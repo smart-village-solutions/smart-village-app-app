@@ -1,5 +1,4 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import _uniqBy from 'lodash/uniqBy';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl, StyleSheet } from 'react-native';
@@ -19,7 +18,7 @@ import {
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
 import { useVoucher } from '../../hooks';
-import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 
 const getAdditionalQueryVariables = (selectedValue: string) => {
@@ -51,7 +50,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const showFilter = route.params?.showFilter ?? true;
   const imageUri = route?.params?.headerImage;
 
-  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), {
+  const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
     variables: { memberId, ...queryVariables }
   });
@@ -82,39 +81,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     }
     setRefreshing(false);
   }, [isConnected, refetch, setRefreshing]);
-
-  const fetchMoreData = () => {
-    return fetchMore({
-      query: getFetchMoreQuery(query),
-      variables: {
-        memberId,
-        ...queryVariables,
-        offset: data?.[queryKey]?.length
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[queryKey]?.length) return prevResult;
-
-        let mergedData;
-
-        if (query === QUERY_TYPES.VOUCHERS_REDEEMED) {
-          // to avoid duplication of data and to be able to list all vouchers redeemed
-          const existingIds = prevResult[queryKey].map((item) => item.id);
-          const newData = fetchMoreResult[queryKey].filter(
-            (item) => !existingIds.includes(item.id)
-          );
-
-          mergedData = [...prevResult[queryKey], ...newData];
-        } else {
-          mergedData = _uniqBy([...prevResult[queryKey], ...fetchMoreResult[queryKey]], 'id');
-        }
-
-        return {
-          ...prevResult,
-          [queryKey]: mergedData
-        };
-      }
-    });
-  };
 
   const updateListDataByDropdown = useCallback(
     (selectedValue: string) => {
@@ -152,7 +118,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       query={query}
       queryVariables={{ ...queryVariables, screenName: ScreenName.VoucherIndex }}
       data={listItems}
-      fetchMoreData={fetchMoreData}
       ListHeaderComponent={
         <>
           {query === QUERY_TYPES.VOUCHERS && (

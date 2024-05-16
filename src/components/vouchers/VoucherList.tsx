@@ -3,7 +3,6 @@ import { FlashList } from '@shopify/flash-list';
 import React, { useEffect, useState } from 'react';
 
 import { useRenderItem } from '../../hooks';
-import { QUERY_TYPES } from '../../queries';
 import { TVoucherItem } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 
@@ -84,19 +83,7 @@ export const VoucherList = ({
   }, [data]);
 
   const onEndReached = async () => {
-    if (fetchMoreData) {
-      // if there is a pagination, the end of the list is reached, when no more data is returned
-      // from partially fetching, so we need to check the data to determine the lists end
-      const { data: moreData } = await fetchMoreData();
-
-      setListEndReached(
-        !moreData[
-          query == QUERY_TYPES.VOUCHERS_REDEEMED ? QUERY_TYPES.VOUCHERS : QUERY_TYPES.GENERIC_ITEMS
-        ].length
-      );
-    } else {
-      setListEndReached(true);
-    }
+    setListEndReached(true);
   };
 
   const renderItem = useRenderItem(query, navigation, {
@@ -114,8 +101,6 @@ export const VoucherList = ({
     })
     .filter((item) => item !== null);
 
-  console.warn(data?.length, { data });
-
   return (
     <FlashList
       data={sectionedData}
@@ -123,7 +108,7 @@ export const VoucherList = ({
       estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
-        if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
+        if (sectionedData?.length >= MAX_INITIAL_NUM_TO_RENDER) {
           return <LoadingSpinner loading={!listEndReached} />;
         }
 

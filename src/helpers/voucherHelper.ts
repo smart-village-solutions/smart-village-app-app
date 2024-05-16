@@ -38,7 +38,7 @@ export const storeVoucherMemberId = (memberId?: string) => {
 };
 
 export const voucherMemberId = async () => {
-  let memberId = null;
+  let memberId;
 
   try {
     memberId = await readFromStore(VOUCHER_MEMBER_ID);
