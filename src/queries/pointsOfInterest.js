@@ -209,6 +209,7 @@ export const GET_POINT_OF_INTEREST = gql`
         publishedAt
         genericType
         title
+        subtitle: teaser
         categories {
           name
           id

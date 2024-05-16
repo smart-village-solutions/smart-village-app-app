@@ -47,6 +47,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
 
   const query = route.params?.query ?? '';
   const showFilter = route.params?.showFilter ?? true;
+  const imageUri = route?.params?.headerImage;
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
@@ -166,7 +167,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
 
                   <Button
                     title={texts.voucher.loginButton}
-                    onPress={() => navigation.navigate(ScreenName.VoucherLogin)}
+                    onPress={() => navigation.navigate(ScreenName.VoucherLogin, { imageUri })}
                   />
                 </Wrapper>
               )}
