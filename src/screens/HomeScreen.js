@@ -23,6 +23,7 @@ import {
   useMatomoTrackScreenView,
   usePermanentFilter,
   usePushNotifications,
+  useRedeemLocalVouchers,
   useStaticContent
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
@@ -228,6 +229,8 @@ export const HomeScreen = ({ navigation, route }) => {
     undefined,
     globalSettings?.settings?.pushNotifications
   );
+
+  useRedeemLocalVouchers();
 
   const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticContentName}`,
