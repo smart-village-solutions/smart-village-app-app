@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { memo } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { Icon, colors, normalize } from '../../config';
@@ -9,7 +9,6 @@ import { QUERY_TYPES } from '../../queries';
 import { TVoucherItem } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { Touchable } from '../Touchable';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 import { Discount } from './Discount';
@@ -27,7 +26,10 @@ export const VoucherListItem = memo(
     const { discountType, id, picture, params, payload, routeName: name, subtitle, title } = item;
 
     return (
-      <Touchable onPress={() => navigation && navigation.push(name, params)} disabled={!navigation}>
+      <TouchableOpacity
+        onPress={() => navigation && navigation.push(name, params)}
+        disabled={!navigation}
+      >
         <Card containerStyle={styles.container}>
           {!!picture?.url && (
             <Image
@@ -69,7 +71,7 @@ export const VoucherListItem = memo(
         </Card>
 
         <Divider />
-      </Touchable>
+      </TouchableOpacity>
     );
   }
 );
