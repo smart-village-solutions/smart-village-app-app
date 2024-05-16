@@ -59,6 +59,7 @@ export const VoucherList = ({
   ListHeaderComponent,
   navigation,
   noSubtitle,
+  query,
   queryVariables,
   refreshControl
 }: {
@@ -68,6 +69,7 @@ export const VoucherList = ({
   ListHeaderComponent: React.ReactElement;
   navigation: StackScreenProps<any>;
   noSubtitle: boolean;
+  query: string;
   queryVariables: any;
   refreshControl: React.ReactElement;
 }) => {
@@ -87,13 +89,17 @@ export const VoucherList = ({
       // from partially fetching, so we need to check the data to determine the lists end
       const { data: moreData } = await fetchMoreData();
 
-      setListEndReached(!moreData[QUERY_TYPES.GENERIC_ITEMS].length);
+      setListEndReached(
+        !moreData[
+          query == QUERY_TYPES.VOUCHERS_REDEEMED ? QUERY_TYPES.VOUCHERS : QUERY_TYPES.GENERIC_ITEMS
+        ].length
+      );
     } else {
       setListEndReached(true);
     }
   };
 
-  const renderItem = useRenderItem(QUERY_TYPES.VOUCHERS, navigation, {
+  const renderItem = useRenderItem(query, navigation, {
     noSubtitle,
     queryVariables
   });
@@ -107,6 +113,8 @@ export const VoucherList = ({
       }
     })
     .filter((item) => item !== null);
+
+  console.warn(data?.length, { data });
 
   return (
     <FlashList

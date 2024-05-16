@@ -76,10 +76,11 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const voucherListItems = useMemo(() => {
     return parseListItemsFromQuery(
       QUERY_TYPES.VOUCHERS,
-      { [QUERY_TYPES.GENERIC_ITEMS]: vouchers },
+      { [QUERY_TYPES.VOUCHERS]: vouchers },
       undefined,
       {
-        withDate: false
+        withDate: false,
+        queryKey: QUERY_TYPES.VOUCHERS
       }
     );
   }, [vouchers]);
@@ -103,7 +104,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         />
       </Wrapper>
 
-      {!!vouchers?.length && (
+      {!!voucherListItems?.length && (
         <View>
           <SectionHeader title={texts.pointOfInterest.vouchers} />
           <FlatList

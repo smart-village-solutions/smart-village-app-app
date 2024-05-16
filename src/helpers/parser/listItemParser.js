@@ -437,7 +437,8 @@ const parseConsulData = (data, query, skipLastDivider) => {
  *    skipLastDivider?: boolean;
  *    withDate?: boolean,
  *    isSectioned?: boolean,
- *    queryVariables?: any
+ *    queryVariables?: any,
+ *    queryKey?: string
  *  }} options
  * @returns
  */
@@ -499,10 +500,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOUCHERS:
     case QUERY_TYPES.VOUCHERS_REDEEMED:
-      return parseVouchers(
-        data[QUERY_TYPES.GENERIC_ITEMS] || data[QUERY_TYPES.VOUCHERS],
-        skipLastDivider
-      );
+      return parseVouchers(data[options.queryKey], skipLastDivider);
     case QUERY_TYPES.VOUCHERS_CATEGORIES:
       return parseVouchersCategories(data[QUERY_TYPES.GENERIC_ITEMS], skipLastDivider);
     case QUERY_TYPES.CONSUL.DEBATES:

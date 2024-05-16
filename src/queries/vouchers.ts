@@ -205,8 +205,8 @@ export const GET_VOUCHERS_CATEGORIES = gql`
 `;
 
 export const GET_VOUCHERS_REDEEMED = gql`
-  query Vouchers($memberId: ID) {
-    vouchers(memberId: $memberId) {
+  query Vouchers($limit: Int, $offset: Int, $order: GenericItemOrder, $memberId: ID) {
+    vouchers(limit: $limit, skip: $offset, order: $order, memberId: $memberId) {
       id
       updatedAt
       createdAt
