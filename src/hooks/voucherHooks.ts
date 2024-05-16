@@ -1,7 +1,10 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { useMutation } from 'react-apollo';
 
-import { voucherAuthToken, voucherMemberId } from '../helpers/voucherHelper';
 import { NetworkContext } from '../NetworkProvider';
+import { addToStore, readFromStore } from '../helpers';
+import { VOUCHER_TRANSACTIONS, voucherAuthToken, voucherMemberId } from '../helpers/voucherHelper';
+import { REDEEM_QUOTA_OF_VOUCHER } from '../queries/vouchers';
 
 export const useVoucher = (): {
   refresh: () => Promise<void>;
@@ -45,4 +48,48 @@ export const useVoucher = (): {
     isLoggedIn,
     memberId
   };
+};
+
+export const useRedeemLocalVouchers = () => {
+  const { isConnected } = useContext(NetworkContext);
+
+  const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
+
+  const redeemLocalVouchers = useCallback(async () => {
+    try {
+      const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
+      let error = false;
+
+      if (voucherTransactions.length) {
+        for (const { voucherId, memberId, quantity, deviceToken } of voucherTransactions) {
+          try {
+            await redeemQuotaOfVoucher({
+              variables: {
+                deviceToken,
+                quantity,
+                voucherId,
+                memberId
+              }
+            });
+          } catch (e) {
+            console.error(e);
+            error = true;
+            break;
+          }
+        }
+
+        if (!error) {
+          await addToStore(VOUCHER_TRANSACTIONS, []);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isConnected) {
+      redeemLocalVouchers();
+    }
+  }, [isConnected, redeemLocalVouchers]);
 };
