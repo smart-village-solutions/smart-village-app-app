@@ -75,7 +75,7 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
     );
 
     if (categories?.length) {
-      entries = _uniqBy(categories, 'name').map((category, index) => ({
+      entries = _sortBy(_uniqBy(categories, 'name'), 'name').map((category, index) => ({
         index: index + 1,
         id: category.id,
         value: category.name,
@@ -83,6 +83,7 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
       }));
     }
   }
+
   return [blankEntry, ...entries];
 };
 

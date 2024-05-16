@@ -40,7 +40,16 @@ const sectionData = (data: TVoucherItem[]) => {
 
   const groupedByCategory = groupDataByCategory(data);
 
-  return transformGroupedDataToArray(groupedByCategory);
+  // sort the groupDataByCategory object by its string keys alphabetically
+  const orderedGroupedByCategory = Object.keys(groupedByCategory)
+    .sort()
+    .reduce((obj, key) => {
+      obj[key] = groupedByCategory[key];
+
+      return obj;
+    }, {});
+
+  return transformGroupedDataToArray(orderedGroupedByCategory);
 };
 
 export const VoucherList = ({
