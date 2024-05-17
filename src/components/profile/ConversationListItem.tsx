@@ -61,7 +61,7 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
   const { firstName, email } = contacts[0];
 
   const displayName =
-    latestMessage?.senderId != currentUserId
+    latestMessage?.senderId != currentUserId && !!latestMessage?.senderName
       ? latestMessage?.senderName
       : firstName
       ? firstName
