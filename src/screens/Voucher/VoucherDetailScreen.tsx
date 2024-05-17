@@ -78,7 +78,8 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
   const voucherListItems = useMemo(() => {
     return parseListItemsFromQuery(QUERY_TYPES.VOUCHERS, actualVouchersData, undefined, {
-      withDate: false
+      withDate: false,
+      queryKey: QUERY_TYPES.GENERIC_ITEMS
     });
   }, [actualVouchersData]);
 
