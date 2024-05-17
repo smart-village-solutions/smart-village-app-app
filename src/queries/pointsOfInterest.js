@@ -226,7 +226,6 @@ export const GET_POINT_OF_INTEREST = gql`
           maxQuantity
           maxPerPerson
           availableQuantity
-          availableQuantityForMember(memberId: 1)
         }
         contentBlocks {
           id
