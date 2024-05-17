@@ -68,11 +68,7 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
       }));
     }
   } else if (query === QUERY_TYPES.VOUCHERS) {
-    const categories = [];
-
-    data?.forEach((voucher) =>
-      voucher.categories?.forEach((category) => categories.push(category))
-    );
+    const categories = data?.categories?.filter((category) => !!category.name);
 
     if (categories?.length) {
       entries = _sortBy(_uniqBy(categories, 'name'), 'name').map((category, index) => ({

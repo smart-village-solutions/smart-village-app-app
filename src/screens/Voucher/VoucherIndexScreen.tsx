@@ -19,7 +19,7 @@ import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
 import { useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { ScreenName } from '../../types';
+import { ScreenName, TCategory, TVoucherItem } from '../../types';
 
 const getAdditionalQueryVariables = (selectedValue: string) => {
   const additionalQueryVariables = {};
@@ -74,6 +74,16 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     });
   }, [data, query]);
 
+  const dropdownData = useMemo(() => {
+    const categories: TCategory[] = [];
+
+    vouchersCategories?.[queryKey]?.forEach((voucher: TVoucherItem) =>
+      voucher.categories?.forEach((category) => categories.push(category))
+    );
+
+    return { categories };
+  }, [vouchersCategories, queryKey]);
+
   const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
@@ -125,7 +135,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               {!!showFilter && !queryVariables.category && (
                 <DropdownHeader
                   {...{
-                    data: vouchersCategories?.[queryKey],
+                    data: dropdownData,
                     query,
                     queryVariables,
                     updateListData: updateListDataByDropdown
