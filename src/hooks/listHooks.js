@@ -188,7 +188,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
-        if (query === QUERY_TYPES.VOUCHERS) {
+        if (query === QUERY_TYPES.VOUCHERS || query === QUERY_TYPES.VOUCHERS_REDEEMED) {
           if (typeof item === 'object' && Object.keys(item).length === 2) {
             return <VoucherCategoryHeader {...{ item, navigation, options, query }} />;
           }

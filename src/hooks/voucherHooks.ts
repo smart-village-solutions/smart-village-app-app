@@ -63,14 +63,15 @@ export const useRedeemLocalVouchers = () => {
       if (voucherTransactions.length) {
         for (const { voucherId, memberId, quantity, deviceToken } of voucherTransactions) {
           try {
-            await redeemQuotaOfVoucher({
-              variables: {
-                deviceToken,
-                quantity,
-                voucherId,
-                memberId
-              }
-            });
+            !!memberId &&
+              (await redeemQuotaOfVoucher({
+                variables: {
+                  deviceToken,
+                  quantity,
+                  voucherId,
+                  memberId
+                }
+              }));
           } catch (e) {
             console.error(e);
             error = true;

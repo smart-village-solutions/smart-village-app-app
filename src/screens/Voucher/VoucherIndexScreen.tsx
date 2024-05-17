@@ -1,5 +1,4 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import _uniqBy from 'lodash/uniqBy';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl, StyleSheet } from 'react-native';
@@ -19,7 +18,7 @@ import {
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
 import { useVoucher } from '../../hooks';
-import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 
 const getAdditionalQueryVariables = (selectedValue: string) => {
@@ -46,12 +45,14 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
 
   const query = route.params?.query ?? '';
+  const queryKey =
+    query === QUERY_TYPES.VOUCHERS_REDEEMED ? QUERY_TYPES.VOUCHERS : QUERY_TYPES.GENERIC_ITEMS;
   const showFilter = route.params?.showFilter ?? true;
   const imageUri = route?.params?.headerImage;
 
-  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), {
+  const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
-    variables: { limit: 20, order: 'createdAt_ASC', memberId, ...queryVariables }
+    variables: { memberId, ...queryVariables }
   });
 
   const { data: vouchersCategories } = useQuery(getQuery(QUERY_TYPES.VOUCHERS_CATEGORIES), {
@@ -68,7 +69,8 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
 
   const listItems = useMemo(() => {
     return parseListItemsFromQuery(query, data, undefined, {
-      withDate: false
+      withDate: false,
+      queryKey
     });
   }, [data, query]);
 
@@ -79,29 +81,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     }
     setRefreshing(false);
   }, [isConnected, refetch, setRefreshing]);
-
-  const fetchMoreData = () => {
-    return fetchMore({
-      query: getFetchMoreQuery(query),
-      variables: {
-        ...queryVariables,
-        offset: data?.[QUERY_TYPES.GENERIC_ITEMS]?.length
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[QUERY_TYPES.GENERIC_ITEMS]?.length) return prevResult;
-
-        const uniqueData = _uniqBy(
-          [...prevResult[QUERY_TYPES.GENERIC_ITEMS], ...fetchMoreResult[QUERY_TYPES.GENERIC_ITEMS]],
-          'id'
-        );
-
-        return {
-          ...prevResult,
-          [QUERY_TYPES.GENERIC_ITEMS]: uniqueData
-        };
-      }
-    });
-  };
 
   const updateListDataByDropdown = useCallback(
     (selectedValue: string) => {
@@ -129,7 +108,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     [query, queryVariables]
   );
 
-  const count = vouchersCount?.[QUERY_TYPES.GENERIC_ITEMS]?.filter(
+  const count = vouchersCount?.[queryKey]?.filter(
     ({ categories }: { categories: { id: number; name: string }[] }) => !!categories?.length
   )?.length;
 
@@ -139,7 +118,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       query={query}
       queryVariables={{ ...queryVariables, screenName: ScreenName.VoucherIndex }}
       data={listItems}
-      fetchMoreData={fetchMoreData}
       ListHeaderComponent={
         <>
           {query === QUERY_TYPES.VOUCHERS && (
@@ -147,7 +125,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               {!!showFilter && !queryVariables.category && (
                 <DropdownHeader
                   {...{
-                    data: vouchersCategories?.[QUERY_TYPES.GENERIC_ITEMS],
+                    data: vouchersCategories?.[queryKey],
                     query,
                     queryVariables,
                     updateListData: updateListDataByDropdown
@@ -198,7 +176,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
           tintColor={colors.accent}
         />
       }
-      showBackToTop
     />
   );
 };
