@@ -214,6 +214,7 @@ export const GET_VOUCHERS_REDEEMED = gql`
       genericType
       id
       title
+      subtitle: teaser
       categories {
         name
         id
