@@ -15,7 +15,7 @@ export const MapViewScreen = ({ navigation, route }) => {
     locations,
     onMarkerPress,
     showsUserLocation
-  } = route?.params;
+  } = route?.params ?? {};
 
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
@@ -27,7 +27,9 @@ export const MapViewScreen = ({ navigation, route }) => {
   const [modelData, setModelData] = useState();
 
   useEffect(() => {
-    navigationToArtworksDetailScreen({ data, isShow: true, modelId, setModelData });
+    if (isAugmentedReality) {
+      navigationToArtworksDetailScreen({ data, isShow: true, modelId, setModelData });
+    }
   }, [modelId]);
   /* end of augmented reality feature */
 

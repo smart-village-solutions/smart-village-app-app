@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     opacity: 0.6,
     position: 'absolute',
-    right: normalize(30),
+    right: normalize(15),
     width: normalize(48),
     zIndex: 1
   }
