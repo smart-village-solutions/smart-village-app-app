@@ -6,10 +6,40 @@ import {
   requestCameraPermissionsAsync,
   requestMediaLibraryPermissionsAsync
 } from 'expo-image-picker';
+import {
+  addAssetsToAlbumAsync,
+  createAlbumAsync,
+  createAssetAsync,
+  getAlbumAsync,
+  requestPermissionsAsync
+} from 'expo-media-library';
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 
+import appJson from '../../app.json';
 import { texts } from '../config';
+
+const saveImageToGallery = async (uri: string) => {
+  const { status } = await requestPermissionsAsync();
+  const appName = appJson.expo.name;
+
+  if (status !== PermissionStatus.GRANTED) {
+    return;
+  }
+
+  try {
+    const asset = await createAssetAsync(uri);
+    const album = await getAlbumAsync(appName);
+
+    if (!album) {
+      await createAlbumAsync(appName, asset, false);
+    } else {
+      await addAssetsToAlbumAsync([asset], album, false);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export const useSelectImage = (
   onChange?: <T>(
@@ -55,7 +85,8 @@ export const useCaptureImage = (
   allowsEditing?: boolean,
   aspect?: [number, number],
   quality?: number,
-  mediaTypes?: MediaTypeOptions
+  mediaTypes?: MediaTypeOptions,
+  saveImage?: boolean
 ) => {
   const [imageUri, setImageUri] = useState<string>();
 
@@ -77,7 +108,13 @@ export const useCaptureImage = (
     });
 
     if (!result.canceled) {
-      onChange ? onChange(setImageUri)(result.assets[0].uri) : setImageUri(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
+
+      if (saveImage) {
+        await saveImageToGallery(uri);
+      }
+
       return result.assets[0];
     }
   }, [onChange]);

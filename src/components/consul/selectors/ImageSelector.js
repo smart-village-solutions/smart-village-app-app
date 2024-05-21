@@ -70,7 +70,9 @@ export const ImageSelector = ({
     undefined, // onChange
     false, // allowsEditing
     selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
-    undefined // quality
+    undefined, // quality
+    undefined, // mediaTypes
+    selectorType === IMAGE_SELECTOR_TYPES.SUE ? true : false // saveImage
   );
 
   useEffect(() => {
