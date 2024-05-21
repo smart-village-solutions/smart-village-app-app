@@ -83,6 +83,12 @@
           }
         }
       ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
+        }
+      ],
       "expo-localization",
       "sentry-expo",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
