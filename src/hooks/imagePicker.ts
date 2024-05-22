@@ -44,12 +44,14 @@ const saveImageToGallery = async (uri: string) => {
 export const useSelectImage = ({
   allowsEditing = false,
   aspect,
+  exif = false,
   mediaTypes = MediaTypeOptions.Images,
   onChange,
   quality = 1
 }: {
   allowsEditing?: boolean;
   aspect?: [number, number];
+  exif?: boolean;
   mediaTypes?: MediaTypeOptions;
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
@@ -71,12 +73,15 @@ export const useSelectImage = ({
     const result = await launchImageLibraryAsync({
       allowsEditing,
       aspect,
+      exif,
       mediaTypes,
       quality
     });
 
     if (!result.canceled) {
-      onChange ? onChange(setImageUri)(result.assets[0].uri) : setImageUri(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
+
       return result.assets[0];
     }
   }, [onChange]);
@@ -87,6 +92,7 @@ export const useSelectImage = ({
 export const useCaptureImage = ({
   allowsEditing = false,
   aspect,
+  exif = false,
   mediaTypes = MediaTypeOptions.Images,
   onChange,
   quality = 1,
@@ -94,6 +100,7 @@ export const useCaptureImage = ({
 }: {
   allowsEditing?: boolean;
   aspect?: [number, number];
+  exif?: boolean;
   mediaTypes?: MediaTypeOptions;
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
@@ -116,6 +123,7 @@ export const useCaptureImage = ({
     const result = await launchCameraAsync({
       allowsEditing,
       aspect,
+      exif,
       mediaTypes,
       quality
     });

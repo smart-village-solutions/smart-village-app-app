@@ -60,12 +60,14 @@ export const ImageSelector = ({
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
-    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1]
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    exif: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 
   const { captureImage } = useCaptureImage({
     allowsEditing: false,
     aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    exif: selectorType === IMAGE_SELECTOR_TYPES.SUE,
     saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 
@@ -103,7 +105,8 @@ export const ImageSelector = ({
   };
 
   const imageSelect = async (imageFunction = selectImage) => {
-    const { uri, type } = await imageFunction();
+    const { uri, type, exif } = await imageFunction();
+
     const { size } = await FileSystem.getInfoAsync(uri);
 
     /* used to specify the mimeType when uploading to the server */
@@ -114,7 +117,7 @@ export const ImageSelector = ({
 
     errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
-    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size }]);
+    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size, exif }]);
     setIsModalVisible(!isModalVisible);
   };
 
