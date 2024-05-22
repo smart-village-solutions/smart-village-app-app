@@ -52,6 +52,7 @@ export const QUERY_TYPES = {
   STATIC_CONTENT_LIST: 'staticContentList',
   TOUR: 'tour',
   SUE: {
+    AREA_SERVICE: 'areaService',
     PRIORITIES: 'priorities',
     REQUESTS: 'requests',
     REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',
