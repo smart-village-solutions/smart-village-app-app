@@ -4,11 +4,12 @@ import * as Location from 'expo-location';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import parsePhoneNumber from 'libphonenumber-js';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useForm, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
+import { SettingsContext } from '../../SettingsProvider';
 import {
   Button,
   DefaultKeyboardAvoidingView,
@@ -27,8 +28,8 @@ import {
 import { colors, device, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import { useKeyboardHeight, useStaticContent } from '../../hooks';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
-import { SettingsContext } from '../../SettingsProvider';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
 
@@ -57,7 +58,8 @@ const Content = (
   selectedPosition: Location.LocationObjectCoords | undefined,
   setSelectedPosition: any,
   setValue: UseFormSetValue<TValues>,
-  getValues: UseFormGetValues<TValues>
+  getValues: UseFormGetValues<TValues>,
+  setZipCode: any
 ) => {
   switch (content) {
     case 'description':
@@ -71,6 +73,7 @@ const Content = (
           setValue={setValue}
           getValues={getValues}
           requiredInputs={requiredInputs}
+          setZipCode={setZipCode}
         />
       );
     case 'user':
@@ -103,6 +106,7 @@ type TProgress = {
   title: string;
 };
 
+/* eslint-disable complexity */
 export const SueReportScreen = ({
   navigation,
   route
@@ -129,6 +133,7 @@ export const SueReportScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TReports>();
+  const [zipCode, setZipCode] = useState<string>();
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef(null);
@@ -173,6 +178,14 @@ export const SueReportScreen = ({
       zipCode: ''
     }
   });
+
+  const { data: areaServiceData } = useQuery(
+    [QUERY_TYPES.SUE.AREA_SERVICE, zipCode || getValues('zipCode')],
+    () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(zipCode || getValues('zipCode')),
+    {
+      enabled: !!limitOfCity && (zipCode?.length === 5 || getValues('zipCode')?.length === 5)
+    }
+  );
 
   const { mutateAsync } = useMutation(postRequests);
 
@@ -281,7 +294,9 @@ export const SueReportScreen = ({
 
           if (
             !!limitOfCity &&
-            limitOfCity.toLocaleLowerCase() !== getValues().city.toLocaleLowerCase()
+            (limitOfCity.toLocaleLowerCase() !== getValues().city.toLocaleLowerCase() ||
+              limitOfCity.toLocaleLowerCase() !==
+                areaServiceData?.values?.[0].name?.toLocaleLowerCase())
           ) {
             return errorMessage;
           }
@@ -472,7 +487,8 @@ export const SueReportScreen = ({
                   selectedPosition,
                   setSelectedPosition,
                   setValue,
-                  getValues
+                  getValues,
+                  setZipCode
                 )
               )}
               {device.platform === 'android' && (
@@ -514,6 +530,7 @@ export const SueReportScreen = ({
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   buttonContainer: {

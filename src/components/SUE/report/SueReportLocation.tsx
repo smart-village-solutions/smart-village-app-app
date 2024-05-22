@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import moment from 'moment';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
@@ -5,7 +6,6 @@ import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../../SettingsProvider';
 import { device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
@@ -40,7 +40,8 @@ export const SueReportLocation = ({
   requiredInputs,
   selectedPosition,
   setSelectedPosition,
-  setValue
+  setValue,
+  setZipCode
 }: {
   control: any;
   getValues: UseFormGetValues<TValues>;
@@ -48,6 +49,7 @@ export const SueReportLocation = ({
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setValue: UseFormSetValue<TValues>;
+  setZipCode: any;
 }) => {
   const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
@@ -137,6 +139,7 @@ export const SueReportLocation = ({
       setValue('houseNumber', houseNumber);
       setValue('zipCode', zipCode);
       setValue('city', city);
+      setZipCode(zipCode);
     } catch (error) {
       console.error('Reverse Geocoding Error:', error);
     }
