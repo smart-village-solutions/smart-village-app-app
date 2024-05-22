@@ -803,6 +803,7 @@ export const texts = {
     birthday: 'Geburtsdatum',
     city: 'Ort',
     dayOfBirth: 'Geburtsdatum',
+    dayOfBirthInvalid: 'Geburtsdatum ungültig, mindestens 18 Jahre',
     email: 'E-Mail-Adresse',
     emailError: 'E-Mail-Adresse muss korrekt ausgefüllt werden',
     emailInvalid: 'E-Mail-Adresse ungültig',

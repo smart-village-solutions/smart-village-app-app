@@ -18,10 +18,10 @@ import {
   WrapperRow
 } from '../../components';
 import { texts } from '../../config';
-import { momentFormat, storeProfileUpdated, storeProfileUserData } from '../../helpers';
+import { momentFormat, storeProfileUserData } from '../../helpers';
+import { useProfileUser } from '../../hooks';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
-import { useProfileUser } from '../../hooks';
 
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
@@ -176,11 +176,28 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                     control,
                     errors,
                     label: texts.profile.birthday,
+                    maximumDate: new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
                     mode: 'date',
                     name,
                     onChange,
                     placeholder: texts.profile.birthday,
                     required: true,
+                    rules: {
+                      validate: (value) => {
+                        const date = new Date(value);
+                        const now = new Date();
+
+                        // Calculate the user's age, 365.25 is the average number of days in a year,
+                        // accounting for leap years (which occur approximately every 4 years).
+                        const age = Math.floor(
+                          (now.getTime() - date.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
+                        );
+
+                        if (age < 18) return texts.profile.dayOfBirthInvalid;
+
+                        return true;
+                      }
+                    },
                     value
                   }}
                 />
