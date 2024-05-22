@@ -17,7 +17,6 @@ import { Input } from '../../form';
 import { Image } from '../../Image';
 import { Modal } from '../../Modal';
 import { BoldText, RegularText } from '../../Text';
-import { Touchable } from '../../Touchable';
 import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_TYPE_REGEX, URL_REGEX } = consts;
@@ -59,21 +58,16 @@ export const ImageSelector = ({
     client: ConsulClient
   });
 
-  const { selectImage } = useSelectImage(
-    undefined, // onChange
-    false, // allowsEditing
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
-    undefined // quality
-  );
+  const { selectImage } = useSelectImage({
+    allowsEditing: false,
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1]
+  });
 
-  const { captureImage } = useCaptureImage(
-    undefined, // onChange
-    false, // allowsEditing
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
-    undefined, // quality
-    undefined, // mediaTypes
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ? true : false // saveImage
-  );
+  const { captureImage } = useCaptureImage({
+    allowsEditing: false,
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
+  });
 
   useEffect(() => {
     onChange(JSON.stringify(imagesAttributes));

@@ -41,15 +41,21 @@ const saveImageToGallery = async (uri: string) => {
   }
 };
 
-export const useSelectImage = (
+export const useSelectImage = ({
+  allowsEditing = false,
+  aspect,
+  mediaTypes = MediaTypeOptions.Images,
+  onChange,
+  quality = 1
+}: {
+  allowsEditing?: boolean;
+  aspect?: [number, number];
+  mediaTypes?: MediaTypeOptions;
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
-  ) => React.Dispatch<React.SetStateAction<T>>,
-  allowsEditing?: boolean,
-  aspect?: [number, number],
-  quality?: number,
-  mediaTypes?: MediaTypeOptions
-) => {
+  ) => React.Dispatch<React.SetStateAction<T>>;
+  quality?: number;
+}) => {
   const [imageUri, setImageUri] = useState<string>();
 
   const selectImage = useCallback(async () => {
@@ -63,10 +69,10 @@ export const useSelectImage = (
     // this allows for proper selecting and cropping to 1:1 images (and not videos)
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
-      mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
-      allowsEditing: allowsEditing ?? false,
+      allowsEditing,
       aspect,
-      quality: quality ?? 1
+      mediaTypes,
+      quality
     });
 
     if (!result.canceled) {
@@ -78,16 +84,23 @@ export const useSelectImage = (
   return { imageUri, selectImage };
 };
 
-export const useCaptureImage = (
+export const useCaptureImage = ({
+  allowsEditing = false,
+  aspect,
+  mediaTypes = MediaTypeOptions.Images,
+  onChange,
+  quality = 1,
+  saveImage = false
+}: {
+  allowsEditing?: boolean;
+  aspect?: [number, number];
+  mediaTypes?: MediaTypeOptions;
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
-  ) => React.Dispatch<React.SetStateAction<T>>,
-  allowsEditing?: boolean,
-  aspect?: [number, number],
-  quality?: number,
-  mediaTypes?: MediaTypeOptions,
-  saveImage?: boolean
-) => {
+  ) => React.Dispatch<React.SetStateAction<T>>;
+  quality?: number;
+  saveImage?: boolean;
+}) => {
   const [imageUri, setImageUri] = useState<string>();
 
   const captureImage = useCallback(async () => {
@@ -101,10 +114,10 @@ export const useCaptureImage = (
     // this allows for proper selecting and cropping to 1:1 images (and not videos)
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchCameraAsync({
-      mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
-      allowsEditing: allowsEditing ?? false,
+      allowsEditing,
       aspect,
-      quality: quality ?? 1
+      mediaTypes,
+      quality
     });
 
     if (!result.canceled) {
