@@ -89,7 +89,9 @@ export const NoticeboardCreateForm = ({
     defaultValues: {
       id: data?.id ?? '',
       body: data?.contentBlocks?.[0]?.body ?? '',
-      dateEnd: data?.dates?.[0]?.dateEnd ? new Date(data?.dates?.[0]?.dateEnd) : new Date(),
+      dateEnd: data?.dates?.[0]?.dateEnd
+        ? new Date(data?.dates?.[0]?.dateEnd)
+        : new Date(new Date().setMonth(new Date().getMonth() + requestedDateDifference)),
       dateStart: data?.dates?.[0]?.dateStart ? new Date(data?.dates?.[0]?.dateStart) : new Date(),
       email: data?.contacts?.[0]?.email ?? '',
       name: data?.contacts?.[0]?.firstName ?? '',
@@ -275,6 +277,10 @@ export const NoticeboardCreateForm = ({
                 control,
                 errors,
                 label: texts.noticeboard.inputDate(requestedDateDifference),
+                maximumDate: new Date(
+                  new Date().setMonth(new Date().getMonth() + requestedDateDifference)
+                ),
+                minimumDate: new Date(),
                 mode: 'date',
                 name,
                 onChange,
