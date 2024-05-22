@@ -22,7 +22,8 @@ export const getGenericItemSectionTitle = (genericType: GenericType): string => 
 
 export const getGenericItemDetailTitle = (
   genericType: GenericType,
-  queryVariables: any
+  queryVariables: any,
+  categoryName: string
 ): string => {
   switch (genericType) {
     case GenericType.Commercial:
@@ -36,6 +37,10 @@ export const getGenericItemDetailTitle = (
     case GenericType.Noticeboard: {
       if (queryVariables?.isCurrentUser) {
         return texts.noticeboard.myNoticeboard;
+      }
+
+      if (categoryName) {
+        return categoryName;
       }
 
       return texts.noticeboard.noticeboard;
