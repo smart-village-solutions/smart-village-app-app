@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -24,13 +24,10 @@ import {
 } from '../../components';
 import { colors, device, normalize, texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
-
-type Props = {
-  route: RouteProp<any, never>;
-};
+import { ScreenName } from '../../types';
 
 /* eslint-disable complexity */
-export const SueDetailScreen = ({ route }: Props) => {
+export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem = {} } = globalSettings;
@@ -144,12 +141,14 @@ export const SueDetailScreen = ({ route }: Props) => {
             <BoldText>{texts.sue.location}</BoldText>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
               <Map
-                locations={[
-                  {
-                    position: { latitude, longitude }
-                  }
-                ]}
+                isMaximizeButtonVisible
+                locations={[{ position: { latitude, longitude } }]}
                 mapStyle={styles.map}
+                onMaximizeButtonPress={() =>
+                  navigation.navigate(ScreenName.MapView, {
+                    locations: [{ position: { latitude, longitude } }]
+                  })
+                }
               />
             )}
           </Wrapper>

@@ -5,6 +5,7 @@ import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
+import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../../SettingsProvider';
 import { device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
@@ -16,10 +17,10 @@ import {
 } from '../../../hooks';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { TValues, mapToMapMarkers } from '../../../screens';
-import { MapMarker } from '../../../types';
+import { MapMarker, ScreenName } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
-import { Wrapper } from '../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
@@ -48,6 +49,7 @@ export const SueReportLocation = ({
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {
+  const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
   const { globalSettings } = useContext(SettingsContext);
@@ -168,41 +170,45 @@ export const SueReportLocation = ({
 
   return (
     <View style={styles.container}>
-      <Map
-        locations={locations}
-        mapCenterPosition={mapCenterPosition}
-        mapStyle={styles.map}
-        isMyLocationButtonVisible
-        onMyLocationButtonPress={() =>
-          Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
-            {
-              text: texts.sue.report.alerts.no
-            },
-            {
-              text: texts.sue.report.alerts.yes,
-              onPress: () => {
-                const location = position || lastKnownPosition;
+      <WrapperHorizontal>
+        <Map
+          isMaximizeButtonVisible
+          isMyLocationButtonVisible
+          locations={locations}
+          mapCenterPosition={mapCenterPosition}
+          mapStyle={styles.map}
+          onMyLocationButtonPress={() =>
+            Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
+              {
+                text: texts.sue.report.alerts.no
+              },
+              {
+                text: texts.sue.report.alerts.yes,
+                onPress: () => {
+                  const location = position || lastKnownPosition;
 
-                if (location) {
-                  setUpdatedRegion(true);
-                  setSelectedPosition(location.coords);
-                  reverseGeocode(location.coords);
+                  if (location) {
+                    setUpdatedRegion(true);
+                    setSelectedPosition(location.coords);
+                    reverseGeocode(location.coords);
+                  }
                 }
               }
-            }
-          ])
-        }
-        onMapPress={({ nativeEvent }) => {
-          setUpdatedRegion(false);
-          setSelectedPosition(nativeEvent.coordinate);
-          reverseGeocode(nativeEvent.coordinate);
-        }}
-        updatedRegion={
-          !!selectedPosition && updatedRegion
-            ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-            : undefined
-        }
-      />
+            ])
+          }
+          onMapPress={({ nativeEvent }) => {
+            setUpdatedRegion(false);
+            setSelectedPosition(nativeEvent.coordinate);
+            reverseGeocode(nativeEvent.coordinate);
+          }}
+          onMaximizeButtonPress={() => navigation.navigate(ScreenName.MapView, { locations })}
+          updatedRegion={
+            !!selectedPosition && updatedRegion
+              ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
+              : undefined
+          }
+        />
+      </WrapperHorizontal>
 
       <Wrapper>
         <RegularText small>{texts.sue.report.mapHint}</RegularText>
