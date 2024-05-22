@@ -123,7 +123,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
 
-      {isCurrentUser ? (
+      {isCurrentUser && (
         <Wrapper>
           <WrapperRow spaceAround>
             <Button
@@ -166,7 +166,79 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
             />
           </WrapperRow>
         </Wrapper>
-      ) : (
+      )}
+
+      {!!categories?.length && !!categories[0].name && (
+        <WrapperHorizontal>
+          <HeadlineText smaller uppercase>
+            {categories[0].name}
+          </HeadlineText>
+        </WrapperHorizontal>
+      )}
+
+      {!!title && <SectionHeader big title={title} />}
+
+      {!!priceInformations?.length && !!priceInformations[0].description.length && (
+        <WrapperHorizontal>
+          <BoldText>Preis: {priceInformations[0].description}</BoldText>
+        </WrapperHorizontal>
+      )}
+
+      {!!contentBlocks?.length && (
+        <>
+          <SectionHeader title={texts.noticeboard.description} containerStyle={styles.paddingTop} />
+          <>
+            {contentBlocks?.map((contentBlock, index) => {
+              return (
+                <StorySection
+                  contentBlock={contentBlock}
+                  index={index}
+                  key={`${contentBlock.id}-${index}`}
+                  openWebScreen={openWebScreen}
+                />
+              );
+            })}
+          </>
+        </>
+      )}
+
+      {!!dates?.length && (
+        <>
+          <SectionHeader title={texts.noticeboard.details} containerStyle={styles.paddingTop} />
+          <WrapperHorizontal>
+            <InfoCard dates={dates} />
+          </WrapperHorizontal>
+        </>
+      )}
+
+      {!!contacts?.length && (
+        <>
+          <SectionHeader title={texts.noticeboard.member} containerStyle={styles.paddingTop} />
+          <WrapperHorizontal>
+            <TextListItem
+              item={{
+                bottomDivider: false,
+                leftIcon: (
+                  <VolunteerAvatar item={{ user: { display_name: contacts[0].firstName } }} />
+                ),
+                routeName: ScreenName.ProfileUpdate,
+                onPress: () =>
+                  navigation.push(ScreenName.NoticeboardMemberIndex, {
+                    data: dataMemberIndex,
+                    isCurrentUser,
+                    memberName: contacts[0].firstName,
+                    query: QUERY_TYPES.GENERIC_ITEMS,
+                    title: texts.noticeboard.member
+                  }),
+                title: contacts[0].firstName
+              }}
+              navigation={memberEntries ? navigation : undefined}
+            />
+          </WrapperHorizontal>
+        </>
+      )}
+
+      {!isCurrentUser && (
         <Wrapper>
           <Button
             icon={<Icon.Mail />}
@@ -187,100 +259,11 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
           />
         </Wrapper>
       )}
-
-      {!!categories?.length && !!categories[0].name && (
-        <WrapperHorizontal>
-          <HeadlineText smaller uppercase>
-            {categories[0].name}
-          </HeadlineText>
-        </WrapperHorizontal>
-      )}
-
-      {!!title && <SectionHeader big title={title} />}
-
-      {!!priceInformations?.length && !!priceInformations[0].description.length && (
-        <WrapperHorizontal>
-          <BoldText>{priceInformations[0].description}</BoldText>
-        </WrapperHorizontal>
-      )}
-
-      {!!dates?.length && (
-        <>
-          <SectionHeader title={texts.noticeboard.details} containerStyle={styles.paddingTop} />
-          <Wrapper>
-            <InfoCard dates={dates} />
-          </Wrapper>
-        </>
-      )}
-
-      {!!contacts?.length && (
-        <>
-          <SectionHeader title={texts.noticeboard.member} containerStyle={styles.paddingTop} />
-          <WrapperHorizontal>
-            <TextListItem
-              item={{
-                bottomDivider: false,
-                leftIcon: (
-                  <VolunteerAvatar item={{ user: { display_name: contacts[0].firstName } }} />
-                ),
-                rightIcon: memberEntries ? (
-                  <Badge
-                    value={memberEntries}
-                    badgeStyle={styles.badge}
-                    textStyle={styles.badgeText}
-                  />
-                ) : undefined,
-                routeName: ScreenName.ProfileUpdate,
-                onPress: () =>
-                  navigation.push(ScreenName.NoticeboardMemberIndex, {
-                    data: dataMemberIndex,
-                    isCurrentUser,
-                    memberName: contacts[0].firstName,
-                    query: QUERY_TYPES.GENERIC_ITEMS,
-                    title: texts.noticeboard.member
-                  }),
-                title: contacts[0].firstName
-              }}
-              navigation={memberEntries ? navigation : undefined}
-            />
-          </WrapperHorizontal>
-        </>
-      )}
-
-      {!!contentBlocks?.length && (
-        <>
-          <SectionHeader title={texts.noticeboard.description} containerStyle={styles.paddingTop} />
-          <WrapperVertical>
-            {contentBlocks?.map((contentBlock, index) => {
-              return (
-                <StorySection
-                  contentBlock={contentBlock}
-                  index={index}
-                  key={`${contentBlock.id}-${index}`}
-                  openWebScreen={openWebScreen}
-                />
-              );
-            })}
-          </WrapperVertical>
-        </>
-      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  badge: {
-    backgroundColor: colors.gray20,
-    borderWidth: 0,
-    borderRadius: normalize(16),
-    paddingHorizontal: normalize(8)
-  },
-  badgeText: {
-    color: colors.darkText,
-    fontFamily: 'regular',
-    fontSize: normalize(11),
-    lineHeight: normalize(13)
-  },
   noPaddingTop: {
     paddingTop: 0
   },
