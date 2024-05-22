@@ -172,6 +172,7 @@ export const SueReportLocation = ({
     <View style={styles.container}>
       <WrapperHorizontal>
         <Map
+          calloutTextEnabled
           isMaximizeButtonVisible
           isMyLocationButtonVisible
           locations={locations}
@@ -197,9 +198,11 @@ export const SueReportLocation = ({
             ])
           }
           onMapPress={({ nativeEvent }) => {
-            setUpdatedRegion(false);
-            setSelectedPosition(nativeEvent.coordinate);
-            reverseGeocode(nativeEvent.coordinate);
+            if (nativeEvent.action !== 'marker-press') {
+              setUpdatedRegion(false);
+              setSelectedPosition(nativeEvent.coordinate);
+              reverseGeocode(nativeEvent.coordinate);
+            }
           }}
           onMaximizeButtonPress={() => navigation.navigate(ScreenName.MapView, { locations })}
           updatedRegion={
