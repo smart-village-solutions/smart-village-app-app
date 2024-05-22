@@ -987,6 +987,14 @@ export const texts = {
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',
+      sendReportDone: {
+        feedbackHeader: 'Gib uns dein Feedback',
+        messagePlaceholder: 'Deine Verbesserungsidee',
+        messageTitle: 'Hast du noch eine Verbesserungsidee?',
+        ratingTitle: 'Wie zufrieden bist du mit der App?',
+        sendButton: 'Absenden',
+        toEntryList: 'Zur Meldungsliste'
+      },
       street: 'Straße',
       termsOfService: 'Datenschutzbestimmungen',
       title: 'Kurze Beschreibung',
