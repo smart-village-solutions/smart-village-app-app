@@ -3,6 +3,7 @@ import { Controller } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../../config';
+import { TValues } from '../../../screens';
 import { Checkbox } from '../../Checkbox';
 import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
@@ -17,7 +18,7 @@ export const SueReportUser = ({
 }: {
   control: any;
   errors: any;
-  requiredInputs: string[];
+  requiredInputs: keyof TValues[];
 }) => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();

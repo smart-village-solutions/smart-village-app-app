@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../../config';
+import { TValues } from '../../../screens';
 import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
@@ -10,11 +11,17 @@ import { Input } from '../../form';
 const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 
 export const SueReportDescription = ({
+  areaServiceData,
   control,
-  requiredInputs
+  errorMessage,
+  requiredInputs,
+  setValue
 }: {
+  areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
-  requiredInputs: string[];
+  errorMessage: string;
+  requiredInputs: keyof TValues[];
+  setValue: UseFormSetValue<TValues>;
 }) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
