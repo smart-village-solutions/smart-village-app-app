@@ -1,4 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
@@ -18,7 +19,7 @@ import {
   WrapperRow
 } from '../../components';
 import { texts } from '../../config';
-import { momentFormat, storeProfileUserData } from '../../helpers';
+import { storeProfileUserData } from '../../helpers';
 import { useProfileUser } from '../../hooks';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
@@ -54,7 +55,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     handleSubmit
   } = useForm<ProfileUpdate>({
     defaultValues: {
-      birthday: birthday ? new Date(momentFormat(birthday, 'YYYY-MM-DD')) : undefined,
+      birthday: birthday ? moment(birthday, 'YYYY-MM-DD').toDate() : undefined,
       city: city || '',
       firstName: first_name || '',
       gender: gender || '',
@@ -176,16 +177,16 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                     control,
                     errors,
                     label: texts.profile.birthday,
-                    maximumDate: new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
+                    maximumDate: moment().subtract(18, 'years').toDate(),
                     mode: 'date',
                     name,
                     onChange,
                     placeholder: texts.profile.birthday,
                     required: true,
                     rules: {
-                      validate: (value) => {
-                        const date = new Date(value);
-                        const now = new Date();
+                      validate: (value: string) => {
+                        const date = moment(value).toDate();
+                        const now = moment().toDate();
 
                         // Calculate the user's age, 365.25 is the average number of days in a year,
                         // accounting for leap years (which occur approximately every 4 years).
