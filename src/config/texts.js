@@ -500,6 +500,7 @@ export const texts = {
     delete: 'Löschen',
     description: 'Beschreibung',
     details: 'Details',
+    duration: 'Laufzeit',
     edit: 'Bearbeiten',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',

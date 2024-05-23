@@ -204,7 +204,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
 
       {!!dates?.length && (
         <>
-          <SectionHeader title={texts.noticeboard.details} containerStyle={styles.paddingTop} />
+          <SectionHeader title={texts.noticeboard.duration} containerStyle={styles.paddingTop} />
           <WrapperHorizontal>
             <InfoCard dates={dates} />
           </WrapperHorizontal>
