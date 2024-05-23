@@ -47,6 +47,7 @@ import {
   like,
   link,
   list,
+  location,
   locationActive,
   logo,
   lunch,
@@ -98,11 +99,13 @@ const SvgIcon = ({
   iconStyle,
   size = normalize(24),
   style,
+  strokeColor,
+  strokeWidth,
   xml
 }: IconProps & { xml: (color: string) => string }) => {
   return (
     <View style={style} hitSlop={getHitSlops(size)}>
-      <SvgXml xml={xml(color)} width={size} height={size} style={iconStyle} />
+      <SvgXml xml={xml(color, strokeColor, strokeWidth)} width={size} height={size} style={iconStyle} />
     </View>
   );
 };
@@ -177,7 +180,7 @@ export const Icon = {
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
-  Location: (props: IconProps) => <NamedIcon name="map-pin-filled" {...props} />,
+  Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   LocationActive: (props: IconProps) => <SvgIcon xml={locationActive} {...props} />,
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
