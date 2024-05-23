@@ -54,11 +54,10 @@ export const TravelTimes = ({ id }: { id: string }) => {
     );
   }
 
-  const sortedData = _sortBy(data?.pointOfInterest?.travelTimes, (item) =>
-    momentFormat(item.departureTime, 'HH:mm', 'HH:mm:ss')
+  const paginatedData = data?.pointOfInterest?.travelTimes?.slice(
+    0,
+    moreData * MAX_INITIAL_NUM_TO_RENDER
   );
-
-  const paginatedData = sortedData.slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER);
 
   return (
     <>
