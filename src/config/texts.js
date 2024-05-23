@@ -327,7 +327,7 @@ export const texts = {
       poll: 'Abstimmung',
       proposal: 'Vorschlag'
     },
-    conversation: 'Nachrichten',
+    conversation: 'Unterhaltungen',
     eventRecord: 'Termin',
     newsItem: 'Nachricht',
     pointOfInterest: 'A bis Z',
@@ -508,7 +508,7 @@ export const texts = {
     inputDescription: 'Beschreibung',
     inputErrorText: 'muss ausgefüllt werden',
     inputMail: 'E-Mail',
-    inputMessage: 'Nachricht',
+    inputMessage: 'Unterhaltung',
     inputName: 'Angezeigter Name',
     inputPhoneNumber: 'Telefonnummer',
     inputPrice: 'Preis',
@@ -525,7 +525,7 @@ export const texts = {
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
     },
-    writeMessage: 'Nachricht schreiben'
+    writeMessage: 'Unterhaltung starten'
   },
   oparl: {
     agendaItem: {
