@@ -27,7 +27,7 @@ export const NoticeboardCategoryTabs = ({
             key={categoryId}
             title={categoryNames?.[categoryId]}
             style={styles.tabsTab}
-            titleStyle={styles.tabsTitle}
+            titleStyle={[styles.tabsTitle, categoryId === selectedCategory && styles.boldText]}
             TouchableComponent={TouchableHighlight}
             underlayColor={colors.surface}
           />
@@ -39,6 +39,9 @@ export const NoticeboardCategoryTabs = ({
 };
 
 const styles = StyleSheet.create({
+  boldText: {
+    fontFamily: 'condbold'
+  },
   divider: {
     backgroundColor: colors.placeholder
   },
@@ -54,9 +57,9 @@ const styles = StyleSheet.create({
   },
   tabsTitle: {
     color: colors.primary,
-    fontFamily: 'regular',
-    fontSize: normalize(12),
-    lineHeight: normalize(16),
+    fontFamily: 'condbold-regular',
+    fontSize: normalize(18),
+    lineHeight: normalize(23),
     textTransform: 'none'
   }
 });
