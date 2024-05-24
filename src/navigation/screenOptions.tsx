@@ -2,12 +2,12 @@
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React, { useContext } from 'react';
-import { PixelRatio, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { OrientationContext } from '../OrientationProvider';
 import { FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
-import { colors, device, normalize } from '../config';
-import { getHeaderHeight } from '../helpers';
+import { colors, normalize } from '../config';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -36,18 +36,11 @@ export const getScreenOptions =
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
     const { orientation } = useContext(OrientationContext);
-
+    const safeAreaInsets = useSafeAreaInsets();
     const isPortrait = orientation === 'portrait';
-    const isSmallerPixelRatio = PixelRatio.get() <= 2;
-    const isBiggerPhone = device.width === 414; // for iPhone 11 or iPhone XR
-    const isNotBiggerPhoneWithSmallerPixelRatio = !isBiggerPhone && isSmallerPixelRatio;
-    const isBiggerPhoneOrBiggerPixelRatio = isBiggerPhone || !isSmallerPixelRatio;
-
     const headerHeight = !isPortrait
-      ? getHeaderHeight('landscape')
-      : isPortrait && isBiggerPhoneOrBiggerPixelRatio
-      ? normalize(116)
-      : isPortrait && isNotBiggerPhoneWithSmallerPixelRatio && normalize(80);
+      ? normalize(35) + safeAreaInsets.top
+      : normalize(56) + safeAreaInsets.top;
 
     return {
       headerTitleStyle: styles.headerTitleStyle,

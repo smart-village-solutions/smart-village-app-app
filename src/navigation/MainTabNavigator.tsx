@@ -1,10 +1,10 @@
 /* eslint-disable complexity */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useContext } from 'react';
-import { PixelRatio } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { OrientationContext } from '../OrientationProvider';
-import { colors, device, normalize } from '../config';
+import { colors, normalize } from '../config';
 import { TabNavigatorConfig } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
@@ -17,21 +17,11 @@ export const MainTabNavigator = ({
   tabNavigatorConfig: TabNavigatorConfig;
 }) => {
   const { orientation } = useContext(OrientationContext);
-
+  const safeAreaInsets = useSafeAreaInsets();
   const isPortrait = orientation === 'portrait';
-  const isSmallerPixelRatio = PixelRatio.get() <= 2;
-  const isBiggerPhone = device.width === 414; // for iPhone 11 or iPhone XR
-  const isNotBiggerPhoneWithSmallerPixelRatio = !isBiggerPhone && isSmallerPixelRatio;
-  const isBiggerPhoneOrBiggerPixelRatio = isBiggerPhone || !isSmallerPixelRatio;
-
-  const tabBarHeight =
-    isPortrait && isNotBiggerPhoneWithSmallerPixelRatio
-      ? normalize(62)
-      : isPortrait && isBiggerPhoneOrBiggerPixelRatio
-      ? normalize(88)
-      : !isPortrait && isNotBiggerPhoneWithSmallerPixelRatio
-      ? normalize(35)
-      : normalize(50);
+  const tabBarHeight = !isPortrait
+    ? normalize(35) + safeAreaInsets.bottom
+    : normalize(64) + safeAreaInsets.bottom;
 
   return (
     <Tab.Navigator
