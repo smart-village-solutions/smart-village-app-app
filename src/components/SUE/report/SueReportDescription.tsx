@@ -3,6 +3,8 @@ import { Controller } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../../config';
+import { TService } from '../../../screens';
+import { BoldText, RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
@@ -11,16 +13,26 @@ const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 
 export const SueReportDescription = ({
   control,
-  requiredInputs
+  requiredInputs,
+  service
 }: {
   control: any;
   requiredInputs: string[];
+  service: TService;
 }) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
 
   return (
     <View style={styles.container}>
+      {!!service?.description && (
+        <Wrapper style={styles.noPaddingTop}>
+          <BoldText>{service.serviceName}</BoldText>
+
+          {!!service.description && <RegularText smallest>{service.description}</RegularText>}
+        </Wrapper>
+      )}
+
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"

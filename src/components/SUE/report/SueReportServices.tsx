@@ -5,15 +5,16 @@ import { useQuery } from 'react-query';
 import { colors, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
+import { TService } from '../../../screens';
 import { LoadingSpinner } from '../../LoadingSpinner';
-import { BoldText, RegularText } from '../../Text';
+import { BoldText } from '../../Text';
 
 export const SueReportServices = ({
-  serviceCode,
-  setServiceCode
+  service,
+  setService
 }: {
-  serviceCode: string;
-  setServiceCode: any;
+  service: TService;
+  setService: any;
 }) => {
   const [loading, setLoading] = useState(true);
 
@@ -36,13 +37,13 @@ export const SueReportServices = ({
 
   return (
     <View style={styles.container}>
-      {data?.map((item, index) => {
-        const selected = serviceCode === item.serviceCode;
+      {data?.map((item: TService, index: number) => {
+        const selected = service?.serviceCode === item.serviceCode;
 
         return (
           <TouchableOpacity
             key={index}
-            onPress={() => setServiceCode(item.serviceCode)}
+            onPress={() => setService(item)}
             style={[
               styles.tile,
               {
@@ -52,12 +53,6 @@ export const SueReportServices = ({
             ]}
           >
             <BoldText center>{item.serviceName}</BoldText>
-
-            {!!item.description && (
-              <RegularText center smallest numberOfLines={3}>
-                {item.description}
-              </RegularText>
-            )}
           </TouchableOpacity>
         );
       })}

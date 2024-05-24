@@ -50,8 +50,8 @@ export type TValues = {
 const Content = (
   content: 'category' | 'description' | 'location' | 'user',
   requiredInputs: string[],
-  serviceCode: string,
-  setServiceCode: any,
+  service: TService,
+  setService: any,
   control: any,
   errors: any,
   selectedPosition: Location.LocationObjectCoords | undefined,
@@ -61,7 +61,9 @@ const Content = (
 ) => {
   switch (content) {
     case 'description':
-      return <SueReportDescription control={control} requiredInputs={requiredInputs} />;
+      return (
+        <SueReportDescription control={control} requiredInputs={requiredInputs} service={service} />
+      );
     case 'location':
       return (
         <SueReportLocation
@@ -76,7 +78,7 @@ const Content = (
     case 'user':
       return <SueReportUser control={control} errors={errors} requiredInputs={requiredInputs} />;
     default:
-      return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+      return <SueReportServices service={service} setService={setService} />;
   }
 };
 
@@ -96,10 +98,16 @@ type TReports = {
   zipCode: string;
 };
 
+export type TService = {
+  serviceCode: string;
+  serviceName: string;
+  description: string;
+};
+
 type TProgress = {
   content: 'category' | 'description' | 'location' | 'user';
   requiredInputs: keyof TReports[];
-  serviceCode: string;
+  service: TService;
   title: string;
 };
 
@@ -123,7 +131,7 @@ export const SueReportScreen = ({
   } = limitOfArea;
 
   const [currentProgress, setCurrentProgress] = useState(0);
-  const [serviceCode, setServiceCode] = useState<string>();
+  const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
@@ -199,7 +207,7 @@ export const SueReportScreen = ({
       addressString,
       lat: selectedPosition?.latitude,
       long: selectedPosition?.longitude,
-      serviceCode,
+      serviceCode: service?.serviceCode,
       ...sueReportData,
       phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational(),
       description: sueReportData.description || '-'
@@ -242,7 +250,7 @@ export const SueReportScreen = ({
 
     switch (currentProgress) {
       case 0:
-        if (!serviceCode) {
+        if (!service) {
           return texts.sue.report.alerts.serviceCode;
         }
         break;
@@ -331,7 +339,11 @@ export const SueReportScreen = ({
   }, []);
 
   const storeReportValues = async () => {
-    await addToStore(SUE_REPORT_VALUES, { selectedPosition, serviceCode, ...getValues() });
+    await addToStore(SUE_REPORT_VALUES, {
+      selectedPosition,
+      service,
+      ...getValues()
+    });
   };
 
   const readReportValuesFromStore = async () => {
@@ -339,7 +351,7 @@ export const SueReportScreen = ({
 
     if (storedValues) {
       setStoredValues(storedValues);
-      setServiceCode(storedValues.serviceCode);
+      setService(storedValues.service);
       setSelectedPosition(storedValues.selectedPosition);
       Object.entries(storedValues).map(([key, value]) => setValue(key, value));
     }
@@ -351,7 +363,7 @@ export const SueReportScreen = ({
     setIsLoadingStoredData(true);
     await AsyncStorage.removeItem(SUE_REPORT_VALUES);
     setStoredValues(undefined);
-    setServiceCode(undefined);
+    setService(undefined);
     setSelectedPosition(undefined);
     reset();
     scrollViewRef?.current?.scrollTo({
@@ -369,7 +381,7 @@ export const SueReportScreen = ({
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    storeReportValues();
+    await storeReportValues();
 
     if (currentProgress < data.length - 1) {
       setCurrentProgress(currentProgress + 1);
@@ -424,7 +436,7 @@ export const SueReportScreen = ({
         headerRight: () => null
       });
     }
-  }, [storedValues, serviceCode, selectedPosition]);
+  }, [storedValues, service, selectedPosition]);
 
   if (loading) {
     return (
@@ -465,8 +477,8 @@ export const SueReportScreen = ({
                 Content(
                   item.content,
                   item.requiredInputs,
-                  serviceCode,
-                  setServiceCode,
+                  service,
+                  setService,
                   control,
                   errors,
                   selectedPosition,
