@@ -36,15 +36,26 @@ const CIRCLE_SIZES = [60, 50, 40, 30];
 export const MapIcon = ({
   iconColor,
   iconName = 'location',
-  iconSize = MARKER_ICON_SIZE
+  iconSize = MARKER_ICON_SIZE,
+  iconStrokeColor,
+  iconStrokeWidth
 }: {
   iconColor?: string;
   iconName?: string;
   iconSize?: number;
+  iconStrokeColor?: string;
+  iconStrokeWidth?: number;
 }) => {
   const MarkerIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
 
-  return <MarkerIcon color={iconColor} size={iconSize} />;
+  return (
+    <MarkerIcon
+      color={iconColor}
+      size={iconSize}
+      strokeColor={iconStrokeColor}
+      strokeWidth={iconStrokeWidth}
+    />
+  );
 };
 
 type TCluster = {
@@ -198,7 +209,7 @@ export const Map = ({
               centerOffset={
                 marker.iconAnchor || {
                   x: 0,
-                  y: -(MARKER_ICON_SIZE / (isActiveMarker && PixelRatio.get() > 2 ? 1.75 : 2))
+                  y: -(MARKER_ICON_SIZE / (isActiveMarker && PixelRatio.get() > 2 ? 1.75 : 3.6))
                 }
               }
               coordinate={marker.position}
@@ -213,7 +224,9 @@ export const Map = ({
                   <MapIcon
                     iconColor={isActiveMarker ? colors.secondary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
-                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE}
+                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE * 1.1}
+                    iconStrokeColor={colors.darkerPrimary}
+                    iconStrokeWidth={1.5}
                   />
                   <View
                     style={[
@@ -235,7 +248,7 @@ export const Map = ({
                             (!isTablet && isSmallerPixelRatio
                               ? normalize(1.95)
                               : normalize(2.35))) *
-                          (isActiveMarker ? normalize(1.05) : normalize(0.9))
+                          (isActiveMarker ? normalize(1.1) : normalize(0.9))
                         }
                       />
                     </View>
@@ -302,10 +315,12 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarker: {
     alignSelf: 'center',
+    bottom: normalize(5),
     backgroundColor: colors.lighterPrimary
   },
   mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.secondary
+    backgroundColor: colors.secondary,
+    bottom: 0,
   },
   mapIconOnLocationMarkerContainer: {
     height: '100%',

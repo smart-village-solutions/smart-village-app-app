@@ -15,6 +15,7 @@ export * from './info';
 export * from './like';
 export * from './link';
 export * from './list';
+export * from './location';
 export * from './locationActive';
 export * from './logo';
 export * from './lunch';
