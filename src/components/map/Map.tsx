@@ -224,7 +224,7 @@ export const Map = ({
                   <MapIcon
                     iconColor={isActiveMarker ? colors.secondary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
-                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE}
+                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE * 1.1}
                     iconStrokeColor={colors.darkerPrimary}
                     iconStrokeWidth={1.5}
                   />
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.secondary,
-    bottom: normalize(0),
+    bottom: 0,
   },
   mapIconOnLocationMarkerContainer: {
     height: '100%',

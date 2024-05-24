@@ -102,7 +102,7 @@ const SvgIcon = ({
   strokeColor,
   strokeWidth,
   xml
-}: IconProps & { xml: (color: string) => string }) => {
+}: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
   return (
     <View style={style} hitSlop={getHitSlops(size)}>
       <SvgXml xml={xml(color, strokeColor, strokeWidth)} width={size} height={size} style={iconStyle} />
