@@ -95,7 +95,11 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
     },
     routeName: ScreenName.Detail,
     params: {
-      title: getGenericItemDetailTitle(genericItem.genericType, queryVariables),
+      title: getGenericItemDetailTitle(
+        genericItem.genericType,
+        queryVariables,
+        genericItem?.categories?.[0]?.name
+      ),
       subQuery,
       suffix: genericItem.genericType,
       query: QUERY_TYPES.GENERIC_ITEM,
