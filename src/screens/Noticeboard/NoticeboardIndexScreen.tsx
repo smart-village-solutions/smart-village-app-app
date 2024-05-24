@@ -17,11 +17,18 @@ import {
   Wrapper
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
-import { graphqlFetchPolicy, parseListItemsFromQuery, profileAuthToken } from '../../helpers';
+import {
+  graphqlFetchPolicy,
+  parseListItemsFromQuery,
+  profileAuthToken,
+  profileUserData
+} from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery } from '../../queries';
+import { ProfileMember } from '../../types';
 import { ListHeaderComponent } from '../NestedInfoScreen';
+import { ProfileUpdateScreen } from '../profile';
 
 /* eslint-disable complexity */
 export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -29,6 +36,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
   const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(false);
+  const [userData, setUserData] = useState<ProfileMember | null>(null);
 
   const isLoginRequired = route.params?.isLoginRequired || false;
   const content = route.params?.content ?? '';
@@ -91,8 +99,10 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     useCallback(() => {
       const getLoginStatus = async () => {
         const storedProfileAuthToken = await profileAuthToken();
+        const { currentUserData } = await profileUserData();
 
         setIsProfileLoggedIn(!!storedProfileAuthToken);
+        setUserData(currentUserData);
       };
 
       getLoginStatus();
@@ -133,6 +143,10 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
         />
       )
     });
+
+  if (userData && userData.member && !Object.keys(userData.member.preferences).length) {
+    return <ProfileUpdateScreen navigation={navigation} route={route} />;
+  }
 
   if (loading && !filteredListItems?.length) {
     return (
