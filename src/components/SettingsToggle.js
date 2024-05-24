@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, device, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 
 import { Switch } from './Switch';
-import { BoldText } from './Text';
+import { HeadlineText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -46,7 +46,7 @@ export const SettingsToggle = ({ item }) => {
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     >
-      <ListItem.Content>{title && <BoldText>{title}</BoldText>}</ListItem.Content>
+      <ListItem.Content>{title && <HeadlineText small>{title}</HeadlineText>}</ListItem.Content>
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
-    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+    paddingVertical: normalize(16)
   },
   marginRight: {
     marginRight: normalize(7)

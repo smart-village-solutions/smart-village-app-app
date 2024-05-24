@@ -30,6 +30,7 @@ export const colors = {
   shadowRgba: 'rgba(0, 0, 0, 0.15)', // black with 0.15 alpha
   placeholder: gray80,
   backgroundRgba: 'rgba(148, 147, 144, 0.08)', // gray80 with 0.08 alpha
+  border: '#BCBBC1',
   borderRgba: 'rgba(222, 221, 216, 1)', // gray20 with 1 alpha
   overlayRgba: 'rgba(25, 24, 24, 0.7)', // lighter black with 0.7 alpha
 

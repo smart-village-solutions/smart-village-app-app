@@ -122,11 +122,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       <ListItem
         bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
         topDivider={topDivider !== undefined ? topDivider : false}
-        containerStyle={[
-          styles.container,
-          containerStyle,
-          (bottomDivider || topDivider) && styles.containerBorder
-        ]}
+        containerStyle={[styles.container, containerStyle]}
         badge={badge}
         onPress={() => (onPress ? onPress(navigation) : navigate())}
         disabled={!navigation}
@@ -207,10 +203,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
     paddingVertical: normalize(16)
-  },
-  containerBorder: {
-    borderBottomColor: colors.borderRgba,
-    borderBottomWidth: 1
   },
   overtitleMarginBottom: {
     marginBottom: normalize(4)

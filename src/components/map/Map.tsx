@@ -18,6 +18,7 @@ type Props = {
   isMaximizeButtonVisible?: boolean;
   isMultipleMarkersMap?: boolean;
   locations?: MapMarker[];
+  logoContainerStyle?: StyleProp<ViewStyle>;
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
   onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
@@ -109,6 +110,7 @@ export const Map = ({
   isMaximizeButtonVisible = false,
   isMultipleMarkersMap = false,
   locations,
+  logoContainerStyle,
   mapCenterPosition,
   mapStyle,
   onMapPress,
@@ -276,7 +278,7 @@ export const Map = ({
         </TouchableOpacity>
       )}
       {device.platform === 'android' && (
-        <View style={styles.logoContainer}>
+        <View style={[styles.logoContainer, logoContainerStyle]}>
           <RegularText smallest>© OpenStreetMap</RegularText>
         </View>
       )}
@@ -310,7 +312,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     left: 0,
     position: 'absolute',
-    width: normalize(100),
+    width: normalize(110),
     zIndex: 1
   },
   mapIconOnLocationMarker: {
@@ -320,7 +322,7 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.secondary,
-    bottom: 0,
+    bottom: 0
   },
   mapIconOnLocationMarkerContainer: {
     height: '100%',

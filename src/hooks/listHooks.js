@@ -171,10 +171,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         return (
           <TextListItem
-            item={{
-              ...item,
-              bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
-            }}
+            item={item}
             {...{
               navigation,
               noSubtitle: options.noSubtitle,

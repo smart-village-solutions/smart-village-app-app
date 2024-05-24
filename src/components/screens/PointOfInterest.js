@@ -163,6 +163,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             ]}
             selectedMarker={id}
             mapStyle={styles.mapStyle}
+            logoContainerStyle={styles.logoContainerStyle}
           />
         </WrapperVertical>
       )}
@@ -185,8 +186,9 @@ const styles = StyleSheet.create({
   mapStyle: {
     borderRadius: normalize(8)
   },
-  noPaddingTop: {
-    paddingTop: 0
+  logoContainerStyle: {
+    paddingLeft: normalize(16),
+    width: normalize(124)
   }
 });
 
