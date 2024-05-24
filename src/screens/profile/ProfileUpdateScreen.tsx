@@ -181,7 +181,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                     mode: 'date',
                     name,
                     onChange,
-                    placeholder: texts.profile.birthday,
+                    placeholder: texts.profile.birthdayPlaceholder,
                     required: true,
                     rules: {
                       validate: (value: string) => {
@@ -194,7 +194,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                           (now.getTime() - date.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
                         );
 
-                        if (age < 18) return texts.profile.dayOfBirthInvalid;
+                        if (age < 18) return texts.profile.birthdayInvalid;
 
                         return true;
                       }
