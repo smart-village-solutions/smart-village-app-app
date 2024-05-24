@@ -158,6 +158,8 @@ export const Map = ({
         onPress={onMapPress}
         ref={refForMapView}
         rotateEnabled={false}
+        showsBuildings={false}
+        showsPointsOfInterest={false}
         showsUserLocation={showsUserLocation}
         showsMyLocationButton={false}
         toolbarEnabled={false}
@@ -177,7 +179,7 @@ export const Map = ({
         }}
       >
         <UrlTile
-          urlTemplate="https://tile-server.sva-services.customer.planetary-quantum.net/tile/{z}/{x}/{y}.png"
+          urlTemplate="https://tileserver-gl.smart-village.app/styles/osm-liberty/{z}/{x}/{y}.png"
           shouldReplaceMapContent={device.platform === 'ios'}
         />
         {!!geometryTourData?.length && (
