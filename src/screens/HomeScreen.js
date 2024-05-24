@@ -37,6 +37,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { OrientationContext } from '../OrientationProvider';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -164,6 +165,8 @@ const renderItem = ({ item }) => {
 
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation } = useContext(OrientationContext);
+  const isPortrait = orientation === 'portrait';
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
   const {
@@ -233,7 +236,10 @@ export const HomeScreen = ({ navigation, route }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <Image source={require('../../assets/MQ_logo.png')} containerStyle={styles.logo} />
+        <Image
+          source={require('../../assets/MQ_logo.png')}
+          containerStyle={isPortrait ? styles.logo : styles.logoLandscape}
+        />
       )
     });
   }, []);
@@ -389,6 +395,10 @@ const styles = StyleSheet.create({
   logo: {
     height: normalize(43),
     width: normalize(70)
+  },
+  logoLandscape: {
+    height: normalize(43 / 1.5),
+    width: normalize(70 / 1.5)
   }
 });
 
