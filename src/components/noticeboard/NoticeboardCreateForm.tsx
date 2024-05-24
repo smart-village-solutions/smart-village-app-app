@@ -89,8 +89,13 @@ export const NoticeboardCreateForm = ({
     defaultValues: {
       id: data?.id ?? '',
       body: data?.contentBlocks?.[0]?.body ?? '',
-      dateEnd: data?.dates?.[0]?.dateEnd ? new Date(data?.dates?.[0]?.dateEnd) : new Date(),
-      dateStart: data?.dates?.[0]?.dateStart ? new Date(data?.dates?.[0]?.dateStart) : new Date(),
+      dateEnd: data?.dates?.[0]?.dateEnd
+        ? moment(data?.dates?.[0]?.dateEnd)?.toDate()
+        : moment().add(requestedDateDifference, 'months').toDate(),
+      dateStart: data?.dates?.[0]?.dateStart
+        ? moment(data?.dates?.[0]?.dateStart)?.toDate()
+        : moment().toDate(),
+
       email: data?.contacts?.[0]?.email ?? '',
       name: data?.contacts?.[0]?.firstName ?? '',
       noticeboardType:
@@ -121,8 +126,8 @@ export const NoticeboardCreateForm = ({
       return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.termsOfService);
     }
 
-    const dateStart = new Date(noticeboardNewData.dateStart);
-    const dateEnd = new Date(noticeboardNewData.dateEnd);
+    const dateStart = moment(noticeboardNewData.dateStart).toDate();
+    const dateEnd = moment(noticeboardNewData.dateEnd).toDate();
     const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
 
     if (dateDifference > requestedDateDifference || dateDifference < 0) {
@@ -275,6 +280,8 @@ export const NoticeboardCreateForm = ({
                 control,
                 errors,
                 label: texts.noticeboard.inputDate(requestedDateDifference),
+                maximumDate: moment().add(requestedDateDifference, 'months').toDate(),
+                minimumDate: moment().toDate(),
                 mode: 'date',
                 name,
                 onChange,

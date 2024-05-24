@@ -17,6 +17,7 @@ import { PickerInput } from './PickerInput';
 type DateTimePickerProps = {
   value?: Date;
   maximumDate?: Date;
+  minimumDate?: Date;
   mode: (IOSNativeProps | AndroidNativeProps)['mode'];
   onChange: (date?: Date) => void;
   dateTimePickerVisible: boolean;
@@ -26,6 +27,7 @@ type DateTimePickerProps = {
 const DateTimePicker = ({
   value = new Date(),
   maximumDate,
+  minimumDate,
   mode,
   onChange,
   dateTimePickerVisible,
@@ -54,6 +56,7 @@ const DateTimePicker = ({
     return (
       <CommunityDateTimePicker
         maximumDate={maximumDate}
+        minimumDate={minimumDate}
         mode={mode}
         onChange={onDatePickerChange}
         textColor={colors.darkText}
@@ -87,6 +90,7 @@ const DateTimePicker = ({
                 <CommunityDateTimePicker
                   display="spinner"
                   maximumDate={maximumDate}
+                  minimumDate={minimumDate}
                   mode={mode}
                   onChange={onDatePickerChange}
                   textColor={colors.darkText}
@@ -109,6 +113,7 @@ type DateTimeInputProps = {
   errors: any;
   label: string;
   maximumDate?: Date;
+  minimumDate?: Date;
   mode?: (IOSNativeProps | AndroidNativeProps)['mode'];
   name: string;
   onChange: () => void;
@@ -124,6 +129,7 @@ export const DateTimeInput = ({
   errors,
   label,
   maximumDate,
+  minimumDate,
   mode = 'time',
   name,
   onChange,
@@ -158,7 +164,15 @@ export const DateTimeInput = ({
         control={control}
       />
       <DateTimePicker
-        {...{ value, maximumDate, mode, onChange, dateTimePickerVisible, setDateTimePickerVisible }}
+        {...{
+          value,
+          maximumDate,
+          minimumDate,
+          mode,
+          onChange,
+          dateTimePickerVisible,
+          setDateTimePickerVisible
+        }}
       />
     </>
   );
