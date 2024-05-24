@@ -79,7 +79,7 @@ const renderCluster = (cluster: TCluster) => {
         latitude: geometry.coordinates[1]
       }}
       style={styles.clusterMarker}
-      onPress={onPress}
+      // onPress={onPress} // HINT: https://github.com/venits/react-native-map-clustering/issues/251
     >
       {CIRCLE_SIZES.map((size, index) => (
         <View
@@ -211,7 +211,7 @@ export const Map = ({
               centerOffset={
                 marker.iconAnchor || {
                   x: 0,
-                  y: -(MARKER_ICON_SIZE / (isActiveMarker && PixelRatio.get() > 2 ? 1.75 : 3.6))
+                  y: -(MARKER_ICON_SIZE / (isActiveMarker ? 1.75 : 3.6))
                 }
               }
               coordinate={marker.position}
