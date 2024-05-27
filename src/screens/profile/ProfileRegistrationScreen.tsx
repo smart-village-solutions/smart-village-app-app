@@ -124,7 +124,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               validate
               rules={{
                 required: texts.profile.passwordError,
-                minLength: { value: 5, message: texts.profile.passwordLengthError }
+                minLength: { value: 8, message: texts.profile.passwordLengthError }
               }}
               errorMessage={errors.password && errors.password.message}
               control={control}

@@ -831,7 +831,7 @@ export const texts = {
     passwordDoNotMatch: 'Passwörter stimmen nicht überein',
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordForgotten: 'Passwort vergessen?',
-    passwordLengthError: 'Das Passwort sollte mindestens 5 Zeichen lang sein',
+    passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
     postcode: 'Postleitzahl',
     postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
     privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
