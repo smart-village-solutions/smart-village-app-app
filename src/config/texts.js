@@ -864,7 +864,11 @@ export const texts = {
     updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
     showUpdateSuccessAlertBody: 'Ihr Profil wurde erfolgreich aktualisiert.',
-    showUpdateSuccessAlertTitle: 'Erfolg'
+    showUpdateSuccessAlertTitle: 'Erfolg',
+    termsOfUseChecked: 'Mit der Registrierung akzeptieren Sie die',
+    termsOfUseLink: 'Nutzungsbedingungen',
+    termsOfUseCheckRequireBody: 'Bitte bestätigen Sie die Nutzungsbedingungen.',
+    termsOfUseCheckRequireTitle: 'Hinweis'
   },
   pushNotifications: {
     abort: 'Abbrechen',

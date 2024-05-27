@@ -30,11 +30,15 @@ const showRegistrationFailAlert = () =>
 const showPrivacyCheckedAlert = () =>
   Alert.alert(texts.profile.privacyCheckRequireTitle, texts.profile.privacyCheckRequireBody);
 
+const showTermsOfUseCheckedAlert = () =>
+  Alert.alert(texts.profile.termsOfUseCheckRequireTitle, texts.profile.termsOfUseCheckRequireBody);
+
 // eslint-disable-next-line complexity
 export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
+  const [hasAcceptedTermsOfUse, setHasAcceptedTermsOfUse] = useState(false);
   const dataPrivacyLink = route.params?.webUrl ?? '';
   const from = route.params?.from ?? '';
 
@@ -57,6 +61,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 
   const onSubmit = (registerData: ProfileRegistration) => {
     if (!hasAcceptedDataPrivacy) return showPrivacyCheckedAlert();
+    if (!hasAcceptedTermsOfUse) return showTermsOfUseCheckedAlert();
 
     mutateRegister(
       { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
@@ -176,6 +181,26 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               linkDescription={texts.profile.privacyCheckLink}
               onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
               title={texts.profile.privacyChecked}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+            />
+          </Wrapper>
+
+          <Wrapper style={styles.noPaddingTop}>
+            <Checkbox
+              boldTitle={false}
+              center={false}
+              checked={hasAcceptedTermsOfUse}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              navigate={() =>
+                navigation.navigate(ScreenName.Html, {
+                  title: texts.profile.termsOfUseLink,
+                  query: QUERY_TYPES.PUBLIC_HTML_FILE,
+                  queryVariables: { name: 'nutzungsbedingungenProfile' }
+                })
+              }
+              linkDescription={texts.profile.termsOfUseLink}
+              onPress={() => setHasAcceptedTermsOfUse(!hasAcceptedTermsOfUse)}
+              title={texts.profile.termsOfUseChecked}
               uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           </Wrapper>
