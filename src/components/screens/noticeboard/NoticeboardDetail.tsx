@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
-import { Badge } from 'react-native-elements';
 
-import { Icon, colors, normalize, texts } from '../../../config';
+import { Icon, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
@@ -57,6 +56,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const subQuery = route.params?.subQuery ?? {};
+  const toRelated = route.params?.toRelated ?? false;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
@@ -235,17 +235,25 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
           <Button
             icon={<Icon.Mail />}
             iconPosition="left"
-            title={texts.noticeboard.writeMessage}
+            title={
+              toRelated
+                ? texts.noticeboard.backToConversation
+                : conversations?.[0]?.id
+                ? texts.noticeboard.toConversation
+                : texts.noticeboard.writeMessage
+            }
             onPress={() =>
               navigation.navigate(ScreenName.ProfileMessaging, {
                 query: QUERY_TYPES.PROFILE.GET_MESSAGES,
                 queryVariables: {
-                  id: conversations?.[0]?.id,
+                  category: categories?.[0]?.name,
                   conversationableId: id,
-                  conversationableType: 'GenericItem'
+                  conversationableType: 'GenericItem',
+                  id: conversations?.[0]?.id,
+                  title
                 },
                 displayName: contacts?.[0]?.firstName,
-                title: texts.detailTitles.conversation
+                title
               })
             }
           />
