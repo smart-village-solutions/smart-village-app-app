@@ -59,7 +59,6 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
   } = message;
   const { contacts, title } = genericItem;
   const { firstName, email } = contacts[0];
-
   const displayName =
     latestMessage?.senderId != currentUserId && !!latestMessage?.senderName
       ? latestMessage?.senderName
@@ -71,7 +70,17 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
     <ListItem
       bottomDivider={bottomDivider}
       containerStyle={styles.container}
-      onPress={() => navigation.push(name, { ...params, displayName, title })}
+      onPress={() =>
+        navigation.push(name, {
+          ...params,
+          queryVariables: {
+            ...params.queryVariables,
+            category: genericItem.categories?.[0]?.name
+          },
+          displayName,
+          title
+        })
+      }
       delayPressIn={0}
       Component={Touchable}
     >

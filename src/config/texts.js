@@ -492,6 +492,7 @@ export const texts = {
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
     all: 'Alles',
+    backToConversation: 'Zurück zur Unterhaltung',
     categoryNames: {
       neighbourlyHelp: 'Nachbarschaftshilfe',
       offer: 'Angebote',
@@ -526,6 +527,8 @@ export const texts = {
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
     },
+    toConversation: 'Zur Unterhaltung',
+    toRelated: 'Zu der zugehörigen Anzeige',
     writeMessage: 'Unterhaltung starten'
   },
   oparl: {
