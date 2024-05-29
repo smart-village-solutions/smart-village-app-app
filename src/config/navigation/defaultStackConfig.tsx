@@ -5,9 +5,9 @@ import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import { QUERY_TYPES } from '../../queries';
 import {
-  AboutScreen,
   ARInfoScreen,
   ARShowScreen,
+  AboutScreen,
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
@@ -17,8 +17,8 @@ import {
   ConsulHomeScreen,
   ConsulIndexScreen,
   ConsulLoginScreen,
-  ConsulRegisteredScreen,
   ConsulRegisterScreen,
+  ConsulRegisteredScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
   DefectReportFormScreen,
@@ -30,7 +30,6 @@ import {
   EncounterScannerScreen,
   EncounterUserDetailScreen,
   FeedbackScreen,
-  getTilesScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -38,9 +37,9 @@ import {
   MapViewScreen,
   MultiButtonScreen,
   NestedInfoScreen,
-  NoticeboardMemberIndexScreen,
   NoticeboardFormScreen,
   NoticeboardIndexScreen,
+  NoticeboardMemberIndexScreen,
   OParlCalendarScreen,
   OParlDetailScreen,
   OParlOrganizationsScreen,
@@ -48,6 +47,8 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   ProfileConversationsScreen,
+  ProfileEditMailScreen,
+  ProfileEditPasswordScreen,
   ProfileHomeScreen,
   ProfileLoginScreen,
   ProfileMessagingScreen,
@@ -73,7 +74,8 @@ import {
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  getTilesScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -351,6 +353,16 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ProfileConversations,
       screenComponent: ProfileConversationsScreen
+    },
+    {
+      routeName: ScreenName.ProfileEditMail,
+      screenComponent: ProfileEditMailScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileEditPassword,
+      screenComponent: ProfileEditPasswordScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
     },
     {
       routeName: ScreenName.ProfileLogin,

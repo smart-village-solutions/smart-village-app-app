@@ -106,6 +106,57 @@ export const profileResetPassword = async ({ email }: ProfileResetPassword) => {
   return (await fetch(`${serverUrl}/members/password`, fetchObj)).json();
 };
 
+export const profileEditPassword = async ({
+  password,
+  passwordConfirmation
+}: {
+  password: string;
+  passwordConfirmation: string;
+}) => {
+  const authToken = await profileAuthToken();
+
+  const formData = {
+    member: {
+      password,
+      password_confirmation: passwordConfirmation
+    }
+  };
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${serverUrl}/members`, fetchObj)).json();
+};
+
+export const profileEditMail = async ({ email }: { email: string }) => {
+  const authToken = await profileAuthToken();
+
+  const formData = {
+    member: {
+      email
+    }
+  };
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${serverUrl}/members`, fetchObj)).json();
+};
+
 export const member = async () => {
   const authToken = await profileAuthToken();
 

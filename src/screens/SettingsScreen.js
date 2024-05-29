@@ -46,11 +46,13 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.locationService.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.locationService.setting,
           topDivider: true
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -60,10 +62,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.permanentFilter.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.permanentFilter.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -73,10 +77,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.mowasRegion.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.mowasRegion.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -86,10 +92,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.list.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.list.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -99,10 +107,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.ar.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.ar.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );

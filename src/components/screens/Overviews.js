@@ -310,6 +310,7 @@ export const Overviews = ({ navigation, route }) => {
               <OptionToggle
                 label={texts.pointOfInterest.filterByOpeningTime}
                 onToggle={() => setFilterByOpeningTimes((value) => !value)}
+                options={{ bold: true }}
                 value={filterByOpeningTimes}
               />
             )}

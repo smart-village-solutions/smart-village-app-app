@@ -1,68 +1,89 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
   Button,
   DefaultKeyboardAvoidingView,
   Input,
+  LOGIN_MODAL,
   LoadingModal,
-  RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
   WrapperVertical
 } from '../../components';
-import { consts, texts } from '../../config';
-import { profileResetPassword } from '../../queries/profile';
-import { ProfileResetPassword, ScreenName } from '../../types';
+import { consts, normalize, texts } from '../../config';
+import { profileEditMail } from '../../queries/profile';
+import { ProfileEditMail } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
-export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>) => {
+const showUpdateFailAlert = () =>
+  Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
+
+const showUpdateSuccessAlert = ({ onPress }: { onPress: () => void }) =>
+  Alert.alert(texts.profile.showUpdateSuccessAlertTitle, texts.profile.showUpdateSuccessAlertBody, [
+    {
+      text: texts.profile.ok,
+      onPress
+    }
+  ]);
+
+export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const from = route.params?.from ?? '';
+
   const {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm<ProfileResetPassword>({
+  } = useForm<ProfileEditMail>({
     defaultValues: {
       email: ''
     }
   });
 
-  const { mutate: mutateSignup, isLoading } = useMutation(profileResetPassword);
+  const {
+    mutate: mutateUpdate,
+    isError,
+    isLoading,
+    isSuccess,
+    reset,
+    data
+  } = useMutation(profileEditMail);
 
-  const onSubmit = (resetPasswordData: ProfileResetPassword) => {
-    mutateSignup(resetPasswordData, {
-      onSuccess: () => {
-        Alert.alert(
-          texts.profile.resetPasswordAlertTitle,
-          texts.profile.resetPasswordAlertMessage,
-          [
-            {
-              text: texts.profile.ok,
-              onPress: () => navigation.navigate(ScreenName.ProfileLogin)
-            }
-          ]
-        );
+  const onSubmit = (updateData: ProfileEditMail) =>
+    mutateUpdate(updateData, {
+      onSuccess: (responseData) => {
+        if (!responseData?.member) {
+          return;
+        }
+
+        showUpdateSuccessAlert({
+          onPress: () => (from === LOGIN_MODAL ? navigation.popToTop() : navigation.goBack())
+        });
       }
     });
-  };
+
+  if (isError || (isSuccess && !data?.member)) {
+    showUpdateFailAlert();
+    reset();
+  }
 
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <WrapperVertical style={styles.center}>
-            <SectionHeader big center title={texts.profile.resetPasswordTitle} />
+            <SectionHeader big center title={texts.profile.updateMail} />
           </WrapperVertical>
 
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
-              label={texts.profile.resetPasswordLabel}
+              label={texts.profile.email}
               placeholder={texts.profile.email}
               keyboardType="email-address"
               textContentType="emailAddress"
@@ -75,23 +96,16 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
               }}
               errorMessage={errors.email && errors.email.message}
               control={control}
+              inputContainerStyle={styles.inputContainer}
             />
           </Wrapper>
 
           <Wrapper>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={texts.profile.send}
+              title={texts.profile.updateMail}
               disabled={isLoading}
             />
-
-            <RegularText />
-
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <RegularText primary center underline>
-                {texts.profile.back}
-              </RegularText>
-            </TouchableOpacity>
           </Wrapper>
 
           <LoadingModal loading={isLoading} />
@@ -107,5 +121,8 @@ const styles = StyleSheet.create({
   },
   noPaddingTop: {
     paddingTop: 0
+  },
+  inputContainer: {
+    height: normalize(45)
   }
 });

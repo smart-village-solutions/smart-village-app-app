@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -9,7 +9,6 @@ import {
   DefaultKeyboardAvoidingView,
   Input,
   LoadingModal,
-  RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -17,11 +16,11 @@ import {
 } from '../../components';
 import { consts, texts } from '../../config';
 import { profileResetPassword } from '../../queries/profile';
-import { ProfileResetPassword, ScreenName } from '../../types';
+import { ProfileResetPassword } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
-export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>) => {
+export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>) => {
   const {
     control,
     formState: { errors },
@@ -37,16 +36,12 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
   const onSubmit = (resetPasswordData: ProfileResetPassword) => {
     mutateSignup(resetPasswordData, {
       onSuccess: () => {
-        Alert.alert(
-          texts.profile.resetPasswordAlertTitle,
-          texts.profile.resetPasswordAlertMessage,
-          [
-            {
-              text: texts.profile.ok,
-              onPress: () => navigation.navigate(ScreenName.ProfileLogin)
-            }
-          ]
-        );
+        Alert.alert(texts.profile.editPasswordAlertTitle, texts.profile.editPasswordAlertMessage, [
+          {
+            text: texts.profile.ok,
+            onPress: () => navigation.goBack()
+          }
+        ]);
       }
     });
   };
@@ -56,13 +51,13 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <WrapperVertical style={styles.center}>
-            <SectionHeader big center title={texts.profile.resetPasswordTitle} />
+            <SectionHeader big center title={texts.profile.updatePassword} />
           </WrapperVertical>
 
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
-              label={texts.profile.resetPasswordLabel}
+              label={texts.profile.editPasswordLabel}
               placeholder={texts.profile.email}
               keyboardType="email-address"
               textContentType="emailAddress"
@@ -81,17 +76,9 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
           <Wrapper>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={texts.profile.send}
+              title={texts.profile.updatePassword}
               disabled={isLoading}
             />
-
-            <RegularText />
-
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <RegularText primary center underline>
-                {texts.profile.back}
-              </RegularText>
-            </TouchableOpacity>
           </Wrapper>
 
           <LoadingModal loading={isLoading} />

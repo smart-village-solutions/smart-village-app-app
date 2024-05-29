@@ -44,6 +44,9 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
 
   if (!data?.length) return <VersionNumber />;
 
+  // add a isHeadlineTitle: false to every item in the data array
+  data.forEach((item) => (item.isHeadlineTitle = false));
+
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
 
@@ -53,8 +56,9 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
       data: [
         ...data,
         withSettings && {
-          title: texts.screenTitles.appSettings,
-          routeName: 'Settings'
+          isHeadlineTitle: false,
+          routeName: 'Settings',
+          title: texts.screenTitles.appSettings
         }
       ]
     }

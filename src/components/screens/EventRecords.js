@@ -300,6 +300,7 @@ export const EventRecords = ({ navigation, route }) => {
                   <OptionToggle
                     label={texts.eventRecord.filterByDailyEvents}
                     onToggle={updateListDataByDailySwitch}
+                    options={{ bold: true }}
                     value={filterByDailyEvents}
                   />
                 )}

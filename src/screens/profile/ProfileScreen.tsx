@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
-import { Alert, RefreshControl, ScrollView } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
@@ -10,12 +10,14 @@ import {
   Button,
   LoadingSpinner,
   SafeAreaViewFlex,
+  SectionHeader,
   ServiceTiles,
   TextListItem,
   VolunteerAvatar,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../../components';
-import { colors, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { useProfileUser } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -105,27 +107,80 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             item={{
               bottomDivider: false,
               leftIcon: <VolunteerAvatar item={{ user: { display_name: displayName } }} />,
-              routeName: ScreenName.ProfileUpdate,
-              onPress: () => navigation.navigate(ScreenName.ProfileUpdate, { member: data.member }),
               title: displayName
             }}
-            navigation={navigation}
           />
         </Wrapper>
 
         <Divider />
 
         <ServiceTiles staticJsonName="profileService" />
+
+        <Divider />
+
+        <SectionHeader
+          big
+          containerStyle={styles.settingsContainer}
+          title={texts.profile.settings}
+        />
+
+        <WrapperHorizontal>
+          <TextListItem
+            item={{
+              isHeadlineTitle: false,
+              onPress: () => navigation.navigate(ScreenName.ProfileUpdate, { member: data.member }),
+              routeName: ScreenName.ProfileUpdate,
+              bottomDivider: true,
+              topDivider: true,
+              title: texts.profile.editProfile
+            }}
+            navigation={navigation}
+            noSubtitle
+          />
+
+          <TextListItem
+            item={{
+              isHeadlineTitle: false,
+              onPress: () => navigation.navigate(ScreenName.ProfileEditMail),
+              routeName: ScreenName.ProfileEditMail,
+              bottomDivider: true,
+              title: texts.profile.editMail
+            }}
+            navigation={navigation}
+            noSubtitle
+          />
+
+          <TextListItem
+            item={{
+              bottomDivider: true,
+              isHeadlineTitle: false,
+              onPress: () => navigation.navigate(ScreenName.ProfileEditPassword),
+              routeName: ScreenName.ProfileEditPassword,
+              title: texts.profile.editPassword
+            }}
+            navigation={navigation}
+            noSubtitle
+          />
+        </WrapperHorizontal>
+
         <Wrapper>
           <Button
-            title={texts.profile.logout}
+            invert
             onPress={() => {
               storeProfileAuthToken();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
             }}
+            title={texts.profile.logout}
           />
         </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  settingsContainer: {
+    marginBottom: normalize(9),
+    marginTop: normalize(9)
+  }
+});

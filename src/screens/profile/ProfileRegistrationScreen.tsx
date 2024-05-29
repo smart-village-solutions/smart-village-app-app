@@ -15,7 +15,8 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
-  WrapperRow
+  WrapperRow,
+  WrapperVertical
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
@@ -88,9 +89,9 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperRow center>
+          <WrapperVertical style={styles.center}>
             <SectionHeader big center title={texts.profile.registrationTitle} />
-          </WrapperRow>
+          </WrapperVertical>
 
           <Wrapper style={styles.noPaddingTop}>
             <Input
@@ -236,6 +237,9 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 };
 
 const styles = StyleSheet.create({
+  center: {
+    alignItems: 'center'
+  },
   noPaddingTop: {
     paddingTop: 0
   },
