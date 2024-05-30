@@ -20,6 +20,7 @@ type Props = {
 // TODO: reuse this component for WasteReminderSettings and SettingsToggle
 export const OptionToggle = ({ label, onToggle, value, options }: Props) => {
   const TextComponent = options?.bold ? BoldText : RegularText;
+
   return (
     <ListItem
       bottomDivider
@@ -41,6 +42,7 @@ export const OptionToggle = ({ label, onToggle, value, options }: Props) => {
 const styles = StyleSheet.create({
   switchContainer: {
     backgroundColor: colors.transparent,
-    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+    padding: 0,
+    paddingVertical: normalize(16)
   }
 });

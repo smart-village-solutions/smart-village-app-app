@@ -17,7 +17,8 @@ import {
   SectionHeader,
   Touchable,
   Wrapper,
-  WrapperRow
+  WrapperRow,
+  WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
@@ -106,11 +107,11 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperRow center>
+          <WrapperVertical style={styles.center}>
             <SectionHeader big center title={texts.profile.loginTitle} />
-          </WrapperRow>
+          </WrapperVertical>
 
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
               placeholder={texts.profile.email}
@@ -190,6 +191,9 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 };
 
 const styles = StyleSheet.create({
+  center: {
+    alignItems: 'center'
+  },
   noPaddingTop: {
     paddingTop: 0
   },

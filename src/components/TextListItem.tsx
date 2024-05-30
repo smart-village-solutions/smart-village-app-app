@@ -8,7 +8,7 @@ import { colors, consts, Icon, normalize } from '../config';
 import { isOpen, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { HeadlineText, RegularText } from './Text';
+import { BoldText, HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -16,6 +16,7 @@ export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
   overtitle?: string;
   onPress?: (navigation: any) => void;
@@ -71,6 +72,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     const {
       badge,
       bottomDivider,
+      isHeadlineTitle = true,
       leftIcon,
       onPress,
       overtitle,
@@ -86,7 +88,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
       topDivider
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
-    let titleText = <HeadlineText small>{trimNewLines(title)}</HeadlineText>;
+    let titleText = isHeadlineTitle ? (
+      <HeadlineText small>{trimNewLines(title)}</HeadlineText>
+    ) : (
+      <BoldText>{trimNewLines(title)}</BoldText>
+    );
 
     let status = '';
     if (showOpenStatus) {

@@ -6,7 +6,7 @@ import { ListItem } from 'react-native-elements';
 import { colors, consts, normalize } from '../config';
 
 import { Switch } from './Switch';
-import { HeadlineText } from './Text';
+import { BoldText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -46,7 +46,7 @@ export const SettingsToggle = ({ item }) => {
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     >
-      <ListItem.Content>{title && <HeadlineText small>{title}</HeadlineText>}</ListItem.Content>
+      <ListItem.Content>{title && <BoldText>{title}</BoldText>}</ListItem.Content>
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}

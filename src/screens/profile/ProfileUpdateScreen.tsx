@@ -16,7 +16,7 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
-  WrapperRow
+  WrapperVertical
 } from '../../components';
 import { texts } from '../../config';
 import { storeProfileUserData } from '../../helpers';
@@ -114,11 +114,11 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperRow center>
+          <WrapperVertical style={styles.center}>
             <SectionHeader big center title={texts.profile.update} />
-          </WrapperRow>
+          </WrapperVertical>
 
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             <Controller
               name="gender"
               render={({ field: { name, onChange, value } }) => (
@@ -270,6 +270,9 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  center: {
+    alignItems: 'center'
+  },
   noPaddingTop: {
     paddingTop: 0
   }

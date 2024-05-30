@@ -46,3 +46,12 @@ export type ProfileUpdate = {
   postcode: string;
   street: string;
 };
+
+export type ProfileEditMail = {
+  email: string;
+};
+
+export type ProfileEditPassword = {
+  password: string;
+  passwordConfirmation: string;
+};
