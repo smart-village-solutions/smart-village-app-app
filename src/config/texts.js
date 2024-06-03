@@ -977,7 +977,7 @@ export const texts = {
       description: 'Ausführliche Beschreibung',
       email: 'E-Mail-Adresse',
       emailHint:
-        'ⓘ Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
+        'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
       houseNumber: 'Hausnummer',
