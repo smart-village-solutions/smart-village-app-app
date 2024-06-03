@@ -32,9 +32,9 @@ const saveImageToGallery = async (uri: string) => {
     const album = await getAlbumAsync(appName);
 
     if (!album) {
-      await createAlbumAsync(appName, asset, false);
+      await createAlbumAsync(appName, asset, true);
     } else {
-      await addAssetsToAlbumAsync([asset], album, false);
+      await addAssetsToAlbumAsync([asset], album, true);
     }
   } catch (error) {
     console.error(error);
