@@ -68,12 +68,18 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
+  const categoryName = route.params?.queryVariables?.categoryName;
+  let nestedCategory;
+  if (categoryName) {
+    nestedCategory = categories.find((category) => category.name === categoryName);
+  }
+
   return (
     <WrapperVertical>
-      {!!category?.name && (
+      {(!!nestedCategory?.name || category?.name) && (
         <WrapperHorizontal>
           <HeadlineText smaller uppercase>
-            {category.name}
+            {nestedCategory?.name || category.name}
           </HeadlineText>
         </WrapperHorizontal>
       )}
@@ -157,7 +163,11 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             locations={[
               {
                 position: { latitude, longitude },
-                iconName: category?.iconName,
+                iconName: nestedCategory?.iconName?.length
+                  ? nestedCategory.iconName
+                  : category?.iconName?.length
+                  ? category.iconName
+                  : undefined,
                 id
               }
             ]}

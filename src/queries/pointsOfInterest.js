@@ -27,6 +27,11 @@ export const GET_POINTS_OF_INTEREST = gql`
     ) {
       id
       name
+      categories {
+        id
+        name
+        iconName
+      }
       category {
         id
         name
@@ -94,6 +99,11 @@ export const GET_POINT_OF_INTEREST = gql`
       title: name
       externalId
       payload
+      categories {
+        id
+        name
+        iconName
+      }
       category {
         id
         name

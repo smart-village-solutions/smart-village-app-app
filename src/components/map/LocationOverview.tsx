@@ -47,7 +47,7 @@ const mapToMapMarkers = (
       if (!latitude || !longitude) return undefined;
 
       return {
-        iconName: item.category.iconName,
+        iconName: item.category?.iconName?.length ? item.category.iconName : undefined,
         id: item.id,
         position: {
           latitude,

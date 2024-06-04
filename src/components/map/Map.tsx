@@ -35,11 +35,11 @@ const MARKER_ICON_SIZE = isSmallerPixelRatio ? normalize(50) : normalize(40);
 const CIRCLE_SIZES = [60, 50, 40, 30];
 
 export const MapIcon = ({
-  iconColor,
+  iconColor = colors.lighterPrimary,
   iconName = 'location',
   iconSize = MARKER_ICON_SIZE,
-  iconStrokeColor,
-  iconStrokeWidth
+  iconStrokeColor = colors.darkerPrimary,
+  iconStrokeWidth = 1.5
 }: {
   iconColor?: string;
   iconName?: string;
@@ -198,8 +198,8 @@ export const Map = ({
         {!!geometryTourData?.length && (
           <Polyline
             coordinates={geometryTourData}
-            strokeWidth={2}
             strokeColor={colors.primary}
+            strokeWidth={2}
             zIndex={1}
           />
         )}
@@ -227,8 +227,6 @@ export const Map = ({
                     iconColor={isActiveMarker ? colors.secondary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
                     iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE * 1.1}
-                    iconStrokeColor={colors.darkerPrimary}
-                    iconStrokeWidth={1.5}
                   />
                   <View
                     style={[
@@ -265,7 +263,10 @@ export const Map = ({
                       ? colors.secondary
                       : colors.lighterPrimary
                   }
-                  iconName={marker.iconName ? marker.iconName : undefined}
+                  iconName={
+                    !marker.iconName ? (isActiveMarker ? 'locationActive' : marker.iconName) : ''
+                  }
+                  iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE * 1.1}
                 />
               )}
             </Marker>

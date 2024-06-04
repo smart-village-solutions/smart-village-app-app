@@ -146,9 +146,11 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   }));
 };
 
-const parsePointOfInterest = (data, skipLastDivider) => {
+const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = undefined) => {
   return data?.map((pointOfInterest, index) => ({
-    iconName: pointOfInterest.category?.iconName,
+    iconName: pointOfInterest.category?.iconName?.length
+      ? pointOfInterest.category.iconName
+      : undefined,
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
     overtitle: pointOfInterest.category?.name,
@@ -159,7 +161,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
     params: {
       title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
-      queryVariables: { id: `${pointOfInterest.id}` },
+      queryVariables: { id: `${pointOfInterest.id}`, categoryName: queryVariables?.category },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
@@ -202,7 +204,7 @@ const parseTours = (data, skipLastDivider) => {
 const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
   return data?.map((category, index) => ({
     id: category.id,
-    iconName: category.iconName,
+    iconName: category.iconName?.length ? category.iconName : undefined,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,
@@ -429,7 +431,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
-      return parsePointOfInterest(data[query], skipLastDivider);
+      return parsePointOfInterest(data[query], skipLastDivider, queryVariables);
     case QUERY_TYPES.TOURS:
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
