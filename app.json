@@ -68,6 +68,9 @@
       "softwareKeyboardLayoutMode": "pan",
       "allowBackup": false
     },
+    "androidStatusBar": {
+      "backgroundColor": "#00000000"
+    },
     "plugins": [
       [
         "expo-document-picker",
