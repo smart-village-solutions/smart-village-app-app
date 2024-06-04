@@ -91,7 +91,12 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     <Overlay
       animationType="fade"
       isVisible={isVisible}
+      onBackdropPress={() => {
+        setIsVisible(false);
+        navigation.pop();
+      }}
       overlayStyle={[styles.overlayWidth, { backgroundColor }]}
+      statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
     >
       <ScrollView style={[styles.containerRadius, { backgroundColor }]}>
