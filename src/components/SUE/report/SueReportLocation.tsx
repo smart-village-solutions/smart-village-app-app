@@ -35,21 +35,23 @@ enum SueStatus {
 
 /* eslint-disable complexity */
 export const SueReportLocation = ({
+  areaServiceData,
   control,
+  errorMessage,
   getValues,
   requiredInputs,
   selectedPosition,
   setSelectedPosition,
-  setValue,
-  setZipCode
+  setValue
 }: {
+  areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
+  errorMessage: string;
   getValues: UseFormGetValues<TValues>;
-  requiredInputs: string[];
+  requiredInputs: keyof TValues[];
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setValue: UseFormSetValue<TValues>;
-  setZipCode: any;
 }) => {
   const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
@@ -135,13 +137,21 @@ export const SueReportLocation = ({
       const zipCode = data?.address?.postcode || '';
       const city = data?.address?.city || '';
 
-      setValue('street', street);
-      setValue('houseNumber', houseNumber);
-      setValue('zipCode', zipCode);
+      if (!!zipCode && !areaServiceData?.postalCodes?.includes(zipCode)) {
+        setValue('city', '');
+        setValue('houseNumber', '');
+        setValue('street', '');
+        setValue('zipCode', '');
+
+        throw new Error(errorMessage);
+      }
+
       setValue('city', city);
-      setZipCode(zipCode);
+      setValue('houseNumber', houseNumber);
+      setValue('street', street);
+      setValue('zipCode', zipCode);
     } catch (error) {
-      console.error('Reverse Geocoding Error:', error);
+      throw new Error(errorMessage);
     }
   }, []);
 
@@ -192,9 +202,14 @@ export const SueReportLocation = ({
                   const location = position || lastKnownPosition;
 
                   if (location) {
-                    setUpdatedRegion(true);
-                    setSelectedPosition(location.coords);
-                    reverseGeocode(location.coords);
+                    reverseGeocode(location.coords)
+                      .then(() => {
+                        setUpdatedRegion(true);
+                        setSelectedPosition(location.coords);
+                      })
+                      .catch((error) => {
+                        Alert.alert(texts.sue.report.alerts.hint, error.message);
+                      });
                   }
                 }
               }
@@ -202,9 +217,14 @@ export const SueReportLocation = ({
           }
           onMapPress={({ nativeEvent }) => {
             if (nativeEvent.action !== 'marker-press') {
-              setUpdatedRegion(false);
-              setSelectedPosition(nativeEvent.coordinate);
-              reverseGeocode(nativeEvent.coordinate);
+              reverseGeocode(nativeEvent.coordinate)
+                .then(() => {
+                  setUpdatedRegion(false);
+                  setSelectedPosition(nativeEvent.coordinate);
+                })
+                .catch((error) => {
+                  Alert.alert(texts.sue.report.alerts.hint, error.message);
+                });
             }
           }}
           onMaximizeButtonPress={() => navigation.navigate(ScreenName.MapView, { locations })}

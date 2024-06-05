@@ -48,19 +48,35 @@ export type TValues = {
   zipCode: string;
 };
 
-const Content = (
-  content: 'category' | 'description' | 'location' | 'user',
-  requiredInputs: string[],
-  serviceCode: string,
-  setServiceCode: any,
-  control: any,
-  errors: any,
-  selectedPosition: Location.LocationObjectCoords | undefined,
-  setSelectedPosition: any,
-  setValue: UseFormSetValue<TValues>,
-  getValues: UseFormGetValues<TValues>,
-  setZipCode: any
-) => {
+type TContent = {
+  areaServiceData: { postalCodes: string[] } | undefined;
+  content: 'category' | 'description' | 'location' | 'user';
+  requiredInputs: keyof TValues[];
+  serviceCode: string | undefined;
+  setServiceCode: any;
+  control: any;
+  errorMessage: string;
+  errors: any;
+  selectedPosition: Location.LocationObjectCoords | undefined;
+  setSelectedPosition: any;
+  setValue: UseFormSetValue<TValues>;
+  getValues: UseFormGetValues<TValues>;
+};
+
+const Content = ({
+  areaServiceData,
+  content,
+  control,
+  errorMessage,
+  errors,
+  getValues,
+  requiredInputs,
+  selectedPosition,
+  serviceCode,
+  setSelectedPosition,
+  setServiceCode,
+  setValue
+}: TContent) => {
   switch (content) {
     case 'description':
       return <SueReportDescription control={control} requiredInputs={requiredInputs} />;
@@ -68,12 +84,13 @@ const Content = (
       return (
         <SueReportLocation
           control={control}
+          errorMessage={errorMessage}
+          getValues={getValues}
+          areaServiceData={areaServiceData}
+          requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
           setValue={setValue}
-          getValues={getValues}
-          requiredInputs={requiredInputs}
-          setZipCode={setZipCode}
         />
       );
     case 'user':
@@ -133,7 +150,6 @@ export const SueReportScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TReports>();
-  const [zipCode, setZipCode] = useState<string>();
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef(null);
@@ -180,11 +196,9 @@ export const SueReportScreen = ({
   });
 
   const { data: areaServiceData } = useQuery(
-    [QUERY_TYPES.SUE.AREA_SERVICE, zipCode || getValues('zipCode')],
-    () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(zipCode || getValues('zipCode')),
-    {
-      enabled: !!limitOfCity && (zipCode?.length === 5 || getValues('zipCode')?.length === 5)
-    }
+    [QUERY_TYPES.SUE.AREA_SERVICE],
+    () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
+    { enabled: !!limitOfCity }
   );
 
   const { mutateAsync } = useMutation(postRequests);
@@ -292,12 +306,7 @@ export const SueReportScreen = ({
             return texts.sue.report.alerts.zipCode;
           }
 
-          if (
-            !!limitOfCity &&
-            (limitOfCity.toLocaleLowerCase() !== getValues().city.toLocaleLowerCase() ||
-              limitOfCity.toLocaleLowerCase() !==
-                areaServiceData?.values?.[0].name?.toLocaleLowerCase())
-          ) {
+          if (!!limitOfCity && !areaServiceData?.postalCodes?.includes(getValues('zipCode'))) {
             return errorMessage;
           }
         }
@@ -477,19 +486,20 @@ export const SueReportScreen = ({
                   <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               ) : (
-                Content(
-                  item.content,
-                  item.requiredInputs,
+                Content({
+                  areaServiceData,
+                  content: item.content,
+                  requiredInputs: item.requiredInputs,
                   serviceCode,
                   setServiceCode,
                   control,
+                  errorMessage,
                   errors,
                   selectedPosition,
                   setSelectedPosition,
                   setValue,
-                  getValues,
-                  setZipCode
-                )
+                  getValues
+                })
               )}
               {device.platform === 'android' && (
                 <View style={{ height: normalize(keyboardHeight) * 0.5 }} />
