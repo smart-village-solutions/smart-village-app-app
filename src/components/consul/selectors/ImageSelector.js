@@ -1,4 +1,5 @@
 import * as FileSystem from 'expo-file-system';
+import * as Location from 'expo-location';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
@@ -9,13 +10,20 @@ import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { deleteArrayItem, errorTextGenerator, jsonParser } from '../../../helpers';
 import { imageHeight, imageWidth } from '../../../helpers/imageHelper';
-import { useCaptureImage, useSelectImage } from '../../../hooks';
+import {
+  useCaptureImage,
+  useLastKnownPosition,
+  usePosition,
+  useSelectImage,
+  useSystemPermission
+} from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
 import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
 import { Modal } from '../../Modal';
+import { useReverseGeocode } from '../../SUE';
 import { BoldText, RegularText } from '../../Text';
 import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
@@ -40,6 +48,7 @@ const deleteImageAlert = (onPress) =>
 
 export const ImageSelector = ({
   control,
+  coordinateCheck,
   errorType,
   field,
   imageId,
@@ -47,6 +56,14 @@ export const ImageSelector = ({
   item,
   selectorType
 }) => {
+  const reverseGeocode = useReverseGeocode();
+  const systemPermission = useSystemPermission();
+
+  const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
+
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -106,8 +123,32 @@ export const ImageSelector = ({
 
   const imageSelect = async (imageFunction = selectImage) => {
     const { uri, type, exif } = await imageFunction();
+    const { GPSLatitude, GPSLongitude } = exif || {};
 
     const { size } = await FileSystem.getInfoAsync(uri);
+
+    const location = {
+      latitude:
+        GPSLatitude || lastKnownPosition?.coords?.latitude || position?.coords?.latitude || 0,
+      longitude:
+        GPSLongitude || lastKnownPosition?.coords?.longitude || position?.coords?.longitude || 0
+    };
+    const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
+
+    if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+      try {
+        await reverseGeocode({
+          areaServiceData,
+          errorMessage,
+          position: location,
+          setValue
+        });
+      } catch (error) {
+        return Alert.alert(texts.sue.report.alerts.hint, error.message);
+      } finally {
+        setIsModalVisible(!isModalVisible);
+      }
+    }
 
     /* used to specify the mimeType when uploading to the server */
     const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
@@ -355,6 +396,7 @@ const styles = StyleSheet.create({
 
 ImageSelector.propTypes = {
   control: PropTypes.object,
+  coordinateCheck: PropTypes.object,
   errorType: PropTypes.string,
   field: PropTypes.object,
   imageId: PropTypes.string,

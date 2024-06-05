@@ -59,6 +59,11 @@ export const SueReportDescription = ({
             <ImageSelector
               {...{
                 control,
+                coordinateCheck: {
+                  areaServiceData,
+                  errorMessage,
+                  setValue
+                },
                 field,
                 isMultiImages: true,
                 selectorType: IMAGE_SELECTOR_TYPES.SUE,

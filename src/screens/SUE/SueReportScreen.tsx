@@ -79,7 +79,15 @@ const Content = ({
 }: TContent) => {
   switch (content) {
     case 'description':
-      return <SueReportDescription control={control} requiredInputs={requiredInputs} />;
+      return (
+        <SueReportDescription
+          areaServiceData={areaServiceData}
+          errorMessage={errorMessage}
+          setValue={setValue}
+          control={control}
+          requiredInputs={requiredInputs}
+        />
+      );
     case 'location':
       return (
         <SueReportLocation
