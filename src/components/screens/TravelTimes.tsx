@@ -1,4 +1,3 @@
-import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import React, { Fragment, useState } from 'react';
 import { useQuery } from 'react-apollo';
@@ -170,7 +169,8 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(8)
   },
   divider: {
-    backgroundColor: colors.placeholder
+    backgroundColor: colors.placeholder,
+    marginHorizontal: normalize(16)
   },
   headSign: {
     flexShrink: 1
