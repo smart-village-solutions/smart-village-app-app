@@ -106,7 +106,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
 
   return (
     <>
-      <Wrapper style={styles.noPaddingBotton}>
+      <Wrapper style={styles.noPaddingBottom}>
         <Button
           invert
           notFullWidth
@@ -158,7 +158,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
 };
 
 const styles = StyleSheet.create({
-  noPaddingBotton: {
+  noPaddingBottom: {
     paddingBottom: 0
   }
 });

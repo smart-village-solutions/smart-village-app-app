@@ -107,6 +107,7 @@ export const Chat = ({
     <GiftedChat
       alwaysShowSend
       bottomOffset={device.platform === 'ios' && normalize(96)}
+      keyboardShouldPersistTaps="handled"
       locale="de"
       messages={messages}
       minInputToolbarHeight={normalize(96)}
@@ -173,6 +174,7 @@ export const Chat = ({
       renderComposer={(props) => (
         <Composer
           {...props}
+          multiline
           textInputStyle={styles.textInputStyle}
           textInputProps={textInputProps}
         />
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
     height: normalize(48),
     justifyContent: 'center',
     marginLeft: normalize(8),
-    marginRight: normalize(20),
+    marginRight: normalize(10),
     width: normalize(48)
   },
   spacingTime: {
