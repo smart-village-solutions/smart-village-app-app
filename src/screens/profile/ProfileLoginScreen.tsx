@@ -17,7 +17,6 @@ import {
   SectionHeader,
   Touchable,
   Wrapper,
-  WrapperRow,
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
@@ -27,7 +26,7 @@ import { QUERY_TYPES } from '../../queries';
 import { member, profileLogIn } from '../../queries/profile';
 import { ProfileLogin, ProfileMember, ScreenName } from '../../types';
 
-const { a11yLabel } = consts;
+const { a11yLabel, EMAIL_REGEX } = consts;
 
 const showLoginFailAlert = () =>
   Alert.alert(texts.profile.loginFailedTitle, texts.profile.loginFailedBody);
@@ -120,8 +119,11 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
               autoCompleteType="email"
               autoCapitalize="none"
               validate
-              rules={{ required: true }}
-              errorMessage={errors.email && `${texts.profile.email} muss ausgefüllt werden`}
+              rules={{
+                required: texts.profile.emailError,
+                pattern: { value: EMAIL_REGEX, message: texts.profile.emailInvalid }
+              }}
+              errorMessage={errors.email && errors.email.message}
               control={control}
               inputContainerStyle={styles.inputContainer}
             />

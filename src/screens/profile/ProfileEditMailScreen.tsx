@@ -8,7 +8,6 @@ import {
   Button,
   DefaultKeyboardAvoidingView,
   Input,
-  LOGIN_MODAL,
   LoadingModal,
   SafeAreaViewFlex,
   SectionHeader,
@@ -16,8 +15,10 @@ import {
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
+import { storeProfileAuthToken } from '../../helpers';
 import { profileEditMail } from '../../queries/profile';
-import { ProfileEditMail } from '../../types';
+import { ProfileEditMail, ScreenName } from '../../types';
+import { useProfileUser } from '../../hooks';
 
 const { EMAIL_REGEX } = consts;
 
@@ -25,23 +26,25 @@ const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
 
 const showUpdateSuccessAlert = ({ onPress }: { onPress: () => void }) =>
-  Alert.alert(texts.profile.showUpdateSuccessAlertTitle, texts.profile.showUpdateSuccessAlertBody, [
-    {
-      text: texts.profile.ok,
-      onPress
-    }
-  ]);
+  Alert.alert(
+    texts.profile.showUpdateSuccessAlertTitle,
+    texts.profile.showUpdateEmailSuccessAlertBody,
+    [
+      {
+        text: texts.profile.ok,
+        onPress
+      }
+    ]
+  );
 
 export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const from = route.params?.from ?? '';
-
   const {
     control,
     formState: { errors },
     handleSubmit
   } = useForm<ProfileEditMail>({
     defaultValues: {
-      email: ''
+      email: route.params?.email || ''
     }
   });
 
@@ -62,7 +65,10 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
         }
 
         showUpdateSuccessAlert({
-          onPress: () => (from === LOGIN_MODAL ? navigation.popToTop() : navigation.goBack())
+          onPress: () => {
+            storeProfileAuthToken();
+            navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
+          }
         });
       }
     });

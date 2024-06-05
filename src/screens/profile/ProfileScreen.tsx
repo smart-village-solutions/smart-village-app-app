@@ -141,7 +141,8 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
           <TextListItem
             item={{
               isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileEditMail),
+              onPress: () =>
+                navigation.navigate(ScreenName.ProfileEditMail, { email: data.member.email }),
               routeName: ScreenName.ProfileEditMail,
               bottomDivider: true,
               title: texts.profile.editMail

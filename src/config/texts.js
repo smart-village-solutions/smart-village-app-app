@@ -877,6 +877,8 @@ export const texts = {
     updatePassword: 'Passwort ändern',
     updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
+    showUpdateEmailSuccessAlertBody:
+      'Dein Profil wurde erfolgreich aktualisiert. Bitte bestätige deine E-Mail-Adresse und melde dich mit der neuen E-Mail-Adresse erneut an.',
     showUpdateSuccessAlertBody: 'Dein Profil wurde erfolgreich aktualisiert.',
     showUpdateSuccessAlertTitle: 'Erfolg',
     termsOfUseChecked: 'Mit der Registrierung akzeptierst du die',
