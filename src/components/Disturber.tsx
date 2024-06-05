@@ -8,7 +8,7 @@ import { useHomeRefresh, useStaticContent } from '../hooks';
 
 import { Button } from './Button';
 import { Image } from './Image';
-import { BoldText, HeadlineText, RegularText } from './Text';
+import { HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
