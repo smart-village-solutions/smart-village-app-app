@@ -195,7 +195,7 @@ export const SueReportScreen = ({
     }
   });
 
-  const { data: areaServiceData } = useQuery(
+  const { data: areaServiceData, isLoading: areaServiceLoading } = useQuery(
     [QUERY_TYPES.SUE.AREA_SERVICE],
     () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
     { enabled: !!limitOfCity }
@@ -306,7 +306,7 @@ export const SueReportScreen = ({
             return texts.sue.report.alerts.zipCode;
           }
 
-          if (!!limitOfCity && !areaServiceData?.postalCodes?.includes(getValues('zipCode'))) {
+          if (!areaServiceData?.postalCodes?.includes(getValues('zipCode'))) {
             return errorMessage;
           }
         }
@@ -450,7 +450,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, serviceCode, selectedPosition]);
 
-  if (loading) {
+  if (loading || areaServiceLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />

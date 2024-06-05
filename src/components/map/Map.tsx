@@ -201,6 +201,7 @@ export const Map = ({
         )}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
+          const calloutText = marker.title;
 
           return (
             <Marker
@@ -257,10 +258,10 @@ export const Map = ({
                 />
               )}
 
-              {calloutTextEnabled && !!marker.title && (
+              {calloutTextEnabled && !!calloutText && (
                 <Callout style={styles.callout}>
                   <RegularText smallest center>
-                    {marker.title}
+                    {calloutText}
                   </RegularText>
                 </Callout>
               )}

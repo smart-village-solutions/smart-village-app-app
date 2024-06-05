@@ -151,7 +151,7 @@ export const SueReportLocation = ({
       setValue('street', street);
       setValue('zipCode', zipCode);
     } catch (error) {
-      throw new Error(errorMessage);
+      throw new Error(error.message);
     }
   }, []);
 
@@ -216,7 +216,10 @@ export const SueReportLocation = ({
             ])
           }
           onMapPress={({ nativeEvent }) => {
-            if (nativeEvent.action !== 'marker-press') {
+            if (
+              nativeEvent.action !== 'marker-press' &&
+              nativeEvent.action !== 'callout-inside-press'
+            ) {
               reverseGeocode(nativeEvent.coordinate)
                 .then(() => {
                   setUpdatedRegion(false);
