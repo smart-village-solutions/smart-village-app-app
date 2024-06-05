@@ -78,7 +78,12 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     try {
       const { data } = await sendMessage({ variables: newMessageData });
 
-      data?.createMessage?.id && setQueryVariables({ id: data.createMessage.id });
+      !newMessageData?.conversationId &&
+        data?.createMessage?.id &&
+        setQueryVariables({
+          ...queryVariables,
+          id: data.createMessage.id
+        });
     } catch (error) {
       console.error(error);
     }
