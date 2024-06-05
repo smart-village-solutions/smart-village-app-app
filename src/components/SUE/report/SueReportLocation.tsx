@@ -198,36 +198,38 @@ export const SueReportLocation = ({
               },
               {
                 text: texts.sue.report.alerts.yes,
-                onPress: () => {
+                onPress: async () => {
                   const location = position || lastKnownPosition;
 
                   if (location) {
-                    reverseGeocode(location.coords)
-                      .then(() => {
-                        setUpdatedRegion(true);
-                        setSelectedPosition(location.coords);
-                      })
-                      .catch((error) => {
-                        Alert.alert(texts.sue.report.alerts.hint, error.message);
-                      });
+                    setUpdatedRegion(true);
+                    setSelectedPosition(location.coords);
+
+                    try {
+                      await reverseGeocode(location.coords);
+                    } catch (error) {
+                      setSelectedPosition(undefined);
+                      Alert.alert(texts.sue.report.alerts.hint, error.message);
+                    }
                   }
                 }
               }
             ])
           }
-          onMapPress={({ nativeEvent }) => {
+          onMapPress={async ({ nativeEvent }) => {
             if (
               nativeEvent.action !== 'marker-press' &&
               nativeEvent.action !== 'callout-inside-press'
             ) {
-              reverseGeocode(nativeEvent.coordinate)
-                .then(() => {
-                  setUpdatedRegion(false);
-                  setSelectedPosition(nativeEvent.coordinate);
-                })
-                .catch((error) => {
-                  Alert.alert(texts.sue.report.alerts.hint, error.message);
-                });
+              setUpdatedRegion(false);
+              setSelectedPosition(nativeEvent.coordinate);
+
+              try {
+                await reverseGeocode(nativeEvent.coordinate);
+              } catch (error) {
+                setSelectedPosition(undefined);
+                Alert.alert(texts.sue.report.alerts.hint, error.message);
+              }
             }
           }}
           onMaximizeButtonPress={() => navigation.navigate(ScreenName.MapView, { locations })}
