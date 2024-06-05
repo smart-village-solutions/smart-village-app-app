@@ -187,7 +187,6 @@ export const Map = ({
         }}
       >
         <UrlTile
-          doubleTileSize={device.platform === 'android'}
           urlTemplate="https://tileserver-gl.smart-village.app/styles/osm-liberty/{z}/{x}/{y}.png"
           shouldReplaceMapContent={device.platform === 'ios'}
         />
