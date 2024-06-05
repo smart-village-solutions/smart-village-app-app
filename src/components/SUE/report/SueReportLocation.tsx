@@ -33,6 +33,54 @@ enum SueStatus {
   WAIT_THIRDPARTY = 'TICKET_STATUS_WAIT_THIRDPARTY'
 }
 
+export const useReverseGeocode = () => {
+  return useCallback(
+    async ({
+      areaServiceData,
+      errorMessage,
+      position,
+      setValue
+    }: {
+      areaServiceData: { postalCodes: string[] } | undefined;
+      errorMessage: string;
+      position: { latitude: number; longitude: number };
+      setValue: UseFormSetValue<TValues>;
+    }) => {
+      const { latitude, longitude } = position;
+
+      try {
+        const response = await (
+          await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+          )
+        ).json();
+
+        const city = response?.address?.city || '';
+        const houseNumber = response?.address?.house_number || '';
+        const street = response?.address?.road || '';
+        const zipCode = response?.address?.postcode || '';
+
+        if (!areaServiceData?.postalCodes?.includes(zipCode)) {
+          setValue('city', '');
+          setValue('houseNumber', '');
+          setValue('street', '');
+          setValue('zipCode', '');
+
+          throw new Error(errorMessage);
+        }
+
+        setValue('city', city);
+        setValue('houseNumber', houseNumber);
+        setValue('street', street);
+        setValue('zipCode', zipCode);
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+    []
+  );
+};
+
 /* eslint-disable complexity */
 export const SueReportLocation = ({
   areaServiceData,
@@ -53,6 +101,7 @@ export const SueReportLocation = ({
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {
+  const reverseGeocode = useReverseGeocode();
   const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
@@ -123,37 +172,18 @@ export const SueReportLocation = ({
     }
   }, []);
 
-  const reverseGeocode = useCallback(async (position: Location.LocationObjectCoords) => {
-    const { latitude, longitude } = position;
-
+  const handleGeocode = async (position: { latitude: number; longitude: number }) => {
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
-      );
-
-      const data = await response.json();
-      const street = data?.address?.road || '';
-      const houseNumber = data?.address?.house_number || '';
-      const zipCode = data?.address?.postcode || '';
-      const city = data?.address?.city || '';
-
-      if (!!zipCode && !areaServiceData?.postalCodes?.includes(zipCode)) {
-        setValue('city', '');
-        setValue('houseNumber', '');
-        setValue('street', '');
-        setValue('zipCode', '');
-
-        throw new Error(errorMessage);
-      }
-
-      setValue('city', city);
-      setValue('houseNumber', houseNumber);
-      setValue('street', street);
-      setValue('zipCode', zipCode);
+      await reverseGeocode({
+        areaServiceData,
+        errorMessage,
+        position,
+        setValue
+      });
     } catch (error) {
       throw new Error(error.message);
     }
-  }, []);
+  };
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
@@ -206,7 +236,7 @@ export const SueReportLocation = ({
                     setSelectedPosition(location.coords);
 
                     try {
-                      await reverseGeocode(location.coords);
+                      await handleGeocode(location.coords);
                     } catch (error) {
                       setSelectedPosition(undefined);
                       Alert.alert(texts.sue.report.alerts.hint, error.message);
