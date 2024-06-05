@@ -7,10 +7,10 @@ import { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-nati
 
 import { colors, device, Icon, IconUrl, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
+import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { RegularText } from '../Text';
-import { useLocationSettings } from '../../hooks';
 
 type Props = {
   clusteringEnabled?: boolean;
@@ -226,7 +226,7 @@ export const Map = ({
                   <MapIcon
                     iconColor={isActiveMarker ? colors.secondary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
-                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE * 1.1}
+                    iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
                   />
                   <View
                     style={[
@@ -266,7 +266,7 @@ export const Map = ({
                   iconName={
                     !marker.iconName ? (isActiveMarker ? 'locationActive' : marker.iconName) : ''
                   }
-                  iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE * 1.1}
+                  iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
                 />
               )}
             </Marker>
