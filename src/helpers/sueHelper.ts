@@ -1,8 +1,9 @@
 import { storageHelper } from './storageHelper';
 
 export const fetchSueEndpoints = async (serviceRequestId?: number) => {
-  const globalSettings = await storageHelper.globalSettings();
-  const { apiConfig = {} } = globalSettings?.settings?.sue || {};
+  const configurations = await storageHelper.configurations();
+  const { sueConfig = {} } = configurations;
+  const { apiConfig = {} } = sueConfig;
 
   const { apiKey, jurisdictionId, serverUrl } = apiConfig[apiConfig?.whichApi] || apiConfig;
 

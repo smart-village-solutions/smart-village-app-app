@@ -5,6 +5,7 @@ import { SettingsContext } from './SettingsProvider';
 import { defaultAppDesignSystemConfig, defaultSueAppConfig } from './config/configurations';
 import { useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
+import { storageHelper } from './helpers';
 
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
@@ -15,7 +16,7 @@ export const ConfigurationsContext = createContext(defaultConfiguration);
 
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings } = globalSettings;
+  const { settings, appDesignSystem = {} } = globalSettings;
   const { sue = {} } = settings || {};
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
@@ -25,12 +26,6 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     () => getQuery(QUERY_TYPES.SUE.CONFIGURATIONS)(),
     { enabled: !!sue }
   );
-
-  const { data: appDesignSystem } = useStaticContent({
-    refreshTimeKey: 'publicJsonFile-appDesignSystem',
-    name: 'appDesignSystem',
-    type: 'json'
-  });
 
   const { data: sueProgress } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
@@ -45,6 +40,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     };
 
     setConfigurations(config);
+    storageHelper.setConfigurations(config);
   }, [sueConfigData, appDesignSystem]);
 
   return (

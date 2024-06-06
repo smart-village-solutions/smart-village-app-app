@@ -14,7 +14,9 @@ export const storageHelper = {
   matomoSettings: () => readFromStore('matomoSettings'),
   setMatomoSettings: (matomoSettings) => addToStore('matomoSettings', matomoSettings),
   listTypesSettings: () => readFromStore('listTypesSettings'),
-  setListTypesSettings: (listTypesSettings) => addToStore('listTypesSettings', listTypesSettings)
+  setListTypesSettings: (listTypesSettings) => addToStore('listTypesSettings', listTypesSettings),
+  configurations: () => readFromStore('configurations'),
+  setConfigurations: (configurations) => addToStore('configurations', configurations)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {
