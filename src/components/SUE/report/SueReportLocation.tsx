@@ -254,7 +254,7 @@ export const SueReportLocation = ({
               setSelectedPosition(nativeEvent.coordinate);
 
               try {
-                await reverseGeocode(nativeEvent.coordinate);
+                await handleGeocode(nativeEvent.coordinate);
               } catch (error) {
                 setSelectedPosition(undefined);
                 Alert.alert(texts.sue.report.alerts.hint, error.message);
