@@ -50,6 +50,19 @@ export type TValues = {
 
 type TContent = {
   areaServiceData: { postalCodes: string[] } | undefined;
+  configuration: {
+    geoMap: {
+      areas: any[];
+      center: number[];
+      clisterTreshold: number;
+      clusterDistance: number;
+      locationIsRequired: boolean;
+      locationStreetIsRequired: boolean;
+      minZoom: number;
+    };
+    limitation: any;
+    requiredFields: any;
+  };
   content: 'category' | 'description' | 'location' | 'user';
   requiredInputs: keyof TValues[];
   serviceCode: string | undefined;
@@ -65,6 +78,7 @@ type TContent = {
 
 const Content = ({
   areaServiceData,
+  configuration,
   content,
   control,
   errorMessage,
@@ -82,19 +96,20 @@ const Content = ({
       return (
         <SueReportDescription
           areaServiceData={areaServiceData}
-          errorMessage={errorMessage}
-          setValue={setValue}
+          configuration={configuration}
           control={control}
+          errorMessage={errorMessage}
           requiredInputs={requiredInputs}
+          setValue={setValue}
         />
       );
     case 'location':
       return (
         <SueReportLocation
+          areaServiceData={areaServiceData}
           control={control}
           errorMessage={errorMessage}
           getValues={getValues}
-          areaServiceData={areaServiceData}
           requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
@@ -102,7 +117,14 @@ const Content = ({
         />
       );
     case 'user':
-      return <SueReportUser control={control} errors={errors} requiredInputs={requiredInputs} />;
+      return (
+        <SueReportUser
+          configuration={configuration}
+          control={control}
+          errors={errors}
+          requiredInputs={requiredInputs}
+        />
+      );
     default:
       return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
@@ -288,6 +310,8 @@ export const SueReportScreen = ({
           const images = JSON.parse(getValues().images);
 
           let totalSize = 0;
+          const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value) || 31457280;
+
           const isImageGreater10MB = images.some(({ size }: { size: number }) => {
             totalSize += size;
             return size >= 10485760;
@@ -299,7 +323,7 @@ export const SueReportScreen = ({
           }
 
           /* the server does not support files larger than 30 MB in total of all files. */
-          if (totalSize >= 31457280) {
+          if (totalSize >= totalSizeLimit) {
             return texts.sue.report.alerts.imagesGreater30MBError;
           }
         }
