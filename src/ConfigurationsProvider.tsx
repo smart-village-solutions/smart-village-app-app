@@ -32,10 +32,16 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     type: 'json'
   });
 
+  const { data: sueProgress } = useStaticContent({
+    refreshTimeKey: 'publicJsonFile-sueReportProgress',
+    name: 'sueReportProgress',
+    type: 'json'
+  });
+
   useEffect(() => {
     const config = {
       appDesignSystem,
-      sueConfig: { ...sue, ...sueConfigData }
+      sueConfig: { ...sue, ...sueConfigData, sueProgress }
     };
 
     setConfigurations(config);

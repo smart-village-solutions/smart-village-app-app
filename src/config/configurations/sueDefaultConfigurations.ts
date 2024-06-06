@@ -55,10 +55,20 @@ const defaultRequiredFieldsConfig = {
   }
 };
 
+const defaultSueProgressConfig = [
+  {
+    content: '',
+    requiredInputs: [],
+    subtitle: '',
+    title: ''
+  }
+];
+
 export const defaultSueAppConfig = {
   apiConfig: defaultApiConfig,
   geoMap: geoMapDefaultConfig,
   limitation: limitationDefaultConfig,
   limitOfArea: defaultLimitOfAreaConfig,
-  requiredFields: defaultRequiredFieldsConfig
+  requiredFields: defaultRequiredFieldsConfig,
+  sueProgress: defaultSueProgressConfig
 };

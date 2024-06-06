@@ -136,15 +136,15 @@ export const SueReportScreen = ({
   navigation,
   route
 }: { navigation: any } & StackScreenProps<any>) => {
-  const { data, loading } = useStaticContent<TProgress[]>({
-    refreshTimeKey: 'publicJsonFile-sueReportProgress',
-    name: 'sueReportProgress',
-    type: 'json'
-  });
+  const { sueConfig = {} } = useContext(ConfigurationsContext);
+  const {
+    geoMap = {},
+    limitation = {},
+    limitOfArea = {},
+    requiredFields = {},
+    sueProgress = []
+  } = sueConfig;
 
-  const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
-  const { limitOfArea = {} } = settings?.sue;
   const {
     city: limitOfCity = '',
     zipCodes: limitOfZipCodes = [],
@@ -403,7 +403,7 @@ export const SueReportScreen = ({
 
     storeReportValues();
 
-    if (currentProgress < data.length - 1) {
+    if (currentProgress < sueProgress.length - 1) {
       setCurrentProgress(currentProgress + 1);
       scrollViewRef?.current?.scrollTo({
         x: device.width * (currentProgress + 1),
@@ -458,7 +458,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, serviceCode, selectedPosition]);
 
-  if (loading || areaServiceLoading) {
+  if (areaServiceLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -472,7 +472,7 @@ export const SueReportScreen = ({
 
   return (
     <SafeAreaViewFlex>
-      <SueReportProgress progress={data} currentProgress={currentProgress + 1} />
+      <SueReportProgress progress={sueProgress} currentProgress={currentProgress + 1} />
 
       <DefaultKeyboardAvoidingView>
         <ScrollView
@@ -483,7 +483,7 @@ export const SueReportScreen = ({
           scrollEnabled={false}
           showsHorizontalScrollIndicator={false}
         >
-          {data?.map((item: TProgress, index: number) => (
+          {sueProgress?.map((item: TProgress, index: number) => (
             <ScrollView
               key={index}
               contentContainerStyle={styles.contentContainer}
@@ -536,9 +536,11 @@ export const SueReportScreen = ({
           <Button
             disabled={isLoading}
             notFullWidth={currentProgress !== 0}
-            onPress={currentProgress < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
+            onPress={
+              currentProgress < sueProgress.length - 1 ? handleNextPage : handleSubmit(onSubmit)
+            }
             title={
-              currentProgress === data.length - 1
+              currentProgress === sueProgress.length - 1
                 ? texts.sue.report.sendReport
                 : texts.sue.report.next
             }
