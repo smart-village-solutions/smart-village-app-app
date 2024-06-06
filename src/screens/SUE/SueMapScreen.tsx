@@ -66,10 +66,12 @@ type Props = {
 };
 
 export const SueMapScreen = ({ navigation, route }: Props) => {
-  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
+  const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const { sueStatus = {} } = appDesignSystem;
+  const { geoMap = {} } = sueConfig;
+
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
@@ -129,9 +131,11 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     <SafeAreaViewFlex>
       <Map
         isMultipleMarkersMap
+        clusterDistance={geoMap?.clusterDistance}
         clusteringEnabled={true}
         locations={mapMarkers}
         mapStyle={styles.map}
+        minZoom={geoMap?.minZoom}
         onMarkerPress={(id) => {
           // reset selected request id to undefined to avoid rendering bug with images in overlay
           setSelectedRequestId(undefined);

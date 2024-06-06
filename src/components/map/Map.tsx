@@ -13,6 +13,7 @@ import { useLocationSettings } from '../../hooks';
 
 type Props = {
   calloutTextEnabled?: boolean;
+  clusterDistance?: number;
   clusteringEnabled?: boolean;
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
@@ -21,6 +22,7 @@ type Props = {
   locations?: MapMarker[];
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
+  minZoom?: number;
   onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
@@ -96,6 +98,7 @@ const renderCluster = (cluster: TCluster) => {
 /* eslint-disable complexity */
 export const Map = ({
   calloutTextEnabled = false,
+  clusterDistance,
   clusteringEnabled = false,
   geometryTourData,
   isMaximizeButtonVisible = false,
@@ -104,6 +107,7 @@ export const Map = ({
   locations,
   mapCenterPosition,
   mapStyle,
+  minZoom,
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
@@ -159,6 +163,7 @@ export const Map = ({
         clusterColor={colors.primary}
         clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
+        radius={clusterDistance}
         renderCluster={renderCluster}
         initialRegion={initialRegion}
         region={updatedRegion}
@@ -173,6 +178,7 @@ export const Map = ({
         toolbarEnabled={false}
         style={[stylesForMap().map, mapStyle]}
         userLocationPriority="balanced"
+        minZoom={minZoom}
         mapPadding={{
           top: 0,
           right: 0,
