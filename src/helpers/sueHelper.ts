@@ -21,10 +21,17 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   const sueServicesUrl = `${serverUrl}/services?jurisdiction_id=${jurisdictionId}`;
   const sueStatusesUrl = `${serverUrl}/statuses?jurisdiction_id=${jurisdictionId}`;
 
+  const sueConfigurationsUrl = `${serverUrl}/configurations?jurisdiction_id=${jurisdictionId}`;
+  const sueContactRequiredFieldConfigurationUrl = `${serverUrl}/configurations/contactRequiredFieldConfiguration?jurisdiction_id=${jurisdictionId}`;
+  const sueGeoMapConfigurationUrl = `${serverUrl}/configurations/geoMapConfiguration?jurisdiction_id=${jurisdictionId}`;
+
   return {
     apiKey,
     jurisdictionId,
+    sueConfigurationsUrl,
+    sueContactRequiredFieldConfigurationUrl,
     sueFetchObj,
+    sueGeoMapConfigurationUrl,
     suePostRequest,
     suePrioritiesUrl,
     sueRequestsUrl,

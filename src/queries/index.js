@@ -2,6 +2,7 @@
 // IMPORT CREATE QUERIES
 import {
   areaService,
+  configurations,
   priorities,
   requests,
   requestsWithServiceRequestId,
@@ -99,6 +100,7 @@ export const getQuery = (query, filterOptions = {}) => {
 
     // SUE QUERIES
     [QUERY_TYPES.SUE.AREA_SERVICE]: areaService,
+    [QUERY_TYPES.SUE.CONFIGURATIONS]: configurations,
     [QUERY_TYPES.SUE.PRIORITIES]: priorities,
     [QUERY_TYPES.SUE.REQUESTS]: requests,
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: requestsWithServiceRequestId,

@@ -1,3 +1,5 @@
+export * from './configurations';
+
 export * from './colors';
 export * from './consts';
 export * from './device';
