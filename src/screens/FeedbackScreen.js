@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   Button,
@@ -13,19 +14,18 @@ import {
   Wrapper
 } from '../components';
 import { Icon, colors, consts, normalize, texts } from '../config';
-import { useMatomoTrackScreenView } from '../hooks';
-import { useAppInfo } from '../hooks/appInfo';
+import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
 export const FeedbackScreen = () => {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   const {
     control,
     formState: { errors },
-    reset,
     handleSubmit
   } = useForm({
     defaultValues: {
@@ -69,14 +69,13 @@ export const FeedbackScreen = () => {
 
     try {
       await createAppUserContent({ variables: formData });
-
-      reset();
-
       Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
     } catch (error) {
       console.error(error);
     }
+
     setLoading(false);
+    navigation.goBack();
   };
 
   return (
