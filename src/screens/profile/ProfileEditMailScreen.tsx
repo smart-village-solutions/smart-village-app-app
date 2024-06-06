@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -18,7 +18,6 @@ import { consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken } from '../../helpers';
 import { profileEditMail } from '../../queries/profile';
 import { ProfileEditMail, ScreenName } from '../../types';
-import { useProfileUser } from '../../hooks';
 
 const { EMAIL_REGEX } = consts;
 
@@ -57,7 +56,9 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
     data
   } = useMutation(profileEditMail);
 
-  const onSubmit = (updateData: ProfileEditMail) =>
+  const onSubmit = (updateData: ProfileEditMail) => {
+    Keyboard.dismiss();
+
     mutateUpdate(updateData, {
       onSuccess: (responseData) => {
         if (!responseData?.member) {
@@ -72,6 +73,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
         });
       }
     });
+  };
 
   if (isError || (isSuccess && !data?.member)) {
     showUpdateFailAlert();

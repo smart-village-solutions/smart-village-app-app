@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -32,10 +32,12 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
     }
   });
 
-  const { mutate: mutateSignup, isLoading } = useMutation(profileResetPassword);
+  const { mutate: mutateResetPassword, isLoading } = useMutation(profileResetPassword);
 
   const onSubmit = (resetPasswordData: ProfileResetPassword) => {
-    mutateSignup(resetPasswordData, {
+    Keyboard.dismiss();
+
+    mutateResetPassword(resetPasswordData, {
       onSuccess: () => {
         Alert.alert(
           texts.profile.resetPasswordAlertTitle,
