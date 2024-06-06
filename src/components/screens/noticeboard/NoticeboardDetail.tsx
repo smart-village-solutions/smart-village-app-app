@@ -168,6 +168,14 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
         </Wrapper>
       )}
 
+      {isCurrentUser && !!categories?.length && !!categories[0].name && (
+        <WrapperHorizontal>
+          <HeadlineText smaller uppercase>
+            {categories[0].name}
+          </HeadlineText>
+        </WrapperHorizontal>
+      )}
+
       {!!title && <SectionHeader big title={title} />}
 
       {!!priceInformations?.length && !!priceInformations[0].description.length && (
