@@ -6,7 +6,7 @@ import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { SettingsContext } from '../../../SettingsProvider';
+import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
 import {
@@ -105,8 +105,7 @@ export const SueReportLocation = ({
   const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
   const now = moment();

@@ -2,13 +2,13 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { SettingsContext } from '../../../SettingsProvider';
-import { device, normalize } from '../../../config';
+import { ConfigurationsContext } from '../../../ConfigurationsProvider';
+import { normalize } from '../../../config';
 import { ScreenName } from '../../../types';
+import { Button } from '../../Button';
 import { Image } from '../../Image';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
-import { Button } from '../../Button';
 
 export const SueReportSend = ({
   isDone,
@@ -19,8 +19,7 @@ export const SueReportSend = ({
   isLoading: boolean;
   navigation: any;
 }) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = appDesignSystem;
   const { reportSendDone = {}, reportSendLoading = {} } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;

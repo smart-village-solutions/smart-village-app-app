@@ -32,6 +32,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { ConfigurationsContext } from '../ConfigurationsProvider';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -163,13 +164,9 @@ const renderItem = ({ item }) => {
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
-  const {
-    appDesignSystem = {},
-    sections = {},
-    widgets: widgetConfigs = [],
-    hdvt = {}
-  } = globalSettings;
+  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
     staticContentList = {},
     showNews = true,

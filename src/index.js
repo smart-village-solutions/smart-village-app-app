@@ -42,7 +42,6 @@ const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({
-    appDesignSystem: {},
     filter: {},
     hdvt: {},
     navigation: 'tab',

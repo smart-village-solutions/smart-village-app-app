@@ -2,7 +2,7 @@ import _upperFirst from 'lodash/upperFirst';
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { SettingsContext } from '../../SettingsProvider';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { Icon, colors, device, normalize } from '../../config';
 import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
@@ -21,8 +21,7 @@ export const SueStatus = ({
   small?: boolean;
   status: string;
 }) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const {
     containerStyle = {},

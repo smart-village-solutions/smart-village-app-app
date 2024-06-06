@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { SettingsContext } from '../../SettingsProvider';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { normalize, texts } from '../../config';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
@@ -9,8 +9,7 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 import { SueStatus } from './SueStatus';
 
 export const SueStatuses = ({ status }: { status: string }) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses, statusViewColors = {} } = sueStatus;
 

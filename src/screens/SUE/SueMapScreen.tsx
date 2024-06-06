@@ -6,6 +6,7 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-nat
 import { ListItem } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import {
   BoldText,
@@ -65,8 +66,9 @@ type Props = {
 };
 
 export const SueMapScreen = ({ navigation, route }: Props) => {
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem, navigation: navigationType } = globalSettings;
+  const { navigation: navigationType } = globalSettings;
   const { sueStatus = {} } = appDesignSystem;
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {
