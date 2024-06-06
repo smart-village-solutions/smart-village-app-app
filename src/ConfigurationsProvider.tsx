@@ -7,6 +7,7 @@ import { useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 
 const defaultConfiguration = {
+  appDesignSystem: defaultAppDesignSystemConfig,
   sueConfig: defaultSueAppConfig
 };
 
@@ -25,8 +26,15 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     { enabled: !!sue }
   );
 
+  const { data: appDesignSystem } = useStaticContent({
+    refreshTimeKey: 'publicJsonFile-appDesignSystem',
+    name: 'appDesignSystem',
+    type: 'json'
+  });
+
   useEffect(() => {
     const config = {
+      appDesignSystem,
       sueConfig: { ...sue, ...sueConfigData }
     };
 
