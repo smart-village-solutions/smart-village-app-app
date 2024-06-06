@@ -16,7 +16,9 @@ import {
   Input,
   RegularText,
   Touchable,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal,
+  WrapperRow
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat, storeProfileAuthToken } from '../../helpers';
@@ -38,6 +40,7 @@ type TNoticeboardCreateData = {
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
   price: string;
+  priceType?: string;
   termsOfService: boolean;
   title: string;
 };
@@ -103,7 +106,8 @@ export const NoticeboardCreateForm = ({
           texts.noticeboard.categoryNames,
           (value) => value === data?.categories?.[0]?.name
         ) || '',
-      price: data?.priceInformations?.[0]?.description ?? '',
+      price: data?.priceInformations?.[0]?.description?.replace('€', '').trim() ?? '',
+      priceType: data?.priceInformations?.[0]?.priceType ?? '€',
       termsOfService: false,
       title: data?.title ?? ''
     }
@@ -135,6 +139,13 @@ export const NoticeboardCreateForm = ({
     }
 
     try {
+      let price = noticeboardNewData.price;
+
+      // regex to check if price is a number with 2 decimal places allowing . or , as decimal separator
+      if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
+        price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
+      }
+
       await createGenericItem({
         variables: {
           id: noticeboardNewData.id,
@@ -150,7 +161,7 @@ export const NoticeboardCreateForm = ({
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
-          priceInformations: [{ description: noticeboardNewData.price }]
+          priceInformations: [{ description: price }]
         }
       });
 
@@ -260,14 +271,24 @@ export const NoticeboardCreateForm = ({
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
-        <Input
-          name="price"
-          label={texts.noticeboard.inputPrice}
-          placeholder={texts.noticeboard.inputPrice}
-          validate
-          errorMessage={errors.price && errors.price.message}
-          control={control}
-        />
+        <WrapperRow spaceBetween>
+          <Input
+            name="price"
+            label={texts.noticeboard.inputPrice}
+            placeholder={texts.noticeboard.inputPrice}
+            validate
+            errorMessage={errors.price && errors.price.message}
+            control={control}
+            row
+          />
+          <Input
+            name="priceType"
+            label={texts.noticeboard.inputPriceType}
+            placeholder={texts.noticeboard.inputPriceTypePlaceholder}
+            control={control}
+            row
+          />
+        </WrapperRow>
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>

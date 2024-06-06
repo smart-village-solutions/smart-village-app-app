@@ -161,6 +161,7 @@ export const DetailScreen = ({ navigation, route }) => {
                 data={(data && data[query]) || details}
                 navigation={navigation}
                 fetchPolicy={fetchPolicy}
+                refetch={refetch}
                 route={route}
               />
               <FeedbackFooter />

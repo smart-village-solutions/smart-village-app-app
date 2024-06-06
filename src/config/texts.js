@@ -514,6 +514,8 @@ export const texts = {
     inputName: 'Angezeigter Name',
     inputPhoneNumber: 'Telefonnummer',
     inputPrice: 'Preis',
+    inputPriceType: ' ',
+    inputPriceTypePlaceholder: 'Währung oder Zusatz',
     inputTitle: 'Titel',
     invalidMail: '-Adresse ist nicht gültig.',
     member: 'Anbieter',

@@ -28,7 +28,7 @@ import { VolunteerAvatar } from '../../volunteer';
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
-export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
+export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
   const {
     id,
     categories,
@@ -102,6 +102,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
 
   useFocusEffect(
     useCallback(() => {
+      refetch();
       conversationsRefetch();
     }, [])
   );
