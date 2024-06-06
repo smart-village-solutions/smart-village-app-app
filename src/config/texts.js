@@ -945,6 +945,7 @@ export const texts = {
           title: 'Eingabe löschen'
         },
         hint: 'Hinweis',
+        imageType: 'Bitte laden Sie formatkonforme Inhalte hoch.',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
         imagesGreater30MBError:
           'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',

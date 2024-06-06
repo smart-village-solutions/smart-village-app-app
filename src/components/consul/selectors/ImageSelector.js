@@ -46,7 +46,9 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
+/* eslint-disable complexity */
 export const ImageSelector = ({
+  configuration,
   control,
   coordinateCheck,
   errorType,
@@ -135,7 +137,20 @@ export const ImageSelector = ({
     };
     const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
 
+    /* used to specify the mimeType when uploading to the server */
+    const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+    const mimeType = `${type}/${imageType}`;
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
     if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+      const extension = mimeType.split('/')[1];
+
+      if (!configuration.limitation.allowedAttachmentTypes.value.includes(extension)) {
+        setIsModalVisible(!isModalVisible);
+        return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageType);
+      }
+
       try {
         await reverseGeocode({
           areaServiceData,
@@ -149,12 +164,6 @@ export const ImageSelector = ({
         setIsModalVisible(!isModalVisible);
       }
     }
-
-    /* used to specify the mimeType when uploading to the server */
-    const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
-    const mimeType = `${type}/${imageType}`;
-    const uriSplitForImageName = uri.split('/');
-    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
 
     errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
@@ -171,7 +180,9 @@ export const ImageSelector = ({
           <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
           <Button
-            disabled={values?.length >= 5}
+            disabled={
+              values?.length >= (parseInt(configuration?.limitation?.maxFileUploads?.value) ?? 5)
+            }
             icon={<Icon.Camera size={normalize(16)} />}
             iconPosition="left"
             invert
@@ -331,6 +342,7 @@ export const ImageSelector = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   image: {
@@ -395,6 +407,7 @@ const styles = StyleSheet.create({
 });
 
 ImageSelector.propTypes = {
+  configuration: PropTypes.object,
   control: PropTypes.object,
   coordinateCheck: PropTypes.object,
   errorType: PropTypes.string,

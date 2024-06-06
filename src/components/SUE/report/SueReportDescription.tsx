@@ -14,12 +14,14 @@ export const SueReportDescription = ({
   areaServiceData,
   control,
   errorMessage,
+  configuration,
   requiredInputs,
   setValue
 }: {
   areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
   errorMessage: string;
+  configuration: any;
   requiredInputs: keyof TValues[];
   setValue: UseFormSetValue<TValues>;
 }) => {
@@ -58,6 +60,7 @@ export const SueReportDescription = ({
           render={({ field }) => (
             <ImageSelector
               {...{
+                configuration,
                 control,
                 coordinateCheck: {
                   areaServiceData,
