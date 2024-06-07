@@ -11,33 +11,39 @@ export const configurations = async () => {
     sueGeoMapConfigurationUrl = ''
   } = await fetchSueEndpoints();
 
-  const configPromise = await (await fetch(`${sueConfigurationsUrl}`, sueFetchObj)).json();
-  const geoMapPromise = await (await fetch(`${sueGeoMapConfigurationUrl}`, sueFetchObj)).json();
-  const requiredFieldPromise = await (
-    await fetch(`${sueContactRequiredFieldConfigurationUrl}`, sueFetchObj)
-  ).json();
+  const urls = [
+    sueConfigurationsUrl,
+    sueGeoMapConfigurationUrl,
+    sueContactRequiredFieldConfigurationUrl
+  ];
 
-  return Promise.all([configPromise, geoMapPromise, requiredFieldPromise])
-    .then(([configResponse, geoMapResponse, requiredFieldResponse]) => {
-      const mapKeysToCamelCase = (obj) => _mapKeys(obj, (value, key) => _camelCase(key));
+  const fetchPromises = urls.map((url) => fetch(url, sueFetchObj));
 
-      const limitation = configResponse
-        ?.map((item) => mapKeysToCamelCase(item))
-        ?.reduce((acc, curr) => {
-          acc[_camelCase(curr?.shortName)] = curr;
+  try {
+    const responses = await Promise.all(fetchPromises);
+    const jsonDataPromises = responses.map((response) => response.json());
 
-          return acc;
-        }, {});
-      const geoMap = mapKeysToCamelCase(geoMapResponse);
-      const requiredFields = mapKeysToCamelCase(requiredFieldResponse);
+    const [configResponse, geoMapResponse, requiredFieldResponse] = await Promise.all(
+      jsonDataPromises
+    );
 
-      return {
-        geoMap,
-        limitation,
-        requiredFields
-      };
-    })
-    .catch((error) => {
-      throw new Error(`Failed to fetch configurations: ${error.message}`);
-    });
+    const mapKeysToCamelCase = (obj) => _mapKeys(obj, (value, key) => _camelCase(key));
+
+    const limitation = configResponse
+      ?.map((item) => mapKeysToCamelCase(item))
+      ?.reduce((acc, curr) => {
+        acc[_camelCase(curr?.shortName)] = curr;
+        return acc;
+      }, {});
+    const geoMap = mapKeysToCamelCase(geoMapResponse);
+    const requiredFields = mapKeysToCamelCase(requiredFieldResponse);
+
+    return {
+      geoMap,
+      limitation,
+      requiredFields
+    };
+  } catch (error) {
+    throw new Error(`Failed to fetch configurations: ${error.message}`);
+  }
 };
