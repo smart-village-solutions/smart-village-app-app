@@ -5,9 +5,9 @@ export const areaService = async () => {
   const { sueConfig = {} } = configurations;
   const { apiConfig = {}, geoMap = {} } = sueConfig;
 
-  const { apiKey, serverUrl } = apiConfig.areaService || {};
+  const { apiKey, serverUrl } = apiConfig?.areaService || {};
 
-  const id = geoMap.areas[0].id || apiConfig.areaService.id;
+  const id = geoMap?.areas?.[0]?.id || apiConfig?.areaService?.id;
 
   const areaServiceFetchObj = {
     method: 'GET',

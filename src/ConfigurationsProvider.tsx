@@ -7,6 +7,20 @@ import { useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 import { storageHelper } from './helpers';
 
+const mergeDefaultConfiguration = (target: any, source: any) => {
+  for (const key in source) {
+    if (source[key] instanceof Object && !Array.isArray(source[key])) {
+      if (!target[key]) {
+        target[key] = {};
+      }
+      mergeDefaultConfiguration(target[key], source[key]);
+    } else {
+      target[key] = source[key];
+    }
+  }
+  return target;
+};
+
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
   sueConfig: defaultSueAppConfig
@@ -24,7 +38,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const { data: sueConfigData } = useQuery(
     [QUERY_TYPES.SUE.CONFIGURATIONS],
     () => getQuery(QUERY_TYPES.SUE.CONFIGURATIONS)(),
-    { enabled: !!sue }
+    { enabled: !!Object.keys(sue).length }
   );
 
   const { data: sueProgress } = useStaticContent({
@@ -39,9 +53,9 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     };
 
-    setConfigurations(config);
+    setConfigurations((prev) => mergeDefaultConfiguration(prev, config));
     storageHelper.setConfigurations(config);
-  }, [sueConfigData, appDesignSystem]);
+  }, [sueConfigData]);
 
   return (
     <ConfigurationsContext.Provider value={configurations}>

@@ -1,4 +1,4 @@
-const defaultApiConfig = {
+const apiDefaults = {
   apiKey: '',
   areaService: { apiKey: '', id: '', serverUrl: '' },
   jurisdictionId: '',
@@ -7,57 +7,58 @@ const defaultApiConfig = {
   whichApi: ''
 };
 
-const geoMapDefaultConfig = {
+const geoMapDefaults = {
   areas: [],
   center: {},
-  clisterTreshold: 2,
   clusterDistance: 80,
+  clusterThreshold: 2,
   locationIsRequired: false,
   locationStreetIsRequired: false,
   minZoom: 11
 };
 
-const defaultLimitOfAreaConfig = {
+const limitOfAreaDefaults = {
   city: '',
   errorMessage: '',
   zipCodes: []
 };
 
-const limitationDefaultConfig = {
+const limitationDefaults = {
   allowedAttachmentTypes: {
     name: '',
-    value: ''
+    value: 'png,jpg,jpeg'
   },
   maxAttachmentSize: {
     name: '',
-    value: ''
+    value: '31457280'
   },
   maxFileUploads: {
     name: '',
-    value: ''
+    value: '5'
   },
   privacyPolicy: {
     name: '',
-    value: ''
+    value: 'https://smart-village.app/datenschutzerklaerung/'
   }
 };
 
-const defaultRequiredFieldsConfig = {
+const requiredFieldsDefaults = {
   address: {
     city: false,
-    postalCode: false,
-    street: false
+    street: false,
+    zipCode: false
   },
   contact: {
     email: false,
-    familyName: true,
+    lastName: false,
     phone: false
   }
 };
 
-const defaultSueProgressConfig = [
+const sueProgressDefaults = [
   {
     content: '',
+    inputs: [],
     requiredInputs: [],
     subtitle: '',
     title: ''
@@ -65,10 +66,10 @@ const defaultSueProgressConfig = [
 ];
 
 export const defaultSueAppConfig = {
-  apiConfig: defaultApiConfig,
-  geoMap: geoMapDefaultConfig,
-  limitation: limitationDefaultConfig,
-  limitOfArea: defaultLimitOfAreaConfig,
-  requiredFields: defaultRequiredFieldsConfig,
-  sueProgress: defaultSueProgressConfig
+  apiDefaults,
+  geoMap: geoMapDefaults,
+  limitation: limitationDefaults,
+  limitOfArea: limitOfAreaDefaults,
+  requiredFields: requiredFieldsDefaults,
+  sueProgress: sueProgressDefaults
 };

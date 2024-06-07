@@ -52,11 +52,9 @@ const sueProgressWithRequiredInputs = (
   }
 
   return progress.map((item) => {
-    if (!item.requiredInputs) {
-      item.requiredInputs = [];
-    }
-
-    item.requiredInputs = item.requiredInputs.filter((key) => requiredInputs[key] !== false);
+    item.requiredInputs = (item.requiredInputs || []).filter(
+      (key) => requiredInputs[key] !== false
+    );
 
     for (const key of item.inputs) {
       if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
@@ -348,7 +346,7 @@ export const SueReportScreen = ({
           const images = JSON.parse(getValues().images);
 
           let totalSize = 0;
-          const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value) || 31457280;
+          const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
 
           const isImageGreater10MB = images.some(({ size }: { size: number }) => {
             totalSize += size;

@@ -73,7 +73,9 @@ export const SueReportDescription = ({
                 errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
                 item: {
                   name: 'images',
-                  infoText: texts.sue.report.imageHint,
+                  infoText: texts.sue.report.imageHint(
+                    configuration?.limitation?.maxFileUploads?.value
+                  ),
                   buttonTitle: texts.sue.report.addImage
                 }
               }}

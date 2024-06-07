@@ -180,9 +180,7 @@ export const ImageSelector = ({
           <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
           <Button
-            disabled={
-              values?.length >= (parseInt(configuration?.limitation?.maxFileUploads?.value) ?? 5)
-            }
+            disabled={values?.length >= parseInt(configuration?.limitation?.maxFileUploads?.value)}
             icon={<Icon.Camera size={normalize(16)} />}
             iconPosition="left"
             invert
