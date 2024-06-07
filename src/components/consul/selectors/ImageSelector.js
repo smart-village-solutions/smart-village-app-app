@@ -14,6 +14,7 @@ import {
   useCaptureImage,
   useLastKnownPosition,
   usePosition,
+  useReverseGeocode,
   useSelectImage,
   useSystemPermission
 } from '../../../hooks';
@@ -23,7 +24,6 @@ import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
 import { Modal } from '../../Modal';
-import { useReverseGeocode } from '../../SUE';
 import { BoldText, RegularText } from '../../Text';
 import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
@@ -129,9 +129,9 @@ export const ImageSelector = ({
 
     const location = {
       latitude:
-        GPSLatitude || lastKnownPosition?.coords?.latitude || position?.coords?.latitude || 0,
+        GPSLatitude || position?.coords?.latitude || lastKnownPosition?.coords?.latitude || 0,
       longitude:
-        GPSLongitude || lastKnownPosition?.coords?.longitude || position?.coords?.longitude || 0
+        GPSLongitude || position?.coords?.longitude || lastKnownPosition?.coords?.longitude || 0
     };
     const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
 
