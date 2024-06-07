@@ -52,11 +52,9 @@ const sueProgressWithRequiredInputs = (
   }
 
   return progress.map((item) => {
-    item.requiredInputs = (item.requiredInputs || []).filter(
-      (key) => requiredInputs[key] !== false
-    );
+    item.requiredInputs = (item.requiredInputs || [])?.filter((key) => requiredInputs?.[key]);
 
-    for (const key of item.inputs) {
+    for (const key of item.inputs || []) {
       if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
         item.requiredInputs.push(key);
       }
