@@ -19,6 +19,7 @@ export * from './personalizedTiles';
 export * from './pullToRefetch';
 export * from './PushNotification';
 export * from './TimeHooks';
+export * from './reverseGeocode';
 export * from './staticContent';
 export * from './surveyHooks';
 export * from './versionCheck';

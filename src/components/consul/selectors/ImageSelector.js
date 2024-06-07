@@ -1,4 +1,5 @@
 import * as FileSystem from 'expo-file-system';
+import * as Location from 'expo-location';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
@@ -9,7 +10,14 @@ import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { deleteArrayItem, errorTextGenerator, jsonParser } from '../../../helpers';
 import { imageHeight, imageWidth } from '../../../helpers/imageHelper';
-import { useCaptureImage, useSelectImage } from '../../../hooks';
+import {
+  useCaptureImage,
+  useLastKnownPosition,
+  usePosition,
+  useReverseGeocode,
+  useSelectImage,
+  useSystemPermission
+} from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
 import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
@@ -17,7 +25,6 @@ import { Input } from '../../form';
 import { Image } from '../../Image';
 import { Modal } from '../../Modal';
 import { BoldText, RegularText } from '../../Text';
-import { Touchable } from '../../Touchable';
 import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_TYPE_REGEX, URL_REGEX } = consts;
@@ -41,6 +48,7 @@ const deleteImageAlert = (onPress) =>
 
 export const ImageSelector = ({
   control,
+  coordinateCheck,
   errorType,
   field,
   imageId,
@@ -48,6 +56,14 @@ export const ImageSelector = ({
   item,
   selectorType
 }) => {
+  const reverseGeocode = useReverseGeocode();
+  const systemPermission = useSystemPermission();
+
+  const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
+
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -59,21 +75,18 @@ export const ImageSelector = ({
     client: ConsulClient
   });
 
-  const { selectImage } = useSelectImage(
-    undefined, // onChange
-    false, // allowsEditing
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
-    undefined // quality
-  );
+  const { selectImage } = useSelectImage({
+    allowsEditing: false,
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    exif: selectorType === IMAGE_SELECTOR_TYPES.SUE
+  });
 
-  const { captureImage } = useCaptureImage(
-    undefined, // onChange
-    false, // allowsEditing
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
-    undefined, // quality
-    undefined, // mediaTypes
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ? true : false // saveImage
-  );
+  const { captureImage } = useCaptureImage({
+    allowsEditing: false,
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    exif: selectorType === IMAGE_SELECTOR_TYPES.SUE,
+    saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
+  });
 
   useEffect(() => {
     onChange(JSON.stringify(imagesAttributes));
@@ -109,8 +122,34 @@ export const ImageSelector = ({
   };
 
   const imageSelect = async (imageFunction = selectImage) => {
-    const { uri, type } = await imageFunction();
+    setIsModalVisible(!isModalVisible);
+
+    const { uri, type, exif } = await imageFunction();
+    const { GPSLatitude, GPSLongitude } = exif || {};
     const { size } = await FileSystem.getInfoAsync(uri);
+    const location = {
+      latitude:
+        GPSLatitude || position?.coords?.latitude || lastKnownPosition?.coords?.latitude || 0,
+      longitude:
+        GPSLongitude || position?.coords?.longitude || lastKnownPosition?.coords?.longitude || 0
+    };
+    const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
+
+    if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+      try {
+        await reverseGeocode({
+          areaServiceData,
+          errorMessage,
+          position: location,
+          setValue
+        });
+
+        coordinateCheck.setSelectedPosition(location);
+        coordinateCheck.setUpdateRegionFromImage(true);
+      } catch (error) {
+        return Alert.alert(texts.sue.report.alerts.hint, error.message);
+      }
+    }
 
     /* used to specify the mimeType when uploading to the server */
     const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
@@ -120,7 +159,7 @@ export const ImageSelector = ({
 
     errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
-    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size }]);
+    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size, exif }]);
     setIsModalVisible(!isModalVisible);
   };
 
@@ -358,6 +397,7 @@ const styles = StyleSheet.create({
 
 ImageSelector.propTypes = {
   control: PropTypes.object,
+  coordinateCheck: PropTypes.object,
   errorType: PropTypes.string,
   field: PropTypes.object,
   imageId: PropTypes.string,

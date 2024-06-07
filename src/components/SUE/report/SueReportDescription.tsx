@@ -1,8 +1,10 @@
+import * as Location from 'expo-location';
 import React, { useRef } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../../config';
+import { TValues } from '../../../screens';
 import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
@@ -10,11 +12,21 @@ import { Input } from '../../form';
 const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 
 export const SueReportDescription = ({
+  areaServiceData,
   control,
-  requiredInputs
+  errorMessage,
+  requiredInputs,
+  setSelectedPosition,
+  setUpdateRegionFromImage,
+  setValue
 }: {
+  areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
-  requiredInputs: string[];
+  errorMessage: string;
+  requiredInputs: keyof TValues[];
+  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setUpdateRegionFromImage: (value: boolean) => void;
+  setValue: UseFormSetValue<TValues>;
 }) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
@@ -52,6 +64,13 @@ export const SueReportDescription = ({
             <ImageSelector
               {...{
                 control,
+                coordinateCheck: {
+                  areaServiceData,
+                  errorMessage,
+                  setSelectedPosition,
+                  setUpdateRegionFromImage,
+                  setValue
+                },
                 field,
                 isMultiImages: true,
                 selectorType: IMAGE_SELECTOR_TYPES.SUE,

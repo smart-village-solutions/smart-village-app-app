@@ -4,11 +4,12 @@ import * as Location from 'expo-location';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import parsePhoneNumber from 'libphonenumber-js';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useForm, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
+import { SettingsContext } from '../../SettingsProvider';
 import {
   Button,
   DefaultKeyboardAvoidingView,
@@ -27,8 +28,8 @@ import {
 import { colors, device, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import { useKeyboardHeight, useStaticContent } from '../../hooks';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
-import { SettingsContext } from '../../SettingsProvider';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
 
@@ -47,30 +48,65 @@ export type TValues = {
   zipCode: string;
 };
 
-const Content = (
-  content: 'category' | 'description' | 'location' | 'user',
-  requiredInputs: string[],
-  serviceCode: string,
-  setServiceCode: any,
-  control: any,
-  errors: any,
-  selectedPosition: Location.LocationObjectCoords | undefined,
-  setSelectedPosition: any,
-  setValue: UseFormSetValue<TValues>,
-  getValues: UseFormGetValues<TValues>
-) => {
+type TContent = {
+  areaServiceData: { postalCodes: string[] } | undefined;
+  content: 'category' | 'description' | 'location' | 'user';
+  requiredInputs: keyof TValues[];
+  serviceCode: string | undefined;
+  setServiceCode: any;
+  control: any;
+  errorMessage: string;
+  errors: any;
+  selectedPosition: Location.LocationObjectCoords | undefined;
+  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setUpdateRegionFromImage: (value: boolean) => void;
+  updateRegionFromImage: boolean;
+  setValue: UseFormSetValue<TValues>;
+  getValues: UseFormGetValues<TValues>;
+};
+
+const Content = ({
+  areaServiceData,
+  content,
+  control,
+  errorMessage,
+  errors,
+  getValues,
+  requiredInputs,
+  selectedPosition,
+  serviceCode,
+  setSelectedPosition,
+  setServiceCode,
+  setUpdateRegionFromImage,
+  setValue,
+  updateRegionFromImage
+}: TContent) => {
   switch (content) {
     case 'description':
-      return <SueReportDescription control={control} requiredInputs={requiredInputs} />;
+      return (
+        <SueReportDescription
+          areaServiceData={areaServiceData}
+          control={control}
+          errorMessage={errorMessage}
+          requiredInputs={requiredInputs}
+          setSelectedPosition={setSelectedPosition}
+          setUpdateRegionFromImage={setUpdateRegionFromImage}
+          setValue={setValue}
+        />
+      );
     case 'location':
       return (
         <SueReportLocation
+          areaServiceData={areaServiceData}
           control={control}
-          selectedPosition={selectedPosition}
-          setSelectedPosition={setSelectedPosition}
-          setValue={setValue}
+          errorMessage={errorMessage}
           getValues={getValues}
           requiredInputs={requiredInputs}
+          selectedPosition={selectedPosition}
+          setSelectedPosition={setSelectedPosition}
+          setUpdateRegionFromImage={setUpdateRegionFromImage}
+          setValue={setValue}
+          updateRegionFromImage={updateRegionFromImage}
         />
       );
     case 'user':
@@ -103,6 +139,7 @@ type TProgress = {
   title: string;
 };
 
+/* eslint-disable complexity */
 export const SueReportScreen = ({
   navigation,
   route
@@ -129,6 +166,7 @@ export const SueReportScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TReports>();
+  const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef(null);
@@ -173,6 +211,12 @@ export const SueReportScreen = ({
       zipCode: ''
     }
   });
+
+  const { data: areaServiceData, isLoading: areaServiceLoading } = useQuery(
+    [QUERY_TYPES.SUE.AREA_SERVICE],
+    () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
+    { enabled: !!limitOfCity }
+  );
 
   const { mutateAsync } = useMutation(postRequests);
 
@@ -279,10 +323,7 @@ export const SueReportScreen = ({
             return texts.sue.report.alerts.zipCode;
           }
 
-          if (
-            !!limitOfCity &&
-            limitOfCity.toLocaleLowerCase() !== getValues().city.toLocaleLowerCase()
-          ) {
+          if (!areaServiceData?.postalCodes?.includes(getValues('zipCode'))) {
             return errorMessage;
           }
         }
@@ -426,7 +467,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, serviceCode, selectedPosition]);
 
-  if (loading) {
+  if (loading || areaServiceLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -462,18 +503,22 @@ export const SueReportScreen = ({
                   <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               ) : (
-                Content(
-                  item.content,
-                  item.requiredInputs,
+                Content({
+                  areaServiceData,
+                  content: item.content,
+                  requiredInputs: item.requiredInputs,
                   serviceCode,
                   setServiceCode,
                   control,
+                  errorMessage,
                   errors,
                   selectedPosition,
                   setSelectedPosition,
+                  setUpdateRegionFromImage,
+                  updateRegionFromImage,
                   setValue,
                   getValues
-                )
+                })
               )}
               {device.platform === 'android' && (
                 <View style={{ height: normalize(keyboardHeight) * 0.5 }} />
@@ -514,6 +559,7 @@ export const SueReportScreen = ({
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   buttonContainer: {

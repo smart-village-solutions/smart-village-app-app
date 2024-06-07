@@ -12,7 +12,7 @@ export const SueReportServices = ({
   serviceCode,
   setServiceCode
 }: {
-  serviceCode: string;
+  serviceCode: string | undefined;
   setServiceCode: any;
 }) => {
   const [loading, setLoading] = useState(true);
