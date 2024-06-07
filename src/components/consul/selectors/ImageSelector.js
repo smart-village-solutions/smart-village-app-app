@@ -124,9 +124,10 @@ export const ImageSelector = ({
   };
 
   const imageSelect = async (imageFunction = selectImage) => {
+    const { uri, type, exif } = await imageFunction();
+
     setIsModalVisible(!isModalVisible);
 
-    const { uri, type, exif } = await imageFunction();
     const { GPSLatitude, GPSLongitude } = exif || {};
     const { size } = await FileSystem.getInfoAsync(uri);
     const location = {
