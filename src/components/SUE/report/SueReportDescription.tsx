@@ -1,3 +1,4 @@
+import * as Location from 'expo-location';
 import React, { useRef } from 'react';
 import { Controller, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
@@ -15,12 +16,16 @@ export const SueReportDescription = ({
   control,
   errorMessage,
   requiredInputs,
+  setSelectedPosition,
+  setUpdateRegionFromImage,
   setValue
 }: {
   areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
   errorMessage: string;
   requiredInputs: keyof TValues[];
+  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {
   const titleRef = useRef();
@@ -62,6 +67,8 @@ export const SueReportDescription = ({
                 coordinateCheck: {
                   areaServiceData,
                   errorMessage,
+                  setSelectedPosition,
+                  setUpdateRegionFromImage,
                   setValue
                 },
                 field,

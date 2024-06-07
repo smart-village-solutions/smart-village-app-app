@@ -143,6 +143,9 @@ export const ImageSelector = ({
           position: location,
           setValue
         });
+
+        coordinateCheck.setSelectedPosition(location);
+        coordinateCheck.setUpdateRegionFromImage(true);
       } catch (error) {
         return Alert.alert(texts.sue.report.alerts.hint, error.message);
       } finally {
