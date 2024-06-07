@@ -2,10 +2,11 @@ import React, { ReactNode, createContext, useContext, useEffect, useState } from
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from './SettingsProvider';
-import { defaultAppDesignSystemConfig, defaultSueAppConfig } from './config/configurations';
 import { useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 import { storageHelper } from './helpers';
+import { defaultAppDesignSystemConfig } from './config/appDesignSystem';
+import { defaultSueAppConfig } from './config/sue';
 
 const mergeDefaultConfiguration = (target: any, source: any) => {
   for (const key in source) {
