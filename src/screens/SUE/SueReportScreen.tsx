@@ -58,7 +58,9 @@ type TContent = {
   errorMessage: string;
   errors: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
-  setSelectedPosition: any;
+  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setUpdateRegionFromImage: (value: boolean) => void;
+  updateRegionFromImage: boolean;
   setValue: UseFormSetValue<TValues>;
   getValues: UseFormGetValues<TValues>;
 };
@@ -75,22 +77,36 @@ const Content = ({
   serviceCode,
   setSelectedPosition,
   setServiceCode,
-  setValue
+  setUpdateRegionFromImage,
+  setValue,
+  updateRegionFromImage
 }: TContent) => {
   switch (content) {
     case 'description':
-      return <SueReportDescription control={control} requiredInputs={requiredInputs} />;
+      return (
+        <SueReportDescription
+          areaServiceData={areaServiceData}
+          control={control}
+          errorMessage={errorMessage}
+          requiredInputs={requiredInputs}
+          setSelectedPosition={setSelectedPosition}
+          setUpdateRegionFromImage={setUpdateRegionFromImage}
+          setValue={setValue}
+        />
+      );
     case 'location':
       return (
         <SueReportLocation
+          areaServiceData={areaServiceData}
           control={control}
           errorMessage={errorMessage}
           getValues={getValues}
-          areaServiceData={areaServiceData}
           requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
+          setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}
+          updateRegionFromImage={updateRegionFromImage}
         />
       );
     case 'user':
@@ -150,6 +166,7 @@ export const SueReportScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TReports>();
+  const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef(null);
@@ -497,6 +514,8 @@ export const SueReportScreen = ({
                   errors,
                   selectedPosition,
                   setSelectedPosition,
+                  setUpdateRegionFromImage,
+                  updateRegionFromImage,
                   setValue,
                   getValues
                 })

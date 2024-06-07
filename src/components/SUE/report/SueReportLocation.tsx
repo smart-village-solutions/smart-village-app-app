@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import moment from 'moment';
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
@@ -13,6 +13,7 @@ import {
   useLastKnownPosition,
   useLocationSettings,
   usePosition,
+  useReverseGeocode,
   useSystemPermission
 } from '../../../hooks';
 import { QUERY_TYPES, getQuery } from '../../../queries';
@@ -42,7 +43,9 @@ export const SueReportLocation = ({
   requiredInputs,
   selectedPosition,
   setSelectedPosition,
-  setValue
+  setUpdateRegionFromImage,
+  setValue,
+  updateRegionFromImage
 }: {
   areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
@@ -51,8 +54,11 @@ export const SueReportLocation = ({
   requiredInputs: keyof TValues[];
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
+  updateRegionFromImage: boolean;
 }) => {
+  const reverseGeocode = useReverseGeocode();
   const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
@@ -67,6 +73,12 @@ export const SueReportLocation = ({
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
   const [updatedRegion, setUpdatedRegion] = useState(false);
+
+  useEffect(() => {
+    if (updateRegionFromImage) {
+      setUpdatedRegion(true);
+    }
+  }, [selectedPosition, updateRegionFromImage]);
 
   const streetInputRef = useRef();
   const houseNumberInputRef = useRef();
@@ -123,37 +135,18 @@ export const SueReportLocation = ({
     }
   }, []);
 
-  const reverseGeocode = useCallback(async (position: Location.LocationObjectCoords) => {
-    const { latitude, longitude } = position;
-
+  const handleGeocode = async (position: { latitude: number; longitude: number }) => {
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
-      );
-
-      const data = await response.json();
-      const street = data?.address?.road || '';
-      const houseNumber = data?.address?.house_number || '';
-      const zipCode = data?.address?.postcode || '';
-      const city = data?.address?.city || '';
-
-      if (!!zipCode && !areaServiceData?.postalCodes?.includes(zipCode)) {
-        setValue('city', '');
-        setValue('houseNumber', '');
-        setValue('street', '');
-        setValue('zipCode', '');
-
-        throw new Error(errorMessage);
-      }
-
-      setValue('city', city);
-      setValue('houseNumber', houseNumber);
-      setValue('street', street);
-      setValue('zipCode', zipCode);
+      await reverseGeocode({
+        areaServiceData,
+        errorMessage,
+        position,
+        setValue
+      });
     } catch (error) {
       throw new Error(error.message);
     }
-  }, []);
+  };
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
@@ -203,10 +196,11 @@ export const SueReportLocation = ({
 
                   if (location) {
                     setUpdatedRegion(true);
+                    setUpdateRegionFromImage(false);
                     setSelectedPosition(location.coords);
 
                     try {
-                      await reverseGeocode(location.coords);
+                      await handleGeocode(location.coords);
                     } catch (error) {
                       setSelectedPosition(undefined);
                       Alert.alert(texts.sue.report.alerts.hint, error.message);
@@ -222,10 +216,11 @@ export const SueReportLocation = ({
               nativeEvent.action !== 'callout-inside-press'
             ) {
               setUpdatedRegion(false);
+              setUpdateRegionFromImage(false);
               setSelectedPosition(nativeEvent.coordinate);
 
               try {
-                await reverseGeocode(nativeEvent.coordinate);
+                await handleGeocode(nativeEvent.coordinate);
               } catch (error) {
                 setSelectedPosition(undefined);
                 Alert.alert(texts.sue.report.alerts.hint, error.message);
@@ -234,7 +229,7 @@ export const SueReportLocation = ({
           }}
           onMaximizeButtonPress={() => navigation.navigate(ScreenName.MapView, { locations })}
           updatedRegion={
-            !!selectedPosition && updatedRegion
+            !!selectedPosition && (updatedRegion || updateRegionFromImage)
               ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
               : undefined
           }
