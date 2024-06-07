@@ -1,4 +1,5 @@
 export * from './areaService';
+export * from './configurations';
 export * from './priorities';
 export * from './requests';
 export * from './requestsWithServiceRequestId';

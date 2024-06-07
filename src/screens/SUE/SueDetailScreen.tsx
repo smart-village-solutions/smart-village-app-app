@@ -4,8 +4,8 @@ import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet } from 'react
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
-import { SettingsContext } from '../../SettingsProvider';
 import {
   BoldText,
   HtmlView,
@@ -29,8 +29,7 @@ import { ScreenName } from '../../types';
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {};

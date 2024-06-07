@@ -1,8 +1,9 @@
 import { storageHelper } from './storageHelper';
 
 export const fetchSueEndpoints = async (serviceRequestId?: number) => {
-  const globalSettings = await storageHelper.globalSettings();
-  const { apiConfig = {} } = globalSettings?.settings?.sue || {};
+  const configurations = await storageHelper.configurations();
+  const { sueConfig = {} } = configurations;
+  const { apiConfig = {} } = sueConfig;
 
   const { apiKey, jurisdictionId, serverUrl } = apiConfig[apiConfig?.whichApi] || apiConfig;
 
@@ -21,10 +22,17 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   const sueServicesUrl = `${serverUrl}/services?jurisdiction_id=${jurisdictionId}`;
   const sueStatusesUrl = `${serverUrl}/statuses?jurisdiction_id=${jurisdictionId}`;
 
+  const sueConfigurationsUrl = `${serverUrl}/configurations?jurisdiction_id=${jurisdictionId}`;
+  const sueContactRequiredFieldConfigurationUrl = `${serverUrl}/configurations/contactRequiredFieldConfiguration?jurisdiction_id=${jurisdictionId}`;
+  const sueGeoMapConfigurationUrl = `${serverUrl}/configurations/geoMapConfiguration?jurisdiction_id=${jurisdictionId}`;
+
   return {
     apiKey,
     jurisdictionId,
+    sueConfigurationsUrl,
+    sueContactRequiredFieldConfigurationUrl,
     sueFetchObj,
+    sueGeoMapConfigurationUrl,
     suePostRequest,
     suePrioritiesUrl,
     sueRequestsUrl,

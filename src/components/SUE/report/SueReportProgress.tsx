@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { Divider, normalize } from 'react-native-elements';
 
-import { SettingsContext } from '../../../SettingsProvider';
+import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { colors } from '../../../config';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper, WrapperRow } from '../../Wrapper';
@@ -20,8 +20,7 @@ export const SueReportProgress = ({
   progress: TProgress;
   currentProgress: number;
 }) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueProgress = {} } = appDesignSystem;
   const { subtitleStyle = {}, textContainer = {}, titleStyle = {} } = sueProgress;
 

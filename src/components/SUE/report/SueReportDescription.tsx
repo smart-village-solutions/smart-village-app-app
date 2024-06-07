@@ -15,6 +15,7 @@ export const SueReportDescription = ({
   areaServiceData,
   control,
   errorMessage,
+  configuration,
   requiredInputs,
   setSelectedPosition,
   setUpdateRegionFromImage,
@@ -23,6 +24,7 @@ export const SueReportDescription = ({
   areaServiceData: { postalCodes: string[] } | undefined;
   control: any;
   errorMessage: string;
+  configuration: any;
   requiredInputs: keyof TValues[];
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
@@ -63,6 +65,7 @@ export const SueReportDescription = ({
           render={({ field }) => (
             <ImageSelector
               {...{
+                configuration,
                 control,
                 coordinateCheck: {
                   areaServiceData,
@@ -77,7 +80,9 @@ export const SueReportDescription = ({
                 errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
                 item: {
                   name: 'images',
-                  infoText: texts.sue.report.imageHint,
+                  infoText: texts.sue.report.imageHint(
+                    configuration?.limitation?.maxFileUploads?.value
+                  ),
                   buttonTitle: texts.sue.report.addImage
                 }
               }}

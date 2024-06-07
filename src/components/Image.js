@@ -4,10 +4,11 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Image as RNEImage } from 'react-native-elements';
 import { CacheManager } from 'react-native-expo-image-cache';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
-import { SettingsContext } from '../SettingsProvider';
 
 import { ImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
@@ -42,7 +43,7 @@ export const Image = ({
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
   const timestamp = useInterval(refreshInterval);
-  const { apiConfig = {} } = globalSettings?.settings?.sue || {};
+  const { apiConfig = {} } = useContext(ConfigurationsContext);
   const { apiKey = '' } = apiConfig[apiConfig?.whichApi] || apiConfig;
 
   // only use cache when refreshInterval is undefined

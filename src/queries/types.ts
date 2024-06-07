@@ -53,6 +53,7 @@ export const QUERY_TYPES = {
   TOUR: 'tour',
   SUE: {
     AREA_SERVICE: 'areaService',
+    CONFIGURATIONS: 'configurations',
     PRIORITIES: 'priorities',
     REQUESTS: 'requests',
     REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',

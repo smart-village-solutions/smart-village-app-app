@@ -9,7 +9,7 @@ import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from
 import { Divider } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
-import { SettingsContext } from '../../SettingsProvider';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   Button,
   DefaultKeyboardAvoidingView,
@@ -27,11 +27,44 @@ import {
 } from '../../components';
 import { colors, device, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
-import { useKeyboardHeight, useStaticContent } from '../../hooks';
+import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
+
+type TRequiredFields = {
+  [key: string]: {
+    [key: string]: boolean;
+  };
+};
+
+const sueProgressWithRequiredInputs = (
+  progress: TProgress[],
+  fields: TRequiredFields
+): TProgress[] => {
+  const requiredInputs: { [key: string]: boolean } = {};
+
+  for (const section in fields) {
+    for (const field in fields[section]) {
+      requiredInputs[field] = fields[section][field];
+    }
+  }
+
+  return progress.map((item) => {
+    item.requiredInputs = (item.requiredInputs || []).filter(
+      (key) => requiredInputs[key] !== false
+    );
+
+    for (const key of item.inputs) {
+      if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
+        item.requiredInputs.push(key);
+      }
+    }
+
+    return item;
+  });
+};
 
 export type TValues = {
   city: string;
@@ -50,6 +83,19 @@ export type TValues = {
 
 type TContent = {
   areaServiceData: { postalCodes: string[] } | undefined;
+  configuration: {
+    geoMap: {
+      areas: any[];
+      center: number[];
+      clisterTreshold: number;
+      clusterDistance: number;
+      locationIsRequired: boolean;
+      locationStreetIsRequired: boolean;
+      minZoom: number;
+    };
+    limitation: any;
+    requiredFields: any;
+  };
   content: 'category' | 'description' | 'location' | 'user';
   requiredInputs: keyof TValues[];
   serviceCode: string | undefined;
@@ -67,6 +113,7 @@ type TContent = {
 
 const Content = ({
   areaServiceData,
+  configuration,
   content,
   control,
   errorMessage,
@@ -86,6 +133,7 @@ const Content = ({
       return (
         <SueReportDescription
           areaServiceData={areaServiceData}
+          configuration={configuration}
           control={control}
           errorMessage={errorMessage}
           requiredInputs={requiredInputs}
@@ -110,7 +158,14 @@ const Content = ({
         />
       );
     case 'user':
-      return <SueReportUser control={control} errors={errors} requiredInputs={requiredInputs} />;
+      return (
+        <SueReportUser
+          configuration={configuration}
+          control={control}
+          errors={errors}
+          requiredInputs={requiredInputs}
+        />
+      );
     default:
       return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
@@ -134,7 +189,8 @@ type TReports = {
 
 type TProgress = {
   content: 'category' | 'description' | 'location' | 'user';
-  requiredInputs: keyof TReports[];
+  inputs: string[];
+  requiredInputs?: keyof TReports[];
   serviceCode: string;
   title: string;
 };
@@ -144,21 +200,22 @@ export const SueReportScreen = ({
   navigation,
   route
 }: { navigation: any } & StackScreenProps<any>) => {
-  const { data, loading } = useStaticContent<TProgress[]>({
-    refreshTimeKey: 'publicJsonFile-sueReportProgress',
-    name: 'sueReportProgress',
-    type: 'json'
-  });
+  const { sueConfig = {} } = useContext(ConfigurationsContext);
+  const {
+    geoMap = {},
+    limitation = {},
+    limitOfArea = {},
+    requiredFields = {},
+    sueProgress = []
+  } = sueConfig;
 
-  const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
-  const { limitOfArea = {} } = settings?.sue;
   const {
     city: limitOfCity = '',
     zipCodes: limitOfZipCodes = [],
     errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
   } = limitOfArea;
 
+  const [sueProgressWithConfig, setSueProgressWithConfig] = useState<TProgress[]>([]);
   const [currentProgress, setCurrentProgress] = useState(0);
   const [serviceCode, setServiceCode] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -279,7 +336,8 @@ export const SueReportScreen = ({
 
   /* eslint-disable complexity */
   const alertTextGeneratorForMissingData = () => {
-    const requiredInputs = data?.[currentProgress]?.requiredInputs;
+    const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
+
     const isAnyInputMissing = requiredInputs?.some(
       (inputKey: keyof TValues) => !getValues()[inputKey]
     );
@@ -297,6 +355,8 @@ export const SueReportScreen = ({
           const images = JSON.parse(getValues().images);
 
           let totalSize = 0;
+          const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
+
           const isImageGreater10MB = images.some(({ size }: { size: number }) => {
             totalSize += size;
             return size >= 10485760;
@@ -308,9 +368,13 @@ export const SueReportScreen = ({
           }
 
           /* the server does not support files larger than 30 MB in total of all files. */
-          if (totalSize >= 31457280) {
+          if (totalSize >= totalSizeLimit) {
             return texts.sue.report.alerts.imagesGreater30MBError;
           }
+        }
+
+        if (isAnyInputMissing) {
+          return texts.sue.report.alerts.missingAnyInput;
         }
         break;
       case 2:
@@ -341,6 +405,10 @@ export const SueReportScreen = ({
             return errorMessage;
           }
         }
+
+        if (isAnyInputMissing) {
+          return texts.sue.report.alerts.missingAnyInput;
+        }
         break;
       case 3:
         if (isAnyInputMissing) {
@@ -370,6 +438,10 @@ export const SueReportScreen = ({
   useEffect(() => {
     readReportValuesFromStore();
   }, []);
+
+  useEffect(() => {
+    setSueProgressWithConfig(sueProgressWithRequiredInputs(sueProgress, requiredFields));
+  }, [sueProgress, requiredFields]);
 
   const storeReportValues = async () => {
     await addToStore(SUE_REPORT_VALUES, { selectedPosition, serviceCode, ...getValues() });
@@ -412,7 +484,7 @@ export const SueReportScreen = ({
 
     storeReportValues();
 
-    if (currentProgress < data.length - 1) {
+    if (currentProgress < sueProgressWithConfig.length - 1) {
       setCurrentProgress(currentProgress + 1);
       scrollViewRef?.current?.scrollTo({
         x: device.width * (currentProgress + 1),
@@ -467,7 +539,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, serviceCode, selectedPosition]);
 
-  if (loading || areaServiceLoading) {
+  if (areaServiceLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -481,7 +553,7 @@ export const SueReportScreen = ({
 
   return (
     <SafeAreaViewFlex>
-      <SueReportProgress progress={data} currentProgress={currentProgress + 1} />
+      <SueReportProgress progress={sueProgressWithConfig} currentProgress={currentProgress + 1} />
 
       <DefaultKeyboardAvoidingView>
         <ScrollView
@@ -492,7 +564,7 @@ export const SueReportScreen = ({
           scrollEnabled={false}
           showsHorizontalScrollIndicator={false}
         >
-          {data?.map((item: TProgress, index: number) => (
+          {sueProgressWithConfig?.map((item: TProgress, index: number) => (
             <ScrollView
               key={index}
               contentContainerStyle={styles.contentContainer}
@@ -505,6 +577,11 @@ export const SueReportScreen = ({
               ) : (
                 Content({
                   areaServiceData,
+                  configuration: {
+                    limitation,
+                    geoMap,
+                    requiredFields
+                  },
                   content: item.content,
                   requiredInputs: item.requiredInputs,
                   serviceCode,
@@ -547,9 +624,13 @@ export const SueReportScreen = ({
           <Button
             disabled={isLoading}
             notFullWidth={currentProgress !== 0}
-            onPress={currentProgress < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
+            onPress={
+              currentProgress < sueProgressWithConfig.length - 1
+                ? handleNextPage
+                : handleSubmit(onSubmit)
+            }
             title={
-              currentProgress === data.length - 1
+              currentProgress === sueProgressWithConfig.length - 1
                 ? texts.sue.report.sendReport
                 : texts.sue.report.next
             }

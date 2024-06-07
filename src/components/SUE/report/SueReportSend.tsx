@@ -5,17 +5,16 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
 
-import { SettingsContext } from '../../../SettingsProvider';
+import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { colors, normalize, texts } from '../../../config';
 import { QUERY_TYPES, createQuery } from '../../../queries';
 import { ScreenName } from '../../../types';
 import { Button } from '../../Button';
+import { DefaultKeyboardAvoidingView } from '../../DefaultKeyboardAvoidingView';
 import { Image } from '../../Image';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
-import { DefaultKeyboardAvoidingView } from '../../DefaultKeyboardAvoidingView';
-import { SafeAreaViewFlex } from '../../SafeAreaViewFlex';
 
 type TNewContent = {
   message: string;
@@ -31,8 +30,7 @@ export const SueReportSend = ({
   isLoading: boolean;
   navigation: any;
 }) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = appDesignSystem;
   const { reportSendDone = {}, reportSendLoading = {} } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;

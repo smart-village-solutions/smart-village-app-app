@@ -8,8 +8,8 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
 
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
-import { SettingsContext } from '../../SettingsProvider';
 import {
   EmptyMessage,
   Filter,
@@ -73,8 +73,7 @@ type Props = {
 
 export const SueListScreen = ({ navigation, route }: Props) => {
   const { isConnected } = useContext(NetworkContext);
-  const { globalSettings } = useContext(SettingsContext);
-  const { appDesignSystem = {} } = globalSettings;
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
   const query = route.params?.query ?? '';

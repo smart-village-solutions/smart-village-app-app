@@ -945,6 +945,7 @@ export const texts = {
           title: 'Eingabe löschen'
         },
         hint: 'Hinweis',
+        imageType: 'Der verwendete Dateityp wird nicht unterstützt.',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
         imagesGreater30MBError:
           'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',
@@ -981,7 +982,7 @@ export const texts = {
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
       houseNumber: 'Hausnummer',
-      imageHint: 'ⓘ Es können bis zu 5 Fotos hochgeladen werden',
+      imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
       lastName: 'Nachname',
       mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
       next: 'Weiter',

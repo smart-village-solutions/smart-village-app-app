@@ -12,10 +12,12 @@ import { Input } from '../../form';
 const { EMAIL_REGEX, PHONE_NUMBER_REGEX } = consts;
 
 export const SueReportUser = ({
+  configuration,
   control,
   errors,
   requiredInputs
 }: {
+  configuration: any;
   control: any;
   errors: any;
   requiredInputs: keyof TValues[];
@@ -104,7 +106,7 @@ export const SueReportUser = ({
             <Checkbox
               checked={!!value}
               onPress={() => onChange(!value)}
-              link="https://smart-village.app/datenschutzerklaerung/"
+              link={configuration?.limitation?.privacyPolicy?.value}
               linkDescription={texts.sue.report.termsOfService}
               title={`${texts.defectReport.inputCheckbox} *`}
               checkedColor={colors.accent}
