@@ -122,11 +122,11 @@ export const ImageSelector = ({
   };
 
   const imageSelect = async (imageFunction = selectImage) => {
+    setIsModalVisible(!isModalVisible);
+
     const { uri, type, exif } = await imageFunction();
     const { GPSLatitude, GPSLongitude } = exif || {};
-
     const { size } = await FileSystem.getInfoAsync(uri);
-
     const location = {
       latitude:
         GPSLatitude || position?.coords?.latitude || lastKnownPosition?.coords?.latitude || 0,
@@ -148,8 +148,6 @@ export const ImageSelector = ({
         coordinateCheck.setUpdateRegionFromImage(true);
       } catch (error) {
         return Alert.alert(texts.sue.report.alerts.hint, error.message);
-      } finally {
-        setIsModalVisible(!isModalVisible);
       }
     }
 
