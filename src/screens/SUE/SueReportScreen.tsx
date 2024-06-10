@@ -11,10 +11,12 @@ import { useMutation, useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
+  BoldText,
   Button,
   DefaultKeyboardAvoidingView,
   HeaderRight,
   LoadingContainer,
+  RegularText,
   SafeAreaViewFlex,
   SueReportDescription,
   SueReportLocation,
@@ -79,6 +81,13 @@ export type TValues = {
   zipCode: string;
 };
 
+export type TService = {
+  description: string;
+  metadata: boolean;
+  serviceCode: string;
+  serviceName: string;
+};
+
 type TContent = {
   areaServiceData: { postalCodes: string[] } | undefined;
   configuration: {
@@ -96,8 +105,8 @@ type TContent = {
   };
   content: 'category' | 'description' | 'location' | 'user';
   requiredInputs: keyof TValues[];
-  serviceCode: string | undefined;
-  setServiceCode: any;
+  service: TService | undefined;
+  setService: any;
   control: any;
   errorMessage: string;
   errors: any;
@@ -119,9 +128,9 @@ const Content = ({
   getValues,
   requiredInputs,
   selectedPosition,
-  serviceCode,
+  service,
   setSelectedPosition,
-  setServiceCode,
+  setService,
   setUpdateRegionFromImage,
   setValue,
   updateRegionFromImage
@@ -165,7 +174,7 @@ const Content = ({
         />
       );
     default:
-      return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+      return <SueReportServices setService={setService} service={service} />;
   }
 };
 
@@ -215,7 +224,7 @@ export const SueReportScreen = ({
 
   const [sueProgressWithConfig, setSueProgressWithConfig] = useState<TProgress[]>([]);
   const [currentProgress, setCurrentProgress] = useState(0);
-  const [serviceCode, setServiceCode] = useState<string>();
+  const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
@@ -242,16 +251,6 @@ export const SueReportScreen = ({
 
     return unsubscribe;
   }, [navigation]);
-
-  useEffect(() => {
-    if (serviceCode) {
-      scrollViewContentRef.current[currentProgress]?.scrollTo({
-        x: 0,
-        y: contentHeights[currentProgress],
-        animated: true
-      });
-    }
-  }, [serviceCode, contentHeights]);
 
   const handleContentSizeChange = (index: number, contentHeight: number) => {
     setContentHeights((prevHeights) => {
@@ -317,7 +316,7 @@ export const SueReportScreen = ({
       addressString,
       lat: selectedPosition?.latitude,
       long: selectedPosition?.longitude,
-      serviceCode,
+      serviceCode: service?.serviceCode,
       ...sueReportData,
       phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational(),
       description: sueReportData.description || '-'
@@ -361,7 +360,7 @@ export const SueReportScreen = ({
 
     switch (currentProgress) {
       case 0:
-        if (!serviceCode) {
+        if (!service?.serviceCode) {
           return texts.sue.report.alerts.serviceCode;
         }
         break;
@@ -461,7 +460,11 @@ export const SueReportScreen = ({
   }, [sueProgress, requiredFields]);
 
   const storeReportValues = async () => {
-    await addToStore(SUE_REPORT_VALUES, { selectedPosition, serviceCode, ...getValues() });
+    await addToStore(SUE_REPORT_VALUES, {
+      selectedPosition,
+      service,
+      ...getValues()
+    });
   };
 
   const readReportValuesFromStore = async () => {
@@ -469,7 +472,7 @@ export const SueReportScreen = ({
 
     if (storedValues) {
       setStoredValues(storedValues);
-      setServiceCode(storedValues.serviceCode);
+      setService(storedValues.service);
       setSelectedPosition(storedValues.selectedPosition);
       Object.entries(storedValues).map(([key, value]) => setValue(key, value));
     }
@@ -481,7 +484,7 @@ export const SueReportScreen = ({
     setIsLoadingStoredData(true);
     await AsyncStorage.removeItem(SUE_REPORT_VALUES);
     setStoredValues(undefined);
-    setServiceCode(undefined);
+    setService(undefined);
     setSelectedPosition(undefined);
     reset();
     scrollViewRef?.current?.scrollTo({
@@ -554,7 +557,7 @@ export const SueReportScreen = ({
         headerRight: () => null
       });
     }
-  }, [storedValues, serviceCode, selectedPosition]);
+  }, [storedValues, service, selectedPosition]);
 
   if (areaServiceLoading) {
     return (
@@ -585,8 +588,10 @@ export const SueReportScreen = ({
             <ScrollView
               key={index}
               contentContainerStyle={styles.contentContainer}
-              ref={(el) => (scrollViewContentRef.current[index] = el)}
-              onContentSizeChange={(contentHeight) => handleContentSizeChange(index, contentHeight)}
+              ref={(e) => (scrollViewContentRef.current[index] = e)}
+              onContentSizeChange={(contentHeight: number) =>
+                handleContentSizeChange(index, contentHeight)
+              }
             >
               {isLoadingStoredData ? (
                 <LoadingContainer>
@@ -601,20 +606,21 @@ export const SueReportScreen = ({
                     requiredFields
                   },
                   content: item.content,
-                  requiredInputs: item.requiredInputs,
-                  serviceCode,
-                  setServiceCode,
                   control,
                   errorMessage,
                   errors,
+                  getValues,
+                  requiredInputs: item.requiredInputs,
                   selectedPosition,
+                  service,
                   setSelectedPosition,
+                  setService,
                   setUpdateRegionFromImage,
-                  updateRegionFromImage,
                   setValue,
-                  getValues
+                  updateRegionFromImage
                 })
               )}
+
               {device.platform === 'android' && (
                 <View style={{ height: normalize(keyboardHeight) * 0.5 }} />
               )}
@@ -622,9 +628,14 @@ export const SueReportScreen = ({
           ))}
         </ScrollView>
 
-        <WrapperHorizontal>
-          <Divider />
-        </WrapperHorizontal>
+        <Divider />
+
+        {!!service?.serviceName && !!service.description && currentProgress === 0 && (
+          <Wrapper style={styles.noPaddingBottom}>
+            <BoldText>{service.serviceName}</BoldText>
+            <RegularText>{service.description}</RegularText>
+          </Wrapper>
+        )}
 
         <Wrapper
           style={[styles.buttonContainer, currentProgress !== 0 && styles.buttonContainerRow]}
@@ -670,5 +681,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: device.width
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
   }
 });
