@@ -59,6 +59,7 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
+      "icon": "./assets/icon-transparent.png",
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
