@@ -5,11 +5,11 @@ import MapView from 'react-native-map-clustering';
 import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
 import { colors, device, Icon, normalize } from '../../config';
-import { imageHeight, imageWidth } from '../../helpers';
+import { imageHeight, imageWidth, truncateText } from '../../helpers';
+import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { RegularText } from '../Text';
-import { useLocationSettings } from '../../hooks';
 
 type Props = {
   calloutTextEnabled?: boolean;
@@ -206,7 +206,8 @@ export const Map = ({
         )}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
-          const calloutText = marker.title;
+          const serviceName = truncateText(marker.serviceName);
+          const title = truncateText(marker.title);
 
           return (
             <Marker
@@ -263,11 +264,18 @@ export const Map = ({
                 />
               )}
 
-              {calloutTextEnabled && !!calloutText && (
+              {calloutTextEnabled && (
                 <Callout style={styles.callout}>
-                  <RegularText smallest center>
-                    {calloutText}
-                  </RegularText>
+                  {!!serviceName && (
+                    <RegularText smallest center>
+                      {serviceName}
+                    </RegularText>
+                  )}
+                  {!!title && (
+                    <RegularText smallest center>
+                      {title}
+                    </RegularText>
+                  )}
                 </Callout>
               )}
             </Marker>
