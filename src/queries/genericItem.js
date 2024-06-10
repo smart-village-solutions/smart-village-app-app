@@ -223,6 +223,7 @@ export const GET_GENERIC_ITEM = gql`
 
 export const CREATE_GENERIC_ITEM = gql`
   mutation createGenericItem(
+    $id: ID
     $addresses: [AddressInput!]
     $categoryName: String
     $contacts: [ContactInput!]
@@ -236,6 +237,7 @@ export const CREATE_GENERIC_ITEM = gql`
     $forceCreate: Boolean = false
   ) {
     createGenericItem(
+      id: $id
       addresses: $addresses
       categoryName: $categoryName
       contacts: $contacts

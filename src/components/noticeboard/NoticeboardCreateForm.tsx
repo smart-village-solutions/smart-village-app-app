@@ -98,7 +98,6 @@ export const NoticeboardCreateForm = ({
       dateStart: data?.dates?.[0]?.dateStart
         ? moment(data?.dates?.[0]?.dateStart)?.toDate()
         : moment().toDate(),
-
       email: data?.contacts?.[0]?.email ?? '',
       name: data?.contacts?.[0]?.firstName ?? '',
       noticeboardType:
