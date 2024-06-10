@@ -264,7 +264,7 @@ export const Map = ({
                       : colors.lighterPrimary
                   }
                   iconName={
-                    !marker.iconName ? (isActiveMarker ? 'locationActive' : marker.iconName) : ''
+                    marker.iconName ? (isActiveMarker ? 'locationActive' : marker.iconName) : ''
                   }
                   iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
                 />
