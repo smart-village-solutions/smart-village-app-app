@@ -156,10 +156,6 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     );
   }
 
-  if (!filteredListItems?.length) {
-    return <EmptyMessage title={texts.noticeboard.emptyTitle} />;
-  }
-
   if (!categoryIdsTabs?.length) {
     return (
       <>
