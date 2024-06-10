@@ -49,6 +49,7 @@ export type ProfileUpdate = {
 
 export type ProfileEditMail = {
   email: string;
+  emailConfirmation: string;
 };
 
 export type ProfileEditPassword = {

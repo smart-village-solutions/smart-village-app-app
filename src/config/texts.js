@@ -819,6 +819,8 @@ export const texts = {
       'Gib deine registrierte E-Mail-Adresse ein, um den Prozess zum Ändern deines Passworts zu starten.',
     editProfile: 'Profil aktualisieren',
     email: 'E-Mail-Adresse',
+    emailConfirmation: 'E-Mail-Adresse bestätigen',
+    emailDoNotMatch: 'E-Mail-Adressen stimmen nicht überein',
     emailError: 'E-Mail-Adresse muss korrekt ausgefüllt werden',
     emailInvalid: 'E-Mail-Adresse ungültig',
     enterCode: 'Code eingeben',

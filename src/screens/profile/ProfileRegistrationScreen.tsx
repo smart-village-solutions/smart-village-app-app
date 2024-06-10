@@ -15,7 +15,6 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
-  WrapperRow,
   WrapperVertical
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';

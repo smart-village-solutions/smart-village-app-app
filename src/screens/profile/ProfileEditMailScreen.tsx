@@ -40,12 +40,15 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    watch
   } = useForm<ProfileEditMail>({
     defaultValues: {
-      email: route.params?.email || ''
+      email: route.params?.email || '',
+      emailConfirmation: ''
     }
   });
+  const email = watch('email');
 
   const {
     mutate: mutateUpdate,
@@ -103,6 +106,27 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
                 pattern: { value: EMAIL_REGEX, message: texts.profile.emailInvalid }
               }}
               errorMessage={errors.email && errors.email.message}
+              control={control}
+              inputContainerStyle={styles.inputContainer}
+            />
+          </Wrapper>
+
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="emailConfirmation"
+              label={texts.profile.emailConfirmation}
+              placeholder={texts.profile.emailConfirmation}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoCompleteType="email"
+              autoCapitalize="none"
+              validate
+              rules={{
+                required: texts.profile.emailError,
+                pattern: { value: EMAIL_REGEX, message: texts.profile.emailInvalid },
+                validate: (value: string) => value === email || texts.profile.emailDoNotMatch
+              }}
+              errorMessage={errors.emailConfirmation && errors.emailConfirmation.message}
               control={control}
               inputContainerStyle={styles.inputContainer}
             />
