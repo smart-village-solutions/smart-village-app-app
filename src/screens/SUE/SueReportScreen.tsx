@@ -222,9 +222,10 @@ export const SueReportScreen = ({
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TReports>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
+  const [contentHeights, setContentHeights] = useState([]);
 
   const scrollViewRef = useRef(null);
-  const scrollViewContentRef = useRef(null);
+  const scrollViewContentRef = useRef([]);
 
   const keyboardHeight = useKeyboardHeight();
 
@@ -241,6 +242,24 @@ export const SueReportScreen = ({
 
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    if (serviceCode) {
+      scrollViewContentRef.current[currentProgress]?.scrollTo({
+        x: 0,
+        y: contentHeights[currentProgress],
+        animated: true
+      });
+    }
+  }, [serviceCode, contentHeights]);
+
+  const handleContentSizeChange = (index: number, contentHeight: number) => {
+    setContentHeights((prevHeights) => {
+      const newHeights = [...prevHeights];
+      newHeights[index] = contentHeight;
+      return newHeights;
+    });
+  };
 
   const {
     control,
@@ -418,9 +437,9 @@ export const SueReportScreen = ({
         }
 
         if (!getValues().termsOfService) {
-          scrollViewContentRef.current?.scrollTo({
+          scrollViewContentRef.current[currentProgress]?.scrollTo({
             x: 0,
-            y: device.height,
+            y: contentHeights[currentProgress],
             animated: true
           });
 
@@ -566,7 +585,8 @@ export const SueReportScreen = ({
             <ScrollView
               key={index}
               contentContainerStyle={styles.contentContainer}
-              ref={scrollViewContentRef}
+              ref={(el) => (scrollViewContentRef.current[index] = el)}
+              onContentSizeChange={(contentHeight) => handleContentSizeChange(index, contentHeight)}
             >
               {isLoadingStoredData ? (
                 <LoadingContainer>
