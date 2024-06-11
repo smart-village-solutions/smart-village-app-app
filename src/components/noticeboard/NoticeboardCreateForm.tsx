@@ -17,7 +17,6 @@ import {
   RegularText,
   Touchable,
   Wrapper,
-  WrapperHorizontal,
   WrapperRow
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';

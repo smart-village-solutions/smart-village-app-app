@@ -1,20 +1,23 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
   Button,
   DefaultKeyboardAvoidingView,
+  HtmlView,
   Input,
   LoadingModal,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
+  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { consts, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
+import { useStaticContent } from '../../hooks';
 import { profileResetPassword } from '../../queries/profile';
 import { ProfileResetPassword } from '../../types';
 
@@ -32,6 +35,24 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
   });
 
   const { mutate: mutateResetPassword, isLoading } = useMutation(profileResetPassword);
+
+  const {
+    data: dataProfileEditPasswordScreenTop,
+    loading: loadingProfileEditPasswordScreenTop,
+    refetch: refetchProfileEditPasswordScreenTop
+  } = useStaticContent({
+    name: 'profileEditPasswordScreenTop',
+    type: 'html'
+  });
+
+  const {
+    data: dataProfileEditPasswordScreenBottom,
+    loading: loadingProfileEditPasswordScreenBottom,
+    refetch: refetchProfileEditPasswordScreenBottom
+  } = useStaticContent({
+    name: 'profileEditPasswordScreenBottom',
+    type: 'html'
+  });
 
   const onSubmit = (resetPasswordData: ProfileResetPassword) => {
     Keyboard.dismiss();
@@ -51,15 +72,36 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={
+                loadingProfileEditPasswordScreenTop || loadingProfileEditPasswordScreenBottom
+              }
+              onRefresh={() => {
+                refetchProfileEditPasswordScreenTop();
+                refetchProfileEditPasswordScreenBottom();
+              }}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        >
           <WrapperVertical style={styles.center}>
             <SectionHeader big center title={texts.profile.updatePassword} />
           </WrapperVertical>
 
+          {!!dataProfileEditPasswordScreenTop && (
+            <WrapperHorizontal>
+              <HtmlView html={dataProfileEditPasswordScreenTop} />
+            </WrapperHorizontal>
+          )}
+
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
-              label={texts.profile.editPasswordLabel}
+              label={!dataProfileEditPasswordScreenTop && texts.profile.editPasswordLabel}
               placeholder={texts.profile.email}
               keyboardType="email-address"
               textContentType="emailAddress"
@@ -74,6 +116,12 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
               control={control}
             />
           </Wrapper>
+
+          {!!dataProfileEditPasswordScreenBottom && (
+            <WrapperHorizontal>
+              <HtmlView html={dataProfileEditPasswordScreenBottom} />
+            </WrapperHorizontal>
+          )}
 
           <Wrapper>
             <Button

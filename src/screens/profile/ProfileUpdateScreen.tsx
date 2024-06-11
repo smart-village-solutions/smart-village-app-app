@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -10,17 +10,19 @@ import {
   DateTimeInput,
   DefaultKeyboardAvoidingView,
   DropdownInput,
+  HtmlView,
   Input,
   LOGIN_MODAL,
   LoadingModal,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
+  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { texts } from '../../config';
+import { colors, texts } from '../../config';
 import { storeProfileUserData } from '../../helpers';
-import { useProfileUser } from '../../hooks';
+import { useProfileUser, useStaticContent } from '../../hooks';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
 
@@ -74,6 +76,24 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     data
   } = useMutation(profileUpdate);
 
+  const {
+    data: dataProfileUpdateScreenTop,
+    loading: loadingProfileUpdateScreenTop,
+    refetch: refetchProfileUpdateScreenTop
+  } = useStaticContent({
+    name: 'profileUpdateScreenTop',
+    type: 'html'
+  });
+
+  const {
+    data: dataProfileUpdateScreenBottom,
+    loading: loadingProfileUpdateScreenBottom,
+    refetch: refetchProfileUpdateScreenBottom
+  } = useStaticContent({
+    name: 'profileUpdateScreenBottom',
+    type: 'html'
+  });
+
   const onSubmit = (updateData: ProfileUpdate) =>
     mutateUpdate(updateData, {
       onSuccess: (responseData) => {
@@ -113,10 +133,29 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={loadingProfileUpdateScreenTop || loadingProfileUpdateScreenBottom}
+              onRefresh={() => {
+                refetchProfileUpdateScreenTop();
+                refetchProfileUpdateScreenBottom();
+              }}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        >
           <WrapperVertical style={styles.center}>
             <SectionHeader big center title={texts.profile.update} />
           </WrapperVertical>
+
+          {!!dataProfileUpdateScreenTop && (
+            <WrapperHorizontal>
+              <HtmlView html={dataProfileUpdateScreenTop} />
+            </WrapperHorizontal>
+          )}
 
           <Wrapper style={styles.noPaddingTop}>
             <Controller
@@ -252,6 +291,12 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
               errorMessage={errors.city && `${texts.profile.city} muss ausgefüllt werden`}
             />
           </Wrapper>
+
+          {!!dataProfileUpdateScreenBottom && (
+            <WrapperHorizontal>
+              <HtmlView html={dataProfileUpdateScreenBottom} />
+            </WrapperHorizontal>
+          )}
 
           <Wrapper>
             <Button
