@@ -30,8 +30,9 @@ export const SueReportSend = ({
   isLoading: boolean;
   navigation: any;
 }) => {
-  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
+  const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = appDesignSystem;
+  const { showFeedbackSection } = sueConfig;
   const { reportSendDone = {}, reportSendLoading = {} } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
@@ -99,59 +100,65 @@ export const SueReportSend = ({
               title={texts.sue.report.sendReportDone.toEntryList}
             />
 
-            <Divider />
+            {showFeedbackSection && (
+              <>
+                <Divider />
 
-            <View style={styles.feedbackContainer}>
-              <View style={styles.headerContainer}>
-                <BoldText>{texts.sue.report.sendReportDone.feedbackHeader}</BoldText>
-              </View>
+                <View style={styles.feedbackContainer}>
+                  <View style={styles.headerContainer}>
+                    <BoldText>{texts.sue.report.sendReportDone.feedbackHeader}</BoldText>
+                  </View>
 
-              <View style={styles.ratingContainer}>
-                <RegularText small style={styles.ratingContainer}>
-                  {texts.sue.report.sendReportDone.ratingTitle}
-                </RegularText>
+                  <View style={styles.ratingContainer}>
+                    <RegularText small style={styles.ratingContainer}>
+                      {texts.sue.report.sendReportDone.ratingTitle}
+                    </RegularText>
 
-                <Controller
-                  name="ratingCount"
-                  render={({ field: { onChange, value } }) => (
-                    <Rating
-                      imageSize={normalize(24)}
-                      onFinishRating={onChange}
-                      ratingColor={colors.primary}
-                      startingValue={value}
-                      style={styles.rating}
-                      tintColor={colors.lighterPrimary}
-                      type="custom"
+                    <Controller
+                      name="ratingCount"
+                      render={({ field: { onChange, value } }) => (
+                        <Rating
+                          imageSize={normalize(24)}
+                          onFinishRating={onChange}
+                          ratingColor={colors.primary}
+                          startingValue={value}
+                          style={styles.rating}
+                          tintColor={colors.lighterPrimary}
+                          type="custom"
+                        />
+                      )}
+                      control={control}
                     />
-                  )}
-                  control={control}
-                />
-              </View>
+                  </View>
 
-              <View style={styles.headerContainer}>
-                <Input
-                  control={control}
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.textArea}
-                  label={texts.sue.report.sendReportDone.messageTitle}
-                  multiline
-                  name="message"
-                  onFocus={() => scrollViewRef.current?.scrollTo({ x: 0, y: 250, animated: true })}
-                  placeholder={texts.sue.report.sendReportDone.messagePlaceholder}
-                  textAlignVertical="top"
-                />
-              </View>
+                  <View style={styles.headerContainer}>
+                    <Input
+                      control={control}
+                      inputContainerStyle={styles.inputContainer}
+                      inputStyle={styles.textArea}
+                      label={texts.sue.report.sendReportDone.messageTitle}
+                      multiline
+                      name="message"
+                      onFocus={() =>
+                        scrollViewRef.current?.scrollTo({ x: 0, y: 250, animated: true })
+                      }
+                      placeholder={texts.sue.report.sendReportDone.messagePlaceholder}
+                      textAlignVertical="top"
+                    />
+                  </View>
 
-              <Button
-                disabled={loading}
-                onPress={handleSubmit(onSubmit)}
-                title={
-                  loading
-                    ? texts.feedbackScreen.sendButton.disabled
-                    : texts.sue.report.sendReportDone.sendButton
-                }
-              />
-            </View>
+                  <Button
+                    disabled={loading}
+                    onPress={handleSubmit(onSubmit)}
+                    title={
+                      loading
+                        ? texts.feedbackScreen.sendButton.disabled
+                        : texts.sue.report.sendReportDone.sendButton
+                    }
+                  />
+                </View>
+              </>
+            )}
           </Wrapper>
         )}
       </ScrollView>
