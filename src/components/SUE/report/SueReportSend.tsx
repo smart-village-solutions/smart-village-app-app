@@ -77,7 +77,9 @@ export const SueReportSend = ({
     <DefaultKeyboardAvoidingView>
       <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
         <Wrapper>
-          <BoldText center>{title}</BoldText>
+          <BoldText big center>
+            {title}
+          </BoldText>
         </Wrapper>
         <Wrapper>
           <RegularText center>{subtitle}</RegularText>
