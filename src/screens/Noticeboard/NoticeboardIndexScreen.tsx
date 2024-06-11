@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useQuery as RQuseQuery } from 'react-query';
 
 import {
   Button,
@@ -21,11 +22,14 @@ import {
   graphqlFetchPolicy,
   parseListItemsFromQuery,
   profileAuthToken,
-  profileUserData
+  profileUserData,
+  storeProfileAuthToken,
+  storeProfileUserData
 } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { getQuery } from '../../queries';
+import { getQuery, QUERY_TYPES } from '../../queries';
+import { member } from '../../queries/profile';
 import { ProfileMember } from '../../types';
 import { ListHeaderComponent } from '../NestedInfoScreen';
 import { ProfileUpdateScreen } from '../profile';
@@ -48,6 +52,19 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const currentMember = queryVariables?.currentMember ?? false;
 
   const [selectedCategory, setSelectedCategory] = useState<number>();
+
+  const { isLoading: isLoadingMember } = RQuseQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    enabled: isLoginRequired && isProfileLoggedIn,
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
+        storeProfileAuthToken();
+
+        return;
+      }
+
+      storeProfileUserData(responseData);
+    }
+  });
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
@@ -105,7 +122,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
         setUserData(currentUserData);
       };
 
-      getLoginStatus();
+      !isLoadingMember && getLoginStatus();
     }, [])
   );
 

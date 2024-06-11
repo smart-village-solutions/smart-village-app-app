@@ -45,7 +45,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
 
   const { isLoading, data, refetch } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
-      if (!responseData?.member) {
+      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
         storeProfileAuthToken();
 
         showLoginAgainAlert({
