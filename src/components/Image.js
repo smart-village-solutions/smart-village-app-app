@@ -43,7 +43,8 @@ export const Image = ({
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
   const timestamp = useInterval(refreshInterval);
-  const { apiConfig = {} } = useContext(ConfigurationsContext);
+  const { sueConfig = {} } = useContext(ConfigurationsContext);
+  const { apiConfig = {} } = sueConfig;
   const { apiKey = '' } = apiConfig[apiConfig?.whichApi] || apiConfig;
 
   // only use cache when refreshInterval is undefined
