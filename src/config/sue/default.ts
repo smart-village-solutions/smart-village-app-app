@@ -55,6 +55,8 @@ const requiredFieldsDefaults = {
   }
 };
 
+const showFeedbackSectionDefaults = false;
+
 const sueProgressDefaults = [
   {
     content: '',
@@ -71,5 +73,6 @@ export const defaultSueAppConfig = {
   limitation: limitationDefaults,
   limitOfArea: limitOfAreaDefaults,
   requiredFields: requiredFieldsDefaults,
+  showFeedbackSection: showFeedbackSectionDefaults,
   sueProgress: sueProgressDefaults
 };
