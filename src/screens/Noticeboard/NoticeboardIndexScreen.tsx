@@ -40,6 +40,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
   const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [userData, setUserData] = useState<ProfileMember | null>(null);
 
   const isLoginRequired = route.params?.isLoginRequired || false;
@@ -68,6 +69,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
+    skip: !isProfileLoggedIn,
     variables: queryVariables
   });
 
@@ -115,11 +117,13 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   useFocusEffect(
     useCallback(() => {
       const getLoginStatus = async () => {
+        setIsLoginLoading(true);
         const storedProfileAuthToken = await profileAuthToken();
         const { currentUserData } = await profileUserData();
 
         setIsProfileLoggedIn(!!storedProfileAuthToken);
         setUserData(currentUserData);
+        setIsLoginLoading(false);
       };
 
       !isLoadingMember && getLoginStatus();
@@ -165,7 +169,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     return <ProfileUpdateScreen navigation={navigation} route={route} />;
   }
 
-  if (loading && !filteredListItems?.length) {
+  if (isLoginLoading || (loading && !filteredListItems?.length)) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -175,7 +179,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   if (!categoryIdsTabs?.length) {
     return (
-      <>
+      <SafeAreaViewFlex>
         <EmptyMessage title={texts.noticeboard.emptyTitle} />
         {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
           <>
@@ -197,7 +201,11 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
             </Wrapper>
           </>
         )}
-      </>
+
+        {isLoginRequired && !isProfileLoggedIn && (
+          <LoginModal publicJsonFile="loginModal" navigation={navigation} />
+        )}
+      </SafeAreaViewFlex>
     );
   }
 
