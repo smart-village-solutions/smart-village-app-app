@@ -38,7 +38,7 @@ export const SueReportDescription = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"
-          label={`${texts.sue.report.title} ${requiredInputs?.includes('title') ? '*' : ''}`}
+          label={texts.sue.report.title + '*'}
           placeholder={texts.sue.report.title}
           control={control}
           ref={titleRef}
