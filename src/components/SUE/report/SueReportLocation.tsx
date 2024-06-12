@@ -197,6 +197,51 @@ export const SueReportLocation = ({
     }
   };
 
+  const onMyLocationButtonPress = async (isFullScreenMap = false) => {
+    if (!isFullScreenMap) {
+      Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
+        {
+          text: texts.sue.report.alerts.no
+        },
+        {
+          text: texts.sue.report.alerts.yes,
+          onPress: async () => {
+            const location = position || lastKnownPosition;
+
+            if (location) {
+              setUpdatedRegion(true);
+              setUpdateRegionFromImage(false);
+              setSelectedPosition(location.coords);
+
+              try {
+                await handleGeocode(location.coords);
+              } catch (error) {
+                setSelectedPosition(undefined);
+                Alert.alert(texts.sue.report.alerts.hint, error.message);
+              }
+            }
+          }
+        }
+      ]);
+    } else {
+      const location = position || lastKnownPosition;
+
+      if (location) {
+        setUpdatedRegion(true);
+        setUpdateRegionFromImage(false);
+        setSelectedPosition(location.coords);
+
+        try {
+          await handleGeocode(location.coords);
+        } catch (error) {
+          setSelectedPosition(undefined);
+          Alert.alert(texts.sue.report.alerts.hint, error.message);
+          throw new Error(error.message);
+        }
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <WrapperHorizontal>
@@ -207,39 +252,20 @@ export const SueReportLocation = ({
           locations={locations}
           mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
-          onMyLocationButtonPress={() =>
-            Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
-              {
-                text: texts.sue.report.alerts.no
-              },
-              {
-                text: texts.sue.report.alerts.yes,
-                onPress: async () => {
-                  const location = position || lastKnownPosition;
-
-                  if (location) {
-                    setUpdatedRegion(true);
-                    setUpdateRegionFromImage(false);
-                    setSelectedPosition(location.coords);
-
-                    try {
-                      await handleGeocode(location.coords);
-                    } catch (error) {
-                      setSelectedPosition(undefined);
-                      Alert.alert(texts.sue.report.alerts.hint, error.message);
-                    }
-                  }
-                }
-              }
-            ])
-          }
+          onMyLocationButtonPress={() => onMyLocationButtonPress()}
           onMapPress={onMapPress}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.MapView, {
               calloutTextEnabled: true,
+              currentPosition: position || lastKnownPosition,
+              isMyLocationButtonVisible: !!locationService,
+              isSue: true,
               locations,
+              mapCenterPosition: selectedPosition || mapCenterPosition,
               onMapPress,
-              selectedPosition
+              onMyLocationButtonPress,
+              selectedPosition,
+              showsUserLocation: true
             })
           }
           updatedRegion={

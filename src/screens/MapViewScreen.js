@@ -2,21 +2,25 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { SettingsContext } from '../SettingsProvider';
 import { Map, TextListItem, Wrapper } from '../components';
 import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
-import { SettingsContext } from '../SettingsProvider';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
     calloutTextEnabled,
+    currentPosition,
     geometryTourData,
     isAugmentedReality,
     isMaximizeButtonVisible,
+    isMyLocationButtonVisible,
     isSue,
     locations,
+    mapCenterPosition,
     onMapPress,
     onMarkerPress,
+    onMyLocationButtonPress,
     selectedPosition,
     showsUserLocation
   } = route?.params ?? {};
@@ -26,6 +30,7 @@ export const MapViewScreen = ({ navigation, route }) => {
 
   const [position, setPosition] = useState(selectedPosition);
   const [locationsWithPin, setLocationsWithPin] = useState(locations);
+  const [updatedRegion, setUpdatedRegion] = useState();
 
   /* the improvement in the next comment line has been added for augmented reality feature. */
   const { data } = route?.params?.augmentedRealityData ?? [];
@@ -57,10 +62,24 @@ export const MapViewScreen = ({ navigation, route }) => {
           calloutTextEnabled,
           geometryTourData,
           isMaximizeButtonVisible,
+          isMyLocationButtonVisible,
           locations: [...locationsWithPin, { position }],
+          mapCenterPosition,
           mapStyle: styles.map,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
           showsUserLocation
+        }}
+        onMyLocationButtonPress={async () => {
+          if (isSue) {
+            setPosition(currentPosition.coords);
+            setUpdatedRegion(true);
+
+            try {
+              await onMyLocationButtonPress(true);
+            } catch (error) {
+              setPosition(undefined);
+            }
+          }
         }}
         onMapPress={async ({ nativeEvent }) => {
           if (
@@ -69,6 +88,7 @@ export const MapViewScreen = ({ navigation, route }) => {
             isSue
           ) {
             setPosition(nativeEvent.coordinate);
+            setUpdatedRegion(false);
 
             try {
               await onMapPress({ nativeEvent });
@@ -77,6 +97,11 @@ export const MapViewScreen = ({ navigation, route }) => {
             }
           }
         }}
+        updatedRegion={
+          !!position && updatedRegion && isSue
+            ? { ...position, latitudeDelta: 0.01, longitudeDelta: 0.01 }
+            : undefined
+        }
       />
 
       {isAugmentedReality && modelData && (
