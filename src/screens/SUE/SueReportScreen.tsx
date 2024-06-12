@@ -374,6 +374,10 @@ export const SueReportScreen = ({
         if (isAnyInputMissing) {
           return texts.sue.report.alerts.missingAnyInput;
         }
+
+        if (selectedPosition) {
+          Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
+        }
         break;
       case 2:
         if (getValues().houseNumber && !getValues().street) {

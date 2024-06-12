@@ -163,6 +163,8 @@ export const ImageSelector = ({
         coordinateCheck.setSelectedPosition(location);
         coordinateCheck.setUpdateRegionFromImage(true);
       } catch (error) {
+        coordinateCheck.setSelectedPosition(undefined);
+        coordinateCheck.setUpdateRegionFromImage(false);
         return Alert.alert(texts.sue.report.alerts.hint, error.message);
       }
     }
