@@ -17,6 +17,7 @@ import {
   RegularText,
   Touchable,
   Wrapper,
+  WrapperHorizontal,
   WrapperRow
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
@@ -314,27 +315,13 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
-        {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-        <HtmlView html={consentForDataProcessingText} />
+      {!!consentForDataProcessingText && (
+        <WrapperHorizontal>
+          <HtmlView html={consentForDataProcessingText} />
+        </WrapperHorizontal>
+      )}
 
-        <Controller
-          name="termsOfService"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              checked={!!value}
-              checkedIcon={<Icon.SquareCheckFilled />}
-              containerStyle={styles.paddingTop}
-              onPress={() => onChange(!value)}
-              title={`${texts.noticeboard.inputCheckbox} *`}
-              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.noticeboard.send}
