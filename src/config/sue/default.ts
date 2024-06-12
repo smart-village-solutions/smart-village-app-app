@@ -55,7 +55,17 @@ const requiredFieldsDefaults = {
   }
 };
 
-const showFeedbackSectionDefault = false;
+const sueReportScreenDefaults = {
+  showFeedbackSection: false,
+  reportSendDone: {
+    subtitle: '',
+    title: ''
+  },
+  reportSendLoading: {
+    subtitle: '',
+    title: ''
+  }
+};
 
 const sueProgressDefaults = [
   {
@@ -68,11 +78,11 @@ const sueProgressDefaults = [
 ];
 
 export const defaultSueAppConfig = {
-  apiDefaults,
+  apiConfig: apiDefaults,
   geoMap: geoMapDefaults,
   limitation: limitationDefaults,
   limitOfArea: limitOfAreaDefaults,
   requiredFields: requiredFieldsDefaults,
-  showFeedbackSection: showFeedbackSectionDefault,
-  sueProgress: sueProgressDefaults
+  sueProgress: sueProgressDefaults,
+  sueReportScreen: sueReportScreenDefaults
 };

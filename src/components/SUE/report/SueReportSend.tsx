@@ -30,9 +30,8 @@ export const SueReportSend = ({
   isLoading: boolean;
   navigation: any;
 }) => {
-  const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
-  const { sueReportScreen = {} } = appDesignSystem;
-  const { showFeedbackSection } = sueConfig;
+  const { sueConfig = {} } = useContext(ConfigurationsContext);
+  const { sueReportScreen = {}, showFeedbackSection } = sueConfig;
   const { reportSendDone = {}, reportSendLoading = {} } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
