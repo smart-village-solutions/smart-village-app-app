@@ -135,7 +135,6 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         clusteringEnabled={true}
         locations={mapMarkers}
         mapStyle={styles.map}
-        minZoom={geoMap?.minZoom}
         onMarkerPress={(id) => {
           // reset selected request id to undefined to avoid rendering bug with images in overlay
           setSelectedRequestId(undefined);
