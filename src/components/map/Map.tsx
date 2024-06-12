@@ -267,7 +267,6 @@ export const Map = ({
                     marker.iconName ? (isActiveMarker ? 'locationActive' : marker.iconName) : ''
                   }
                   iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
-                  iconStrokeWidth={marker.iconName == 'ownLocation' ? 0.65 : undefined}
                 />
               )}
             </Marker>
