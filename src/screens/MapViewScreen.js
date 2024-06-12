@@ -13,13 +13,19 @@ export const MapViewScreen = ({ navigation, route }) => {
     geometryTourData,
     isAugmentedReality,
     isMaximizeButtonVisible,
+    isSue,
     locations,
+    onMapPress,
     onMarkerPress,
+    selectedPosition,
     showsUserLocation
   } = route?.params ?? {};
 
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+
+  const [position, setPosition] = useState(selectedPosition);
+  const [locationsWithPin, setLocationsWithPin] = useState(locations);
 
   /* the improvement in the next comment line has been added for augmented reality feature. */
   const { data } = route?.params?.augmentedRealityData ?? [];
@@ -34,6 +40,16 @@ export const MapViewScreen = ({ navigation, route }) => {
   }, [modelId]);
   /* end of augmented reality feature */
 
+  useEffect(() => {
+    if (isSue) {
+      setLocationsWithPin((prevData) =>
+        prevData.map((item) =>
+          item?.iconName === 'location' ? { iconName: 'location', position } : item
+        )
+      );
+    }
+  }, [position]);
+
   return (
     <>
       <Map
@@ -41,10 +57,25 @@ export const MapViewScreen = ({ navigation, route }) => {
           calloutTextEnabled,
           geometryTourData,
           isMaximizeButtonVisible,
-          locations,
+          locations: [...locationsWithPin, { position }],
           mapStyle: styles.map,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
           showsUserLocation
+        }}
+        onMapPress={async ({ nativeEvent }) => {
+          if (
+            nativeEvent.action !== 'marker-press' &&
+            nativeEvent.action !== 'callout-inside-press' &&
+            isSue
+          ) {
+            setPosition(nativeEvent.coordinate);
+
+            try {
+              await onMapPress({ nativeEvent });
+            } catch (error) {
+              setPosition(undefined);
+            }
+          }
         }}
       />
 

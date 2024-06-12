@@ -177,6 +177,26 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
+  const onMapPress = async ({
+    nativeEvent
+  }: {
+    nativeEvent: { action: string; coordinate: Location.LocationObjectCoords };
+  }) => {
+    if (nativeEvent.action !== 'marker-press' && nativeEvent.action !== 'callout-inside-press') {
+      setUpdatedRegion(false);
+      setUpdateRegionFromImage(false);
+      setSelectedPosition(nativeEvent.coordinate);
+
+      try {
+        await handleGeocode(nativeEvent.coordinate);
+      } catch (error) {
+        setSelectedPosition(undefined);
+        Alert.alert(texts.sue.report.alerts.hint, error.message);
+        throw new Error(error.message);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <WrapperHorizontal>
@@ -213,27 +233,13 @@ export const SueReportLocation = ({
               }
             ])
           }
-          onMapPress={async ({ nativeEvent }) => {
-            if (
-              nativeEvent.action !== 'marker-press' &&
-              nativeEvent.action !== 'callout-inside-press'
-            ) {
-              setUpdatedRegion(false);
-              setUpdateRegionFromImage(false);
-              setSelectedPosition(nativeEvent.coordinate);
-
-              try {
-                await handleGeocode(nativeEvent.coordinate);
-              } catch (error) {
-                setSelectedPosition(undefined);
-                Alert.alert(texts.sue.report.alerts.hint, error.message);
-              }
-            }
-          }}
+          onMapPress={onMapPress}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.MapView, {
               calloutTextEnabled: true,
-              locations
+              locations,
+              onMapPress,
+              selectedPosition
             })
           }
           updatedRegion={
