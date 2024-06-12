@@ -1,5 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as Location from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -22,6 +23,7 @@ import {
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
+import { useLastKnownPosition, usePosition, useSystemPermission } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 
@@ -65,18 +67,30 @@ type Props = {
   route: RouteProp<any, never>;
 };
 
+/* eslint-disable complexity */
 export const SueMapScreen = ({ navigation, route }: Props) => {
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType } = globalSettings;
+  const { navigation: navigationType, settings = {} } = globalSettings;
+  const { locationService } = settings;
   const { sueStatus = {} } = appDesignSystem;
   const { geoMap = {} } = sueConfig;
+  const systemPermission = useSystemPermission();
+  const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
 
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
   };
   const [selectedRequestId, setSelectedRequestId] = useState<string>();
+
+  const [currentPosition, setCurrentPosition] = useState<
+    Location.LocationObjectCoords | undefined
+  >();
+  const [updateRegion, setUpdatedRegion] = useState<boolean>(false);
 
   const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
     getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
@@ -135,7 +149,18 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         clusteringEnabled={true}
         locations={mapMarkers}
         mapStyle={styles.map}
+        isMyLocationButtonVisible={!!locationService}
         minZoom={geoMap?.minZoom}
+        onMyLocationButtonPress={() => {
+          const location = position || lastKnownPosition;
+
+          setUpdatedRegion(true);
+          setCurrentPosition(location?.coords);
+
+          setTimeout(() => {
+            setUpdatedRegion(false);
+          }, 100);
+        }}
         onMarkerPress={(id) => {
           // reset selected request id to undefined to avoid rendering bug with images in overlay
           setSelectedRequestId(undefined);
@@ -145,6 +170,15 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
           }, 100);
         }}
         selectedMarker={selectedRequestId}
+        updatedRegion={
+          !!currentPosition && updateRegion
+            ? {
+                ...currentPosition,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01
+              }
+            : undefined
+        }
       />
       {!detailsLoading && !!selectedRequestId && !!item && (
         <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
@@ -184,6 +218,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   closeButton: {
