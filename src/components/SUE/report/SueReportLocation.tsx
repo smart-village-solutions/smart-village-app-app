@@ -7,6 +7,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
+import { SettingsContext } from '../../../SettingsProvider';
 import { device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
 import {
@@ -61,6 +62,9 @@ export const SueReportLocation = ({
   const reverseGeocode = useReverseGeocode();
   const navigation = useNavigation();
   const { locationSettings } = useLocationSettings();
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { locationService } = settings;
   const systemPermission = useSystemPermission();
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
@@ -179,7 +183,7 @@ export const SueReportLocation = ({
         <Map
           calloutTextEnabled
           isMaximizeButtonVisible
-          isMyLocationButtonVisible
+          isMyLocationButtonVisible={!!locationService}
           locations={locations}
           mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
