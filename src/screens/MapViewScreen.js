@@ -9,6 +9,7 @@ import { SettingsContext } from '../SettingsProvider';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
+    calloutTextEnabled,
     geometryTourData,
     isAugmentedReality,
     isMaximizeButtonVisible,
@@ -37,6 +38,7 @@ export const MapViewScreen = ({ navigation, route }) => {
     <>
       <Map
         {...{
+          calloutTextEnabled,
           geometryTourData,
           isMaximizeButtonVisible,
           locations,

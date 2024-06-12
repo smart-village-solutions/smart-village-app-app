@@ -226,7 +226,12 @@ export const SueReportLocation = ({
               }
             }
           }}
-          onMaximizeButtonPress={() => navigation.navigate(ScreenName.MapView, { locations })}
+          onMaximizeButtonPress={() =>
+            navigation.navigate(ScreenName.MapView, {
+              calloutTextEnabled: true,
+              locations
+            })
+          }
           updatedRegion={
             !!selectedPosition && (updatedRegion || updateRegionFromImage)
               ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
