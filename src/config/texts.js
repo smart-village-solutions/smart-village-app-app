@@ -1192,7 +1192,7 @@ export const texts = {
         'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
       scannerTitle: 'QR-Code scannen'
     },
-    secret: 'Kundennummer'
+    secret: 'Vertragskonto-Nr.'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
