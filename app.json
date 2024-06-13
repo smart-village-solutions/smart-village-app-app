@@ -83,6 +83,7 @@
           }
         }
       ],
+      "expo-asset",
       "expo-font",
       "expo-localization",
       "expo-secure-store",

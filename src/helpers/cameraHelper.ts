@@ -1,4 +1,4 @@
-import { Camera } from 'expo-camera';
+import { Camera } from 'expo-camera/legacy';
 
 import { AcceptedRatio } from '../types';
 
