@@ -22,16 +22,6 @@ export const defaultAppDesignSystemConfig = {
       topTitleStyle: {}
     }
   },
-  sueReportScreen: {
-    reportSendDone: {
-      subtitle: '',
-      title: ''
-    },
-    reportSendLoading: {
-      subtitle: '',
-      title: ''
-    }
-  },
   sueStatus: {
     containerStyle: {},
     statusTextColors: {
