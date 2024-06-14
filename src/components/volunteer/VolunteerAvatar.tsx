@@ -63,10 +63,14 @@ export const VolunteerAvatar = ({
 const styles = StyleSheet.create({
   border: {
     borderColor: colors.darkText,
+    borderRadius: normalize(34),
     borderWidth: normalize(1)
   },
   containerStyle: {
-    padding: normalize(2)
+    borderRadius: normalize(34),
+    height: normalize(34),
+    padding: normalize(2),
+    width: normalize(34)
   },
   marginLeft: {
     marginLeft: normalize(-12)
