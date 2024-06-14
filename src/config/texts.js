@@ -1,5 +1,3 @@
-import appJson from '../../app.json';
-
 export const texts = {
   accessibilityLabels: {
     checkbox: {
@@ -103,7 +101,7 @@ export const texts = {
     noBookmarksinCategory:
       'In dieser Kategorie wurden noch keine Einträge für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     noBookmarksYet:
-      'Es wurden noch keine Beiträge, Orte oder Touren für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
+      'Es wurde noch nichts für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
   calendarToggle: {
@@ -408,7 +406,7 @@ export const texts = {
       title: 'Hinweis'
     },
     errorTitle: 'Fehler',
-    noData: 'Bitte überprüfen Sie Ihre Internetverbindung.',
+    noData: 'Bitte die Internetverbindung überprüfen.',
     unexpected: 'Es ist ein unerwarteter Fehler aufgetreten.'
   },
   eventRecord: {
@@ -424,7 +422,7 @@ export const texts = {
   feedbackScreen: {
     alert: {
       title: 'Feedback',
-      message: 'Vielen Dank für Ihr Feedback!',
+      message: 'Vielen Dank für das Feedback!',
       ok: 'OK'
     },
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
@@ -436,10 +434,10 @@ export const texts = {
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
     },
     inputsErrorMessages: {
-      checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
-      email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      checkbox: 'Bitte bestätige, dass du mit dem Speichern deiner Daten einverstanden bist.',
+      email: 'Bitte gib eine gültige E-Mail-Adresse ein.',
       hint: 'Hinweis',
-      message: 'Bitte geben Sie eine Mitteilung ein.'
+      message: 'Bitte gib eine Mitteilung ein.'
     },
     sendButton: {
       disabled: 'Bitte warten...',
@@ -469,7 +467,7 @@ export const texts = {
   locationOverview: {
     list: 'Listenansicht',
     map: 'Kartenansicht',
-    noSelection: 'Bitte wählen Sie eine Markierung aus.'
+    noSelection: 'Bitte wähle eine Markierung aus.'
   },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',
@@ -484,12 +482,12 @@ export const texts = {
   noticeboard: {
     abort: 'Abbrechen',
     alerts: {
-      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
-      delete: 'Willst Du diesen Eintrag wirklich löschen?',
-      error: 'Bitte versuchen Sie es erneut.',
+      dateDifference: 'Bitte wähle eine maximale Laufzeit von drei Monaten.',
+      delete: 'Willst du diesen Eintrag wirklich löschen?',
+      error: 'Bitte versuche es erneut.',
       hint: 'Hinweis',
-      noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
-      termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
+      noticeboardType: 'Bitte wähle den Typ des Eintrags aus.',
+      termsOfService: 'Bitte stimme der Verarbeitung deiner Daten zu.'
     },
     all: 'Alles',
     backToConversation: 'Zurück zur Unterhaltung',
@@ -503,7 +501,7 @@ export const texts = {
     details: 'Details',
     duration: 'Laufzeit',
     edit: 'Bearbeiten',
-    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuche es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
@@ -526,7 +524,7 @@ export const texts = {
     successScreen: {
       application: 'Die Nachricht wurde gesendet.',
       entry:
-        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
+        'Vielen Dank für deinen Eintrag. \n \nWir prüfen deine Angaben. Dein Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
     },
     toConversation: 'Zur Unterhaltung',
@@ -770,7 +768,7 @@ export const texts = {
   placeholder: {
     homeSectionButton: 'Filter ändern',
     homeSectionTitle: (title) => `Keine ${title} vorhanden.`,
-    homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
+    homeSectionSubtitle: 'Hast du alle Quellen abgewählt?'
   },
   pointOfInterest: {
     availableVehicles: 'Verfügbare Fahrzeuge',
@@ -804,7 +802,7 @@ export const texts = {
   },
   profile: {
     abort: 'Abbrechen',
-    alreadyRegistered: 'Du bist schon registriert? ',
+    alreadyRegistered: 'du bist schon registriert? ',
     back: 'Zurück',
     birthday: 'Geburtsdatum',
     birthdayInvalid: 'Mindestalter nicht erreicht',
@@ -841,7 +839,7 @@ export const texts = {
     loginTitle: 'Login',
     logout: 'Abmelden',
     next: 'Weiter',
-    notYetRegistered: 'Du bist noch nicht registriert? ',
+    notYetRegistered: 'du bist noch nicht registriert? ',
     ok: 'OK',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
@@ -884,7 +882,7 @@ export const texts = {
     updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
     showUpdateEmailSuccessAlertBody:
-      'Dein Profil wurde erfolgreich aktualisiert. Bitte bestätige deine E-Mail-Adresse und melde dich mit der neuen E-Mail-Adresse erneut an.',
+      'Dein Profil wurde erfolgreich aktualisiert. Bitte bestätige deine E-Mail-Adresse und melde Dich mit der neuen E-Mail-Adresse erneut an.',
     showUpdateSuccessAlertBody: 'Dein Profil wurde erfolgreich aktualisiert.',
     showUpdateSuccessAlertTitle: 'Erfolg',
     termsOfUseChecked: 'Mit der Registrierung akzeptierst du die',
@@ -895,10 +893,10 @@ export const texts = {
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
-    permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
+    permissionMissingBody: 'Bitte überprüfe deine Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis',
     permissionRequiredBody:
-      'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
+      'Diese Funktion benötigt die Berechtigung dir Benachrichtigungen zu schicken.'
   },
   screenTitles: {
     about: 'Menü',
@@ -1033,10 +1031,10 @@ export const texts = {
       pl: 'Komentarze'
     },
     commentSubmissionAlert: {
-      de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
+      de: 'Dein Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
       pl: 'Twój komentarz zostanie teraz zweryfikowany przez redakcję i opublikowany tak szybko, jak to możliwe.'
     },
-    commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
+    commentSubmissionAlertTitle: 'Dein Kommentar wird nun redaktionell geprüft',
     dateEnd: {
       de: 'Abschluss der Umfrage:',
       pl: 'Zakończenie ankiety:'
@@ -1047,11 +1045,11 @@ export const texts = {
     },
     errors: {
       submissionBody:
-        'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+        'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       submissionTitle: 'Fehler'
     },
     hint: {
-      de: 'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
+      de: 'Die Umfrageergebnisse werden erst angezeigt, wenn du deine Stimme abgegeben hast oder die Umfrage beendet wurde.',
       pl: 'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
     },
     multiSelectPossible: {
@@ -1072,7 +1070,7 @@ export const texts = {
     },
     submitSuccess: {
       entry:
-        'Mit Ihren Ideen und Rückmeldungen helfen Sie uns dabei, den Service der Gemeinde weiter zu verbessern.',
+        'Mit deinen Ideen und Rückmeldungen hilfst du uns dabei, den Service der Gemeinde weiter zu verbessern.',
       header: 'Vielen Dank für die Teilnahme an unserer Umfrage.'
     }
   },
@@ -1268,8 +1266,7 @@ export const texts = {
     alertsHeadline: 'Wetterwarnungen',
     currentHeadline: 'Aktuelles Wetter',
     nextDaysHeadline: 'Wetter der nächsten Tage',
-    noData:
-      'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+    noData: 'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuche es später erneut.'
   },
   widgets: {
     constructionSites: 'Baustellen',
