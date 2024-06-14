@@ -4,6 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import {
   IconAlertHexagonFilled,
   IconArrowNarrowRight,
+  IconAt,
   IconCircle,
   IconCircleCheckFilled,
   IconClock,
@@ -105,7 +106,12 @@ const SvgIcon = ({
 }: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
   return (
     <View style={style} hitSlop={getHitSlops(size)}>
-      <SvgXml xml={xml(color, strokeColor, strokeWidth)} width={size} height={size} style={iconStyle} />
+      <SvgXml
+        xml={xml(color, strokeColor, strokeWidth)}
+        width={size}
+        height={size}
+        style={iconStyle}
+      />
     </View>
   );
 };
@@ -152,6 +158,7 @@ export const Icon = {
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowRight2: (props: IconProps) => <TablerIcon IconComponent={IconArrowNarrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
+  At: (props: IconProps) => <TablerIcon IconComponent={IconAt} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
