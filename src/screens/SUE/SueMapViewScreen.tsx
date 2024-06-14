@@ -27,10 +27,12 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
   const [locationsWithPin, setLocationsWithPin] = useState(locations);
   const [updatedRegion, setUpdatedRegion] = useState<boolean>();
 
+  const iconName = 'location';
+
   useEffect(() => {
     setLocationsWithPin((prevData) =>
       prevData.map((item) =>
-        item?.iconName === 'location' ? { iconName: 'location', position: selectedPosition } : item
+        item?.iconName === iconName ? { iconName, position: selectedPosition } : item
       )
     );
   }, [selectedPosition]);
@@ -43,7 +45,9 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
           geometryTourData,
           isMaximizeButtonVisible,
           isMyLocationButtonVisible,
-          locations: [...locationsWithPin, { position: selectedPosition }],
+          locations: selectedPosition
+            ? [...locationsWithPin, { iconName, position: selectedPosition }]
+            : locationsWithPin,
           mapCenterPosition,
           mapStyle: styles.map,
           onMarkerPress: onMarkerPress,
