@@ -10,6 +10,14 @@ import { BoldText, RegularText } from '../Text';
 const a11yLabel = consts.a11yLabel;
 const localeString = 'de';
 
+const toLocaleString = (value: number) =>
+  value.toLocaleString(localeString, {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2
+  });
+
 export const Discount = ({
   discount,
   id,
@@ -35,19 +43,17 @@ export const Discount = ({
       <View style={styles.container}>
         {!!discountedPrice && (
           <View style={styles.discountedPriceContainer}>
-            <BoldText lightest>{discountedPrice.toLocaleString(localeString)} €</BoldText>
+            <BoldText lightest>{toLocaleString(discountedPrice)}</BoldText>
           </View>
         )}
 
         {!!originalPrice && (
           <RegularText lineThrough lighter>
-            {originalPrice.toLocaleString(localeString)} €
+            {toLocaleString(originalPrice)}
           </RegularText>
         )}
 
-        {!!discountAmount && (
-          <RegularText primary> -{discountAmount.toLocaleString(localeString)} €</RegularText>
-        )}
+        {!!discountAmount && <RegularText primary> -{toLocaleString(discountAmount)}</RegularText>}
       </View>
 
       <TouchableOpacity
