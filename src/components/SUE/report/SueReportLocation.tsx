@@ -185,9 +185,9 @@ export const SueReportLocation = ({
     nativeEvent: { action: string; coordinate: Location.LocationObjectCoords };
   }) => {
     if (nativeEvent.action !== 'marker-press' && nativeEvent.action !== 'callout-inside-press') {
+      setSelectedPosition(nativeEvent.coordinate);
       setUpdatedRegion(false);
       setUpdateRegionFromImage(false);
-      setSelectedPosition(nativeEvent.coordinate);
 
       try {
         await handleGeocode(nativeEvent.coordinate);
@@ -209,9 +209,9 @@ export const SueReportLocation = ({
           text: texts.sue.report.alerts.yes,
           onPress: async () => {
             if (currentPosition) {
+              setSelectedPosition(currentPosition.coords);
               setUpdatedRegion(true);
               setUpdateRegionFromImage(false);
-              setSelectedPosition(currentPosition.coords);
 
               try {
                 await handleGeocode(currentPosition.coords);
@@ -225,9 +225,9 @@ export const SueReportLocation = ({
       ]);
     } else {
       if (currentPosition) {
+        setSelectedPosition(currentPosition.coords);
         setUpdatedRegion(true);
         setUpdateRegionFromImage(false);
-        setSelectedPosition(currentPosition.coords);
 
         try {
           await handleGeocode(currentPosition.coords);
