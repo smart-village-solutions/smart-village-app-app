@@ -255,11 +255,10 @@ export const SueReportLocation = ({
           onMyLocationButtonPress={() => onMyLocationButtonPress()}
           onMapPress={onMapPress}
           onMaximizeButtonPress={() =>
-            navigation.navigate(ScreenName.MapView, {
+            navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
               currentPosition: position || lastKnownPosition,
               isMyLocationButtonVisible: !!locationService,
-              isSue: true,
               locations,
               mapCenterPosition: selectedPosition || mapCenterPosition,
               onMapPress,

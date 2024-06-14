@@ -9,28 +9,16 @@ import { navigationToArtworksDetailScreen } from '../helpers';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
-    calloutTextEnabled,
-    currentPosition,
     geometryTourData,
     isAugmentedReality,
     isMaximizeButtonVisible,
-    isMyLocationButtonVisible,
-    isSue,
     locations,
-    mapCenterPosition,
-    onMapPress,
     onMarkerPress,
-    onMyLocationButtonPress,
-    selectedPosition,
     showsUserLocation
   } = route?.params ?? {};
 
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
-
-  const [position, setPosition] = useState(selectedPosition);
-  const [locationsWithPin, setLocationsWithPin] = useState(locations);
-  const [updatedRegion, setUpdatedRegion] = useState();
 
   /* the improvement in the next comment line has been added for augmented reality feature. */
   const { data } = route?.params?.augmentedRealityData ?? [];
@@ -45,63 +33,17 @@ export const MapViewScreen = ({ navigation, route }) => {
   }, [modelId]);
   /* end of augmented reality feature */
 
-  useEffect(() => {
-    if (isSue) {
-      setLocationsWithPin((prevData) =>
-        prevData.map((item) =>
-          item?.iconName === 'location' ? { iconName: 'location', position } : item
-        )
-      );
-    }
-  }, [position]);
-
   return (
     <>
       <Map
         {...{
-          calloutTextEnabled,
           geometryTourData,
           isMaximizeButtonVisible,
-          isMyLocationButtonVisible,
-          locations: [...locationsWithPin, { position }],
-          mapCenterPosition,
-          mapStyle: styles.map,
+          locations,
+          mapStyle: styles.mapStyle,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
           showsUserLocation
         }}
-        onMyLocationButtonPress={async () => {
-          if (isSue) {
-            setPosition(currentPosition.coords);
-            setUpdatedRegion(true);
-
-            try {
-              await onMyLocationButtonPress(true);
-            } catch (error) {
-              setPosition(undefined);
-            }
-          }
-        }}
-        onMapPress={async ({ nativeEvent }) => {
-          if (
-            nativeEvent.action !== 'marker-press' &&
-            nativeEvent.action !== 'callout-inside-press' &&
-            isSue
-          ) {
-            setPosition(nativeEvent.coordinate);
-            setUpdatedRegion(false);
-
-            try {
-              await onMapPress({ nativeEvent });
-            } catch (error) {
-              setPosition(undefined);
-            }
-          }
-        }}
-        updatedRegion={
-          !!position && updatedRegion && isSue
-            ? { ...position, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-            : undefined
-        }
       />
 
       {isAugmentedReality && modelData && (
@@ -134,7 +76,7 @@ const styles = StyleSheet.create({
   augmentedRealityInfoContainer: {
     width: '90%'
   },
-  map: {
+  mapStyle: {
     width: '100%',
     height: '100%'
   },
