@@ -55,6 +55,7 @@ export enum ScreenName {
   SueList = 'SueList',
   SueMap = 'SueMap',
   SueReport = 'SueReport',
+  SueReportMapView = 'SueReportMapView',
   SurveyDetail = 'SurveyDetail',
   SurveyOverview = 'SurveyOverview',
   TilesScreen = 'TilesScreen',

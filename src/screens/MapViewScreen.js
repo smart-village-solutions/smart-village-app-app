@@ -2,14 +2,13 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { SettingsContext } from '../SettingsProvider';
 import { Map, TextListItem, Wrapper } from '../components';
 import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
-import { SettingsContext } from '../SettingsProvider';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
-    calloutTextEnabled,
     geometryTourData,
     isAugmentedReality,
     isMaximizeButtonVisible,
@@ -38,7 +37,6 @@ export const MapViewScreen = ({ navigation, route }) => {
     <>
       <Map
         {...{
-          calloutTextEnabled,
           geometryTourData,
           isMaximizeButtonVisible,
           locations,

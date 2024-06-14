@@ -48,6 +48,7 @@ import {
   SettingsScreen,
   SueListScreen,
   SueMapScreen,
+  SueMapViewScreen,
   SueReportScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -373,6 +374,11 @@ export const defaultStackConfig = ({
         query: QUERY_TYPES.SUE.REQUESTS,
         usedAsInitialScreen: true
       }
+    },
+    {
+      routeName: ScreenName.SueReportMapView,
+      screenComponent: SueMapViewScreen,
+      screenOptions: { title: texts.screenTitles.mapView }
     },
     {
       routeName: ScreenName.SurveyDetail,
