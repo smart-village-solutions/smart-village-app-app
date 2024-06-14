@@ -4,7 +4,6 @@ import { Badge as RNBadge } from 'react-native-elements';
 
 import { colors, normalize } from '../../config';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 export const Badge = ({
   badgeStyle,
@@ -15,11 +14,7 @@ export const Badge = ({
 }) => {
   const { count, loading } = useMessagesContext();
 
-  if (loading) {
-    return <LoadingSpinner loading />;
-  }
-
-  if (count === 0) {
+  if (loading || count === 0) {
     return null;
   }
 
