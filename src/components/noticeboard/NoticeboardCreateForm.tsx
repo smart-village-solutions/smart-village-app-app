@@ -41,7 +41,6 @@ type TNoticeboardCreateData = {
   noticeboardType: NOTICEBOARD_TYPES;
   price: string;
   priceType?: string;
-  termsOfService: boolean;
   title: string;
 };
 
@@ -107,7 +106,6 @@ export const NoticeboardCreateForm = ({
         ) || '',
       price: data?.priceInformations?.[0]?.description?.replace('€', '').trim() ?? '',
       priceType: data?.priceInformations?.[0]?.priceType ?? '€',
-      termsOfService: false,
       title: data?.title ?? ''
     }
   });
@@ -124,10 +122,6 @@ export const NoticeboardCreateForm = ({
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
-
-    if (!noticeboardNewData.termsOfService) {
-      return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.termsOfService);
-    }
 
     const dateStart = moment(noticeboardNewData.dateStart).toDate();
     const dateEnd = moment(noticeboardNewData.dateEnd).toDate();
