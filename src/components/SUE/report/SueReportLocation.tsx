@@ -75,6 +75,8 @@ export const SueReportLocation = ({
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
+  const currentPosition = position || lastKnownPosition;
+
   const [updatedRegion, setUpdatedRegion] = useState(false);
 
   useEffect(() => {
@@ -198,8 +200,6 @@ export const SueReportLocation = ({
   };
 
   const onMyLocationButtonPress = async ({ isFullScreenMap = false }) => {
-    const currentPosition = position || lastKnownPosition;
-
     if (!isFullScreenMap) {
       Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
         {
@@ -255,7 +255,7 @@ export const SueReportLocation = ({
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
-              currentPosition: position || lastKnownPosition,
+              currentPosition,
               isMyLocationButtonVisible: !!locationService,
               locations,
               mapCenterPosition: selectedPosition || mapCenterPosition,
