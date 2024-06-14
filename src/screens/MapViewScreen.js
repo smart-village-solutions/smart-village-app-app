@@ -40,7 +40,7 @@ export const MapViewScreen = ({ navigation, route }) => {
           geometryTourData,
           isMaximizeButtonVisible,
           locations,
-          mapStyle: styles.mapStyle,
+          mapStyle: styles.map,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
           showsUserLocation
         }}
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   augmentedRealityInfoContainer: {
     width: '90%'
   },
-  mapStyle: {
+  map: {
     width: '100%',
     height: '100%'
   },
