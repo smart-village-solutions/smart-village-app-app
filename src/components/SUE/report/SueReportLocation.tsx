@@ -197,7 +197,9 @@ export const SueReportLocation = ({
     }
   };
 
-  const onMyLocationButtonPress = async (isFullScreenMap = false) => {
+  const onMyLocationButtonPress = async ({ isFullScreenMap = false }) => {
+    const currentPosition = position || lastKnownPosition;
+
     if (!isFullScreenMap) {
       Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
         {
@@ -206,15 +208,13 @@ export const SueReportLocation = ({
         {
           text: texts.sue.report.alerts.yes,
           onPress: async () => {
-            const location = position || lastKnownPosition;
-
-            if (location) {
+            if (currentPosition) {
               setUpdatedRegion(true);
               setUpdateRegionFromImage(false);
-              setSelectedPosition(location.coords);
+              setSelectedPosition(currentPosition.coords);
 
               try {
-                await handleGeocode(location.coords);
+                await handleGeocode(currentPosition.coords);
               } catch (error) {
                 setSelectedPosition(undefined);
                 Alert.alert(texts.sue.report.alerts.hint, error.message);
@@ -224,15 +224,13 @@ export const SueReportLocation = ({
         }
       ]);
     } else {
-      const location = position || lastKnownPosition;
-
-      if (location) {
+      if (currentPosition) {
         setUpdatedRegion(true);
         setUpdateRegionFromImage(false);
-        setSelectedPosition(location.coords);
+        setSelectedPosition(currentPosition.coords);
 
         try {
-          await handleGeocode(location.coords);
+          await handleGeocode(currentPosition.coords);
         } catch (error) {
           setSelectedPosition(undefined);
           Alert.alert(texts.sue.report.alerts.hint, error.message);
@@ -252,7 +250,7 @@ export const SueReportLocation = ({
           locations={locations}
           mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
-          onMyLocationButtonPress={() => onMyLocationButtonPress()}
+          onMyLocationButtonPress={onMyLocationButtonPress}
           onMapPress={onMapPress}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {

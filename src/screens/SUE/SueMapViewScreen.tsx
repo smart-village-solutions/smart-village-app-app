@@ -1,18 +1,11 @@
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useContext, useEffect, useState } from 'react';
+import * as Location from 'expo-location';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { SettingsContext } from '../../SettingsProvider';
 import { Map } from '../../components';
 import { colors, normalize } from '../../config';
 
-export const SueMapViewScreen = ({
-  navigation,
-  route
-}: {
-  navigation: StackNavigationProp<any>;
-  route: any;
-}) => {
+export const SueMapViewScreen = ({ route }: { route: any }) => {
   const {
     calloutTextEnabled,
     currentPosition,
@@ -24,24 +17,23 @@ export const SueMapViewScreen = ({
     onMapPress,
     onMarkerPress,
     onMyLocationButtonPress,
-    selectedPosition,
+    selectedPosition: position,
     showsUserLocation
   } = route?.params ?? {};
 
-  const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType } = globalSettings;
-
-  const [position, setPosition] = useState(selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useState<
+    Location.LocationObjectCoords | undefined
+  >(position);
   const [locationsWithPin, setLocationsWithPin] = useState(locations);
-  const [updatedRegion, setUpdatedRegion] = useState();
+  const [updatedRegion, setUpdatedRegion] = useState<boolean>();
 
   useEffect(() => {
     setLocationsWithPin((prevData) =>
       prevData.map((item) =>
-        item?.iconName === 'location' ? { iconName: 'location', position } : item
+        item?.iconName === 'location' ? { iconName: 'location', position: selectedPosition } : item
       )
     );
-  }, [position]);
+  }, [selectedPosition]);
 
   return (
     <>
@@ -51,20 +43,20 @@ export const SueMapViewScreen = ({
           geometryTourData,
           isMaximizeButtonVisible,
           isMyLocationButtonVisible,
-          locations: [...locationsWithPin, { position }],
+          locations: [...locationsWithPin, { position: selectedPosition }],
           mapCenterPosition,
           mapStyle: styles.map,
           onMarkerPress: onMarkerPress,
           showsUserLocation
         }}
         onMyLocationButtonPress={async () => {
-          setPosition(currentPosition.coords);
+          setSelectedPosition(currentPosition.coords);
           setUpdatedRegion(true);
 
           try {
-            await onMyLocationButtonPress(true);
+            await onMyLocationButtonPress({ isFullScreenMap: true });
           } catch (error) {
-            setPosition(undefined);
+            setSelectedPosition(undefined);
           }
         }}
         onMapPress={async ({ nativeEvent }) => {
@@ -72,19 +64,19 @@ export const SueMapViewScreen = ({
             nativeEvent.action !== 'marker-press' &&
             nativeEvent.action !== 'callout-inside-press'
           ) {
-            setPosition(nativeEvent.coordinate);
+            setSelectedPosition(nativeEvent.coordinate);
             setUpdatedRegion(false);
 
             try {
               await onMapPress({ nativeEvent });
             } catch (error) {
-              setPosition(undefined);
+              setSelectedPosition(undefined);
             }
           }
         }}
         updatedRegion={
-          !!position && updatedRegion
-            ? { ...position, latitudeDelta: 0.01, longitudeDelta: 0.01 }
+          !!selectedPosition && updatedRegion
+            ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
             : undefined
         }
       />
@@ -121,11 +113,3 @@ const styles = StyleSheet.create({
     shadowRadius: 3
   }
 });
-
-const stylesWithProps = ({ navigationType }) => {
-  return StyleSheet.create({
-    position: {
-      bottom: navigationType === 'drawer' ? '8%' : '4%'
-    }
-  });
-};
