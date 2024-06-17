@@ -72,6 +72,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
     $dataProvider: String
     $dataProviderId: ID
     $excludeDataProviderIds: [ID]
+    $excludeMowasRegionalKeys: [String]
     $categoryId: ID
     $categoryIds: [ID!]
   ) {
@@ -81,6 +82,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
       excludeDataProviderIds: $excludeDataProviderIds
+      excludeMowasRegionalKeys: $excludeMowasRegionalKeys
       categoryId: $categoryId
       categoryIds: $categoryIds
     ) {

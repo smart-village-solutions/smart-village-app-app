@@ -74,12 +74,12 @@ const renderItem = ({ item }) => {
       indexCategoryIds,
       rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS
     }) => {
-      const queryVariables = { limit };
+      const indexQueryVariables = { limit };
 
       if (indexCategoryIds?.length) {
-        queryVariables.categoryIds = indexCategoryIds;
+        indexQueryVariables.categoryIds = indexCategoryIds;
       } else {
-        queryVariables.categoryId = categoryId;
+        indexQueryVariables.categoryId = categoryId;
       }
 
       return {
@@ -88,7 +88,7 @@ const renderItem = ({ item }) => {
           title,
           titleDetail,
           query: QUERY_TYPES.NEWS_ITEMS,
-          queryVariables,
+          queryVariables: indexQueryVariables,
           rootRouteName
         }
       };
