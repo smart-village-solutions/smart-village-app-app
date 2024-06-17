@@ -38,6 +38,7 @@ enum SueStatus {
 /* eslint-disable complexity */
 export const SueReportLocation = ({
   areaServiceData,
+  configuration,
   control,
   errorMessage,
   getValues,
@@ -48,13 +49,14 @@ export const SueReportLocation = ({
   setValue,
   updateRegionFromImage
 }: {
-  areaServiceData: { postalCodes: string[] } | undefined;
+  areaServiceData?: { postalCodes?: string[] };
+  configuration: any;
   control: any;
   errorMessage: string;
   getValues: UseFormGetValues<TValues>;
   requiredInputs: keyof TValues[];
-  selectedPosition: Location.LocationObjectCoords | undefined;
-  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  selectedPosition?: Location.LocationObjectCoords;
+  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
   updateRegionFromImage: boolean;
@@ -87,7 +89,7 @@ export const SueReportLocation = ({
 
   const streetInputRef = useRef();
   const houseNumberInputRef = useRef();
-  const zipCodeInputRef = useRef();
+  const postalCodeInputRef = useRef();
   const cityInputRef = useRef();
 
   const queryVariables = {
@@ -116,15 +118,15 @@ export const SueReportLocation = ({
   );
 
   const geocode = useCallback(async () => {
-    const { street, houseNumber, zipCode, city } = getValues();
+    const { street, houseNumber, postalCode, city } = getValues();
 
-    if (!street || !zipCode || !city) {
+    if (!street || !postalCode || !city) {
       return;
     }
 
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&country=germany&postalcode=${zipCode}`
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&country=germany&postalcode=${postalCode}`
       );
 
       const data = await response.json();
@@ -301,21 +303,23 @@ export const SueReportLocation = ({
           control={control}
           onChange={geocode}
           ref={houseNumberInputRef}
-          onSubmitEditing={() => zipCodeInputRef.current?.focus()}
+          onSubmitEditing={() => postalCodeInputRef.current?.focus()}
         />
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="zipCode"
-          label={`${texts.sue.report.zipCode} ${requiredInputs?.includes('zipCode') ? '*' : ''}`}
-          placeholder={texts.sue.report.zipCode}
+          name="postalCode"
+          label={`${texts.sue.report.postalCode} ${
+            requiredInputs?.includes('postalCode') ? '*' : ''
+          }`}
+          placeholder={texts.sue.report.postalCode}
           maxLength={5}
           keyboardType="numeric"
           textContentType="postalCode"
           control={control}
           onChange={geocode}
-          ref={zipCodeInputRef}
+          ref={postalCodeInputRef}
           onSubmitEditing={() => cityInputRef.current?.focus()}
         />
       </Wrapper>

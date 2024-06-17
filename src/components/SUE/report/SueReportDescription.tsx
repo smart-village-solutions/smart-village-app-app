@@ -21,12 +21,12 @@ export const SueReportDescription = ({
   setUpdateRegionFromImage,
   setValue
 }: {
-  areaServiceData: { postalCodes: string[] } | undefined;
+  areaServiceData?: { postalCodes?: string[] };
   control: any;
   errorMessage: string;
   configuration: any;
   requiredInputs: keyof TValues[];
-  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {

@@ -960,8 +960,7 @@ export const texts = {
         },
         invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
         invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
-        limitOfArea: (city) =>
-          `Leider kann die Sag's uns Einfach nur Standorte der ${city} nutzen.`,
+        limitOfArea: (city) => `Bitte geben Sie nur Standorte für ${city} ein.`,
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
         missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
         no: 'Nein',
@@ -971,8 +970,8 @@ export const texts = {
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
         title: 'Bitte kurz beschreiben, worum es geht.',
         yes: 'Ja',
-        zipCode: 'Bitte geben Sie die Postleitzahl an',
-        zipCodeLength: 'Postleitzahl muss 5-stellig sein.'
+        postalCode: 'Bitte geben Sie die Postleitzahl an',
+        postalCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
       city: 'Ort',
@@ -981,10 +980,10 @@ export const texts = {
       emailHint:
         'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
       errorText: 'muss ausgefüllt werden',
-      firstName: 'Vorname',
+      name: 'Vorname',
       houseNumber: 'Hausnummer',
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
-      lastName: 'Nachname',
+      familyName: 'Nachname',
       mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
@@ -1000,7 +999,7 @@ export const texts = {
       street: 'Straße',
       termsOfService: 'Datenschutzbestimmungen',
       title: 'Kurze Beschreibung',
-      zipCode: 'Postleitzahl'
+      postalCode: 'Postleitzahl'
     },
     result: 'Ergebnis',
     results: 'Ergebnisse'

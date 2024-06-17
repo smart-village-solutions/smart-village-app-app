@@ -69,15 +69,15 @@ export type TValues = {
   city: string;
   description: string;
   email: string;
-  firstName: string;
+  familyName: string;
   houseNumber: string;
   images: string;
-  lastName: string;
+  name: string;
   phone: string;
+  postalCode: string;
   street: string;
   termsOfService: boolean;
   title: string;
-  zipCode: string;
 };
 
 export type TService = {
@@ -88,7 +88,7 @@ export type TService = {
 };
 
 type TContent = {
-  areaServiceData: { postalCodes: string[] } | undefined;
+  areaServiceData?: { postalCodes?: string[] };
   configuration: {
     geoMap: {
       areas: any[];
@@ -104,13 +104,13 @@ type TContent = {
   };
   content: 'category' | 'description' | 'location' | 'user';
   requiredInputs: keyof TValues[];
-  service: TService | undefined;
+  service?: TService;
   setService: any;
   control: any;
   errorMessage: string;
   errors: any;
-  selectedPosition: Location.LocationObjectCoords | undefined;
-  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  selectedPosition?: Location.LocationObjectCoords;
+  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   updateRegionFromImage: boolean;
   setValue: UseFormSetValue<TValues>;
@@ -152,6 +152,7 @@ const Content = ({
       return (
         <SueReportLocation
           areaServiceData={areaServiceData}
+          configuration={configuration}
           control={control}
           errorMessage={errorMessage}
           getValues={getValues}
@@ -182,15 +183,15 @@ type TReports = {
   city: string;
   description: string;
   email: string;
-  firstName: string;
+  familyName: string;
   houseNumber: string;
   images: { uri: string; mimeType: string }[];
-  lastName: string;
+  name: string;
   phone: string;
+  postalCode: string;
   street: string;
   termsOfService: string;
   title: string;
-  zipCode: string;
 };
 
 type TProgress = {
@@ -217,7 +218,7 @@ export const SueReportScreen = ({
 
   const {
     city: limitOfCity = '',
-    zipCodes: limitOfZipCodes = [],
+    postalCodes: limitOfPostalCodes = [],
     errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
   } = limitOfArea;
 
@@ -272,15 +273,15 @@ export const SueReportScreen = ({
       city: '',
       description: '',
       email: '',
-      firstName: '',
+      familyName: '',
       houseNumber: '',
       images: '[]',
-      lastName: '',
+      name: '',
       phone: '',
+      postalCode: '',
       street: '',
       termsOfService: false,
-      title: '',
-      zipCode: ''
+      title: ''
     }
   });
 
@@ -305,14 +306,16 @@ export const SueReportScreen = ({
     if (
       !!sueReportData.street ||
       !!sueReportData.houseNumber ||
-      !!sueReportData.zipCode ||
+      !!sueReportData.postalCode ||
       !!sueReportData.city
     ) {
-      addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
+      addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.postalCode}; ${sueReportData.city}`;
     }
 
     const formData = {
       addressString,
+      firstName: sueReportData?.name,
+      lastName: sueReportData?.familyName,
       lat: selectedPosition?.latitude,
       long: selectedPosition?.longitude,
       serviceCode: service?.serviceCode,
@@ -364,7 +367,7 @@ export const SueReportScreen = ({
         }
         break;
       case 1:
-        if (!getValues().title) {
+        if (!getValues('title')) {
           return texts.sue.report.alerts.title;
         } else if (getValues().images) {
           const images = JSON.parse(getValues().images);
@@ -397,30 +400,33 @@ export const SueReportScreen = ({
         }
         break;
       case 2:
-        if (getValues().houseNumber && !getValues().street) {
+        if (getValues('houseNumber') && !getValues('street')) {
           return texts.sue.report.alerts.street;
         }
 
-        if (getValues().city) {
-          if (!getValues().zipCode) {
-            return texts.sue.report.alerts.zipCode;
+        if (getValues('city')) {
+          if (!getValues('postalCode')) {
+            return texts.sue.report.alerts.postalCode;
           }
 
-          if (!areaServiceData?.postalCodes?.includes(getValues('zipCode'))) {
+          if (!areaServiceData?.postalCodes?.includes(getValues('postalCode'))) {
             return errorMessage;
           }
         }
 
-        if (getValues().zipCode) {
-          if (getValues().zipCode.length !== 5) {
-            return texts.sue.report.alerts.zipCodeLength;
+        if (getValues('postalCode')) {
+          if (getValues('postalCode').length !== 5) {
+            return texts.sue.report.alerts.postalCodeLength;
           }
 
-          if (!getValues().city) {
+          if (!getValues('city')) {
             return texts.sue.report.alerts.city;
           }
 
-          if (!!limitOfZipCodes.length && !limitOfZipCodes.includes(getValues().zipCode)) {
+          if (
+            !!limitOfPostalCodes.length &&
+            !limitOfPostalCodes.includes(getValues('postalCode'))
+          ) {
             return errorMessage;
           }
         }
@@ -434,7 +440,7 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.missingAnyInput;
         }
 
-        if (!getValues().firstName && !getValues().lastName && !getValues().email) {
+        if (!getValues('name') && !getValues('familyName') && !getValues('email')) {
           return texts.sue.report.alerts.contact;
         }
 
