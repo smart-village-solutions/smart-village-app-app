@@ -948,8 +948,8 @@ export const texts = {
         imageType: 'Der verwendete Dateityp wird nicht unterstützt.',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
         imageLocation: 'Die Adresse wurde dem Bild entnommen',
-        imagesGreater30MBError:
-          'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',
+        imagesTotalSizeError: (size) =>
+          `Die ausgewählten Bilder dürfen insgesamt nicht größer als ${size} sein.`,
         imageSelectAlert: {
           camera: 'Bild aufnehmen',
           cancel: 'Abbrechen',
