@@ -1,12 +1,12 @@
-export const formatSize = (size: number) => {
+export const formatSize = (size: number, decimals = 1) => {
   if (size < 100) {
-    return `${size.toFixed(1)} B`;
+    return `${size.toFixed(decimals)} B`;
   } else if (size < 100000) {
-    return `${(size / 1000).toFixed(1)} KB`;
+    return `${(size / 1000).toFixed(decimals)} KB`;
   } else if (size < 100000000) {
-    return `${(size / 1000000).toFixed(1)} MB`;
+    return `${(size / 1000000).toFixed(decimals)} MB`;
   } else {
-    return `${(size / 1000000000).toFixed(1)} GB`;
+    return `${(size / 1000000000).toFixed(decimals)} GB`;
   }
 };
 
