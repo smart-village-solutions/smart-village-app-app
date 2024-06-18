@@ -41,16 +41,21 @@ type TRequiredFields = {
 };
 
 const sueProgressWithRequiredInputs = (
-  progress: TProgress[],
-  fields: TRequiredFields
+  fields: TRequiredFields,
+  geoMap: { locationIsRequired: boolean; locationStreetIsRequired: boolean },
+  progress: TProgress[]
 ): TProgress[] => {
   const requiredInputs: { [key: string]: boolean } = {};
 
-  for (const section in fields) {
-    for (const field in fields[section]) {
-      requiredInputs[field] = fields[section][field];
+  if (fields?.contact) {
+    for (const field in fields.contact) {
+      requiredInputs[field] = fields.contact[field];
     }
   }
+
+  requiredInputs['city'] = !!geoMap?.locationIsRequired;
+  requiredInputs['postalCode'] = !!geoMap?.locationIsRequired;
+  requiredInputs['street'] = !!geoMap?.locationStreetIsRequired;
 
   return progress.map((item) => {
     item.requiredInputs = (item.requiredInputs || [])?.filter((key) => requiredInputs?.[key]);
@@ -465,8 +470,8 @@ export const SueReportScreen = ({
   }, []);
 
   useEffect(() => {
-    setSueProgressWithConfig(sueProgressWithRequiredInputs(sueProgress, requiredFields));
-  }, [sueProgress, requiredFields]);
+    setSueProgressWithConfig(sueProgressWithRequiredInputs(requiredFields, geoMap, sueProgress));
+  }, [sueProgress, requiredFields, geoMap]);
 
   const storeReportValues = async () => {
     await addToStore(SUE_REPORT_VALUES, {
