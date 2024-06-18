@@ -169,7 +169,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.lightestText,
-    fontFamily: 'bold'
+    fontFamily: 'bold',
+    fontSize: normalize(18)
   },
   titleInvert: {
     color: colors.primary
