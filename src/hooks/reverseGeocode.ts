@@ -11,7 +11,7 @@ export const useReverseGeocode = () => {
       position,
       setValue
     }: {
-      areaServiceData: { postalCodes: string[] } | undefined;
+      areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
       position: { latitude: number; longitude: number };
       setValue: UseFormSetValue<TValues>;
