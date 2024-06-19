@@ -9,7 +9,7 @@ import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 
-const { EMAIL_REGEX, PHONE_NUMBER_REGEX } = consts;
+const { EMAIL_REGEX, PHONE_NUMBER_REGEX, INPUT_KEYS } = consts;
 
 export const SueReportUser = ({
   configuration,
@@ -31,8 +31,10 @@ export const SueReportUser = ({
     <View style={styles.container}>
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="name"
-          label={`${texts.sue.report.name} ${requiredInputs?.includes('name') ? '*' : ''}`}
+          name={INPUT_KEYS.SUE.NAME}
+          label={`${texts.sue.report.name} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.NAME) ? '*' : ''
+          }`}
           placeholder={texts.sue.report.name}
           textContentType="givenName"
           control={control}
@@ -43,9 +45,9 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="familyName"
+          name={INPUT_KEYS.SUE.FAMILY_NAME}
           label={`${texts.sue.report.familyName} ${
-            requiredInputs?.includes('familyName') ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.FAMILY_NAME) ? '*' : ''
           }`}
           placeholder={texts.sue.report.familyName}
           textContentType="familyName"
@@ -57,8 +59,10 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="email"
-          label={`${texts.sue.report.email} ${requiredInputs?.includes('email') ? '*' : ''}`}
+          name={INPUT_KEYS.SUE.EMAIL}
+          label={`${texts.sue.report.email} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.EMAIL) ? '*' : ''
+          }`}
           placeholder={texts.sue.report.email}
           keyboardType="email-address"
           autoCapitalize="none"
@@ -81,8 +85,10 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="phone"
-          label={`${texts.sue.report.phone} ${requiredInputs?.includes('phone') ? '*' : ''}`}
+          name={INPUT_KEYS.SUE.PHONE}
+          label={`${texts.sue.report.phone} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.PHONE) ? '*' : ''
+          }`}
           placeholder={texts.sue.report.phone}
           keyboardType="phone-pad"
           textContentType="telephoneNumber"
@@ -101,7 +107,7 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Controller
-          name="termsOfService"
+          name={INPUT_KEYS.SUE.TERMS_OF_SERVICE}
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}

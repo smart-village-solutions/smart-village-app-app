@@ -26,13 +26,15 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { colors, device, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { addToStore, formatSize, readFromStore } from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
+
+const { INPUT_KEYS } = consts;
 
 type TRequiredFields = {
   [key: string]: {
@@ -53,9 +55,9 @@ const sueProgressWithRequiredInputs = (
     }
   }
 
-  requiredInputs['city'] = !!geoMap?.locationIsRequired;
-  requiredInputs['postalCode'] = !!geoMap?.locationIsRequired;
-  requiredInputs['street'] = !!geoMap?.locationStreetIsRequired;
+  requiredInputs[INPUT_KEYS.SUE.CITY] = !!geoMap?.locationIsRequired;
+  requiredInputs[INPUT_KEYS.SUE.POSTAL_CODE] = !!geoMap?.locationIsRequired;
+  requiredInputs[INPUT_KEYS.SUE.STREET] = !!geoMap?.locationStreetIsRequired;
 
   return progress.map((item) => {
     item.requiredInputs = (item.requiredInputs || [])?.filter((key) => requiredInputs?.[key]);
@@ -157,7 +159,6 @@ const Content = ({
       return (
         <SueReportLocation
           areaServiceData={areaServiceData}
-          configuration={configuration}
           control={control}
           errorMessage={errorMessage}
           getValues={getValues}
@@ -275,18 +276,18 @@ export const SueReportScreen = ({
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
-      city: '',
-      description: '',
-      email: '',
-      familyName: '',
-      houseNumber: '',
-      images: '[]',
-      name: '',
-      phone: '',
-      postalCode: '',
-      street: '',
-      termsOfService: false,
-      title: ''
+      [INPUT_KEYS.SUE.CITY]: '',
+      [INPUT_KEYS.SUE.DESCRIPTION]: '',
+      [INPUT_KEYS.SUE.EMAIL]: '',
+      [INPUT_KEYS.SUE.FAMILY_NAME]: '',
+      [INPUT_KEYS.SUE.HOUSE_NUMBER]: '',
+      [INPUT_KEYS.SUE.IMAGES]: '[]',
+      [INPUT_KEYS.SUE.NAME]: '',
+      [INPUT_KEYS.SUE.PHONE]: '',
+      [INPUT_KEYS.SUE.POSTAL_CODE]: '',
+      [INPUT_KEYS.SUE.STREET]: '',
+      [INPUT_KEYS.SUE.TERMS_OF_SERVICE]: false,
+      [INPUT_KEYS.SUE.TITLE]: ''
     }
   });
 
@@ -362,7 +363,7 @@ export const SueReportScreen = ({
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
 
     const isAnyInputMissing = requiredInputs?.some(
-      (inputKey: keyof TValues) => !getValues()[inputKey]
+      (inputKey: keyof TValues) => !getValues(inputKey)
     );
 
     switch (currentProgress) {
@@ -372,10 +373,10 @@ export const SueReportScreen = ({
         }
         break;
       case 1:
-        if (!getValues('title')) {
+        if (!getValues(INPUT_KEYS.SUE.TITLE)) {
           return texts.sue.report.alerts.title;
-        } else if (getValues().images) {
-          const images = JSON.parse(getValues().images);
+        } else if (getValues(INPUT_KEYS.SUE.IMAGES)) {
+          const images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
 
           let totalSize = 0;
           const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
@@ -405,32 +406,32 @@ export const SueReportScreen = ({
         }
         break;
       case 2:
-        if (getValues('houseNumber') && !getValues('street')) {
+        if (getValues(INPUT_KEYS.SUE.HOUSE_NUMBER) && !getValues(INPUT_KEYS.SUE.STREET)) {
           return texts.sue.report.alerts.street;
         }
 
-        if (getValues('city')) {
-          if (!getValues('postalCode')) {
+        if (getValues(INPUT_KEYS.SUE.CITY)) {
+          if (!getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
             return texts.sue.report.alerts.postalCode;
           }
 
-          if (!areaServiceData?.postalCodes?.includes(getValues('postalCode'))) {
+          if (!areaServiceData?.postalCodes?.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))) {
             return errorMessage;
           }
         }
 
-        if (getValues('postalCode')) {
-          if (getValues('postalCode').length !== 5) {
+        if (getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
+          if (getValues(INPUT_KEYS.SUE.POSTAL_CODE).length !== 5) {
             return texts.sue.report.alerts.postalCodeLength;
           }
 
-          if (!getValues('city')) {
+          if (!getValues(INPUT_KEYS.SUE.CITY)) {
             return texts.sue.report.alerts.city;
           }
 
           if (
             !!limitOfPostalCodes.length &&
-            !limitOfPostalCodes.includes(getValues('postalCode'))
+            !limitOfPostalCodes.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))
           ) {
             return errorMessage;
           }
@@ -445,11 +446,15 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.missingAnyInput;
         }
 
-        if (!getValues('name') && !getValues('familyName') && !getValues('email')) {
+        if (
+          !getValues(INPUT_KEYS.SUE.NAME) &&
+          !getValues(INPUT_KEYS.SUE.FAMILY_NAME) &&
+          !getValues(INPUT_KEYS.SUE.EMAIL)
+        ) {
           return texts.sue.report.alerts.contact;
         }
 
-        if (!getValues().termsOfService) {
+        if (!getValues(INPUT_KEYS.SUE.TERMS_OF_SERVICE)) {
           scrollViewContentRef.current[currentProgress]?.scrollTo({
             x: 0,
             y: contentHeights[currentProgress],

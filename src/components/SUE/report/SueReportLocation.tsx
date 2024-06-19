@@ -8,7 +8,7 @@ import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { SettingsContext } from '../../../SettingsProvider';
-import { device, normalize, texts } from '../../../config';
+import { consts, device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
 import {
   useLastKnownPosition,
@@ -27,6 +27,8 @@ import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
+const { INPUT_KEYS } = consts;
+
 enum SueStatus {
   IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
   INVALID = 'TICKET_STATUS_INVALID',
@@ -38,7 +40,6 @@ enum SueStatus {
 /* eslint-disable complexity */
 export const SueReportLocation = ({
   areaServiceData,
-  configuration,
   control,
   errorMessage,
   getValues,
@@ -50,7 +51,6 @@ export const SueReportLocation = ({
   updateRegionFromImage
 }: {
   areaServiceData?: { postalCodes?: string[] };
-  configuration: any;
   control: any;
   errorMessage: string;
   getValues: UseFormGetValues<TValues>;
@@ -281,8 +281,10 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="street"
-          label={`${texts.sue.report.street} ${requiredInputs?.includes('street') ? '*' : ''}`}
+          name={INPUT_KEYS.SUE.STREET}
+          label={`${texts.sue.report.street} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? '*' : ''
+          }`}
           placeholder={texts.sue.report.street}
           textContentType="streetAddressLine1"
           control={control}
@@ -294,9 +296,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="houseNumber"
+          name={INPUT_KEYS.SUE.HOUSE_NUMBER}
           label={`${texts.sue.report.houseNumber} ${
-            requiredInputs?.includes('houseNumber') ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? '*' : ''
           }`}
           placeholder={texts.sue.report.houseNumber}
           textContentType="off"
@@ -309,9 +311,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="postalCode"
+          name={INPUT_KEYS.SUE.POSTAL_CODE}
           label={`${texts.sue.report.postalCode} ${
-            requiredInputs?.includes('postalCode') ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? '*' : ''
           }`}
           placeholder={texts.sue.report.postalCode}
           maxLength={5}
@@ -326,8 +328,10 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="city"
-          label={`${texts.sue.report.city} ${requiredInputs?.includes('city') ? '*' : ''}`}
+          name={INPUT_KEYS.SUE.CITY}
+          label={`${texts.sue.report.city} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? '*' : ''
+          }`}
           placeholder={texts.sue.report.city}
           control={control}
           textContentType="addressCity"
