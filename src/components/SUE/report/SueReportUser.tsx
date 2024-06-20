@@ -31,11 +31,11 @@ export const SueReportUser = ({
     <View style={styles.container}>
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name={INPUT_KEYS.SUE.NAME}
-          label={`${texts.sue.report.name} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.NAME) ? '*' : ''
+          name={INPUT_KEYS.SUE.FIRST_NAME}
+          label={`${texts.sue.report.firstName} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.FIRST_NAME) ? '*' : ''
           }`}
-          placeholder={texts.sue.report.name}
+          placeholder={texts.sue.report.firstName}
           textContentType="givenName"
           control={control}
           ref={firstNameRef}
@@ -45,11 +45,11 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name={INPUT_KEYS.SUE.FAMILY_NAME}
-          label={`${texts.sue.report.familyName} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.FAMILY_NAME) ? '*' : ''
+          name={INPUT_KEYS.SUE.LAST_NAME}
+          label={`${texts.sue.report.lastName} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.LAST_NAME) ? '*' : ''
           }`}
-          placeholder={texts.sue.report.familyName}
+          placeholder={texts.sue.report.lastName}
           textContentType="familyName"
           control={control}
           ref={lastNameRef}

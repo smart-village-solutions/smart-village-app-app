@@ -42,16 +42,26 @@ type TRequiredFields = {
   };
 };
 
+// we had to apply this mapping because the input keys from ConfigAPI and the keys in the code do not match.
+// TODO: this part of the code can be removed after the API update.
+const keyMapping = {
+  [INPUT_KEYS.SUE.NAME]: INPUT_KEYS.SUE.FIRST_NAME,
+  [INPUT_KEYS.SUE.FAMILY_NAME]: INPUT_KEYS.SUE.LAST_NAME
+};
+
+export const getMappedKey = (inputKey: string) => keyMapping[inputKey] || inputKey;
+
 const sueProgressWithRequiredInputs = (
-  fields: TRequiredFields,
+  requiredFields: TRequiredFields,
   geoMap: { locationIsRequired: boolean; locationStreetIsRequired: boolean },
   progress: TProgress[]
 ): TProgress[] => {
   const requiredInputs: { [key: string]: boolean } = {};
 
-  if (fields?.contact) {
-    for (const field in fields.contact) {
-      requiredInputs[field] = fields.contact[field];
+  if (requiredFields?.contact) {
+    for (const field in requiredFields.contact) {
+      const mappedKey = getMappedKey(field);
+      requiredInputs[mappedKey] = requiredFields.contact[field];
     }
   }
 
@@ -60,11 +70,14 @@ const sueProgressWithRequiredInputs = (
   requiredInputs[INPUT_KEYS.SUE.STREET] = !!geoMap?.locationStreetIsRequired;
 
   return progress.map((item) => {
-    item.requiredInputs = (item.requiredInputs || [])?.filter((key) => requiredInputs?.[key]);
+    item.requiredInputs = (item.requiredInputs || []).filter(
+      (key: string) => requiredInputs?.[getMappedKey(key)]
+    );
 
     for (const key of item.inputs || []) {
-      if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
-        item.requiredInputs.push(key);
+      const mappedKey = getMappedKey(key);
+      if (requiredInputs[mappedKey] && !item.requiredInputs.includes(mappedKey)) {
+        item.requiredInputs.push(mappedKey);
       }
     }
 
@@ -279,10 +292,10 @@ export const SueReportScreen = ({
       [INPUT_KEYS.SUE.CITY]: '',
       [INPUT_KEYS.SUE.DESCRIPTION]: '',
       [INPUT_KEYS.SUE.EMAIL]: '',
-      [INPUT_KEYS.SUE.FAMILY_NAME]: '',
+      [INPUT_KEYS.SUE.FIRST_NAME]: '',
       [INPUT_KEYS.SUE.HOUSE_NUMBER]: '',
       [INPUT_KEYS.SUE.IMAGES]: '[]',
-      [INPUT_KEYS.SUE.NAME]: '',
+      [INPUT_KEYS.SUE.LAST_NAME]: '',
       [INPUT_KEYS.SUE.PHONE]: '',
       [INPUT_KEYS.SUE.POSTAL_CODE]: '',
       [INPUT_KEYS.SUE.STREET]: '',
@@ -320,8 +333,6 @@ export const SueReportScreen = ({
 
     const formData = {
       addressString,
-      firstName: sueReportData?.name,
-      lastName: sueReportData?.familyName,
       lat: selectedPosition?.latitude,
       long: selectedPosition?.longitude,
       serviceCode: service?.serviceCode,
@@ -362,9 +373,10 @@ export const SueReportScreen = ({
   const alertTextGeneratorForMissingData = () => {
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
 
-    const isAnyInputMissing = requiredInputs?.some(
-      (inputKey: keyof TValues) => !getValues(inputKey)
-    );
+    const isAnyInputMissing = requiredInputs?.some((inputKey: string) => {
+      const mappedKey = getMappedKey(inputKey);
+      return !getValues(mappedKey);
+    });
 
     switch (currentProgress) {
       case 0:
