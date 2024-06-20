@@ -50,7 +50,8 @@ const requiredFieldsDefaults = {
   },
   contact: {
     email: false,
-    lastName: false,
+    familyName: false,
+    name: false,
     phone: false
   }
 };

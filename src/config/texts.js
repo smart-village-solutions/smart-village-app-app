@@ -980,10 +980,10 @@ export const texts = {
       emailHint:
         'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
       errorText: 'muss ausgefüllt werden',
-      name: 'Vorname',
+      firstName: 'Vorname',
       houseNumber: 'Hausnummer',
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
-      familyName: 'Nachname',
+      lastName: 'Nachname',
       mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
