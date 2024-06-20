@@ -142,6 +142,23 @@ export const consts = {
     WIDTH: 2
   },
 
+  INPUT_KEYS: {
+    SUE: {
+      CITY: 'city',
+      DESCRIPTION: 'description',
+      EMAIL: 'email',
+      FAMILY_NAME: 'familyName',
+      HOUSE_NUMBER: 'houseNumber',
+      IMAGES: 'images',
+      NAME: 'name',
+      PHONE: 'phone',
+      POSTAL_CODE: 'postalCode',
+      STREET: 'street',
+      TERMS_OF_SERVICE: 'termsOfService',
+      TITLE: 'title'
+    }
+  },
+
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
       BB_BUS: 'Bürger- und Unternehmensservice',
