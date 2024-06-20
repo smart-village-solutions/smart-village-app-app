@@ -13,7 +13,7 @@ export const SueReportServices = ({
   service,
   setService
 }: {
-  service: TService;
+  service?: TService;
   setService: any;
 }) => {
   const [loading, setLoading] = useState(true);

@@ -26,13 +26,15 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { colors, device, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { addToStore, formatSize, readFromStore } from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
+
+const { INPUT_KEYS } = consts;
 
 type TRequiredFields = {
   [key: string]: {
@@ -41,16 +43,21 @@ type TRequiredFields = {
 };
 
 const sueProgressWithRequiredInputs = (
-  progress: TProgress[],
-  fields: TRequiredFields
+  fields: TRequiredFields,
+  geoMap: { locationIsRequired: boolean; locationStreetIsRequired: boolean },
+  progress: TProgress[]
 ): TProgress[] => {
   const requiredInputs: { [key: string]: boolean } = {};
 
-  for (const section in fields) {
-    for (const field in fields[section]) {
-      requiredInputs[field] = fields[section][field];
+  if (fields?.contact) {
+    for (const field in fields.contact) {
+      requiredInputs[field] = fields.contact[field];
     }
   }
+
+  requiredInputs[INPUT_KEYS.SUE.CITY] = !!geoMap?.locationIsRequired;
+  requiredInputs[INPUT_KEYS.SUE.POSTAL_CODE] = !!geoMap?.locationIsRequired;
+  requiredInputs[INPUT_KEYS.SUE.STREET] = !!geoMap?.locationStreetIsRequired;
 
   return progress.map((item) => {
     item.requiredInputs = (item.requiredInputs || [])?.filter((key) => requiredInputs?.[key]);
@@ -69,15 +76,15 @@ export type TValues = {
   city: string;
   description: string;
   email: string;
-  firstName: string;
+  familyName: string;
   houseNumber: string;
   images: string;
-  lastName: string;
+  name: string;
   phone: string;
+  postalCode: string;
   street: string;
   termsOfService: boolean;
   title: string;
-  zipCode: string;
 };
 
 export type TService = {
@@ -88,7 +95,7 @@ export type TService = {
 };
 
 type TContent = {
-  areaServiceData: { postalCodes: string[] } | undefined;
+  areaServiceData?: { postalCodes?: string[] };
   configuration: {
     geoMap: {
       areas: any[];
@@ -104,13 +111,13 @@ type TContent = {
   };
   content: 'category' | 'description' | 'location' | 'user';
   requiredInputs: keyof TValues[];
-  service: TService | undefined;
+  service?: TService;
   setService: any;
   control: any;
   errorMessage: string;
   errors: any;
-  selectedPosition: Location.LocationObjectCoords | undefined;
-  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  selectedPosition?: Location.LocationObjectCoords;
+  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   updateRegionFromImage: boolean;
   setValue: UseFormSetValue<TValues>;
@@ -182,15 +189,15 @@ type TReports = {
   city: string;
   description: string;
   email: string;
-  firstName: string;
+  familyName: string;
   houseNumber: string;
   images: { uri: string; mimeType: string }[];
-  lastName: string;
+  name: string;
   phone: string;
+  postalCode: string;
   street: string;
   termsOfService: string;
   title: string;
-  zipCode: string;
 };
 
 type TProgress = {
@@ -217,7 +224,7 @@ export const SueReportScreen = ({
 
   const {
     city: limitOfCity = '',
-    zipCodes: limitOfZipCodes = [],
+    postalCodes: limitOfPostalCodes = [],
     errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
   } = limitOfArea;
 
@@ -269,18 +276,18 @@ export const SueReportScreen = ({
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
-      city: '',
-      description: '',
-      email: '',
-      firstName: '',
-      houseNumber: '',
-      images: '[]',
-      lastName: '',
-      phone: '',
-      street: '',
-      termsOfService: false,
-      title: '',
-      zipCode: ''
+      [INPUT_KEYS.SUE.CITY]: '',
+      [INPUT_KEYS.SUE.DESCRIPTION]: '',
+      [INPUT_KEYS.SUE.EMAIL]: '',
+      [INPUT_KEYS.SUE.FAMILY_NAME]: '',
+      [INPUT_KEYS.SUE.HOUSE_NUMBER]: '',
+      [INPUT_KEYS.SUE.IMAGES]: '[]',
+      [INPUT_KEYS.SUE.NAME]: '',
+      [INPUT_KEYS.SUE.PHONE]: '',
+      [INPUT_KEYS.SUE.POSTAL_CODE]: '',
+      [INPUT_KEYS.SUE.STREET]: '',
+      [INPUT_KEYS.SUE.TERMS_OF_SERVICE]: false,
+      [INPUT_KEYS.SUE.TITLE]: ''
     }
   });
 
@@ -305,14 +312,16 @@ export const SueReportScreen = ({
     if (
       !!sueReportData.street ||
       !!sueReportData.houseNumber ||
-      !!sueReportData.zipCode ||
+      !!sueReportData.postalCode ||
       !!sueReportData.city
     ) {
-      addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
+      addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.postalCode}; ${sueReportData.city}`;
     }
 
     const formData = {
       addressString,
+      firstName: sueReportData?.name,
+      lastName: sueReportData?.familyName,
       lat: selectedPosition?.latitude,
       long: selectedPosition?.longitude,
       serviceCode: service?.serviceCode,
@@ -354,7 +363,7 @@ export const SueReportScreen = ({
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
 
     const isAnyInputMissing = requiredInputs?.some(
-      (inputKey: keyof TValues) => !getValues()[inputKey]
+      (inputKey: keyof TValues) => !getValues(inputKey)
     );
 
     switch (currentProgress) {
@@ -364,10 +373,10 @@ export const SueReportScreen = ({
         }
         break;
       case 1:
-        if (!getValues().title) {
+        if (!getValues(INPUT_KEYS.SUE.TITLE)) {
           return texts.sue.report.alerts.title;
-        } else if (getValues().images) {
-          const images = JSON.parse(getValues().images);
+        } else if (getValues(INPUT_KEYS.SUE.IMAGES)) {
+          const images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
 
           let totalSize = 0;
           const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
@@ -397,30 +406,33 @@ export const SueReportScreen = ({
         }
         break;
       case 2:
-        if (getValues().houseNumber && !getValues().street) {
+        if (getValues(INPUT_KEYS.SUE.HOUSE_NUMBER) && !getValues(INPUT_KEYS.SUE.STREET)) {
           return texts.sue.report.alerts.street;
         }
 
-        if (getValues().city) {
-          if (!getValues().zipCode) {
-            return texts.sue.report.alerts.zipCode;
+        if (getValues(INPUT_KEYS.SUE.CITY)) {
+          if (!getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
+            return texts.sue.report.alerts.postalCode;
           }
 
-          if (!areaServiceData?.postalCodes?.includes(getValues('zipCode'))) {
+          if (!areaServiceData?.postalCodes?.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))) {
             return errorMessage;
           }
         }
 
-        if (getValues().zipCode) {
-          if (getValues().zipCode.length !== 5) {
-            return texts.sue.report.alerts.zipCodeLength;
+        if (getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
+          if (getValues(INPUT_KEYS.SUE.POSTAL_CODE).length !== 5) {
+            return texts.sue.report.alerts.postalCodeLength;
           }
 
-          if (!getValues().city) {
+          if (!getValues(INPUT_KEYS.SUE.CITY)) {
             return texts.sue.report.alerts.city;
           }
 
-          if (!!limitOfZipCodes.length && !limitOfZipCodes.includes(getValues().zipCode)) {
+          if (
+            !!limitOfPostalCodes.length &&
+            !limitOfPostalCodes.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))
+          ) {
             return errorMessage;
           }
         }
@@ -434,11 +446,15 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.missingAnyInput;
         }
 
-        if (!getValues().firstName && !getValues().lastName && !getValues().email) {
+        if (
+          !getValues(INPUT_KEYS.SUE.NAME) &&
+          !getValues(INPUT_KEYS.SUE.FAMILY_NAME) &&
+          !getValues(INPUT_KEYS.SUE.EMAIL)
+        ) {
           return texts.sue.report.alerts.contact;
         }
 
-        if (!getValues().termsOfService) {
+        if (!getValues(INPUT_KEYS.SUE.TERMS_OF_SERVICE)) {
           scrollViewContentRef.current[currentProgress]?.scrollTo({
             x: 0,
             y: contentHeights[currentProgress],
@@ -459,8 +475,8 @@ export const SueReportScreen = ({
   }, []);
 
   useEffect(() => {
-    setSueProgressWithConfig(sueProgressWithRequiredInputs(sueProgress, requiredFields));
-  }, [sueProgress, requiredFields]);
+    setSueProgressWithConfig(sueProgressWithRequiredInputs(requiredFields, geoMap, sueProgress));
+  }, [sueProgress, requiredFields, geoMap]);
 
   const storeReportValues = async () => {
     await addToStore(SUE_REPORT_VALUES, {

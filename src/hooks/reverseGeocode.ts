@@ -11,7 +11,7 @@ export const useReverseGeocode = () => {
       position,
       setValue
     }: {
-      areaServiceData: { postalCodes: string[] } | undefined;
+      areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
       position: { latitude: number; longitude: number };
       setValue: UseFormSetValue<TValues>;
@@ -28,13 +28,13 @@ export const useReverseGeocode = () => {
         const city = response?.address?.city || '';
         const houseNumber = response?.address?.house_number || '';
         const street = response?.address?.road || '';
-        const zipCode = response?.address?.postcode || '';
+        const postalCode = response?.address?.postcode || '';
 
-        if (!areaServiceData?.postalCodes?.includes(zipCode)) {
+        if (!areaServiceData?.postalCodes?.includes(postalCode)) {
           setValue('city', '');
           setValue('houseNumber', '');
           setValue('street', '');
-          setValue('zipCode', '');
+          setValue('postalCode', '');
 
           throw new Error(errorMessage);
         }
@@ -42,7 +42,7 @@ export const useReverseGeocode = () => {
         setValue('city', city);
         setValue('houseNumber', houseNumber);
         setValue('street', street);
-        setValue('zipCode', zipCode);
+        setValue('postalCode', postalCode);
       } catch (error) {
         throw new Error(error.message);
       }

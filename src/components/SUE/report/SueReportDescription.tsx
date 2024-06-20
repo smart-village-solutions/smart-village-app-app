@@ -9,7 +9,7 @@ import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
 
-const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
+const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
 export const SueReportDescription = ({
   areaServiceData,
@@ -21,12 +21,12 @@ export const SueReportDescription = ({
   setUpdateRegionFromImage,
   setValue
 }: {
-  areaServiceData: { postalCodes: string[] } | undefined;
+  areaServiceData?: { postalCodes?: string[] };
   control: any;
   errorMessage: string;
   configuration: any;
   requiredInputs: keyof TValues[];
-  setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {
@@ -37,7 +37,7 @@ export const SueReportDescription = ({
     <View style={styles.container}>
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="title"
+          name={INPUT_KEYS.SUE.TITLE}
           label={texts.sue.report.title + '*'}
           placeholder={texts.sue.report.title}
           control={control}
@@ -48,9 +48,9 @@ export const SueReportDescription = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="description"
+          name={INPUT_KEYS.SUE.DESCRIPTION}
           label={`${texts.sue.report.description} ${
-            requiredInputs?.includes('description') ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? '*' : ''
           }`}
           placeholder={texts.sue.report.description}
           multiline
@@ -61,7 +61,7 @@ export const SueReportDescription = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Controller
-          name="images"
+          name={INPUT_KEYS.SUE.IMAGES}
           render={({ field }) => (
             <ImageSelector
               {...{
@@ -79,7 +79,7 @@ export const SueReportDescription = ({
                 selectorType: IMAGE_SELECTOR_TYPES.SUE,
                 errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
                 item: {
-                  name: 'images',
+                  name: INPUT_KEYS.SUE.IMAGES,
                   infoText: texts.sue.report.imageHint(
                     configuration?.limitation?.maxFileUploads?.value
                   ),
