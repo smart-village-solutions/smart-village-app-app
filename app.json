@@ -87,7 +87,6 @@
       "expo-font",
       "expo-localization",
       "expo-secure-store",
-      "sentry-expo",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }

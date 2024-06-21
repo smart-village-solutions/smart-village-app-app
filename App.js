@@ -1,9 +1,9 @@
+import * as Sentry from '@sentry/react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as Sentry from 'sentry-expo';
 
 import { MainApp } from './src';
 import { auth } from './src/auth';
@@ -77,7 +77,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);
 
 const styles = StyleSheet.create({
   flex: {
