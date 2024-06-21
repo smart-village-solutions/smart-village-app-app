@@ -5323,11 +5323,6 @@ expo-notifications@~0.28.9:
     expo-constants "~16.0.0"
     fs-extra "^9.1.0"
 
-expo-permissions@~14.2.1:
-  version "14.2.1"
-  resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-14.2.1.tgz#da4a7ef45e13da99032960528267cc9ca8e964b8"
-  integrity sha512-jXGnOODtDMFvK7cwo7wIRPcnA7m1bie80gJ5BdL6Vs5kgCU7+RCLOCp3sBw7TKRPIlVMmQDhZA62bGzoBV0hkA==
-
 expo-screen-orientation@~7.0.5:
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/expo-screen-orientation/-/expo-screen-orientation-7.0.5.tgz#0a517982151c6519fa4b10ce27047de39c1f92cf"

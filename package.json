@@ -77,7 +77,6 @@
     "expo-localization": "~15.0.3",
     "expo-location": "~17.0.1",
     "expo-notifications": "~0.28.9",
-    "expo-permissions": "~14.2.1",
     "expo-screen-orientation": "~7.0.5",
     "expo-secure-store": "~13.0.1",
     "expo-splash-screen": "~0.27.5",
