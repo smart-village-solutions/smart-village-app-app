@@ -97,12 +97,8 @@ export const SueReportLocation = ({
     status: Object.values(SueStatus).map((status) => status)
   };
 
-  const { data, isLoading } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS, queryVariables],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables),
-    {
-      cacheTime: moment().endOf('day').diff(now) // end of day
-    }
+  const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
+    getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
   );
 
   const mapMarkers = useMemo(
