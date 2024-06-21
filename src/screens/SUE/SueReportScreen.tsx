@@ -386,7 +386,7 @@ export const SueReportScreen = ({
         break;
       case 1:
         if (!getValues(INPUT_KEYS.SUE.TITLE)) {
-          return texts.sue.report.alerts.title;
+          return texts.sue.report.alerts.missingAnyInput;
         } else if (getValues(INPUT_KEYS.SUE.IMAGES)) {
           const images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
 
