@@ -4,7 +4,7 @@
   },
   "build": {
     "production": {
-      "node": "v18.19.1",
+      "node": "18.19.1",
       "yarn": "1.22.19",
       "channel": "production"
     },
