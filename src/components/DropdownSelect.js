@@ -20,6 +20,7 @@ export const DropdownSelect = ({
   setData,
   label,
   labelWrapperStyle,
+  placeholder,
   showSearch,
   searchInputStyle,
   renderSearch,
@@ -60,7 +61,9 @@ export const DropdownSelect = ({
           accessible
           style={styles.dropdownRowWrapper}
         >
-          <RegularText primary={highlighted}>{rowData}</RegularText>
+          <RegularText primary={highlighted} placeholder={rowData == placeholder}>
+            {rowData}
+          </RegularText>
         </Wrapper>
       );
     },
@@ -130,7 +133,7 @@ export const DropdownSelect = ({
         keyboardShouldPersistTaps="handled"
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText style={styles.selectedValueText}>
+          <RegularText style={styles.selectedValueText} placeholder={selectedValue == placeholder}>
             {multipleSelect ? selectedMultipleValues : selectedValue}
           </RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
@@ -174,6 +177,7 @@ DropdownSelect.propTypes = {
   multipleSelect: PropTypes.bool,
   setData: PropTypes.func,
   label: PropTypes.string,
+  placeholder: PropTypes.string,
   labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
   showSearch: PropTypes.bool,
   searchInputStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),

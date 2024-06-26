@@ -1,19 +1,34 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import { Card } from 'react-native-elements';
+import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 
 import { Image } from './Image';
+import { SueCategory, SueImageFallback, SueStatus } from './SUE';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
+import { Wrapper, WrapperHorizontal } from './Wrapper';
 
-const renderCardContent = (item, horizontal) => {
-  const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
+/* eslint-disable complexity */
+const renderCardContent = (item, horizontal, sue) => {
+  const {
+    address,
+    appDesignSystem = {},
+    aspectRatio,
+    iconName,
+    picture,
+    requestedDatetime,
+    serviceName,
+    status,
+    subtitle,
+    title,
+    topTitle
+  } = item;
   const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
-  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
+  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
 
   const cardContent = [];
 
@@ -21,17 +36,11 @@ const renderCardContent = (item, horizontal) => {
     picture: () =>
       !!picture?.url && (
         <Image
+          borderRadius={sue ? 0 : imageBorderRadius}
+          childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
+          containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
           source={{ uri: picture.url }}
-          childrenContainerStyle={stylesWithProps({ horizontal }).image}
-          containerStyle={[styles.imageContainer, imageStyle]}
-          borderRadius={imageBorderRadius}
         />
-      ),
-    overtitle: () =>
-      !!overtitle && (
-        <RegularText small style={[generalStyle, overtitleStyle]}>
-          {overtitle}
-        </RegularText>
       ),
     subtitle: () =>
       !!subtitle && (
@@ -44,30 +53,65 @@ const renderCardContent = (item, horizontal) => {
         <BoldText style={[generalStyle, titleStyle]}>
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </BoldText>
-      )
+      ),
+    topTitle: () => (
+      <RegularText small style={[!!topTitleStyle && topTitleStyle]}>
+        {topTitle}
+      </RegularText>
+    ),
+
+    // SUE
+    sue: {
+      address: () => (
+        <Wrapper>
+          <RegularText small>{address}</RegularText>
+        </Wrapper>
+      ),
+      category: () => (
+        <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
+      ),
+      divider: () => (
+        <Wrapper style={styles.noPaddingTop}>
+          <Divider />
+        </Wrapper>
+      ),
+      pictureFallback: () => (
+        <SueImageFallback
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImageContainer]}
+        />
+      ),
+      status: () => <SueStatus iconName={iconName} status={status} />
+    }
   };
 
   if (contentSequence?.length) {
     contentSequence.forEach((item) => {
-      if (sequenceMap[item]) {
-        cardContent.push(sequenceMap[item]());
-      }
+      sequenceMap[item] && cardContent.push(sequenceMap[item]());
     });
   } else {
-    cardContent.push(sequenceMap.picture());
-    cardContent.push(sequenceMap.overtitle());
-    cardContent.push(sequenceMap.subtitle());
-    cardContent.push(sequenceMap.title());
+    picture?.url && cardContent.push(sequenceMap.picture());
+    topTitle && cardContent.push(sequenceMap.topTitle());
+    subtitle && cardContent.push(sequenceMap.subtitle());
+    !sue && title && cardContent.push(sequenceMap.title());
+
+    if (sue) {
+      !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
+      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.category());
+      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.divider());
+      title && cardContent.push(<WrapperHorizontal>{sequenceMap.title()}</WrapperHorizontal>);
+      address && cardContent.push(sequenceMap.sue.address());
+      status && cardContent.push(sequenceMap.sue.status());
+    }
   }
 
   return cardContent;
 };
+/* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal, item }) => {
+export const CardListItem = memo(({ navigation, horizontal, item, sue }) => {
   const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
   const { containerStyle, contentContainerStyle } = appDesignSystem;
 
-  // TODO: count articles logic could to be implemented
   return (
     <Touchable
       accessibilityLabel={`${subtitle} (${title}) ${consts.a11yLabel.button}`}
@@ -78,10 +122,11 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
         <View
           style={[
             stylesWithProps({ horizontal }).contentContainer,
-            !!contentContainerStyle && contentContainerStyle
+            !!contentContainerStyle && contentContainerStyle,
+            sue && styles.sueContentContainer
           ]}
         >
-          {renderCardContent(item, horizontal)}
+          {renderCardContent(item, horizontal, sue)}
         </View>
       </Card>
     </Touchable>
@@ -106,12 +151,27 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignSelf: 'center',
     marginBottom: normalize(7)
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  sueContentContainer: {
+    borderColor: colors.gray20,
+    borderRadius: normalize(8),
+    borderWidth: 1,
+    width: '100%'
+  },
+  sueImageContainer: {
+    alignSelf: 'auto',
+    borderTopLeftRadius: normalize(8),
+    borderTopRightRadius: normalize(8),
+    width: '100%'
   }
 });
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal }) => {
+const stylesWithProps = ({ aspectRatio, horizontal }) => {
   let width = imageWidth();
 
   if (horizontal) {
@@ -126,7 +186,7 @@ const stylesWithProps = ({ horizontal }) => {
       width: maxWidth
     },
     image: {
-      height: imageHeight(maxWidth),
+      height: imageHeight(maxWidth, aspectRatio),
       width: maxWidth
     }
   });
@@ -138,9 +198,11 @@ CardListItem.displayName = 'CardListItem';
 CardListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  horizontal: PropTypes.bool
+  horizontal: PropTypes.bool,
+  sue: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
-  horizontal: false
+  horizontal: false,
+  sue: false
 };

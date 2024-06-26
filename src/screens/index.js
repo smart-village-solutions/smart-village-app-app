@@ -4,6 +4,7 @@ export * from './DefectReport';
 export * from './doc';
 export * from './Noticeboard';
 export * from './OParl';
+export * from './SUE';
 export * from './volunteer';
 
 export * from './AppIntroScreen';

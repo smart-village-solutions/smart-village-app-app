@@ -3,10 +3,11 @@ import React from 'react';
 
 import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
+import { QUERY_TYPES } from '../../queries';
 import {
-  AboutScreen,
   ARInfoScreen,
   ARShowScreen,
+  AboutScreen,
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
@@ -16,8 +17,8 @@ import {
   ConsulHomeScreen,
   ConsulIndexScreen,
   ConsulLoginScreen,
-  ConsulRegisteredScreen,
   ConsulRegisterScreen,
+  ConsulRegisteredScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
   DefectReportFormScreen,
@@ -29,7 +30,6 @@ import {
   EncounterScannerScreen,
   EncounterUserDetailScreen,
   FeedbackScreen,
-  getTilesScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -46,6 +46,10 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   SettingsScreen,
+  SueListScreen,
+  SueMapScreen,
+  SueMapViewScreen,
+  SueReportScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
   TilesScreen,
@@ -63,7 +67,8 @@ import {
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  getTilesScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -72,7 +77,6 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
-import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -343,6 +347,38 @@ export const defaultStackConfig = ({
       screenComponent: SettingsScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer }),
       initialParams: { title: texts.screenTitles.settings }
+    },
+    {
+      routeName: ScreenName.SueList,
+      screenComponent: SueListScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.listView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueMap,
+      screenComponent: SueMapScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.mapView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueReport,
+      screenComponent: SueReportScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.reportView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueReportMapView,
+      screenComponent: SueMapViewScreen,
+      screenOptions: { title: texts.screenTitles.mapView }
     },
     {
       routeName: ScreenName.SurveyDetail,

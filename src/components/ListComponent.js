@@ -48,8 +48,10 @@ export const ListComponent = ({
   fetchMoreData,
   horizontal,
   isIndexStartingAt1,
+  isLoading,
   ListEmptyComponent,
   ListFooterComponent,
+  ListFooterLoadingIndicator,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -77,8 +79,10 @@ export const ListComponent = ({
       data={data}
       refetch={refetch}
       fetchMoreData={fetchMoreData}
+      isLoading={isLoading}
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={ListFooterComponent}
+      ListFooterLoadingIndicator={ListFooterLoadingIndicator}
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
@@ -97,8 +101,10 @@ ListComponent.propTypes = {
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
   isIndexStartingAt1: PropTypes.bool,
+  isLoading: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterComponent: PropTypes.object,
+  ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,

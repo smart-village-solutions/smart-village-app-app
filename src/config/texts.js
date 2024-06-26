@@ -444,6 +444,19 @@ export const texts = {
       enabled: 'Senden'
     }
   },
+  filter: {
+    date: 'Datum',
+    hideFilter: 'Filter ausblenden',
+    resetFilter: 'Filter zurücksetzen',
+    showFilter: 'Filter anzeigen',
+    search: 'Was suchen Sie?',
+    sorting: {
+      updatedDatetime: 'Änderungsdatum',
+      requestedDatetime: 'Erstelldatum',
+      status: 'Status',
+      title: 'Betreff'
+    }
+  },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
@@ -810,6 +823,11 @@ export const texts = {
     pointsOfInterest: 'Orte und Touren',
     service: appJson.expo.name,
     settings: 'Einstellungen',
+    sue: {
+      mapView: 'Meldungskarte',
+      listView: 'Meldungsliste',
+      reportView: 'Etwas melden'
+    },
     survey: 'Umfrage',
     surveys: 'Umfragen',
     volunteer: {
@@ -906,6 +924,87 @@ export const texts = {
     onboarding: 'App-Einführung',
     pushNotifications: 'Push-Benachrichtigungen'
   },
+  sue: {
+    answer: 'Antworten',
+    currentStatus: 'Aktueller Status',
+    datetime: 'Datum und Uhrzeit der Meldung',
+    description: 'Beschreibung',
+    location: 'Ort',
+    report: {
+      addImage: 'Bilder hinzufügen',
+      alerts: {
+        address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
+        close: 'Schließen',
+        contact: 'Bitte geben Sie mindestens eine Kontaktinformation ein',
+        city: 'Bitte geben Sie den Ort an',
+        dataDeleteAlert: {
+          cancel: 'Nein',
+          deleteButton: 'Löschen',
+          message: 'Sind Sie sicher, dass Sie Ihre eingegebenen Meldungsdaten löschen möchten?',
+          ok: 'Ja',
+          title: 'Eingabe löschen'
+        },
+        hint: 'Hinweis',
+        imageType: 'Der verwendete Dateityp wird nicht unterstützt.',
+        imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
+        imageLocation:
+          'Die Adressinformationen wurden dem Bild entnommen und werden im nächsten Schritt vorausgefüllt.',
+        imagesTotalSizeError: (size) =>
+          `Die ausgewählten Bilder dürfen insgesamt nicht größer als ${size} sein.`,
+        imageSelectAlert: {
+          camera: 'Bild aufnehmen',
+          cancel: 'Abbrechen',
+          description:
+            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Galerie auswählen?',
+          gallery: 'Galerie öffnen',
+          title: 'Bildquelle auswählen'
+        },
+        invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
+        invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
+        limitOfArea: (city) => `Bitte geben Sie nur Standorte für ${city} ein.`,
+        location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
+        no: 'Nein',
+        myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
+        serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
+        street: 'Bitte geben Sie die Straße an',
+        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
+        title: 'Bitte kurz beschreiben, worum es geht.',
+        yes: 'Ja',
+        postalCode: 'Bitte geben Sie die Postleitzahl an',
+        postalCodeLength: 'Postleitzahl muss 5-stellig sein.'
+      },
+      back: 'Zurück',
+      city: 'Ort',
+      description: 'Ausführliche Beschreibung',
+      email: 'E-Mail-Adresse',
+      emailHint:
+        'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
+      errorText: 'muss ausgefüllt werden',
+      firstName: 'Vorname',
+      houseNumber: 'Hausnummer',
+      imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
+      lastName: 'Nachname',
+      mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
+      next: 'Weiter',
+      phone: 'Telefonnummer',
+      sendReport: 'Meldung senden',
+      sendReportDone: {
+        feedbackHeader: 'Gib uns dein Feedback',
+        messagePlaceholder: 'Deine Verbesserungsidee',
+        messageTitle: 'Hast du noch eine Verbesserungsidee?',
+        ratingTitle: 'Wie zufrieden bist du mit der App?',
+        sendButton: 'Absenden',
+        toEntryList: 'Zur Meldungsliste'
+      },
+      street: 'Straße',
+      termsOfService: 'Datenschutzbestimmungen',
+      title: 'Kurze Beschreibung',
+      postalCode: 'Postleitzahl'
+    },
+    result: 'Ergebnis',
+    results: 'Ergebnisse'
+  },
   survey: {
     archive: 'Umfrage-Archiv',
     answerLabelPrefix: {
@@ -979,6 +1078,12 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
+  },
+  updateAlert: {
+    updateNow: 'Jetzt aktualisieren',
+    updateRequiredMessage:
+      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisieren Sie jetzt, um von den neuesten Verbesserungen zu profitieren.',
+    updateRequiredTitle: 'Aktualisierung erforderlich'
   },
   volunteer: {
     abort: 'Abbrechen',

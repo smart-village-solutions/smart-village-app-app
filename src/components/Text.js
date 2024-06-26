@@ -81,6 +81,7 @@ export const RegularText = styled(Text)`
     props.smallest &&
     css`
       font-size: ${normalize(12)};
+      line-height: ${normalize(16)};
     `};
 
   ${(props) =>

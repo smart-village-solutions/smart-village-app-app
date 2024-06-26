@@ -17,6 +17,8 @@ import {
   drawerMenu,
   editSetting,
   emptySection,
+  filter,
+  gps,
   heartEmpty,
   heartFilled,
   home,
@@ -26,6 +28,7 @@ import {
   list,
   location,
   lunch,
+  lupe,
   mail,
   member,
   notVerifiedBadge,
@@ -40,12 +43,20 @@ import {
   send,
   service,
   share,
+  sueCheckSmall,
+  sueClock,
+  sueClockSmall,
+  sueEye,
+  sueEyeSmall,
+  sueFace,
+  sueFaceSmall,
   trash,
   unvisible,
   url,
   verifiedBadge,
   visible
 } from '../icons';
+import { sueBroom } from '../icons/SUE/broom';
 
 import { colors } from './colors';
 import { device } from './device';
@@ -104,6 +115,7 @@ const NamedIcon = ({
 export const Icon = {
   About: (props: IconProps) => <NamedIcon name="menu" {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
+  Albums: (props: IconProps) => <NamedIcon name="albums" {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="arrow-down-circle" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
@@ -124,6 +136,8 @@ export const Icon = {
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <NamedIcon name="expand" {...props} />,
+  Filter: (props: IconProps) => <SvgIcon xml={filter} {...props} />,
+  GPS: (props: IconProps) => <SvgIcon xml={gps} {...props} />,
   Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
@@ -133,6 +147,7 @@ export const Icon = {
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
+  Lupe: (props: IconProps) => <SvgIcon xml={lupe} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
   Member: (props: IconProps) => <SvgIcon xml={member} {...props} />,
   NamedIcon,
@@ -159,6 +174,14 @@ export const Icon = {
       <SvgIcon xml={share} {...props} />
     ),
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
+  SueBroom: (props: IconProps) => <SvgIcon xml={sueBroom} {...props} />,
+  SueCheckSmall: (props: IconProps) => <SvgIcon xml={sueCheckSmall} {...props} />,
+  SueClock: (props: IconProps) => <SvgIcon xml={sueClock} {...props} />,
+  SueClockSmall: (props: IconProps) => <SvgIcon xml={sueClockSmall} {...props} />,
+  SueEye: (props: IconProps) => <SvgIcon xml={sueEye} {...props} />,
+  SueEyeSmall: (props: IconProps) => <SvgIcon xml={sueEyeSmall} {...props} />,
+  SueFace: (props: IconProps) => <SvgIcon xml={sueFace} {...props} />,
+  SueFaceSmall: (props: IconProps) => <SvgIcon xml={sueFaceSmall} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
   Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,

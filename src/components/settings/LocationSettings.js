@@ -19,7 +19,7 @@ export const baseLocationMarker = {
 };
 
 export const getLocationMarker = (locationObject) => ({
-  ...baseLocationMarker,
+  iconName: locationObject?.iconName || baseLocationMarker.iconName,
   position: {
     ...locationObject.coords,
     latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
@@ -102,7 +102,6 @@ export const LocationSettings = () => {
       <Collapsible collapsed={!showMap}>
         <Map
           locations={locations}
-          mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
           onMapPress={({ nativeEvent }) => {
             setSelectedPosition({
               ...nativeEvent.coordinate

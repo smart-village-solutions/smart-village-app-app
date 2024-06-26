@@ -14,11 +14,14 @@ const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
+/* eslint-disable complexity */
 export const VerticalList = ({
   data,
   fetchMoreData,
   isIndexStartingAt1,
+  isLoading,
   ListEmptyComponent,
+  ListFooterLoadingIndicator,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -64,8 +67,12 @@ export const VerticalList = ({
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
+            if (ListFooterLoadingIndicator) {
+              return <ListFooterLoadingIndicator />;
+            }
+
             return (
-              <ActivityIndicator color={colors.refreshControl} style={{ margin: normalize(14) }} />
+              <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
             );
           } else if (listEndReached && showBackToTop) {
             return (
@@ -86,6 +93,14 @@ export const VerticalList = ({
               </>
             );
           }
+        } else if (isLoading) {
+          if (ListFooterLoadingIndicator) {
+            return <ListFooterLoadingIndicator />;
+          }
+
+          return (
+            <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
+          );
         } else if (
           query == QUERY_TYPES.POINTS_OF_INTEREST &&
           switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON
@@ -106,10 +121,14 @@ export const VerticalList = ({
     />
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1
+  },
+  loadingIndicator: {
+    margin: normalize(14)
   },
   spacer: {
     height: normalize(70)
@@ -120,8 +139,10 @@ VerticalList.propTypes = {
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   isIndexStartingAt1: PropTypes.bool,
+  isLoading: PropTypes.bool,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
+  ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
@@ -133,6 +154,7 @@ VerticalList.propTypes = {
 };
 
 VerticalList.defaultProps = {
+  isLoading: false,
   noSubtitle: false,
   leftImage: false,
   isIndexStartingAt1: false

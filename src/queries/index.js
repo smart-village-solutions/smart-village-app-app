@@ -1,5 +1,14 @@
 // IMPORT TYPES
 // IMPORT CREATE QUERIES
+import {
+  areaService,
+  configurations,
+  priorities,
+  requests,
+  requestsWithServiceRequestId,
+  services,
+  statuses
+} from './SUE';
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
 // IMPORT GET QUERIES
 import { GET_CATEGORIES } from './categories';
@@ -88,6 +97,15 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.CONSUL.PROPOSALS]: GET_PROPOSALS,
     [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: PUBLIC_COMMENT,
     [QUERY_TYPES.CONSUL.USER]: USER,
+
+    // SUE QUERIES
+    [QUERY_TYPES.SUE.AREA_SERVICE]: areaService,
+    [QUERY_TYPES.SUE.CONFIGURATIONS]: configurations,
+    [QUERY_TYPES.SUE.PRIORITIES]: priorities,
+    [QUERY_TYPES.SUE.REQUESTS]: requests,
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: requestsWithServiceRequestId,
+    [QUERY_TYPES.SUE.SERVICES]: services,
+    [QUERY_TYPES.SUE.STATUSES]: statuses,
 
     // VOLUNTEER QUERIES
     [QUERY_TYPES.VOLUNTEER.APPLICANTS]: groupMembership,

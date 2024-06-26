@@ -83,6 +83,12 @@
           }
         }
       ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
+        }
+      ],
       "expo-asset",
       "expo-font",
       "expo-localization",
