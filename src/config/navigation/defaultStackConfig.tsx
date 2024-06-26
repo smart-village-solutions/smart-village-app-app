@@ -3,6 +3,7 @@ import React from 'react';
 
 import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
+import { QUERY_TYPES } from '../../queries';
 import {
   AboutScreen,
   ARInfoScreen,
@@ -72,7 +73,6 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
-import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 

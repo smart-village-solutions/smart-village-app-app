@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ListItem } from 'react-native-elements';
+import { Badge, ListItem } from 'react-native-elements';
+import { StyleSheet } from 'react-native';
 
 import { colors, consts, Icon, normalize } from '../config';
 
@@ -32,10 +33,7 @@ export class CategoryListItem extends React.PureComponent {
             : true
         }
         topDivider={topDivider !== undefined ? topDivider : false}
-        containerStyle={{
-          backgroundColor: colors.transparent,
-          paddingVertical: normalize(12)
-        }}
+        containerStyle={styles.container}
         onPress={() => navigation.push(name, params)}
         delayPressIn={0}
         Component={Touchable}
@@ -43,14 +41,33 @@ export class CategoryListItem extends React.PureComponent {
       >
         <ListItem.Content>
           {noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
-          <BoldText noSubtitle={noSubtitle}>{`${title} (${count})`}</BoldText>
+          <BoldText noSubtitle={noSubtitle}>{title}</BoldText>
         </ListItem.Content>
+
+        <Badge value={count} badgeStyle={styles.badge} textStyle={styles.badgeText} />
 
         <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
       </ListItem>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.transparent,
+    paddingVertical: normalize(12)
+  },
+  badge: {
+    backgroundColor: colors.transparent,
+    flex: 1
+  },
+  badgeText: {
+    color: colors.darkText,
+    fontSize: normalize(14),
+    fontFamily: 'bold',
+    lineHeight: normalize(20)
+  }
+});
 
 CategoryListItem.propTypes = {
   navigation: PropTypes.object.isRequired,

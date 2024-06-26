@@ -240,7 +240,7 @@ export const EventRecords = ({ navigation, route }) => {
   ) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -311,7 +311,7 @@ export const EventRecords = ({ navigation, route }) => {
         ListEmptyComponent={
           loading ? (
             <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
+              <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           ) : showCalendar ? (
             <Calendar

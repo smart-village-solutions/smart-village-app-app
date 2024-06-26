@@ -22,6 +22,7 @@ export const VerticalList = ({
   ListHeaderComponent,
   navigation,
   noSubtitle,
+  noOvertitle,
   openWebScreen,
   query,
   refetch,
@@ -37,6 +38,7 @@ export const VerticalList = ({
   const renderItem = useRenderItem(query, navigation, {
     isIndexStartingAt1,
     noSubtitle,
+    noOvertitle,
     openWebScreen,
     refetch
   });
@@ -124,6 +126,7 @@ VerticalList.propTypes = {
   ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
+  noOvertitle: PropTypes.bool,
   noSubtitle: PropTypes.bool,
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
@@ -133,7 +136,8 @@ VerticalList.propTypes = {
 };
 
 VerticalList.defaultProps = {
-  noSubtitle: false,
+  isIndexStartingAt1: false,
   leftImage: false,
-  isIndexStartingAt1: false
+  noOvertitle: false,
+  noSubtitle: false
 };

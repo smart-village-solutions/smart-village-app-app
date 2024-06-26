@@ -93,7 +93,7 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
 
         return (
           <View key={index}>
-            <InfoBox>
+            <InfoBox style={styles.wrap}>
               <Icon.Location style={styles.margin} />
               {isPressable ? (
                 <TouchableOpacity onPress={() => addressOnPress(filteredAddress, item.geoLocation)}>
@@ -131,5 +131,8 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
 const styles = StyleSheet.create({
   margin: {
     marginRight: normalize(12)
+  },
+  wrap: {
+    width: '90%'
   }
 });

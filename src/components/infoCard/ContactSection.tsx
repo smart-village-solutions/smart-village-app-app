@@ -18,7 +18,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
   return (
     <>
       {(!!contact.lastName || !!contact.firstName) && (
-        <InfoBox>
+        <InfoBox style={styles.wrap}>
           <RNEIcon name="person" type="material" color={colors.primary} iconStyle={styles.margin} />
           {!!contact.firstName && <RegularText>{contact.firstName} </RegularText>}
           {!!contact.lastName && <RegularText>{contact.lastName}</RegularText>}
@@ -26,7 +26,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       )}
 
       {!!contact.phone && (
-        <InfoBox>
+        <InfoBox style={styles.wrap}>
           <Icon.Phone style={styles.margin} />
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
@@ -41,7 +41,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       )}
 
       {!!contact.email && (
-        <InfoBox>
+        <InfoBox style={styles.wrap}>
           <Icon.Mail style={styles.margin} />
           <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
             <RegularText
@@ -57,7 +57,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       )}
 
       {!!contact.fax && (
-        <InfoBox>
+        <InfoBox style={styles.wrap}>
           <RNEIcon name="print" type="material" color={colors.primary} iconStyle={styles.margin} />
           <RegularText primary accessibilityLabel={`(${a11yText.fax} ${contact.fax}`}>
             {contact.fax}
@@ -89,5 +89,8 @@ export const ContactSection = ({
 const styles = StyleSheet.create({
   margin: {
     marginRight: normalize(12)
+  },
+  wrap: {
+    width: '90%'
   }
 });

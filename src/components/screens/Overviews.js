@@ -269,7 +269,7 @@ export const Overviews = ({ navigation, route }) => {
           />
         )
       });
-    } else if (!route.params?.usedAsInitialScreen) {
+    } else {
       navigation.setOptions({
         headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
       });
@@ -305,7 +305,7 @@ export const Overviews = ({ navigation, route }) => {
   if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -378,11 +378,11 @@ export const Overviews = ({ navigation, route }) => {
             ListEmptyComponent={
               loading ? (
                 <LoadingContainer>
-                  <ActivityIndicator color={colors.accent} />
+                  <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               ) : (
                 <EmptyMessage
-                  title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                  title={!categories?.length ? texts.empty.list : ''}
                   showIcon={!categories?.length}
                 />
               )
@@ -427,7 +427,9 @@ export const Overviews = ({ navigation, route }) => {
           />
         </>
       )}
-      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+      {!loading &&
+        !!listItems?.length &&
+        query === QUERY_TYPES.POINTS_OF_INTEREST &&
         switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON &&
         filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
           <IndexMapSwitch filter={filterType} setFilter={setFilterType} />

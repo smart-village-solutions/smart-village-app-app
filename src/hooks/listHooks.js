@@ -52,6 +52,7 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
  * @param {{
  *          horizontal?: boolean;
  *          isIndexStartingAt1?: boolean
+ *          noOvertitle?: boolean;
  *          noSubtitle?: boolean;
  *          openWebScreen?: () => void;
  *          queryVariables?: object
@@ -60,7 +61,9 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
-  const { listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
 
   const listType = getListType(query, listTypesSettings);
 
@@ -73,7 +76,14 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
 
-        return <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />;
+        return (
+          <CardListItem
+            navigation={navigation}
+            horizontal={options.horizontal}
+            noOvertitle={options.noOvertitle}
+            item={item}
+          />
+        );
       };
       break;
     }
@@ -91,7 +101,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 item.bottomDivider ??
                 (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              leftImage: true
+            }}
           />
         );
       };
@@ -115,13 +130,19 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 item={{ ...item, bottomDivider: true }}
                 navigation={navigation}
                 noSubtitle={options.noSubtitle}
+                noOvertitle={options.noOvertitle}
                 withCard
               />
             );
           }
 
           return (
-            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+            <CardListItem
+              navigation={navigation}
+              horizontal={options.horizontal}
+              noOvertitle={options.noOvertitle}
+              item={item}
+            />
           );
         } else {
           return (
@@ -134,6 +155,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
               }}
               navigation={navigation}
               noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
               leftImage
               withCard
             />
@@ -143,7 +165,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => {
+      renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
@@ -184,12 +206,15 @@ export const useRenderItem = (query, navigation, options = {}) => {
               ...item,
               bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              listsWithoutArrows
+            }}
           />
         );
       };
-
-      break;
     }
   }
 

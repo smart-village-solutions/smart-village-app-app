@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import {
   EventRecord,
@@ -20,6 +20,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
+import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
@@ -85,7 +86,6 @@ export const DetailScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details ?? {};
-  const [today] = useState(new Date().toISOString());
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -105,6 +105,11 @@ export const DetailScreen = ({ navigation, route }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
+
+    // this will trigger the onRefresh functions provided to the `useDetailRefresh` hook in other
+    // components.
+    DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+
     isConnected && (await refetch());
     setRefreshing(false);
   };
@@ -118,7 +123,7 @@ export const DetailScreen = ({ navigation, route }) => {
   return (
     <Query
       query={getQuery(query)}
-      variables={{ id: queryVariables.id, date: today }}
+      variables={{ id: queryVariables.id }}
       fetchPolicy={query === QUERY_TYPES.EVENT_RECORD ? 'cache-and-network' : fetchPolicy}
     >
       {({ data, loading, refetch, networkStatus }) => {
