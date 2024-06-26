@@ -9,7 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   if (sentryApi?.config) {
     config.plugins?.push([
       '@sentry/react-native/expo',
-      { project: sentryApi.project, organization: sentryApi.organization }
+      { project: sentryApi.config.project, organization: sentryApi.config.organization }
     ]);
   }
 
