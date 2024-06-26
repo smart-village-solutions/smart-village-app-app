@@ -1,7 +1,6 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { PermissionStatus } from 'expo-permissions';
 import { Alert } from 'react-native';
 
 import { colors, device, texts } from '../config';
@@ -9,6 +8,12 @@ import { parseColorToHex } from '../helpers/colorHelper';
 import { addToStore, readFromStore } from '../helpers/storageHelper';
 
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
+
+const PermissionStatus = {
+  DENIED: 'denied',
+  GRANTED: 'granted',
+  UNDETERMINED: 'undetermined'
+};
 
 export const getInAppPermission = async (): Promise<boolean> => {
   return (await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)) ?? false;
