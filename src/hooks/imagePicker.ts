@@ -20,7 +20,7 @@ import appJson from '../../app.json';
 import { texts } from '../config';
 
 const saveImageToGallery = async (uri: string) => {
-  const { status } = await requestPermissionsAsync();
+  const { status } = await requestPermissionsAsync(undefined, ['photo']);
   const appName = appJson.expo.name;
 
   if (status !== PermissionStatus.GRANTED) {
