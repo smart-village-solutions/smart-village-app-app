@@ -135,7 +135,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       if (sortBy === SORT_BY.REQUESTED_DATE_TIME || sortBy === SORT_BY.UPDATED_DATE_TIME) {
         parsedListItem = _sortBy(parsedListItem, (item) => new Date(item[sortBy]));
       } else {
-        parsedListItem = _sortBy(parsedListItem, sortBy);
+        parsedListItem = _sortBy(parsedListItem, (item) => item[sortBy]?.toLowerCase());
       }
     }
 
