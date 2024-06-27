@@ -1,20 +1,20 @@
-/* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
+import { View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { SectionHeader } from '../components';
+import { ConversationListItem, SectionHeader } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, texts } from '../config';
+import { consts, normalize } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
-const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
+const { LIST_TYPES } = consts;
 
 const getListType = (query, listTypesSettings) => {
   switch (query) {
@@ -54,6 +54,7 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
  *          isIndexStartingAt1?: boolean
  *          noOvertitle?: boolean;
  *          noSubtitle?: boolean;
+ *          listType?: boolean
  *          openWebScreen?: () => void;
  *          queryVariables?: object
  *          refetch?: () => void
@@ -69,7 +70,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
   let renderItem;
 
-  switch (listType) {
+  switch (options.listType || listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
@@ -135,13 +136,16 @@ export const useRenderItem = (query, navigation, options = {}) => {
               />
             );
           }
+        }
 
+        if (index === 0) {
           return (
             <CardListItem
-              navigation={navigation}
+              bigTitle
               horizontal={options.horizontal}
-              noOvertitle={options.noOvertitle}
               item={item}
+              navigation={navigation}
+              noOvertitle={options.noOvertitle}
             />
           );
         } else {
@@ -157,6 +161,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
               noSubtitle={options.noSubtitle}
               noOvertitle={options.noOvertitle}
               leftImage
+              rightImage
               withCard
             />
           );
@@ -165,7 +170,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
+      /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
+        if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
+          return <ConversationListItem item={item} navigation={navigation} />;
+        }
+
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
@@ -197,15 +207,26 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+          return (
+            <View
+              style={{
+                marginLeft: target == 'StickyHeader' ? 0 : -normalize(16),
+                marginRight: target == 'StickyHeader' ? 0 : -normalize(16)
+              }}
+            >
+              <EventSectionHeader {...{ item, navigation, options, query }} />
+            </View>
+          );
+        }
+
+        // `SectionHeader` list item for `Noticeboard`
+        if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
+          return item.component;
         }
 
         return (
           <TextListItem
-            item={{
-              ...item,
-              bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
-            }}
+            item={item}
             {...{
               navigation,
               noSubtitle: options.noSubtitle,
@@ -215,6 +236,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
           />
         );
       };
+      /* eslint-enable complexity */
+
+      break;
     }
   }
 

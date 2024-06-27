@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { consts, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { Button } from '../Button';
@@ -11,9 +11,9 @@ import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
-import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
-import { Wrapper } from '../Wrapper';
+import { HeadlineText } from '../Text';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 
@@ -21,7 +21,7 @@ import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
-import { TimeTables } from './TimeTables';
+import { TravelTimes } from './TravelTimes';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -37,6 +37,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     contact,
     dataProvider,
     description,
+    hasTravelTimes,
     id,
     lunches,
     mediaContents,
@@ -44,7 +45,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     operatingCompany,
     priceInformations,
     title,
-    travelTimes,
     webUrls
   } = data;
 
@@ -54,7 +54,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   // action to open source urls
   const openWebScreen = useOpenWebScreen('Ort', undefined, route.params?.rootRouteName);
 
-  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
@@ -69,52 +68,72 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
-  return (
-    <View>
-      <ImageSection mediaContents={mediaContents} />
-      <SectionHeader title={title} />
-      <Wrapper>
-        {!!logo && <Logo source={{ uri: logo }} />}
+  const categoryName = route.params?.queryVariables?.categoryName;
+  let nestedCategory;
+  if (categoryName) {
+    nestedCategory = categories.find((category) => category.name === categoryName);
+  }
 
-        <InfoCard
-          category={category}
-          addresses={addresses}
-          contact={contact}
-          openingHours={openingHours}
-          openWebScreen={openWebScreen}
-          webUrls={webUrls}
-        />
-      </Wrapper>
+  return (
+    <WrapperVertical>
+      {(!!nestedCategory?.name || category?.name) && (
+        <WrapperHorizontal>
+          <HeadlineText smaller uppercase>
+            {nestedCategory?.name || category.name}
+          </HeadlineText>
+        </WrapperHorizontal>
+      )}
+      <SectionHeader big title={title} />
+
+      {!!mediaContents?.length && (
+        <WrapperVertical>
+          <ImageSection mediaContents={mediaContents} />
+        </WrapperVertical>
+      )}
+
+      {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
+        <SectionHeader title={texts.pointOfInterest.overview} />
+      )}
+
+      {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
+        <Wrapper>
+          <InfoCard
+            addresses={addresses}
+            contact={contact}
+            openingHours={openingHours}
+            openWebScreen={openWebScreen}
+            webUrls={webUrls}
+          />
+        </Wrapper>
+      )}
 
       {!!payload?.freeStatusUrl && (
         <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />
       )}
 
-      {!!travelTimes?.length && (
-        <TimeTables travelTimes={travelTimes} iconName={category?.iconName} />
-      )}
+      {hasTravelTimes && <TravelTimes id={id} iconName={category?.iconName} />}
 
       {!!openingHours?.length && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.openingTime} />
           <OpeningTimesCard openingHours={openingHours} />
-        </View>
+        </WrapperVertical>
       )}
 
       {!!priceInformations?.length && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.prices} />
           <PriceCard prices={priceInformations} />
-        </View>
+        </WrapperVertical>
       )}
 
       {!!description && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.description} />
-          <Wrapper>
+          <WrapperHorizontal>
             <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        </View>
+          </WrapperHorizontal>
+        </WrapperVertical>
       )}
 
       {!!lunches?.length && (
@@ -138,19 +157,25 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
        * connected to a network with no information of internet connectivity.
        */}
       {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
           <Map
             locations={[
               {
                 position: { latitude, longitude },
-                iconName: category?.iconName,
+                iconName: nestedCategory?.iconName?.length
+                  ? nestedCategory.iconName
+                  : category?.iconName?.length
+                  ? category.iconName
+                  : undefined,
                 id
               }
             ]}
             selectedMarker={id}
+            mapStyle={styles.mapStyle}
+            logoContainerStyle={styles.logoContainerStyle}
           />
-        </View>
+        </WrapperVertical>
       )}
 
       <OperatingCompany
@@ -162,10 +187,20 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
       {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-    </View>
+    </WrapperVertical>
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  logoContainerStyle: {
+    paddingLeft: normalize(16),
+    width: normalize(124)
+  },
+  mapStyle: {
+    borderRadius: normalize(8)
+  }
+});
 
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,

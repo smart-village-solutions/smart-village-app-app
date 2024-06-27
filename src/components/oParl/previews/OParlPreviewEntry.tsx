@@ -40,7 +40,7 @@ export const OParlPreviewEntry = ({
         <HtmlView html={title} />
       </ListItem.Content>
 
-      {navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
+      {!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
     </ListItem>
   );
 };
@@ -48,6 +48,7 @@ export const OParlPreviewEntry = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
+    padding: 0,
     paddingVertical: normalize(12)
   }
 });

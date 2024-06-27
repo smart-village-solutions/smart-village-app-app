@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors as RNEColors } from 'react-native-elements';
 
-import { Icon, normalize } from '../../config';
+import { Icon, colors, normalize } from '../../config';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperWrap } from '../Wrapper';
@@ -52,7 +52,7 @@ export const Row = ({
         </Wrapper>
         {!!onPress && (
           <Wrapper style={styles.icon}>
-            <Icon.ArrowRight />
+            <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
           </Wrapper>
         )}
       </WrapperRow>
@@ -109,10 +109,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     justifyContent: 'center',
-    paddingLeft: 0
+    paddingLeft: 0,
+    paddingRight: 0
   },
   left: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingLeft: 0
   },
   line: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -120,6 +122,7 @@ const styles = StyleSheet.create({
   },
   right: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingRight: 0
   }
 });

@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList } from 'react-native';
+import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
 
 import {
   AugmentedReality,
@@ -18,7 +18,7 @@ import {
   MowasRegionSettings,
   PermanentFilterSettings
 } from '../components/settings';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   addToStore,
   createMatomoUserId,
@@ -46,11 +46,13 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.locationService.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.locationService.setting,
           topDivider: true
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -60,10 +62,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.permanentFilter.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.permanentFilter.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -73,10 +77,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.mowasRegion.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.mowasRegion.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -86,10 +92,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.list.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.list.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -99,10 +107,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.ar.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.ar.setting
         }}
+        listsWithoutArrows
         navigation={navigation}
       />
     );
@@ -281,9 +291,9 @@ export const SettingsScreen = ({ navigation, route }) => {
         });
       }
 
-      settingsList.push({
-        data: ['listSettings']
-      });
+      // settingsList.push({
+      //   data: ['listSettings']
+      // });
 
       if (settings.ar) {
         try {
@@ -337,6 +347,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     default:
       Component = (
         <SectionList
+          initialNumToRender={100}
           keyExtractor={keyExtractor}
           sections={data}
           renderItem={({ item }) => renderItem({ item, navigation })}
@@ -347,6 +358,7 @@ export const SettingsScreen = ({ navigation, route }) => {
               </Wrapper>
             )
           }
+          style={styles.container}
         />
       );
       break;
@@ -354,6 +366,12 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  }
+});
 
 SettingsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

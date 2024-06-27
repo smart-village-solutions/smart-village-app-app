@@ -7,6 +7,7 @@ import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, consts, device, Icon, IconSet, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
+import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 
@@ -16,7 +17,9 @@ export type TServiceTile = {
   iconName?: ComponentProps<typeof IconSet>['name'];
   image: string;
   isVisible?: boolean;
+  numberOfTiles?: number;
   params?: any;
+  query?: string;
   routeName: string;
   tile?: string;
   tileSizeFactor?: number;
@@ -57,7 +60,12 @@ export const ServiceTile = ({
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
 
   return (
-    <ServiceBox orientation={orientation} dimensions={dimensions} bigTile={!!item.tile}>
+    <ServiceBox
+      orientation={orientation}
+      dimensions={dimensions}
+      bigTile={!!item.tile}
+      numberOfTiles={item?.numberOfTiles}
+    >
       <TouchableOpacity
         onPress={onPress}
         accessibilityLabel={
@@ -97,6 +105,9 @@ export const ServiceTile = ({
               resizeMode="contain"
             />
           )}
+
+          {!!item?.query && <Badge />}
+
           {!!item.title && (
             <BoldText
               small

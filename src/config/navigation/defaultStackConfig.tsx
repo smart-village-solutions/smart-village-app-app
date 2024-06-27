@@ -30,7 +30,6 @@ import {
   EncounterScannerScreen,
   EncounterUserDetailScreen,
   FeedbackScreen,
-  getTilesScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -46,6 +45,19 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  ProfileConversationsScreen,
+  ProfileEditMailScreen,
+  ProfileEditPasswordScreen,
+  ProfileHomeScreen,
+  ProfileLoginScreen,
+  ProfileMessagingScreen,
+  ProfileNoticeboardFormScreen,
+  ProfileNoticeboardIndexScreen,
+  ProfileNoticeboardMemberIndexScreen,
+  ProfileRegistrationScreen,
+  ProfileResetPasswordScreen,
+  ProfileSignupScreen,
+  ProfileUpdateScreen,
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -64,7 +76,8 @@ import {
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  getTilesScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -122,7 +135,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer }),
+      initialParams: {
+        title: texts.screenTitles.favorites
+      }
     },
     {
       routeName: ScreenName.Category,
@@ -159,17 +175,6 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ConsulStartNewScreen,
       screenComponent: ConsulStartNewScreen
-    },
-    {
-      routeName: ScreenName.Company,
-      screenComponent: getTilesScreen({
-        matomoString: MATOMO_TRACKING.SCREEN_VIEW.COMPANY,
-        staticJsonName: 'homeCompanies',
-        titleFallback: texts.homeTitles.company,
-        titleKey: 'headlineCompany',
-        imageKey: 'headlineCompanyImage'
-      }),
-      screenOptions: { title: texts.screenTitles.company }
     },
     {
       routeName: ScreenName.ConstructionSiteDetail,
@@ -271,6 +276,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Index,
       screenComponent: IndexScreen,
+      screenOptions: getScreenOptions({ withInfo: true }),
       // NOTE: is used as initial screen for the points of interest tab
       initialParams: {
         title: texts.screenTitles.pointsOfInterest,
@@ -293,15 +299,17 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.NestedInfo,
-      screenComponent: NestedInfoScreen
+      screenComponent: NestedInfoScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
+    },
+    {
+      routeName: ScreenName.Noticeboard,
+      screenComponent: NoticeboardIndexScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       routeName: ScreenName.NoticeboardForm,
       screenComponent: NoticeboardFormScreen
-    },
-    {
-      routeName: ScreenName.Noticeboard,
-      screenComponent: NoticeboardIndexScreen
     },
     {
       routeName: ScreenName.OParlCalendar,
@@ -326,6 +334,75 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.OParlSearch,
       screenComponent: OParlSearchScreen
+    },
+    {
+      routeName: ScreenName.Profile,
+      screenComponent: ProfileHomeScreen,
+      screenOptions: getScreenOptions({ withInfo: true }),
+      initialParams: {
+        title: texts.screenTitles.profile.home,
+        query: QUERY_TYPES.PUBLIC_JSON_FILE,
+        queryVariables: {
+          name: 'profile'
+        },
+        rootRouteName: ScreenName.Profile
+      }
+    },
+    {
+      routeName: ScreenName.ProfileConversations,
+      screenComponent: ProfileConversationsScreen
+    },
+    {
+      routeName: ScreenName.ProfileEditMail,
+      screenComponent: ProfileEditMailScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileEditPassword,
+      screenComponent: ProfileEditPasswordScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileLogin,
+      screenComponent: ProfileLoginScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileMessaging,
+      screenComponent: ProfileMessagingScreen
+    },
+    {
+      routeName: ScreenName.ProfileNoticeboard,
+      screenComponent: ProfileNoticeboardIndexScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
+    },
+    {
+      routeName: ScreenName.ProfileNoticeboardForm,
+      screenComponent: ProfileNoticeboardFormScreen
+    },
+    {
+      routeName: ScreenName.ProfileNoticeboardMemberIndex,
+      screenComponent: ProfileNoticeboardMemberIndexScreen
+    },
+    {
+      routeName: ScreenName.ProfileRegistration,
+      screenComponent: ProfileRegistrationScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileResetPassword,
+      screenComponent: ProfileResetPasswordScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileSignup,
+      screenComponent: ProfileSignupScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileUpdate,
+      screenComponent: ProfileUpdateScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
     },
     {
       routeName: ScreenName.Service,
@@ -356,7 +433,8 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.TilesScreen,
-      screenComponent: TilesScreen
+      screenComponent: TilesScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       routeName: ScreenName.VolunteerDetail,

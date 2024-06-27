@@ -21,7 +21,7 @@ import {
   OptionToggle,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper
+  WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, openLink, parseListItemsFromQuery } from '../../helpers';
@@ -256,18 +256,18 @@ export const EventRecords = ({ navigation, route }) => {
             {!!eventListIntro && (
               <>
                 {!!eventListIntro.introText && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <RegularText small>{eventListIntro.introText}</RegularText>
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
 
                 {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <Button
                       onPress={() => openLink(eventListIntro.url, openWebScreen)}
                       title={eventListIntro.buttonTitle}
                     />
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
                 <Divider />
               </>
@@ -301,6 +301,7 @@ export const EventRecords = ({ navigation, route }) => {
                   <OptionToggle
                     label={texts.eventRecord.filterByDailyEvents}
                     onToggle={updateListDataByDailySwitch}
+                    options={{ bold: true }}
                     value={filterByDailyEvents}
                   />
                 )}
@@ -336,8 +337,8 @@ export const EventRecords = ({ navigation, route }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={refresh}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
           />
         }
         showBackToTop

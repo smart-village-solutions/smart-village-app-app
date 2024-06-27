@@ -4,6 +4,7 @@ export const GET_CATEGORIES = gql`
   query Categories($ids: [ID!], $excludeIds: [ID!], $location: String) {
     categories(ids: $ids, excludeIds: $excludeIds) {
       id
+      iconName
       name
       pointsOfInterestCount(location: $location)
       pointsOfInterestTreeCount(location: $location)
@@ -14,6 +15,7 @@ export const GET_CATEGORIES = gql`
       }
       children {
         id
+        iconName
         name
         pointsOfInterestCount(location: $location)
         pointsOfInterestTreeCount(location: $location)
@@ -21,6 +23,7 @@ export const GET_CATEGORIES = gql`
         toursTreeCount(location: $location)
         children {
           id
+          iconName
           name
           pointsOfInterestCount(location: $location)
           pointsOfInterestTreeCount(location: $location)
@@ -28,6 +31,7 @@ export const GET_CATEGORIES = gql`
           toursTreeCount(location: $location)
           children {
             id
+            iconName
             name
             pointsOfInterestCount(location: $location)
             pointsOfInterestTreeCount(location: $location)
@@ -35,6 +39,7 @@ export const GET_CATEGORIES = gql`
             toursTreeCount(location: $location)
             children {
               id
+              iconName
               name
               pointsOfInterestCount(location: $location)
               pointsOfInterestTreeCount(location: $location)
@@ -42,6 +47,7 @@ export const GET_CATEGORIES = gql`
               toursTreeCount(location: $location)
               children {
                 id
+                iconName
                 name
                 pointsOfInterestCount(location: $location)
                 pointsOfInterestTreeCount(location: $location)
@@ -49,6 +55,7 @@ export const GET_CATEGORIES = gql`
                 toursTreeCount(location: $location)
                 children {
                   id
+                  iconName
                   name
                   pointsOfInterestCount(location: $location)
                   pointsOfInterestTreeCount(location: $location)
@@ -60,6 +67,16 @@ export const GET_CATEGORIES = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const GET_CATEGORIES_FILTER = gql`
+  query Categories($ids: [ID!]) {
+    categories(ids: $ids) {
+      id
+      iconName
+      name
     }
   }
 `;

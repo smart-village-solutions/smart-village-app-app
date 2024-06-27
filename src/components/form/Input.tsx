@@ -25,7 +25,7 @@ export const Input = ({
   name,
   rules,
   label,
-  boldLabel = false,
+  boldLabel = true,
   validate = false,
   disabled = false,
   hidden = false,
@@ -47,6 +47,7 @@ export const Input = ({
     rules
   });
   const inputRef = useRef(null);
+  const [isActive, setIsActive] = React.useState(false);
 
   useEffect(() => {
     // NOTE: need to set the font family for android explicitly on android, because password
@@ -56,7 +57,8 @@ export const Input = ({
       inputRef?.current?.setNativeProps({
         style: {
           fontFamily: 'regular',
-          fontSize: normalize(16)
+          fontSize: normalize(14),
+          lineHeight: normalize(20)
         }
       });
     }
@@ -71,7 +73,7 @@ export const Input = ({
         multiline={multiline}
         {...furtherProps}
         containerStyle={[styles.container, styles.chatContainer]}
-        inputContainerStyle={styles.inputContainer}
+        inputContainerStyle={[styles.inputContainer, multiline && styles.inputContainerMultiline]}
         inputStyle={[
           styles.input,
           styles.chatInput,
@@ -90,7 +92,13 @@ export const Input = ({
       label={label && <Label bold={boldLabel}>{label}</Label>}
       value={field.value}
       onChangeText={field.onChange}
-      onBlur={field.onBlur}
+      onBlur={() => {
+        field.onBlur();
+        setIsActive(false);
+      }}
+      onFocus={() => {
+        setIsActive(true);
+      }}
       disabled={disabled}
       disableFullscreenUI
       multiline={multiline}
@@ -99,11 +107,9 @@ export const Input = ({
       scrollEnabled={multiline}
       rightIcon={
         rightIcon ||
-        (isValid ? (
-          <Icon.Ok color={colors.primary} />
-        ) : (
-          !isValid && !!errorMessage && <Icon.Close color={colors.error} />
-        ))
+        (!isValid && !!errorMessage ? (
+          <Icon.AlertHexagonFilled color={colors.error} size={normalize(16)} />
+        ) : undefined)
       }
       containerStyle={[
         styles.container,
@@ -115,7 +121,8 @@ export const Input = ({
         styles.inputContainer,
         disabled && styles.inputContainerDisabled,
         hidden && styles.inputContainerHidden,
-        isValid && styles.inputContainerSuccess,
+        multiline && styles.inputContainerMultiline,
+        isActive && styles.inputContainerSuccess,
         !isValid && !!errorMessage && styles.inputContainerError,
         isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
         inputContainerStyle
@@ -124,7 +131,6 @@ export const Input = ({
       inputStyle={[
         styles.input,
         multiline && device.platform === 'ios' && styles.multiline,
-        !isValid && !!errorMessage && styles.inputError,
         inputStyle
       ]}
       errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
@@ -153,8 +159,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalize(1),
     borderColor: colors.gray40,
     borderLeftWidth: normalize(1),
+    borderRadius: normalize(8),
     borderRightWidth: normalize(1),
-    borderTopWidth: normalize(1)
+    borderTopWidth: normalize(1),
+    height: normalize(42)
   },
   inputContainerDisabled: {
     backgroundColor: colors.gray20,
@@ -166,6 +174,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderTopWidth: 0,
     display: 'none'
+  },
+  inputContainerMultiline: {
+    height: 'auto'
   },
   inputContainerSuccess: {
     borderColor: colors.primary
@@ -183,13 +194,17 @@ const styles = StyleSheet.create({
     paddingLeft: normalize(12),
     paddingRight: normalize(6),
     paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
-    fontFamily: 'regular'
+    fontFamily: 'regular',
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   multiline: {
     paddingTop: normalize(12)
   },
   inputError: {
-    color: colors.error
+    color: colors.error,
+    fontSize: normalize(12),
+    lineHeight: normalize(16)
   },
   inputErrorHeight: {
     height: 0

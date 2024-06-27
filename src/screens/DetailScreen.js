@@ -3,12 +3,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
+import { NetworkContext } from '../NetworkProvider';
+import { SettingsContext } from '../SettingsProvider';
 import {
   EventRecord,
   LoadingContainer,
   NewsItem,
   Offer,
   PointOfInterest,
+  ProfileNoticeboardDetail,
   SafeAreaViewFlex,
   Tour
 } from '../components';
@@ -16,11 +19,9 @@ import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
-import { NetworkContext } from '../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
-import { GenericType } from '../types';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
+import { QUERY_TYPES, getQuery } from '../queries';
+import { GenericType } from '../types';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
@@ -31,10 +32,8 @@ const getGenericComponent = (genericType) => {
     case GenericType.Deadline:
     case GenericType.Job:
       return Offer;
-    case GenericType.DefectReport:
-      return DefectReportFormScreen;
     case GenericType.Noticeboard:
-      return NoticeboardFormScreen;
+      return ProfileNoticeboardDetail;
   }
 };
 
@@ -81,10 +80,15 @@ const useRootRouteByCategory = (details, navigation) => {
   }, [id, categoriesNews]);
 };
 
+/* eslint-disable complexity */
 export const DetailScreen = ({ navigation, route }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { conversations = false } = settings;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
+  const id = route.params?.id;
+  const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const details = route.params?.details ?? {};
 
   const [refreshing, setRefreshing] = useState(false);
@@ -140,7 +144,33 @@ export const DetailScreen = ({ navigation, route }) => {
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
         if ((!data || !data[query]) && !details) return null;
 
-        const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
+        let Component;
+
+        const genericType = data?.[query]?.genericType || details?.genericType;
+
+        // check for form screens a detail screen first
+        if (genericType === GenericType.DefectReport) {
+          Component = DefectReportFormScreen;
+        }
+
+        if (genericType === GenericType.Noticeboard && !conversations) {
+          Component = NoticeboardFormScreen;
+        }
+
+        if (Component) {
+          return (
+            <Component
+              data={(data && data[query]) || details}
+              navigation={navigation}
+              fetchPolicy={fetchPolicy}
+              refetch={refetch}
+              route={route}
+            />
+          );
+        }
+
+        // otherwise determine detail screen based on query and generic type
+        Component = getComponent(query, genericType);
 
         if (!Component) return null;
 
@@ -160,6 +190,7 @@ export const DetailScreen = ({ navigation, route }) => {
                 data={(data && data[query]) || details}
                 navigation={navigation}
                 fetchPolicy={fetchPolicy}
+                refetch={refetch}
                 route={route}
               />
               <FeedbackFooter />
@@ -170,6 +201,7 @@ export const DetailScreen = ({ navigation, route }) => {
     </Query>
   );
 };
+/* eslint-enable complexity */
 
 DetailScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

@@ -8,6 +8,7 @@ import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery } from '../../queries';
 import { DataListSection } from '../DataListSection';
+import { WrapperVertical } from '../Wrapper';
 
 const { REFRESH_INTERVALS } = consts;
 
@@ -17,6 +18,7 @@ type Props = {
   ids: string[];
   bookmarkKey: string;
   navigation: StackNavigationProp<any>;
+  listType: string;
   query: string;
   sectionTitle?: string;
   setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
@@ -28,6 +30,7 @@ export const BookmarkSection = ({
   ids,
   bookmarkKey,
   navigation,
+  listType,
   query,
   sectionTitle,
   setConnectionState
@@ -50,7 +53,8 @@ export const BookmarkSection = ({
         suffix,
         query,
         title: sectionTitle,
-        categoryTitleDetail
+        categoryTitleDetail,
+        listType
       }),
     [navigation, suffix]
   );
@@ -65,16 +69,19 @@ export const BookmarkSection = ({
   }, [data, bookmarkKey, loading, setConnectionState]);
 
   return (
-    <DataListSection
-      buttonTitle={texts.bookmarks.showAll}
-      loading={loading}
-      navigate={onPressShowMore}
-      navigation={navigation}
-      query={query}
-      sectionData={data}
-      sectionTitle={sectionTitle}
-      sectionTitleDetail={categoryTitleDetail}
-      showButton={ids.length > 3}
-    />
+    <WrapperVertical>
+      <DataListSection
+        buttonTitle={texts.bookmarks.showAll}
+        loading={loading}
+        navigate={onPressShowMore}
+        navigation={navigation}
+        listType={listType}
+        query={query}
+        sectionData={data}
+        sectionTitle={sectionTitle}
+        sectionTitleDetail={categoryTitleDetail}
+        showButton={ids.length > 3}
+      />
+    </WrapperVertical>
   );
 };

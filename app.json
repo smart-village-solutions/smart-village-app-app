@@ -7,7 +7,7 @@
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
-    "version": "3.3.5",
+    "version": "4.0.0",
     "runtimeVersion": { "policy": "nativeVersion" },
     "extra": { "eas": { "projectId": "20540f3a-6e82-4038-8987-adb6d97f0e75" } },
     "icon": "./assets/icon.png",
@@ -26,6 +26,16 @@
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App kann die Standortbestimmung nutzen, um Ihre aktuelle Position auf der Karte darzustellen und Inhalte nach Entfernung zu sortieren.",
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPIReason": "Die App benötigt Informationen über den verfügbaren Speicherplatz, um sicherzustellen, dass genügend Platz für die Ausführung von Download- und Speicheroperationen vorhanden ist."
+          },
+          {
+            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPIReason": "Die App verwendet Dateizeitstempel, um die Synchronisierung von Dateien zu verwalten und sicherzustellen, dass der Nutzer immer die neuesten Dateiversionen hat."
+          }
+        ],
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp"]
@@ -52,8 +62,6 @@
       "allowBackup": false
     },
     "androidStatusBar": {
-      "barStyle": "dark-content",
-      "translucent": true,
       "backgroundColor": "#00000000"
     },
     "plugins": [

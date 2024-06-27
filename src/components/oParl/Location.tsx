@@ -6,7 +6,7 @@ import { texts } from '../../config';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
 import { LocationData, MapMarker } from '../../types';
 import { Map } from '../map';
-import { WrapperHorizontal } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
 import {
@@ -103,10 +103,12 @@ export const Location = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Row fullText left={locationTexts.streetAddress} right={streetAddress} />
-      <Row fullText left={locationTexts.postalCode} right={postalCode} />
-      <Row fullText left={locationTexts.locality} right={localityString} />
-      <Row fullText left={locationTexts.room} right={room} />
+      <WrapperHorizontal>
+        <Row fullText left={locationTexts.streetAddress} right={streetAddress} />
+        <Row fullText left={locationTexts.postalCode} right={postalCode} />
+        <Row fullText left={locationTexts.locality} right={localityString} />
+        <Row fullText left={locationTexts.room} right={room} />
+      </WrapperHorizontal>
       {!!mapMarkers.length && <Map locations={mapMarkers} />}
       <OParlPreviewSection
         data={meetings ?? meeting}
@@ -121,13 +123,13 @@ export const Location = ({ data, navigation }: Props) => {
       />
       <OParlPreviewSection data={persons} header={locationTexts.persons} navigation={navigation} />
       <OParlPreviewSection data={papers} header={locationTexts.papers} navigation={navigation} />
-      <WrapperHorizontal>
+      <Wrapper>
         <SimpleRow fullText left={locationTexts.description} right={description} />
         <KeywordSection keyword={keyword} />
         <SimpleRow fullText left={locationTexts.license} right={license} />
         <WebRepresentation name={locationTexts.location} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
-      </WrapperHorizontal>
+      </Wrapper>
     </>
   );
 };

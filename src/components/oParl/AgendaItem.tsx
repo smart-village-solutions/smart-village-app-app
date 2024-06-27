@@ -3,7 +3,7 @@ import React from 'react';
 
 import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
 import {
@@ -46,23 +46,25 @@ export const AgendaItem = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Row left={agendaItemTexts.name} right={name} leftWidth={leftWidth} fullText />
-      <Row left={agendaItemTexts.number} right={number} leftWidth={leftWidth} />
-      {isPublic !== undefined && (
+      <WrapperHorizontal>
+        <Row left={agendaItemTexts.name} right={name} leftWidth={leftWidth} fullText />
+        <Row left={agendaItemTexts.number} right={number} leftWidth={leftWidth} />
+        {isPublic !== undefined && (
+          <Row
+            left={agendaItemTexts.public}
+            right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
+            leftWidth={leftWidth}
+          />
+        )}
+        <Row left={agendaItemTexts.result} right={result} leftWidth={leftWidth} fullText />
         <Row
-          left={agendaItemTexts.public}
-          right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
+          left={agendaItemTexts.resolutionText}
+          right={resolutionText}
           leftWidth={leftWidth}
+          fullText
         />
-      )}
-      <Row left={agendaItemTexts.result} right={result} leftWidth={leftWidth} fullText />
-      <Row
-        left={agendaItemTexts.resolutionText}
-        right={resolutionText}
-        leftWidth={leftWidth}
-        fullText
-      />
-      <DateSection endDate={end} startDate={start} topDivider={false} leftWidth={leftWidth} />
+        <DateSection endDate={end} startDate={start} topDivider={false} leftWidth={leftWidth} />
+      </WrapperHorizontal>
       <OParlPreviewSection
         data={meeting}
         header={agendaItemTexts.meeting}

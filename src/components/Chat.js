@@ -1,3 +1,4 @@
+import 'dayjs/locale/de';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { MediaTypeOptions } from 'expo-image-picker';
@@ -18,7 +19,7 @@ import {
   Send
 } from 'react-native-gifted-chat';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { useSelectDocument, useSelectImage } from '../hooks';
 
@@ -39,6 +40,7 @@ const { IMAGE_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
  * @param {object} messageTextStyleRight   style of chat text on the right
  * @param {func}   onSendButton            function returning message text
  * @param {string} placeholder             placeholder text of `textInput`
+ * @param {bool}   showActionButton           prop to render the action buttons
  * @param {object} textInputProps          props to customise text input
  * @param {number} userId      prop to recognise whether the message is the owner
  *                                         or another user
@@ -51,6 +53,7 @@ export const Chat = ({
   messageTextStyleRight,
   onSendButton,
   placeholder = '',
+  showActionButton = false,
   textInputProps,
   userId
 }) => {
@@ -103,6 +106,9 @@ export const Chat = ({
   return (
     <GiftedChat
       alwaysShowSend
+      bottomOffset={device.platform === 'ios' && normalize(96)}
+      keyboardShouldPersistTaps="handled"
+      locale="de"
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
@@ -139,6 +145,8 @@ export const Chat = ({
           Abbrechen: () => null
         };
 
+        if (!showActionButton) return null;
+
         return (
           <Actions
             {...props}
@@ -166,6 +174,7 @@ export const Chat = ({
       renderComposer={(props) => (
         <Composer
           {...props}
+          multiline
           textInputStyle={styles.textInputStyle}
           textInputProps={textInputProps}
         />
@@ -231,9 +240,7 @@ export const Chat = ({
       )}
       renderTime={(props) => (
         <View style={styles.spacingTime}>
-          <RegularText smallest placeholder>
-            {momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}
-          </RegularText>
+          <RegularText small>{momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}</RegularText>
         </View>
       )}
     />
@@ -291,6 +298,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray20
   },
   inputToolbarContainer: {
+    backgroundColor: colors.surface,
     paddingVertical: normalize(24)
   },
   inputToolbarPrimary: {
@@ -327,12 +335,12 @@ const styles = StyleSheet.create({
   },
   sendButtonContainer: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: normalize(4),
     height: normalize(48),
     justifyContent: 'center',
     marginLeft: normalize(8),
-    marginRight: normalize(20),
+    marginRight: normalize(10),
     width: normalize(48)
   },
   spacingTime: {
@@ -377,6 +385,7 @@ Chat.propTypes = {
   messageTextStyleRight: PropTypes.object,
   onSendButton: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  showActionButton: PropTypes.bool,
   textInputProps: PropTypes.object,
-  userId: PropTypes.string || PropTypes.number
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

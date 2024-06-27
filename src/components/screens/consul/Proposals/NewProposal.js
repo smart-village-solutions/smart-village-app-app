@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, namespace, normalize, secrets, texts } from '../../../../config';
+import { colors, consts, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { documentErrorMessageGenerator, imageErrorMessageGenerator } from '../../../../helpers';
 import { QUERY_TYPES } from '../../../../queries';
@@ -425,13 +425,13 @@ export const NewProposal = ({ navigation, data, query }) => {
       <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
           <Checkbox
-            title={texts.consul.startNew.termsOfServiceLabel}
+            checked={hasAcceptedTermsOfService}
+            checkedIcon={<Icon.SquareCheckFilled />}
             link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
-            checkedIcon="check-square-o"
-            uncheckedIcon="square-o"
-            checked={hasAcceptedTermsOfService}
             onPress={() => setHasAcceptedTermsOfService(!hasAcceptedTermsOfService)}
+            title={texts.consul.startNew.termsOfServiceLabel}
+            uncheckedIcon={<Icon.Square color={colors.placeholder} />}
           />
         </WrapperHorizontal>
 

@@ -7,6 +7,7 @@ import { OParlObjectPreviewData } from '../../../types';
 import { SectionHeader } from '../../SectionHeader';
 
 import { OParlPreviewComponent } from './OParlPreviewComponent';
+import { WrapperHorizontal } from '../../Wrapper';
 
 type Props = {
   data?: OParlObjectPreviewData;
@@ -30,12 +31,14 @@ export const OParlItemPreview = ({
   return (
     <View style={styles.marginTop}>
       {!!header?.length && <SectionHeader title={header} />}
-      <OParlPreviewComponent
-        data={data}
-        navigation={navigation}
-        withAgendaItem={withAgendaItem}
-        withPerson={withPerson}
-      />
+      <WrapperHorizontal>
+        <OParlPreviewComponent
+          data={data}
+          navigation={navigation}
+          withAgendaItem={withAgendaItem}
+          withPerson={withPerson}
+        />
+      </WrapperHorizontal>
     </View>
   );
 };

@@ -1,4 +1,5 @@
 export * from './encounter';
+export * from './profile';
 export * from './volunteer';
 
 export * from './Accessibility';
@@ -7,6 +8,7 @@ export * from './AppIntroSlide';
 export * from './Camera';
 export * from './ConstructionSite';
 export * from './Contact';
+export * from './Date';
 export * from './GenericItem';
 export * from './GenericType';
 export * from './LocationSettings';

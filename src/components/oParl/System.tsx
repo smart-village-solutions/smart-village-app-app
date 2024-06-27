@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 
 import { texts } from '../../config';
 import { SystemData } from '../../types';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
 import {
@@ -40,30 +40,32 @@ export const System = ({ data, navigation }: Props) => {
     website
   } = data;
 
-  const onPressLicense = useCallback(() => navigation.push('Web', { webUrl: license }), [
-    navigation,
-    license
-  ]);
+  const onPressLicense = useCallback(
+    () => navigation.push('Web', { webUrl: license }),
+    [navigation, license]
+  );
 
-  const onPressProduct = useCallback(() => navigation.push('Web', { webUrl: product }), [
-    navigation,
-    product
-  ]);
+  const onPressProduct = useCallback(
+    () => navigation.push('Web', { webUrl: product }),
+    [navigation, product]
+  );
 
-  const onPressVendor = useCallback(() => navigation.push('Web', { webUrl: vendor }), [
-    navigation,
-    vendor
-  ]);
+  const onPressVendor = useCallback(
+    () => navigation.push('Web', { webUrl: vendor }),
+    [navigation, vendor]
+  );
 
-  const onPressWebsite = useCallback(() => navigation.push('Web', { webUrl: website }), [
-    navigation,
-    website
-  ]);
+  const onPressWebsite = useCallback(
+    () => navigation.push('Web', { webUrl: website }),
+    [navigation, website]
+  );
 
   return (
     <>
-      <Row left={systemTexts.name} right={name} leftWidth={leftWidth} />
-      <Row left={systemTexts.oparlVersion} right={oparlVersion} leftWidth={leftWidth} />
+      <WrapperHorizontal>
+        <Row left={systemTexts.name} right={name} leftWidth={leftWidth} />
+        <Row left={systemTexts.oparlVersion} right={oparlVersion} leftWidth={leftWidth} />
+      </WrapperHorizontal>
       <OParlPreviewSection data={body} header={systemTexts.body} navigation={navigation} />
       <Wrapper>
         <SimpleRow left={systemTexts.product} right={product} onPress={onPressProduct} />

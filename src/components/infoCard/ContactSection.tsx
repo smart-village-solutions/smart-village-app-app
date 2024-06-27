@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Icon as RNEIcon } from 'react-native-elements';
+import { Divider, Icon as RNEIcon } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { Contact } from '../../types';
 import { RegularText } from '../Text';
-import { InfoBox } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 const ContactView = ({ contact }: { contact?: Contact }) => {
   const a11yText = consts.a11yLabel;
@@ -18,51 +18,84 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
   return (
     <>
       {(!!contact.lastName || !!contact.firstName) && (
-        <InfoBox style={styles.wrap}>
-          <RNEIcon name="person" type="material" color={colors.primary} iconStyle={styles.margin} />
-          {!!contact.firstName && <RegularText>{contact.firstName} </RegularText>}
-          {!!contact.lastName && <RegularText>{contact.lastName}</RegularText>}
-        </InfoBox>
+        <>
+          <WrapperVertical>
+            <WrapperRow centerVertical style={styles.wrap}>
+              <RNEIcon
+                name="person"
+                type="material"
+                color={colors.primary}
+                iconStyle={styles.margin}
+              />
+              {!!contact.firstName && <RegularText>{contact.firstName} </RegularText>}
+              {!!contact.lastName && <RegularText>{contact.lastName}</RegularText>}
+            </WrapperRow>
+          </WrapperVertical>
+          <Divider style={styles.divider} />
+        </>
       )}
 
       {!!contact.phone && (
-        <InfoBox style={styles.wrap}>
-          <Icon.Phone style={styles.margin} />
+        <>
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
-            <RegularText
-              primary
-              accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
+            <WrapperVertical>
+              <WrapperRow centerVertical style={styles.wrap}>
+                <Icon.Phone style={styles.margin} />
+                <RegularText
+                  primary
+                  accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
             ${consts.a11yLabel.button} ${consts.a11yLabel.phoneAppHint}`}
-            >
-              {contact.phone}
-            </RegularText>
+                >
+                  {contact.phone}
+                </RegularText>
+              </WrapperRow>
+            </WrapperVertical>
           </TouchableOpacity>
-        </InfoBox>
+
+          <Divider style={styles.divider} />
+        </>
       )}
 
       {!!contact.email && (
-        <InfoBox style={styles.wrap}>
-          <Icon.Mail style={styles.margin} />
+        <>
           <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
-            <RegularText
-              primary
-              accessibilityLabel={`
+            <WrapperVertical>
+              <WrapperRow centerVertical style={styles.wrap}>
+                <Icon.Mail style={styles.margin} />
+                <RegularText
+                  primary
+                  accessibilityLabel={`
                 ${a11yText.mail} (${contact.email}) ${a11yText.button} ${a11yText.mailHint}
               `}
-            >
-              {contact.email}
-            </RegularText>
+                >
+                  {contact.email}
+                </RegularText>
+              </WrapperRow>
+            </WrapperVertical>
           </TouchableOpacity>
-        </InfoBox>
+
+          <Divider style={styles.divider} />
+        </>
       )}
 
       {!!contact.fax && (
-        <InfoBox style={styles.wrap}>
-          <RNEIcon name="print" type="material" color={colors.primary} iconStyle={styles.margin} />
-          <RegularText primary accessibilityLabel={`(${a11yText.fax} ${contact.fax}`}>
-            {contact.fax}
-          </RegularText>
-        </InfoBox>
+        <>
+          <WrapperVertical>
+            <WrapperRow centerVertical style={styles.wrap}>
+              <RNEIcon
+                name="print"
+                type="material"
+                color={colors.primary}
+                iconStyle={styles.margin}
+              />
+              <RegularText primary accessibilityLabel={`(${a11yText.fax} ${contact.fax}`}>
+                {contact.fax}
+              </RegularText>
+            </WrapperRow>
+          </WrapperVertical>
+
+          <Divider style={styles.divider} />
+        </>
       )}
     </>
   );
@@ -87,6 +120,9 @@ export const ContactSection = ({
 };
 
 const styles = StyleSheet.create({
+  divider: {
+    backgroundColor: colors.placeholder
+  },
   margin: {
     marginRight: normalize(12)
   },

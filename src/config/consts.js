@@ -42,6 +42,8 @@ export const consts = {
     mail: '(E-Mail-Adresse)',
     mailHint: '(Wechselt zur E-Mail-App)',
     mapHint: '(Wechselt zur Karten-App)',
+    informationIcon: 'Informationen (Taste)',
+    informationHint: 'Zu den Informationen wechseln',
     openMenuHint: 'Navigiert zum Menü',
     openMenuIcon: 'Menü (Taste)',
     phoneNumber: '(Telefonnummer)',
@@ -158,6 +160,11 @@ export const consts = {
     }
   },
 
+  HOST_NAMES: {
+    DETAIL: 'detail',
+    ENCOUNTER: 'encounter'
+  },
+
   LIST_TYPES: {
     CARD_LIST: 'cardList',
     IMAGE_TEXT_LIST: 'imageTextList',
@@ -167,6 +174,7 @@ export const consts = {
 
   ROOT_ROUTE_NAMES: {
     COMMERCIALS: 'Commercials',
+    CONVERSATIONS: 'Conversations',
     DEADLINES: 'Deadlines',
     DEFECT_REPORT: 'DefectReport',
     EVENT_RECORDS: 'EventRecords',

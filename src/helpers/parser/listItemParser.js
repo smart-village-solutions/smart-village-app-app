@@ -29,7 +29,7 @@ const GENERIC_TYPES_WITH_DATES = [
   GenericType.Noticeboard
 ];
 
-const filterGenericItems = (item) => {
+export const filterGenericItems = (item) => {
   if (GENERIC_TYPES_WITH_DATES.includes(item?.genericType)) {
     const dateEnd = item?.dates?.[0]?.dateEnd;
     const hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : true;
@@ -71,12 +71,13 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) => {
+const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter(filterGenericItems);
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
+    categories: genericItem.categories,
     overtitle:
       genericItem.genericType !== GenericType.Deadline &&
       subtitle(
@@ -93,13 +94,14 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
             mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
         )[0]?.sourceUrl?.url
     },
-    routeName:
-      genericItem.genericType === GenericType.Noticeboard
-        ? ScreenName.NoticeboardForm
-        : ScreenName.Detail,
+    routeName: ScreenName.Detail,
     params: {
-      title: getGenericItemDetailTitle(genericItem.genericType),
-      consentForDataProcessingText,
+      title: getGenericItemDetailTitle(
+        genericItem.genericType,
+        queryVariables,
+        genericItem?.categories?.[0]?.name
+      ),
+      subQuery,
       suffix: genericItem.genericType,
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${genericItem.id}` },
@@ -144,8 +146,11 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   }));
 };
 
-const parsePointOfInterest = (data, skipLastDivider) => {
+const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = undefined) => {
   return data?.map((pointOfInterest, index) => ({
+    iconName: pointOfInterest.category?.iconName?.length
+      ? pointOfInterest.category.iconName
+      : undefined,
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
     overtitle: pointOfInterest.category?.name,
@@ -156,7 +161,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
     params: {
       title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
-      queryVariables: { id: `${pointOfInterest.id}` },
+      queryVariables: { id: `${pointOfInterest.id}`, categoryName: queryVariables?.category },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
@@ -199,6 +204,7 @@ const parseTours = (data, skipLastDivider) => {
 const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
   return data?.map((category, index) => ({
     id: category.id,
+    iconName: category.iconName?.length ? category.iconName : undefined,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,
@@ -234,6 +240,22 @@ const parsePointsOfInterestAndTours = (data) => {
 
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
+
+const parseConversations = (data) =>
+  data?.map((conversation, index) => ({
+    ...conversation,
+    bottomDivider: index !== data.length - 1,
+    createdAt: conversation.latestMessage?.createdAt,
+    genericItemId: conversation.conversationableId,
+    params: {
+      query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+      queryVariables: conversation,
+      rootRouteName: ROOT_ROUTE_NAMES.CONVERSATIONS,
+      title: texts.detailTitles.conversation
+    },
+    routeName: ScreenName.ProfileMessaging,
+    subtitle: conversation.latestMessage?.messageText
+  }));
 
 /* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, currentUserId) => {
@@ -379,12 +401,12 @@ const parseConsulData = (data, query, skipLastDivider) => {
  * @param {string | undefined} titleDetail
  * @param {{
  *    bookmarkable?: boolean;
- *    consentForDataProcessingText?: string;
  *    skipLastDivider?: boolean;
  *    withDate?: boolean,
  *    withTime?: boolean,
  *    isSectioned?: boolean,
- *    queryVariables?: any
+ *    queryVariables?: any,
+ *    subQuery?: any
  *  }} options
  * @returns
  */
@@ -394,30 +416,32 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
 
   const {
     bookmarkable = true,
-    consentForDataProcessingText,
     skipLastDivider = false,
     withDate = true,
     withTime = false,
     isSectioned = false,
-    queryVariables
+    queryVariables,
+    subQuery
   } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate, withTime);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(data[query], skipLastDivider, consentForDataProcessingText);
+      return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
-      return parsePointOfInterest(data[query], skipLastDivider);
+      return parsePointOfInterest(data[query], skipLastDivider, queryVariables);
     case QUERY_TYPES.TOURS:
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
       return parseCategories(data[query], skipLastDivider, ScreenName.Category, queryVariables);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.PROFILE.GET_CONVERSATIONS:
+      return parseConversations(data[query]);
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
       return parseVolunteers(

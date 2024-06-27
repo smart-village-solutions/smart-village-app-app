@@ -2,6 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 
 import { SubQuery } from '../types';
+import { Icon } from '../config';
 
 import { Button } from './Button';
 
@@ -80,35 +81,42 @@ export const MultiButtonWithSubQuery = ({
   subQuery,
   title
 }: {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<any, string>;
   rootRouteName?: string;
-  subQuery: SubQuery;
+  subQuery?: SubQuery;
   title: string;
 }) => {
   return (
     <>
-      {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
+      {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || !!subQuery.params) && (
         <Button
           title={subQuery.buttonTitle || `${title} öffnen`}
           onPress={() => navigateWithSubQuery({ navigation, subQuery, rootRouteName, title })}
         />
       )}
 
-      {subQuery?.buttons?.map((button, index) => (
-        <Button
-          key={`${index}-${button.webUrl}`}
-          title={button.buttonTitle || `${title} öffnen`}
-          onPress={() =>
-            navigateWithSubQuery({
-              navigation,
-              params: button,
-              rootRouteName,
-              subQuery,
-              title
-            })
-          }
-        />
-      ))}
+      {subQuery?.buttons?.map((button, index) => {
+        const ButtonIcon = Icon[button.icon as keyof typeof Icon];
+
+        return (
+          <Button
+            key={`${index}-${button.webUrl}`}
+            icon={!!button.icon && <ButtonIcon />}
+            iconPosition={button.iconPosition}
+            invert={!!button.invert}
+            title={button.buttonTitle || `${title} öffnen`}
+            onPress={() =>
+              navigateWithSubQuery({
+                navigation,
+                params: button,
+                rootRouteName,
+                subQuery,
+                title
+              })
+            }
+          />
+        );
+      })}
     </>
   );
 };

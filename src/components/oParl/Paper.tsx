@@ -4,7 +4,7 @@ import React from 'react';
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { PaperData } from '../../types';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
 import {
@@ -48,10 +48,12 @@ export const Paper = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Row left={paperTexts.name} right={name} fullText />
-      <Row left={paperTexts.reference} right={reference} />
-      <Row left={paperTexts.paperType} right={paperType} />
-      <Row left={paperTexts.date} right={date ? momentFormat(date, undefined, 'x') : undefined} />
+      <WrapperHorizontal>
+        <Row left={paperTexts.name} right={name} fullText />
+        <Row left={paperTexts.reference} right={reference} />
+        <Row left={paperTexts.paperType} right={paperType} />
+        <Row left={paperTexts.date} right={date ? momentFormat(date, undefined, 'x') : undefined} />
+      </WrapperHorizontal>
       <OParlPreviewSection
         data={consultation}
         header={paperTexts.consultation}

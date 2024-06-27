@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
+import { NetworkContext } from '../NetworkProvider';
+import { SettingsContext } from '../SettingsProvider';
 import {
   About,
   ConnectedImagesCarousel,
@@ -18,7 +20,12 @@ import {
   Wrapper
 } from '../components';
 import { colors, consts, texts } from '../config';
-import { graphqlFetchPolicy, rootRouteName } from '../helpers';
+import {
+  graphqlFetchPolicy,
+  queryVariablesFromQuery,
+  rootRouteName,
+  routeNameFromQuery
+} from '../helpers';
 import {
   useMatomoTrackScreenView,
   usePermanentFilter,
@@ -26,9 +33,7 @@ import {
   useStaticContent
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
-import { NetworkContext } from '../NetworkProvider';
-import { getQueryType, QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
+import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
@@ -201,20 +206,23 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const interactionHandler = useCallback(
     (response) => {
-      const data = response?.notification?.request?.content?.data;
-      const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
+      const data = response?.notification?.request?.content?.data || {};
+      const { id, query_type: queryType, title } = data;
+      const query = queryType ? getQueryType(queryType) : undefined;
+      const name = routeNameFromQuery(query);
+      const queryVariables = queryVariablesFromQuery(query, data);
 
-      if (data?.id && queryType) {
+      if (id && name && query) {
         // navigate to the referenced item
         navigation.navigate({
-          name: 'Detail',
+          name,
           params: {
-            title: texts.detailTitles[queryType],
-            query: queryType,
-            queryVariables: { id: data.id },
-            rootRouteName: rootRouteName(queryType),
+            details: null,
+            query,
+            queryVariables,
+            rootRouteName: rootRouteName(query),
             shareContent: null,
-            details: null
+            title: title || texts.detailTitles[query]
           }
         });
       }
@@ -348,7 +356,7 @@ export const HomeScreen = ({ navigation, route }) => {
             {route.params?.isDrawer && (
               <>
                 <HomeService publicJsonFile="homeService" />
-                <About navigation={navigation} withHomeRefresh />
+                <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
               </>
             )}
           </>

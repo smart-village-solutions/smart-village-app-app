@@ -4,6 +4,7 @@ export const QUERY_TYPES = {
   APP_USER_CONTENT: 'appUserContent',
   AR_DOWNLOAD_LIST: 'arDownloadList',
   CATEGORIES: 'categories',
+  CATEGORIES_FILTER: 'categoriesFilter',
   CONSTRUCTION_SITES: 'constructionSites',
   CONSUL: {
     COMMENTS: 'comments',
@@ -45,8 +46,14 @@ export const QUERY_TYPES = {
   NEWS_ITEMS: 'newsItems',
   NEWS_ITEMS_DATA_PROVIDER: 'newsItemsDataProvider',
   POINT_OF_INTEREST: 'pointOfInterest',
+  POINT_OF_INTEREST_TRAVEL_TIMES: 'pointOfInterestTravelTimes',
   POINTS_OF_INTEREST: 'pointsOfInterest',
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
+  PROFILE: {
+    GET_CONVERSATIONS: 'getConversations',
+    GET_MESSAGES: 'getMessages',
+    MEMBER: 'member'
+  },
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   STATIC_CONTENT_LIST: 'staticContentList',
@@ -92,5 +99,11 @@ export const getQueryType = (input: string) => {
     QUERY_TYPES.NEWS_ITEM,
     QUERY_TYPES.EVENT_RECORD
   ];
+
+  // special condition used for push notifications coming from messaging
+  if (camelCaseInput === 'messagingConversation') {
+    return QUERY_TYPES.PROFILE.GET_MESSAGES;
+  }
+
   return availableTypes.find((type) => type === camelCaseInput);
 };

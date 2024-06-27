@@ -1,6 +1,6 @@
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
+import { ActivityIndicator, RefreshControl, SectionList, StyleSheet } from 'react-native';
 
 import {
   HtmlView,
@@ -9,9 +9,9 @@ import {
   MultiButtonWithSubQuery,
   SafeAreaViewFlex,
   SectionHeader,
-  Wrapper
+  WrapperVertical
 } from '../components';
-import { colors } from '../config';
+import { colors, normalize } from '../config';
 import { useStaticContent } from '../hooks';
 import { useRenderItem } from '../hooks/listHooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -39,8 +39,8 @@ export const ListHeaderComponent = ({
   html?: string;
   loading: boolean;
   navigation: StackNavigationProp<any>;
-  navigationTitle: string;
-  subQuery: SubQuery;
+  navigationTitle?: string;
+  subQuery?: SubQuery;
 }) => {
   if (loading) {
     return <LoadingSpinner loading />;
@@ -51,11 +51,11 @@ export const ListHeaderComponent = ({
   }
 
   return (
-    <Wrapper>
+    <WrapperVertical style={styles.noPaddingBottom}>
       {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
       <HtmlView html={html} />
       <MultiButtonWithSubQuery {...{ navigation, subQuery, title: navigationTitle }} />
-    </Wrapper>
+    </WrapperVertical>
   );
 };
 
@@ -67,6 +67,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   const rootRouteName = route.params?.rootRouteName;
   const subQuery = route.params?.subQuery ?? undefined;
   const navigationTitle = route.params?.title;
+
   const { data, loading, refetch } = useStaticContent<NestedInfo>({ name, type: 'json' });
   const {
     data: dataHtml,
@@ -140,11 +141,26 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
         }
         sections={sectionData}
         renderSectionHeader={({ section: { title } }) =>
-          title ? <SectionHeader title={title} /> : null
+          title ? (
+            <SectionHeader title={title} containerStyle={styles.sectionHeaderContainer} />
+          ) : null
         }
         renderItem={renderItem}
         keyExtractor={(item) => item.title}
+        style={styles.container}
       />
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
+  },
+  sectionHeaderContainer: {
+    marginHorizontal: -normalize(14)
+  }
+});

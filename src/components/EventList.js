@@ -1,7 +1,9 @@
 import { FlashList } from '@shopify/flash-list';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
+import { normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
@@ -110,9 +112,16 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       stickyHeaderIndices={stickyHeaderIndices}
+      contentContainerStyle={styles.contentContainer}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingHorizontal: normalize(16)
+  }
+});
 
 EventList.propTypes = {
   data: PropTypes.array,

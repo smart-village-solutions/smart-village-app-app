@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Address, Contact, WebUrl } from '../../types';
 import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 
 type Props = {
@@ -25,7 +25,7 @@ export const OperatingCompany = ({ title, logo, operatingCompany, openWebScreen 
   }
 
   return (
-    <View>
+    <WrapperVertical>
       <SectionHeader title={title} />
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
@@ -37,6 +37,6 @@ export const OperatingCompany = ({ title, logo, operatingCompany, openWebScreen 
           openWebScreen={openWebScreen}
         />
       </Wrapper>
-    </View>
+    </WrapperVertical>
   );
 };

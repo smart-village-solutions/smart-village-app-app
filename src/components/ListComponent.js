@@ -54,13 +54,15 @@ export const ListComponent = ({
   navigation,
   noSubtitle,
   noOvertitle,
+  listType,
   openWebScreen,
   query,
   queryVariables,
   refetch,
   refreshControl,
   sectionByDate,
-  showBackToTop
+  showBackToTop,
+  stickyHeaderIndices
 }) => {
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
@@ -84,12 +86,14 @@ export const ListComponent = ({
       navigation={navigation}
       noSubtitle={noSubtitle}
       noOvertitle={noOvertitle}
+      listType={listType}
       openWebScreen={openWebScreen}
       query={query}
       queryVariables={queryVariables}
       isIndexStartingAt1={isIndexStartingAt1}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
+      stickyHeaderIndices={stickyHeaderIndices}
     />
   );
 };
@@ -105,11 +109,13 @@ ListComponent.propTypes = {
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
   noOvertitle: PropTypes.bool,
+  listType: PropTypes.string,
   openWebScreen: PropTypes.func,
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object,
   refetch: PropTypes.func,
   refreshControl: PropTypes.object,
   sectionByDate: PropTypes.bool,
-  showBackToTop: PropTypes.bool
+  showBackToTop: PropTypes.bool,
+  stickyHeaderIndices: PropTypes.array
 };

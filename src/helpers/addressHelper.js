@@ -11,7 +11,7 @@ export const formatAddress = (address) => {
   // add an extra ',' to the street, if it is defined
   return [addition, street?.length ? `${street},` : undefined, cityPart]
     .filter((s) => s?.length)
-    .join('\n');
+    .join(' ');
 };
 
 export const formatAddressSingleLine = (address) => {

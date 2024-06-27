@@ -14,10 +14,12 @@ import {
   Wrapper
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { device, texts } from '../config';
+import { consts, device, texts } from '../config';
 import { getBestSupportedRatioWithRetry, getNumericalRatioFromAspectRatio } from '../helpers';
 import { useCreateEncounter } from '../hooks';
 import { AcceptedRatio, ScreenName, User } from '../types';
+
+const { HOST_NAMES } = consts;
 
 const useOrientationLock = () =>
   useEffect(() => {
@@ -32,7 +34,7 @@ const showErrorAlert = () => Alert.alert(texts.errors.errorTitle, texts.encounte
 const parseQrCode = (data: string): string | undefined => {
   const result = Linking.parse(data);
 
-  if (result.scheme === appJson.expo.scheme && result.hostname === 'encounter') {
+  if (result.scheme === appJson.expo.scheme && result.hostname === HOST_NAMES.ENCOUNTER) {
     return result.queryParams?.qrId;
   }
 };

@@ -24,28 +24,20 @@ const legislativeTermTexts = texts.oparl.legislativeTerm;
 const leftWidth = 120;
 
 export const LegislativeTerm = ({ data, navigation }: Props) => {
-  const {
-    body,
-    created,
-    deleted,
-    endDate,
-    keyword,
-    license,
-    modified,
-    name,
-    startDate,
-    web
-  } = data;
+  const { body, created, deleted, endDate, keyword, license, modified, name, startDate, web } =
+    data;
 
   return (
     <>
-      <Row left={legislativeTermTexts.name} right={name} leftWidth={leftWidth} fullText />
-      <DateSection
-        endDate={endDate}
-        startDate={startDate}
-        topDivider={false}
-        leftWidth={leftWidth}
-      />
+      <WrapperHorizontal>
+        <Row left={legislativeTermTexts.name} right={name} leftWidth={leftWidth} fullText />
+        <DateSection
+          endDate={endDate}
+          startDate={startDate}
+          topDivider={false}
+          leftWidth={leftWidth}
+        />
+      </WrapperHorizontal>
       <OParlPreviewSection
         data={body}
         header={legislativeTermTexts.partOfBody}

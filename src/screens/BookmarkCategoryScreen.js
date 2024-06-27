@@ -16,13 +16,14 @@ import { useBookmarks, useMatomoTrackScreenView, useRefreshTime } from '../hooks
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery } from '../queries';
 
-const { MATOMO_TRACKING } = consts;
+const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const suffix = route.params?.suffix ?? '';
   const categoryTitleDetail = route.params?.categoryTitleDetail ?? '';
   const bookmarks = useBookmarks(query, suffix);
+  const listType = route.params?.listType ?? LIST_TYPES.TEXT_LIST;
 
   const variables = { ids: bookmarks };
 
@@ -72,7 +73,13 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent navigation={navigation} data={listItems} horizontal={false} query={query} />
+      <ListComponent
+        navigation={navigation}
+        data={listItems}
+        horizontal={false}
+        query={query}
+        listType={listType}
+      />
     </SafeAreaViewFlex>
   );
 };

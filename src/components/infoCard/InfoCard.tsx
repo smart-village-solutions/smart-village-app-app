@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Icon as RNEIcon } from 'react-native-elements';
+import { Divider, Icon as RNEIcon } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../../config';
 import { mergeWebUrls } from '../../helpers';
-import { Address, Contact, OpeningHour, WebUrl } from '../../types';
+import { Address, Contact, OpeningHour, SVA_Date, WebUrl } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
 
 import { AddressSection } from './AddressSection';
 import { ContactSection } from './ContactSection';
+import { DateSection } from './DateSection';
 import { OpenStatus } from './OpenStatus';
 import { UrlSection } from './UrlSection';
 
@@ -24,9 +25,10 @@ type Props = WebUrlProps & {
   address?: Address;
   addresses?: Address[];
   category?: { name?: string };
+  dates?: SVA_Date[];
   name?: string;
   openingHours?: OpeningHour[];
-  openWebScreen: (link: string) => void;
+  openWebScreen?: (link: string) => void;
 };
 
 /* TODO: add a logic to display info category and url that fit the screen even if long text
@@ -37,6 +39,7 @@ export const InfoCard = ({
   category,
   contact,
   contacts,
+  dates,
   name,
   webUrls,
   openingHours,
@@ -58,20 +61,24 @@ export const InfoCard = ({
       </InfoBox>
     )}
 
+    <Divider style={styles.divider} />
+
     <OpenStatus openingHours={openingHours} />
 
     <AddressSection address={address} addresses={addresses} openWebScreen={openWebScreen} />
 
     <ContactSection contact={contact} contacts={contacts} />
 
-    <UrlSection
-      openWebScreen={openWebScreen}
-      webUrls={mergeWebUrls({ webUrls, contact, contacts })}
-    />
+    <UrlSection webUrls={mergeWebUrls({ webUrls, contact, contacts })} />
+
+    <DateSection dates={dates} />
   </View>
 );
 
 const styles = StyleSheet.create({
+  divider: {
+    backgroundColor: colors.placeholder
+  },
   margin: {
     marginRight: normalize(12)
   }

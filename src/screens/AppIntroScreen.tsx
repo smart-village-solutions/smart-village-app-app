@@ -1,5 +1,6 @@
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { ListRenderItem, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
@@ -66,21 +67,21 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
   }
 
   return (
-    <SafeAreaViewFlex>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+    <SafeAreaViewFlex style={styles.background}>
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
-        renderItem={renderSlide}
+        activeDotStyle={styles.activeDot}
         data={slides}
+        dotClickEnabled={false}
+        dotStyle={styles.inactiveDot}
         keyExtractor={keyExtractor}
+        onDone={setOnboardingComplete}
         onSlideChange={(_, index) => {
           slides[index]?.onLeaveSlide?.(true);
         }}
-        onDone={setOnboardingComplete}
         renderDoneButton={() => <SliderButton label={texts.appIntro.continue} />}
+        renderItem={renderSlide}
         renderNextButton={() => <SliderButton label={texts.appIntro.continue} />}
-        dotStyle={styles.inactiveDot}
-        activeDotStyle={styles.activeDot}
-        dotClickEnabled={false}
         scrollEnabled={false}
         style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
@@ -97,6 +98,9 @@ const styles = StyleSheet.create({
     borderRadius: normalize(ACTIVE_DOT_SIZE) / 2,
     height: ACTIVE_DOT_SIZE,
     width: ACTIVE_DOT_SIZE
+  },
+  background: {
+    backgroundColor: colors.surface
   },
   imageContainer: {
     width: '100%'

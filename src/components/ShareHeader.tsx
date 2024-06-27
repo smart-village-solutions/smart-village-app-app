@@ -8,7 +8,7 @@ const { a11yLabel } = consts;
 
 type Props = {
   shareContent?: ShareContent;
-  style?: StyleProp<ViewStyle>;
+  style: StyleProp<ViewStyle>;
 };
 
 export const ShareHeader = ({ shareContent, style }: Props) => {

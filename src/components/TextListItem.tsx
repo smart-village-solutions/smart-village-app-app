@@ -8,7 +8,7 @@ import { colors, consts, Icon, normalize } from '../config';
 import { isOpen, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { BoldText, RegularText } from './Text';
+import { BoldText, HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -16,6 +16,7 @@ export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
   overtitle?: string;
   onPress?: (navigation: any) => void;
@@ -37,6 +38,7 @@ type Props = {
   imageStyle?: ImageStyle;
   item: ItemData;
   leftImage?: boolean;
+  listItemStyle?: ViewStyle;
   listsWithoutArrows?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
   noOvertitle?: boolean;
@@ -58,6 +60,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     imageStyle,
     item,
     leftImage,
+    listItemStyle,
     listsWithoutArrows,
     navigation,
     noSubtitle,
@@ -69,6 +72,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     const {
       badge,
       bottomDivider,
+      isHeadlineTitle = true,
       leftIcon,
       onPress,
       overtitle,
@@ -88,6 +92,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
       <BoldText small style={{ marginTop: normalize(2) }}>
         {trimNewLines(title)}
       </BoldText>
+    ) : isHeadlineTitle ? (
+      <HeadlineText small>{trimNewLines(title)}</HeadlineText>
     ) : (
       <BoldText small>{trimNewLines(title)}</BoldText>
     );
@@ -126,11 +132,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       <ListItem
         bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
         topDivider={topDivider !== undefined ? topDivider : false}
-        containerStyle={[
-          styles.container,
-          containerStyle,
-          (bottomDivider || topDivider) && styles.containerBorder
-        ]}
+        containerStyle={[styles.container, containerStyle]}
         badge={badge}
         onPress={() => (onPress ? onPress(navigation) : navigate())}
         disabled={!navigation}
@@ -154,17 +156,35 @@ export const TextListItem: NamedExoticComponent<Props> & {
 
         {withCard ? (
           <ListItem.Content>
-            {!!overtitle && <RegularText smallest>{trimNewLines(overtitle)}</RegularText>}
-            {noSubtitle || !subtitle ? undefined : titleText}
-            {noSubtitle || !subtitle ? titleText : <RegularText smallest>{subtitle}</RegularText>}
-          </ListItem.Content>
-        ) : (
-          <ListItem.Content>
-            {!noOvertitle && !!overtitle && (
-              <RegularText smallest>{trimNewLines(overtitle)}</RegularText>
+            {!!overtitle && (
+              <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
+                {trimNewLines(overtitle)}
+              </HeadlineText>
             )}
             {noSubtitle || !subtitle ? undefined : titleText}
-            {noSubtitle || !subtitle ? titleText : <RegularText smallest>{subtitle}</RegularText>}
+            {noSubtitle || !subtitle ? (
+              titleText
+            ) : (
+              <RegularText small style={styles.subtitle}>
+                {subtitle}
+              </RegularText>
+            )}
+          </ListItem.Content>
+        ) : (
+          <ListItem.Content style={listItemStyle}>
+            {!noOvertitle && !!overtitle && (
+              <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
+                {trimNewLines(overtitle)}
+              </HeadlineText>
+            )}
+            {noSubtitle || !subtitle ? undefined : titleText}
+            {noSubtitle || !subtitle ? (
+              titleText
+            ) : (
+              <RegularText small style={styles.subtitle}>
+                {subtitle}
+              </RegularText>
+            )}
             {!!status && <RegularText>{status}</RegularText>}
           </ListItem.Content>
         )}
@@ -191,11 +211,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
-    paddingVertical: normalize(12)
+    paddingHorizontal: 0,
+    paddingVertical: normalize(16)
   },
-  containerBorder: {
-    borderBottomColor: colors.borderRgba,
-    borderBottomWidth: 1
+  overtitleMarginBottom: {
+    marginBottom: normalize(4)
   },
   smallImage: {
     height: normalize(72),
@@ -206,6 +226,9 @@ const styles = StyleSheet.create({
   },
   statustitleWrapper: {
     marginTop: normalize(7)
+  },
+  subtitle: {
+    marginTop: normalize(6)
   },
   withBigCardStyle: {
     height: normalize(72),
@@ -221,10 +244,12 @@ TextListItem.propTypes = {
   imageStyle: PropTypes.object,
   item: PropTypes.object.isRequired,
   leftImage: PropTypes.bool,
+  listItemStyle: PropTypes.object,
   listsWithoutArrows: PropTypes.bool,
   navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,
   noSubtitle: PropTypes.bool,
+  noOvertitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
   withCard: PropTypes.bool
@@ -233,8 +258,8 @@ TextListItem.propTypes = {
 TextListItem.defaultProps = {
   leftImage: false,
   listsWithoutArrows: false,
-  noOvertitle: false,
   noSubtitle: false,
+  noOvertitle: false,
   rightImage: false,
   withCard: false
 };

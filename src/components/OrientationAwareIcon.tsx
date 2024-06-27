@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
-import { consts, device, IconProps, normalize } from '../config';
+import { device, IconProps, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
 type Props = IconProps & {
@@ -14,7 +14,7 @@ type Props = IconProps & {
 const LANDSCAPE_ADJUSTMENT_FACTOR = 0.75;
 
 export const OrientationAwareIcon = (props: Props) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
+  const { orientation } = useContext(OrientationContext);
   const {
     Icon,
     iconStyle,
@@ -24,16 +24,15 @@ export const OrientationAwareIcon = (props: Props) => {
     style
   } = props;
 
-  const needLandscapeStyle =
-    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
-
-  // we need adjustments only on iOS, so otherwise just return the item with the usual props
-  // TODO: is this still needed with Expo 48?
-  if (!needLandscapeStyle || !(device.platform === 'ios')) {
+  if (orientation !== 'landscape' && !device.isTablet) {
     return <Icon {...props} />;
   }
 
   const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
+
+  if (orientation !== 'landscape' && device.isTablet) {
+    return <Icon {...props} iconStyle={[iconStyle, { width: adjustedSize }]} size={adjustedSize} />;
+  }
 
   return (
     <Icon

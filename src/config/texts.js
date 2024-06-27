@@ -103,7 +103,7 @@ export const texts = {
     noBookmarksinCategory:
       'In dieser Kategorie wurden noch keine Einträge für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     noBookmarksYet:
-      'Es wurden noch keine Beiträge, Orte oder Touren für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
+      'Es wurde noch nichts für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
   calendarToggle: {
@@ -328,6 +328,7 @@ export const texts = {
       proposal: 'Vorschlag'
     },
     eventRecord: 'Veranstaltung',
+    conversation: 'Unterhaltungen',
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
     volunteer: {
@@ -414,6 +415,7 @@ export const texts = {
     appointments: 'Termine',
     appointmentsShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
+    details: 'Details',
     filterByDailyEvents: 'Nur tagesaktuelle anzeigen',
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
@@ -451,7 +453,6 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
-    company: 'Städtische Unternehmen',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
     service: 'Service'
@@ -485,36 +486,52 @@ export const texts = {
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
       error: 'Bitte versuchen Sie es erneut.',
+      delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
       hint: 'Hinweis',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
+    all: 'Alles',
+    backToConversation: 'Zurück zur Unterhaltung',
     categoryNames: {
       neighbourlyHelp: 'Nachbarschaftshilfe',
       offer: 'Angebot',
       search: 'Gesuch'
     },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    delete: 'Löschen',
+    description: 'Beschreibung',
+    details: 'Details',
+    duration: 'Laufzeit',
+    edit: 'Bearbeiten',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
     inputDescription: 'Beschreibung',
     inputErrorText: 'muss ausgefüllt werden',
-    inputMail: 'Ihre E-Mail',
-    inputMessage: 'Ihre Nachricht',
-    inputName: 'Ihr Name',
-    inputPhoneNumber: 'Ihre Telefonnummer',
+    inputMail: 'E-Mail',
+    inputMessage: 'Nachricht',
+    inputName: 'Angezeigter Name',
+    inputPhoneNumber: 'Telefonnummer',
+    inputPrice: 'Preis',
+    inputPriceType: ' ',
+    inputPriceTypePlaceholder: 'Währung oder Zusatz',
     inputTitle: 'Titel',
     invalidMail: '-Adresse ist nicht gültig.',
-    noticeboard: 'Schwarzes Brett',
+    member: 'Anbieter',
+    myNoticeboard: 'Meine Anzeige',
+    noticeboard: 'Anzeige',
     publicationDate: 'Erscheinungsdatum',
     send: 'Senden',
     successScreen: {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
-        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Sie erhalten eine E-Mail, wenn der Eintrag freigeschaltet wurde.',
+        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
-    }
+    },
+    toConversation: 'Zur Unterhaltung',
+    toRelated: 'Zu der zugehörigen Anzeige',
+    writeMessage: 'Unterhaltung starten'
   },
   oparl: {
     agendaItem: {
@@ -753,17 +770,19 @@ export const texts = {
   placeholder: {
     homeSectionButton: 'Filter ändern',
     homeSectionTitle: (title) => `Keine ${title} vorhanden.`,
-    homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
+    homeSectionSubtitle: 'Haben Sie alle Quellen abgewählt?'
   },
   pointOfInterest: {
     availableVehicles: 'Verfügbare Fahrzeuge',
     departureTimes: 'Abfahrtszeiten',
+    departureTimesShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
-    location: 'Anfahrt',
+    location: 'Karte',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
+    overview: 'Übersicht',
     priceFree: 'kostenlos',
     prices: 'Preise',
     routePlanner: 'Zum Routenplaner bbnavi',
@@ -783,6 +802,94 @@ export const texts = {
     today: 'Heute',
     yourPosition: 'Ihre Position'
   },
+  profile: {
+    abort: 'Abbrechen',
+    alreadyRegistered: 'Sie sind schon registriert? ',
+    back: 'Zurück',
+    birthday: 'Geburtsdatum',
+    birthdayInvalid: 'Mindestalter nicht erreicht',
+    birthdayPlaceholder: 'Mindestalter: 18 Jahre',
+    city: 'Ort',
+    editMail: 'E-Mail-Adresse ändern',
+    editPassword: 'Passwort ändern',
+    editPasswordAlertMessage:
+      'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
+    editPasswordAlertTitle: 'Passwort ändern',
+    editPasswordLabel:
+      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Ändern Ihres Passworts zu starten.',
+    editProfile: 'Profil aktualisieren',
+    email: 'E-Mail-Adresse',
+    emailConfirmation: 'Neue E-Mail-Adresse bestätigen',
+    emailCurrent: 'Aktuelle E-Mail-Adresse',
+    emailDoNotMatch: 'E-Mail-Adressen stimmen nicht überein',
+    emailError: 'E-Mail-Adresse muss korrekt ausgefüllt werden',
+    emailInvalid: 'E-Mail-Adresse ungültig',
+    emailNew: 'Neue E-Mail-Adresse',
+    enterCode: 'Code eingeben',
+    firstName: 'Vorname',
+    firstnameError: 'Vorname muss ausgefüllt werden',
+    gender: 'Anrede',
+    invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
+    invalidUrl: '-URL ist keine gültige URL',
+    lastName: 'Nachname',
+    lastnameError: 'Nachname muss ausgefüllt werden',
+    login: 'Anmelden',
+    loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    loginFailedTitle: 'Fehler bei der Anmeldung',
+    loginTitle: 'Login',
+    logout: 'Abmelden',
+    next: 'Weiter',
+    notYetRegistered: 'Sie sind noch nicht registriert? ',
+    ok: 'OK',
+    password: 'Passwort',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordDoNotMatch: 'Passwörter stimmen nicht überein',
+    passwordError: 'Passwort muss ausgefüllt werden',
+    passwordForgotten: 'Passwort vergessen?',
+    passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
+    postcode: 'Postleitzahl',
+    postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
+    privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
+    privacyCheckLink: 'Datenschutzbestimmungen',
+    privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',
+    privacyCheckRequireTitle: 'Hinweis',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    registrationFailedTitle: 'Fehler bei der Registrierung',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren',
+    resetPasswordAlertMessage:
+      'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
+    resetPasswordAlertTitle: 'Passwort zurücksetzen',
+    resetPasswordLabel:
+      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Zurücksetzen Ihres Passworts zu starten.',
+    resetPasswordTitle: 'Passwort zurücksetzen',
+    send: 'Absenden',
+    settings: 'Einstellungen',
+    signInAgainBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    signInAgainTitle: 'Fehler bei der Anmeldung. Bitte noch einmal versuchen.',
+    streetAndHouseNumber: 'Straße und Hausnummer',
+    token: 'Code',
+    tokenError: 'Code muss ausgefüllt werden',
+    update: 'Profil aktualisieren',
+    updateMail: 'E-Mail-Adresse ändern',
+    updatePassword: 'Passwort ändern',
+    updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
+    showUpdateEmailSuccessAlertBody:
+      'Ihr Profil wurde erfolgreich aktualisiert. Bitte bestätigen Sie Ihre E-Mail-Adresse und melden Sie sich mit der neuen E-Mail-Adresse erneut an.',
+    showUpdateSuccessAlertBody: 'Ihr Profil wurde erfolgreich aktualisiert.',
+    showUpdateSuccessAlertTitle: 'Erfolg',
+    termsOfUseChecked: 'Mit der Registrierung akzeptieren Sie die',
+    termsOfUseLink: 'Nutzungsbedingungen',
+    termsOfUseCheckRequireBody: 'Bitte bestätigen Sie die Nutzungsbedingungen.',
+    termsOfUseCheckRequireTitle: 'Hinweis'
+  },
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
@@ -792,9 +899,8 @@ export const texts = {
       'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
   },
   screenTitles: {
-    about: appJson.expo.name,
+    about: 'Menü',
     appSettings: 'App-Einstellungen',
-    company: appJson.expo.name,
     constructionSite: 'Baustelle',
     consul: {
       login: 'Anmelden',
@@ -803,12 +909,16 @@ export const texts = {
     },
     encounterHome: 'Mitfahrbank',
     events: 'Veranstaltungen',
+    favorites: 'Favoriten',
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
+    profile: {
+      home: 'Profil'
+    },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
-    service: appJson.expo.name,
+    service: 'Service',
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
@@ -965,10 +1075,12 @@ export const texts = {
     }
   },
   tabBarLabel: {
-    about: 'Mehr',
+    about: 'Menü',
+    favorites: 'Favoriten',
+    home: 'Start',
+    profile: 'Profil',
     company: 'Unternehmen',
     events: 'Events',
-    home: 'Übersicht',
     pointsOfInterest: 'POI',
     service: 'Service',
     volunteer: 'Ehrenamt'
