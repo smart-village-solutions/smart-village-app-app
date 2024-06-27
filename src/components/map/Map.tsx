@@ -2,7 +2,8 @@ import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView from 'react-native-map-clustering';
-import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
+// import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
+import MapLibreGL from '@maplibre/maplibre-react-native';
 
 import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth, truncateText } from '../../helpers';
@@ -35,6 +36,7 @@ type Props = {
 
 const MARKER_ICON_SIZE = normalize(40);
 const CIRCLE_SIZES = [60, 50, 40, 30];
+MapLibreGL.setAccessToken(null); 
 
 const MapIcon = ({
   iconColor,
@@ -159,7 +161,7 @@ export const Map = ({
 
   return (
     <View style={[styles.container, style]}>
-      <MapView
+      {/* <MapView
         clusterColor={colors.primary}
         clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
@@ -296,7 +298,21 @@ export const Map = ({
         <View style={styles.logoContainer}>
           <RegularText smallest>© OpenStreetMap</RegularText>
         </View>
-      )}
+      )} */}
+      <MapLibreGL.MapView 
+        style={styles.map}
+        styleJSON='https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json'
+      >
+        <MapLibreGL.Camera
+          zoomLevel={14}
+          centerCoordinate={[13.404954, 52.520008]} // Beispielkoordinaten für Berlin
+        />
+        {/* <MapLibreGL.VectorSource
+          url='https://tileserver-gl.smart-village.app/styles/512/osm-liberty.json'
+          attribution="© OpenStreetMap contributors"
+        >
+        </MapLibreGL.VectorSource> */}
+      </MapLibreGL.MapView>
     </View>
   );
 };
@@ -365,7 +381,11 @@ const styles = StyleSheet.create({
     right: normalize(15),
     width: normalize(48),
     zIndex: 1
-  }
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 /* eslint-disable react-native/no-unused-styles */
