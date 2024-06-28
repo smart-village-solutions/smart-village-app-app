@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.0.0] :dizzy:
+
+This version includes the Expo SDK 50 and SDK 51 update, a new the defect report module and a new voucher module. Theming feature coming soon.
+
+### Added
+
+- added new defect report module (Sag's uns einfach)
+- added new voucher module
+- added the option to add time subtitle to the event list
+- added options to add html at the top and bottom of the tile screen
+
+### Changed
+
+- upgraded Expo to version 50: https://blog.expo.dev/expo-sdk-50-afb524038906
+- upgraded Expo to version 51: https://blog.expo.dev/expo-sdk-51-b73ed1798672
+- updated `normalize` function according to current device sizes
+- updated sentry integration
+
+### Fixed
+
+- fixed a bug in the development app that caused images not to be displayed on the Android platform
+- fixed a bug that caused the app to crash in map view when `iconName` was missing
+- fixed a bug that caused the settings screen to fail to load
+- fixed a bug that caused street names on the map to appear twice on the iOS platform
+
 ## [v3.3.5]
 
 This version fixes minor known issues and adds a new tab to the settings screen for mowas keys
