@@ -6,7 +6,8 @@ import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors, normalize, texts } from '../../../config';
+import { colors, device, normalize, texts } from '../../../config';
+import { useKeyboardHeight } from '../../../hooks';
 import { QUERY_TYPES, createQuery } from '../../../queries';
 import { ScreenName } from '../../../types';
 import { Button } from '../../Button';
@@ -36,6 +37,7 @@ export const SueReportSend = ({
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
 
+  const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
 
   const { control, reset, handleSubmit } = useForm({
@@ -158,6 +160,10 @@ export const SueReportSend = ({
                     }
                   />
                 </View>
+
+                {device.platform === 'android' && (
+                  <View style={{ height: normalize(keyboardHeight) * 0.8 }} />
+                )}
               </>
             )}
           </Wrapper>
