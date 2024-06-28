@@ -26,6 +26,7 @@
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App kann die Standortbestimmung nutzen, um Ihre aktuelle Position auf der Karte darzustellen und Inhalte nach Entfernung zu sortieren.",
+        "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp"]
@@ -60,13 +61,7 @@
       [
         "expo-camera",
         {
-          "microphonePermission": false
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "microphonePermission": false
+          "recordAudioAndroid": false
         }
       ],
       [
@@ -91,6 +86,7 @@
       ],
       "expo-asset",
       "expo-font",
+      "expo-image-picker",
       "expo-localization",
       "expo-secure-store",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
