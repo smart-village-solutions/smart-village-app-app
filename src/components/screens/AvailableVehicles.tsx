@@ -1,5 +1,5 @@
 import _upperFirst from 'lodash/upperFirst';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
@@ -12,6 +12,7 @@ import { RegularText } from '../Text';
 type AvailableVehiclesProps = {
   id: string;
   name: string;
+  count?: number;
 };
 
 export const AvailableVehicles = ({
@@ -34,7 +35,7 @@ export const AvailableVehicles = ({
         const ok = response.ok;
 
         if (ok && status === 200 && !!data?.available) {
-          setAvailableVehiclesData(data.available);
+          setAvailableVehiclesData(getCountArray(data.available));
         }
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
@@ -44,6 +45,19 @@ export const AvailableVehicles = ({
     };
 
     fetchData();
+  }, []);
+
+  const getCountArray = useCallback((vehicles: AvailableVehiclesProps[]) => {
+    const vehicleCounts = vehicles.reduce<Record<string, number>>((accumulator, vehicle) => {
+      accumulator[vehicle.name] = (accumulator[vehicle.name] || 0) + 1;
+      return accumulator;
+    }, {});
+
+    return Object.keys(vehicleCounts).map((key) => ({
+      id: key,
+      name: key,
+      count: vehicleCounts[key]
+    }));
   }, []);
 
   if (loading) {
@@ -65,8 +79,9 @@ export const AvailableVehicles = ({
           <Fragment key={item.id}>
             <ListItem style={styles.container}>
               {!!iconName && <CategoryIcon />}
-              <ListItem.Content>
+              <ListItem.Content style={styles.contentContainer}>
                 <RegularText>{item.name}</RegularText>
+                <RegularText>{item.count}</RegularText>
               </ListItem.Content>
             </ListItem>
             {index !== availableVehiclesData.length - 1 && <Divider style={styles.divider} />}
@@ -83,6 +98,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     paddingVertical: normalize(12)
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   divider: {
     backgroundColor: colors.placeholder
