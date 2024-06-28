@@ -124,6 +124,7 @@
     "react-native-snap-carousel": "4.0.0-beta.6",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "15.2.0",
+    "react-native-svg-transformer": "^1.3.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-version-check-expo": "^3.4.7",
     "react-native-web": "~0.19.10",
