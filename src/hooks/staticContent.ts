@@ -59,7 +59,12 @@ export const useStaticContent = <T>({
       refreshTime
     });
 
-  const { data, error: queryError, loading, refetch } = useQuery(
+  const {
+    data,
+    error: queryError,
+    loading,
+    refetch
+  } = useQuery(
     getQuery(type === 'json' ? QUERY_TYPES.PUBLIC_JSON_FILE : QUERY_TYPES.PUBLIC_HTML_FILE),
     {
       variables: { name, version: appJson.expo.version },

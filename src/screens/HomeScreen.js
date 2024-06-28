@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
+import { NetworkContext } from '../NetworkProvider';
+import { SettingsContext } from '../SettingsProvider';
 import {
   About,
   ConnectedImagesCarousel,
@@ -24,15 +27,13 @@ import {
   useMatomoTrackScreenView,
   usePermanentFilter,
   usePushNotifications,
+  useRedeemLocalVouchers,
   useStaticContent,
   useVersionCheck
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
-import { NetworkContext } from '../NetworkProvider';
-import { getQueryType, QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
+import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
-import { ConfigurationsContext } from '../ConfigurationsProvider';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -230,6 +231,7 @@ export const HomeScreen = ({ navigation, route }) => {
   );
 
   useVersionCheck();
+  useRedeemLocalVouchers();
 
   const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticContentName}`,

@@ -24,3 +24,4 @@ export * from './staticContent';
 export * from './surveyHooks';
 export * from './versionCheck';
 export * from './waterTemperature';
+export * from './voucherHooks';

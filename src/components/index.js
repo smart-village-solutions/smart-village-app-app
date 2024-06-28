@@ -15,6 +15,7 @@ export * from './volunteer';
 export * from './wasteCalendar';
 export * from './weather';
 export * from './widgets';
+export * from './vouchers';
 
 export * from './BackToTop';
 export * from './Button';

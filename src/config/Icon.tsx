@@ -54,7 +54,8 @@ import {
   unvisible,
   url,
   verifiedBadge,
-  visible
+  visible,
+  voucher
 } from '../icons';
 import { sueBroom } from '../icons/SUE/broom';
 
@@ -188,5 +189,6 @@ export const Icon = {
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
   Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
-  Volunteer: (props: IconProps) => <NamedIcon name="people-circle" {...props} />
+  Volunteer: (props: IconProps) => <NamedIcon name="people-circle" {...props} />,
+  Voucher: (props: IconProps) => <SvgIcon xml={voucher} {...props} />
 };

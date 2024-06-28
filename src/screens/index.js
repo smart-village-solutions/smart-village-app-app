@@ -6,6 +6,7 @@ export * from './Noticeboard';
 export * from './OParl';
 export * from './SUE';
 export * from './volunteer';
+export * from './Voucher';
 
 export * from './AppIntroScreen';
 export * from './AboutScreen';

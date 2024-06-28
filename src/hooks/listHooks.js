@@ -1,9 +1,10 @@
+/* eslint-disable complexity */
 /* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
 import { SettingsContext } from '../SettingsProvider';
-import { SectionHeader } from '../components';
+import { SectionHeader, VoucherListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -39,6 +40,24 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
         },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
         showFilterByDailyEvents: false
+      })
+    }
+  />
+);
+
+const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
+  <SectionHeader
+    title={item.name}
+    onPress={() =>
+      navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
+        title: texts.screenTitles.voucher.index,
+        query,
+        queryVariables: {
+          ...options.queryVariables,
+          categoryId: item.id,
+          category: item.name
+        },
+        rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
       })
     }
   />
@@ -177,6 +196,14 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
+        if (query === QUERY_TYPES.VOUCHERS || query === QUERY_TYPES.VOUCHERS_REDEEMED) {
+          if (typeof item === 'object' && Object.keys(item).length === 2) {
+            return <VoucherCategoryHeader {...{ item, navigation, options, query }} />;
+          }
+
+          return <VoucherListItem navigation={navigation} item={item} />;
+        }
+
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
@@ -196,6 +223,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
   }
+  /* eslint-enable complexity */
 
   return useCallback(renderItem, [
     query,

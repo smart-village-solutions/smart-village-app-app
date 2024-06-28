@@ -83,6 +83,10 @@ export const QUERY_TYPES = {
     USER: 'volunteerUser',
     USERS: 'volunteerUsers'
   } as const,
+  VOUCHER: 'voucher',
+  VOUCHERS_CATEGORIES: 'vouchersCategories',
+  VOUCHERS_REDEEMED: 'vouchersRedeemed',
+  VOUCHERS: 'vouchers',
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WATER_TEMPERATURE: 'waterTemperature',

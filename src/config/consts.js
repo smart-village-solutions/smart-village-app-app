@@ -192,6 +192,11 @@ export const consts = {
     }
   },
 
+  HOST_NAMES: {
+    DETAIL: 'detail',
+    ENCOUNTER: 'encounter'
+  },
+
   LIST_TYPES: {
     CARD_LIST: 'cardList',
     IMAGE_TEXT_LIST: 'imageTextList',
@@ -211,6 +216,7 @@ export const consts = {
     POINTS_OF_INTEREST: 'PointsOfInterest',
     SUE: 'Sue',
     TOURS: 'Tours',
+    VOUCHER: 'Voucher',
     VOLUNTEER: 'Volunteer',
     CONSOLE_HOME: 'ConsulHome'
   }

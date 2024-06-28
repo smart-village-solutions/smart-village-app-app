@@ -18,6 +18,7 @@ import { subtitle } from '../textHelper';
 import { parseConsulData } from './consulParser';
 import { parseSueData } from './sueParser';
 import { parseVolunteerData } from './volunteerParser';
+import { parseVouchersCategories, parseVouchersData } from './voucherParser';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -235,6 +236,7 @@ const parsePointsOfInterestAndTours = (data) => {
 };
 
 /* eslint-disable complexity */
+
 /**
  * Parses list items from query a query result
  * @param {string} query
@@ -249,6 +251,7 @@ const parsePointsOfInterestAndTours = (data) => {
  *    isSectioned?: boolean,
  *    queryVariables?: any,
  *    appDesignSystem?: any
+ *    queryKey?: string
  *  }} options
  * @returns
  */
@@ -331,6 +334,12 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteerData(data, query, skipLastDivider);
 
+    // VOUCHERS
+    case QUERY_TYPES.VOUCHERS:
+    case QUERY_TYPES.VOUCHERS_REDEEMED:
+      return parseVouchersData(data[options.queryKey], skipLastDivider);
+    case QUERY_TYPES.VOUCHERS_CATEGORIES:
+      return parseVouchersCategories(data[QUERY_TYPES.GENERIC_ITEMS], skipLastDivider);
     default:
       return data;
   }

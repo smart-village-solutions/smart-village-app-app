@@ -64,6 +64,11 @@ import {
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   VolunteerSignupScreen,
+  VoucherDetailScreen,
+  VoucherHomeScreen,
+  VoucherIndexScreen,
+  VoucherLoginScreen,
+  VoucherScannerScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -450,6 +455,30 @@ export const defaultStackConfig = ({
       routeName: ScreenName.VolunteerSignup,
       screenComponent: VolunteerSignupScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VoucherDetail,
+      screenComponent: VoucherDetailScreen,
+      screenOptions: getScreenOptions({ withBookmark: false })
+    },
+    {
+      routeName: ScreenName.VoucherHome,
+      screenComponent: VoucherHomeScreen,
+      screenOptions: { title: texts.screenTitles.voucher.home }
+    },
+    {
+      routeName: ScreenName.VoucherIndex,
+      screenComponent: VoucherIndexScreen
+    },
+    {
+      routeName: ScreenName.VoucherLogin,
+      screenComponent: VoucherLoginScreen,
+      screenOptions: { title: texts.screenTitles.voucher.home }
+    },
+    {
+      routeName: ScreenName.VoucherScanner,
+      screenComponent: VoucherScannerScreen,
+      screenOptions: { title: texts.screenTitles.voucher.qr }
     },
     {
       routeName: ScreenName.WasteCollection,

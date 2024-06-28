@@ -18,7 +18,8 @@ const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, is
     [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
       ? !queryVariables.location
       : !queryVariables.categoryId,
-    [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider
+    [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider,
+    [QUERY_TYPES.VOUCHERS]: !queryVariables.categoryId
   }[query];
 
   const blankEntry = {
@@ -66,7 +67,19 @@ const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, is
         selected: dataProvider.name === queryVariables.dataProvider
       }));
     }
+  } else if (query === QUERY_TYPES.VOUCHERS) {
+    const categories = data?.categories?.filter((category) => !!category.name);
+
+    if (categories?.length) {
+      entries = _sortBy(_uniqBy(categories, 'name'), 'name').map((category, index) => ({
+        index: index + 1,
+        id: category.id,
+        value: category.name,
+        selected: category.id === queryVariables.categoryId
+      }));
+    }
   }
+
   return [blankEntry, ...entries];
 };
 
@@ -81,12 +94,14 @@ export const DropdownHeader = ({
     [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
       ? texts.dropdownFilter.location
       : texts.dropdownFilter.category,
-    [QUERY_TYPES.NEWS_ITEMS]: texts.dropdownFilter.dataProvider
+    [QUERY_TYPES.NEWS_ITEMS]: texts.dropdownFilter.dataProvider,
+    [QUERY_TYPES.VOUCHERS]: texts.dropdownFilter.category
   }[query];
 
   const selectedKey = {
     [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter ? 'value' : 'id',
-    [QUERY_TYPES.NEWS_ITEMS]: 'value'
+    [QUERY_TYPES.NEWS_ITEMS]: 'value',
+    [QUERY_TYPES.VOUCHERS]: 'id'
   }[query];
 
   const { excludeDataProviderIds } = usePermanentFilter();

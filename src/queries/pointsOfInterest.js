@@ -78,6 +78,9 @@ export const GET_POINTS_OF_INTEREST = gql`
         dateTo
         useYear
       }
+      vouchers {
+        id
+      }
       webUrls {
         id
         url
@@ -198,6 +201,54 @@ export const GET_POINT_OF_INTEREST = gql`
       }
       lunches {
         id
+      }
+      vouchers {
+        id
+        updatedAt
+        createdAt
+        publishedAt
+        genericType
+        title
+        subtitle: teaser
+        categories {
+          name
+          id
+        }
+        discountType {
+          originalPrice
+          discountedPrice
+          discountPercentage
+          discountAmount
+        }
+        quota {
+          id
+          frequency
+          maxQuantity
+          maxPerPerson
+          availableQuantity
+        }
+        contentBlocks {
+          id
+          title
+          intro
+          body
+          updatedAt
+          createdAt
+        }
+        dates {
+          id
+          dateStart
+          timeStart
+          dateEnd
+          timeEnd
+        }
+        mediaContents {
+          contentType
+          sourceUrl {
+            url
+          }
+        }
+        payload
       }
     }
   }

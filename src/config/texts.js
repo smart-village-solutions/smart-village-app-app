@@ -339,6 +339,7 @@ export const texts = {
       task: 'Aufgabe',
       user: 'Profil'
     },
+    voucher: 'Gutschein',
     tour: 'Tour'
   },
   dropdownFilter: {
@@ -773,6 +774,7 @@ export const texts = {
     departureTimes: 'Abfahrtszeiten',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
+    loadMoreVouchers: 'Mehr anzeigen',
     location: 'Anfahrt',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
@@ -794,6 +796,8 @@ export const texts = {
     },
     showLunches: 'Zum aktuellen Gastro-Angebot',
     today: 'Heute',
+    vouchers: 'Aktuelle Angebote',
+    vouchersMore: 'Weitere Angebote',
     yourPosition: 'Ihre Position'
   },
   pushNotifications: {
@@ -839,6 +843,12 @@ export const texts = {
       messages: 'Mein Postfach',
       personal: 'Mein Bereich',
       tasks: 'Meine Aufgaben'
+    },
+    voucher: {
+      home: 'TreueClub',
+      index: 'Neue Angebote',
+      partner: 'Kooperationspartner',
+      qr: 'Code scannen'
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
@@ -1231,6 +1241,64 @@ export const texts = {
     xmpp: 'xmpp',
     youtube: 'Youtube'
   },
+  voucher: {
+    abort: 'Abbrechen',
+    detailScreen: {
+      available: 'Verfügbar',
+      availableFrom: 'Verfügbar ab',
+      availableTo: 'Verfügbar bis',
+      cancel: 'Abbrechen',
+      checkboxLabel: 'Ja, ich habe die Konditionen verstanden.',
+      close: 'Schließen',
+      daily: 'pro Tag',
+      desiredQuantity: 'Gewünschte Anzahl',
+      emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
+      frequency: (maxPerPerson, frequency) =>
+        `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
+      isNotAvailable: 'Gutschein derzeit nicht verfügbar',
+      limit: (availableQuantity, maxQuantity) =>
+        `Limitiert: ${availableQuantity}/${maxQuantity} verfügbar`,
+      monthly: 'pro Monat',
+      once: 'einmalig',
+      progressSubtitle: 'Minuten',
+      progressTitle: 'Der Coupon läuft ab in',
+      quarterly: 'pro Quartal',
+      redeem: 'Gutschein einlösen',
+      redeemDescription: 'Bitte zeigen Sie den Coupon beim Bezahlen vor.',
+      redeemed: 'Gutschein eingelöst',
+      redeemErrorDescription: 'Dieser Coupon ist nur einmal einlösbar',
+      redeemErrorTitle: 'Fehler beim Einlösen',
+      redeemNow: 'Jetzt einlösen',
+      redeemTitle: 'Sie können den Gutschein nun verwenden',
+      sheetDescription:
+        'Sie haben nach Bestätigung 15 Minuten Zeit den automatisch erzeugten Coupon beim Bezahlen vorzuzeigen. Nach 15 Minuten läuft der Coupon ab. Sie brauchen keinen Internetempfang um einen Coupon zu erstellen.',
+      sheetTitle: 'Möchten Sie den Gutschein einlösen?',
+      toPartnerButton: 'Zum Kooperationspartner',
+      weekly: 'pro Woche',
+      yearly: 'pro Jahr'
+    },
+    indexLoginDescription:
+      'Um die Angebote einlösen zu können, melden Sie sich bitte in Ihrem Kundenkonto an. Voraussetzung ist ein aktiver Stromvertrag bei den Stadtwerken Detmold.',
+    indexLoginTitle: 'Bitte einloggen',
+    key: 'Nachname Vertragspartner',
+    login: 'Anmelden',
+    loginButton: 'Zum Login',
+    loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    loginFailedTitle: 'Fehler bei der Anmeldung',
+    loginTitle: 'Anmelden',
+    offersCategories: 'Angebote Kategorien',
+    result: 'Ergebnis',
+    results: 'Ergebnisse',
+    scannerScreen: {
+      errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      errorButton: 'Erneut versuchen',
+      errorTitle: 'Fehler',
+      cameraPermissionMissing:
+        'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+      scannerTitle: 'QR-Code scannen'
+    },
+    secret: 'Vertragskonto-Nr.'
+  },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
@@ -1268,6 +1336,7 @@ export const texts = {
     lunch: 'Gastro',
     surveys: 'Umfragen',
     water: 'Wasser',
-    weather: 'Wetter'
+    weather: 'Wetter',
+    vouchers: 'Angebote'
   }
 };
