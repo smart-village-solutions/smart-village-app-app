@@ -62,6 +62,7 @@ export const NoticeboardCreateForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const isEdit = !!Object.keys(data).length;
   const subQuery = route.params?.subQuery ?? {};
   const consentForDataProcessingText =
     subQuery?.params?.consentForDataProcessingText ??
@@ -334,25 +335,28 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
-        <Controller
-          name="image"
-          render={({ field }) => (
-            <ImageSelector
-              {...{
-                control,
-                field,
-                item: {
-                  name: 'image',
-                  label: texts.volunteer.images,
-                  buttonTitle: texts.volunteer.addImage
-                }
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
+      {(!!existingImageUrl || !isEdit) && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="image"
+            render={({ field }) => (
+              <ImageSelector
+                {...{
+                  isDeletable: !isEdit,
+                  control,
+                  field,
+                  item: {
+                    name: 'image',
+                    label: texts.volunteer.images,
+                    buttonTitle: texts.volunteer.addImage
+                  }
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
 
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>
