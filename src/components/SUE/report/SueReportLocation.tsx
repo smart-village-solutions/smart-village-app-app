@@ -279,7 +279,7 @@ export const SueReportLocation = ({
         <Input
           name={INPUT_KEYS.SUE.STREET}
           label={`${texts.sue.report.street} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.street}
           textContentType="streetAddressLine1"
@@ -294,7 +294,7 @@ export const SueReportLocation = ({
         <Input
           name={INPUT_KEYS.SUE.HOUSE_NUMBER}
           label={`${texts.sue.report.houseNumber} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.houseNumber}
           textContentType="off"
@@ -309,7 +309,7 @@ export const SueReportLocation = ({
         <Input
           name={INPUT_KEYS.SUE.POSTAL_CODE}
           label={`${texts.sue.report.postalCode} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.postalCode}
           maxLength={5}
@@ -326,7 +326,7 @@ export const SueReportLocation = ({
         <Input
           name={INPUT_KEYS.SUE.CITY}
           label={`${texts.sue.report.city} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.city}
           control={control}

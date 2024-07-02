@@ -33,7 +33,7 @@ export const SueReportUser = ({
         <Input
           name={INPUT_KEYS.SUE.FIRST_NAME}
           label={`${texts.sue.report.firstName} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.FIRST_NAME) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.FIRST_NAME) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.firstName}
           textContentType="givenName"
@@ -47,7 +47,7 @@ export const SueReportUser = ({
         <Input
           name={INPUT_KEYS.SUE.LAST_NAME}
           label={`${texts.sue.report.lastName} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.LAST_NAME) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.LAST_NAME) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.lastName}
           textContentType="familyName"
@@ -61,7 +61,7 @@ export const SueReportUser = ({
         <Input
           name={INPUT_KEYS.SUE.EMAIL}
           label={`${texts.sue.report.email} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.EMAIL) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.EMAIL) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.email}
           keyboardType="email-address"
@@ -87,7 +87,7 @@ export const SueReportUser = ({
         <Input
           name={INPUT_KEYS.SUE.PHONE}
           label={`${texts.sue.report.phone} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.PHONE) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.PHONE) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.phone}
           keyboardType="phone-pad"

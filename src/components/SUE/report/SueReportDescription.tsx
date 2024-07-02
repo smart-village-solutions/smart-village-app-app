@@ -40,7 +40,7 @@ export const SueReportDescription = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name={INPUT_KEYS.SUE.TITLE}
-          label={texts.sue.report.title + '*'}
+          label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.title}
           control={control}
           ref={titleRef}
@@ -52,7 +52,7 @@ export const SueReportDescription = ({
         <Input
           name={INPUT_KEYS.SUE.DESCRIPTION}
           label={`${texts.sue.report.description} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.description}
           multiline
