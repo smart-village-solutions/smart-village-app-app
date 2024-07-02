@@ -36,6 +36,11 @@ export const useReverseGeocode = () => {
           setValue('street', street);
           setValue('postalCode', postalCode);
         } else {
+          setValue('city', '');
+          setValue('houseNumber', '');
+          setValue('street', '');
+          setValue('postalCode', '');
+
           throw new Error(errorMessage);
         }
       } catch (error) {
