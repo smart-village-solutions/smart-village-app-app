@@ -147,8 +147,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       parsedListItem = _filter(
         parsedListItem,
         (item) =>
-          item.title?.includes(queryVariables.search) ||
-          item.description?.includes(queryVariables.search)
+          item.title?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
+          item.description?.toLowerCase().includes(queryVariables.search.toLowerCase())
       );
     }
 
