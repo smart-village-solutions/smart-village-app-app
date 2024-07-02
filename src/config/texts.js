@@ -957,8 +957,7 @@ export const texts = {
         hint: 'Hinweis',
         imageType: 'Der verwendete Dateityp wird nicht unterstützt.',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
-        imageLocation:
-          'Die Adressinformationen wurden dem Bild entnommen und werden im nächsten Schritt vorausgefüllt.',
+        imageLocation: 'Die Adressinformationen wurden dem Bild entnommen und vorausgefüllt.',
         imagesTotalSizeError: (size) =>
           `Die ausgewählten Bilder dürfen insgesamt nicht größer als ${size} sein.`,
         imageSelectAlert: {

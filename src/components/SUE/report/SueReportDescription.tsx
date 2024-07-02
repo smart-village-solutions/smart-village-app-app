@@ -13,22 +13,24 @@ const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
 export const SueReportDescription = ({
   areaServiceData,
+  configuration,
   control,
   errorMessage,
-  configuration,
   requiredInputs,
   selectedPosition,
   setSelectedPosition,
+  setShowCoordinatesFromImageAlert,
   setUpdateRegionFromImage,
   setValue
 }: {
   areaServiceData?: { postalCodes?: string[] };
+  configuration: any;
   control: any;
   errorMessage: string;
-  configuration: any;
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {
@@ -74,6 +76,7 @@ export const SueReportDescription = ({
                   errorMessage,
                   selectedPosition,
                   setSelectedPosition,
+                  setShowCoordinatesFromImageAlert,
                   setUpdateRegionFromImage,
                   setValue
                 },
