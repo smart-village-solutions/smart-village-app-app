@@ -465,14 +465,6 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.missingAnyInput;
         }
 
-        if (
-          !getValues(INPUT_KEYS.SUE.NAME) &&
-          !getValues(INPUT_KEYS.SUE.FAMILY_NAME) &&
-          !getValues(INPUT_KEYS.SUE.EMAIL)
-        ) {
-          return texts.sue.report.alerts.contact;
-        }
-
         if (!getValues(INPUT_KEYS.SUE.TERMS_OF_SERVICE)) {
           scrollViewContentRef.current[currentProgress]?.scrollTo({
             x: 0,
