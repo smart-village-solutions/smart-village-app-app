@@ -29,6 +29,11 @@ import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_TYPE_REGEX, URL_REGEX } = consts;
 
+const IMAGE_FROM = {
+  CAMERA: 'Camera',
+  GALLERY: 'Gallery'
+};
+
 const deleteImageAlert = (onPress) =>
   Alert.alert(
     texts.consul.startNew.deleteAttributesAlertTitle,
@@ -104,12 +109,10 @@ export const ImageSelector = ({
     }
 
     if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
-      const { GPSLatitude, GPSLongitude } = imagesAttributes[index].exif || {};
+      const { GPSLatitude, GPSLongitude } = imagesAttributes?.[index]?.exif || {};
       const { selectedPosition, setValue = () => {} } = coordinateCheck || {};
 
       if (
-        !!GPSLatitude &&
-        !!GPSLongitude &&
         selectedPosition.latitude === GPSLatitude &&
         selectedPosition.longitude === GPSLongitude
       ) {
@@ -143,19 +146,28 @@ export const ImageSelector = ({
     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
   };
 
-  const imageSelect = async (imageFunction = selectImage) => {
+  const imageSelect = async (imageFunction, from = IMAGE_FROM.GALLERY) => {
     const { uri, type, exif } = await imageFunction();
 
     setIsModalVisible(!isModalVisible);
 
     const { GPSLatitude, GPSLongitude } = exif || {};
     const { size } = await FileSystem.getInfoAsync(uri);
-    const location = {
-      latitude:
-        GPSLatitude || position?.coords?.latitude || lastKnownPosition?.coords?.latitude || 0,
-      longitude:
-        GPSLongitude || position?.coords?.longitude || lastKnownPosition?.coords?.longitude || 0
-    };
+
+    let location = { latitude: undefined, longitude: undefined };
+
+    if (from === IMAGE_FROM.GALLERY) {
+      location = {
+        latitude: GPSLatitude,
+        longitude: GPSLongitude
+      };
+    } else if (from === IMAGE_FROM.CAMERA) {
+      location = {
+        latitude: position?.coords?.latitude || lastKnownPosition?.coords?.latitude,
+        longitude: position?.coords?.longitude || lastKnownPosition?.coords?.longitude
+      };
+    }
+
     const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
 
     /* used to specify the mimeType when uploading to the server */
@@ -172,20 +184,22 @@ export const ImageSelector = ({
         return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageType);
       }
 
-      try {
-        await reverseGeocode({
-          areaServiceData,
-          errorMessage,
-          position: location,
-          setValue
-        });
+      if (!!location.latitude && !!location.longitude) {
+        try {
+          await reverseGeocode({
+            areaServiceData,
+            errorMessage,
+            position: location,
+            setValue
+          });
 
-        coordinateCheck.setSelectedPosition(location);
-        coordinateCheck.setUpdateRegionFromImage(true);
-      } catch (error) {
-        coordinateCheck.setSelectedPosition(undefined);
-        coordinateCheck.setUpdateRegionFromImage(false);
-        return Alert.alert(texts.sue.report.alerts.hint, error.message);
+          coordinateCheck.setSelectedPosition(location);
+          coordinateCheck.setUpdateRegionFromImage(true);
+        } catch (error) {
+          coordinateCheck.setSelectedPosition(undefined);
+          coordinateCheck.setUpdateRegionFromImage(false);
+          return Alert.alert(texts.sue.report.alerts.hint, error.message);
+        }
       }
     }
 
@@ -280,7 +294,7 @@ export const ImageSelector = ({
                 icon={<Icon.Camera size={normalize(16)} />}
                 iconPosition="left"
                 invert
-                onPress={() => imageSelect(captureImage)}
+                onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
                 title={texts.sue.report.alerts.imageSelectAlert.camera}
               />
               <Button
@@ -303,7 +317,7 @@ export const ImageSelector = ({
           {infoText}
         </RegularText>
 
-        <Button title={buttonTitle} invert onPress={imageSelect} />
+        <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
 
         {values?.map((item, index) => (
           <View key={`image-${index}`} style={styles.volunteerContainer}>
@@ -359,7 +373,7 @@ export const ImageSelector = ({
           )}
         </>
       ) : (
-        <Button title={buttonTitle} invert onPress={imageSelect} />
+        <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
       )}
     </>
   );
