@@ -939,6 +939,9 @@ export const texts = {
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',
+    empty: {
+      list: 'Schade, es wurden keine passenden Einträge gefunden.'
+    },
     location: 'Ort',
     report: {
       addImage: 'Bilder hinzufügen',
