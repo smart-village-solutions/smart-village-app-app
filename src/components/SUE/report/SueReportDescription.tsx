@@ -17,6 +17,7 @@ export const SueReportDescription = ({
   errorMessage,
   configuration,
   requiredInputs,
+  selectedPosition,
   setSelectedPosition,
   setUpdateRegionFromImage,
   setValue
@@ -26,6 +27,7 @@ export const SueReportDescription = ({
   errorMessage: string;
   configuration: any;
   requiredInputs: keyof TValues[];
+  selectedPosition?: Location.LocationObjectCoords;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
@@ -70,6 +72,7 @@ export const SueReportDescription = ({
                 coordinateCheck: {
                   areaServiceData,
                   errorMessage,
+                  selectedPosition,
                   setSelectedPosition,
                   setUpdateRegionFromImage,
                   setValue
