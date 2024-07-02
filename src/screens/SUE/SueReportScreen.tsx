@@ -163,6 +163,7 @@ const Content = ({
           control={control}
           errorMessage={errorMessage}
           requiredInputs={requiredInputs}
+          selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}

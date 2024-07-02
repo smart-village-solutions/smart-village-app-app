@@ -103,6 +103,26 @@ export const ImageSelector = ({
       }
     }
 
+    if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+      const { GPSLatitude, GPSLongitude } = imagesAttributes[index].exif || {};
+      const { selectedPosition, setValue = () => {} } = coordinateCheck || {};
+
+      if (
+        !!GPSLatitude &&
+        !!GPSLongitude &&
+        selectedPosition.latitude === GPSLatitude &&
+        selectedPosition.longitude === GPSLongitude
+      ) {
+        coordinateCheck.setSelectedPosition(undefined);
+        coordinateCheck.setUpdateRegionFromImage(false);
+
+        setValue('city', '');
+        setValue('houseNumber', '');
+        setValue('street', '');
+        setValue('postalCode', '');
+      }
+    }
+
     if (isMultiImages) {
       const isURL = URL_REGEX.test(imagesAttributes[index].uri);
 
