@@ -170,7 +170,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         query={query}
         data={listItems}
         ListEmptyComponent={
-          isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.empty.list} />
+          isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.sue.empty.list} />
         }
         ListHeaderComponent={
           <>
