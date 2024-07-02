@@ -115,8 +115,8 @@ export const ImageSelector = ({
       if (
         !!GPSLatitude &&
         !!GPSLongitude &&
-        selectedPosition.latitude === GPSLatitude &&
-        selectedPosition.longitude === GPSLongitude
+        selectedPosition?.latitude === GPSLatitude &&
+        selectedPosition?.longitude === GPSLongitude
       ) {
         coordinateCheck.setSelectedPosition(undefined);
         coordinateCheck.setUpdateRegionFromImage(false);
@@ -197,10 +197,9 @@ export const ImageSelector = ({
 
           coordinateCheck.setSelectedPosition(location);
           coordinateCheck.setUpdateRegionFromImage(true);
+          coordinateCheck.setShowCoordinatesFromImageAlert(false);
         } catch (error) {
-          coordinateCheck.setSelectedPosition(undefined);
-          coordinateCheck.setUpdateRegionFromImage(false);
-          return Alert.alert(texts.sue.report.alerts.hint, error.message);
+          console.error(error);
         }
       }
     }
