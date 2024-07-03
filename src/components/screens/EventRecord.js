@@ -1,9 +1,10 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
+import { SettingsContext } from '../../SettingsProvider';
 import { colors, consts, normalize, texts } from '../../config';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
@@ -37,6 +38,10 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecord = ({ data, route }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { eventDetail = {} } = settings;
+  const { numToRender: MAX_INITIAL_NUM_TO_RENDER, appointmentsShowMoreButton } = eventDetail;
   const {
     addresses,
     categories,
@@ -48,7 +53,7 @@ export const EventRecord = ({ data, route }) => {
     mediaContents,
     operatingCompany,
     priceInformations,
-    settings,
+    settings: webUrlsSettings,
     title,
     webUrls
   } = data;
@@ -119,7 +124,7 @@ export const EventRecord = ({ data, route }) => {
           category={category}
           addresses={addresses}
           contacts={contacts}
-          webUrls={settings?.displayOnlySummary === 'true' ? [] : webUrls}
+          webUrls={webUrlsSettings?.displayOnlySummary === 'true' ? [] : webUrls}
           openWebScreen={openWebScreen}
         />
       </Wrapper>
@@ -127,7 +132,11 @@ export const EventRecord = ({ data, route }) => {
       {!!openingHours?.length && (
         <View>
           <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard openingHours={openingHours} />
+          <OpeningTimesCard
+            openingHours={openingHours}
+            MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
+            appointmentsShowMoreButton={appointmentsShowMoreButton}
+          />
         </View>
       )}
 
@@ -156,12 +165,12 @@ export const EventRecord = ({ data, route }) => {
         title={texts.eventRecord.operatingCompany}
       />
 
-      {settings?.displayOnlySummary === 'true' && !!settings?.onlySummaryLinkText && (
+      {webUrlsSettings?.displayOnlySummary === 'true' && !!webUrlsSettings?.onlySummaryLinkText && (
         <Wrapper>
           {webUrls.map(({ url }, index) => (
             <Button
               key={index}
-              title={settings.onlySummaryLinkText}
+              title={webUrlsSettings.onlySummaryLinkText}
               onPress={() => openLink(url, openWebScreen)}
             />
           ))}
