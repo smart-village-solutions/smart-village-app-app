@@ -1,4 +1,4 @@
-import { formatSizeForAugmentedReality } from '../fileSizeHelper';
+import { formatSizeStandard } from '../fileSizeHelper';
 
 /**
  * display bytes downloaded per second in different formats
@@ -10,10 +10,8 @@ import { formatSizeForAugmentedReality } from '../fileSizeHelper';
  */
 export const progressSizeGenerator = (progressSize, totalSize) => {
   if (!progressSize) {
-    return formatSizeForAugmentedReality(totalSize);
+    return formatSizeStandard(totalSize);
   }
 
-  return `${formatSizeForAugmentedReality(progressSize)} / ${formatSizeForAugmentedReality(
-    totalSize
-  )}`;
+  return `${formatSizeStandard(progressSize)} / ${formatSizeStandard(totalSize)}`;
 };

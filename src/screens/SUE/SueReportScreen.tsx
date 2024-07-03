@@ -27,7 +27,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, device, normalize, texts } from '../../config';
-import { addToStore, formatSize, readFromStore } from '../../helpers';
+import { addToStore, formatSizeStandard, readFromStore } from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
@@ -405,7 +405,9 @@ export const SueReportScreen = ({
 
           /* the server does not support files larger than 30 MB in total of all files. */
           if (totalSize >= totalSizeLimit) {
-            return texts.sue.report.alerts.imagesTotalSizeError(formatSize(totalSizeLimit, 0));
+            return texts.sue.report.alerts.imagesTotalSizeError(
+              formatSizeStandard(totalSizeLimit, 0)
+            );
           }
         }
 
