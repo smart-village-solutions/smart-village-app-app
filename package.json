@@ -112,7 +112,6 @@
     "react-native-gesture-handler": "~2.16.1",
     "react-native-get-random-values": "~1.11.0",
     "react-native-gifted-chat": "^2.0.1",
-    "react-native-map-clustering": "^3.4.2",
     "react-native-maps": "1.14.0",
     "react-native-markdown-display": "^7.0.0-alpha.2",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
@@ -130,7 +129,8 @@
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
     "react-query": "^3.34.14",
-    "styled-components": "~4.4.1"
+    "styled-components": "~4.4.1",
+    "supercluster": "^8.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
