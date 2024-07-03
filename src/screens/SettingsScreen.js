@@ -41,8 +41,16 @@ const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
+export const SETTINGS_SCREENS = {
+  AR: 'augmentedRealitySettings',
+  LIST: 'listSettings',
+  LOCATION: 'locationSettings',
+  MOWAS_REGION: 'mowasRegionSettings',
+  PERMANENT_FILTER: 'permanentFilterSettings'
+};
+
 const renderItem = ({ item, navigation }) => {
-  if (item === 'locationSettings') {
+  if (item === SETTINGS_SCREENS.LOCATION) {
     return (
       <TextListItem
         item={{
@@ -56,7 +64,7 @@ const renderItem = ({ item, navigation }) => {
     );
   }
 
-  if (item === 'permanentFilterSettings') {
+  if (item === SETTINGS_SCREENS.PERMANENT_FILTER) {
     return (
       <TextListItem
         item={{
@@ -69,7 +77,7 @@ const renderItem = ({ item, navigation }) => {
     );
   }
 
-  if (item === 'mowasRegionSettings') {
+  if (item === SETTINGS_SCREENS.MOWAS_REGION) {
     return (
       <TextListItem
         item={{
@@ -82,7 +90,7 @@ const renderItem = ({ item, navigation }) => {
     );
   }
 
-  if (item === 'listSettings') {
+  if (item === SETTINGS_SCREENS.LIST) {
     return (
       <TextListItem
         item={{
@@ -95,7 +103,7 @@ const renderItem = ({ item, navigation }) => {
     );
   }
 
-  if (item === 'augmentedRealitySettings') {
+  if (item === SETTINGS_SCREENS.AR) {
     return (
       <TextListItem
         item={{
@@ -267,22 +275,22 @@ export const SettingsScreen = ({ navigation, route }) => {
 
       if (settings.locationService) {
         settingsList.push({
-          data: ['locationSettings']
+          data: [SETTINGS_SCREENS.LOCATION]
         });
       }
 
       settingsList.push({
-        data: ['permanentFilterSettings']
+        data: [SETTINGS_SCREENS.PERMANENT_FILTER]
       });
 
       if (mowas?.regionalKeys?.length) {
         settingsList.push({
-          data: ['mowasRegionSettings']
+          data: [SETTINGS_SCREENS.MOWAS_REGION]
         });
       }
 
       settingsList.push({
-        data: ['listSettings']
+        data: [SETTINGS_SCREENS.LIST]
       });
 
       if (settings.ar) {
@@ -291,7 +299,7 @@ export const SettingsScreen = ({ navigation, route }) => {
             () => null,
             () => {
               settingsList.push({
-                data: ['augmentedRealitySettings']
+                data: [SETTINGS_SCREENS.AR]
               });
             }
           );
@@ -319,19 +327,19 @@ export const SettingsScreen = ({ navigation, route }) => {
   let Component;
 
   switch (setting) {
-    case 'locationSettings':
+    case SETTINGS_SCREENS.LOCATION:
       Component = <LocationSettings />;
       break;
-    case 'permanentFilterSettings':
+    case SETTINGS_SCREENS.PERMANENT_FILTER:
       Component = <PermanentFilterSettings />;
       break;
-    case 'mowasRegionSettings':
+    case SETTINGS_SCREENS.MOWAS_REGION:
       Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
       break;
-    case 'listSettings':
+    case SETTINGS_SCREENS.LIST:
       Component = <ListSettings />;
       break;
-    case 'augmentedRealitySettings':
+    case SETTINGS_SCREENS.AR:
       Component = <AugmentedReality id={settings.ar.tourId} onSettingsScreen />;
       break;
     default:
