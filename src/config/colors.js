@@ -32,5 +32,6 @@ export const colors = {
   gray40,
   gray60,
 
-  refreshControl: 'rgb(15, 70, 24)'
+  refreshControl: 'rgb(15, 70, 24)',
+  translucentAccent: 'rgba(0, 122, 255, 0.7)'
 };
