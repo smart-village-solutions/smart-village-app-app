@@ -880,10 +880,12 @@ export const texts = {
         'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
       chooseAlternateLocationButton: 'Alternativen Standort wählen',
       next: 'Weiter',
+      ok: 'OK',
       onSystemPermissionMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       save: 'Speichern',
-      setting: 'Standort'
+      setting: 'Standort',
+      settings: 'Einstellungen'
     },
     mowasRegion: {
       setting: 'MoWaS-Regionen'
