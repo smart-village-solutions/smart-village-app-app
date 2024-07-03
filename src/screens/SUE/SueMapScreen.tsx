@@ -19,11 +19,17 @@ import {
   SueImageFallback,
   SueStatus,
   Touchable,
-  Wrapper
+  Wrapper,
+  locationServiceEnabledAlert
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
-import { useLastKnownPosition, usePosition, useSystemPermission } from '../../hooks';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 
@@ -69,6 +75,8 @@ type Props = {
 
 /* eslint-disable complexity */
 export const SueMapScreen = ({ navigation, route }: Props) => {
+  const { locationSettings = {} } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings;
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
@@ -152,6 +160,12 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         isMyLocationButtonVisible={!!locationService}
         onMyLocationButtonPress={() => {
           const location = position || lastKnownPosition;
+
+          locationServiceEnabledAlert({
+            currentPosition: location,
+            locationServiceEnabled,
+            navigation
+          });
 
           setUpdatedRegion(true);
           setCurrentPosition(location?.coords);
