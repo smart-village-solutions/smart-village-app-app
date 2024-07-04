@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import React, { useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Controller, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
@@ -10,6 +10,8 @@ import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
+
+const MemoizedImageSelector = React.memo((props) => <ImageSelector {...props} />);
 
 export const SueReportDescription = ({
   areaServiceData,
@@ -36,6 +38,41 @@ export const SueReportDescription = ({
 }) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
+
+  const imageSelectorProps = useMemo(
+    () => ({
+      configuration,
+      control,
+      coordinateCheck: {
+        areaServiceData,
+        errorMessage,
+        selectedPosition,
+        setSelectedPosition,
+        setShowCoordinatesFromImageAlert,
+        setUpdateRegionFromImage,
+        setValue
+      },
+      isMultiImages: true,
+      selectorType: IMAGE_SELECTOR_TYPES.SUE,
+      errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
+      item: {
+        name: INPUT_KEYS.SUE.IMAGES,
+        infoText: texts.sue.report.imageHint(configuration?.limitation?.maxFileUploads?.value),
+        buttonTitle: texts.sue.report.addImage
+      }
+    }),
+    [
+      configuration,
+      control,
+      areaServiceData,
+      errorMessage,
+      selectedPosition,
+      setSelectedPosition,
+      setShowCoordinatesFromImageAlert,
+      setUpdateRegionFromImage,
+      setValue
+    ]
+  );
 
   return (
     <View style={styles.container}>
@@ -66,34 +103,7 @@ export const SueReportDescription = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name={INPUT_KEYS.SUE.IMAGES}
-          render={({ field }) => (
-            <ImageSelector
-              {...{
-                configuration,
-                control,
-                coordinateCheck: {
-                  areaServiceData,
-                  errorMessage,
-                  selectedPosition,
-                  setSelectedPosition,
-                  setShowCoordinatesFromImageAlert,
-                  setUpdateRegionFromImage,
-                  setValue
-                },
-                field,
-                isMultiImages: true,
-                selectorType: IMAGE_SELECTOR_TYPES.SUE,
-                errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
-                item: {
-                  name: INPUT_KEYS.SUE.IMAGES,
-                  infoText: texts.sue.report.imageHint(
-                    configuration?.limitation?.maxFileUploads?.value
-                  ),
-                  buttonTitle: texts.sue.report.addImage
-                }
-              }}
-            />
-          )}
+          render={({ field }) => <MemoizedImageSelector {...imageSelectorProps} field={field} />}
           control={control}
         />
       </Wrapper>
