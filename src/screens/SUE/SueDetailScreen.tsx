@@ -22,7 +22,7 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { colors, device, normalize, texts } from '../../config';
+import { colors, texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -142,7 +142,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
               <Map
                 isMaximizeButtonVisible
                 locations={[{ position: { latitude, longitude } }]}
-                mapStyle={styles.map}
                 onMaximizeButtonPress={() =>
                   navigation.navigate(ScreenName.MapView, {
                     locations: [{ position: { latitude, longitude } }]
@@ -187,9 +186,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  map: {
-    width: device.width - 2 * normalize(14)
-  },
   noPaddingBottom: {
     paddingBottom: 0
   },

@@ -1,7 +1,7 @@
-import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useRef, useEffect, useState } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle, Text } from 'react-native';
 import MapLibreGL from '@maplibre/maplibre-react-native';
+import _upperFirst from 'lodash/upperFirst';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Supercluster from 'supercluster';
 
 import { colors, device, Icon, normalize } from '../../config';
@@ -9,8 +9,8 @@ import { imageHeight, imageWidth, truncateText } from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
+import { LoadingSpinnerMap } from '../LoadingSpinnerMap';
 import { RegularText } from '../Text';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 type Props = {
   calloutTextEnabled?: boolean;
@@ -18,7 +18,6 @@ type Props = {
   clusteringEnabled?: boolean;
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
-  isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations?: MapMarker[];
   mapCenterPosition?: { latitude: number; longitude: number };
@@ -35,7 +34,8 @@ type Props = {
 };
 
 const MARKER_ICON_SIZE = normalize(40);
-MapLibreGL.setAccessToken(null);
+const CIRCLE_SIZES = [normalize(60), normalize(50), normalize(40), normalize(30)];
+const HITBOX_SIZE = normalize(80); // Größe der unsichtbaren Hitbox
 
 const MapIcon = ({
   iconColor,
@@ -51,13 +51,49 @@ const MapIcon = ({
   return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
+const renderCluster = (cluster) => {
+  const { clusterColor: backgroundColor, geometry, id, onPress, properties = {} } = cluster;
+  const { point_count: points } = properties;
+
+  return (
+    <MapLibreGL.PointAnnotation
+      key={`cluster-${id}`}
+      id={`cluster-${id}`}
+      coordinate={geometry.coordinates}
+      onSelected={onPress}
+    >
+      <View style={styles.hitbox}>
+        {CIRCLE_SIZES.map((size, index) => (
+          <View
+            key={`circle-${index}`}
+            style={[
+              styles.clusterCircle,
+              {
+                backgroundColor,
+                borderRadius: normalize(size / 2),
+                height: normalize(size),
+                opacity: 0.2 * (index + 1),
+                width: normalize(size)
+              }
+            ]}
+          >
+            <RegularText lightest center smallest>
+              {points}
+            </RegularText>
+          </View>
+        ))}
+      </View>
+    </MapLibreGL.PointAnnotation>
+  );
+};
+
+/* eslint-disable complexity */
 export const Map = ({
   calloutTextEnabled = false,
   clusterDistance = 50,
-  clusteringEnabled = false,
+  clusteringEnabled = true,
   geometryTourData,
   isMaximizeButtonVisible = false,
-  isMultipleMarkersMap = false,
   isMyLocationButtonVisible = false,
   locations = [],
   mapCenterPosition,
@@ -82,6 +118,7 @@ export const Map = ({
   const [zoomLevel, setZoomLevel] = useState<number>(14);
   const [isInitialFit, setIsInitialFit] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   const showsUserLocationSetting =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? showsUserLocation;
@@ -89,7 +126,7 @@ export const Map = ({
   // center of Germany
   let initialRegion: { latitude: number; longitude: number } = {
     latitude: 51.1657,
-    longitude: 10.4515,
+    longitude: 10.4515
   };
 
   if (locations?.[0]?.position?.latitude && locations[0]?.position?.longitude) {
@@ -108,33 +145,46 @@ export const Map = ({
   }
 
   useEffect(() => {
-    const index = new Supercluster({
-      radius: clusterDistance,
-      maxZoom: 20,
-    });
+    if (clusteringEnabled) {
+      const index = new Supercluster({
+        radius: clusterDistance,
+        maxZoom: 20
+      });
 
-    const points = locations.map((location, index) => ({
-      type: 'Feature',
-      properties: { cluster: false, id: location.id, index },
-      geometry: {
-        type: 'Point',
-        coordinates: [location.position.longitude, location.position.latitude],
-      },
-    }));
+      const points = locations.map((location, index) => ({
+        type: 'Feature',
+        properties: { cluster: false, id: location.id, index },
+        geometry: {
+          type: 'Point',
+          coordinates: [location.position.longitude, location.position.latitude]
+        }
+      }));
 
-    index.load(points);
-    const bounds = [-180, -85, 180, 85];
-    setClusters(index.getClusters(bounds, zoomLevel));
+      index.load(points);
+      const bounds = [-180, -85, 180, 85];
+      setClusters(index.getClusters(bounds, zoomLevel));
+    } else {
+      setClusters(
+        locations.map((location, index) => ({
+          type: 'Feature',
+          properties: { cluster: false, id: location.id, index },
+          geometry: {
+            type: 'Point',
+            coordinates: [location.position.longitude, location.position.latitude]
+          }
+        }))
+      );
+    }
 
     // Berechne die Begrenzungskoordinaten für alle Marker
     if (locations.length > 0 && isInitialFit) {
-      const coordinates = locations.map(loc => [loc.position.longitude, loc.position.latitude]);
+      const coordinates = locations.map((loc) => [loc.position.longitude, loc.position.latitude]);
       if (locations.length === 1) {
         if (cameraRef.current) {
           cameraRef.current.setCamera({
             centerCoordinate: coordinates[0],
             zoomLevel: 15,
-            animationDuration: 0,
+            animationDuration: 0
           });
           setTimeout(() => {
             setIsLoading(false);
@@ -142,8 +192,14 @@ export const Map = ({
           setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
         }
       } else {
-        const [minLng, minLat] = coordinates.reduce((prev, curr) => [Math.min(prev[0], curr[0]), Math.min(prev[1], curr[1])], [Infinity, Infinity]);
-        const [maxLng, maxLat] = coordinates.reduce((prev, curr) => [Math.max(prev[0], curr[0]), Math.max(prev[1], curr[1])], [-Infinity, -Infinity]);
+        const [minLng, minLat] = coordinates.reduce(
+          (prev, curr) => [Math.min(prev[0], curr[0]), Math.min(prev[1], curr[1])],
+          [Infinity, Infinity]
+        );
+        const [maxLng, maxLat] = coordinates.reduce(
+          (prev, curr) => [Math.max(prev[0], curr[0]), Math.max(prev[1], curr[1])],
+          [-Infinity, -Infinity]
+        );
         const deltaLng = (maxLng - minLng) * 0.1; // Add 10% padding to the bounds
         const deltaLat = (maxLat - minLat) * 0.1; // Add 10% padding to the bounds
         if (cameraRef.current) {
@@ -152,65 +208,98 @@ export const Map = ({
             [maxLng + deltaLng, maxLat + deltaLat],
             0 // animationDuration in ms
           );
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 1000); // Timeout in Millisekunden anpassen je nach Bedarf
-          setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
+          if (clusteringEnabled) {
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 1000); // Timeout in Millisekunden anpassen je nach Bedarf
+            setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
+          } else {
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 4000); // Timeout in Millisekunden anpassen je nach Bedarf
+            setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
+          }
         }
       }
     }
-  }, [locations, clusterDistance, zoomLevel, isInitialFit]);
+  }, [locations, clusterDistance, zoomLevel, isInitialFit, clusteringEnabled]);
 
-  const handleMyLocationButtonPress = () => {
-    if (refForMapView.current && locationSettings?.currentLocation) {
+  useEffect(() => {
+    if (updatedRegion && cameraRef.current) {
       cameraRef.current.setCamera({
-        centerCoordinate: [
-          locationSettings.currentLocation.latitude,
-          locationSettings.currentLocation.longitude
-        ],
-        zoomLevel: 15,
+        centerCoordinate: [updatedRegion.longitude, updatedRegion.latitude],
+        zoomLevel: 14,
         animationDuration: 1000
       });
     }
+  }, [updatedRegion]);
+
+  const handleMapPress = (event) => {
+    if (onMapPress) {
+      const { geometry } = event;
+      const nativeEvent = {
+        coordinate: {
+          latitude: geometry.coordinates[1],
+          longitude: geometry.coordinates[0]
+        }
+      };
+      onMapPress({ nativeEvent });
+    }
   };
+
+  const handleClusterPress = useCallback(
+    (cluster) => {
+      if (isAnimating) return; // Skip if animation is already in progress
+
+      setIsAnimating(true);
+      const [longitude, latitude] = cluster.geometry.coordinates;
+      const zoom = Math.min(zoomLevel + 2, 20); // Increase the zoom level by 2 or set to max zoom level (20)
+      if (cameraRef.current) {
+        cameraRef.current.setCamera({
+          centerCoordinate: [longitude, latitude],
+          zoomLevel: zoom,
+          animationDuration: 1000
+        });
+      }
+
+      // Wait for the animation to finish
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 1000);
+    },
+    [isAnimating, zoomLevel]
+  );
 
   return (
     <View style={[styles.container, style]}>
-      <LoadingSpinner loading={isLoading} />
-      <MapLibreGL.MapView 
-        style={styles.map}
-        styleJSON='https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json'
-        onPress={onMapPress}
+      <LoadingSpinnerMap loading={isLoading} />
+      <MapLibreGL.MapView
+        style={mapStyle || styles.map}
+        styleJSON="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
+        onPress={handleMapPress}
         ref={refForMapView}
         onRegionDidChange={(region) => {
           const newZoomLevel = Math.round(region.properties.zoomLevel);
           if (!isNaN(newZoomLevel)) {
             setZoomLevel(newZoomLevel);
           }
-        }}  
+        }}
         showUserLocation={showsUserLocationSetting}
       >
-        <MapLibreGL.Camera
-          ref={cameraRef}
-        />
+        <MapLibreGL.Camera ref={cameraRef} minZoomLevel={minZoom} />
+
         {clusters.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
           const { cluster: isCluster, point_count: pointCount } = cluster.properties;
 
-          if (isCluster) {
-            return (
-              <MapLibreGL.PointAnnotation
-                key={`cluster-${index}`}
-                id={`cluster-${index}`}
-                coordinate={[longitude, latitude]}
-              >
-                <View style={styles.clusterContainer}>
-                  <View style={styles.cluster}>
-                    <Text style={styles.clusterText}>{pointCount}</Text>
-                  </View>
-                </View>
-              </MapLibreGL.PointAnnotation>
-            );
+          if (clusteringEnabled && isCluster) {
+            return renderCluster({
+              clusterColor: colors.primary,
+              geometry: { coordinates: [longitude, latitude] },
+              id: `cluster-${index}`,
+              onPress: () => handleClusterPress(cluster),
+              properties: { point_count: pointCount }
+            });
           }
 
           const marker = locations[cluster.properties.index];
@@ -225,10 +314,12 @@ export const Map = ({
               onSelected={() => onMarkerPress?.(marker.id)}
               key={`${index}-${marker.id}`}
             >
-              <View style={[
-                styles.markerContainer,
-                isActiveMarker ? styles.activeMarkerContainer : undefined
-              ]}>
+              <View
+                style={[
+                  styles.markerContainer,
+                  isActiveMarker ? styles.activeMarkerContainer : undefined
+                ]}
+              >
                 {!!marker.iconName &&
                 marker.iconName != 'ownLocation' &&
                 marker.iconName != 'location' ? (
@@ -293,25 +384,23 @@ export const Map = ({
           );
         })}
         {!!geometryTourData?.length && (
-          <MapLibreGL.ShapeSource id="line1" shape={{
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: geometryTourData.map(point => [point.longitude, point.latitude]),
-            },
-          }}>
+          <MapLibreGL.ShapeSource
+            id="line1"
+            shape={{
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: geometryTourData.map((point) => [point.longitude, point.latitude])
+              }
+            }}
+          >
             <MapLibreGL.LineLayer
               id="linelayer1"
               style={{ lineColor: colors.primary, lineWidth: 2 }}
             />
           </MapLibreGL.ShapeSource>
         )}
-        {showsUserLocationSetting && (
-          <MapLibreGL.UserLocation
-            visible={true}
-            onUpdate={() => {}}
-          />
-        )}
+        {showsUserLocationSetting && <MapLibreGL.UserLocation visible={true} onUpdate={() => {}} />}
       </MapLibreGL.MapView>
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
@@ -319,7 +408,7 @@ export const Map = ({
         </TouchableOpacity>
       )}
       {isMyLocationButtonVisible && (
-        <TouchableOpacity style={styles.myLocationButton} onPress={handleMyLocationButtonPress}>
+        <TouchableOpacity style={styles.myLocationButton} onPress={onMyLocationButtonPress}>
           <Icon.GPS size={normalize(18)} />
         </TouchableOpacity>
       )}
@@ -341,28 +430,30 @@ const styles = StyleSheet.create({
     borderRadius: normalize(10),
     alignItems: 'center'
   },
-  clusterContainer: {
+  clusterCircle: {
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute'
   },
-  cluster: {
-    width: normalize(40),
-    height: normalize(40),
-    borderRadius: normalize(20),
-    backgroundColor: colors.translucentAccent,
+  clusterMarker: {
     alignItems: 'center',
+    height: normalize(60),
     justifyContent: 'center',
+    width: normalize(60)
   },
-  clusterText: {
-    color: '#fff',
-    fontSize: normalize(16),
-    fontWeight: 'bold',
+  hitbox: {
+    width: normalize(HITBOX_SIZE),
+    height: normalize(HITBOX_SIZE),
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   container: {
     alignItems: 'center',
     backgroundColor: colors.surface,
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: '100%',
+    height: normalize(200)
   },
   logoContainer: {
     alignItems: 'center',
@@ -386,7 +477,7 @@ const styles = StyleSheet.create({
   maximizeMapButton: {
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: 50,
+    borderRadius: normalize(50),
     bottom: normalize(15),
     height: normalize(48),
     justifyContent: 'center',
@@ -398,7 +489,7 @@ const styles = StyleSheet.create({
   myLocationButton: {
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: 50,
+    borderRadius: normalize(50),
     top: normalize(15),
     height: normalize(48),
     justifyContent: 'center',
@@ -409,15 +500,15 @@ const styles = StyleSheet.create({
   },
   markerContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   activeMarkerContainer: {
     // Define your styles for active marker here
   },
   map: {
     width: '100%',
-    height: '100%',
-  },
+    height: '100%'
+  }
 });
 
 /* eslint-disable react-native/no-unused-styles */

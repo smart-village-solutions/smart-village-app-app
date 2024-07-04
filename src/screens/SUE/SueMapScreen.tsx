@@ -144,11 +144,8 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaViewFlex>
       <Map
-        isMultipleMarkersMap
         clusterDistance={geoMap?.clusterDistance}
-        clusteringEnabled={true}
         locations={mapMarkers}
-        mapStyle={styles.map}
         isMyLocationButtonVisible={!!locationService}
         onMyLocationButtonPress={() => {
           const location = position || lastKnownPosition;
@@ -251,11 +248,7 @@ const styles = StyleSheet.create({
   listItem: {
     borderRadius: normalize(8),
     padding: 0,
-    paddingRight: 14
-  },
-  map: {
-    height: '100%',
-    width: '100%'
+    paddingRight: normalize(14)
   },
   image: {
     height: normalize(120),

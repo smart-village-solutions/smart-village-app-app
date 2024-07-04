@@ -125,7 +125,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   return (
     <>
       <Map
-        isMultipleMarkersMap
         locations={mapMarkers}
         mapStyle={styles.map}
         onMarkerPress={setSelectedPointOfInterest}
@@ -160,14 +159,14 @@ const styles = StyleSheet.create({
     right: '4%',
     width: '92%',
     // shadow:
-    elevation: 2,
+    elevation: normalize(2),
     shadowColor: colors.shadowRgba,
     shadowOffset: {
-      height: 5,
+      height: normalize(5),
       width: 0
     },
-    shadowOpacity: 0.5,
-    shadowRadius: 3
+    shadowOpacity: normalize(0.5),
+    shadowRadius: normalize(3)
   },
   map: {
     height: '100%',

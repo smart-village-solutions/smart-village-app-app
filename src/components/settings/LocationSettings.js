@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 import { normalize, texts } from '../../config';
@@ -100,14 +100,16 @@ export const LocationSettings = () => {
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
       </Wrapper>
       <Collapsible collapsed={!showMap}>
-        <Map
-          locations={locations}
-          onMapPress={({ nativeEvent }) => {
-            setSelectedPosition({
-              ...nativeEvent.coordinate
-            });
-          }}
-        />
+        <View style={styles.mapContainer}>
+          <Map
+            locations={locations}
+            onMapPress={({ nativeEvent }) => {
+              setSelectedPosition({
+                ...nativeEvent.coordinate
+              });
+            }}
+          />
+        </View>
         <Wrapper>
           <Button
             title={texts.settingsContents.locationService.save}
@@ -149,5 +151,9 @@ export const LocationSettings = () => {
 const styles = StyleSheet.create({
   containerStyle: {
     marginBottom: normalize(21)
+  },
+  mapContainer: {
+    width: '100%',
+    height: normalize(250)
   }
 });

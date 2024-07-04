@@ -49,7 +49,6 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             ? [...locationsWithPin, { iconName, position: selectedPosition }]
             : locationsWithPin,
           mapCenterPosition,
-          mapStyle: styles.map,
           onMarkerPress: onMarkerPress,
           showsUserLocation
         }}
@@ -91,10 +90,6 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
 const styles = StyleSheet.create({
   augmentedRealityInfoContainer: {
     width: '90%'
-  },
-  map: {
-    width: '100%',
-    height: '100%'
   },
   marginTop: {
     marginTop: normalize(14)
