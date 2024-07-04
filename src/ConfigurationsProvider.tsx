@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from './SettingsProvider';
@@ -48,15 +48,18 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     type: 'json'
   });
 
-  useEffect(() => {
+  const mergedConfig = useMemo(() => {
     const config = {
       appDesignSystem,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     };
+    return mergeDefaultConfiguration({ ...defaultConfiguration }, config);
+  }, [appDesignSystem, sue, sueConfigData, sueProgress]);
 
-    setConfigurations((prev) => mergeDefaultConfiguration(prev, config));
-    storageHelper.setConfigurations(config);
-  }, [sueConfigData]);
+  useEffect(() => {
+    setConfigurations(mergedConfig);
+    storageHelper.setConfigurations(mergedConfig);
+  }, [mergedConfig]);
 
   return (
     <ConfigurationsContext.Provider value={configurations}>
