@@ -12,6 +12,7 @@ import { OrientationContext } from '../OrientationProvider';
 import { getQuery } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
+import { useIsFocused } from '@react-navigation/native';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 
@@ -39,6 +40,13 @@ export const ImagesCarousel = ({
   const [carouselImageIndex, setCarouselImageIndex] = useState(0);
 
   const carouselRef = useRef();
+  const isFocused = useIsFocused();
+
+  if (isFocused) {
+    carouselRef.current?.startAutoplay();
+  } else {
+    carouselRef.current?.stopAutoplay();
+  }
 
   useEffect(() => {
     isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
