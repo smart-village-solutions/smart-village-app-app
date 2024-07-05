@@ -424,11 +424,11 @@ export const Map = ({
 
 const styles = StyleSheet.create({
   callout: {
-    width: normalize(120),
+    alignItems: 'center',
     backgroundColor: colors.surface,
-    padding: normalize(5),
     borderRadius: normalize(10),
-    alignItems: 'center'
+    padding: normalize(5),
+    width: normalize(120)
   },
   clusterCircle: {
     alignItems: 'center',
@@ -442,18 +442,18 @@ const styles = StyleSheet.create({
     width: normalize(60)
   },
   hitbox: {
-    width: normalize(HITBOX_SIZE),
-    height: normalize(HITBOX_SIZE),
     alignItems: 'center',
-    justifyContent: 'center'
+    height: normalize(HITBOX_SIZE),
+    justifyContent: 'center',
+    width: normalize(HITBOX_SIZE)
   },
   container: {
     alignItems: 'center',
     backgroundColor: colors.surface,
     flex: 1,
+    height: normalize(200),
     justifyContent: 'center',
-    width: '100%',
-    height: normalize(200)
+    width: '100%'
   },
   logoContainer: {
     alignItems: 'center',
@@ -490,11 +490,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: normalize(50),
-    top: normalize(15),
     height: normalize(48),
     justifyContent: 'center',
     position: 'absolute',
     right: normalize(15),
+    top: normalize(15),
     width: normalize(48),
     zIndex: 1
   },
@@ -506,8 +506,8 @@ const styles = StyleSheet.create({
     // Define your styles for active marker here
   },
   map: {
-    width: '100%',
-    height: '100%'
+    height: '100%',
+    width: '100%'
   }
 });
 

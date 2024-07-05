@@ -154,12 +154,11 @@ const styles = StyleSheet.create({
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),
+    elevation: normalize(2),
     left: '4%',
     position: 'absolute',
     right: '4%',
     width: '92%',
-    // shadow:
-    elevation: normalize(2),
     shadowColor: colors.shadowRgba,
     shadowOffset: {
       height: normalize(5),

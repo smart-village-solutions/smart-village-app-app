@@ -20,9 +20,9 @@ export const LoadingSpinnerMap = ({ loading }: Props) => {
 const styles = StyleSheet.create({
   loadingContainer: {
     ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     justifyContent: 'center',
-    alignItems: 'center',
     zIndex: 10
   }
 });
