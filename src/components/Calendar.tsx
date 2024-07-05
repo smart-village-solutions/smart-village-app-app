@@ -33,7 +33,7 @@ type Props = {
   isListRefreshing: boolean;
   navigation: StackNavigationProp<any>;
   query: string;
-  queryVariables: { contentContainerId?: number; dateRange?: string[] };
+  queryVariables: { contentContainerId?: number; dateRange?: string[]; limit?: number};
 };
 
 const today = moment().format('YYYY-MM-DD');
@@ -47,7 +47,7 @@ export const Calendar = ({
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
+  const { deprecated = {}, settings = {} } = globalSettings;
   const { eventCalendar = {} } = settings;
   const { dotCount = MAX_DOTS_PER_DAY, subList = false } = eventCalendar;
   const [queryVariablesWithDateRange, setQueryVariablesWithDateRange] = useState<any>({
@@ -58,26 +58,41 @@ export const Calendar = ({
   const contentContainerId = queryVariables.contentContainerId;
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-    fetchPolicy,
-    skip: query !== QUERY_TYPES.EVENT_RECORDS,
-    variables: {
-      ...queryVariables,
-      // if we show the calendar, we need to fetch all the entries at once and not a limited amount
-      limit: undefined
+  const { data, loading, refetch } = useQuery(
+    getQuery(
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS
+    ),
+    {
+      fetchPolicy,
+      skip: query !== QUERY_TYPES.EVENT_RECORDS,
+      variables: {
+        ...queryVariables,
+        // TODO: deprecated - if we show the calendar, we need to fetch all the entries at once
+        //                    and not a limited amount
+        limit: deprecated?.events?.listingWithoutDateFragment ? undefined : queryVariables.limit
+      }
     }
-  });
+  );
 
   const {
     data: dataDateRange,
     loading: loadingDateRange,
     refetch: refetchDateRange,
     fetchMore: fetchMoreDateRange
-  } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-    fetchPolicy,
-    skip: query !== QUERY_TYPES.EVENT_RECORDS || !subList,
-    variables: queryVariablesWithDateRange
-  });
+  } = useQuery(
+    getQuery(
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS
+    ),
+    {
+      fetchPolicy,
+      skip: query !== QUERY_TYPES.EVENT_RECORDS || !subList,
+      variables: queryVariablesWithDateRange
+    }
+  );
 
   const onDayPress = useCallback(
     (day: DateData) => {

@@ -55,7 +55,7 @@ const today = moment().format('YYYY-MM-DD');
 export const EventRecords = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
+  const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
     filter;
   const { events: showVolunteerEvents = false } = hdvt;
@@ -77,7 +77,11 @@ export const EventRecords = ({ navigation, route }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   const { data, loading, fetchMore, refetch, networkStatus } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS),
+    getQuery(
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS
+    ),
     {
       fetchPolicy,
       variables: queryVariables,
