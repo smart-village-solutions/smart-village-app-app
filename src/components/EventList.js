@@ -64,7 +64,21 @@ export const EventList = ({
       // from partially fetching, so we need to check the data to determine the lists end
       const { data: moreData } = await fetchMoreData();
 
-      setListEndReached(!moreData[QUERY_TYPES.EVENT_RECORDS].length);
+      const hasLastPageEventRecords = () => {
+        if (!moreData?.pages) {
+          return false;
+        }
+
+        const lastPage = moreData.pages[moreData.pages.length - 1];
+
+        return (
+          (lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length > 0 &&
+            lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length < queryVariables?.limit) ||
+          MAX_INITIAL_NUM_TO_RENDER
+        );
+      };
+
+      setListEndReached(!hasLastPageEventRecords);
     } else {
       setListEndReached(true);
     }
@@ -90,10 +104,10 @@ export const EventList = ({
     <FlashList
       data={sectionedData}
       refreshing={refreshing}
-      estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
+      estimatedItemSize={queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
-        if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
+        if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
           return <LoadingSpinner loading={!listEndReached} />;
         }
 
