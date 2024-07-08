@@ -93,8 +93,8 @@
       "expo-font",
       "expo-localization",
       "expo-secure-store",
-      "./config-plugins/withAndroidMailQueriesAndWhatsappPackage",
-      "@maplibre/maplibre-react-native"
+      "@maplibre/maplibre-react-native",
+      "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }
 }
