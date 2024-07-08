@@ -984,7 +984,7 @@ export const texts = {
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
         settings: 'Einstellungen',
         street: 'Bitte geben Sie die Straße an',
-        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
+        terms: 'Bitte akzeptieren Sie die Datenschutzbestimmung und Nutzungsbedingung.',
         title: 'Bitte kurz beschreiben, worum es geht.',
         yes: 'Ja',
         postalCode: 'Bitte geben Sie die Postleitzahl an',
@@ -1015,7 +1015,9 @@ export const texts = {
         toEntryList: 'Zur Meldungsliste'
       },
       street: 'Straße',
-      termsOfService: 'Datenschutzbestimmungen',
+      termsInputCheckbox: 'Ich stimme den folgenden Bedingungen zu:',
+      termsOfService: 'Datenschutzbestimmung',
+      termsOfUse: 'Nutzungsbedingung',
       title: 'Kurze Beschreibung',
       postalCode: 'Postleitzahl'
     },

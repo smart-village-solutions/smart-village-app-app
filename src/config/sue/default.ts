@@ -58,6 +58,10 @@ const requiredFieldsDefaults = {
 
 const sueReportScreenDefaults = {
   showFeedbackSection: false,
+  reportTerms: {
+    termsOfService: {},
+    termsOfUse: {}
+  },
   reportSendDone: {
     subtitle: '',
     title: ''
