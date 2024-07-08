@@ -445,7 +445,7 @@ export const SueReportScreen = ({
             animated: true
           });
 
-          return texts.sue.report.alerts.termsOfService;
+          return texts.sue.report.alerts.terms;
         }
         break;
       default:
