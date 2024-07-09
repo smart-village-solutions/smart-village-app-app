@@ -15,7 +15,8 @@ const sentryApi = secrets[namespace].sentryApi;
 
 if (sentryApi?.dsn) {
   Sentry.init({
-    dsn: sentryApi.dsn
+    dsn: sentryApi.dsn,
+    enabled: !__DEV__ // NOTE: Sentry will be enabled only in production by default
     // debug: __DEV__ // NOTE: If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event.
   });
 }
