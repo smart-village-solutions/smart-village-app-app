@@ -67,6 +67,7 @@ export const SueStatus = ({
     >
       {!!iconName && (
         <StatusIcon
+          accessibilityLabel={status}
           color={textColor}
           size={small ? normalize(12) : normalize(16)}
           style={small ? styles.smallMarginRight : styles.marginRight}

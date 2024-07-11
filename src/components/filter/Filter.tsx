@@ -76,8 +76,9 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
     <>
       <TouchableOpacity
         onPress={() => setIsCollapsed(!isCollapsed)}
-        accessibilityLabel={a11yLabel.editIcon}
-        accessibilityHint={a11yLabel.editHint}
+        accessibilityLabel={`${isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter} ${
+          a11yLabel.button
+        }`}
         style={styles.button}
       >
         <BoldText small primary={!isCollapsed}>

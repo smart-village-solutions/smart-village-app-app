@@ -27,7 +27,7 @@ import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
-const { INPUT_KEYS } = consts;
+const { a11yLabel, INPUT_KEYS } = consts;
 
 export const locationServiceEnabledAlert = ({
   currentPosition,
@@ -316,6 +316,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.STREET} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.STREET}
           label={`${texts.sue.report.street} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? ' *' : ''
@@ -331,6 +334,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.houseNumber} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.HOUSE_NUMBER}
           label={`${texts.sue.report.houseNumber} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? ' *' : ''
@@ -346,6 +352,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.postalCode} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.POSTAL_CODE}
           label={`${texts.sue.report.postalCode} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? ' *' : ''
@@ -363,6 +372,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.city} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.CITY}
           label={`${texts.sue.report.city} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? ' *' : ''

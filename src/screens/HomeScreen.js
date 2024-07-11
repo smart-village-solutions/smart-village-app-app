@@ -19,7 +19,8 @@ import {
   SectionHeader,
   Widgets,
   Wrapper,
-  WrapperHorizontal
+  WrapperHorizontal,
+  WrapperVertical
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
@@ -334,11 +335,11 @@ export const HomeScreen = ({ navigation, route }) => {
             {!!staticContentListItem?.length && (
               <>
                 {!!staticContentListTitle && (
-                  <WrapperHorizontal>
-                    <RegularText></RegularText>
-                  </WrapperHorizontal>
+                  <WrapperVertical style={styles.noPaddingBottom}>
+                    <SectionHeader title={staticContentListTitle} />
+                  </WrapperVertical>
                 )}
-                {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
+
                 {!!staticContentListDescription && (
                   <Wrapper>
                     <RegularText>{staticContentListDescription}</RegularText>
@@ -376,6 +377,12 @@ export const HomeScreen = ({ navigation, route }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  noPaddingBottom: {
+    paddingBottom: 0
+  }
+});
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

@@ -9,7 +9,7 @@ import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
 
-const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
+const { a11yLabel, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
 const MemoizedImageSelector = memo((props) => <ImageSelector {...props} />);
 
@@ -78,6 +78,7 @@ export const SueReportDescription = ({
     <View style={styles.container}>
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.title} ${a11yLabel.required}`}
           name={INPUT_KEYS.SUE.TITLE}
           label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.title}
@@ -89,6 +90,9 @@ export const SueReportDescription = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.description} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.DESCRIPTION}
           label={`${texts.sue.report.description} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? ' *' : ''

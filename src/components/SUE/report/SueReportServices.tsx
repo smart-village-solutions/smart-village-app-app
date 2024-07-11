@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors, device, normalize } from '../../../config';
+import { colors, consts, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { TService } from '../../../screens';
@@ -23,6 +23,8 @@ const ServiceTile = memo(({ item, selected, onPress }) => (
     <BoldText center>{item.serviceName}</BoldText>
   </TouchableOpacity>
 ));
+
+const { a11yLabel } = consts;
 
 export const SueReportServices = ({
   service,
@@ -61,6 +63,7 @@ export const SueReportServices = ({
             key={index}
             item={item}
             selected={selected}
+            accessibilityLabel={`${item.serviceName} ${a11yLabel.button}`}
             onPress={() => setService(item)}
           />
         );

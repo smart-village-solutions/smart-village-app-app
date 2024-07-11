@@ -10,6 +10,8 @@ import { useOpenWebScreen } from '../hooks';
 import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
 
+const { a11yLabel } = consts;
+
 export const Checkbox = ({
   boldTitle,
   center = undefined,
@@ -34,11 +36,16 @@ export const Checkbox = ({
   return (
     <CheckBox
       accessibilityRole="button"
-      accessibilityLabel={`${
+      accessibilityLabel={`${a11yLabel.checkbox} (${
         checked
           ? texts.accessibilityLabels.checkbox.active
           : texts.accessibilityLabels.checkbox.inactive
-      } ${title}`}
+      }) ${title}`}
+      accessibilityValue={
+        checked
+          ? texts.accessibilityLabels.checkbox.active
+          : texts.accessibilityLabels.checkbox.inactive
+      }
       size={normalize(21)}
       center={center}
       title={
