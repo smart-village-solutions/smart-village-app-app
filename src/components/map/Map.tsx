@@ -33,9 +33,13 @@ type Props = {
   updatedRegion?: Region;
 };
 
-const MARKER_ICON_SIZE = normalize(40);
 const CIRCLE_SIZES = [normalize(60), normalize(50), normalize(40), normalize(30)];
-const HITBOX_SIZE = normalize(80); // Größe der unsichtbaren Hitbox
+const DEFAULT_ZOOM_LEVEL = 14;
+const HITBOX_SIZE = normalize(80);
+const MARKER_ICON_SIZE = normalize(40);
+const MAX_ZOOM_LEVEL = 20;
+const TIMEOUT_CLUSTER = 1000;
+const TIMEOUT_SINGLE_MARKER = 4000;
 
 const MapIcon = ({
   iconColor,
@@ -53,7 +57,7 @@ const MapIcon = ({
 
 const renderCluster = (cluster) => {
   const { clusterColor: backgroundColor, geometry, id, onPress, properties = {} } = cluster;
-  const { point_count: points } = properties;
+  const { point_count } = properties;
 
   return (
     <MapLibreGL.PointAnnotation
@@ -78,7 +82,7 @@ const renderCluster = (cluster) => {
             ]}
           >
             <RegularText lightest center smallest>
-              {points}
+              {point_count}
             </RegularText>
           </View>
         ))}
@@ -88,6 +92,24 @@ const renderCluster = (cluster) => {
 };
 
 /* eslint-disable complexity */
+// calculate the bounds of the map to fit all markers
+const calculateBounds = (coordinates) => {
+  const [minLng, minLat] = coordinates.reduce(
+    (prev, curr) => [Math.min(prev[0], curr[0]), Math.min(prev[1], curr[1])],
+    [Infinity, Infinity]
+  );
+
+  const [maxLng, maxLat] = coordinates.reduce(
+    (prev, curr) => [Math.max(prev[0], curr[0]), Math.max(prev[1], curr[1])],
+    [-Infinity, -Infinity]
+  );
+
+  const deltaLng = (maxLng - minLng) * 0.1;
+  const deltaLat = (maxLat - minLat) * 0.1;
+
+  return { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat };
+};
+
 export const Map = ({
   calloutTextEnabled = false,
   clusterDistance = 50,
@@ -115,7 +137,7 @@ export const Map = ({
   const refForMapView = useRef<MapLibreGL.MapView>(null);
   const cameraRef = useRef<MapLibreGL.Camera>(null);
   const [clusters, setClusters] = useState<any[]>([]);
-  const [zoomLevel, setZoomLevel] = useState<number>(14);
+  const [zoomLevel, setZoomLevel] = useState<number>(DEFAULT_ZOOM_LEVEL);
   const [isInitialFit, setIsInitialFit] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -144,39 +166,33 @@ export const Map = ({
     };
   }
 
+  const mapLocations = () => {
+    return locations.map((location, index) => ({
+      type: 'Feature',
+      properties: { cluster: false, id: location.id, index },
+      geometry: {
+        type: 'Point',
+        coordinates: [location.position.longitude, location.position.latitude]
+      }
+    }));
+  };
+
   useEffect(() => {
     if (clusteringEnabled) {
       const index = new Supercluster({
         radius: clusterDistance,
-        maxZoom: 20
+        maxZoom: MAX_ZOOM_LEVEL
       });
 
-      const points = locations.map((location, index) => ({
-        type: 'Feature',
-        properties: { cluster: false, id: location.id, index },
-        geometry: {
-          type: 'Point',
-          coordinates: [location.position.longitude, location.position.latitude]
-        }
-      }));
+      const points = mapLocations();
 
       index.load(points);
-      const bounds = [-180, -85, 180, 85];
+      const bounds = [2, 46, 18, 56];
       setClusters(index.getClusters(bounds, zoomLevel));
     } else {
-      setClusters(
-        locations.map((location, index) => ({
-          type: 'Feature',
-          properties: { cluster: false, id: location.id, index },
-          geometry: {
-            type: 'Point',
-            coordinates: [location.position.longitude, location.position.latitude]
-          }
-        }))
-      );
+      setClusters(mapLocations());
     }
 
-    // Berechne die Begrenzungskoordinaten für alle Marker
     if (locations.length > 0 && isInitialFit) {
       const coordinates = locations.map((loc) => [loc.position.longitude, loc.position.latitude]);
       if (locations.length === 1) {
@@ -188,36 +204,27 @@ export const Map = ({
           });
           setTimeout(() => {
             setIsLoading(false);
-          }, 4000); // Timeout in Millisekunden anpassen je nach Bedarf
-          setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
+          }, TIMEOUT_SINGLE_MARKER);
+          setIsInitialFit(false);
         }
-      } else {
-        const [minLng, minLat] = coordinates.reduce(
-          (prev, curr) => [Math.min(prev[0], curr[0]), Math.min(prev[1], curr[1])],
-          [Infinity, Infinity]
-        );
-        const [maxLng, maxLat] = coordinates.reduce(
-          (prev, curr) => [Math.max(prev[0], curr[0]), Math.max(prev[1], curr[1])],
-          [-Infinity, -Infinity]
-        );
-        const deltaLng = (maxLng - minLng) * 0.1; // Add 10% padding to the bounds
-        const deltaLat = (maxLat - minLat) * 0.1; // Add 10% padding to the bounds
+      } else if (coordinates && coordinates.length > 0) {
+        const { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat } = calculateBounds(coordinates);
         if (cameraRef.current) {
           cameraRef.current.fitBounds(
             [minLng - deltaLng, minLat - deltaLat],
             [maxLng + deltaLng, maxLat + deltaLat],
-            0 // animationDuration in ms
+            0
           );
           if (clusteringEnabled) {
             setTimeout(() => {
               setIsLoading(false);
-            }, 1000); // Timeout in Millisekunden anpassen je nach Bedarf
-            setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
+            }, TIMEOUT_CLUSTER);
+            setIsInitialFit(false);
           } else {
             setTimeout(() => {
               setIsLoading(false);
-            }, 4000); // Timeout in Millisekunden anpassen je nach Bedarf
-            setIsInitialFit(false); // Verhindert zukünftige automatische Anpassungen
+            }, TIMEOUT_SINGLE_MARKER);
+            setIsInitialFit(false);
           }
         }
       }
@@ -228,7 +235,7 @@ export const Map = ({
     if (updatedRegion && cameraRef.current) {
       cameraRef.current.setCamera({
         centerCoordinate: [updatedRegion.longitude, updatedRegion.latitude],
-        zoomLevel: 14,
+        zoomLevel: DEFAULT_ZOOM_LEVEL,
         animationDuration: 1000
       });
     }
@@ -249,11 +256,11 @@ export const Map = ({
 
   const handleClusterPress = useCallback(
     (cluster) => {
-      if (isAnimating) return; // Skip if animation is already in progress
+      if (isAnimating) return;
 
       setIsAnimating(true);
       const [longitude, latitude] = cluster.geometry.coordinates;
-      const zoom = Math.min(zoomLevel + 2, 20); // Increase the zoom level by 2 or set to max zoom level (20)
+      const zoom = Math.min(zoomLevel + 2, MAX_ZOOM_LEVEL);
       if (cameraRef.current) {
         cameraRef.current.setCamera({
           centerCoordinate: [longitude, latitude],
@@ -262,10 +269,11 @@ export const Map = ({
         });
       }
 
-      // Wait for the animation to finish
+      // wait for cluster animation to finish to not trigger multiple animations
+      // when pressing multiple clusters during animation
       setTimeout(() => {
         setIsAnimating(false);
-      }, 1000);
+      }, TIMEOUT_CLUSTER);
     },
     [isAnimating, zoomLevel]
   );
@@ -274,13 +282,13 @@ export const Map = ({
     <View style={[styles.container, style]}>
       <LoadingSpinnerMap loading={isLoading} />
       <MapLibreGL.MapView
-        style={mapStyle || styles.map}
+        style={[styles.map, mapStyle]}
         styleJSON="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
         onPress={handleMapPress}
         ref={refForMapView}
         onRegionDidChange={(region) => {
           const newZoomLevel = Math.round(region.properties.zoomLevel);
-          if (!isNaN(newZoomLevel)) {
+          if (typeof newZoomLevel === 'number' && !isNaN(newZoomLevel)) {
             setZoomLevel(newZoomLevel);
           }
         }}
@@ -290,15 +298,15 @@ export const Map = ({
 
         {clusters.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
-          const { cluster: isCluster, point_count: pointCount } = cluster.properties;
+          const { cluster: isCluster, point_count } = cluster.properties;
 
           if (clusteringEnabled && isCluster) {
             return renderCluster({
               clusterColor: colors.primary,
               geometry: { coordinates: [longitude, latitude] },
-              id: `cluster-${index}`,
+              id: index,
               onPress: () => handleClusterPress(cluster),
-              properties: { point_count: pointCount }
+              properties: { point_count }
             });
           }
 
@@ -314,12 +322,7 @@ export const Map = ({
               onSelected={() => onMarkerPress?.(marker.id)}
               key={`${index}-${marker.id}`}
             >
-              <View
-                style={[
-                  styles.markerContainer,
-                  isActiveMarker ? styles.activeMarkerContainer : undefined
-                ]}
-              >
+              <View style={styles.markerContainer}>
                 {!!marker.iconName &&
                 marker.iconName != 'ownLocation' &&
                 marker.iconName != 'location' ? (
@@ -400,7 +403,7 @@ export const Map = ({
             />
           </MapLibreGL.ShapeSource>
         )}
-        {showsUserLocationSetting && <MapLibreGL.UserLocation visible={true} onUpdate={() => {}} />}
+        {showsUserLocationSetting && <MapLibreGL.UserLocation visible />}
       </MapLibreGL.MapView>
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
@@ -501,9 +504,6 @@ const styles = StyleSheet.create({
   markerContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  activeMarkerContainer: {
-    // Define your styles for active marker here
   },
   map: {
     height: '100%',
