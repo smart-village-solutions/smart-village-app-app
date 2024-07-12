@@ -3014,7 +3014,7 @@
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.8.tgz#30744afdb385e2945e22f3b033f897f76b1f12ca"
   integrity sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==
 
-"@types/geojson@^7946.0.10", "@types/geojson@^7946.0.13":
+"@types/geojson@^7946.0.10":
   version "7946.0.14"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.14.tgz#319b63ad6df705ee2a65a73ef042c8271e696613"
   integrity sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==
@@ -10124,13 +10124,6 @@ react-native-lightbox-v2@0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/react-native-lightbox-v2/-/react-native-lightbox-v2-0.9.0.tgz#b97be4d892ebb959069c451948b11da390bc46d8"
   integrity sha512-Fc5VFHFj2vokS+OegyTsANKb1CYoUlOtAv+EBH5wtpJn1b5cey6jVXH7136G5+8OC9JmKWSgKHc5thFwOoZTUg==
-
-react-native-maps@1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-1.14.0.tgz#1e5cac8e88d80002c512dd4763a205493a1ae58d"
-  integrity sha512-ai7h4UdRLGPFCguz1fI8n4sKLEh35nZXHAH4nSWyAeHGrN8K9GjICu9Xd4Q5Ok4h+WwrM6Xz5pGbF3Qm1tO6iQ==
-  dependencies:
-    "@types/geojson" "^7946.0.13"
 
 react-native-markdown-display@^7.0.0-alpha.2:
   version "7.0.0-alpha.2"
