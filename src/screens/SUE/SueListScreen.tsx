@@ -229,8 +229,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={refresh}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
           />
         }
       />

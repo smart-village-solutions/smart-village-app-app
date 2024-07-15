@@ -106,8 +106,8 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
         <RefreshControl
           refreshing={refreshing}
           onRefresh={refresh}
-          colors={[colors.accent]}
-          tintColor={colors.accent}
+          colors={[colors.refreshControl]}
+          tintColor={colors.refreshControl}
         />
       }
     >
