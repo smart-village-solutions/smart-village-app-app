@@ -38,6 +38,7 @@ const DEFAULT_ZOOM_LEVEL = 14;
 const HITBOX_SIZE = normalize(80);
 const MARKER_ICON_SIZE = normalize(40);
 const MAX_ZOOM_LEVEL = 20;
+const ONE_MARKER_ZOOM_LEVEL = 15;
 const TIMEOUT_CLUSTER = 1000;
 const TIMEOUT_SINGLE_MARKER = 4000;
 
@@ -136,6 +137,7 @@ export const Map = ({
   const { locationSettings } = useLocationSettings();
   const refForMapView = useRef<MapLibreGL.MapView>(null);
   const cameraRef = useRef<MapLibreGL.Camera>(null);
+  const superclusterRef = useRef(null); // Add this line
   const [clusters, setClusters] = useState<any[]>([]);
   const [zoomLevel, setZoomLevel] = useState<number>(DEFAULT_ZOOM_LEVEL);
   const [isInitialFit, setIsInitialFit] = useState<boolean>(true);
@@ -187,6 +189,7 @@ export const Map = ({
       const points = mapLocations();
 
       index.load(points);
+      superclusterRef.current = index; // Store the Supercluster instance in the ref
       const bounds = [2, 46, 18, 56];
       setClusters(index.getClusters(bounds, zoomLevel));
     } else {
@@ -199,7 +202,7 @@ export const Map = ({
         if (cameraRef.current) {
           cameraRef.current.setCamera({
             centerCoordinate: coordinates[0],
-            zoomLevel: 15,
+            zoomLevel: ONE_MARKER_ZOOM_LEVEL,
             animationDuration: 0
           });
           setTimeout(() => {
@@ -260,22 +263,24 @@ export const Map = ({
 
       setIsAnimating(true);
       const [longitude, latitude] = cluster.geometry.coordinates;
-      const zoom = Math.min(zoomLevel + 2, MAX_ZOOM_LEVEL);
-      if (cameraRef.current) {
-        cameraRef.current.setCamera({
-          centerCoordinate: [longitude, latitude],
-          zoomLevel: zoom,
-          animationDuration: 1000
-        });
+
+      if (superclusterRef.current) {
+        const expansionZoom = superclusterRef.current.getClusterExpansionZoom(cluster.id);
+
+        if (cameraRef.current) {
+          cameraRef.current.setCamera({
+            centerCoordinate: [longitude, latitude],
+            zoomLevel: expansionZoom,
+            animationDuration: 1000
+          });
+        }
       }
 
-      // wait for cluster animation to finish to not trigger multiple animations
-      // when pressing multiple clusters during animation
       setTimeout(() => {
         setIsAnimating(false);
       }, TIMEOUT_CLUSTER);
     },
-    [isAnimating, zoomLevel]
+    [isAnimating]
   );
 
   return (
@@ -481,7 +486,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: normalize(50),
-    bottom: normalize(15),
+    bottom: normalize(35),
     height: normalize(48),
     justifyContent: 'center',
     position: 'absolute',

@@ -153,6 +153,6 @@ const styles = StyleSheet.create({
     marginBottom: normalize(21)
   },
   mapContainer: {
-    height: normalize(250)
+    height: normalize(200)
   }
 });
