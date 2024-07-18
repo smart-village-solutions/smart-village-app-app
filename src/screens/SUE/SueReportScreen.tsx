@@ -123,18 +123,19 @@ type TContent = {
     requiredFields: any;
   };
   content: 'category' | 'description' | 'location' | 'user';
-  requiredInputs: keyof TValues[];
-  service?: TService;
-  setService: any;
   control: any;
   errorMessage: string;
   errors: any;
-  selectedPosition?: Location.LocationObjectCoords;
-  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
-  setUpdateRegionFromImage: (value: boolean) => void;
-  updateRegionFromImage: boolean;
-  setValue: UseFormSetValue<TValues>;
   getValues: UseFormGetValues<TValues>;
+  requiredInputs: keyof TValues[];
+  selectedPosition?: Location.LocationObjectCoords;
+  service?: TService;
+  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setService: any;
+  setShowCoordinatesFromImageAlert: (value: boolean) => void;
+  setUpdateRegionFromImage: (value: boolean) => void;
+  setValue: UseFormSetValue<TValues>;
+  updateRegionFromImage: boolean;
 };
 
 const Content = ({
@@ -150,6 +151,7 @@ const Content = ({
   service,
   setSelectedPosition,
   setService,
+  setShowCoordinatesFromImageAlert,
   setUpdateRegionFromImage,
   setValue,
   updateRegionFromImage
@@ -165,6 +167,7 @@ const Content = ({
           requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
+          setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}
         />
@@ -387,8 +390,8 @@ export const SueReportScreen = ({
         }
         break;
       case 1:
-        if (!getValues(INPUT_KEYS.SUE.TITLE)) {
-          return texts.sue.report.alerts.missingAnyInput;
+        if (!getValues(INPUT_KEYS.SUE.TITLE).trim()) {
+          return texts.sue.report.alerts.title;
         } else if (getValues(INPUT_KEYS.SUE.IMAGES)) {
           const images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
 
@@ -462,14 +465,6 @@ export const SueReportScreen = ({
       case 3:
         if (isAnyInputMissing) {
           return texts.sue.report.alerts.missingAnyInput;
-        }
-
-        if (
-          !getValues(INPUT_KEYS.SUE.NAME) &&
-          !getValues(INPUT_KEYS.SUE.FAMILY_NAME) &&
-          !getValues(INPUT_KEYS.SUE.EMAIL)
-        ) {
-          return texts.sue.report.alerts.contact;
         }
 
         if (!getValues(INPUT_KEYS.SUE.TERMS_OF_SERVICE)) {
@@ -652,6 +647,7 @@ export const SueReportScreen = ({
                   service,
                   setSelectedPosition,
                   setService,
+                  setShowCoordinatesFromImageAlert,
                   setUpdateRegionFromImage,
                   setValue,
                   updateRegionFromImage

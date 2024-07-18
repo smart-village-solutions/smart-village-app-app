@@ -1,9 +1,9 @@
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
 import { Map } from '../../components';
-import { colors, normalize } from '../../config';
+import { colors, normalize, texts } from '../../config';
 
 export const SueMapViewScreen = ({ route }: { route: any }) => {
   const {
@@ -54,14 +54,24 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
           showsUserLocation
         }}
         onMyLocationButtonPress={async () => {
-          setSelectedPosition(currentPosition.coords);
-          setUpdatedRegion(true);
+          Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
+            {
+              text: texts.sue.report.alerts.no
+            },
+            {
+              text: texts.sue.report.alerts.yes,
+              onPress: async () => {
+                setSelectedPosition(currentPosition.coords);
+                setUpdatedRegion(true);
 
-          try {
-            await onMyLocationButtonPress({ isFullScreenMap: true });
-          } catch (error) {
-            setSelectedPosition(undefined);
-          }
+                try {
+                  await onMyLocationButtonPress({ isFullScreenMap: true });
+                } catch (error) {
+                  setSelectedPosition(undefined);
+                }
+              }
+            }
+          ]);
         }}
         onMapPress={async ({ nativeEvent }) => {
           if (

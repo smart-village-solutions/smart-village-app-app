@@ -147,8 +147,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       parsedListItem = _filter(
         parsedListItem,
         (item) =>
-          item.title?.includes(queryVariables.search) ||
-          item.description?.includes(queryVariables.search)
+          item.title?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
+          item.description?.toLowerCase().includes(queryVariables.search.toLowerCase())
       );
     }
 
@@ -170,7 +170,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         query={query}
         data={listItems}
         ListEmptyComponent={
-          isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.empty.list} />
+          isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.sue.empty.list} />
         }
         ListHeaderComponent={
           <>

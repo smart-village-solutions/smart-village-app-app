@@ -13,22 +13,24 @@ const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
 export const SueReportDescription = ({
   areaServiceData,
+  configuration,
   control,
   errorMessage,
-  configuration,
   requiredInputs,
   selectedPosition,
   setSelectedPosition,
+  setShowCoordinatesFromImageAlert,
   setUpdateRegionFromImage,
   setValue
 }: {
   areaServiceData?: { postalCodes?: string[] };
+  configuration: any;
   control: any;
   errorMessage: string;
-  configuration: any;
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
 }) => {
@@ -40,7 +42,7 @@ export const SueReportDescription = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name={INPUT_KEYS.SUE.TITLE}
-          label={texts.sue.report.title + '*'}
+          label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.title}
           control={control}
           ref={titleRef}
@@ -52,7 +54,7 @@ export const SueReportDescription = ({
         <Input
           name={INPUT_KEYS.SUE.DESCRIPTION}
           label={`${texts.sue.report.description} ${
-            requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? '*' : ''
+            requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? ' *' : ''
           }`}
           placeholder={texts.sue.report.description}
           multiline
@@ -74,6 +76,7 @@ export const SueReportDescription = ({
                   errorMessage,
                   selectedPosition,
                   setSelectedPosition,
+                  setShowCoordinatesFromImageAlert,
                   setUpdateRegionFromImage,
                   setValue
                 },

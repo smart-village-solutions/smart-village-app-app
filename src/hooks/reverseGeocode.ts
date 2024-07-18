@@ -30,7 +30,12 @@ export const useReverseGeocode = () => {
         const street = response?.address?.road || '';
         const postalCode = response?.address?.postcode || '';
 
-        if (!areaServiceData?.postalCodes?.includes(postalCode)) {
+        if (areaServiceData?.postalCodes?.includes(postalCode)) {
+          setValue('city', city);
+          setValue('houseNumber', houseNumber);
+          setValue('street', street);
+          setValue('postalCode', postalCode);
+        } else {
           setValue('city', '');
           setValue('houseNumber', '');
           setValue('street', '');
@@ -38,11 +43,6 @@ export const useReverseGeocode = () => {
 
           throw new Error(errorMessage);
         }
-
-        setValue('city', city);
-        setValue('houseNumber', houseNumber);
-        setValue('street', street);
-        setValue('postalCode', postalCode);
       } catch (error) {
         throw new Error(error.message);
       }

@@ -939,6 +939,9 @@ export const texts = {
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',
+    empty: {
+      list: 'Schade, es wurden keine passenden Einträge gefunden.'
+    },
     location: 'Ort',
     report: {
       addImage: 'Bilder hinzufügen',
@@ -957,8 +960,7 @@ export const texts = {
         hint: 'Hinweis',
         imageType: 'Der verwendete Dateityp wird nicht unterstützt.',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
-        imageLocation:
-          'Die Adressinformationen wurden dem Bild entnommen und werden im nächsten Schritt vorausgefüllt.',
+        imageLocation: 'Die Adressinformationen wurden dem Bild entnommen und vorausgefüllt.',
         imagesTotalSizeError: (size) =>
           `Die ausgewählten Bilder dürfen insgesamt nicht größer als ${size} sein.`,
         imageSelectAlert: {
@@ -975,7 +977,7 @@ export const texts = {
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
         missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
         no: 'Nein',
-        myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
+        myLocation: 'Möchten Sie Ihren aktuellen Standort als Adresse übernehmen?',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
         street: 'Bitte geben Sie die Straße an',
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
