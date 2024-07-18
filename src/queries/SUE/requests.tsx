@@ -28,14 +28,13 @@ export const requests = async (queryVariables) => {
 
 /* eslint-disable complexity */
 export const postRequests = async (data: any) => {
-  const { apiKey = '', jurisdictionId = '', suePostRequest = '' } = await fetchSueEndpoints();
+  const { apiKey = '', suePostRequest = '' } = await fetchSueEndpoints();
   const formData = new FormData();
 
   data?.addressString && formData.append('address_string', data.addressString);
   data?.description && formData.append('description', data.description);
   data?.email && formData.append('email', data.email);
   data?.firstName && formData.append('first_name', data.firstName);
-  formData.append('jurisdiction_id', jurisdictionId);
   data?.lastName && formData.append('last_name', data.lastName);
   data?.lat && formData.append('lat', data.lat);
   data?.long && formData.append('long', data.long);

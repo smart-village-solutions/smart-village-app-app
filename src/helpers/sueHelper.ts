@@ -5,7 +5,7 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   const { sueConfig = {} } = configurations;
   const { apiConfig = {} } = sueConfig;
 
-  const { apiKey, jurisdictionId, serverUrl } = apiConfig[apiConfig?.whichApi] || apiConfig;
+  const { apiKey, serverUrl } = apiConfig[apiConfig?.whichApi] || apiConfig;
 
   const sueFetchObj = {
     method: 'GET',
@@ -16,19 +16,18 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   };
 
   const suePostRequest = `${serverUrl}/requests`;
-  const suePrioritiesUrl = `${serverUrl}/priorities?jurisdiction_id=${jurisdictionId}`;
-  const sueRequestsUrl = `${serverUrl}/requests?jurisdiction_id=${jurisdictionId}`;
-  const sueRequestsUrlWithServiceId = `${serverUrl}/requests/${serviceRequestId}?jurisdiction_id=${jurisdictionId}`;
-  const sueServicesUrl = `${serverUrl}/services?jurisdiction_id=${jurisdictionId}`;
-  const sueStatusesUrl = `${serverUrl}/statuses?jurisdiction_id=${jurisdictionId}`;
+  const suePrioritiesUrl = `${serverUrl}/priorities`;
+  const sueRequestsUrl = `${serverUrl}/requests`;
+  const sueRequestsUrlWithServiceId = `${serverUrl}/requests/${serviceRequestId}`;
+  const sueServicesUrl = `${serverUrl}/services`;
+  const sueStatusesUrl = `${serverUrl}/statuses`;
 
-  const sueConfigurationsUrl = `${serverUrl}/configurations?jurisdiction_id=${jurisdictionId}`;
-  const sueContactRequiredFieldConfigurationUrl = `${serverUrl}/configurations/contactRequiredFieldConfiguration?jurisdiction_id=${jurisdictionId}`;
-  const sueGeoMapConfigurationUrl = `${serverUrl}/configurations/geoMapConfiguration?jurisdiction_id=${jurisdictionId}`;
+  const sueConfigurationsUrl = `${serverUrl}/configurations`;
+  const sueContactRequiredFieldConfigurationUrl = `${serverUrl}/configurations/contactRequiredFieldConfiguration`;
+  const sueGeoMapConfigurationUrl = `${serverUrl}/configurations/geoMapConfiguration`;
 
   return {
     apiKey,
-    jurisdictionId,
     sueConfigurationsUrl,
     sueContactRequiredFieldConfigurationUrl,
     sueFetchObj,
