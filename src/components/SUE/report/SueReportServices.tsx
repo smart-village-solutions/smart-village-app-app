@@ -46,13 +46,6 @@ export const SueReportServices = ({
     setLoading(false);
   }, [refetch]);
 
-  const handleSetService = useCallback(
-    (item) => {
-      setService(item);
-    },
-    [setService]
-  );
-
   const memoizedData = useMemo(() => data || [], [data]);
 
   if (isLoading || loading) {
@@ -68,7 +61,7 @@ export const SueReportServices = ({
             key={index}
             item={item}
             selected={selected}
-            onPress={() => handleSetService(item)}
+            onPress={() => setService(item)}
           />
         );
       })}

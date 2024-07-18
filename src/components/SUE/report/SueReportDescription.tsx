@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 import { Controller, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
@@ -11,7 +11,7 @@ import { Input } from '../../form';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
-const MemoizedImageSelector = React.memo((props) => <ImageSelector {...props} />);
+const MemoizedImageSelector = memo((props) => <ImageSelector {...props} />);
 
 export const SueReportDescription = ({
   areaServiceData,

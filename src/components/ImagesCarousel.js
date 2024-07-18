@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
@@ -12,7 +13,6 @@ import { OrientationContext } from '../OrientationProvider';
 import { getQuery } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
-import { useIsFocused } from '@react-navigation/native';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 

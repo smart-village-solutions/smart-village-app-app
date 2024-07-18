@@ -364,7 +364,7 @@ export const SueReportScreen = ({
             return;
           }
 
-          if (!images.length) {
+          if (!images?.length) {
             return;
           }
 
