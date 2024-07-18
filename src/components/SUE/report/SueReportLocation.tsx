@@ -226,6 +226,7 @@ export const SueReportLocation = ({
       } catch (error) {
         setSelectedPosition(undefined);
         Alert.alert(texts.sue.report.alerts.hint, error.message);
+        return { error: error.message };
       }
     }
   };

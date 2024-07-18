@@ -98,9 +98,9 @@ export const SueMapViewScreen = ({
             setSelectedPosition(nativeEvent.coordinate);
             setUpdatedRegion(false);
 
-            try {
-              await onMapPress({ nativeEvent });
-            } catch (error) {
+            const mapPress = await onMapPress({ nativeEvent });
+
+            if (!!mapPress?.error) {
               setSelectedPosition(undefined);
             }
           }
