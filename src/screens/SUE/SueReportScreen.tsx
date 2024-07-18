@@ -163,6 +163,7 @@ const Content = ({
           control={control}
           errorMessage={errorMessage}
           requiredInputs={requiredInputs}
+          selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}
@@ -241,6 +242,7 @@ export const SueReportScreen = ({
     errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
   } = limitOfArea;
 
+  const [showCoordinatesFromImageAlert, setShowCoordinatesFromImageAlert] = useState(false);
   const [sueProgressWithConfig, setSueProgressWithConfig] = useState<TProgress[]>([]);
   const [currentProgress, setCurrentProgress] = useState(0);
   const [service, setService] = useState<TService>();
@@ -403,7 +405,7 @@ export const SueReportScreen = ({
             return texts.sue.report.alerts.imageGreater10MBError;
           }
 
-          /* the server does not support files larger than 30 MB in total of all files. */
+          /* the server does not support files larger than `totalSizeLimit` in total of all files. */
           if (totalSize >= totalSizeLimit) {
             return texts.sue.report.alerts.imagesTotalSizeError(
               formatSizeStandard(totalSizeLimit, 0)
@@ -415,7 +417,9 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.missingAnyInput;
         }
 
-        if (selectedPosition) {
+        if (selectedPosition && !showCoordinatesFromImageAlert) {
+          setShowCoordinatesFromImageAlert(true);
+
           Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
         }
         break;
