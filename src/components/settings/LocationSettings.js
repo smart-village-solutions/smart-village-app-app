@@ -1,7 +1,6 @@
 import * as Location from 'expo-location';
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import Collapsible from 'react-native-collapsible';
 
 import { normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
@@ -27,16 +26,24 @@ export const getLocationMarker = (locationObject) => ({
   }
 });
 
+const MapComponent = React.memo(({ locations, onMapPress }) => {
+  return (
+    <View style={styles.mapContainer}>
+      <Map
+        locations={locations}
+        onMapPress={onMapPress}
+      />
+    </View>
+  );
+});
+
 export const LocationSettings = () => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
 
   const [showMap, setShowMap] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState();
-
-  if (!systemPermission) {
-    return <LoadingSpinner loading />;
-  }
+  const [initialRender, setInitialRender] = useState(true);
 
   const {
     locationService = systemPermission.status !== Location.PermissionStatus.DENIED,
@@ -44,20 +51,18 @@ export const LocationSettings = () => {
     defaultAlternativePosition
   } = locationSettings || {};
 
-  const locationServiceSwitchData = {
+  const locationServiceSwitchData = useMemo(() => ({
     title: texts.settingsTitles.locationService,
     bottomDivider: true,
     topDivider: true,
     value: locationService,
     onActivate: (revert) => {
       Location.getForegroundPermissionsAsync().then((response) => {
-        // if the system permission is granted, we can simply enable the sorting
         if (response.status === Location.PermissionStatus.GRANTED) {
           setAndSyncLocationSettings({ locationService: true });
           return;
         }
 
-        // if we can ask for the system permission, do so and update the settings or revert depending on the outcome
         if (response.status === Location.PermissionStatus.UNDETERMINED || response.canAskAgain) {
           Location.requestForegroundPermissionsAsync()
             .then((response) => {
@@ -72,7 +77,6 @@ export const LocationSettings = () => {
           return;
         }
 
-        // if we neither have the permission, nor can we ask for it, then show an alert that the permission is missing
         revert();
         Alert.alert(
           texts.settingsTitles.locationService,
@@ -81,7 +85,7 @@ export const LocationSettings = () => {
       });
     },
     onDeactivate: () => setAndSyncLocationSettings({ locationService: false })
-  };
+  }), [locationService, setAndSyncLocationSettings]);
 
   let locations = [];
 
@@ -93,57 +97,69 @@ export const LocationSettings = () => {
     locations = [getLocationMarker(defaultAlternativePosition)];
   }
 
+  const handleMapPress = ({ nativeEvent }) => {
+    setSelectedPosition({
+      ...nativeEvent.coordinate
+    });
+  };
+
+  const handleSave = () => {
+    if (selectedPosition) {
+      setAndSyncLocationSettings({
+        alternativePosition: geoLocationToLocationObject(selectedPosition)
+      });
+    }
+    setSelectedPosition(undefined);
+    setShowMap(false);
+  };
+
+  const handleAbort = () => {
+    setSelectedPosition(undefined);
+    setShowMap(false);
+  };
+
+  useEffect(() => {
+    if (showMap && initialRender) {
+      setInitialRender(false);
+    }
+  }, [showMap, initialRender]);
+
+  if (!systemPermission) {
+    return <LoadingSpinner loading />;
+  }
+
   return (
     <ScrollView>
       <SettingsToggle item={locationServiceSwitchData} />
       <Wrapper>
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
       </Wrapper>
-      <Collapsible collapsed={!showMap}>
-        <View style={styles.mapContainer}>
-          <Map
-            locations={locations}
-            onMapPress={({ nativeEvent }) => {
-              setSelectedPosition({
-                ...nativeEvent.coordinate
-              });
-            }}
-          />
-        </View>
-        <Wrapper>
-          <Button
-            title={texts.settingsContents.locationService.save}
-            onPress={() => {
-              selectedPosition &&
-                setAndSyncLocationSettings({
-                  alternativePosition: geoLocationToLocationObject(selectedPosition)
-                });
-              setSelectedPosition(undefined);
-              setShowMap(false);
-            }}
-          />
-
-          <Touchable
-            onPress={() => {
-              setSelectedPosition(undefined);
-              setShowMap(false);
-            }}
-            style={styles.containerStyle}
-          >
-            <RegularText primary center>
-              {texts.settingsContents.locationService.abort}
-            </RegularText>
-          </Touchable>
-        </Wrapper>
-      </Collapsible>
-      <Collapsible collapsed={showMap}>
+      {showMap ? (
+        <>
+          {!initialRender && <MapComponent locations={locations} onMapPress={handleMapPress} />}
+          <Wrapper>
+            <Button
+              title={texts.settingsContents.locationService.save}
+              onPress={handleSave}
+            />
+            <Touchable
+              onPress={handleAbort}
+              style={styles.containerStyle}
+            >
+              <RegularText primary center>
+                {texts.settingsContents.locationService.abort}
+              </RegularText>
+            </Touchable>
+          </Wrapper>
+        </>
+      ) : (
         <Wrapper>
           <Button
             title={texts.settingsContents.locationService.chooseAlternateLocationButton}
             onPress={() => setShowMap(true)}
           />
         </Wrapper>
-      </Collapsible>
+      )}
     </ScrollView>
   );
 };
