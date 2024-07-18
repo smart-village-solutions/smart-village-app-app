@@ -19,8 +19,7 @@
     "lint": "./node_modules/.bin/eslint __tests__ src --ext .js,.jsx,.ts,.tsx",
     "test": "./node_modules/.bin/jest",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
-    "test:coverage": "node_modules/.bin/jest --coverage",
-    "postinstall": "patch-package"
+    "test:coverage": "node_modules/.bin/jest --coverage"
   },
   "jest": {
     "preset": "jest-expo",
@@ -94,7 +93,6 @@
     "matomo-tracker-react-native": "^0.3.0",
     "moment": "~2.29.4",
     "moment-range": "^4.0.2",
-    "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "qs": "^6.10.3",
     "react": "18.2.0",
