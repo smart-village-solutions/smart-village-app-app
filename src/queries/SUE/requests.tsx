@@ -8,7 +8,7 @@ export const requests = async (queryVariables) => {
   const { sueFetchObj = {}, sueRequestsUrl = '' } = await fetchSueEndpoints();
 
   const response = await (
-    await fetch(`${sueRequestsUrl}&${queryParams.toString()}`, sueFetchObj)
+    await fetch(`${sueRequestsUrl}?${queryParams.toString()}`, sueFetchObj)
   ).json();
 
   return new Promise((resolve) => {

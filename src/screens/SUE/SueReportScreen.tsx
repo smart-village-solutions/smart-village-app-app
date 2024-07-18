@@ -42,15 +42,6 @@ type TRequiredFields = {
   };
 };
 
-// we had to apply this mapping because the input keys from ConfigAPI and the keys in the code do not match.
-// TODO: this part of the code can be removed after the API update.
-const keyMapping = {
-  [INPUT_KEYS.SUE.NAME]: INPUT_KEYS.SUE.FIRST_NAME,
-  [INPUT_KEYS.SUE.FAMILY_NAME]: INPUT_KEYS.SUE.LAST_NAME
-};
-
-export const getMappedKey = (inputKey: string) => keyMapping[inputKey] || inputKey;
-
 const sueProgressWithRequiredInputs = (
   requiredFields: TRequiredFields,
   geoMap: { locationIsRequired: boolean; locationStreetIsRequired: boolean },
@@ -60,8 +51,7 @@ const sueProgressWithRequiredInputs = (
 
   if (requiredFields?.contact) {
     for (const field in requiredFields.contact) {
-      const mappedKey = getMappedKey(field);
-      requiredInputs[mappedKey] = requiredFields.contact[field];
+      requiredInputs[field] = requiredFields.contact[field];
     }
   }
 
@@ -71,13 +61,12 @@ const sueProgressWithRequiredInputs = (
 
   return progress.map((item) => {
     item.requiredInputs = (item.requiredInputs || []).filter(
-      (key: string) => requiredInputs?.[getMappedKey(key)]
+      (key: string) => requiredInputs?.[key]
     );
 
     for (const key of item.inputs || []) {
-      const mappedKey = getMappedKey(key);
-      if (requiredInputs[mappedKey] && !item.requiredInputs.includes(mappedKey)) {
-        item.requiredInputs.push(mappedKey);
+      if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
+        item.requiredInputs.push(key);
       }
     }
 
@@ -374,8 +363,7 @@ export const SueReportScreen = ({
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
 
     const isAnyInputMissing = requiredInputs?.some((inputKey: string) => {
-      const mappedKey = getMappedKey(inputKey);
-      return !getValues(mappedKey);
+      return !getValues(inputKey);
     });
 
     switch (currentProgress) {
