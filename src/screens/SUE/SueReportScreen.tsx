@@ -393,6 +393,12 @@ export const SueReportScreen = ({
 
             Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
           }
+
+          if (selectedPosition && !showCoordinatesFromImageAlert) {
+            setShowCoordinatesFromImageAlert(true);
+
+            Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
+          }
         }
 
         if (isAnyInputMissing) {
@@ -447,7 +453,7 @@ export const SueReportScreen = ({
             animated: true
           });
 
-          return texts.sue.report.alerts.termsOfService;
+          return texts.sue.report.alerts.terms;
         }
         break;
       default:
