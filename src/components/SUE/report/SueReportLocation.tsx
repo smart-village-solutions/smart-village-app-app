@@ -177,18 +177,13 @@ export const SueReportLocation = ({
     }
   }, []);
 
-  const handleGeocode = async (position: { latitude: number; longitude: number }) => {
-    try {
-      await reverseGeocode({
-        areaServiceData,
-        errorMessage,
-        position,
-        setValue
-      });
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
+  const handleGeocode = async (position: { latitude: number; longitude: number }) =>
+    await reverseGeocode({
+      areaServiceData,
+      errorMessage,
+      position,
+      setValue
+    });
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
@@ -231,7 +226,7 @@ export const SueReportLocation = ({
       } catch (error) {
         setSelectedPosition(undefined);
         Alert.alert(texts.sue.report.alerts.hint, error.message);
-        throw new Error(error.message);
+        return { error: error.message };
       }
     }
   };
@@ -277,7 +272,6 @@ export const SueReportLocation = ({
         } catch (error) {
           setSelectedPosition(undefined);
           Alert.alert(texts.sue.report.alerts.hint, error.message);
-          throw new Error(error.message);
         }
       }
     }
