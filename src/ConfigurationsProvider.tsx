@@ -53,6 +53,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       appDesignSystem,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     };
+
     return mergeDefaultConfiguration({ ...defaultConfiguration }, config);
   }, [appDesignSystem, sue, sueConfigData, sueProgress]);
 
