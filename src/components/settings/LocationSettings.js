@@ -79,7 +79,7 @@ export const LocationSettings = () => {
           texts.settingsContents.locationService.onSystemPermissionMissing,
           [
             {
-              text: texts.settingsContents.locationService.ok
+              text: texts.settingsContents.locationService.cancel
             },
             {
               text: texts.settingsContents.locationService.settings,

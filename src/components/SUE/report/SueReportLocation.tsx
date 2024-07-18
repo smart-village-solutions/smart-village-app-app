@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { StackNavigationProp } from '@react-navigation/stack';
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { SettingsContext } from '../../../SettingsProvider';
 import { consts, device, normalize, texts } from '../../../config';
@@ -41,10 +41,12 @@ export const locationServiceEnabledAlert = ({
   if (!locationServiceEnabled || !currentPosition) {
     Alert.alert(
       texts.settingsTitles.locationService,
-      texts.settingsContents.locationService.onSystemPermissionMissing,
+      !locationServiceEnabled
+        ? texts.settingsContents.locationService.onLocationServiceMissing
+        : texts.settingsContents.locationService.onSystemPermissionMissing,
       [
         {
-          text: texts.sue.report.alerts.ok
+          text: texts.sue.report.alerts.imageSelectAlert.cancel
         },
         {
           text: texts.sue.report.alerts.settings,

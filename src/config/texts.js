@@ -878,11 +878,14 @@ export const texts = {
       abort: 'Abbrechen',
       alternativePositionHint:
         'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
+      cancel: 'Abbrechen',
       chooseAlternateLocationButton: 'Alternativen Standort wählen',
       next: 'Weiter',
       ok: 'OK',
-      onSystemPermissionMissing:
+      onLocationServiceMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
+      onSystemPermissionMissing:
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes müssen Sie die App neu starten.',
       save: 'Speichern',
       setting: 'Standort',
       settings: 'Einstellungen'
@@ -1002,7 +1005,7 @@ export const texts = {
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
       lastName: 'Nachname',
       mapHint:
-        'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen Standort verwenden. ',
+        'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen Standort verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',
