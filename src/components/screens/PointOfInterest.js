@@ -19,6 +19,7 @@ import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 import { VoucherListItem } from '../vouchers';
 
+import { SettingsContext } from '../../SettingsProvider';
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -33,6 +34,9 @@ export const INCREMENT_VOUCHER_COUNT = 5;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showFilterByOpeningTimes: showOpeningTimes = true } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const {
     addresses,
@@ -95,11 +99,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         {!!logo && <Logo source={{ uri: logo }} />}
 
         <InfoCard
-          category={category}
           addresses={addresses}
+          category={category}
           contact={contact}
           openingHours={openingHours}
           openWebScreen={openWebScreen}
+          showOpeningTimes={showOpeningTimes}
           webUrls={webUrls}
         />
       </Wrapper>
