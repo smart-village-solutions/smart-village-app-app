@@ -4,8 +4,10 @@ import { StyleSheet, View } from 'react-native';
 
 import { normalize } from '../config';
 
-export const LoadingContainer = ({ children, web }) => (
-  <View style={[styles.loadingContainer, web && styles.webPosition]}>{children}</View>
+export const LoadingContainer = ({ children, containerStyle, web }) => (
+  <View style={[styles.loadingContainer, web && styles.webPosition, containerStyle]}>
+    {children}
+  </View>
 );
 
 const styles = StyleSheet.create({
@@ -26,5 +28,6 @@ const styles = StyleSheet.create({
 
 LoadingContainer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  containerStyle: PropTypes.object,
   web: PropTypes.bool
 };

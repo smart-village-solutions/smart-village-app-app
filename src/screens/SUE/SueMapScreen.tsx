@@ -147,6 +147,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         clusterDistance={geoMap?.clusterDistance}
         locations={mapMarkers}
         isMyLocationButtonVisible={!!locationService}
+        mapStyle={styles.map}
         onMyLocationButtonPress={() => {
           const location = position || lastKnownPosition;
 
@@ -249,6 +250,10 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8),
     padding: 0,
     paddingRight: normalize(14)
+  },
+  map: {
+    height: '100%',
+    width: '100%'
   },
   image: {
     height: normalize(120),

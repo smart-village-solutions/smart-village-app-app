@@ -24,6 +24,7 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
   const [selectedPosition, setSelectedPosition] = useState<
     Location.LocationObjectCoords | undefined
   >(position);
+  const [selectedMarker, setSelectedMarker] = useState<string | undefined>();
   const [locationsWithPin, setLocationsWithPin] = useState(locations);
   const [updatedRegion, setUpdatedRegion] = useState<boolean>();
 
@@ -49,7 +50,9 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             ? [...locationsWithPin, { iconName, position: selectedPosition }]
             : locationsWithPin,
           mapCenterPosition,
-          onMarkerPress: onMarkerPress,
+          mapStyle: styles.map,
+          onMarkerPress,
+          selectedMarker,
           showsUserLocation
         }}
         onMyLocationButtonPress={async () => {
@@ -62,6 +65,7 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             setSelectedPosition(undefined);
           }
         }}
+        onMarkerPress={(id) => setSelectedMarker(id)}
         onMapPress={async ({ nativeEvent }) => {
           if (
             nativeEvent.action !== 'marker-press' &&
@@ -90,6 +94,10 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
 const styles = StyleSheet.create({
   augmentedRealityInfoContainer: {
     width: '90%'
+  },
+  map: {
+    height: '100%',
+    width: '100%'
   },
   marginTop: {
     marginTop: normalize(14)

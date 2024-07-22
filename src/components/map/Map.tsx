@@ -1,22 +1,28 @@
-import MapLibreGL from '@maplibre/maplibre-react-native';
+import MapLibreGL, {
+  Camera,
+  LineLayer,
+  MapView,
+  PointAnnotation,
+  ShapeSource,
+  UserLocation
+} from '@maplibre/maplibre-react-native';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Supercluster from 'supercluster';
 
 import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth, truncateText } from '../../helpers';
 import { useLocationSettings } from '../../hooks';
-import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
-import { LoadingSpinnerMap } from '../LoadingSpinnerMap';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 
 type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
   clusteringEnabled?: boolean;
-  geometryTourData?: LatLng[];
+  geometryTourData?: MapMarker[];
   isMaximizeButtonVisible?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations?: MapMarker[];
@@ -30,17 +36,24 @@ type Props = {
   selectedMarker?: string;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
-  updatedRegion?: Region;
+  updatedRegion?: { latitude: number; longitude: number };
+};
+
+type TCluster = {
+  cluster?: boolean;
+  clusterColor: string;
+  geometry: { coordinates: [number, number] };
+  id: string | number;
+  onPress: () => void;
+  properties: { point_count?: string };
 };
 
 const CIRCLE_SIZES = [normalize(60), normalize(50), normalize(40), normalize(30)];
 const DEFAULT_ZOOM_LEVEL = 14;
-const HITBOX_SIZE = normalize(80);
+const HIT_BOX_SIZE = normalize(80);
 const MARKER_ICON_SIZE = normalize(40);
 const MAX_ZOOM_LEVEL = 20;
 const ONE_MARKER_ZOOM_LEVEL = 15;
-const TIMEOUT_CLUSTER = 1000;
-const TIMEOUT_SINGLE_MARKER = 4000;
 
 const MapIcon = ({
   iconColor,
@@ -56,18 +69,18 @@ const MapIcon = ({
   return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
-const renderCluster = (cluster) => {
+const renderCluster = (cluster: TCluster) => {
   const { clusterColor: backgroundColor, geometry, id, onPress, properties = {} } = cluster;
   const { point_count } = properties;
 
   return (
-    <MapLibreGL.PointAnnotation
+    <PointAnnotation
       key={`cluster-${id}`}
       id={`cluster-${id}`}
       coordinate={geometry.coordinates}
       onSelected={onPress}
     >
-      <View style={styles.hitbox}>
+      <View style={styles.hitBox}>
         {CIRCLE_SIZES.map((size, index) => (
           <View
             key={`circle-${index}`}
@@ -88,7 +101,7 @@ const renderCluster = (cluster) => {
           </View>
         ))}
       </View>
-    </MapLibreGL.PointAnnotation>
+    </PointAnnotation>
   );
 };
 
@@ -132,12 +145,10 @@ export const Map = ({
   updatedRegion,
   ...otherProps
 }: Props) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
   const { locationSettings } = useLocationSettings();
-  const refForMapView = useRef<MapLibreGL.MapView>(null);
   const cameraRef = useRef<MapLibreGL.Camera>(null);
-  const superclusterRef = useRef(null); // Add this line
+  const superClusterRef = useRef(null);
+
   const [clusters, setClusters] = useState<any[]>([]);
   const [zoomLevel, setZoomLevel] = useState<number>(DEFAULT_ZOOM_LEVEL);
   const [isInitialFit, setIsInitialFit] = useState<boolean>(true);
@@ -168,16 +179,15 @@ export const Map = ({
     };
   }
 
-  const mapLocations = () => {
-    return locations.map((location, index) => ({
-      type: 'Feature',
-      properties: { cluster: false, id: location.id, index },
-      geometry: {
-        type: 'Point',
-        coordinates: [location.position.longitude, location.position.latitude]
-      }
-    }));
-  };
+  const mapLocations = locations.map((location, index) => ({
+    ...location,
+    type: 'Feature',
+    properties: { cluster: false, id: location.id, index },
+    geometry: {
+      type: 'Point',
+      coordinates: [location.position.longitude, location.position.latitude]
+    }
+  }));
 
   useEffect(() => {
     if (clusteringEnabled) {
@@ -185,15 +195,15 @@ export const Map = ({
         radius: clusterDistance,
         maxZoom: MAX_ZOOM_LEVEL
       });
-
-      const points = mapLocations();
+      const bounds = [2, 46, 18, 56];
+      const points = mapLocations;
 
       index.load(points);
-      superclusterRef.current = index; // Store the Supercluster instance in the ref
-      const bounds = [2, 46, 18, 56];
+      superClusterRef.current = index; // Store the Supercluster instance in the ref
+
       setClusters(index.getClusters(bounds, zoomLevel));
     } else {
-      setClusters(mapLocations());
+      setClusters(mapLocations);
     }
 
     if (locations.length > 0 && isInitialFit) {
@@ -201,32 +211,28 @@ export const Map = ({
       if (locations.length === 1) {
         if (cameraRef.current) {
           cameraRef.current.setCamera({
+            animationDuration: 0,
             centerCoordinate: coordinates[0],
-            zoomLevel: ONE_MARKER_ZOOM_LEVEL,
-            animationDuration: 0
+            zoomLevel: ONE_MARKER_ZOOM_LEVEL
           });
-          setTimeout(() => {
-            setIsLoading(false);
-          }, TIMEOUT_SINGLE_MARKER);
+          setIsLoading(false);
           setIsInitialFit(false);
         }
       } else if (coordinates && coordinates.length > 0) {
         const { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat } = calculateBounds(coordinates);
+
         if (cameraRef.current) {
           cameraRef.current.fitBounds(
             [minLng - deltaLng, minLat - deltaLat],
             [maxLng + deltaLng, maxLat + deltaLat],
             0
           );
+
           if (clusteringEnabled) {
-            setTimeout(() => {
-              setIsLoading(false);
-            }, TIMEOUT_CLUSTER);
+            setIsLoading(false);
             setIsInitialFit(false);
           } else {
-            setTimeout(() => {
-              setIsLoading(false);
-            }, TIMEOUT_SINGLE_MARKER);
+            setIsLoading(false);
             setIsInitialFit(false);
           }
         }
@@ -237,9 +243,9 @@ export const Map = ({
   useEffect(() => {
     if (updatedRegion && cameraRef.current) {
       cameraRef.current.setCamera({
+        animationDuration: 1000,
         centerCoordinate: [updatedRegion.longitude, updatedRegion.latitude],
-        zoomLevel: DEFAULT_ZOOM_LEVEL,
-        animationDuration: 1000
+        zoomLevel: DEFAULT_ZOOM_LEVEL
       });
     }
   }, [updatedRegion]);
@@ -258,39 +264,35 @@ export const Map = ({
   };
 
   const handleClusterPress = useCallback(
-    (cluster) => {
+    (cluster: TCluster) => {
       if (isAnimating) return;
 
       setIsAnimating(true);
       const [longitude, latitude] = cluster.geometry.coordinates;
 
-      if (superclusterRef.current) {
-        const expansionZoom = superclusterRef.current.getClusterExpansionZoom(cluster.id);
+      if (superClusterRef.current) {
+        const expansionZoom = superClusterRef.current.getClusterExpansionZoom(cluster.id);
 
         if (cameraRef.current) {
           cameraRef.current.setCamera({
+            animationDuration: 1000,
             centerCoordinate: [longitude, latitude],
-            zoomLevel: expansionZoom,
-            animationDuration: 1000
+            zoomLevel: expansionZoom
           });
         }
       }
 
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, TIMEOUT_CLUSTER);
+      setIsAnimating(false);
     },
     [isAnimating]
   );
 
   return (
     <View style={[styles.container, style]}>
-      <LoadingSpinnerMap loading={isLoading} />
-      <MapLibreGL.MapView
-        style={[styles.map, mapStyle]}
-        styleJSON="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
+      <LoadingSpinner containerStyle={styles.loadingContainer} loading={isLoading} />
+      <MapView
+        attributionEnabled={false}
         onPress={handleMapPress}
-        ref={refForMapView}
         onRegionDidChange={(region) => {
           const newZoomLevel = Math.round(region.properties.zoomLevel);
           if (typeof newZoomLevel === 'number' && !isNaN(newZoomLevel)) {
@@ -298,88 +300,45 @@ export const Map = ({
           }
         }}
         showUserLocation={showsUserLocationSetting}
+        style={[stylesForMap().map, mapStyle]}
+        styleJSON="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
       >
-        <MapLibreGL.Camera ref={cameraRef} minZoomLevel={minZoom} />
+        <Camera ref={cameraRef} minZoomLevel={minZoom} />
 
-        {clusters.map((cluster, index) => {
-          const [longitude, latitude] = cluster.geometry.coordinates;
-          const { cluster: isCluster, point_count } = cluster.properties;
+        {clusters.map((marker, index) => {
+          const [longitude, latitude] = marker.geometry.coordinates;
+          const { cluster: isCluster } = marker.properties;
 
           if (clusteringEnabled && isCluster) {
             return renderCluster({
               clusterColor: colors.primary,
               geometry: { coordinates: [longitude, latitude] },
               id: index,
-              onPress: () => handleClusterPress(cluster),
-              properties: { point_count }
+              onPress: () => handleClusterPress(marker),
+              properties: marker.properties
             });
           }
 
-          const marker = locations[cluster.properties.index];
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
-          const serviceName = truncateText(marker.serviceName);
-          const title = truncateText(marker.title);
+          const serviceName = truncateText(marker?.serviceName);
+          const title = truncateText(marker?.title);
 
           return (
-            <MapLibreGL.PointAnnotation
-              id={`${index}-${marker.id}`}
+            <PointAnnotation
               coordinate={[marker.position.longitude, marker.position.latitude]}
-              onSelected={() => onMarkerPress?.(marker.id)}
               key={`${index}-${marker.id}`}
+              onSelected={() => onMarkerPress?.(marker.id)}
             >
-              <View style={styles.markerContainer}>
-                {!!marker.iconName &&
-                marker.iconName != 'ownLocation' &&
-                marker.iconName != 'location' ? (
-                  <>
-                    <MapIcon
-                      iconColor={
-                        marker.iconBackgroundColor
-                          ? isActiveMarker
-                            ? marker.iconColor
-                            : marker.iconBackgroundColor
-                          : isActiveMarker
-                          ? colors.accent
-                          : undefined
-                      }
-                    />
-                    <View
-                      style={[
-                        styles.mapIconOnLocationMarker,
-                        isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined,
-                        !!marker.iconBackgroundColor && {
-                          backgroundColor: isActiveMarker
-                            ? marker.iconColor
-                            : marker.iconBackgroundColor
-                        }
-                      ]}
-                    >
-                      <MapIcon
-                        iconColor={
-                          marker.iconColor
-                            ? isActiveMarker
-                              ? colors.surface
-                              : marker.iconColor
-                            : colors.surface
-                        }
-                        iconName={marker.iconName}
-                        iconSize={MARKER_ICON_SIZE / 3.25}
-                      />
-                    </View>
-                  </>
-                ) : (
-                  <MapIcon
-                    iconColor={isActiveMarker ? colors.accent : undefined}
-                    iconName={marker.iconName ? marker.iconName : undefined}
-                  />
-                )}
-                {calloutTextEnabled && (
+              <>
+                {calloutTextEnabled && isActiveMarker && (
                   <View style={styles.callout}>
+                    <View style={styles.calloutTriangle} />
                     {!!serviceName && (
                       <RegularText smallest center>
                         {serviceName}
                       </RegularText>
                     )}
+
                     {!!title && (
                       <RegularText smallest center>
                         {title}
@@ -387,12 +346,61 @@ export const Map = ({
                     )}
                   </View>
                 )}
-              </View>
-            </MapLibreGL.PointAnnotation>
+
+                <View style={styles.markerContainer}>
+                  {!!marker.iconName &&
+                  marker.iconName != 'ownLocation' &&
+                  marker.iconName != 'location' ? (
+                    <>
+                      <MapIcon
+                        iconColor={
+                          marker.iconBackgroundColor
+                            ? isActiveMarker
+                              ? marker.iconColor
+                              : marker.iconBackgroundColor
+                            : isActiveMarker
+                            ? colors.accent
+                            : undefined
+                        }
+                      />
+                      <View
+                        style={[
+                          styles.mapIconOnLocationMarker,
+                          isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined,
+                          !!marker.iconBackgroundColor && {
+                            backgroundColor: isActiveMarker
+                              ? marker.iconColor
+                              : marker.iconBackgroundColor
+                          }
+                        ]}
+                      >
+                        <MapIcon
+                          iconColor={
+                            marker.iconColor
+                              ? isActiveMarker
+                                ? colors.surface
+                                : marker.iconColor
+                              : colors.surface
+                          }
+                          iconName={marker.iconName}
+                          iconSize={MARKER_ICON_SIZE / 3.25}
+                        />
+                      </View>
+                    </>
+                  ) : (
+                    <MapIcon
+                      iconColor={isActiveMarker ? colors.accent : undefined}
+                      iconName={marker.iconName ? marker.iconName : undefined}
+                    />
+                  )}
+                </View>
+              </>
+            </PointAnnotation>
           );
         })}
+
         {!!geometryTourData?.length && (
-          <MapLibreGL.ShapeSource
+          <ShapeSource
             id="line1"
             shape={{
               type: 'Feature',
@@ -402,24 +410,25 @@ export const Map = ({
               }
             }}
           >
-            <MapLibreGL.LineLayer
-              id="linelayer1"
-              style={{ lineColor: colors.primary, lineWidth: 2 }}
-            />
-          </MapLibreGL.ShapeSource>
+            <LineLayer id="linelayer1" style={{ lineColor: colors.primary, lineWidth: 2 }} />
+          </ShapeSource>
         )}
-        {showsUserLocationSetting && <MapLibreGL.UserLocation visible />}
-      </MapLibreGL.MapView>
+
+        {showsUserLocationSetting && <UserLocation visible />}
+      </MapView>
+
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
           <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
+
       {isMyLocationButtonVisible && (
         <TouchableOpacity style={styles.myLocationButton} onPress={onMyLocationButtonPress}>
           <Icon.GPS size={normalize(18)} />
         </TouchableOpacity>
       )}
+
       {device.platform === 'android' && (
         <View style={styles.logoContainer}>
           <RegularText smallest>© OpenStreetMap</RegularText>
@@ -435,8 +444,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: normalize(10),
+    bottom: normalize(55),
     padding: normalize(5),
+    position: 'absolute',
     width: normalize(120)
+  },
+  calloutTriangle: {
+    backgroundColor: colors.surface,
+    borderRadius: normalize(5),
+    bottom: normalize(-10),
+    height: normalize(30),
+    position: 'absolute',
+    transform: [{ rotate: '45deg' }],
+    width: normalize(30)
   },
   clusterCircle: {
     alignItems: 'center',
@@ -449,19 +469,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: normalize(60)
   },
-  hitbox: {
+  hitBox: {
     alignItems: 'center',
-    height: normalize(HITBOX_SIZE),
+    height: normalize(HIT_BOX_SIZE),
     justifyContent: 'center',
-    width: normalize(HITBOX_SIZE)
+    width: normalize(HIT_BOX_SIZE)
   },
   container: {
     alignItems: 'center',
     backgroundColor: colors.surface,
     flex: 1,
-    height: normalize(200),
+    justifyContent: 'center'
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     justifyContent: 'center',
-    width: '100%'
+    zIndex: 1
   },
   logoContainer: {
     alignItems: 'center',
@@ -486,7 +511,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: normalize(50),
-    bottom: normalize(35),
+    bottom: normalize(15),
     height: normalize(48),
     justifyContent: 'center',
     position: 'absolute',
@@ -509,10 +534,6 @@ const styles = StyleSheet.create({
   markerContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  map: {
-    height: '100%',
-    width: '100%'
   }
 });
 

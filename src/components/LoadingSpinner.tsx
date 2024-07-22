@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, ViewStyle } from 'react-native';
 
 import { colors } from '../config';
 
@@ -7,11 +7,12 @@ import { LoadingContainer } from './LoadingContainer';
 
 type Props = {
   loading?: boolean;
+  containerStyle?: ViewStyle;
 };
 
-export const LoadingSpinner = ({ loading }: Props) => {
+export const LoadingSpinner = ({ loading, containerStyle }: Props) => {
   return loading ? (
-    <LoadingContainer>
+    <LoadingContainer containerStyle={containerStyle}>
       <ActivityIndicator color={colors.refreshControl} />
     </LoadingContainer>
   ) : null;

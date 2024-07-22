@@ -1,6 +1,7 @@
 import * as Location from 'expo-location';
-import React, { useState, useMemo, useEffect } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
+import Collapsible from 'react-native-collapsible';
 
 import { normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
@@ -26,24 +27,12 @@ export const getLocationMarker = (locationObject) => ({
   }
 });
 
-const MapComponent = React.memo(({ locations, onMapPress }) => {
-  return (
-    <View style={styles.mapContainer}>
-      <Map
-        locations={locations}
-        onMapPress={onMapPress}
-      />
-    </View>
-  );
-});
-
 export const LocationSettings = () => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
 
   const [showMap, setShowMap] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState();
-  const [initialRender, setInitialRender] = useState(true);
 
   const {
     locationService = systemPermission.status !== Location.PermissionStatus.DENIED,
@@ -51,41 +40,44 @@ export const LocationSettings = () => {
     defaultAlternativePosition
   } = locationSettings || {};
 
-  const locationServiceSwitchData = useMemo(() => ({
-    title: texts.settingsTitles.locationService,
-    bottomDivider: true,
-    topDivider: true,
-    value: locationService,
-    onActivate: (revert) => {
-      Location.getForegroundPermissionsAsync().then((response) => {
-        if (response.status === Location.PermissionStatus.GRANTED) {
-          setAndSyncLocationSettings({ locationService: true });
-          return;
-        }
+  const locationServiceSwitchData = useMemo(
+    () => ({
+      title: texts.settingsTitles.locationService,
+      bottomDivider: true,
+      topDivider: true,
+      value: locationService,
+      onActivate: (revert) => {
+        Location.getForegroundPermissionsAsync().then((response) => {
+          if (response.status === Location.PermissionStatus.GRANTED) {
+            setAndSyncLocationSettings({ locationService: true });
+            return;
+          }
 
-        if (response.status === Location.PermissionStatus.UNDETERMINED || response.canAskAgain) {
-          Location.requestForegroundPermissionsAsync()
-            .then((response) => {
-              if (response.status !== Location.PermissionStatus.GRANTED) {
-                revert();
-              } else {
-                setAndSyncLocationSettings({ locationService: true });
-                return;
-              }
-            })
-            .catch(() => revert());
-          return;
-        }
+          if (response.status === Location.PermissionStatus.UNDETERMINED || response.canAskAgain) {
+            Location.requestForegroundPermissionsAsync()
+              .then((response) => {
+                if (response.status !== Location.PermissionStatus.GRANTED) {
+                  revert();
+                } else {
+                  setAndSyncLocationSettings({ locationService: true });
+                  return;
+                }
+              })
+              .catch(() => revert());
+            return;
+          }
 
-        revert();
-        Alert.alert(
-          texts.settingsTitles.locationService,
-          texts.settingsContents.locationService.onSystemPermissionMissing
-        );
-      });
-    },
-    onDeactivate: () => setAndSyncLocationSettings({ locationService: false })
-  }), [locationService, setAndSyncLocationSettings]);
+          revert();
+          Alert.alert(
+            texts.settingsTitles.locationService,
+            texts.settingsContents.locationService.onSystemPermissionMissing
+          );
+        });
+      },
+      onDeactivate: () => setAndSyncLocationSettings({ locationService: false })
+    }),
+    [locationService, setAndSyncLocationSettings]
+  );
 
   let locations = [];
 
@@ -118,12 +110,6 @@ export const LocationSettings = () => {
     setShowMap(false);
   };
 
-  useEffect(() => {
-    if (showMap && initialRender) {
-      setInitialRender(false);
-    }
-  }, [showMap, initialRender]);
-
   if (!systemPermission) {
     return <LoadingSpinner loading />;
   }
@@ -134,32 +120,26 @@ export const LocationSettings = () => {
       <Wrapper>
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
       </Wrapper>
-      {showMap ? (
-        <>
-          {!initialRender && <MapComponent locations={locations} onMapPress={handleMapPress} />}
-          <Wrapper>
-            <Button
-              title={texts.settingsContents.locationService.save}
-              onPress={handleSave}
-            />
-            <Touchable
-              onPress={handleAbort}
-              style={styles.containerStyle}
-            >
-              <RegularText primary center>
-                {texts.settingsContents.locationService.abort}
-              </RegularText>
-            </Touchable>
-          </Wrapper>
-        </>
-      ) : (
+      <Collapsible collapsed={!showMap}>
+        <Map locations={locations} onMapPress={handleMapPress} />
+
+        <Wrapper>
+          <Button title={texts.settingsContents.locationService.save} onPress={handleSave} />
+          <Touchable onPress={handleAbort} style={styles.containerStyle}>
+            <RegularText primary center>
+              {texts.settingsContents.locationService.abort}
+            </RegularText>
+          </Touchable>
+        </Wrapper>
+      </Collapsible>
+      <Collapsible collapsed={showMap}>
         <Wrapper>
           <Button
             title={texts.settingsContents.locationService.chooseAlternateLocationButton}
             onPress={() => setShowMap(true)}
           />
         </Wrapper>
-      )}
+      </Collapsible>
     </ScrollView>
   );
 };

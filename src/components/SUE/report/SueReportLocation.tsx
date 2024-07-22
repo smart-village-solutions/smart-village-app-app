@@ -80,6 +80,7 @@ export const SueReportLocation = ({
   const currentPosition = position || lastKnownPosition;
 
   const [updatedRegion, setUpdatedRegion] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState<string | undefined>();
 
   useEffect(() => {
     if (updateRegionFromImage) {
@@ -248,8 +249,9 @@ export const SueReportLocation = ({
           locations={locations}
           mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
-          onMyLocationButtonPress={onMyLocationButtonPress}
           onMapPress={onMapPress}
+          onMarkerPress={(id) => setSelectedMarker(id)}
+          onMyLocationButtonPress={onMyLocationButtonPress}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
@@ -263,6 +265,7 @@ export const SueReportLocation = ({
               showsUserLocation: true
             })
           }
+          selectedMarker={selectedMarker}
           updatedRegion={
             !!selectedPosition && (updatedRegion || updateRegionFromImage)
               ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
