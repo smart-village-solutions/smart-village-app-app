@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
@@ -13,20 +13,22 @@ import {
   Checkbox,
   DateTimeInput,
   HtmlView,
+  ImageSelector,
   Input,
   RegularText,
   Touchable,
   Wrapper,
   WrapperHorizontal,
   WrapperRow
-} from '../../../components';
-import { Icon, colors, consts, normalize, texts } from '../../../config';
-import { momentFormat, storeProfileAuthToken } from '../../../helpers';
-import { QUERY_TYPES } from '../../../queries';
-import { CREATE_GENERIC_ITEM } from '../../../queries/genericItem';
-import { member } from '../../../queries/profile';
-import { showLoginAgainAlert } from '../../../screens/profile/ProfileScreen';
-import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../../types';
+} from '../../components';
+import { Icon, colors, consts, normalize, texts } from '../../config';
+import { momentFormat, storeProfileAuthToken } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
+import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
+import { uploadMediaContent } from '../../queries/mediaContent';
+import { member } from '../../queries/profile';
+import { showLoginAgainAlert } from '../../screens/profile/ProfileScreen';
+import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 const extendedMoment = extendMoment(moment);
@@ -37,6 +39,7 @@ type TNoticeboardCreateData = {
   dateEnd: string;
   dateStart: string;
   email: string;
+  image: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
   price: string;
@@ -50,7 +53,7 @@ const NOTICEBOARD_TYPE_OPTIONS = [
 ];
 
 /* eslint-disable complexity */
-export const ProfileNoticeboardCreateForm = ({
+export const NoticeboardCreateForm = ({
   data,
   navigation,
   route
@@ -59,6 +62,7 @@ export const ProfileNoticeboardCreateForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const isEdit = !!Object.keys(data).length;
   const subQuery = route.params?.subQuery ?? {};
   const consentForDataProcessingText =
     subQuery?.params?.consentForDataProcessingText ??
@@ -66,6 +70,7 @@ export const ProfileNoticeboardCreateForm = ({
     '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
@@ -81,6 +86,8 @@ export const ProfileNoticeboardCreateForm = ({
       }
     }
   });
+
+  const existingImageUrl = data?.mediaContents?.[0]?.sourceUrl?.url;
 
   const {
     control,
@@ -98,6 +105,7 @@ export const ProfileNoticeboardCreateForm = ({
         ? moment(data?.dates?.[0]?.dateStart)?.toDate()
         : moment().toDate(),
       email: data?.contacts?.[0]?.email ?? '',
+      image: existingImageUrl ? JSON.stringify([{ uri: existingImageUrl }]) : '[]',
       name: data?.contacts?.[0]?.firstName ?? '',
       noticeboardType:
         _findKey(
@@ -111,18 +119,15 @@ export const ProfileNoticeboardCreateForm = ({
   });
 
   useEffect(() => {
-    if (!memberData?.member) {
-      return;
-    }
-
-    setValue('email', memberData.member.email ?? '');
+    setValue('email', memberData?.member?.email ?? '');
     setValue(
       'name',
-      `${memberData.member.first_name ?? ''} ${memberData.member.last_name?.[0] ?? ''}`.trim()
+      `${memberData?.member?.first_name ?? ''} ${memberData?.member?.last_name?.[0] ?? ''}`.trim()
     );
   }, [memberData]);
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
+  let imageUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -135,12 +140,26 @@ export const ProfileNoticeboardCreateForm = ({
       return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.dateDifference);
     }
 
+    setIsLoading(true);
+
     try {
       let price = noticeboardNewData.price;
 
       // regex to check if price is a number with 2 decimal places allowing . or , as decimal separator
       if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
+      }
+      const image = JSON.parse(noticeboardNewData.image);
+
+      if (image?.length) {
+        try {
+          imageUrl = await uploadMediaContent(image[0], 'image');
+        } catch (error) {
+          setIsLoading(false);
+
+          Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+          return;
+        }
       }
 
       await createGenericItem({
@@ -158,6 +177,7 @@ export const ProfileNoticeboardCreateForm = ({
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
+          mediaContents: [{ sourceUrl: { url: imageUrl }, contentType: 'image' }],
           priceInformations: [{ description: price }]
         }
       });
@@ -165,6 +185,8 @@ export const ProfileNoticeboardCreateForm = ({
       navigation.goBack();
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {
+      setIsLoading(false);
+
       console.error(error);
     }
   };
@@ -175,27 +197,26 @@ export const ProfileNoticeboardCreateForm = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          control={control}
-          disabled
-          errorMessage={errors.name && errors.name.message}
-          label={`${texts.noticeboard.inputName} *`}
           name="name"
+          label={`${texts.noticeboard.inputName} *`}
           placeholder={texts.noticeboard.inputName}
+          validate
+          disabled
           rules={{
             required: `${texts.noticeboard.inputName} ${texts.noticeboard.inputErrorText}`
           }}
-          validate
+          errorMessage={errors.name && errors.name.message}
+          control={control}
         />
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          control={control}
-          errorMessage={errors.email && errors.email.message}
-          keyboardType="email-address"
-          label={`${texts.noticeboard.inputMail} *`}
           name="email"
+          label={`${texts.noticeboard.inputMail} *`}
           placeholder={texts.noticeboard.inputMail}
+          keyboardType="email-address"
+          validate
           rules={{
             required: `${texts.noticeboard.inputMail} ${texts.noticeboard.inputErrorText}`,
             pattern: {
@@ -203,7 +224,8 @@ export const ProfileNoticeboardCreateForm = ({
               message: `${texts.noticeboard.inputMail}${texts.noticeboard.invalidMail}`
             }
           }}
-          validate
+          errorMessage={errors.email && errors.email.message}
+          control={control}
         />
       </Wrapper>
 
@@ -313,6 +335,29 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
+      {(!!existingImageUrl || !isEdit) && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="image"
+            render={({ field }) => (
+              <ImageSelector
+                {...{
+                  isDeletable: !isEdit,
+                  control,
+                  field,
+                  item: {
+                    name: 'image',
+                    label: texts.volunteer.images,
+                    buttonTitle: texts.volunteer.addImage
+                  }
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
+
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>
           <HtmlView html={consentForDataProcessingText} />
@@ -323,7 +368,7 @@ export const ProfileNoticeboardCreateForm = ({
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.noticeboard.send}
-          disabled={loading}
+          disabled={loading || isLoading}
         />
 
         <Touchable onPress={() => navigation.goBack()}>
@@ -340,6 +385,9 @@ export const ProfileNoticeboardCreateForm = ({
 const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
+  },
+  paddingTop: {
+    paddingTop: normalize(16)
   },
   textArea: {
     height: normalize(100),

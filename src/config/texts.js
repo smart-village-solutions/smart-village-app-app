@@ -485,9 +485,10 @@ export const texts = {
     abort: 'Abbrechen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
-      error: 'Bitte versuchen Sie es erneut.',
       delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
+      error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',
+      imageUploadError: 'Beim Hochladen des Bildes ist ein Fehler aufgetreten.',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },

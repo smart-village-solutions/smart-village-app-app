@@ -35,7 +35,15 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, errorType, field, imageId, isMultiImages, item }) => {
+export const ImageSelector = ({
+  control,
+  errorType,
+  field,
+  imageId,
+  isDeletable = true,
+  isMultiImages,
+  item
+}) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -154,9 +162,11 @@ export const ImageSelector = ({ control, errorType, field, imageId, isMultiImage
           <WrapperRow center spaceBetween>
             <Image source={{ uri: values[0].uri }} childrenContainerStyle={styles.image} />
 
-            <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(0))}>
-              <Icon.Trash color={colors.error} size={normalize(16)} />
-            </TouchableOpacity>
+            {isDeletable && (
+              <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(0))}>
+                <Icon.Trash color={colors.error} size={normalize(16)} />
+              </TouchableOpacity>
+            )}
           </WrapperRow>
 
           {!!infoAndErrorText[0]?.infoText && (
@@ -197,6 +207,7 @@ ImageSelector.propTypes = {
   errorType: PropTypes.string,
   field: PropTypes.object,
   imageId: PropTypes.string,
+  isDeletable: PropTypes.bool,
   isMultiImages: PropTypes.bool,
   item: PropTypes.object
 };

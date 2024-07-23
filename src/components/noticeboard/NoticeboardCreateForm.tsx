@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React from 'react';
+import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
@@ -12,6 +12,7 @@ import {
   Checkbox,
   DateTimeInput,
   HtmlView,
+  ImageSelector,
   Input,
   RegularText,
   Touchable,
@@ -22,6 +23,7 @@ import {
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
+import { uploadMediaContent } from '../../queries/mediaContent';
 import { NOTICEBOARD_TYPES } from '../../types';
 
 const { EMAIL_REGEX } = consts;
@@ -33,6 +35,7 @@ type TNoticeboardCreateData = {
   dateEnd: string;
   dateStart: string;
   email: string;
+  image: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
   termsOfService: boolean;
@@ -60,6 +63,7 @@ export const NoticeboardCreateForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const isEdit = !!Object.keys(data).length;
   const subQuery = route.params?.subQuery ?? {};
   const consentForDataProcessingText =
     subQuery?.params?.consentForDataProcessingText ??
@@ -67,6 +71,7 @@ export const NoticeboardCreateForm = ({
     '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -83,6 +88,7 @@ export const NoticeboardCreateForm = ({
         ? moment(data?.dates?.[0]?.dateStart)?.toDate()
         : moment().toDate(),
       email: data?.contacts?.[0]?.email ?? '',
+      image: existingImageUrl ? JSON.stringify([{ uri: existingImageUrl }]) : '[]',
       name: data?.contacts?.[0]?.firstName ?? '',
       noticeboardType:
         _findKey(
@@ -96,6 +102,7 @@ export const NoticeboardCreateForm = ({
   });
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
+  let imageUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -112,12 +119,26 @@ export const NoticeboardCreateForm = ({
       return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.dateDifference);
     }
 
+    setIsLoading(true);
+
     try {
       let price = noticeboardNewData.price;
 
       // regex to check if price is a number with 2 decimal places allowing . or , as decimal separator
       if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
+      }
+      const image = JSON.parse(noticeboardNewData.image);
+
+      if (image?.length) {
+        try {
+          imageUrl = await uploadMediaContent(image[0], 'image');
+        } catch (error) {
+          setIsLoading(false);
+
+          Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+          return;
+        }
       }
 
       await createGenericItem({
@@ -135,6 +156,7 @@ export const NoticeboardCreateForm = ({
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
+          mediaContents: [{ sourceUrl: { url: imageUrl }, contentType: 'image' }],
           priceInformations: [{ description: price }]
         }
       });
@@ -142,6 +164,8 @@ export const NoticeboardCreateForm = ({
       navigation.goBack();
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {
+      setIsLoading(false);
+
       console.error(error);
     }
   };
@@ -289,6 +313,29 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
+      {(!!existingImageUrl || !isEdit) && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="image"
+            render={({ field }) => (
+              <ImageSelector
+                {...{
+                  isDeletable: !isEdit,
+                  control,
+                  field,
+                  item: {
+                    name: 'image',
+                    label: texts.volunteer.images,
+                    buttonTitle: texts.volunteer.addImage
+                  }
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
+
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>
           <HtmlView html={consentForDataProcessingText} />
@@ -317,7 +364,7 @@ export const NoticeboardCreateForm = ({
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.noticeboard.send}
-          disabled={loading}
+          disabled={loading || isLoading}
         />
 
         <Touchable onPress={() => navigation.goBack()}>
