@@ -3,7 +3,6 @@ import React, { createContext, useState } from 'react';
 
 export const SettingsContext = createContext({
   globalSettings: {
-    appDesignSystem: {},
     filter: {},
     hdvt: {},
     navigation: 'tab',

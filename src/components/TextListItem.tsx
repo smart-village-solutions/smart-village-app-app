@@ -16,6 +16,7 @@ export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  count?: number;
   isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
   overtitle?: string;
@@ -72,6 +73,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     const {
       badge,
       bottomDivider,
+      count,
       isHeadlineTitle = true,
       leftIcon,
       onPress,
@@ -89,7 +91,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
     let titleText = withCard ? (
-      <BoldText small style={{ marginTop: normalize(2) }}>
+      <BoldText small style={{ marginTop: normalize(4) }}>
         {trimNewLines(title)}
       </BoldText>
     ) : isHeadlineTitle ? (
@@ -199,6 +201,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
             />
           ) : undefined)}
 
+        {!!count && <BoldText>{count}</BoldText>}
+
         {!listsWithoutArrows && !!navigation && !withCard && (
           <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
         )}
@@ -249,7 +253,6 @@ TextListItem.propTypes = {
   navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,
   noSubtitle: PropTypes.bool,
-  noOvertitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
   withCard: PropTypes.bool

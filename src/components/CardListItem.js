@@ -7,11 +7,26 @@ import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
+import { SueCategory, SueImageFallback, SueStatus } from './SUE';
 import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
+import { Wrapper, WrapperHorizontal } from './Wrapper';
 
-const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
-  const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
+/* eslint-disable complexity */
+const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
+  const {
+    address,
+    appDesignSystem = {},
+    aspectRatio,
+    iconName,
+    overtitle,
+    picture,
+    requestedDatetime,
+    serviceName,
+    status,
+    subtitle,
+    title
+  } = item;
   const {
     contentSequence,
     imageBorderRadius = normalize(8),
@@ -26,10 +41,10 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
     picture: () =>
       !!picture?.url && (
         <Image
+          borderRadius={sue ? 0 : imageBorderRadius}
+          childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
+          containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
           source={{ uri: picture.url }}
-          childrenContainerStyle={stylesWithProps({ horizontal }).image}
-          containerStyle={[styles.imageContainer, imageStyle]}
-          borderRadius={imageBorderRadius}
         />
       ),
     overtitle: () =>
@@ -58,26 +73,57 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
         <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </HeadlineText>
-      )
+      ),
+
+    // SUE
+    sue: {
+      address: () => (
+        <Wrapper>
+          <RegularText small>{address}</RegularText>
+        </Wrapper>
+      ),
+      category: () => (
+        <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
+      ),
+      divider: () => (
+        <Wrapper style={styles.noPaddingTop}>
+          <Divider />
+        </Wrapper>
+      ),
+      pictureFallback: () => (
+        <SueImageFallback
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImageContainer]}
+        />
+      ),
+      status: () => <SueStatus iconName={iconName} status={status} />
+    }
   };
 
   if (contentSequence?.length) {
     contentSequence.forEach((item) => {
-      if (sequenceMap[item]) {
-        cardContent.push(sequenceMap[item]());
-      }
+      sequenceMap[item] && cardContent.push(sequenceMap[item]());
     });
   } else {
     picture?.url && cardContent.push(sequenceMap.picture());
     !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
-    title && cardContent.push(sequenceMap.title());
+    !sue && title && cardContent.push(sequenceMap.title());
     subtitle && cardContent.push(sequenceMap.subtitle());
+
+    if (sue) {
+      !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
+      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.category());
+      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.divider());
+      title && cardContent.push(<WrapperHorizontal>{sequenceMap.title()}</WrapperHorizontal>);
+      address && cardContent.push(sequenceMap.sue.address());
+      status && cardContent.push(sequenceMap.sue.status());
+    }
   }
 
   return cardContent;
 };
+/* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle }) => {
+export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle, sue }) => {
   const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
   const { containerStyle, contentContainerStyle } = appDesignSystem;
 
@@ -89,8 +135,14 @@ export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, b
     >
       <View>
         <Card containerStyle={[styles.container, containerStyle]}>
-          <View style={[stylesWithProps({ horizontal }).contentContainer, contentContainerStyle]}>
-            {renderCardContent(item, horizontal, noOvertitle, bigTitle)}
+          <View
+            style={[
+              stylesWithProps({ horizontal }).contentContainer,
+              contentContainerStyle,
+              sue && styles.sueContentContainer
+            ]}
+          >
+            {renderCardContent(item, horizontal, noOvertitle, bigTitle, sue)}
           </View>
         </Card>
         {!horizontal && <Divider />}
@@ -122,14 +174,26 @@ const styles = StyleSheet.create({
     marginTop: normalize(14)
   },
   imageContainer: {},
-  subtitle: {
-    marginTop: normalize(6)
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  sueContentContainer: {
+    borderColor: colors.gray20,
+    borderRadius: normalize(8),
+    borderWidth: 1,
+    width: '100%'
+  },
+  sueImageContainer: {
+    alignSelf: 'auto',
+    borderTopLeftRadius: normalize(8),
+    borderTopRightRadius: normalize(8),
+    width: '100%'
   }
 });
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal }) => {
+const stylesWithProps = ({ aspectRatio, horizontal }) => {
   let width = imageWidth();
 
   if (horizontal) {
@@ -144,9 +208,9 @@ const stylesWithProps = ({ horizontal }) => {
       width: maxWidth
     },
     image: {
+      height: imageHeight(maxWidth, aspectRatio),
       marginBottom: normalize(7),
-      height: imageHeight(width),
-      width: width
+      width: maxWidth
     }
   });
 };
@@ -155,15 +219,17 @@ const stylesWithProps = ({ horizontal }) => {
 CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
-  navigation: PropTypes.object,
-  item: PropTypes.object.isRequired,
+  bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
+  item: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,
-  bigTitle: PropTypes.bool
+  sue: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
+  bigTitle: false,
   horizontal: false,
   noOvertitle: false,
-  bigTitle: false
+  sue: false
 };

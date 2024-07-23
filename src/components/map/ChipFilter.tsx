@@ -2,8 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import _sortBy from 'lodash/sortBy';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { IconUrl, colors, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -31,7 +30,7 @@ const keyExtractor = (
   index: number
 ) => `index${index}-id${item.id}`;
 
-export const Filter = ({ queryVariables, refetch }: Props) => {
+export const ChipFilter = ({ queryVariables, refetch }: Props) => {
   const [categoryIds, setCategoryIds] = useState<string[]>(
     queryVariables.categoryIds?.map((item) => item.toString()) || []
   );

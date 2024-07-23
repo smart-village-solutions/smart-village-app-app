@@ -39,7 +39,7 @@ const getBookmarkCount = (bookmarks) => {
   return count;
 };
 
-export const BookmarkScreen = ({ navigation }) => {
+export const BookmarkScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks();
   const categoriesNews = useNewsCategories();
   const { globalSettings } = useContext(SettingsContext);
@@ -50,12 +50,13 @@ export const BookmarkScreen = ({ navigation }) => {
     bookmarkCategoryTitlesTours = texts.categoryTitles.tours
   } = categoryTitles;
   const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
+  const query = route.params?.query || '';
 
   const getSection = useCallback(
     (itemType, categoryTitle, suffix, categoryTitleDetail) => {
       const bookmarkKey = getKeyFromTypeAndSuffix(itemType, suffix);
 
-      if (!bookmarks[bookmarkKey]?.length) return null;
+      if (!bookmarks[bookmarkKey]?.length || (!!query && query !== bookmarkKey)) return null;
 
       return (
         <BookmarkSection
@@ -106,6 +107,7 @@ export const BookmarkScreen = ({ navigation }) => {
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
+        {getSection(QUERY_TYPES.VOUCHERS, '')}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,
           getGenericItemSectionTitle(GenericType.Commercial),
@@ -132,5 +134,6 @@ export const BookmarkScreen = ({ navigation }) => {
 };
 
 BookmarkScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object
 };

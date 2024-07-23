@@ -8,6 +8,7 @@ import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { LunchWidget } from './LunchWidget';
 import { SurveyWidget } from './SurveyWidget';
+import { VoucherWidget } from './VoucherWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WebWidget } from './WebWidget';
@@ -30,6 +31,7 @@ const EXISTING_WIDGETS: {
   event: EventWidget,
   lunch: LunchWidget,
   survey: SurveyWidget,
+  voucher: VoucherWidget,
   water: WaterTemperatureWidget,
   weather: WeatherWidget,
   web: WebWidget

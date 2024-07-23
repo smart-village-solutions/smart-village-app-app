@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
@@ -17,7 +18,8 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Widgets,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../components';
 import { colors, consts, texts } from '../config';
 import {
@@ -30,7 +32,9 @@ import {
   useMatomoTrackScreenView,
   usePermanentFilter,
   usePushNotifications,
-  useStaticContent
+  useRedeemLocalVouchers,
+  useStaticContent,
+  useVersionCheck
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { QUERY_TYPES, getQueryType } from '../queries';
@@ -166,13 +170,9 @@ const renderItem = ({ item }) => {
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
-  const {
-    appDesignSystem = {},
-    sections = {},
-    widgets: widgetConfigs = [],
-    hdvt = {}
-  } = globalSettings;
+  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
     staticContentList = {},
     showNews = true,
@@ -237,6 +237,9 @@ export const HomeScreen = ({ navigation, route }) => {
     globalSettings?.settings?.pushNotifications
   );
 
+  useVersionCheck();
+  useRedeemLocalVouchers();
+
   const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticContentName}`,
     name: staticContentName,
@@ -244,13 +247,13 @@ export const HomeScreen = ({ navigation, route }) => {
     skip: !showStaticContentList
   });
 
-  // function to add customised styles from `globalSettings` to `contentList`
+  // function to add customized styles from `globalSettings` to the list items
   const staticContentListItem = useMemo(() => {
     if (!staticContentListData) {
       return [];
     }
 
-    let listItem = [...staticContentListData];
+    let listItem = staticContentListData;
 
     if (appDesignSystem?.staticContentList) {
       listItem = listItem?.map((item: any) => ({
@@ -260,7 +263,7 @@ export const HomeScreen = ({ navigation, route }) => {
     }
 
     return listItem;
-  }, [staticContentListData]);
+  }, [appDesignSystem, staticContentListData]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
@@ -323,7 +326,6 @@ export const HomeScreen = ({ navigation, route }) => {
         ListHeaderComponent={
           <>
             <ConnectedImagesCarousel
-              alternateAspectRatio
               navigation={navigation}
               publicJsonFile="homeCarousel"
               refreshTimeKey="publicJsonFile-homeCarousel"
@@ -336,8 +338,13 @@ export const HomeScreen = ({ navigation, route }) => {
         }
         ListFooterComponent={
           <>
-            {showStaticContentList && !!staticContentListItem?.length && (
+            {!!staticContentListItem?.length && (
               <>
+                {!!staticContentListTitle && (
+                  <WrapperHorizontal>
+                    <RegularText></RegularText>
+                  </WrapperHorizontal>
+                )}
                 {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
                 {!!staticContentListDescription && (
                   <Wrapper>
@@ -348,6 +355,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 <ListComponent
                   data={staticContentListItem}
                   horizontal={horizontal}
+                  navigation={navigation}
                   query={QUERY_TYPES.STATIC_CONTENT_LIST}
                 />
               </>

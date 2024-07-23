@@ -16,7 +16,7 @@ import { LoadingContainer } from '../LoadingContainer';
 import { TextListItem } from '../TextListItem';
 import { getLocationMarker } from '../settings';
 
-import { Filter } from './Filter';
+import { ChipFilter } from './ChipFilter';
 import { Map } from './Map';
 
 type Props = {
@@ -140,7 +140,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   return (
     <>
       {(queryVariables?.categoryIds?.length || 0) > 1 && (
-        <Filter queryVariables={queryVariables} refetch={refetch} />
+        <ChipFilter queryVariables={queryVariables} refetch={refetch} />
       )}
 
       <Map

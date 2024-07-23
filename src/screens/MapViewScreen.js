@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { SettingsContext } from '../SettingsProvider';
 import { Map, TextListItem, Wrapper } from '../components';
 import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
-import { SettingsContext } from '../SettingsProvider';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
@@ -15,7 +15,7 @@ export const MapViewScreen = ({ navigation, route }) => {
     locations,
     onMarkerPress,
     showsUserLocation
-  } = route?.params;
+  } = route?.params ?? {};
 
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
@@ -27,7 +27,9 @@ export const MapViewScreen = ({ navigation, route }) => {
   const [modelData, setModelData] = useState();
 
   useEffect(() => {
-    navigationToArtworksDetailScreen({ data, isShow: true, modelId, setModelData });
+    if (isAugmentedReality) {
+      navigationToArtworksDetailScreen({ data, isShow: true, modelId, setModelData });
+    }
   }, [modelId]);
   /* end of augmented reality feature */
 
@@ -38,7 +40,7 @@ export const MapViewScreen = ({ navigation, route }) => {
           geometryTourData,
           isMaximizeButtonVisible,
           locations,
-          mapStyle: styles.mapStyle,
+          mapStyle: styles.map,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
           showsUserLocation
         }}
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
   augmentedRealityInfoContainer: {
     width: '90%'
   },
-  mapStyle: {
+  map: {
     width: '100%',
     height: '100%'
   },

@@ -1,5 +1,5 @@
+import Constants from 'expo-constants';
 import { Platform, PlatformIOSStatic } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { device } from '../config';
 
@@ -15,7 +15,7 @@ export const getHeaderHeight = (orientation: 'portrait' | 'landscape') =>
 
 export const statusBarHeight = (orientation: 'portrait' | 'landscape') =>
   device.platform === 'android'
-    ? getStatusBarHeight()
+    ? Constants.statusBarHeight
     : orientation === 'portrait'
-    ? getStatusBarHeight()
+    ? Constants.statusBarHeight
     : 0;

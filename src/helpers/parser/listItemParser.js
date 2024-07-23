@@ -1,10 +1,7 @@
 import _filter from 'lodash/filter';
 import _shuffle from 'lodash/shuffle';
-import React from 'react';
-import { StyleSheet } from 'react-native';
 
-import { VolunteerAvatar } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
@@ -15,10 +12,13 @@ import {
 } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
-import { getTitleForQuery } from '../queryHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
-import { volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
+
+import { parseConsulData } from './consulParser';
+import { parseSueData } from './sueParser';
+import { parseVolunteerData } from './volunteerParser';
+import { parseVouchersCategories, parseVouchersData } from './voucherParser';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -258,170 +258,37 @@ const parseConversations = (data) =>
   }));
 
 /* eslint-disable complexity */
-const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, currentUserId) => {
-  return data?.map((volunteer, index) => {
-    let badge, leftIcon, statustitle, statustitleIcon, teaserTitle;
 
-    if (query === QUERY_TYPES.VOLUNTEER.USER) {
-      if ((volunteer.user?.id || volunteer.id) == currentUserId) {
-        badge = {
-          value: texts.volunteer.myProfile,
-          textStyle: {
-            color: colors.lightestText
-          },
-          badgeStyle: {
-            backgroundColor: colors.primary
-          }
-        };
-      }
-
-      leftIcon = <VolunteerAvatar item={volunteer.user ? volunteer : { user: volunteer }} />;
-    }
-
-    if (query === QUERY_TYPES.VOLUNTEER.GROUP && !!volunteer.role) {
-      statustitle = texts.volunteer[volunteer.role];
-      statustitleIcon = (
-        <Icon.Member
-          color={colors.placeholder}
-          size={normalize(13)}
-          style={styles.statustitleIcon}
-        />
-      );
-    }
-
-    if (query === QUERY_TYPES.VOLUNTEER.GROUP) {
-      teaserTitle = volunteer.description;
-    }
-
-    if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
-      teaserTitle = volunteer.content?.topics?.map((topic) => topic.name).join(', ');
-    }
-
-    return {
-      ...volunteer,
-      id: volunteer.id || volunteer.user?.id,
-      title:
-        volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
-      subtitle: volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned),
-      badge: volunteer.badge || badge,
-      statustitle: volunteer.statustitle || statustitle,
-      statustitleIcon: volunteer.statustitleIcon || statustitleIcon,
-      leftIcon,
-      teaserTitle,
-      picture: volunteer.picture,
-      routeName: ScreenName.VolunteerDetail,
-      onPress: volunteer.onPress,
-      listDate: volunteer.listDate || volunteerListDate(volunteer),
-      status: volunteer.status,
-      params: {
-        title: getTitleForQuery(query, volunteer),
-        query,
-        queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
-        queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-          refetchInterval: 1000
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-        shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-          message: shareMessage(
-            {
-              title: volunteer.title || volunteer.name,
-              subtitle:
-                volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned)
-            },
-            query
-          )
-        },
-        details: volunteer
-      },
-      bottomDivider: !skipLastDivider || index !== data.length - 1
-    };
-  });
-};
-/* eslint-enable complexity */
-
-const querySwitcherForDetail = (query) => {
-  switch (query) {
-    case QUERY_TYPES.CONSUL.DEBATES:
-    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
-      return QUERY_TYPES.CONSUL.DEBATE;
-    case QUERY_TYPES.CONSUL.PROPOSALS:
-    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
-      return QUERY_TYPES.CONSUL.PROPOSAL;
-    case QUERY_TYPES.CONSUL.POLLS:
-      return QUERY_TYPES.CONSUL.POLL;
-    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
-      return QUERY_TYPES.CONSUL.PUBLIC_COMMENT;
-    default:
-      return query;
-  }
-};
-
-const parseConsulData = (data, query, skipLastDivider) => {
-  return data?.nodes?.map((consulData, index) => {
-    let subtitle = momentFormatUtcToLocal(consulData.publicCreatedAt ?? consulData.createdAt);
-    let title = consulData.title ?? consulData.body;
-
-    if (query === QUERY_TYPES.CONSUL.PUBLIC_COMMENTS) {
-      subtitle = consulData.commentableTitle;
-    } else if (query === QUERY_TYPES.CONSUL.POLLS) {
-      subtitle =
-        momentFormatUtcToLocal(consulData.startsAt) +
-        ' - ' +
-        momentFormatUtcToLocal(consulData.endsAt);
-    }
-
-    if (query === QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS && !consulData.published) {
-      title = `${texts.consul.draft} - ${title}`;
-    }
-
-    return {
-      id: consulData.id,
-      title,
-      createdAt: consulData.publicCreatedAt,
-      cachedVotesUp: consulData.cachedVotesUp,
-      subtitle,
-      routeName: ScreenName.ConsulDetailScreen,
-      published: consulData.published,
-      params: {
-        title: getTitleForQuery(query),
-        query: querySwitcherForDetail(query),
-        queryVariables: { id: consulData.id },
-        rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
-      },
-      bottomDivider: !skipLastDivider || index !== consulData.length - 1
-    };
-  });
-};
-
-/* eslint-disable complexity */
 /**
  * Parses list items from query a query result
  * @param {string} query
  * @param {any} data
  * @param {string | undefined} titleDetail
  * @param {{
+ *    appDesignSystem?: any;
  *    bookmarkable?: boolean;
+ *    isSectioned?: boolean;
+ *    queryKey?: string;
+ *    queryVariables?: any;
  *    skipLastDivider?: boolean;
- *    withDate?: boolean,
- *    withTime?: boolean,
- *    isSectioned?: boolean,
- *    queryVariables?: any,
- *    subQuery?: any
+ *    subQuery?: any;
+ *    withDate?: boolean;
+ *    withTime?: boolean;
  *  }} options
  * @returns
  */
-// eslint-disable-next-line complexity
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
   if (!data) return [];
 
   const {
+    appDesignSystem,
     bookmarkable = true,
-    skipLastDivider = false,
-    withDate = true,
-    withTime = false,
     isSectioned = false,
     queryVariables,
-    subQuery
+    skipLastDivider = false,
+    subQuery,
+    withDate = true,
+    withTime = false
   } = options;
 
   switch (query) {
@@ -442,9 +309,25 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parsePointsOfInterestAndTours(data);
     case QUERY_TYPES.PROFILE.GET_CONVERSATIONS:
       return parseConversations(data[query]);
+
+    // CONSUL
+    case QUERY_TYPES.CONSUL.DEBATES:
+    case QUERY_TYPES.CONSUL.PROPOSALS:
+    case QUERY_TYPES.CONSUL.POLLS:
+    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
+    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
+      return parseConsulData(data[query], query, skipLastDivider);
+
+    // SUE
+    case QUERY_TYPES.SUE.REQUESTS:
+    case QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID:
+      return parseSueData(data, appDesignSystem);
+
+    // VOLUNTEER
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
-      return parseVolunteers(
+      return parseVolunteerData(
         data,
         QUERY_TYPES.VOLUNTEER.CALENDAR,
         skipLastDivider,
@@ -453,13 +336,18 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       );
     case QUERY_TYPES.VOLUNTEER.GROUPS:
     case QUERY_TYPES.VOLUNTEER.GROUPS_MY:
-      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
+      return parseVolunteerData(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
-      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CONVERSATION, skipLastDivider, withDate);
+      return parseVolunteerData(
+        data,
+        QUERY_TYPES.VOLUNTEER.CONVERSATION,
+        skipLastDivider,
+        withDate
+      );
     case QUERY_TYPES.VOLUNTEER.MEMBERS:
     case QUERY_TYPES.VOLUNTEER.APPLICANTS:
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
-      return parseVolunteers(
+      return parseVolunteerData(
         data,
         QUERY_TYPES.VOLUNTEER.USER,
         skipLastDivider,
@@ -468,23 +356,16 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
         queryVariables?.currentUserId
       );
     case QUERY_TYPES.VOLUNTEER.PROFILE:
-      return parseVolunteers(data, query, skipLastDivider);
-    case QUERY_TYPES.CONSUL.DEBATES:
-    case QUERY_TYPES.CONSUL.PROPOSALS:
-    case QUERY_TYPES.CONSUL.POLLS:
-    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
-    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
-    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
-      return parseConsulData(data[query], query, skipLastDivider);
+      return parseVolunteerData(data, query, skipLastDivider);
+
+    // VOUCHERS
+    case QUERY_TYPES.VOUCHERS:
+    case QUERY_TYPES.VOUCHERS_REDEEMED:
+      return parseVouchersData(data[options.queryKey], skipLastDivider);
+    case QUERY_TYPES.VOUCHERS_CATEGORIES:
+      return parseVouchersCategories(data[QUERY_TYPES.GENERIC_ITEMS], skipLastDivider);
     default:
       return data;
   }
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  statustitleIcon: {
-    marginRight: normalize(7),
-    marginTop: normalize(1)
-  }
-});

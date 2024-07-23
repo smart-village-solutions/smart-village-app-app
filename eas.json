@@ -4,7 +4,7 @@
   },
   "build": {
     "production": {
-      "node": "16.13.0",
+      "node": "18.19.1",
       "yarn": "1.22.19",
       "channel": "production",
       "ios": {

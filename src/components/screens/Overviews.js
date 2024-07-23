@@ -41,6 +41,7 @@ import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } f
 import { NetworkContext } from '../../NetworkProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
+import { GenericType } from '../../types';
 
 const FILTER_TYPES = {
   LIST: 'list',
@@ -213,6 +214,12 @@ export const Overviews = ({ navigation, route }) => {
     if (filterByOpeningTimes) {
       parsedListItems = parsedListItems?.filter(
         (entry) => isOpen(entry.params?.details?.openingHours)?.open
+      );
+    }
+
+    if (queryVariables?.genericType === GenericType.Voucher) {
+      parsedListItems = parsedListItems?.filter(
+        (entry) => !!entry.params?.details?.vouchers?.length
       );
     }
 

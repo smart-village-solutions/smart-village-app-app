@@ -5,8 +5,7 @@ import { MediaTypeOptions } from 'expo-image-picker';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   Actions,
   Bubble,
@@ -94,13 +93,11 @@ export const Chat = ({
     }
   };
 
-  const { selectImage } = useSelectImage(
-    undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
-    undefined, // quality,
-    MediaTypeOptions.All // mediaTypes
-  );
+  const { selectImage } = useSelectImage({
+    allowsEditing: false,
+    mediaTypes: MediaTypeOptions.All
+  });
+
   const { selectDocument } = useSelectDocument();
 
   return (

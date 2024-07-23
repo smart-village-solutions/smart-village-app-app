@@ -2,11 +2,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 
+import { NetworkContext } from '../../NetworkProvider';
 import { consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
-import { getQuery } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
+import { ScreenName } from '../../types';
 import { DataListSection } from '../DataListSection';
 import { WrapperVertical } from '../Wrapper';
 
@@ -36,20 +37,21 @@ export const BookmarkSection = ({
   setConnectionState
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items
+  const variables = query === QUERY_TYPES.VOUCHERS ? { ids } : { ids: ids.slice(0, 3) };
 
   const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items
   const { loading, data } = useQuery(getQuery(query), {
     fetchPolicy,
-    variables: { ids: ids.slice(0, 3) }
+    variables
   });
 
   const onPressShowMore = useCallback(
     () =>
-      navigation.navigate('BookmarkCategory', {
+      navigation.navigate(ScreenName.BookmarkCategory, {
         suffix,
         query,
         title: sectionTitle,
@@ -72,10 +74,11 @@ export const BookmarkSection = ({
     <WrapperVertical>
       <DataListSection
         buttonTitle={texts.bookmarks.showAll}
+        limit={variables?.ids.length}
+        listType={listType}
         loading={loading}
         navigate={onPressShowMore}
         navigation={navigation}
-        listType={listType}
         query={query}
         sectionData={data}
         sectionTitle={sectionTitle}

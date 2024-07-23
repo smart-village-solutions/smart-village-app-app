@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import { Alert } from 'react-native';
 
 import { texts } from '../../config';
+import { removeFromStore } from '../storageHelper';
 
 import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
@@ -27,7 +27,7 @@ export const deleteObject = async ({ index, data, setData }) => {
         if (objectItem?.uri) {
           await FileSystem.deleteAsync(objectItem.uri);
         }
-        await AsyncStorage.removeItem(storageName);
+        removeFromStore(storageName);
 
         deletedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;
         deletedData[index].payload.scenes[sceneIndex].localUris = [];

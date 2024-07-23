@@ -1,3 +1,3 @@
-export * from './Filter';
+export * from './ChipFilter';
 export * from './LocationOverview';
 export * from './Map';

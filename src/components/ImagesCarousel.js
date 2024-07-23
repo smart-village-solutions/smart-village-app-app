@@ -193,7 +193,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   imageContainer: {
-    alignSelf: 'center'
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: '100%'
   },
   pauseButton: {
     alignItems: 'center',

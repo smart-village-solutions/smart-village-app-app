@@ -9,6 +9,7 @@ import { normalize } from '../config';
 import { CalendarHeader } from './CalendarHeader';
 import { ChatHeader } from './ChatHeader';
 import { DrawerHeader } from './DrawerHeader';
+import { DeleteHeader } from './DeleteHeader';
 import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
 import { InfoHeader } from './InfoHeader';
@@ -24,6 +25,7 @@ type Props = {
   withBookmark?: boolean;
   withChat?: boolean;
   withCalendar?: boolean;
+  withDelete?: boolean;
   withGroup?: boolean;
   withDrawer?: boolean;
   withEdit?: boolean;
@@ -39,6 +41,7 @@ export const HeaderRight = ({
   withBookmark = false,
   withChat = false,
   withCalendar = false,
+  withDelete = false,
   withGroup = false,
   withDrawer = false,
   withEdit = false,
@@ -49,6 +52,7 @@ export const HeaderRight = ({
     {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
     {withChat && <ChatHeader navigation={navigation} style={styles.icon} />}
     {withCalendar && <CalendarHeader navigation={navigation} style={styles.icon} />}
+    {withDelete && <DeleteHeader onPress={onPress} style={styles.icon} />}
     {withGroup && <GroupHeader navigation={navigation} style={styles.icon} />}
     {withEdit && <EditHeader onPress={onPress} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}

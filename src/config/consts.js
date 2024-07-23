@@ -80,6 +80,8 @@ export const consts = {
     /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
   VIDEO_TYPE_REGEX: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4)$/i,
   UMLAUT_REGEX: /[üäöÜÄÖß]/g,
+  PHONE_NUMBER_REGEX:
+    /(((\+([0-9]+) )|0)([1-9][0-9]+)(( ([0-9]) ([0-9]+))| ([0-9]+)([-]([0-9]+))?))|([1-9][0-9][0-9])/,
 
   CALENDAR: {
     DOT_SIZE: 6,
@@ -105,6 +107,14 @@ export const consts = {
     TOURS: ONCE_A_DAY
   },
 
+  FILTER_TYPES: {
+    DATE: 'date',
+    DROPDOWN: 'dropdown',
+    SUE: {
+      STATUS: 'status'
+    }
+  },
+
   DIMENSIONS: {
     // the max screen size we want to render full screen
     FULL_SCREEN_MAX_WIDTH: 504
@@ -119,7 +129,12 @@ export const consts = {
 
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
+    SUE: 'Sue',
     VOLUNTEER: 'Volunteer'
+  },
+
+  IMAGE_SELECTOR_TYPES: {
+    SUE: 'Sue'
   },
 
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
@@ -128,6 +143,25 @@ export const consts = {
     // default image aspect ratio is 2:1
     HEIGHT: 1,
     WIDTH: 2
+  },
+
+  INPUT_KEYS: {
+    SUE: {
+      CITY: 'city',
+      DESCRIPTION: 'description',
+      EMAIL: 'email',
+      FAMILY_NAME: 'familyName',
+      FIRST_NAME: 'firstName',
+      HOUSE_NUMBER: 'houseNumber',
+      IMAGES: 'images',
+      LAST_NAME: 'lastName',
+      NAME: 'name',
+      PHONE: 'phone',
+      POSTAL_CODE: 'postalCode',
+      STREET: 'street',
+      TERMS_OF_SERVICE: 'termsOfService',
+      TITLE: 'title'
+    }
   },
 
   MATOMO_TRACKING: {
@@ -183,7 +217,9 @@ export const consts = {
     NOTICEBOARD: 'Noticeboard',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
+    SUE: 'Sue',
     TOURS: 'Tours',
+    VOUCHER: 'Voucher',
     VOLUNTEER: 'Volunteer',
     CONSOLE_HOME: 'ConsulHome'
   }

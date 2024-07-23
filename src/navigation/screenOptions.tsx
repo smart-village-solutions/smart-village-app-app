@@ -16,6 +16,7 @@ type OptionProps = {
 
 type OptionConfig = {
   withBookmark?: boolean;
+  withDelete?: boolean;
   withDrawer?: boolean;
   withFavorites?: boolean;
   withShare?: boolean;
@@ -27,6 +28,7 @@ type OptionConfig = {
 export const getScreenOptions =
   ({
     withBookmark,
+    withDelete,
     withDrawer,
     withFavorites,
     withShare,
@@ -58,6 +60,7 @@ export const getScreenOptions =
             route,
             shareContent: route.params?.shareContent,
             withBookmark,
+            withDelete,
             withDrawer,
             withShare,
             withInfo

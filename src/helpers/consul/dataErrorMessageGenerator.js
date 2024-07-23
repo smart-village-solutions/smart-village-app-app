@@ -77,6 +77,15 @@ export const errorTextGenerator = async ({
         }
       ]);
       break;
+    case IMAGE_SELECTOR_ERROR_TYPES.SUE:
+      /* the server does not support files more than 10MB in size. */
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText: size > 10485760 && texts.sue.report.alerts.imageGreater10MBError
+        }
+      ]);
+      break;
     default:
       break;
   }

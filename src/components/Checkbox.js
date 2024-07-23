@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
-import { OrientationContext } from '../OrientationProvider';
 import { useOpenWebScreen } from '../hooks';
+import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
@@ -16,6 +16,7 @@ export const Checkbox = ({
   checked = false,
   checkedIcon,
   containerStyle = {},
+  lightest = false,
   link = '',
   linkDescription = '',
   navigate,
@@ -44,9 +45,13 @@ export const Checkbox = ({
       title={
         <WrapperHorizontal>
           {boldTitle ? (
-            <BoldText small>{title}</BoldText>
+            <BoldText small lightest={lightest}>
+              {title}
+            </BoldText>
           ) : (
-            <RegularText small>{title}</RegularText>
+            <RegularText small lightest={lightest}>
+              {title}
+            </RegularText>
           )}
           {(!!link || !!navigate) && !!linkDescription && (
             <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
@@ -96,6 +101,7 @@ Checkbox.propTypes = {
   checkedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   containerStyle: PropTypes.object,
   disabled: PropTypes.bool,
+  lightest: PropTypes.bool,
   link: PropTypes.string,
   linkDescription: PropTypes.string,
   navigate: PropTypes.func,

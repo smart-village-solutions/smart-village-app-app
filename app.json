@@ -36,6 +36,7 @@
             "NSPrivacyAccessedAPIReason": "Die App verwendet Dateizeitstempel, um die Synchronisierung von Dateien zu verwalten und sicherzustellen, dass der Nutzer immer die neuesten Dateiversionen hat."
           }
         ],
+        "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp"]
@@ -68,13 +69,7 @@
       [
         "expo-camera",
         {
-          "microphonePermission": false
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "microphonePermission": false
+          "recordAudioAndroid": false
         }
       ],
       [
@@ -91,8 +86,17 @@
           }
         }
       ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
+        }
+      ],
+      "expo-asset",
+      "expo-font",
+      "expo-image-picker",
       "expo-localization",
-      "sentry-expo",
+      "expo-secure-store",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }

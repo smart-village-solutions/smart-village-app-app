@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { useController, UseControllerOptions } from 'react-hook-form';
+import React, { forwardRef, useContext, useEffect, useRef } from 'react';
+import { useController, UseControllerProps } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { InputProps, Input as RNEInput } from 'react-native-elements';
 
@@ -10,7 +10,7 @@ import { Label } from '../Label';
 const { a11yLabel } = consts;
 
 type Props = InputProps &
-  UseControllerOptions & {
+  UseControllerProps & {
     validate?: boolean;
     hidden?: boolean;
     row?: boolean;
@@ -19,127 +19,135 @@ type Props = InputProps &
   };
 
 /* eslint-disable complexity */
-/* there are a lot of conditions */
-export const Input = ({
-  control,
-  name,
-  rules,
-  label,
-  boldLabel = true,
-  validate = false,
-  disabled = false,
-  hidden = false,
-  errorMessage,
-  row = false,
-  multiline = false,
-  rightIcon,
-  chat = false,
-  inputContainerStyle,
-  inputStyle,
-  containerStyle,
-  ...furtherProps
-}: Props) => {
-  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+export const Input = forwardRef(
+  (
+    {
+      control,
+      name,
+      rules,
+      label,
+      boldLabel = true,
+      validate = false,
+      disabled = false,
+      hidden = false,
+      errorMessage,
+      row = false,
+      multiline = false,
+      rightIcon,
+      chat = false,
+      inputContainerStyle,
+      inputStyle,
+      containerStyle,
+      ...furtherProps
+    }: Props,
+    ref
+  ) => {
+    const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
-  const { field } = useController({
-    control,
-    name,
-    rules
-  });
-  const inputRef = useRef(null);
-  const [isActive, setIsActive] = React.useState(false);
+    const { field } = useController({
+      control,
+      name,
+      rules
+    });
+    const inputRef = ref || useRef(null);
+    const [isActive, setIsActive] = React.useState(false);
 
-  useEffect(() => {
-    // NOTE: need to set the font family for android explicitly on android, because password
-    // placeholder font family appears wrong otherwise
-    // => https://github.com/facebook/react-native/issues/30123
-    if (device.platform === 'android') {
-      inputRef?.current?.setNativeProps({
-        style: {
-          fontFamily: 'regular',
-          fontSize: normalize(14),
-          lineHeight: normalize(20)
-        }
-      });
+    useEffect(() => {
+      // NOTE: need to set the font family for android explicitly on android, because password
+      // placeholder font family appears wrong otherwise
+      // => https://github.com/facebook/react-native/issues/30123
+      if (device.platform === 'android') {
+        inputRef?.current?.setNativeProps({
+          style: {
+            fontFamily: 'regular',
+            fontSize: normalize(14),
+            lineHeight: normalize(20)
+          }
+        });
+      }
+    }, []);
+
+    if (chat) {
+      return (
+        <RNEInput
+          ref={inputRef}
+          value={field.value}
+          onChangeText={field.onChange}
+          multiline={multiline}
+          {...furtherProps}
+          containerStyle={[styles.container, styles.chatContainer]}
+          inputContainerStyle={styles.inputContainer}
+          inputStyle={[
+            styles.input,
+            styles.chatInput,
+            multiline && device.platform === 'ios' && styles.chatMultiline
+          ]}
+          accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
+        />
+      );
     }
-  }, []);
 
-  if (chat) {
+    const isValid = !disabled && validate && !!field.value && !errorMessage;
+
     return (
       <RNEInput
         ref={inputRef}
+        label={label && <Label bold={boldLabel}>{label}</Label>}
         value={field.value}
         onChangeText={field.onChange}
+        onBlur={() => {
+          field.onBlur();
+          setIsActive(false);
+        }}
+        onFocus={() => {
+          setIsActive(true);
+        }}
+        disabled={disabled}
+        disableFullscreenUI
         multiline={multiline}
         {...furtherProps}
-        containerStyle={[styles.container, styles.chatContainer]}
-        inputContainerStyle={[styles.inputContainer, multiline && styles.inputContainerMultiline]}
+        errorMessage={!isValid ? errorMessage : ''}
+        scrollEnabled={multiline}
+        rightIcon={
+          rightIcon ||
+          (isValid ? (
+            <Icon.Ok color={colors.primary} />
+          ) : !isValid && !!errorMessage ? (
+            <Icon.AlertHexagonFilled color={colors.error} size={normalize(16)} />
+          ) : undefined)
+        }
+        containerStyle={[
+          styles.container,
+          row && styles.row,
+          hidden && !errorMessage && styles.containerHidden,
+          containerStyle
+        ]}
+        inputContainerStyle={[
+          styles.inputContainer,
+          disabled && styles.inputContainerDisabled,
+          hidden && styles.inputContainerHidden,
+          multiline && styles.inputContainerMultiline,
+          isActive && styles.inputContainerSuccess,
+          isValid && styles.inputContainerSuccess,
+          !isValid && !!errorMessage && styles.inputContainerError,
+          isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
+          inputContainerStyle
+        ]}
+        rightIconContainerStyle={styles.rightIconContainer}
         inputStyle={[
           styles.input,
-          styles.chatInput,
-          multiline && device.platform === 'ios' && styles.chatMultiline
+          multiline && device.platform === 'ios' && styles.multiline,
+          !isValid && !!errorMessage && styles.inputError,
+          inputStyle
         ]}
+        errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
+        placeholderTextColor={colors.placeholder}
+        disabledInputStyle={styles.inputDisabled}
         accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
       />
     );
   }
-
-  const isValid = !disabled && validate && !!field.value && !errorMessage;
-
-  return (
-    <RNEInput
-      ref={inputRef}
-      label={label && <Label bold={boldLabel}>{label}</Label>}
-      value={field.value}
-      onChangeText={field.onChange}
-      onBlur={() => {
-        field.onBlur();
-        setIsActive(false);
-      }}
-      onFocus={() => {
-        setIsActive(true);
-      }}
-      disabled={disabled}
-      disableFullscreenUI
-      multiline={multiline}
-      {...furtherProps}
-      errorMessage={!isValid ? errorMessage : ''}
-      scrollEnabled={multiline}
-      rightIcon={
-        rightIcon ||
-        (!isValid && !!errorMessage ? (
-          <Icon.AlertHexagonFilled color={colors.error} size={normalize(16)} />
-        ) : undefined)
-      }
-      containerStyle={[
-        styles.container,
-        row && styles.row,
-        hidden && !errorMessage && styles.containerHidden,
-        containerStyle
-      ]}
-      inputContainerStyle={[
-        styles.inputContainer,
-        disabled && styles.inputContainerDisabled,
-        hidden && styles.inputContainerHidden,
-        multiline && styles.inputContainerMultiline,
-        isActive && styles.inputContainerSuccess,
-        !isValid && !!errorMessage && styles.inputContainerError,
-        isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
-        inputContainerStyle
-      ]}
-      rightIconContainerStyle={styles.rightIconContainer}
-      inputStyle={[
-        styles.input,
-        multiline && device.platform === 'ios' && styles.multiline,
-        inputStyle
-      ]}
-      errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
-      placeholderTextColor={colors.placeholder}
-      disabledInputStyle={styles.inputDisabled}
-      accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
-    />
-  );
-};
+);
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({

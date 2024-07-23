@@ -42,6 +42,8 @@ import {
   drawerMenu,
   editSetting,
   emptySection,
+  filter,
+  gps,
   homeFilled,
   info,
   like,
@@ -51,6 +53,7 @@ import {
   locationActive,
   logo,
   lunch,
+  lupe,
   member,
   notVerifiedBadge,
   ok,
@@ -62,11 +65,20 @@ import {
   routePlanner,
   send,
   service,
+  sueCheckSmall,
+  sueClock,
+  sueClockSmall,
+  sueEye,
+  sueEyeSmall,
+  sueFace,
+  sueFaceSmall,
   unvisible,
   userFilled,
   verifiedBadge,
-  visible
+  visible,
+  voucher
 } from '../icons';
+import { sueBroom } from '../icons/SUE/broom';
 import Tabler from '../icons/tabler-icons';
 
 import { colors } from './colors';
@@ -149,6 +161,7 @@ const TablerIcon = ({
 export const Icon = {
   About: (props: IconProps) => <TablerIcon IconComponent={IconMenu2} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
+  Albums: (props: IconProps) => <NamedIcon name="album" {...props} />,
   AlertHexagonFilled: (props: IconProps) => (
     <TablerIcon IconComponent={IconAlertHexagonFilled} {...props} />
   ),
@@ -178,19 +191,22 @@ export const Icon = {
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <TablerIcon IconComponent={IconMaximize} {...props} />,
+  Filter: (props: IconProps) => <SvgIcon xml={filter} {...props} />,
   Flag: (props: IconProps) => <TablerIcon IconComponent={IconFlag2} {...props} />,
-  Home: (props: IconProps) => <TablerIcon IconComponent={IconHome2} {...props} />,
-  HomeFilled: (props: IconProps) => <SvgIcon xml={homeFilled} {...props} />,
+  GPS: (props: IconProps) => <SvgIcon xml={gps} {...props} />,
   HeartEmpty: (props: IconProps) => <TablerIcon IconComponent={IconHeart} {...props} />,
   HeartFilled: (props: IconProps) => <TablerIcon IconComponent={IconHeartFilled} {...props} />,
+  Home: (props: IconProps) => <TablerIcon IconComponent={IconHome2} {...props} />,
+  HomeFilled: (props: IconProps) => <SvgIcon xml={homeFilled} {...props} />,
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
-  Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
+  Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   LocationActive: (props: IconProps) => <SvgIcon xml={locationActive} {...props} />,
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
+  Lupe: (props: IconProps) => <SvgIcon xml={lupe} {...props} />,
   Mail: (props: IconProps) => <TablerIcon IconComponent={IconMessage2} {...props} />,
   Map: (props: IconProps) => <TablerIcon IconComponent={IconMap} {...props} />,
   Member: (props: IconProps) => <SvgIcon xml={member} {...props} />,
@@ -213,19 +229,28 @@ export const Icon = {
   RadioButtonEmpty: (props: IconProps) => <NamedIcon name="circle" {...props} />,
   RadioButtonFilled: (props: IconProps) => <NamedIcon name="circle-filled" {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
+  Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => <NamedIcon name="settings" {...props} />,
   Share: (props: IconProps) => <TablerIcon IconComponent={IconShare3} {...props} />,
-  Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Square: (props: IconProps) => <TablerIcon IconComponent={IconSquare} {...props} />,
   SquareCheckFilled: (props: IconProps) => (
     <TablerIcon IconComponent={IconSquareCheckFilled} {...props} />
   ),
+  SueBroom: (props: IconProps) => <SvgIcon xml={sueBroom} {...props} />,
+  SueCheckSmall: (props: IconProps) => <SvgIcon xml={sueCheckSmall} {...props} />,
+  SueClock: (props: IconProps) => <SvgIcon xml={sueClock} {...props} />,
+  SueClockSmall: (props: IconProps) => <SvgIcon xml={sueClockSmall} {...props} />,
+  SueEye: (props: IconProps) => <SvgIcon xml={sueEye} {...props} />,
+  SueEyeSmall: (props: IconProps) => <SvgIcon xml={sueEyeSmall} {...props} />,
+  SueFace: (props: IconProps) => <SvgIcon xml={sueFace} {...props} />,
+  SueFaceSmall: (props: IconProps) => <SvgIcon xml={sueFaceSmall} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="chart-candle" {...props} />,
   Trash: (props: IconProps) => <TablerIcon IconComponent={IconTrash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: IconProps) => <TablerIcon IconComponent={IconLink} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
   Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
-  Volunteer: (props: IconProps) => <NamedIcon name="users-group" {...props} />
+  Volunteer: (props: IconProps) => <NamedIcon name="users-group" {...props} />,
+  Voucher: (props: IconProps) => <SvgIcon xml={voucher} {...props} />
 };

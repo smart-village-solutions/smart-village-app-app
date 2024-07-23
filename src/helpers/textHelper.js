@@ -20,3 +20,26 @@ export const subtitle = (first, last, time) => {
 
   return last;
 };
+
+/**
+ * Truncate text to a certain length
+ *
+ * @param {string | undefined} text the text to truncate
+ * @param {number | undefined} maxLength the maximum length of the text
+ *
+ * @return {string} the truncated text
+ */
+export const truncateText = (text, maxLength = 50) => {
+  if (!text) return;
+
+  if (text.length <= maxLength) return text;
+
+  const truncated = text.substring(0, maxLength);
+  const lastSpaceIndex = truncated.lastIndexOf(' ');
+
+  if (lastSpaceIndex > 0) {
+    return truncated.substring(0, lastSpaceIndex) + '...';
+  }
+
+  return truncated + '...';
+};
