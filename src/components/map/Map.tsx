@@ -420,12 +420,6 @@ export const Map = ({
           <Icon.GPS size={normalize(18)} />
         </TouchableOpacity>
       )}
-
-      {device.platform === 'android' && (
-        <View style={styles.logoContainer}>
-          <RegularText smallest>© OpenStreetMap</RegularText>
-        </View>
-      )}
     </View>
   );
 };
