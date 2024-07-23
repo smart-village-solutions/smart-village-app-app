@@ -5,6 +5,7 @@ export * from './parser';
 export * from './accessibilityListeners';
 export * from './addressHelper';
 export * from './bookmarkHelper';
+export * from './calculateBoundsToFitAllMarkers';
 export * from './calendarHelper';
 export * from './cameraHelper';
 export * from './colorHelper';

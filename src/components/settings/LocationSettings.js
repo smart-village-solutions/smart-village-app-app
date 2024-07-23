@@ -147,8 +147,5 @@ export const LocationSettings = () => {
 const styles = StyleSheet.create({
   containerStyle: {
     marginBottom: normalize(21)
-  },
-  mapContainer: {
-    height: normalize(200)
   }
 });

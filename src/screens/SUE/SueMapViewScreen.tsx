@@ -65,12 +65,13 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             setSelectedPosition(undefined);
           }
         }}
-        onMarkerPress={(id) => setSelectedMarker(id)}
+        onMarkerPress={setSelectedMarker}
         onMapPress={async ({ nativeEvent }) => {
           if (
             nativeEvent.action !== 'marker-press' &&
             nativeEvent.action !== 'callout-inside-press'
           ) {
+            setSelectedMarker(undefined);
             setSelectedPosition(nativeEvent.coordinate);
             setUpdatedRegion(false);
 

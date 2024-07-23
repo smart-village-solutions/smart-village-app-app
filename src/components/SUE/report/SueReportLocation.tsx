@@ -184,6 +184,7 @@ export const SueReportLocation = ({
     nativeEvent: { action: string; coordinate: Location.LocationObjectCoords };
   }) => {
     if (nativeEvent.action !== 'marker-press' && nativeEvent.action !== 'callout-inside-press') {
+      setSelectedMarker(undefined);
       setSelectedPosition(nativeEvent.coordinate);
       setUpdatedRegion(false);
       setUpdateRegionFromImage(false);
@@ -250,7 +251,7 @@ export const SueReportLocation = ({
           mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
           onMapPress={onMapPress}
-          onMarkerPress={(id) => setSelectedMarker(id)}
+          onMarkerPress={setSelectedMarker}
           onMyLocationButtonPress={onMyLocationButtonPress}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {

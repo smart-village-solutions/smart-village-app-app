@@ -12,7 +12,12 @@ import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-
 import Supercluster from 'supercluster';
 
 import { colors, device, Icon, normalize } from '../../config';
-import { imageHeight, imageWidth, truncateText } from '../../helpers';
+import {
+  calculateBoundsToFitAllMarkers,
+  imageHeight,
+  imageWidth,
+  truncateText
+} from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -106,24 +111,6 @@ const renderCluster = (cluster: TCluster) => {
 };
 
 /* eslint-disable complexity */
-// calculate the bounds of the map to fit all markers
-const calculateBounds = (coordinates) => {
-  const [minLng, minLat] = coordinates.reduce(
-    (prev, curr) => [Math.min(prev[0], curr[0]), Math.min(prev[1], curr[1])],
-    [Infinity, Infinity]
-  );
-
-  const [maxLng, maxLat] = coordinates.reduce(
-    (prev, curr) => [Math.max(prev[0], curr[0]), Math.max(prev[1], curr[1])],
-    [-Infinity, -Infinity]
-  );
-
-  const deltaLng = (maxLng - minLng) * 0.1;
-  const deltaLat = (maxLat - minLat) * 0.1;
-
-  return { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat };
-};
-
 export const Map = ({
   calloutTextEnabled = false,
   clusterDistance = 50,
@@ -195,6 +182,15 @@ export const Map = ({
         radius: clusterDistance,
         maxZoom: MAX_ZOOM_LEVEL
       });
+      /**
+       * the values represent the maximum possible latitude and longitude values for the earth's
+       * coordinate system, defining a rectangular area that covers the entire world.
+       * The values are based on the following assumptions:
+       * Westernmost longitude: 2° E (covering parts of France and the Netherlands)
+       * Easternmost longitude: 18° E (covering parts of Poland and the Czech Republic)
+       * Northernmost latitude: 56° N (covering parts of Denmark)
+       * Southernmost latitude: 46° N (covering parts of Switzerland and Austria)
+       */
       const bounds = [2, 46, 18, 56];
       const points = mapLocations;
 
@@ -211,7 +207,7 @@ export const Map = ({
       if (locations.length === 1) {
         if (cameraRef.current) {
           cameraRef.current.setCamera({
-            animationDuration: 0,
+            animationDuration: 1000,
             centerCoordinate: coordinates[0],
             zoomLevel: ONE_MARKER_ZOOM_LEVEL
           });
@@ -219,7 +215,8 @@ export const Map = ({
           setIsInitialFit(false);
         }
       } else if (coordinates && coordinates.length > 0) {
-        const { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat } = calculateBounds(coordinates);
+        const { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat } =
+          calculateBoundsToFitAllMarkers(coordinates);
 
         if (cameraRef.current) {
           cameraRef.current.fitBounds(
@@ -228,13 +225,8 @@ export const Map = ({
             0
           );
 
-          if (clusteringEnabled) {
-            setIsLoading(false);
-            setIsInitialFit(false);
-          } else {
-            setIsLoading(false);
-            setIsInitialFit(false);
-          }
+          setIsLoading(false);
+          setIsInitialFit(false);
         }
       }
     }
@@ -462,12 +454,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute'
-  },
-  clusterMarker: {
-    alignItems: 'center',
-    height: normalize(60),
-    justifyContent: 'center',
-    width: normalize(60)
   },
   hitBox: {
     alignItems: 'center',
