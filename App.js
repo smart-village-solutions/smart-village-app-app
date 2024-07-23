@@ -1,5 +1,6 @@
-import * as Sentry from '@sentry/react-native';
+import MapLibreGL from '@maplibre/maplibre-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Sentry from '@sentry/react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -11,6 +12,7 @@ import { auth } from './src/auth';
 import { fontConfig, namespace, secrets } from './src/config';
 import { SUE_REPORT_VALUES } from './src/screens';
 
+MapLibreGL.setAccessToken(null);
 const sentryApi = secrets[namespace].sentryApi;
 
 if (sentryApi?.dsn) {
