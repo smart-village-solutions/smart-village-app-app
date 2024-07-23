@@ -36,7 +36,7 @@
   "dependencies": {
     "@apollo/react-hooks": "~3.1.5",
     "@expo/vector-icons": "14.0.0",
-    "@maplibre/maplibre-react-native": "^10.0.0-alpha.5",
+    "@maplibre/maplibre-react-native": "^10.0.0-alpha.10",
     "@native-html/iframe-plugin": "^2.6.1",
     "@native-html/table-plugin": "^5.3.1",
     "@react-native-async-storage/async-storage": "1.23.1",
