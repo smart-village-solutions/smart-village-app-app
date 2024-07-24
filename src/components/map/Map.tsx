@@ -287,7 +287,7 @@ export const Map = ({
         onPress={handleMapPress}
         onRegionDidChange={(region) => {
           const newZoomLevel = Math.round(region.properties.zoomLevel);
-          if (typeof newZoomLevel === 'number' && !isNaN(newZoomLevel)) {
+          if (typeof newZoomLevel === 'number') {
             setZoomLevel(newZoomLevel);
           }
         }}
