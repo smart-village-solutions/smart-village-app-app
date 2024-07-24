@@ -150,11 +150,11 @@ export const SueReportUser = ({
               <WrapperHorizontal>
                 <WrapperHorizontal>
                   <WrapperHorizontal>
-                    <RegularText small primary onPress={openWebScreenTermsOfService}>
+                    <RegularText underline primary onPress={openWebScreenTermsOfService}>
                       - {texts.sue.report.termsOfService}
                     </RegularText>
                     {!!linkTermsOfUse && (
-                      <RegularText small primary onPress={openWebScreenTermsOfUse}>
+                      <RegularText underline primary onPress={openWebScreenTermsOfUse}>
                         - {texts.sue.report.termsOfUse}
                       </RegularText>
                     )}
