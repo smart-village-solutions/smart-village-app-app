@@ -287,7 +287,9 @@ export const Map = ({
         onPress={handleMapPress}
         onRegionDidChange={(region) => {
           const newZoomLevel = Math.round(region.properties.zoomLevel);
-          if (typeof newZoomLevel === 'number') {
+
+          if (typeof newZoomLevel === 'number' && newZoomLevel !== zoomLevel) {
+            onMarkerPress?.(undefined);
             setZoomLevel(newZoomLevel);
           }
         }}
@@ -317,6 +319,7 @@ export const Map = ({
 
           return (
             <PointAnnotation
+              anchor={{ x: 0.5, y: 1 }}
               coordinate={[marker.position.longitude, marker.position.latitude]}
               key={`${index}-${marker.id}`}
               onSelected={() => onMarkerPress?.(marker.id)}
@@ -513,7 +516,8 @@ const styles = StyleSheet.create({
   },
   markerContainer: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    zIndex: 1
   }
 });
 
