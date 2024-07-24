@@ -121,7 +121,7 @@ export const LocationSettings = () => {
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
       </Wrapper>
       <Collapsible collapsed={!showMap}>
-        <Map locations={locations} onMapPress={handleMapPress} />
+        <Map clusteringEnabled={false} locations={locations} onMapPress={handleMapPress} />
 
         <Wrapper>
           <Button title={texts.settingsContents.locationService.save} onPress={handleSave} />
