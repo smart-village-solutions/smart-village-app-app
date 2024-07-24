@@ -27,8 +27,7 @@ export const PersonPreview = ({ data, navigation }: Props) => {
     params,
     subtitle: faction?.organization && getOrganizationNameString(faction.organization),
     title,
-    topDivider: true,
-    bottomDivider: false
+    topDivider: false
   };
 
   return <TextListItem navigation={navigation} item={item} />;

@@ -2,15 +2,17 @@ import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
-import { SectionList } from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
 
-import { HtmlView, SafeAreaViewFlex, SectionHeader, TextListItem, Wrapper } from '../components';
+import { SafeAreaViewFlex, SectionHeader, TextListItem } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { texts } from '../config';
+import { normalize, texts } from '../config';
 import { combineLanguages } from '../helpers';
 import { usePullToRefetch, useStaticContent, useSurveyLanguages } from '../hooks';
 import { SURVEYS } from '../queries/survey';
 import { Survey } from '../types';
+
+import { ListHeaderComponent } from './NestedInfoScreen';
 
 type Props = {
   route: {
@@ -79,7 +81,7 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { additionalProps } = route.params ?? {};
 
-  const { data } = useStaticContent({
+  const { data, htmlLoading } = useStaticContent({
     name: additionalProps?.htmlName,
     type: 'html',
     refreshTimeKey: `publicHtmlFile-${additionalProps?.htmlName}`,
@@ -103,17 +105,27 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
     <SafeAreaViewFlex>
       <SectionList
         ListHeaderComponent={
-          !!data ? (
-            <Wrapper>
-              <HtmlView html={data} />
-            </Wrapper>
+          data ? (
+            <ListHeaderComponent
+              html={data}
+              loading={htmlLoading}
+              navigation={navigation}
+              navigationTitle=""
+            />
           ) : null
         }
         refreshControl={RefreshControl}
         renderItem={renderSurvey}
         renderSectionHeader={renderSectionHeader}
         sections={surveySections}
+        style={styles.container}
       />
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  }
+});

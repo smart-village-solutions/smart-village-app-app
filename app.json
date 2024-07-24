@@ -26,6 +26,16 @@
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App kann die Standortbestimmung nutzen, um Ihre aktuelle Position auf der Karte darzustellen und Inhalte nach Entfernung zu sortieren.",
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPIReason": "Die App benötigt Informationen über den verfügbaren Speicherplatz, um sicherzustellen, dass genügend Platz für die Ausführung von Download- und Speicheroperationen vorhanden ist."
+          },
+          {
+            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPIReason": "Die App verwendet Dateizeitstempel, um die Synchronisierung von Dateien zu verwalten und sicherzustellen, dass der Nutzer immer die neuesten Dateiversionen hat."
+          }
+        ],
         "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
@@ -53,8 +63,6 @@
       "allowBackup": false
     },
     "androidStatusBar": {
-      "barStyle": "dark-content",
-      "translucent": true,
       "backgroundColor": "#00000000"
     },
     "plugins": [

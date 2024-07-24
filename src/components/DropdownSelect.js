@@ -15,7 +15,9 @@ import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 const { a11yLabel } = consts;
 
 export const DropdownSelect = ({
+  boldLabel = false,
   data,
+  errorMessage,
   multipleSelect,
   setData,
   label,
@@ -83,7 +85,7 @@ export const DropdownSelect = ({
       accessible
     >
       <WrapperHorizontal style={labelWrapperStyle}>
-        <Label>{label}</Label>
+        <Label bold={boldLabel}>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
         accessible={false}
@@ -132,8 +134,14 @@ export const DropdownSelect = ({
         searchPlaceholder={searchPlaceholder}
         keyboardShouldPersistTaps="handled"
       >
-        <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText style={styles.selectedValueText} placeholder={selectedValue == placeholder}>
+        <WrapperRow
+          style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
+        >
+          <RegularText
+            style={styles.selectedValueText}
+            placeholder={selectedValue == placeholder}
+            numberOfLines={1}
+          >
             {multipleSelect ? selectedMultipleValues : selectedValue}
           </RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
@@ -145,16 +153,26 @@ export const DropdownSelect = ({
 
 const styles = StyleSheet.create({
   dropdownTextWrapper: {
-    borderColor: colors.borderRgba,
-    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    borderBottomWidth: normalize(1),
+    borderColor: colors.gray40,
+    borderRadius: normalize(8),
+    borderLeftWidth: normalize(1),
+    borderRightWidth: normalize(1),
+    borderTopWidth: normalize(1),
+    flexDirection: 'row',
+    minHeight: normalize(42),
     justifyContent: 'space-between',
-    padding: normalize(14)
+    paddingHorizontal: normalize(12)
   },
   dropdownDropdown: {
+    backgroundColor: colors.surface,
     borderColor: colors.borderRgba,
     borderRadius: 0,
     borderWidth: StyleSheet.hairlineWidth,
     elevation: 2,
+    height: 'auto',
+    maxHeight: normalize(320),
     shadowColor: colors.shadow,
     shadowOffset: { height: 5, width: 0 },
     shadowOpacity: 0.5,
@@ -165,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface
   },
   dropdownSeparator: {
-    backgroundColor: colors.borderRgba,
+    backgroundColor: colors.gray40,
     height: StyleSheet.hairlineWidth
   },
   selectedValueText: { width: '90%' }
@@ -173,7 +191,9 @@ const styles = StyleSheet.create({
 
 DropdownSelect.displayName = 'DropdownSelect';
 DropdownSelect.propTypes = {
+  boldLabel: PropTypes.bool,
   data: PropTypes.array,
+  errorMessage: PropTypes.string,
   multipleSelect: PropTypes.bool,
   setData: PropTypes.func,
   label: PropTypes.string,

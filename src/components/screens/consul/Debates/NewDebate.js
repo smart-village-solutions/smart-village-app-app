@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
 
-import { namespace, normalize, secrets, texts } from '../../../../config';
+import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/consul';
@@ -167,13 +167,13 @@ export const NewDebate = ({ navigation, data, query }) => {
       <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
           <Checkbox
-            title={texts.consul.startNew.termsOfServiceLabel}
+            checked={hasAcceptedTermsOfService}
+            checkedIcon={<Icon.SquareCheckFilled />}
             link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
-            checkedIcon="check-square-o"
-            uncheckedIcon="square-o"
-            checked={hasAcceptedTermsOfService}
             onPress={() => setHasAcceptedTermsOfService(!hasAcceptedTermsOfService)}
+            title={texts.consul.startNew.termsOfServiceLabel}
+            uncheckedIcon={<Icon.Square color={colors.placeholder} />}
           />
         </WrapperHorizontal>
 

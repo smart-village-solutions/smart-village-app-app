@@ -8,7 +8,7 @@ import { useHomeRefresh, useStaticContent } from '../hooks';
 
 import { Button } from './Button';
 import { ImagesCarousel } from './ImagesCarousel';
-import { BoldText, RegularText } from './Text';
+import { HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
@@ -106,7 +106,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
           <>
             {showButtonToClose && (
               <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
-                <Icon.Close color={colors.darkText} size={normalize(16)} />
+                <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
               </TouchableOpacity>
             )}
 
@@ -125,12 +125,12 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               <View style={styles.withoutImageMarginTop} />
             )}
 
-            <Wrapper style={styles.noPaddingBottom}>
+            <Wrapper style={styles.smallPaddingBottom}>
               <WrapperHorizontal>
                 {!!headline && (
-                  <BoldText center uppercase style={styles.headlineText}>
+                  <HeadlineText center uppercase style={styles.headlineText}>
                     {headline}
-                  </BoldText>
+                  </HeadlineText>
                 )}
               </WrapperHorizontal>
             </Wrapper>
@@ -138,16 +138,20 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             <Wrapper style={styles.noPaddingTop}>
               <WrapperHorizontal>
                 {!!title && (
-                  <BoldText center large>
+                  <HeadlineText center big>
                     {title}
-                  </BoldText>
+                  </HeadlineText>
                 )}
               </WrapperHorizontal>
             </Wrapper>
 
             <Wrapper style={styles.noPaddingTop}>
               <WrapperHorizontal>
-                {!!description && <RegularText center>{description}</RegularText>}
+                {!!description && (
+                  <RegularText center big>
+                    {description}
+                  </RegularText>
+                )}
               </WrapperHorizontal>
             </Wrapper>
 
@@ -179,11 +183,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignItems: 'center',
-    backgroundColor: colors.gray20,
+    backgroundColor: colors.darkText,
     borderRadius: 25,
     height: normalize(32),
     justifyContent: 'center',
-    opacity: 1,
+    opacity: 0.64,
     position: 'absolute',
     right: normalize(16),
     top: normalize(16),
@@ -196,14 +200,13 @@ const styles = StyleSheet.create({
   headlineText: {
     fontSize: normalize(14),
     fontWeight: '700',
-    lineHeight: normalize(16),
-    textTransform: 'uppercase'
+    lineHeight: normalize(16)
   },
   withoutImageMarginTop: {
     marginTop: normalize(21)
   },
-  noPaddingBottom: {
-    paddingBottom: 0
+  smallPaddingBottom: {
+    paddingBottom: normalize(8)
   },
   noPaddingTop: {
     paddingTop: 0

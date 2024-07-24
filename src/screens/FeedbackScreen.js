@@ -2,29 +2,30 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   Button,
   Checkbox,
   DefaultKeyboardAvoidingView,
   Input,
-  SafeAreaViewFlex
+  SafeAreaViewFlex,
+  Wrapper
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
-import { useMatomoTrackScreenView } from '../hooks';
-import { useAppInfo } from '../hooks/appInfo';
-import { createQuery, QUERY_TYPES } from '../queries';
+import { Icon, colors, consts, normalize, texts } from '../config';
+import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
+import { QUERY_TYPES, createQuery } from '../queries';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
 export const FeedbackScreen = () => {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   const {
     control,
     formState: { errors },
-    reset,
     handleSubmit
   } = useForm({
     defaultValues: {
@@ -68,30 +69,30 @@ export const FeedbackScreen = () => {
 
     try {
       await createAppUserContent({ variables: formData });
-
-      reset();
-
       Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
     } catch (error) {
       console.error(error);
     }
+
     setLoading(false);
+    navigation.goBack();
   };
 
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={{ padding: normalize(14) }}>
+          <Wrapper>
             <Input
               name="name"
               label={texts.feedbackScreen.inputsLabel.name}
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.name}
               control={control}
-              containerStyle={styles.containerStyle}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
               label={texts.feedbackScreen.inputsLabel.email}
@@ -107,9 +108,10 @@ export const FeedbackScreen = () => {
               }}
               errorMessage={errors.email && errors.email.message}
               control={control}
-              containerStyle={styles.containerStyle}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Input
               name="phone"
               label={texts.feedbackScreen.inputsLabel.phone}
@@ -117,42 +119,41 @@ export const FeedbackScreen = () => {
               placeholder={texts.feedbackScreen.inputsLabel.phone}
               keyboardType="phone-pad"
               control={control}
-              containerStyle={styles.containerStyle}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Input
-              name="message"
+              control={control}
+              errorMessage={errors.message && errors.message.message}
+              inputStyle={styles.textArea}
               label={texts.feedbackScreen.inputsLabel.message + ' *'}
-              boldLabel
-              placeholder={texts.feedbackScreen.inputsLabel.message}
               multiline
+              name="message"
+              placeholder={texts.feedbackScreen.inputsLabel.message}
+              rules={{ required: texts.feedbackScreen.inputsErrorMessages.message }}
               textAlignVertical="top"
               validate
-              rules={{ required: texts.feedbackScreen.inputsErrorMessages.message }}
-              errorMessage={errors.message && errors.message.message}
-              control={control}
-              containerStyle={styles.containerStyle}
-              inputStyle={styles.textArea}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Controller
               name="consent"
               render={({ field: { onChange, value } }) => (
                 <Checkbox
-                  boldTitle
-                  containerStyle={styles.checkboxContainerStyle}
-                  title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
-                  checkedIcon="check-square-o"
-                  checkedColor={colors.accent}
-                  uncheckedIcon="square-o"
-                  uncheckedColor={colors.darkText}
                   checked={value}
+                  checkedIcon={<Icon.SquareCheckFilled />}
                   onPress={() => onChange(!value)}
+                  title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
+                  uncheckedIcon={<Icon.Square color={colors.placeholder} />}
                 />
               )}
               control={control}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Button
               onPress={handleSubmit(onSubmit)}
               title={
@@ -162,7 +163,7 @@ export const FeedbackScreen = () => {
               }
               disabled={loading}
             />
-          </View>
+          </Wrapper>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
@@ -170,8 +171,8 @@ export const FeedbackScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  checkboxContainerStyle: {
-    marginTop: normalize(30)
+  noPaddingTop: {
+    paddingTop: 0
   },
   textArea: {
     height: normalize(100),

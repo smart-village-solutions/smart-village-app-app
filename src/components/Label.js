@@ -7,8 +7,9 @@ import { Text } from './Text';
 export const Label = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
-  font-size: ${normalize(14)};
-  line-height: ${normalize(28)};
+  font-size: ${normalize(12)};
+  line-height: ${normalize(16)};
+  margin-bottom: ${normalize(8)};
 
   ${(props) =>
     props.bold &&

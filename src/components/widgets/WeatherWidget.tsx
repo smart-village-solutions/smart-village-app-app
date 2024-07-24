@@ -1,8 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';

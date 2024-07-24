@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { FlatList } from 'react-native';
 
-import { LoadingSpinner } from '..';
+import { LoadingSpinner, WrapperHorizontal } from '..';
 import { readFromStore } from '../../helpers';
 import { addMowasRegionalKeysToTokenOnServer } from '../../pushNotifications';
 import { MOWAS_REGIONAL_KEYS, MowasFilterAction, mowasRegionalKeysReducer } from '../../reducers';
@@ -51,19 +51,21 @@ export const MowasRegionSettings = ({
       data={mowasRegionalKeys}
       keyExtractor={keyExtractor}
       renderItem={({ item }) => (
-        <SettingsToggle
-          item={{
-            title: item.name,
-            bottomDivider: true,
-            value: !selectedMowasRegionalKeys.includes(item.rs),
-            onActivate: () => {
-              dispatch({ type: MowasFilterAction.RemoveMowasRegionalKey, payload: item.rs });
-            },
-            onDeactivate: () => {
-              dispatch({ type: MowasFilterAction.AddMowasRegionalKey, payload: item.rs });
-            }
-          }}
-        />
+        <WrapperHorizontal>
+          <SettingsToggle
+            item={{
+              title: item.name,
+              bottomDivider: true,
+              value: !selectedMowasRegionalKeys.includes(item.rs),
+              onActivate: () => {
+                dispatch({ type: MowasFilterAction.RemoveMowasRegionalKey, payload: item.rs });
+              },
+              onDeactivate: () => {
+                dispatch({ type: MowasFilterAction.AddMowasRegionalKey, payload: item.rs });
+              }
+            }}
+          />
+        </WrapperHorizontal>
       )}
     />
   );

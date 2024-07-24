@@ -61,15 +61,15 @@ export const Body = ({ data, navigation }: Props) => {
     website
   } = data;
 
-  const onPressLicense = useCallback(() => navigation.push('Web', { webUrl: license }), [
-    navigation,
-    license
-  ]);
+  const onPressLicense = useCallback(
+    () => navigation.push('Web', { webUrl: license }),
+    [navigation, license]
+  );
 
-  const onPressWebsite = useCallback(() => navigation.push('Web', { webUrl: website }), [
-    navigation,
-    website
-  ]);
+  const onPressWebsite = useCallback(
+    () => navigation.push('Web', { webUrl: website }),
+    [navigation, website]
+  );
 
   const renderEquivalentItem = useCallback(
     (url, index) => (
@@ -87,13 +87,15 @@ export const Body = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Row left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
-      <Row left={bodyTexts.classification} right={classification} />
-      <Row left={bodyTexts.ags} right={ags} fullText />
-      <Row left={bodyTexts.rgs} right={rgs} fullText />
-      {!!location && (
-        <Row left={bodyTexts.location} right={<FormattedLocation location={location} />} />
-      )}
+      <WrapperHorizontal>
+        <Row left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
+        <Row left={bodyTexts.classification} right={classification} />
+        <Row left={bodyTexts.ags} right={ags} fullText />
+        <Row left={bodyTexts.rgs} right={rgs} fullText />
+        {!!location && (
+          <Row left={bodyTexts.location} right={<FormattedLocation location={location} />} />
+        )}
+      </WrapperHorizontal>
       <OParlPreviewSection
         data={legislativeTermList ?? legislativeTerm}
         header={bodyTexts.legislativeTerm}

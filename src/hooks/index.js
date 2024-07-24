@@ -1,10 +1,13 @@
 export * from './consul';
 export * from './encounter';
+export * from './profile';
 export * from './volunteer';
 
 export * from './apollo';
+export * from './appInfo';
 export * from './Bookmarks';
 export * from './constructionSites';
+export * from './DetailRefresh';
 export * from './documentPicker';
 export * from './HomeRefresh';
 export * from './imagePicker';

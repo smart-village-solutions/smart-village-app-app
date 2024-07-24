@@ -26,7 +26,7 @@ export const VolunteerAvatar = ({
     ?.map((part) => part[0])
     ?.join('');
 
-  const uri = volunteerProfileImage(guid);
+  const uri = !!guid && volunteerProfileImage(guid);
 
   if (totalCount > MAX_AVATARS_COUNT && index == MAX_AVATARS_COUNT) {
     return (
@@ -63,10 +63,14 @@ export const VolunteerAvatar = ({
 const styles = StyleSheet.create({
   border: {
     borderColor: colors.darkText,
-    borderWidth: 1
+    borderRadius: normalize(34),
+    borderWidth: normalize(1)
   },
   containerStyle: {
-    padding: normalize(2)
+    borderRadius: normalize(34),
+    height: normalize(34),
+    padding: normalize(2),
+    width: normalize(34)
   },
   marginLeft: {
     marginLeft: normalize(-12)

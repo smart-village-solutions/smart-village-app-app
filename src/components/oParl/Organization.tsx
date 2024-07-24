@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { OrganizationData } from '../../types';
-import { WrapperHorizontal } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
@@ -49,10 +49,10 @@ export const Organization = ({ data, navigation }: Props) => {
     website
   } = data;
 
-  const onPressWebsite = useCallback(() => navigation.push('Web', { webUrl: website }), [
-    navigation,
-    website
-  ]);
+  const onPressWebsite = useCallback(
+    () => navigation.push('Web', { webUrl: website }),
+    [navigation, website]
+  );
 
   let nameString: string | undefined;
 
@@ -70,52 +70,54 @@ export const Organization = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Row
-        left={organizationTexts.name}
-        right={name || shortName ? nameString : undefined}
-        fullText
-        leftWidth={leftWidth}
-      />
-      <Row
-        left={organizationTexts.startDate}
-        right={startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : undefined}
-        leftWidth={leftWidth}
-      />
-      <Row
-        left={organizationTexts.endDate}
-        right={endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : undefined}
-        leftWidth={leftWidth}
-      />
-      <Row left={organizationTexts.classification} right={classification} leftWidth={leftWidth} />
-      <Row
-        left={organizationTexts.organizationType}
-        right={organizationType}
-        leftWidth={leftWidth}
-      />
-      <Row
-        left={organizationTexts.body}
-        right={body?.name}
-        onPress={() =>
-          navigation.push('OParlDetail', {
-            type: body?.type,
-            id: body?.id,
-            title: texts.oparl.body.body
-          })
-        }
-        leftWidth={leftWidth}
-      />
-      <Row
-        left={organizationTexts.location}
-        right={formattedLocation}
-        leftWidth={leftWidth}
-        onPress={() =>
-          navigation.push('OParlDetail', {
-            type: location?.type,
-            id: location?.id,
-            title: texts.oparl.location.location
-          })
-        }
-      />
+      <WrapperHorizontal>
+        <Row
+          left={organizationTexts.name}
+          right={name || shortName ? nameString : undefined}
+          fullText
+          leftWidth={leftWidth}
+        />
+        <Row
+          left={organizationTexts.startDate}
+          right={startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : undefined}
+          leftWidth={leftWidth}
+        />
+        <Row
+          left={organizationTexts.endDate}
+          right={endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : undefined}
+          leftWidth={leftWidth}
+        />
+        <Row left={organizationTexts.classification} right={classification} leftWidth={leftWidth} />
+        <Row
+          left={organizationTexts.organizationType}
+          right={organizationType}
+          leftWidth={leftWidth}
+        />
+        <Row
+          left={organizationTexts.body}
+          right={body?.name}
+          onPress={() =>
+            navigation.push('OParlDetail', {
+              type: body?.type,
+              id: body?.id,
+              title: texts.oparl.body.body
+            })
+          }
+          leftWidth={leftWidth}
+        />
+        <Row
+          left={organizationTexts.location}
+          right={formattedLocation}
+          leftWidth={leftWidth}
+          onPress={() =>
+            navigation.push('OParlDetail', {
+              type: location?.type,
+              id: location?.id,
+              title: texts.oparl.location.location
+            })
+          }
+        />
+      </WrapperHorizontal>
       <OParlPreviewSection
         data={externalBody}
         header={organizationTexts.externalBody}
@@ -142,7 +144,7 @@ export const Organization = ({ data, navigation }: Props) => {
         navigation={navigation}
         withPerson
       />
-      <WrapperHorizontal>
+      <Wrapper>
         <SimpleRow left={organizationTexts.website} onPress={onPressWebsite} right={website} />
         <SimpleRow
           left={organizationTexts.post}
@@ -157,7 +159,7 @@ export const Organization = ({ data, navigation }: Props) => {
           web={web}
         />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
-      </WrapperHorizontal>
+      </Wrapper>
     </>
   );
 };

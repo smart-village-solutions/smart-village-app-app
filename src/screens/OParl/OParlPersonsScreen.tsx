@@ -2,7 +2,13 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
-import { DropdownSelect, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
+import {
+  DropdownSelect,
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperHorizontal
+} from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
@@ -85,7 +91,11 @@ const useListData = (
 export const OParlPersonsScreen = ({ navigation }: Props) => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const [finished, setFinished] = useState(false);
-  const { data: orgaListData, loading: orgaListLoading, error: orgaListError } = useOParlQuery<{
+  const {
+    data: orgaListData,
+    loading: orgaListLoading,
+    error: orgaListError
+  } = useOParlQuery<{
     [orgaListQueryName]: OrganizationListData[];
   }>(orgaListQuery);
 
@@ -110,7 +120,11 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
       )
     : undefined;
 
-  const { data: orgaData, loading: orgaLoading, error: orgaError } = useOParlQuery<{
+  const {
+    data: orgaData,
+    loading: orgaLoading,
+    error: orgaError
+  } = useOParlQuery<{
     [organizationMembersQueryName]: OrganizationPeopleData[];
   }>(organizationMembersQuery, {
     variables: { id: selectedOrganization?.id },
@@ -159,7 +173,9 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
       <FlatList
         data={!orgaLoading ? listData : undefined}
         renderItem={({ item }) => (
-          <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
+          <WrapperHorizontal key={item.id}>
+            <OParlPreviewComponent data={item} navigation={navigation} />
+          </WrapperHorizontal>
         )}
         ListHeaderComponent={
           <Wrapper style={styles.noPaddingTop}>

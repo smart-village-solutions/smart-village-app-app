@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { consts } from '../../config';
 import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
-import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
 import { StorySection } from '../StorySection';
-import { RegularText } from '../Text';
-import { Wrapper } from '../Wrapper';
+import { HeadlineText, RegularText } from '../Text';
+import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -23,7 +22,7 @@ export const NewsItem = ({ data, route }) => {
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
-  const subtitle = `${momentFormatUtcToLocal(publishedAt)} | ${dataProvider && dataProvider.name}`;
+  const subtitle = dataProvider && dataProvider.name;
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
   const rootRouteName = route.params?.rootRouteName ?? '';
@@ -49,13 +48,30 @@ export const NewsItem = ({ data, route }) => {
 
   return (
     <View>
+      {!!subtitle && (
+        <WrapperVertical style={styles.noPaddingBottom}>
+          <WrapperRow center>
+            <HeadlineText smaller uppercase>
+              {subtitle}
+            </HeadlineText>
+          </WrapperRow>
+        </WrapperVertical>
+      )}
+
+      <WrapperRow center>
+        <SectionHeader big center title={trimNewLines(title)} />
+      </WrapperRow>
+
+      {!!momentFormatUtcToLocal(publishedAt) && (
+        <Wrapper center>
+          <WrapperRow center>
+            <RegularText>{momentFormatUtcToLocal(publishedAt)}</RegularText>
+          </WrapperRow>
+        </Wrapper>
+      )}
+
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection mediaContents={contentBlocks?.[0]?.mediaContents} />
-      <SectionHeader title={trimNewLines(title)} onPress={link ? openWebScreen : undefined} />
-      <Wrapper>
-        {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-        {!!logo && <Logo source={{ uri: logo }} />}
-      </Wrapper>
 
       {!!contentBlocks?.length &&
         contentBlocks.map((contentBlock, index) => (
@@ -73,6 +89,12 @@ export const NewsItem = ({ data, route }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  noPaddingBottom: {
+    paddingBottom: 0
+  }
+});
 
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired,

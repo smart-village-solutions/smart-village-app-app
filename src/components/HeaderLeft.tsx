@@ -2,7 +2,7 @@ import { HeaderBackButtonProps } from '@react-navigation/elements';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { colors, consts, device, Icon, normalize } from '../config';
 
 // TODO: can this be exchanged with https://reactnavigation.org/docs/elements/#headerbackbutton?
 export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) =>
@@ -20,6 +20,8 @@ export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) =>
         )}
       </TouchableOpacity>
     </View>
+  ) : device.platform == 'android' ? (
+    <Icon.ArrowLeft color={colors.surface} />
   ) : null;
 
 const styles = StyleSheet.create({

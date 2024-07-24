@@ -29,6 +29,7 @@ export * from './openingHoursHelper';
 export * from './personNameHelper';
 export * from './positionHelper';
 export * from './priceHelper';
+export * from './profileHelper';
 export * from './promiseHelper';
 export * from './queryHelper';
 export * from './refreshIntervalHelper';

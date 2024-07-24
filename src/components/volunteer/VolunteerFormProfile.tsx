@@ -279,14 +279,12 @@ export const VolunteerFormProfile = ({
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
-              onPress={() => onChange(!value)}
-              title="Jahr im Profil verbergen"
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
+              checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={styles.checkboxContainerStyle}
+              onPress={() => onChange(!value)}
               textStyle={styles.checkboxTextStyle}
+              title="Jahr im Profil verbergen"
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
           control={control}

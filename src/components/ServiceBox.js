@@ -3,15 +3,16 @@ import styled, { css } from 'styled-components/native';
 import { normalize } from '../config';
 
 const flexBasis = (props) => {
-  const { orientation, bigTile } = props;
-  const numberOfTiles = orientation === 'landscape' ? 5 : 3;
-  const tileFactor = bigTile ? 0.3 : 1;
+  const { orientation, bigTile, numberOfTiles: tilesConfig = {} } = props;
+  const { landscape = 5, portrait = 3 } = tilesConfig;
+  const numberOfTiles = orientation === 'landscape' ? landscape : portrait;
+  const tileFactor = bigTile ? (orientation === 'landscape' ? 1.2 : 0.7) : 1;
 
   return 100 / (numberOfTiles + 0.3 * tileFactor);
 };
 
 export const ServiceBox = styled.View`
-  margin: ${normalize(14)}px 0;
+  margin: ${normalize(16)}px 0;
 
   ${(props) =>
     css`
@@ -21,6 +22,6 @@ export const ServiceBox = styled.View`
   ${(props) =>
     props.bigTile &&
     css`
-      margin: 0 0 ${normalize(1)}px 0;
+      margin: 0 0 ${normalize(8)}px 0;
     `};
 `;
