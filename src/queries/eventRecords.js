@@ -111,6 +111,7 @@ export const GET_EVENT_RECORDS = gql`
   query EventRecords(
     $ids: [ID]
     $limit: Int
+    $take: Int
     $location: String
     $offset: Int
     $order: EventRecordsOrder
@@ -122,6 +123,7 @@ export const GET_EVENT_RECORDS = gql`
     eventRecords(
       ids: $ids
       limit: $limit
+      take: $take
       location: $location
       skip: $offset
       order: $order

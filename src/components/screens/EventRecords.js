@@ -50,6 +50,8 @@ const hasFilterSelection = (isLocationFilter, queryVariables) => {
 };
 
 const today = moment().format('YYYY-MM-DD');
+// we need to set a date range to correctly sort the results by list date, so we set it far in the future
+const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -63,7 +65,10 @@ export const EventRecords = ({ navigation, route }) => {
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
-  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
+  const [queryVariables, setQueryVariables] = useState({
+    ...(route.params?.queryVariables || {}),
+    dateRange: (route.params?.queryVariables || {}).dateRange || [today, todayIn10Years]
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [filterByDailyEvents, setFilterByDailyEvents] = useState(
@@ -73,7 +78,8 @@ export const EventRecords = ({ navigation, route }) => {
   const showFilter = (route.params?.showFilter ?? true) && showEventsFilter;
   const showFilterByDailyEvents =
     (route.params?.showFilterByDailyEvents ?? showFilter) && !showCalendar;
-  const hasDailyFilterSelection = !!queryVariables.dateRange;
+  const hasDailyFilterSelection =
+    !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
 
   // https://github.com/ndraaditiya/React-Query-GraphQL/blob/main/src/services/index.jsx
@@ -83,7 +89,11 @@ export const EventRecords = ({ navigation, route }) => {
         deprecated?.events?.listingWithoutDateFragment
           ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
           : QUERY_TYPES.EVENT_RECORDS,
-        queryVariables
+        {
+          ...queryVariables,
+          limit: undefined,
+          take: queryVariables.limit
+        }
       ],
       async ({ pageParam = 0 }) => {
         const client = await ReactQueryClient();
@@ -96,6 +106,8 @@ export const EventRecords = ({ navigation, route }) => {
           ),
           {
             ...queryVariables,
+            limit: undefined,
+            take: queryVariables.limit,
             offset: pageParam
           }
         );
@@ -174,10 +186,7 @@ export const EventRecords = ({ navigation, route }) => {
         });
       } else {
         setQueryVariables((prevQueryVariables) => {
-          // remove the filter key for the specific query, when unselecting daily events
-          delete prevQueryVariables.dateRange;
-
-          return { ...prevQueryVariables, refetchDate: true };
+          return { ...prevQueryVariables, dateRange: [today, todayIn10Years], refetchDate: true };
         });
       }
 
@@ -248,12 +257,14 @@ export const EventRecords = ({ navigation, route }) => {
     }, [isConnected, refetch, refetchVolunteerEvents, showCalendar, showVolunteerEvents])
   );
 
-  const fetchMoreData = useCallback(() => {
+  const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
 
     if (hasNextPage) {
-      return fetchNextPage();
+      return await fetchNextPage();
     }
+
+    return {};
   }, [data, fetchNextPage, showCalendar, hasNextPage, query]);
 
   if (!query) return null;

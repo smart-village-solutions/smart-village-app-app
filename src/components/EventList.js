@@ -78,7 +78,7 @@ export const EventList = ({
         );
       };
 
-      setListEndReached(!hasLastPageEventRecords);
+      setListEndReached(!hasLastPageEventRecords());
     } else {
       setListEndReached(true);
     }
