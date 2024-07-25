@@ -55,7 +55,7 @@ type TCluster = {
 
 const CIRCLE_SIZES = [normalize(60), normalize(50), normalize(40), normalize(30)];
 const DEFAULT_ZOOM_LEVEL = 14;
-const HIT_BOX_SIZE = normalize(80);
+const HIT_BOX_SIZE = normalize(50);
 const MARKER_ICON_SIZE = normalize(40);
 const MAX_ZOOM_LEVEL = 20;
 const ONE_MARKER_ZOOM_LEVEL = 15;
@@ -80,12 +80,13 @@ const renderCluster = (cluster: TCluster) => {
 
   return (
     <PointAnnotation
-      key={`cluster-${id}`}
-      id={`cluster-${id}`}
       coordinate={geometry.coordinates}
+      id={`cluster-${id}`}
+      key={`cluster-${id}`}
       onSelected={onPress}
+      style={styles.hitBox}
     >
-      <View style={styles.hitBox}>
+      <>
         {CIRCLE_SIZES.map((size, index) => (
           <View
             key={`circle-${index}`}
@@ -105,7 +106,7 @@ const renderCluster = (cluster: TCluster) => {
             </RegularText>
           </View>
         ))}
-      </View>
+      </>
     </PointAnnotation>
   );
 };
@@ -211,7 +212,7 @@ export const Map = ({
             centerCoordinate: coordinates[0],
             zoomLevel: ONE_MARKER_ZOOM_LEVEL
           });
-          setIsLoading(false);
+
           setIsInitialFit(false);
         }
       } else if (coordinates && coordinates.length > 0) {
@@ -225,7 +226,6 @@ export const Map = ({
             0
           );
 
-          setIsLoading(false);
           setIsInitialFit(false);
         }
       }
@@ -251,6 +251,7 @@ export const Map = ({
           longitude: geometry.coordinates[0]
         }
       };
+
       onMapPress({ nativeEvent });
     }
   };
@@ -262,17 +263,13 @@ export const Map = ({
       setIsAnimating(true);
       const [longitude, latitude] = cluster.geometry.coordinates;
 
-      if (superClusterRef.current) {
-        const expansionZoom = superClusterRef.current.getClusterExpansionZoom(cluster.id);
+      const expansionZoom = superClusterRef?.current.getClusterExpansionZoom(cluster.id);
 
-        if (cameraRef.current) {
-          cameraRef.current.setCamera({
-            animationDuration: 1000,
-            centerCoordinate: [longitude, latitude],
-            zoomLevel: expansionZoom
-          });
-        }
-      }
+      cameraRef?.current.setCamera({
+        animationDuration: 1000,
+        centerCoordinate: [longitude, latitude],
+        zoomLevel: expansionZoom
+      });
 
       setIsAnimating(false);
     },
@@ -284,6 +281,7 @@ export const Map = ({
       <LoadingSpinner containerStyle={styles.loadingContainer} loading={isLoading} />
       <MapView
         attributionEnabled={false}
+        onDidFinishLoadingMap={() => setIsLoading(false)}
         onPress={handleMapPress}
         onRegionDidChange={(region) => {
           const newZoomLevel = Math.round(region.properties.zoomLevel);
@@ -301,19 +299,19 @@ export const Map = ({
 
         {clusters.map((marker, index) => {
           const [longitude, latitude] = marker.geometry.coordinates;
-          const { cluster: isCluster } = marker.properties;
+          const { id, properties = {} } = marker;
+          const { cluster: isCluster, point_count } = properties;
 
           if (clusteringEnabled && isCluster) {
             return renderCluster({
               clusterColor: colors.primary,
               geometry: { coordinates: [longitude, latitude] },
-              id: index,
+              id,
               onPress: () => handleClusterPress(marker),
               properties: marker.properties
             });
           }
-
-          const isActiveMarker = selectedMarker && marker.id === selectedMarker;
+          const isActiveMarker = selectedMarker && id === selectedMarker;
           const serviceName = truncateText(marker?.serviceName);
           const title = truncateText(marker?.title);
 
@@ -453,9 +451,8 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   hitBox: {
-    alignItems: 'center',
+    borderRadius: normalize(HIT_BOX_SIZE / 2),
     height: normalize(HIT_BOX_SIZE),
-    justifyContent: 'center',
     width: normalize(HIT_BOX_SIZE)
   },
   container: {
