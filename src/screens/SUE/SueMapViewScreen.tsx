@@ -2,10 +2,21 @@ import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
-import { Map } from '../../components';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Map, locationServiceEnabledAlert } from '../../components';
 import { colors, normalize, texts } from '../../config';
+import { useLocationSettings } from '../../hooks';
 
-export const SueMapViewScreen = ({ route }: { route: any }) => {
+export const SueMapViewScreen = ({
+  navigation,
+  route
+}: {
+  navigation: StackNavigationProp<any>;
+  route: any;
+}) => {
+  const { locationSettings = {} } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings;
+
   const {
     calloutTextEnabled,
     currentPosition,
@@ -61,6 +72,12 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             {
               text: texts.sue.report.alerts.yes,
               onPress: async () => {
+                locationServiceEnabledAlert({
+                  currentPosition,
+                  locationServiceEnabled,
+                  navigation
+                });
+
                 setSelectedPosition(currentPosition.coords);
                 setUpdatedRegion(true);
 
@@ -81,9 +98,9 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             setSelectedPosition(nativeEvent.coordinate);
             setUpdatedRegion(false);
 
-            try {
-              await onMapPress({ nativeEvent });
-            } catch (error) {
+            const mapPress = await onMapPress({ nativeEvent });
+
+            if (!!mapPress?.error) {
               setSelectedPosition(undefined);
             }
           }

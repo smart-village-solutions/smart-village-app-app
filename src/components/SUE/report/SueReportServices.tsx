@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -8,6 +8,21 @@ import { QUERY_TYPES, getQuery } from '../../../queries';
 import { TService } from '../../../screens';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
+
+const ServiceTile = memo(({ item, selected, onPress }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[
+      styles.tile,
+      {
+        backgroundColor: selected ? colors.primary + '10' : colors.transparent,
+        borderColor: selected ? colors.primary : colors.gray40
+      }
+    ]}
+  >
+    <BoldText center>{item.serviceName}</BoldText>
+  </TouchableOpacity>
+));
 
 export const SueReportServices = ({
   service,
@@ -26,10 +41,12 @@ export const SueReportServices = ({
     refresh();
   }, []);
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     await refetch();
     setLoading(false);
-  };
+  }, [refetch]);
+
+  const memoizedData = useMemo(() => data || [], [data]);
 
   if (isLoading || loading) {
     return <LoadingSpinner loading />;
@@ -37,23 +54,15 @@ export const SueReportServices = ({
 
   return (
     <View style={styles.container}>
-      {data?.map((item, index) => {
+      {memoizedData.map((item, index) => {
         const selected = service?.serviceCode === item.serviceCode;
-
         return (
-          <TouchableOpacity
+          <ServiceTile
             key={index}
+            item={item}
+            selected={selected}
             onPress={() => setService(item)}
-            style={[
-              styles.tile,
-              {
-                backgroundColor: selected ? colors.primary + '10' : colors.transparent,
-                borderColor: selected ? colors.primary : colors.gray40
-              }
-            ]}
-          >
-            <BoldText center>{item.serviceName}</BoldText>
-          </TouchableOpacity>
+          />
         );
       })}
     </View>

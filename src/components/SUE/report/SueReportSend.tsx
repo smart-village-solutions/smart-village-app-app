@@ -31,8 +31,8 @@ export const SueReportSend = ({
   navigation: any;
 }) => {
   const { sueConfig = {} } = useContext(ConfigurationsContext);
-  const { sueReportScreen = {}, showFeedbackSection } = sueConfig;
-  const { reportSendDone = {}, reportSendLoading = {} } = sueReportScreen;
+  const { sueReportScreen = {} } = sueConfig;
+  const { reportSendDone = {}, reportSendLoading = {}, showFeedbackSection } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
 

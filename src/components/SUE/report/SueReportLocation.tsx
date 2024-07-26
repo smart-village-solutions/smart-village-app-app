@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
-import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Linking, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
@@ -18,7 +18,7 @@ import {
   useSystemPermission
 } from '../../../hooks';
 import { QUERY_TYPES, getQuery } from '../../../queries';
-import { TValues, mapToMapMarkers } from '../../../screens';
+import { SETTINGS_SCREENS, TValues, mapToMapMarkers } from '../../../screens';
 import { MapMarker, ScreenName } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
@@ -28,6 +28,43 @@ import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
 const { INPUT_KEYS } = consts;
+
+export const locationServiceEnabledAlert = ({
+  currentPosition,
+  locationServiceEnabled,
+  navigation
+}: {
+  currentPosition?: Location.LocationObject;
+  locationServiceEnabled?: Boolean;
+  navigation: StackNavigationProp<any>;
+}) => {
+  if (!locationServiceEnabled || !currentPosition) {
+    Alert.alert(
+      texts.settingsTitles.locationService,
+      !locationServiceEnabled
+        ? texts.settingsContents.locationService.onLocationServiceMissing
+        : texts.settingsContents.locationService.onSystemPermissionMissing,
+      [
+        {
+          text: texts.sue.report.alerts.imageSelectAlert.cancel
+        },
+        {
+          text: texts.sue.report.alerts.settings,
+          onPress: () => {
+            if (!locationServiceEnabled) {
+              navigation.navigate(ScreenName.Settings, {
+                setting: SETTINGS_SCREENS.LOCATION,
+                title: texts.settingsContents.locationService.setting
+              });
+            } else if (!currentPosition) {
+              Linking.openSettings();
+            }
+          }
+        }
+      ]
+    );
+  }
+};
 
 enum SueStatus {
   IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
@@ -63,7 +100,8 @@ export const SueReportLocation = ({
 }) => {
   const reverseGeocode = useReverseGeocode();
   const navigation = useNavigation();
-  const { locationSettings } = useLocationSettings();
+  const { locationSettings = {} } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings;
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { locationService } = settings;
@@ -71,11 +109,12 @@ export const SueReportLocation = ({
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
-  const now = moment();
 
-  const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
+  const { position } = usePosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
   const { position: lastKnownPosition } = useLastKnownPosition(
-    systemPermission?.status !== Location.PermissionStatus.GRANTED
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
   );
   const currentPosition = position || lastKnownPosition;
 
@@ -138,18 +177,13 @@ export const SueReportLocation = ({
     }
   }, []);
 
-  const handleGeocode = async (position: { latitude: number; longitude: number }) => {
-    try {
-      await reverseGeocode({
-        areaServiceData,
-        errorMessage,
-        position,
-        setValue
-      });
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
+  const handleGeocode = async (position: { latitude: number; longitude: number }) =>
+    await reverseGeocode({
+      areaServiceData,
+      errorMessage,
+      position,
+      setValue
+    });
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
@@ -192,7 +226,7 @@ export const SueReportLocation = ({
       } catch (error) {
         setSelectedPosition(undefined);
         Alert.alert(texts.sue.report.alerts.hint, error.message);
-        throw new Error(error.message);
+        return { error: error.message };
       }
     }
   };
@@ -206,6 +240,12 @@ export const SueReportLocation = ({
         {
           text: texts.sue.report.alerts.yes,
           onPress: async () => {
+            locationServiceEnabledAlert({
+              currentPosition,
+              locationServiceEnabled,
+              navigation
+            });
+
             if (currentPosition) {
               setSelectedPosition(currentPosition.coords);
               setUpdatedRegion(true);
@@ -232,7 +272,6 @@ export const SueReportLocation = ({
         } catch (error) {
           setSelectedPosition(undefined);
           Alert.alert(texts.sue.report.alerts.hint, error.message);
-          throw new Error(error.message);
         }
       }
     }

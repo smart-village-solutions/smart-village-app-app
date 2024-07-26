@@ -878,12 +878,17 @@ export const texts = {
       abort: 'Abbrechen',
       alternativePositionHint:
         'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
+      cancel: 'Abbrechen',
       chooseAlternateLocationButton: 'Alternativen Standort wählen',
       next: 'Weiter',
-      onSystemPermissionMissing:
+      ok: 'OK',
+      onLocationServiceMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
+      onSystemPermissionMissing:
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes müssen Sie die App neu starten.',
       save: 'Speichern',
-      setting: 'Standort'
+      setting: 'Standort',
+      settings: 'Einstellungen'
     },
     mowasRegion: {
       setting: 'MoWaS-Regionen'
@@ -978,9 +983,11 @@ export const texts = {
         missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort als Adresse übernehmen?',
+        ok: 'OK',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
+        settings: 'Einstellungen',
         street: 'Bitte geben Sie die Straße an',
-        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
+        terms: 'Bitte akzeptieren Sie die Datenschutzbestimmung und Nutzungsbedingung.',
         title: 'Bitte kurz beschreiben, worum es geht.',
         yes: 'Ja',
         postalCode: 'Bitte geben Sie die Postleitzahl an',
@@ -997,7 +1004,8 @@ export const texts = {
       houseNumber: 'Hausnummer',
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
       lastName: 'Nachname',
-      mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
+      mapHint:
+        'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen Standort verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',
@@ -1010,7 +1018,9 @@ export const texts = {
         toEntryList: 'Zur Meldungsliste'
       },
       street: 'Straße',
-      termsOfService: 'Datenschutzbestimmungen',
+      termsInputCheckbox: 'Ich stimme den folgenden Bedingungen zu:',
+      termsOfService: 'Datenschutzbestimmung',
+      termsOfUse: 'Nutzungsbedingung',
       title: 'Kurze Beschreibung',
       postalCode: 'Postleitzahl'
     },

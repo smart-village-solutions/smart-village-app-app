@@ -109,14 +109,21 @@ const renderCardContent = (item, horizontal, sue) => {
 /* eslint-enable complexity */
 
 export const CardListItem = memo(({ navigation, horizontal, item, sue }) => {
-  const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
+  const {
+    appDesignSystem = {},
+    navigation: itemNavigation = {},
+    params,
+    routeName: name,
+    subtitle,
+    title
+  } = item;
   const { containerStyle, contentContainerStyle } = appDesignSystem;
 
   return (
     <Touchable
       accessibilityLabel={`${subtitle} (${title}) ${consts.a11yLabel.button}`}
-      onPress={() => navigation && navigation.push(name, params)}
-      disabled={!navigation}
+      onPress={() => navigation && !!itemNavigation && navigation.push(name, params)}
+      disabled={!navigation || !itemNavigation}
     >
       <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
         <View
