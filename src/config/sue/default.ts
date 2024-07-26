@@ -1,9 +1,8 @@
 const apiDefaults = {
   apiKey: '',
   areaService: { apiKey: '', id: '', serverUrl: '' },
-  jurisdictionId: '',
   serverUrl: '',
-  testApi: { apiKey: '', jurisdictionId: '', serverUrl: '' },
+  testApi: { apiKey: '', serverUrl: '' },
   whichApi: ''
 };
 
