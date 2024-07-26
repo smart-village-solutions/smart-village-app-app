@@ -660,7 +660,7 @@ export const SueReportScreen = ({
           {sueProgressWithConfig?.map((item: TProgress, index: number) => (
             <ScrollView
               key={index}
-              contentContainerStyle={[styles.contentContainer, index === 0 && styles.flex]}
+              contentContainerStyle={styles.contentContainer}
               ref={(e) => (scrollViewContentRef.current[index] = e)}
               onContentSizeChange={(contentHeight: number) =>
                 handleContentSizeChange(index, contentHeight)
@@ -751,9 +751,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: device.width
-  },
-  flex: {
-    flex: 1
   },
   noPaddingBottom: {
     paddingBottom: 0
