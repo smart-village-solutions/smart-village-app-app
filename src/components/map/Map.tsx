@@ -272,6 +272,7 @@ export const Map = ({
             setZoomLevel(newZoomLevel);
           }
         }}
+        rotateEnabled={false}
         style={[stylesForMap().map, mapStyle]}
         styleJSON="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
       >
