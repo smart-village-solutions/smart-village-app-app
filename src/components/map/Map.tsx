@@ -54,11 +54,11 @@ type TCluster = {
 };
 
 const CIRCLE_SIZES = [normalize(60), normalize(50), normalize(40), normalize(30)];
-const DEFAULT_ZOOM_LEVEL = 14;
+const ONE_MARKER_ZOOM_LEVEL = 15;
+const DEFAULT_ZOOM_LEVEL = ONE_MARKER_ZOOM_LEVEL;
 const HIT_BOX_SIZE = normalize(50);
 const MARKER_ICON_SIZE = normalize(40);
 const MAX_ZOOM_LEVEL = 20;
-const ONE_MARKER_ZOOM_LEVEL = 15;
 
 const MapIcon = ({
   iconColor,
@@ -183,8 +183,8 @@ export const Map = ({
       } else {
         setMarkers(mapLocations);
       }
-    }, 1000);
-  }, [isInitialFit, clusteringEnabled, clusterDistance, zoomLevel]);
+    }, 500);
+  }, [clusteringEnabled, mapLocations, clusterDistance, zoomLevel]);
 
   useEffect(() => {
     if (markers.length > 0 && isInitialFit) {
@@ -229,13 +229,12 @@ export const Map = ({
   }, [updatedRegion]);
 
   const handleMapPress = useCallback(
-    (event) => {
+    (coordinate) => {
       if (onMapPress) {
-        const { geometry } = event;
         const nativeEvent = {
           coordinate: {
-            latitude: geometry.coordinates[1],
-            longitude: geometry.coordinates[0]
+            latitude: coordinate.geometry.coordinates[1],
+            longitude: coordinate.geometry.coordinates[0]
           }
         };
 
