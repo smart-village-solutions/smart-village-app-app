@@ -146,26 +146,6 @@ export const Map = ({
   const showsUserLocationSetting =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? showsUserLocation;
 
-  // center of Germany
-  let initialRegion: { latitude: number; longitude: number } = {
-    latitude: 51.1657,
-    longitude: 10.4515
-  };
-
-  if (locations?.[0]?.position?.latitude && locations[0]?.position?.longitude) {
-    initialRegion = {
-      ...initialRegion,
-      latitude: locations[0].position.latitude,
-      longitude: locations[0].position.longitude
-    };
-  }
-
-  if (mapCenterPosition) {
-    initialRegion = {
-      ...initialRegion,
-      ...mapCenterPosition
-    };
-  }
 
   const mapLocations = locations.map((location, index) => ({
     ...location,
@@ -291,7 +271,6 @@ export const Map = ({
             setZoomLevel(newZoomLevel);
           }
         }}
-        showUserLocation={showsUserLocationSetting}
         style={[stylesForMap().map, mapStyle]}
         styleJSON="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
       >
