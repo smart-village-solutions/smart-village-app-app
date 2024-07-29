@@ -36,7 +36,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { showFilterByOpeningTimes: showOpeningTimes = true } = settings;
+  const { showOpeningTimes = true } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const {
     addresses,
