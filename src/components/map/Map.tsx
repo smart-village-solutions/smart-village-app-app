@@ -7,7 +7,7 @@ import MapLibreGL, {
   UserLocation
 } from '@maplibre/maplibre-react-native';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Supercluster from 'supercluster';
 
@@ -111,7 +111,6 @@ const renderCluster = (cluster: TCluster) => {
   );
 };
 
-/* eslint-disable complexity */
 export const Map = ({
   calloutTextEnabled = false,
   clusterDistance = 50,
@@ -134,68 +133,75 @@ export const Map = ({
   ...otherProps
 }: Props) => {
   const { locationSettings } = useLocationSettings();
-  const cameraRef = useRef<MapLibreGL.Camera>(null);
+  const cameraRef = useRef<typeof MapLibreGL.Camera>(null);
   const superClusterRef = useRef(null);
-
-  const [clusters, setClusters] = useState<any[]>([]);
-  const [zoomLevel, setZoomLevel] = useState<number>(DEFAULT_ZOOM_LEVEL);
-  const [isInitialFit, setIsInitialFit] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
-
+  const [markers, setMarkers] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(DEFAULT_ZOOM_LEVEL);
+  const [isInitialFit, setIsInitialFit] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const showsUserLocationSetting =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? showsUserLocation;
 
-
-  const mapLocations = locations.map((location, index) => ({
-    ...location,
-    type: 'Feature',
-    properties: { cluster: false, id: location.id, index },
-    geometry: {
-      type: 'Point',
-      coordinates: [location.position.longitude, location.position.latitude]
-    }
-  }));
+  const mapLocations = useMemo(
+    () =>
+      locations.map((location, index) => ({
+        ...location,
+        type: 'Feature',
+        properties: { cluster: false, id: location.id, index },
+        geometry: {
+          type: 'Point',
+          coordinates: [location.position.longitude, location.position.latitude]
+        }
+      })),
+    [locations]
+  );
 
   useEffect(() => {
-    if (clusteringEnabled) {
-      const index = new Supercluster({
-        radius: clusterDistance,
-        maxZoom: MAX_ZOOM_LEVEL
-      });
-      /**
-       * the values represent the maximum possible latitude and longitude values for the earth's
-       * coordinate system, defining a rectangular area that covers the entire world.
-       * The values are based on the following assumptions:
-       * Westernmost longitude: 2° E (covering parts of France and the Netherlands)
-       * Easternmost longitude: 18° E (covering parts of Poland and the Czech Republic)
-       * Northernmost latitude: 56° N (covering parts of Denmark)
-       * Southernmost latitude: 46° N (covering parts of Switzerland and Austria)
-       */
-      const bounds = [2, 46, 18, 56];
-      const points = mapLocations;
+    setTimeout(() => {
+      if (clusteringEnabled && mapLocations.length > 1) {
+        const index = new Supercluster({
+          radius: clusterDistance,
+          maxZoom: MAX_ZOOM_LEVEL
+        });
 
-      index.load(points);
-      superClusterRef.current = index; // Store the Supercluster instance in the ref
+        /**
+         * the values represent the maximum possible latitude and longitude values for the earth's
+         * coordinate system, defining a rectangular area that covers the entire world.
+         * The values are based on the following assumptions:
+         * Westernmost longitude: 2° E (covering parts of France and the Netherlands)
+         * Easternmost longitude: 18° E (covering parts of Poland and the Czech Republic)
+         * Northernmost latitude: 56° N (covering parts of Denmark)
+         * Southernmost latitude: 46° N (covering parts of Switzerland and Austria)
+         */
+        const bounds = [2, 46, 18, 56];
+        const points = mapLocations;
 
-      setClusters(index.getClusters(bounds, zoomLevel));
-    } else {
-      setClusters(mapLocations);
-    }
+        index.load(points);
+        superClusterRef.current = index; // Store the Supercluster instance in the ref
 
-    if (locations.length > 0 && isInitialFit) {
-      const coordinates = locations.map((loc) => [loc.position.longitude, loc.position.latitude]);
-      if (locations.length === 1) {
+        setMarkers(index.getClusters(bounds, zoomLevel));
+      } else {
+        setMarkers(mapLocations);
+      }
+    }, 1000);
+  }, [isInitialFit, clusteringEnabled, clusterDistance, zoomLevel]);
+
+  useEffect(() => {
+    if (markers.length > 0 && isInitialFit) {
+      const coordinates = locations.map((location) => [
+        location.position.longitude,
+        location.position.latitude
+      ]);
+
+      if (coordinates.length === 1) {
         if (cameraRef.current) {
           cameraRef.current.setCamera({
             animationDuration: 1000,
             centerCoordinate: coordinates[0],
             zoomLevel: ONE_MARKER_ZOOM_LEVEL
           });
-
-          setIsInitialFit(false);
         }
-      } else if (coordinates && coordinates.length > 0) {
+      } else {
         const { minLng, minLat, maxLng, maxLat, deltaLng, deltaLat } =
           calculateBoundsToFitAllMarkers(coordinates);
 
@@ -205,12 +211,12 @@ export const Map = ({
             [maxLng + deltaLng, maxLat + deltaLat],
             0
           );
-
-          setIsInitialFit(false);
         }
       }
+
+      setIsInitialFit(false);
     }
-  }, [locations, clusterDistance, zoomLevel, isInitialFit, clusteringEnabled]);
+  }, [markers, isInitialFit]);
 
   useEffect(() => {
     if (updatedRegion && cameraRef.current) {
@@ -222,39 +228,34 @@ export const Map = ({
     }
   }, [updatedRegion]);
 
-  const handleMapPress = (event) => {
-    if (onMapPress) {
-      const { geometry } = event;
-      const nativeEvent = {
-        coordinate: {
-          latitude: geometry.coordinates[1],
-          longitude: geometry.coordinates[0]
-        }
-      };
+  const handleMapPress = useCallback(
+    (event) => {
+      if (onMapPress) {
+        const { geometry } = event;
+        const nativeEvent = {
+          coordinate: {
+            latitude: geometry.coordinates[1],
+            longitude: geometry.coordinates[0]
+          }
+        };
 
-      onMapPress({ nativeEvent });
-    }
-  };
+        onMapPress({ nativeEvent });
+      }
+    },
+    [onMapPress]
+  );
 
-  const handleClusterPress = useCallback(
-    (cluster: TCluster) => {
-      if (isAnimating) return;
+  const handleClusterPress = useCallback((cluster: TCluster) => {
+    const expansionZoom = superClusterRef?.current?.getClusterExpansionZoom(cluster.id);
 
-      setIsAnimating(true);
-      const [longitude, latitude] = cluster.geometry.coordinates;
-
-      const expansionZoom = superClusterRef?.current.getClusterExpansionZoom(cluster.id);
-
-      cameraRef?.current.setCamera({
+    if (cameraRef.current && expansionZoom) {
+      cameraRef.current.setCamera({
         animationDuration: 1000,
-        centerCoordinate: [longitude, latitude],
+        centerCoordinate: cluster.geometry.coordinates,
         zoomLevel: expansionZoom
       });
-
-      setIsAnimating(false);
-    },
-    [isAnimating]
-  );
+    }
+  }, []);
 
   return (
     <View style={[styles.container, style]}>
@@ -276,10 +277,10 @@ export const Map = ({
       >
         <Camera ref={cameraRef} minZoomLevel={minZoom} />
 
-        {clusters.map((marker, index) => {
+        {markers.map((marker, index) => {
           const [longitude, latitude] = marker.geometry.coordinates;
           const { id, properties = {} } = marker;
-          const { cluster: isCluster, point_count } = properties;
+          const { cluster: isCluster } = properties;
 
           if (clusteringEnabled && isCluster) {
             return renderCluster({
@@ -290,6 +291,7 @@ export const Map = ({
               properties: marker.properties
             });
           }
+
           const isActiveMarker = selectedMarker && id === selectedMarker;
           const serviceName = truncateText(marker?.serviceName);
           const title = truncateText(marker?.title);
@@ -298,6 +300,7 @@ export const Map = ({
             <PointAnnotation
               anchor={{ x: 0.5, y: 1 }}
               coordinate={[marker.position.longitude, marker.position.latitude]}
+              id={`${index}-${marker.id}`}
               key={`${index}-${marker.id}`}
               onSelected={() => onMarkerPress?.(marker.id)}
             >
@@ -403,7 +406,6 @@ export const Map = ({
     </View>
   );
 };
-/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   callout: {
