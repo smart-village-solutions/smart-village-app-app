@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Font from 'expo-font';
+import * as Sentry from '@sentry/react-native';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { AppState, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -26,7 +26,7 @@ SplashScreen.preventAutoHideAsync();
 
 const App = () => {
   const appState = useRef(AppState.currentState);
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [isFontLoaded] = useFonts(fontConfig);
 
   useEffect(() => {
     // runs auth() if app returns from background or inactive to foreground
@@ -41,21 +41,6 @@ const App = () => {
     return () => {
       subscription.remove();
     };
-  }, []);
-
-  useEffect(() => {
-    async function prepare() {
-      try {
-        // Pre-load fonts
-        await Font.loadAsync(fontConfig);
-      } catch (error) {
-        console.warn(error);
-      } finally {
-        setIsFontLoaded(true);
-      }
-    }
-
-    prepare();
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
