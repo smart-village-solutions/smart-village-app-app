@@ -1,8 +1,8 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Map, locationServiceEnabledAlert } from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { useLocationSettings } from '../../hooks';
@@ -100,7 +100,7 @@ export const SueMapViewScreen = ({
 
             const mapPress = await onMapPress({ nativeEvent });
 
-            if (!!mapPress?.error) {
+            if (mapPress?.error) {
               setSelectedPosition(undefined);
             }
           }
