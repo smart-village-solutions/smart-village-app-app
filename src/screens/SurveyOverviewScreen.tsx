@@ -103,7 +103,7 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
     <SafeAreaViewFlex>
       <SectionList
         ListHeaderComponent={
-          !!data ? (
+          data ? (
             <Wrapper>
               <HtmlView html={data} />
             </Wrapper>

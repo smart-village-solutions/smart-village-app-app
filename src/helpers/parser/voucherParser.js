@@ -1,5 +1,6 @@
-import { consts } from '../../config';
+import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
 import { mainImageOfMediaContents } from '../imageHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
