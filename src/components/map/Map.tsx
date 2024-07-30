@@ -1,9 +1,11 @@
 import MapLibreGL, {
   Camera,
+  CircleLayer,
   LineLayer,
   MapView,
   PointAnnotation,
   ShapeSource,
+  SymbolLayer,
   UserLocation
 } from '@maplibre/maplibre-react-native';
 import _upperFirst from 'lodash/upperFirst';
@@ -74,40 +76,40 @@ const MapIcon = ({
   return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
-const renderCluster = (cluster: TCluster) => {
-  const { clusterColor: backgroundColor, geometry, id, onPress, properties = {} } = cluster;
-  const { point_count } = properties;
+const renderCluster = ({ markers, onPress }: { markers: any[]; onPress: () => void }) => {
+  let clustersData = {
+    features: [],
+    type: 'FeatureCollection'
+  };
+
+  markers.map((item) => {
+    if (item.properties.point_count > 0) {
+      clustersData.features.push(item);
+    }
+  });
 
   return (
-    <PointAnnotation
-      coordinate={geometry.coordinates}
-      id={`cluster-${id}`}
-      key={`cluster-${id}`}
-      onSelected={onPress}
-      style={styles.hitBox}
+    <ShapeSource
+      hitbox={{ width: HIT_BOX_SIZE, height: HIT_BOX_SIZE }}
+      id="clusters"
+      onPress={onPress}
+      shape={clustersData}
     >
-      <>
-        {CIRCLE_SIZES.map((size, index) => (
-          <View
-            key={`circle-${index}`}
-            style={[
-              styles.clusterCircle,
-              {
-                backgroundColor,
-                borderRadius: normalize(size / 2),
-                height: normalize(size),
-                opacity: 0.2 * (index + 1),
-                width: normalize(size)
-              }
-            ]}
-          >
-            <RegularText lightest center smallest>
-              {point_count}
-            </RegularText>
-          </View>
-        ))}
-      </>
-    </PointAnnotation>
+      {CIRCLE_SIZES.map((size, index) => (
+        <CircleLayer
+          filter={['has', 'point_count']}
+          id={`circle-${index}`}
+          key={`circle-${index}`}
+          style={{
+            circleColor: colors.primary,
+            circleOpacity: 0.2 * (index + 1),
+            circlePitchAlignment: 'map',
+            circleRadius: size / 2,
+            circleStrokeColor: 'white'
+          }}
+        />
+      ))}
+    </ShapeSource>
   );
 };
 
@@ -209,7 +211,8 @@ export const Map = ({
           cameraRef.current.fitBounds(
             [minLng - deltaLng, minLat - deltaLat],
             [maxLng + deltaLng, maxLat + deltaLat],
-            0
+            0,
+            1000
           );
         }
       }
@@ -245,7 +248,7 @@ export const Map = ({
   );
 
   const handleClusterPress = useCallback((cluster: TCluster) => {
-    const expansionZoom = superClusterRef?.current?.getClusterExpansionZoom(cluster.id);
+    const expansionZoom = superClusterRef?.current?.getClusterExpansionZoom(parseInt(cluster.id));
 
     if (cameraRef.current && expansionZoom) {
       cameraRef.current.setCamera({
@@ -278,17 +281,13 @@ export const Map = ({
         <Camera ref={cameraRef} minZoomLevel={minZoom} />
 
         {markers.map((marker, index) => {
-          const [longitude, latitude] = marker.geometry.coordinates;
           const { id, properties = {} } = marker;
           const { cluster: isCluster } = properties;
 
           if (clusteringEnabled && isCluster) {
             return renderCluster({
-              clusterColor: colors.primary,
-              geometry: { coordinates: [longitude, latitude] },
-              id,
-              onPress: () => handleClusterPress(marker),
-              properties: marker.properties
+              markers,
+              onPress: ({ features }) => handleClusterPress(features?.[0])
             });
           }
 
