@@ -23,6 +23,7 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
+        "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": true },
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App kann die Standortbestimmung nutzen, um Ihre aktuelle Position auf der Karte darzustellen und Inhalte nach Entfernung zu sortieren.",
