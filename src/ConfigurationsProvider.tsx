@@ -45,16 +45,19 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const { data: sueProgress } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
-    type: 'json'
+    type: 'json',
+    skip: !Object.keys(sue).length
   });
 
   const mergedConfig = useMemo(() => {
-    const config = {
+    if (!Object.keys(sue).length) {
+      return defaultConfiguration;
+    }
+
+    return mergeDefaultConfiguration(defaultConfiguration, {
       appDesignSystem,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
-    };
-
-    return mergeDefaultConfiguration({ ...defaultConfiguration }, config);
+    });
   }, [appDesignSystem, sue, sueConfigData, sueProgress]);
 
   useEffect(() => {
