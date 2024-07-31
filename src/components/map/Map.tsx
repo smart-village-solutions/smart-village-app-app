@@ -74,8 +74,8 @@ const MapIcon = ({
   return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
-const renderCluster = (cluster: TCluster) => {
-  const { clusterColor: backgroundColor, geometry, id, onPress, properties = {} } = cluster;
+const renderCluster = (cluster: TCluster, handleClusterPress) => {
+  const { geometry, id, properties = {} } = cluster;
   const { point_count } = properties;
 
   return (
@@ -83,7 +83,7 @@ const renderCluster = (cluster: TCluster) => {
       coordinate={geometry.coordinates}
       id={`cluster-${id}`}
       key={`cluster-${id}`}
-      onSelected={onPress}
+      onSelected={() => handleClusterPress(cluster)}
       style={styles.hitBox}
     >
       <>
@@ -93,7 +93,7 @@ const renderCluster = (cluster: TCluster) => {
             style={[
               styles.clusterCircle,
               {
-                backgroundColor,
+                backgroundColor: colors.primary,
                 borderRadius: normalize(size / 2),
                 height: normalize(size),
                 opacity: 0.2 * (index + 1),
@@ -183,7 +183,7 @@ export const Map = ({
       } else {
         setMarkers(mapLocations);
       }
-    }, 500);
+    }, 100);
   }, [clusteringEnabled, mapLocations, clusterDistance, zoomLevel]);
 
   useEffect(() => {
@@ -209,7 +209,8 @@ export const Map = ({
           cameraRef.current.fitBounds(
             [minLng - deltaLng, minLat - deltaLat],
             [maxLng + deltaLng, maxLat + deltaLat],
-            0
+            0,
+            1000
           );
         }
       }
@@ -256,6 +257,16 @@ export const Map = ({
     }
   }, []);
 
+  const markersForClustering = useMemo(
+    () => markers.filter((marker) => marker.properties.cluster),
+    [markers]
+  );
+
+  const markersNotForClustering = useMemo(
+    () => markers.filter((marker) => !marker.properties.cluster),
+    [markers]
+  );
+
   return (
     <View style={[styles.container, style]}>
       <LoadingSpinner containerStyle={styles.loadingContainer} loading={isLoading} />
@@ -277,22 +288,11 @@ export const Map = ({
       >
         <Camera ref={cameraRef} minZoomLevel={minZoom} />
 
-        {markers.map((marker, index) => {
-          const [longitude, latitude] = marker.geometry.coordinates;
-          const { id, properties = {} } = marker;
-          const { cluster: isCluster } = properties;
+        {clusteringEnabled &&
+          markersForClustering.map((marker: TCluster) => renderCluster(marker, handleClusterPress))}
 
-          if (clusteringEnabled && isCluster) {
-            return renderCluster({
-              clusterColor: colors.primary,
-              geometry: { coordinates: [longitude, latitude] },
-              id,
-              onPress: () => handleClusterPress(marker),
-              properties: marker.properties
-            });
-          }
-
-          const isActiveMarker = selectedMarker && id === selectedMarker;
+        {markersNotForClustering.map((marker, index) => {
+          const isActiveMarker = selectedMarker && marker?.id === selectedMarker;
           const serviceName = truncateText(marker?.serviceName);
           const title = truncateText(marker?.title);
 
