@@ -22,7 +22,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const refreshTime = useRefreshTime('event-widget', REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { hdvt = {} } = globalSettings;
+  const { deprecated = {}, hdvt = {} } = globalSettings;
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
   const [queryVariables] = useState<{ dateRange?: string[]; limit?: number; order: string }>({
     dateRange: [today, today],
@@ -34,11 +34,18 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
     delete queryVariables.dateRange;
   }
 
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-    fetchPolicy,
-    variables: queryVariables,
-    skip: !refreshTime
-  });
+  const { data, loading, refetch } = useQuery(
+    getQuery(
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS
+    ),
+    {
+      fetchPolicy,
+      variables: queryVariables,
+      skip: !refreshTime
+    }
+  );
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,

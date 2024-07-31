@@ -1,22 +1,22 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
-import { DateData } from 'react-native-calendars/src/types';
+import { DateData, Direction } from 'react-native-calendars/src/types';
+import { useInfiniteQuery, useQuery } from 'react-query';
 
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, normalize, texts } from '../config';
-import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
+import { parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
-import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../queries';
+import { QUERY_TYPES, getQuery } from '../queries';
 import { ScreenName } from '../types';
 
+import { ReactQueryClient } from '../ReactQueryClient';
 import { DayComponent } from './DayComponent';
 import { EmptyMessage } from './EmptyMessage';
 import { ListComponent } from './ListComponent';
@@ -33,57 +33,110 @@ type Props = {
   isListRefreshing: boolean;
   navigation: StackNavigationProp<any>;
   query: string;
-  queryVariables: { contentContainerId?: number; dateRange?: string[] };
+  queryVariables: { contentContainerId?: number; dateRange?: string[]; limit?: number };
 };
 
 const today = moment().format('YYYY-MM-DD');
+// end of month plus seven days to have dates for overlapping days in the calendar
+const endOfMonth = moment().endOf('month').add(7, 'days').format('YYYY-MM-DD');
 
-export const Calendar = ({
-  additionalData,
-  isListRefreshing,
-  navigation,
-  query,
-  queryVariables
-}: Props) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+export const Calendar = ({ additionalData, navigation, query, queryVariables }: Props) => {
+  const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
+  const { deprecated = {}, settings = {} } = globalSettings;
   const { eventCalendar = {} } = settings;
   const { dotCount = MAX_DOTS_PER_DAY, subList = false } = eventCalendar;
   const [queryVariablesWithDateRange, setQueryVariablesWithDateRange] = useState<any>({
     ...queryVariables,
-    dateRange: [today, today]
+    dateRange: [today, endOfMonth],
+    limit: undefined // showing the calendar, need to fetch all the entries at once without a limit
   });
-  const [refreshing, setRefreshing] = useState(false);
-  const contentContainerId = queryVariables.contentContainerId;
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-    fetchPolicy,
-    skip: query !== QUERY_TYPES.EVENT_RECORDS,
-    variables: {
+  const [queryVariablesWithDateRangeSubList, setQueryVariablesWithDateRangeSubList] = useState<any>(
+    {
       ...queryVariables,
-      // if we show the calendar, we need to fetch all the entries at once and not a limited amount
-      limit: undefined
+      dateRange: [today, today]
     }
-  });
+  );
+  const contentContainerId = queryVariables.contentContainerId;
 
   const {
-    data: dataDateRange,
-    loading: loadingDateRange,
-    refetch: refetchDateRange,
-    fetchMore: fetchMoreDateRange
-  } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-    fetchPolicy,
-    skip: query !== QUERY_TYPES.EVENT_RECORDS || !subList,
-    variables: queryVariablesWithDateRange
-  });
+    data,
+    isLoading: loading,
+    refetch,
+    isRefetching
+  } = useQuery(
+    [
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS,
+      queryVariablesWithDateRange
+    ],
+    async () => {
+      const client = await ReactQueryClient();
+
+      return await client.request(
+        getQuery(
+          deprecated?.events?.listingWithoutDateFragment
+            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+            : QUERY_TYPES.EVENT_RECORDS
+        ),
+        queryVariablesWithDateRange
+      );
+    },
+    {
+      enabled: query === QUERY_TYPES.EVENT_RECORDS,
+      keepPreviousData: true
+    }
+  );
+
+  const {
+    data: dataSubList,
+    isLoading: loadingSubList,
+    refetch: refetchSubList,
+    isRefetching: isRefetchingSubList,
+    fetchNextPage: fetchNextPageSubList,
+    hasNextPage: hasNextPageSubList
+  } = useInfiniteQuery(
+    [
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS,
+      queryVariablesWithDateRangeSubList
+    ],
+    async ({ pageParam = 0 }) => {
+      const client = await ReactQueryClient();
+
+      return await client.request(
+        getQuery(
+          deprecated?.events?.listingWithoutDateFragment
+            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+            : QUERY_TYPES.EVENT_RECORDS
+        ),
+        {
+          ...queryVariablesWithDateRangeSubList,
+          offset: pageParam
+        }
+      );
+    },
+    {
+      enabled: query === QUERY_TYPES.EVENT_RECORDS && subList,
+      getNextPageParam: (lastPage, allPages) => {
+        if (
+          lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length < queryVariablesWithDateRangeSubList.limit
+        ) {
+          return undefined;
+        }
+
+        return allPages.length * queryVariablesWithDateRangeSubList.limit;
+      }
+    }
+  );
 
   const onDayPress = useCallback(
     (day: DateData) => {
       if (query === QUERY_TYPES.EVENT_RECORDS) {
         if (subList) {
-          setQueryVariablesWithDateRange({
+          setQueryVariablesWithDateRangeSubList({
             ...queryVariables,
             dateRange: [day.dateString, day.dateString]
           });
@@ -92,7 +145,8 @@ export const Calendar = ({
             title: texts.homeTitles.events,
             query,
             queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
-            rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+            rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
+            showFilterByDailyEvents: false
           });
         }
       } else {
@@ -104,20 +158,33 @@ export const Calendar = ({
         });
       }
     },
-    [query, queryVariables, data, contentContainerId]
+    [query, queryVariables, contentContainerId]
   );
 
+  const onMonthChange = useCallback((month: DateData) => {
+    const isCurrentMonth = moment(month.dateString).isSame(moment(), 'month');
+
+    setQueryVariablesWithDateRange({
+      ...queryVariablesWithDateRange,
+      dateRange: [
+        isCurrentMonth
+          ? today
+          : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
+        moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
+      ]
+    });
+  }, []);
+
   const selectedDay = useMemo(() => {
-    if (!queryVariablesWithDateRange?.dateRange?.length) {
+    if (!queryVariablesWithDateRangeSubList?.dateRange?.length) {
       return today;
     }
 
-    return queryVariablesWithDateRange.dateRange[0];
-  }, [queryVariablesWithDateRange]);
+    return queryVariablesWithDateRangeSubList.dateRange[0];
+  }, [queryVariablesWithDateRangeSubList]);
 
   const markedDates = useMemo(() => {
     const dates: CalendarProps['markedDates'] = {};
-
     const eventRecords = data?.[query] || [];
 
     if (additionalData?.length) {
@@ -147,17 +214,20 @@ export const Calendar = ({
     };
 
     return dates;
-  }, [additionalData, data, dotCount, query, selectedDay]);
+  }, [additionalData, data, dotCount, query, queryVariablesWithDateRange, selectedDay]);
 
   const listItems = useMemo(() => {
     if (!subList) return [];
 
     const parsedListItems = parseListItemsFromQuery(
       QUERY_TYPES.EVENT_RECORDS,
-      dataDateRange,
+      {
+        [query]: dataSubList?.pages?.flatMap((page) => page?.[query])
+      },
       undefined,
       {
-        withDate: false
+        withDate: false,
+        withTime: true
       }
     );
 
@@ -168,35 +238,29 @@ export const Calendar = ({
     }
 
     return parsedListItems;
-  }, [additionalData, dataDateRange, query, selectedDay, subList]);
+  }, [additionalData, dataSubList, query, selectedDay, subList]);
 
   const refresh = useCallback(
     async (withCalendar = true) => {
-      setRefreshing(true);
       if (isConnected) {
         withCalendar && (await refetch());
-        await refetchDateRange();
+        await refetchSubList();
       }
-      setRefreshing(false);
     },
-    [isConnected, refetch, refetchDateRange]
+    [isConnected, refetch, refetchSubList]
   );
 
   useEffect(() => {
-    refetchDateRange();
+    refetchSubList();
   }, [selectedDay]);
 
   useEffect(() => {
-    if (isListRefreshing) {
-      refresh();
-    }
-  }, [isListRefreshing]);
-
-  useEffect(() => {
-    setQueryVariablesWithDateRange({
-      ...queryVariables,
-      dateRange: queryVariablesWithDateRange.dateRange
-    });
+    deprecated?.events?.listingWithoutDateFragment &&
+      subList &&
+      setQueryVariablesWithDateRangeSubList({
+        ...queryVariables,
+        dateRange: queryVariablesWithDateRangeSubList.dateRange
+      });
   }, [queryVariables]);
 
   useFocusEffect(
@@ -205,38 +269,39 @@ export const Calendar = ({
     }, [refresh])
   );
 
-  const fetchMoreData = () =>
-    fetchMoreDateRange({
-      query: getFetchMoreQuery(query),
-      variables: {
-        ...queryVariablesWithDateRange,
-        offset: queryVariablesWithDateRange.limit
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[query]?.length) return prevResult;
+  const fetchMoreData = useCallback(() => {
+    if (hasNextPageSubList) {
+      return fetchNextPageSubList();
+    }
 
-        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
+    return { data: { [query]: [] } };
+  }, [dataSubList, fetchNextPageSubList, hasNextPageSubList]);
 
-        return {
-          ...prevResult,
-          [query]: uniqueData
-        };
-      }
-    });
+  const disableArrowLeft =
+    (today || moment().startOf('month').format('YYYY-MM-DD')) ===
+    queryVariablesWithDateRange.dateRange[0];
 
   return (
     <>
       <RNCalendar
         dayComponent={DayComponent}
-        displayLoadingIndicator={loading || refreshing}
+        disableArrowLeft={disableArrowLeft}
+        displayLoadingIndicator={loading || isRefetching || isRefetchingSubList}
         firstDay={1}
         markedDates={markedDates}
         markingType="multi-dot"
+        minDate={today}
         onDayPress={onDayPress}
-        renderArrow={renderArrow}
+        onMonthChange={onMonthChange}
+        renderArrow={(direction: Direction) =>
+          renderArrow(
+            direction,
+            disableArrowLeft && direction == 'left' ? colors.placeholder : undefined
+          )
+        }
         theme={{
           todayTextColor: colors.primary,
-          indicatorColor: colors.primary,
+          indicatorColor: colors.refreshControl,
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
             height: DOT_SIZE,
@@ -247,10 +312,10 @@ export const Calendar = ({
 
       {subList && (
         <ListComponent
-          data={loadingDateRange || refreshing ? [] : listItems}
+          data={loadingSubList || isRefetchingSubList ? [] : listItems}
           fetchMoreData={fetchMoreData}
           ListEmptyComponent={
-            loadingDateRange || refreshing ? (
+            loadingSubList || isRefetchingSubList ? (
               <LoadingContainer>
                 <ActivityIndicator color={colors.refreshControl} />
               </LoadingContainer>
