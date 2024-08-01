@@ -58,9 +58,9 @@ const sueProgressWithRequiredInputs = (
 ): TProgress[] => {
   const requiredInputs: { [key: string]: boolean } = {};
 
-  if (requiredFields?.contact) {
-    for (const field in requiredFields.contact) {
-      requiredInputs[field] = requiredFields.contact[field];
+  if (requiredFields) {
+    for (const field in requiredFields) {
+      requiredInputs[field] = requiredFields[field];
     }
   }
 
