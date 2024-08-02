@@ -32,16 +32,16 @@ export const postRequests = async (data: any) => {
   const formData = new FormData();
 
   if (data) {
-    formData.append('address_string', data.addressString);
-    formData.append('description', data.description);
-    formData.append('email', data.email);
-    formData.append('first_name', data.firstName);
-    formData.append('last_name', data.lastName);
-    formData.append('lat', data.lat);
-    formData.append('long', data.long);
-    formData.append('phone', data.phone);
-    formData.append('service_code', data.serviceCode);
-    formData.append('title', data.title);
+    data.addressString && formData.append('address_string', data.addressString);
+    data.description && formData.append('description', data.description);
+    data.email && formData.append('email', data.email);
+    data.firstName && formData.append('first_name', data.firstName);
+    data.lastName && formData.append('last_name', data.lastName);
+    data.lat && formData.append('lat', data.lat);
+    data.long && formData.append('long', data.long);
+    data.phone && formData.append('phone', data.phone);
+    data.serviceCode && formData.append('service_code', data.serviceCode);
+    data.title && formData.append('title', data.title);
   }
 
   const images = JSON.parse(data?.images) || [];
