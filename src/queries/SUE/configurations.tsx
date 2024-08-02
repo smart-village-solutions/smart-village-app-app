@@ -36,7 +36,7 @@ export const configurations = async () => {
         return acc;
       }, {});
     const geoMap = mapKeysToCamelCase(geoMapResponse);
-    const requiredFields = mapKeysToCamelCase(requiredFieldResponse);
+    const requiredFields = mapKeysToCamelCase(requiredFieldResponse?.contact);
 
     return {
       geoMap,
