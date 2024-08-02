@@ -558,7 +558,7 @@ export const SueReportScreen = ({
         long: selectedPosition?.longitude,
         serviceCode: service?.serviceCode,
         ...sueReportData,
-        phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational(),
+        phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational() || '',
         description: sueReportData.description || '-'
       };
 
