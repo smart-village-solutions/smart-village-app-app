@@ -34,6 +34,7 @@ export const NoticeboardFormScreen = ({
   const name = route?.params?.name ?? '';
   const isNewEntryForm = route?.params?.isNewEntryForm ?? false;
   const details = route?.params?.details ?? {};
+  const queryVariables = route?.params?.queryVariables ?? {};
 
   const {
     data: dataHtml,
@@ -105,7 +106,7 @@ export const NoticeboardFormScreen = ({
             </Wrapper>
           )}
 
-          <Component {...{ data: details, navigation, route }} />
+          <Component {...{ data: details, navigation, route, queryVariables }} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
