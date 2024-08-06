@@ -26,6 +26,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     fetchPolicy,
     variables: queryVariables
   });
+
   const listItems = parseListItemsFromQuery(query, data, '', {
     consentForDataProcessingText,
     queryVariables
