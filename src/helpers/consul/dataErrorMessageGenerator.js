@@ -63,6 +63,7 @@ export const errorTextGenerator = async ({
         }
       ]);
       break;
+    case IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD:
     case IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER:
       /* variable to find the name of the image */
       const uriSplitForImageName = uri.split('/');
