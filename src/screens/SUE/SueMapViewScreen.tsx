@@ -15,7 +15,6 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
     locations,
     mapCenterPosition,
     onMapPress,
-    onMarkerPress,
     onMyLocationButtonPress,
     selectedPosition: position,
     showsUserLocation
@@ -51,7 +50,6 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
             : locationsWithPin,
           mapCenterPosition,
           mapStyle: styles.map,
-          onMarkerPress,
           selectedMarker,
           showsUserLocation
         }}

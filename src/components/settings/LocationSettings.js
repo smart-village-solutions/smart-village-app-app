@@ -120,8 +120,8 @@ export const LocationSettings = () => {
       <Wrapper>
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
       </Wrapper>
-      <Collapsible collapsed={!showMap}>
-        <Map locations={locations} onMapPress={handleMapPress} />
+      <Collapsible collapsed={!showMap} style={styles.collapsible}>
+        <Map clusteringEnabled={false} locations={locations} onMapPress={handleMapPress} />
 
         <Wrapper>
           <Button title={texts.settingsContents.locationService.save} onPress={handleSave} />
@@ -147,5 +147,8 @@ export const LocationSettings = () => {
 const styles = StyleSheet.create({
   containerStyle: {
     marginBottom: normalize(21)
+  },
+  collapsible: {
+    flex: 1
   }
 });
