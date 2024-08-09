@@ -5,6 +5,7 @@ import { WrapperRow } from '../Wrapper';
 
 import { ConstructionSiteNewsWidget } from './ConstructionSiteNewsWidget';
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
+import { ContentWidget } from './ContentWidget';
 import { EventWidget } from './EventWidget';
 import { LunchWidget } from './LunchWidget';
 import { SurveyWidget } from './SurveyWidget';
@@ -28,6 +29,7 @@ const EXISTING_WIDGETS: {
 } = {
   constructionSite: ConstructionSiteWidget,
   constructionSiteNews: ConstructionSiteNewsWidget,
+  content: ContentWidget,
   event: EventWidget,
   lunch: LunchWidget,
   survey: SurveyWidget,

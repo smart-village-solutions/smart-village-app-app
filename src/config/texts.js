@@ -1344,6 +1344,7 @@ export const texts = {
   },
   widgets: {
     constructionSites: 'Baustellen',
+    content: 'Content',
     events: 'Events',
     lunch: 'Gastro',
     surveys: 'Umfragen',
