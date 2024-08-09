@@ -1344,11 +1344,12 @@ export const texts = {
   },
   widgets: {
     constructionSites: 'Baustellen',
+    custom: 'Benutzerdefiniert',
     events: 'Events',
     lunch: 'Gastro',
     surveys: 'Umfragen',
+    vouchers: 'Angebote',
     water: 'Wasser',
-    weather: 'Wetter',
-    vouchers: 'Angebote'
+    weather: 'Wetter'
   }
 };
