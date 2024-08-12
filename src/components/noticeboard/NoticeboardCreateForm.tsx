@@ -28,9 +28,10 @@ import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { member } from '../../queries/profile';
 import { showLoginAgainAlert } from '../../screens/profile/ProfileScreen';
-import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../types';
+import { NOTICEBOARD_TYPES, ScreenName } from '../../types';
+import { ProfileMember } from '../../types/profile';
 
-const { EMAIL_REGEX, IMAGE_SELECTOR_ERROR_TYPES } = consts;
+const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
@@ -88,11 +89,11 @@ export const NoticeboardCreateForm = ({
   });
 
   const formImages = data?.mediaContents?.map((image: any) => {
-    const url = image.sourceUrl.url;
-    const uriSplitForImageName = url.split('/');
+    const uri = image.sourceUrl.url;
+    const uriSplitForImageName = uri.split('/');
     const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
 
-    return { infoText: imageName, url };
+    return { id: image.id, infoText: imageName, uri };
   });
 
   const {
@@ -359,10 +360,10 @@ export const NoticeboardCreateForm = ({
                   isDeletable: !isEdit,
                   isMultiImages: true,
                   item: {
-                    name: 'image',
-                    label: texts.volunteer.images,
-                    buttonTitle: texts.volunteer.addImage
-                  }
+                    buttonTitle: texts.noticeboard.addImages,
+                    name: 'image'
+                  },
+                  selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
                 }}
               />
             )}

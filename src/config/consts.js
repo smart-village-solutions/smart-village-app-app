@@ -122,6 +122,10 @@ export const consts = {
     VOLUNTEER: 'Volunteer'
   },
 
+  IMAGE_SELECTOR_TYPES: {
+    NOTICEBOARD: 'Noticeboard'
+  },
+
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
   // from the server in src/index.js
   IMAGE_ASPECT_RATIO: {
