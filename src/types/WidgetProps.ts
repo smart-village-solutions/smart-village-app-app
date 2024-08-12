@@ -15,6 +15,12 @@ export type WidgetProps = {
     limit?: number;
     noCount?: boolean;
     noFilterByDailyEvents?: boolean;
+    params?: {
+      query: string;
+      queryVariables: {};
+      title: string;
+    };
+    routeName?: string;
     staticContentName?: string;
     staticContentTitle?: string;
     webUrl?: string;
