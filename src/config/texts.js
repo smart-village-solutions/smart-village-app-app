@@ -503,11 +503,6 @@ export const texts = {
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
-    categoryNames: {
-      neighbourlyHelp: 'Nachbarschaftshilfe',
-      offer: 'Angebot',
-      search: 'Gesuch'
-    },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
