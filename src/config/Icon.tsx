@@ -67,6 +67,8 @@ export type IconProps = {
   color?: string;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
+  strokeColor?: string;
+  strokeWidth?: number;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -89,12 +91,19 @@ const SvgIcon = ({
   color = colors.primary,
   iconStyle,
   size = normalize(24),
+  strokeColor,
+  strokeWidth,
   style,
   xml
-}: IconProps & { xml: (color: string) => string }) => {
+}: IconProps & { xml: (color: string, strokeColor?: string, strokeWidth?: number) => string }) => {
   return (
     <View style={style} hitSlop={getHitSlops(size)}>
-      <SvgXml xml={xml(color)} width={size} height={size} style={iconStyle} />
+      <SvgXml
+        xml={xml(color, strokeColor, strokeWidth)}
+        width={size}
+        height={size}
+        style={iconStyle}
+      />
     </View>
   );
 };

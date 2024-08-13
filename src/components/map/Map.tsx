@@ -39,15 +39,26 @@ const CIRCLE_SIZES = [60, 50, 40, 30];
 const MapIcon = ({
   iconColor,
   iconName = 'location',
-  iconSize = MARKER_ICON_SIZE
+  iconSize = MARKER_ICON_SIZE,
+  strokeColor,
+  strokeWidth = normalize(0.5)
 }: {
   iconColor?: string;
   iconName?: string;
   iconSize?: number;
+  strokeColor?: string;
+  strokeWidth?: number;
 }) => {
   const MarkerIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
 
-  return <MarkerIcon color={iconColor} size={iconSize} />;
+  return (
+    <MarkerIcon
+      color={iconColor}
+      size={iconSize}
+      strokeColor={strokeColor}
+      strokeWidth={strokeWidth}
+    />
+  );
 };
 
 type TCluster = {
@@ -232,6 +243,7 @@ export const Map = ({
                         ? colors.accent
                         : undefined
                     }
+                    strokeColor={marker.iconBorderColor}
                   />
                   <View
                     style={[
@@ -254,6 +266,7 @@ export const Map = ({
                       }
                       iconName={marker.iconName}
                       iconSize={MARKER_ICON_SIZE / 3.25}
+                      strokeColor={marker.iconBorderColor}
                     />
                   </View>
                 </>
@@ -261,6 +274,7 @@ export const Map = ({
                 <MapIcon
                   iconColor={isActiveMarker ? colors.accent : undefined}
                   iconName={marker.iconName ? marker.iconName : undefined}
+                  strokeColor={marker.iconBorderColor}
                 />
               )}
 
