@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-
 import MapView from 'react-native-map-clustering';
 import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
-import { colors, consts, device, Icon, normalize } from '../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { imageHeight, imageWidth, truncateText } from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
@@ -295,7 +295,7 @@ export const Map = ({
       )}
       {isMyLocationButtonVisible && (
         <TouchableOpacity
-          accessibilityLabel={`Eigenen Standort verwenden? ${a11yLabel.button}`}
+          accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
           style={styles.myLocationButton}
           onPress={onMyLocationButtonPress}
         >

@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Keyboard, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { Icon, colors, consts, normalize } from '../config';
+import { Icon, colors, consts, normalize, texts } from '../config';
 
 import { WrapperRow } from './Wrapper';
 import { Input } from './form';
@@ -48,7 +48,7 @@ export const Search = ({
         placeholder={placeholder}
       />
       <TouchableOpacity
-        accessibilityLabel={`Suche starten ${a11yLabel.button}`}
+        accessibilityLabel={`${texts.components.search} ${a11yLabel.button}`}
         onPress={handleSubmit(onSearch)}
         style={[styles.searchButton, buttonStyle]}
       >

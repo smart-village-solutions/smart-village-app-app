@@ -4,7 +4,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import { Divider, normalize } from 'react-native-elements';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors } from '../../../config';
+import { colors, texts } from '../../../config';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper, WrapperRow } from '../../Wrapper';
 
@@ -49,7 +49,7 @@ export const SueReportProgress = ({
                 style={[styles.textContainer, !!textContainer && textContainer]}
               >
                 <BoldText
-                  accessibilityLabel={`Schritt ${currentProgress} von ${progress.length} (${item.title})`}
+                  accessibilityLabel={`${texts.components.sueReportProgress.step} ${currentProgress} ${texts.components.sueReportProgress.of} ${progress.length} (${item.title})`}
                   style={!!titleStyle && titleStyle}
                 >
                   {item.title}
