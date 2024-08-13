@@ -108,7 +108,7 @@ export const SueReportLocation = ({
   const systemPermission = useSystemPermission();
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
-  const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
+  const { statusBorderColors = {}, statusTextColors = {}, statusViewColors = {} } = sueStatus;
 
   const { position } = usePosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
@@ -146,8 +146,9 @@ export const SueReportLocation = ({
         parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
           appDesignSystem
         }),
-        statusViewColors,
-        statusTextColors
+        statusBorderColors,
+        statusTextColors,
+        statusViewColors
       ) || [],
     [data]
   );
