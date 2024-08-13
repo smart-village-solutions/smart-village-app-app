@@ -9,7 +9,7 @@ import { imageHeight, imageWidth, truncateText } from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
-import { RegularText } from '../Text';
+import { BoldText, RegularText } from '../Text';
 
 type Props = {
   calloutTextEnabled?: boolean;
@@ -267,9 +267,9 @@ export const Map = ({
               {calloutTextEnabled && (
                 <Callout style={styles.callout}>
                   {!!serviceName && (
-                    <RegularText smallest center>
+                    <BoldText smallest center>
                       {serviceName}
-                    </RegularText>
+                    </BoldText>
                   )}
                   {!!title && (
                     <RegularText smallest center>
