@@ -37,6 +37,10 @@
       }
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F243F"
+      },
       "package": "de.dev.smartvillage.app",
       "permissions": [
         "ACCESS_FINE_LOCATION",
