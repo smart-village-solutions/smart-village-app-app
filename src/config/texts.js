@@ -128,7 +128,11 @@ export const texts = {
     sueReportProgress: {
       step: 'Schritt',
       of: 'von',
-    }
+    },
+    sueStatus: {
+      inactive: 'Inaktiver Status:',
+      active: 'Aktiver Status:',
+    },
   },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
