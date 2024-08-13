@@ -47,8 +47,5 @@ export const deleteMediaContent = async (mediaContentId) => {
     }
   );
 
-  const status = response.status;
-  const ok = response.ok;
-
-  return ok && status === 204;
+  return response.ok && response.status === 204;
 };

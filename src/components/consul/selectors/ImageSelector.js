@@ -317,6 +317,7 @@ const styles = StyleSheet.create({
     paddingTop: 0
   },
   overlay: {
+    backgroundColor: colors.surface,
     bottom: 0,
     paddingBottom: normalize(56),
     paddingHorizontal: normalize(16),
