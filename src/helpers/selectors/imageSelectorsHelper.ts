@@ -88,10 +88,6 @@ export const onDeleteImage = async ({
         console.error(error);
       }
     }
-
-    setImagesAttributes(deleteArrayItem(imagesAttributes, index));
-    setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
-    return;
   }
 
   setImagesAttributes(deleteArrayItem(imagesAttributes, index));
