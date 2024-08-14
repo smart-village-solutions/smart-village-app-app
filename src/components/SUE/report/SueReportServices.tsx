@@ -9,6 +9,8 @@ import { TService } from '../../../screens';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
 
+const { a11yLabel } = consts;
+
 const ServiceTile = memo(({ accessibilityLabel, item, selected, onPress }) => (
   <TouchableOpacity
     accessibilityLabel={accessibilityLabel}
@@ -24,8 +26,6 @@ const ServiceTile = memo(({ accessibilityLabel, item, selected, onPress }) => (
     <BoldText center>{item.serviceName}</BoldText>
   </TouchableOpacity>
 ));
-
-const { a11yLabel } = consts;
 
 export const SueReportServices = ({
   service,
