@@ -50,6 +50,10 @@
       }
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F7F5F0"
+      },
       "package": "de.test.hb.meinquartier.smartvillage.app",
       "versionCode": 36,
       "permissions": [
@@ -59,7 +63,6 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "icon": "./assets/icon-transparent.png",
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
