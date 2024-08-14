@@ -125,10 +125,7 @@ export const texts = {
   components: {
     search: 'Suche starten',
     map: 'Eigenen Standort verwenden?',
-    sueReportProgress: {
-      step: 'Schritt',
-      of: 'von',
-    },
+    sueReportProgress: (step, ofStep) => `Schritt ${step} von ${ofStep}`,
     sueStatus: {
       inactive: 'Inaktiver Status:',
       active: 'Aktiver Status:',

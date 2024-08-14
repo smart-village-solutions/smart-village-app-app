@@ -49,7 +49,7 @@ export const SueReportProgress = ({
                 style={[styles.textContainer, !!textContainer && textContainer]}
               >
                 <BoldText
-                  accessibilityLabel={`${texts.components.sueReportProgress.step} ${currentProgress} ${texts.components.sueReportProgress.of} ${progress.length} (${item.title})`}
+                  accessibilityLabel={`${texts.components.sueReportProgress(currentProgress, progress.length)} (${item.title})`}
                   style={!!titleStyle && titleStyle}
                 >
                   {item.title}
