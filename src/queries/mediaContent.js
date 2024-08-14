@@ -23,10 +23,8 @@ export const uploadMediaContent = async (image, contentType) => {
   });
 
   const json = await response.json();
-  const status = response.status;
-  const ok = response.ok;
 
-  if (ok && status === 201 && typeof json?.service_url === 'string') {
+  if (response.ok && response.status === 201 && typeof json?.service_url === 'string') {
     return json.service_url;
   }
 
