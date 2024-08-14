@@ -157,19 +157,22 @@ export const NoticeboardCreateForm = ({
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
       }
       const images = JSON.parse(noticeboardNewData.image);
-      const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = [];
+      const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
+        .filter((image) => !!image.id)
+        .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
 
       if (images?.length) {
         for (const image of images) {
-          try {
-            imageUrl = await uploadMediaContent(image, 'image');
+          if (!image.id) {
+            try {
+              imageUrl = await uploadMediaContent(image, 'image');
 
-            imageUrl && imageUrls.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
-          } catch (error) {
-            setIsLoading(false);
-
-            Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
-            return;
+              imageUrl && imageUrls.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
+            } catch (error) {
+              setIsLoading(false);
+              Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+              return;
+            }
           }
         }
       }
