@@ -126,6 +126,11 @@ export const consts = {
     NOTICEBOARD: 'Noticeboard'
   },
 
+  IMAGE_FROM: {
+    CAMERA: 'Camera',
+    GALLERY: 'Gallery'
+  },
+
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
   // from the server in src/index.js
   IMAGE_ASPECT_RATIO: {

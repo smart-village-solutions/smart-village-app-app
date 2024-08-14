@@ -13,8 +13,8 @@ import {
   Checkbox,
   DateTimeInput,
   HtmlView,
-  ImageSelector,
   Input,
+  MultiImageSelector,
   RegularText,
   Touchable,
   Wrapper,
@@ -352,7 +352,7 @@ export const NoticeboardCreateForm = ({
           <Controller
             name="image"
             render={({ field }) => (
-              <ImageSelector
+              <MultiImageSelector
                 {...{
                   control,
                   errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
