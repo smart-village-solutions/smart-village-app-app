@@ -347,30 +347,28 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      {(!!formImages?.length || !isEdit) && (
-        <Wrapper style={styles.noPaddingTop}>
-          <Controller
-            name="image"
-            render={({ field }) => (
-              <MultiImageSelector
-                {...{
-                  control,
-                  errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
-                  field,
-                  isDeletable: !isEdit,
-                  isMultiImages: true,
-                  item: {
-                    buttonTitle: texts.noticeboard.addImages,
-                    name: 'image'
-                  },
-                  selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
-                }}
-              />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="image"
+          render={({ field }) => (
+            <MultiImageSelector
+              {...{
+                control,
+                errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
+                field,
+                isDeletable: !isEdit,
+                isMultiImages: true,
+                item: {
+                  buttonTitle: texts.noticeboard.addImages,
+                  name: 'image'
+                },
+                selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
 
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>
