@@ -1,7 +1,7 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
@@ -19,7 +19,6 @@ import {
   SectionHeader,
   Widgets,
   Wrapper,
-  WrapperHorizontal,
   WrapperVertical
 } from '../components';
 import { colors, consts, texts } from '../config';

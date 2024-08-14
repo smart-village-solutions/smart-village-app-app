@@ -13,6 +13,7 @@ import { Input } from '../../form';
 
 const { a11yLabel, EMAIL_REGEX, PHONE_NUMBER_REGEX, INPUT_KEYS } = consts;
 
+/* eslint-disable complexity */
 export const SueReportUser = ({
   configuration,
   control,
@@ -181,6 +182,7 @@ export const SueReportUser = ({
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   checkboxContainerStyle: {

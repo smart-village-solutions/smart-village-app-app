@@ -9,8 +9,9 @@ import { TService } from '../../../screens';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
 
-const ServiceTile = memo(({ item, selected, onPress }) => (
+const ServiceTile = memo(({ accessibilityLabel, item, selected, onPress }) => (
   <TouchableOpacity
+    accessibilityLabel={accessibilityLabel}
     onPress={onPress}
     style={[
       styles.tile,
@@ -60,11 +61,11 @@ export const SueReportServices = ({
         const selected = service?.serviceCode === item.serviceCode;
         return (
           <ServiceTile
-            key={index}
-            item={item}
-            selected={selected}
             accessibilityLabel={`${item.serviceName} ${a11yLabel.button}`}
+            item={item}
+            key={index}
             onPress={() => setService(item)}
+            selected={selected}
           />
         );
       })}
