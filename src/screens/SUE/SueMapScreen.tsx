@@ -34,7 +34,11 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 
 const CloseButton = ({ onPress }: { onPress: () => void }) => (
-  <TouchableOpacity onPress={onPress} style={styles.closeButton}>
+  <TouchableOpacity
+    accessibilityLabel={consts.a11yLabel.closeIcon}
+    onPress={onPress}
+    style={styles.closeButton}
+  >
     <Icon.Close size={normalize(16)} color={colors.surface} />
   </TouchableOpacity>
 );
@@ -196,7 +200,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
       {!detailsLoading && !!selectedRequestId && !!item && (
         <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
           <ListItem
-            accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+            accessibilityLabel={`${item.title} ${consts.a11yLabel.button}`}
             containerStyle={styles.listItem}
             Component={Touchable}
             delayPressIn={0}

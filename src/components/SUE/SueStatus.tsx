@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
-import { Icon, colors, device, normalize } from '../../config';
+import { Icon, colors, device, normalize, texts } from '../../config';
 import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
@@ -67,6 +67,11 @@ export const SueStatus = ({
     >
       {!!iconName && (
         <StatusIcon
+          accessibilityLabel={
+            disabled 
+            ? `${texts.components.sueStatus.inactive} ${status}` 
+            : `${texts.components.sueStatus.active} ${status}`
+          }
           color={textColor}
           size={small ? normalize(12) : normalize(16)}
           style={small ? styles.smallMarginRight : styles.marginRight}

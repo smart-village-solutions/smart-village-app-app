@@ -1,4 +1,5 @@
 import appJson from '../../app.json';
+import { search } from '../helpers';
 
 export const texts = {
   accessibilityLabels: {
@@ -120,6 +121,15 @@ export const texts = {
   commercial: {
     commercial: 'Angebot',
     commercials: 'Angebote'
+  },
+  components: {
+    search: 'Suche starten',
+    map: 'Eigenen Standort verwenden?',
+    sueReportProgress: (step, ofStep) => `Schritt ${step} von ${ofStep}`,
+    sueStatus: {
+      inactive: 'Inaktiver Status:',
+      active: 'Aktiver Status:',
+    },
   },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'

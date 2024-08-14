@@ -1,7 +1,7 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
@@ -19,7 +19,7 @@ import {
   SectionHeader,
   Widgets,
   Wrapper,
-  WrapperHorizontal
+  WrapperVertical
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
@@ -334,11 +334,11 @@ export const HomeScreen = ({ navigation, route }) => {
             {!!staticContentListItem?.length && (
               <>
                 {!!staticContentListTitle && (
-                  <WrapperHorizontal>
-                    <RegularText></RegularText>
-                  </WrapperHorizontal>
+                  <WrapperVertical style={styles.noPaddingBottom}>
+                    <SectionHeader title={staticContentListTitle} />
+                  </WrapperVertical>
                 )}
-                {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
+
                 {!!staticContentListDescription && (
                   <Wrapper>
                     <RegularText>{staticContentListDescription}</RegularText>
@@ -376,6 +376,12 @@ export const HomeScreen = ({ navigation, route }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  noPaddingBottom: {
+    paddingBottom: 0
+  }
+});
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

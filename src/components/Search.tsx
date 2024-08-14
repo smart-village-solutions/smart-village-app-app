@@ -2,10 +2,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Keyboard, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { Icon, colors, normalize } from '../config';
+import { Icon, colors, consts, normalize, texts } from '../config';
 
 import { WrapperRow } from './Wrapper';
 import { Input } from './form';
+
+const { a11yLabel } = consts;
 
 type TSearch = {
   buttonStyle?: ViewStyle;
@@ -45,7 +47,11 @@ export const Search = ({
         onSubmitEditing={handleSubmit(onSearch)}
         placeholder={placeholder}
       />
-      <TouchableOpacity onPress={handleSubmit(onSearch)} style={[styles.searchButton, buttonStyle]}>
+      <TouchableOpacity
+        accessibilityLabel={`${texts.components.search} ${a11yLabel.button}`}
+        onPress={handleSubmit(onSearch)}
+        style={[styles.searchButton, buttonStyle]}
+      >
         <Icon.Lupe color={colors.surface} size={normalize(24)} />
       </TouchableOpacity>
     </WrapperRow>

@@ -11,8 +11,9 @@ import { RegularText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
 
-const { EMAIL_REGEX, PHONE_NUMBER_REGEX, INPUT_KEYS } = consts;
+const { a11yLabel, EMAIL_REGEX, PHONE_NUMBER_REGEX, INPUT_KEYS } = consts;
 
+/* eslint-disable complexity */
 export const SueReportUser = ({
   configuration,
   control,
@@ -57,6 +58,9 @@ export const SueReportUser = ({
     <View style={styles.container}>
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.firstName} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.FIRST_NAME) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.FIRST_NAME}
           label={`${texts.sue.report.firstName} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.FIRST_NAME) ? ' *' : ''
@@ -71,6 +75,9 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.lastName} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.LAST_NAME) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.LAST_NAME}
           label={`${texts.sue.report.lastName} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.LAST_NAME) ? ' *' : ''
@@ -85,6 +92,9 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.email} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.EMAIL) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.EMAIL}
           label={`${texts.sue.report.email} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.EMAIL) ? ' *' : ''
@@ -111,6 +121,9 @@ export const SueReportUser = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          accessibilityLabel={`${texts.sue.report.phone} ${
+            requiredInputs?.includes(INPUT_KEYS.SUE.PHONE) ? a11yLabel.required : ''
+          }`}
           name={INPUT_KEYS.SUE.PHONE}
           label={`${texts.sue.report.phone} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.PHONE) ? ' *' : ''
@@ -169,6 +182,7 @@ export const SueReportUser = ({
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   checkboxContainerStyle: {

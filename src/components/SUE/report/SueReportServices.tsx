@@ -2,15 +2,18 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors, device, normalize } from '../../../config';
+import { colors, consts, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { TService } from '../../../screens';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
 
-const ServiceTile = memo(({ item, selected, onPress }) => (
+const { a11yLabel } = consts;
+
+const ServiceTile = memo(({ accessibilityLabel, item, selected, onPress }) => (
   <TouchableOpacity
+    accessibilityLabel={accessibilityLabel}
     onPress={onPress}
     style={[
       styles.tile,
@@ -58,10 +61,11 @@ export const SueReportServices = ({
         const selected = service?.serviceCode === item.serviceCode;
         return (
           <ServiceTile
-            key={index}
+            accessibilityLabel={`${item.serviceName} ${a11yLabel.button}`}
             item={item}
-            selected={selected}
+            key={index}
             onPress={() => setService(item)}
+            selected={selected}
           />
         );
       })}

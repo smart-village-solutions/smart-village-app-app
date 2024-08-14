@@ -4,12 +4,14 @@ import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-
 import MapView from 'react-native-map-clustering';
 import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
-import { colors, device, Icon, normalize } from '../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { imageHeight, imageWidth, truncateText } from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { BoldText, RegularText } from '../Text';
+
+const { a11yLabel } = consts;
 
 type Props = {
   calloutTextEnabled?: boolean;
@@ -283,12 +285,20 @@ export const Map = ({
         })}
       </MapView>
       {isMaximizeButtonVisible && (
-        <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
+        <TouchableOpacity
+          accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          style={styles.maximizeMapButton}
+          onPress={onMaximizeButtonPress}
+        >
           <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
       {isMyLocationButtonVisible && (
-        <TouchableOpacity style={styles.myLocationButton} onPress={onMyLocationButtonPress}>
+        <TouchableOpacity
+          accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
+          style={styles.myLocationButton}
+          onPress={onMyLocationButtonPress}
+        >
           <Icon.GPS size={normalize(18)} />
         </TouchableOpacity>
       )}

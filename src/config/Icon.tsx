@@ -64,6 +64,7 @@ import { device } from './device';
 import { normalize } from './normalize';
 
 export type IconProps = {
+  accessibilityLabel?: string;
   color?: string;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
@@ -86,6 +87,7 @@ const getHitSlops = (size: number) => {
 };
 
 const SvgIcon = ({
+  accessibilityLabel,
   color = colors.primary,
   iconStyle,
   size = normalize(24),
@@ -93,13 +95,14 @@ const SvgIcon = ({
   xml
 }: IconProps & { xml: (color: string) => string }) => {
   return (
-    <View style={style} hitSlop={getHitSlops(size)}>
+    <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
       <SvgXml xml={xml(color)} width={size} height={size} style={iconStyle} />
     </View>
   );
 };
 
 const NamedIcon = ({
+  accessibilityLabel,
   color = colors.primary,
   iconStyle,
   name,
@@ -107,7 +110,7 @@ const NamedIcon = ({
   style
 }: IconProps & { name?: ComponentProps<typeof IconSet>['name'] }) => {
   return (
-    <View style={style} hitSlop={getHitSlops(size)}>
+    <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
       <IconSet name={name} size={size} color={color} style={iconStyle} />
     </View>
   );
