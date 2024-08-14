@@ -9,6 +9,7 @@ export * from './map';
 export * from './noticeboard';
 export * from './profile';
 export * from './screens';
+export * from './selectors';
 export * from './survey';
 export * from './volunteer';
 export * from './wasteCalendar';

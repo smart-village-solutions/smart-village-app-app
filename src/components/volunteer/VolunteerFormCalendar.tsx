@@ -13,11 +13,11 @@ import { QUERY_TYPES } from '../../queries';
 import { calendarDelete, calendarNew, calendarUpload, groupsMy } from '../../queries/volunteer';
 import { Calendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
-import { DocumentSelector, ImageSelector } from '../consul/selectors';
 import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { DocumentSelector, MultiImageSelector } from '../selectors';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
@@ -405,12 +405,11 @@ export const VolunteerFormCalendar = ({
         <Controller
           name="images"
           render={({ field }) => (
-            <ImageSelector
+            <MultiImageSelector
               {...{
                 control,
                 errorType: IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER,
                 field,
-                isMultiImages: true,
                 item: {
                   name: 'images',
                   label: texts.volunteer.images,

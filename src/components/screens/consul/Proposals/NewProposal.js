@@ -13,9 +13,9 @@ import { uploadAttachment } from '../../../../queries/consul/uploads';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
-import { DocumentSelector, ImageSelector } from '../../../consul';
 import { Input } from '../../../form';
 import { Label } from '../../../Label';
+import { DocumentSelector, ImageSelector } from '../../../selectors';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
 

@@ -118,7 +118,17 @@ export const consts = {
 
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
+    NOTICEBOARD: 'Noticeboard',
     VOLUNTEER: 'Volunteer'
+  },
+
+  IMAGE_SELECTOR_TYPES: {
+    NOTICEBOARD: 'Noticeboard'
+  },
+
+  IMAGE_FROM: {
+    CAMERA: 'Camera',
+    GALLERY: 'Gallery'
   },
 
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`

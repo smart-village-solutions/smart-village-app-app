@@ -1,27 +1,32 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { ConsulClient } from '../../../ConsulClient';
+import { colors, consts, Icon, normalize, texts } from '../../config';
+import { ConsulClient } from '../../ConsulClient';
 import {
   deleteArrayItem,
   documentErrorMessageGenerator,
   formatSize,
   jsonParser
-} from '../../../helpers';
-import { useSelectDocument } from '../../../hooks';
-import { DELETE_DOCUMENT } from '../../../queries/consul';
-import { calendarDeleteFile } from '../../../queries/volunteer';
-import { Button } from '../../Button';
-import { Input } from '../../form';
-import { RegularText } from '../../Text';
-import { WrapperRow } from '../../Wrapper';
+} from '../../helpers';
+import { useSelectDocument } from '../../hooks';
+import { DELETE_DOCUMENT } from '../../queries/consul';
+import { calendarDeleteFile } from '../../queries/volunteer';
+import { Button } from '../Button';
+import { Input } from '../form';
+import { RegularText } from '../Text';
+import { WrapperRow } from '../Wrapper';
 
 const { URL_REGEX } = consts;
 
-const deleteDocumentAlert = (onPress) =>
+type TValue = {
+  cachedAttachment: string;
+  id: number | string;
+  title: string;
+};
+
+const deleteDocumentAlert = (onPress: () => void) =>
   Alert.alert(
     texts.consul.startNew.deleteAttributesAlertTitle,
     texts.consul.startNew.documentDeleteAlertBody,
@@ -38,7 +43,17 @@ const deleteDocumentAlert = (onPress) =>
     ]
   );
 
-export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
+export const DocumentSelector = ({
+  control,
+  field,
+  isVolunteer,
+  item
+}: {
+  control: any;
+  field: any;
+  isVolunteer: boolean;
+  item: any;
+}) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -55,7 +70,7 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
     onChange(JSON.stringify(documentsAttributes));
   }, [documentsAttributes]);
 
-  const onDeleteDocument = async (documentId, index) => {
+  const onDeleteDocument = async (documentId: number | string, index: number) => {
     if (isVolunteer) {
       const isURL = URL_REGEX.test(documentsAttributes[index].uri);
 
@@ -84,7 +99,12 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
   };
 
   const documentSelect = async () => {
-    const { name: title, size, uri, mimeType } = await selectDocument();
+    const {
+      name: title = '',
+      size = 0,
+      uri = '',
+      mimeType = ''
+    }: { name?: string; size?: number; uri?: string; mimeType?: string } = await selectDocument();
 
     if (!uri) return;
 
@@ -100,7 +120,9 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
     setInfoAndErrorText([
       ...infoAndErrorText,
       {
-        errorText: isVolunteer ? volunteerErrorText : texts.consul.startNew[consulErrorText],
+        errorText: isVolunteer
+          ? volunteerErrorText
+          : texts.consul.startNew[consulErrorText as keyof typeof texts.consul.startNew],
         infoText: isVolunteer ? `${title}` : `(${mimeType}, ${formatSize(size)})`
       }
     ]);
@@ -118,7 +140,7 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
 
         <Button title={buttonTitle} invert onPress={documentSelect} />
 
-        {values?.map((item, index) => (
+        {values?.map((item: TValue, index: number) => (
           <View key={`document-${index}`} style={styles.volunteerContainer}>
             <View style={styles.volunteerUploadPreview}>
               {!!infoAndErrorText[index]?.infoText && (
@@ -151,7 +173,7 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
         {infoText}
       </RegularText>
 
-      {values?.map((item, index) => (
+      {values?.map((item: TValue, index: number) => (
         <View key={index} style={styles.container}>
           <WrapperRow center spaceBetween>
             <RegularText>{item.title}</RegularText>
@@ -203,10 +225,3 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(14)
   }
 });
-
-DocumentSelector.propTypes = {
-  control: PropTypes.object,
-  field: PropTypes.object,
-  isVolunteer: PropTypes.bool,
-  item: PropTypes.object
-};

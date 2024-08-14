@@ -481,6 +481,7 @@ export const texts = {
   },
   noticeboard: {
     abort: 'Abbrechen',
+    addImages: 'Bilder hinzufügen',
     alerts: {
       dateDifference: 'Bitte wähle eine maximale Laufzeit von drei Monaten.',
       delete: 'Willst du diesen Eintrag wirklich löschen?',
@@ -497,6 +498,8 @@ export const texts = {
       offer: 'Angebote',
       search: 'Gesuche'
     },
+    chooseFromGallery: 'Galerie öffnen',
+    close: 'Schließen',
     delete: 'Löschen',
     description: 'Beschreibung',
     details: 'Details',
@@ -504,6 +507,7 @@ export const texts = {
     edit: 'Bearbeiten',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuche es später noch einmal.',
     expiryDate: 'Ablaufdatum',
+    images: 'Aussagekäftiges Bild',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
     inputDescription: 'Beschreibung',
@@ -528,6 +532,7 @@ export const texts = {
         'Vielen Dank für deinen Eintrag. \n \nWir prüfen deine Angaben. Dein Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
     },
+    takePhoto: 'Bild aufnehmen',
     toConversation: 'Zur Unterhaltung',
     toRelated: 'Zu der zugehörigen Anzeige',
     writeMessage: 'Unterhaltung starten'

@@ -13,8 +13,8 @@ import {
   Checkbox,
   DateTimeInput,
   HtmlView,
-  ImageSelector,
   Input,
+  MultiImageSelector,
   RegularText,
   Touchable,
   Wrapper,
@@ -28,9 +28,10 @@ import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { member } from '../../queries/profile';
 import { showLoginAgainAlert } from '../../screens/profile/ProfileScreen';
-import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../types';
+import { NOTICEBOARD_TYPES, ScreenName } from '../../types';
+import { ProfileMember } from '../../types/profile';
 
-const { EMAIL_REGEX } = consts;
+const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
@@ -87,7 +88,13 @@ export const NoticeboardCreateForm = ({
     }
   });
 
-  const existingImageUrl = data?.mediaContents?.[0]?.sourceUrl?.url;
+  const formImages = data?.mediaContents?.map((image: any) => {
+    const uri = image.sourceUrl.url;
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+    return { id: image.id, infoText: imageName, uri };
+  });
 
   const {
     control,
@@ -105,7 +112,7 @@ export const NoticeboardCreateForm = ({
         ? moment(data?.dates?.[0]?.dateStart)?.toDate()
         : moment().toDate(),
       email: data?.contacts?.[0]?.email ?? '',
-      image: existingImageUrl ? JSON.stringify([{ uri: existingImageUrl }]) : '[]',
+      image: formImages?.length ? JSON.stringify(formImages) : '[]',
       name: data?.contacts?.[0]?.firstName ?? '',
       noticeboardType:
         _findKey(
@@ -149,16 +156,24 @@ export const NoticeboardCreateForm = ({
       if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
       }
-      const image = JSON.parse(noticeboardNewData.image);
+      const images = JSON.parse(noticeboardNewData.image);
+      const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
+        .filter((image) => !!image.id)
+        .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
 
-      if (image?.length) {
-        try {
-          imageUrl = await uploadMediaContent(image[0], 'image');
-        } catch (error) {
-          setIsLoading(false);
+      if (images?.length) {
+        for (const image of images) {
+          if (!image.id) {
+            try {
+              imageUrl = await uploadMediaContent(image, 'image');
 
-          Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
-          return;
+              imageUrl && imageUrls.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
+            } catch (error) {
+              setIsLoading(false);
+              Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+              return;
+            }
+          }
         }
       }
 
@@ -177,7 +192,7 @@ export const NoticeboardCreateForm = ({
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
-          mediaContents: [{ sourceUrl: { url: imageUrl }, contentType: 'image' }],
+          mediaContents: imageUrls,
           priceInformations: [{ description: price }]
         }
       });
@@ -335,28 +350,28 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      {(!!existingImageUrl || !isEdit) && (
-        <Wrapper style={styles.noPaddingTop}>
-          <Controller
-            name="image"
-            render={({ field }) => (
-              <ImageSelector
-                {...{
-                  isDeletable: !isEdit,
-                  control,
-                  field,
-                  item: {
-                    name: 'image',
-                    label: texts.volunteer.images,
-                    buttonTitle: texts.volunteer.addImage
-                  }
-                }}
-              />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="image"
+          render={({ field }) => (
+            <MultiImageSelector
+              {...{
+                control,
+                errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
+                field,
+                isDeletable: !isEdit,
+                isMultiImages: true,
+                item: {
+                  buttonTitle: texts.noticeboard.addImages,
+                  name: 'image'
+                },
+                selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
 
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>

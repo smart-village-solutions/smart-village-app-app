@@ -15,7 +15,8 @@ export const Modal = ({
   isListView,
   isVisible,
   modalHiddenButtonName,
-  onModalVisible
+  onModalVisible,
+  overlayStyle
 }) => {
   return (
     <Overlay
@@ -23,7 +24,7 @@ export const Modal = ({
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       windowBackgroundColor={colors.overlayRgba}
-      overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }]}
+      overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
       statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
     >
@@ -57,7 +58,8 @@ Modal.propTypes = {
   isListView: PropTypes.bool,
   isVisible: PropTypes.bool.isRequired,
   modalHiddenButtonName: PropTypes.string,
-  onModalVisible: PropTypes.func.isRequired
+  onModalVisible: PropTypes.func.isRequired,
+  overlayStyle: PropTypes.object
 };
 
 Modal.defaultProps = {

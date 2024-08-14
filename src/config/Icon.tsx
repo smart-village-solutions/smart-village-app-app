@@ -149,6 +149,7 @@ const TablerIcon = ({
 export const Icon = {
   About: (props: IconProps) => <TablerIcon IconComponent={IconMenu2} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
+  Albums: (props: IconProps) => <NamedIcon name="album" {...props} />,
   AlertHexagonFilled: (props: IconProps) => (
     <TablerIcon IconComponent={IconAlertHexagonFilled} {...props} />
   ),
