@@ -55,7 +55,7 @@
         "backgroundColor": "#F7F5F0"
       },
       "package": "de.test.hb.meinquartier.smartvillage.app",
-      "versionCode": 37,
+      "versionCode": 38,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
