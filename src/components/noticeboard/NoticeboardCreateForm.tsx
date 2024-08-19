@@ -160,6 +160,13 @@ export const NoticeboardCreateForm = ({
       const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
         .filter((image) => !!image.id)
         .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
+      const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
+
+      // check if images size is bigger than 10MB
+      if (imagesSize > 10485760) {
+        setIsLoading(false);
+        return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imagesSizeError);
+      }
 
       if (images?.length) {
         for (const image of images) {

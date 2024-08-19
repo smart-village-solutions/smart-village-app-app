@@ -94,13 +94,14 @@ export const Chat = ({
     }
   };
 
-  const { selectImage } = useSelectImage(
-    undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
-    undefined, // quality,
-    MediaTypeOptions.All // mediaTypes
-  );
+  const { selectImage } = useSelectImage({
+    allowsEditing: false,
+    aspect: undefined,
+    mediaTypes: MediaTypeOptions.All,
+    onChange: undefined,
+    quality: undefined
+  });
+
   const { selectDocument } = useSelectDocument();
 
   return (
