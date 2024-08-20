@@ -65,15 +65,19 @@ export const IndexFilter = ({
               setData={setCategoryFilterData}
               label={texts.bbBus.categoryFilter.label}
             />
-            <Divider style={styles.divider} />
-            <DropdownSelect
-              data={locationFilterData}
-              setData={setLocationFilterData}
-              label={texts.bbBus.locationFilter.label}
-              showSearch
-              searchInputStyle={styles.searchInput}
-              searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
-            />
+            {!!locationFilterData?.length && (
+              <>
+                <Divider style={styles.divider} />
+                <DropdownSelect
+                  data={locationFilterData}
+                  setData={setLocationFilterData}
+                  label={texts.bbBus.locationFilter.label}
+                  showSearch
+                  searchInputStyle={styles.searchInput}
+                  searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
+                />
+              </>
+            )}
           </Wrapper>
         );
       case 3:
@@ -85,31 +89,37 @@ export const IndexFilter = ({
               placeholder={texts.bbBus.textSearch.placeholder}
               label={texts.bbBus.textSearch.label}
             />
-            <Divider style={styles.divider} />
-            <DropdownSelect
-              data={locationFilterData}
-              setData={setLocationFilterData}
-              label={texts.bbBus.locationFilter.label}
-              showSearch
-              searchInputStyle={styles.searchInput}
-              searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
-            />
+            {!!locationFilterData?.length && (
+              <>
+                <Divider style={styles.divider} />
+                <DropdownSelect
+                  data={locationFilterData}
+                  setData={setLocationFilterData}
+                  label={texts.bbBus.locationFilter.label}
+                  showSearch
+                  searchInputStyle={styles.searchInput}
+                  searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
+                />
+              </>
+            )}
           </Wrapper>
         );
       case 4:
         return (
           <WrapperVertical>
             <AZFilter data={AZFilterData} setData={setAZFilterData} />
-            <WrapperHorizontal>
-              <DropdownSelect
-                data={locationFilterData}
-                setData={setLocationFilterData}
-                label={texts.bbBus.locationFilter.label}
-                showSearch
-                searchInputStyle={styles.searchInput}
-                searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
-              />
-            </WrapperHorizontal>
+            {!!locationFilterData?.length && (
+              <WrapperHorizontal>
+                <DropdownSelect
+                  data={locationFilterData}
+                  setData={setLocationFilterData}
+                  label={texts.bbBus.locationFilter.label}
+                  showSearch
+                  searchInputStyle={styles.searchInput}
+                  searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
+                />
+              </WrapperHorizontal>
+            )}
           </WrapperVertical>
         );
       default:

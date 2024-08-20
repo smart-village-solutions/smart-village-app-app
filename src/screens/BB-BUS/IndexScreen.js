@@ -52,6 +52,7 @@ export const IndexScreen = ({ navigation }) => {
       selected: index === 0
     })) || INITIAL_FILTER
   );
+  const { isMultiCity = false } = busBb;
   const [refreshing, setRefreshing] = useState(false);
   const [client] = useState(BBBusClient(busBb?.uri));
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BB_BUS);
@@ -182,7 +183,7 @@ export const IndexScreen = ({ navigation }) => {
                     );
                   }
 
-                  const areas = getAreas(data);
+                  const areas = isMultiCity && getAreas(data);
                   const top10 = getTop10(data, top10Ids);
 
                   return (
