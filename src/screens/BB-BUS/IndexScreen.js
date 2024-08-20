@@ -24,6 +24,12 @@ import { SettingsContext } from '../../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
+const FILTER_IDS = {
+  TOP10: 1,
+  SEARCH: 3,
+  ATOZ: 4
+};
+
 const INITIAL_FILTER = [
   { id: 1, title: texts.bbBus.initialFilter.top10, selected: true },
   // TODO: commented out 'Lebenslagen' as the main server does not have data for that section yet
@@ -36,11 +42,18 @@ export const IndexScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const [areaId, setAreaId] = useState(globalSettings?.settings?.busBb?.v2?.areaId?.toString());
-  const [filter, setFilter] = useState(INITIAL_FILTER);
+  const { settings = {} } = globalSettings;
+  const { busBb = {} } = settings;
+  const [areaId, setAreaId] = useState(busBb?.v2?.areaId?.toString());
+  const [filter, setFilter] = useState(
+    busBb?.initialFilter?.map((entry, index) => ({
+      id: FILTER_IDS[entry.toUpperCase()],
+      title: texts.bbBus.initialFilter[entry],
+      selected: index === 0
+    })) || INITIAL_FILTER
+  );
   const [refreshing, setRefreshing] = useState(false);
-  const [client] = useState(BBBusClient(globalSettings?.settings?.busBb?.uri));
-
+  const [client] = useState(BBBusClient(busBb?.uri));
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BB_BUS);
 
   useEffect(() => {
