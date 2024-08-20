@@ -487,6 +487,7 @@ export const texts = {
       delete: 'Willst du diesen Eintrag wirklich löschen?',
       error: 'Bitte versuche es erneut.',
       hint: 'Hinweis',
+      imagesSizeError: 'Die ausgewählten Bilder dürfen insgesamt maximal 10 MB groß sein.',
       imageUploadError: 'Beim Hochladen des Bildes ist ein Fehler aufgetreten.',
       noticeboardType: 'Bitte wähle den Typ des Eintrags aus.',
       termsOfService: 'Bitte stimme der Verarbeitung deiner Daten zu.'

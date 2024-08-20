@@ -129,13 +129,17 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
           renderItem={renderItem}
           sliderWidth={dimensions.width}
           itemWidth={itemWidth}
+          inactiveSlideOpacity={1}
           inactiveSlideScale={1}
           autoplay
+          enableMomentum
           loop
+          loopClonesPerSide={carouselData.length}
           autoplayDelay={0}
           autoplayInterval={4000}
           containerCustomStyle={styles.center}
           onScrollIndexChanged={setCarouselImageIndex}
+          removeClippedSubviews={false}
         />
       )}
 

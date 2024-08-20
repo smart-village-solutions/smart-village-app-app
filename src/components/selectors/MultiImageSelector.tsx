@@ -72,7 +72,7 @@ export const MultiImageSelector = ({
     allowsEditing: false,
     aspect: selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD ? undefined : [1, 1],
     exif: false,
-    saveImage: selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
+    saveImage: false // TODO: `IMAGE_SELECTOR_TYPES.SUE` after merge to master
   });
 
   useEffect(() => {
