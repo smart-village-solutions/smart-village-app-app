@@ -10,6 +10,7 @@ import { useCaptureImage, useSelectImage } from '../../hooks';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Image } from '../Image';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
@@ -61,6 +62,7 @@ export const MultiImageSelector = ({
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
@@ -83,6 +85,7 @@ export const MultiImageSelector = ({
     imageFunction: () => Promise<ImagePickerAsset | undefined>,
     from?: string
   ) => {
+    setLoading(true);
     await onImageSelect({
       errorType,
       from,
@@ -94,6 +97,7 @@ export const MultiImageSelector = ({
     });
 
     setIsModalVisible(!isModalVisible);
+    setLoading(false);
   };
 
   const imageDelete = async (index: number) => {
@@ -173,20 +177,26 @@ export const MultiImageSelector = ({
           </WrapperVertical>
 
           <WrapperVertical>
-            <Button
-              icon={<Icon.Camera size={normalize(16)} />}
-              iconPosition="left"
-              invert
-              onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
-              title={texts.noticeboard.takePhoto}
-            />
-            <Button
-              icon={<Icon.Albums size={normalize(16)} />}
-              iconPosition="left"
-              invert
-              onPress={() => imageSelect(selectImage)}
-              title={texts.noticeboard.chooseFromGallery}
-            />
+            {loading ? (
+              <LoadingSpinner loading />
+            ) : (
+              <>
+                <Button
+                  icon={<Icon.Camera size={normalize(16)} />}
+                  iconPosition="left"
+                  invert
+                  onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
+                  title={texts.noticeboard.takePhoto}
+                />
+                <Button
+                  icon={<Icon.Albums size={normalize(16)} />}
+                  iconPosition="left"
+                  invert
+                  onPress={() => imageSelect(selectImage)}
+                  title={texts.noticeboard.chooseFromGallery}
+                />
+              </>
+            )}
           </WrapperVertical>
         </Modal>
       </>

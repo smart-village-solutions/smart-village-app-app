@@ -5,7 +5,7 @@ import { extendMoment } from 'moment-range';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Alert, Keyboard, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -14,6 +14,7 @@ import {
   DateTimeInput,
   HtmlView,
   Input,
+  LoadingSpinner,
   MultiImageSelector,
   RegularText,
   Touchable,
@@ -387,11 +388,11 @@ export const NoticeboardCreateForm = ({
       )}
 
       <Wrapper>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title={texts.noticeboard.send}
-          disabled={loading || isLoading}
-        />
+        {isLoading ? (
+          <LoadingSpinner loading={isLoading} />
+        ) : (
+          <Button onPress={handleSubmit(onSubmit)} title={texts.noticeboard.send} />
+        )}
 
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>
@@ -407,9 +408,6 @@ export const NoticeboardCreateForm = ({
 const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
-  },
-  paddingTop: {
-    paddingTop: normalize(16)
   },
   textArea: {
     height: normalize(100),
