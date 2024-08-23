@@ -128,8 +128,8 @@ export const texts = {
     sueReportProgress: (step, ofStep) => `Schritt ${step} von ${ofStep}`,
     sueStatus: {
       inactive: 'Inaktiver Status:',
-      active: 'Aktiver Status:',
-    },
+      active: 'Aktiver Status:'
+    }
   },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
@@ -1295,7 +1295,7 @@ export const texts = {
       yearly: 'pro Jahr'
     },
     indexLoginDescription:
-      'Um die Angebote einlösen zu können, melden Sie sich bitte in Ihrem Kundenkonto an. Voraussetzung ist ein aktiver Stromvertrag bei den Stadtwerken Detmold.',
+      'Um die Angebote einlösen zu können, melden Sie sich bitte mit Ihrem Strom- oder Gas-Vertragskonto an.',
     indexLoginTitle: 'Bitte einloggen',
     key: 'Nachname Vertragspartner',
     login: 'Anmelden',
