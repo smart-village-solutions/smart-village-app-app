@@ -7,7 +7,7 @@
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
-    "version": "4.0.0",
+    "version": "4.0.1",
     "runtimeVersion": { "policy": "nativeVersion" },
     "extra": { "eas": { "projectId": "20540f3a-6e82-4038-8987-adb6d97f0e75" } },
     "icon": "./assets/icon.png",
