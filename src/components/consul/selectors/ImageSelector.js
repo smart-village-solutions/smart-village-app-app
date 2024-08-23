@@ -113,8 +113,8 @@ export const ImageSelector = ({
       const { selectedPosition, setValue = () => {} } = coordinateCheck || {};
 
       if (
-        selectedPosition.latitude === GPSLatitude &&
-        selectedPosition.longitude === GPSLongitude
+        selectedPosition?.latitude === GPSLatitude &&
+        selectedPosition?.longitude === GPSLongitude
       ) {
         coordinateCheck.setSelectedPosition(undefined);
         coordinateCheck.setUpdateRegionFromImage(false);

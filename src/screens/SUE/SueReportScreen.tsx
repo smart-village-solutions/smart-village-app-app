@@ -58,9 +58,9 @@ const sueProgressWithRequiredInputs = (
 ): TProgress[] => {
   const requiredInputs: { [key: string]: boolean } = {};
 
-  if (requiredFields?.contact) {
-    for (const field in requiredFields.contact) {
-      requiredInputs[field] = requiredFields.contact[field];
+  if (requiredFields) {
+    for (const field in requiredFields) {
+      requiredInputs[field] = requiredFields[field];
     }
   }
 
@@ -558,7 +558,7 @@ export const SueReportScreen = ({
         long: selectedPosition?.longitude,
         serviceCode: service?.serviceCode,
         ...sueReportData,
-        phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational(),
+        phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational() || '',
         description: sueReportData.description || '-'
       };
 

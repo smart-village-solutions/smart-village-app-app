@@ -42,17 +42,10 @@ const limitationDefaults = {
 };
 
 const requiredFieldsDefaults = {
-  address: {
-    city: false,
-    street: false,
-    zipCode: false
-  },
-  contact: {
-    email: false,
-    familyName: false,
-    name: false,
-    phone: false
-  }
+  email: false,
+  firstName: false,
+  lastName: false,
+  phone: false
 };
 
 const sueReportScreenDefaults = {
