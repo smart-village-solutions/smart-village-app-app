@@ -61,8 +61,12 @@ export const OpeningTimesCard = ({
                   {(open === undefined || open === true) && (!!timeFrom || !!timeTo) && (
                     <TimeBox>
                       {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                      {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                      {!!timeTo && <RegularText> {timeTo}</RegularText>}
+                      {!!timeFrom && !!timeTo && timeFrom !== timeTo && (
+                        <>
+                          <RegularText> -</RegularText>
+                          <RegularText> {timeTo}</RegularText>
+                        </>
+                      )}
                     </TimeBox>
                   )}
                   {open === false && (
