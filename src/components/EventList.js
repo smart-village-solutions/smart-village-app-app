@@ -54,7 +54,7 @@ export const EventList = ({
 
   useEffect(() => {
     setRefreshing(true);
-    setSectionedData(sectionData(data));
+    !!data && setSectionedData(sectionData(data));
     setRefreshing(false);
   }, [data]);
 

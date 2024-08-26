@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -204,17 +203,18 @@ export const EventRecords = ({ navigation, route }) => {
       : undefined;
 
   const listItems = useMemo(() => {
-    let parsedListItems = parseListItemsFromQuery(
-      query,
-      {
-        [query]: data?.pages?.flatMap((page) => page?.[query])
-      },
-      undefined,
-      {
-        withDate: false,
-        withTime: true
-      }
-    );
+    let parsedListItems =
+      parseListItemsFromQuery(
+        query,
+        {
+          [query]: data?.pages?.flatMap((page) => page?.[query])
+        },
+        undefined,
+        {
+          withDate: false,
+          withTime: true
+        }
+      ) || [];
 
     if (additionalData?.length) {
       let filteredAdditionalData;
@@ -236,7 +236,7 @@ export const EventRecords = ({ navigation, route }) => {
     data?.pages?.flatMap((page) => page?.[query]),
     hasDailyFilterSelection,
     query,
-    queryVariables
+    queryVariables.dateRange
   ]);
 
   const refresh = useCallback(async () => {
@@ -247,15 +247,6 @@ export const EventRecords = ({ navigation, route }) => {
     }
     setRefreshing(false);
   }, [isConnected, refetch, refetchVolunteerEvents, setRefreshing, showVolunteerEvents]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (isConnected && !showCalendar) {
-        refetch();
-        showVolunteerEvents && refetchVolunteerEvents();
-      }
-    }, [isConnected, refetch, refetchVolunteerEvents, showCalendar, showVolunteerEvents])
-  );
 
   const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
@@ -270,7 +261,7 @@ export const EventRecords = ({ navigation, route }) => {
   if (!query) return null;
 
   if (
-    (!data && isLoading && !isRefetching && !isFetchingNextPage) ||
+    (!listItems && isLoading && !isRefetching && !isFetchingNextPage) ||
     eventRecordsAddressesLoading ||
     eventRecordsCategoriesLoading
   ) {
