@@ -93,8 +93,8 @@ const SvgIcon = ({
   color = colors.primary,
   iconStyle,
   size = normalize(24),
-  strokeColor,
-  strokeWidth,
+  strokeColor = colors.transparent,
+  strokeWidth = 0,
   style,
   xml
 }: IconProps & { xml: (color: string, strokeColor?: string, strokeWidth?: number) => string }) => {
