@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
@@ -16,6 +16,7 @@ import {
   ListComponent,
   LoadingContainer,
   OptionToggle,
+  REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
   Wrapper
@@ -242,11 +243,19 @@ export const EventRecords = ({ navigation, route }) => {
   const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
+      showCalendar && DeviceEventEmitter.emit(REFRESH_CALENDAR);
       await refetch();
       showVolunteerEvents && refetchVolunteerEvents();
     }
     setRefreshing(false);
-  }, [isConnected, refetch, refetchVolunteerEvents, setRefreshing, showVolunteerEvents]);
+  }, [
+    isConnected,
+    refetch,
+    refetchVolunteerEvents,
+    setRefreshing,
+    showCalendar,
+    showVolunteerEvents
+  ]);
 
   const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };

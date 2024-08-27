@@ -3,12 +3,13 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, View } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import { DateData, Direction } from 'react-native-calendars/src/types';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
 import { NetworkContext } from '../NetworkProvider';
+import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, normalize, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
@@ -16,7 +17,6 @@ import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getQuery } from '../queries';
 import { ScreenName } from '../types';
 
-import { ReactQueryClient } from '../ReactQueryClient';
 import { DayComponent } from './DayComponent';
 import { EmptyMessage } from './EmptyMessage';
 import { ListComponent } from './ListComponent';
@@ -27,6 +27,7 @@ setupLocales();
 
 const { CALENDAR, ROOT_ROUTE_NAMES } = consts;
 const { DOT_SIZE, MAX_DOTS_PER_DAY } = CALENDAR;
+export const REFRESH_CALENDAR = 'REFRESH_CALENDAR';
 
 type Props = {
   additionalData?: any;
@@ -40,6 +41,7 @@ const today = moment().format('YYYY-MM-DD');
 // end of month plus seven days to have dates for overlapping days in the calendar
 const endOfMonth = moment().endOf('month').add(7, 'days').format('YYYY-MM-DD');
 
+/* eslint-disable complexity */
 export const Calendar = ({ additionalData, navigation, query, queryVariables }: Props) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -240,15 +242,12 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
     return parsedListItems;
   }, [additionalData, dataSubList, query, selectedDay, subList]);
 
-  const refresh = useCallback(
-    async (withCalendar = true) => {
-      if (isConnected) {
-        withCalendar && (await refetch());
-        await refetchSubList();
-      }
-    },
-    [isConnected, refetch, refetchSubList]
-  );
+  const refresh = useCallback(async () => {
+    if (isConnected) {
+      await refetch();
+      await refetchSubList();
+    }
+  }, [isConnected, refetch, refetchSubList]);
 
   useEffect(() => {
     refetchSubList();
@@ -265,9 +264,15 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
 
   useFocusEffect(
     useCallback(() => {
-      refresh(false);
-    }, [refresh])
+      refetch();
+    }, [refetch])
   );
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(REFRESH_CALENDAR, refresh);
+
+    return () => subscription.remove();
+  }, [refresh]);
 
   const fetchMoreData = useCallback(() => {
     if (hasNextPageSubList) {
@@ -333,3 +338,4 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
     </>
   );
 };
+/* eslint-enable complexity */
