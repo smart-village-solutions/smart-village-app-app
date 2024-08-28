@@ -4,7 +4,7 @@ import React from 'react';
 import { OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
 import { colors } from '../colors';
-import { Icon } from '../Icon';
+import { Icon } from '../icons';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
 
