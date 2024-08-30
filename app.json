@@ -28,8 +28,9 @@
       "usesIcloudStorage": true,
       "requireFullScreen": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
+        "NSCameraUsageDescription": "Diese App nutzt die Kamera zur Aufnahme von Bildern.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
+        "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
         "NSPrivacyAccessedAPITypes": [
           {
@@ -85,13 +86,7 @@
       [
         "expo-camera",
         {
-          "microphonePermission": false
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "microphonePermission": false
+          "recordAudioAndroid": false
         }
       ],
       [
@@ -100,6 +95,13 @@
           "initialOrientation": "PORTRAIT"
         }
       ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
+        }
+      ],
+      "expo-image-picker",
       "expo-localization",
       "sentry-expo",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
