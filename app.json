@@ -22,8 +22,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "de.test.hb.meinquartier.smartvillage.app",
-      "buildNumber": "3",
+      "bundleIdentifier": "de.hb.meinquartier.smartvillage.app",
+      "buildNumber": "1",
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "requireFullScreen": true,
@@ -55,8 +55,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F7F5F0"
       },
-      "package": "de.test.hb.meinquartier.smartvillage.app",
-      "versionCode": 40,
+      "package": "de.hb.meinquartier.smartvillage.app",
+      "versionCode": 1,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
