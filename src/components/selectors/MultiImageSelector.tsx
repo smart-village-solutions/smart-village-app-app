@@ -1,7 +1,6 @@
 import { ImagePickerAsset } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { jsonParser } from '../../helpers';
@@ -11,8 +10,7 @@ import { Button } from '../Button';
 import { Input } from '../form';
 import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { Modal } from '../Modal';
-import { BoldText, RegularText } from '../Text';
+import { RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 const { IMAGE_FROM, IMAGE_SELECTOR_TYPES } = consts;
@@ -61,7 +59,6 @@ export const MultiImageSelector = ({
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { selectImage } = useSelectImage({
@@ -96,7 +93,6 @@ export const MultiImageSelector = ({
       setInfoAndErrorText
     });
 
-    setIsModalVisible(!isModalVisible);
     setLoading(false);
   };
 
@@ -118,13 +114,28 @@ export const MultiImageSelector = ({
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
-        <Button
-          icon={<Icon.Camera size={normalize(16)} />}
-          iconPosition="left"
-          invert
-          onPress={() => setIsModalVisible(!isModalVisible)}
-          title={buttonTitle}
-        />
+        <WrapperVertical>
+          {loading ? (
+            <LoadingSpinner loading />
+          ) : (
+            <>
+              <Button
+                icon={<Icon.Camera size={normalize(16)} />}
+                iconPosition="left"
+                invert
+                onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
+                title={texts.noticeboard.takePhoto}
+              />
+              <Button
+                icon={<Icon.Albums size={normalize(16)} />}
+                iconPosition="left"
+                invert
+                onPress={() => imageSelect(selectImage)}
+                title={texts.noticeboard.chooseFromGallery}
+              />
+            </>
+          )}
+        </WrapperVertical>
 
         {!!infoText && (
           <RegularText small style={styles.sueInfoText}>
@@ -161,44 +172,6 @@ export const MultiImageSelector = ({
             ))}
           </WrapperRow>
         </ScrollView>
-
-        <Modal
-          isBackdropPress
-          isVisible={isModalVisible}
-          onModalVisible={() => setIsModalVisible(false)}
-          overlayStyle={styles.overlay}
-        >
-          <WrapperVertical style={styles.noPaddingTop}>
-            <BoldText>{texts.noticeboard.addImages}</BoldText>
-          </WrapperVertical>
-
-          <WrapperVertical style={styles.noPaddingTop}>
-            <Divider />
-          </WrapperVertical>
-
-          <WrapperVertical>
-            {loading ? (
-              <LoadingSpinner loading />
-            ) : (
-              <>
-                <Button
-                  icon={<Icon.Camera size={normalize(16)} />}
-                  iconPosition="left"
-                  invert
-                  onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
-                  title={texts.noticeboard.takePhoto}
-                />
-                <Button
-                  icon={<Icon.Albums size={normalize(16)} />}
-                  iconPosition="left"
-                  invert
-                  onPress={() => imageSelect(selectImage)}
-                  title={texts.noticeboard.chooseFromGallery}
-                />
-              </>
-            )}
-          </WrapperVertical>
-        </Modal>
       </>
     );
   }
