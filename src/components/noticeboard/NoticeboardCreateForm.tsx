@@ -391,7 +391,10 @@ export const NoticeboardCreateForm = ({
         {isLoading ? (
           <LoadingSpinner loading={isLoading} />
         ) : (
-          <Button onPress={handleSubmit(onSubmit)} title={texts.noticeboard.send} />
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.send}
+          />
         )}
 
         <Touchable onPress={() => navigation.goBack()}>

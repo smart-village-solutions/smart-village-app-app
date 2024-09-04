@@ -526,7 +526,8 @@ export const texts = {
     myNoticeboard: 'Meine Anzeige',
     noticeboard: 'Anzeige',
     publicationDate: 'Erscheinungsdatum',
-    send: 'Senden',
+    send: 'Anzeige erstellen',
+    editButton: 'Anzeige ändern',
     successScreen: {
       application: 'Die Nachricht wurde gesendet.',
       entry:
