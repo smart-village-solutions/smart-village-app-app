@@ -1,22 +1,21 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
-const { getDefaultConfig } = require('@expo/metro-config');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 
-module.exports = (async () => {
-  const {
-    resolver: { assetExts }
-  } = await getDefaultConfig(__dirname);
+const config = getSentryExpoConfig(__dirname);
 
-  return {
-    transformer: {
-      getTransformOptions: async () => ({
-        transform: {
-          experimentalImportSupport: false,
-          inlineRequires: true
-        }
-      })
-    },
-    resolver: {
-      assetExts: [...assetExts, 'mtl', 'obj', 'vrx']
+config.resolver = {
+  ...config.resolver,
+  assetExts: config.resolver.assetExts.filter((ext) => ext !== 'svg').concat('mtl', 'obj', 'vrx'),
+  sourceExts: [...config.resolver.sourceExts, 'svg']
+};
+config.transformer = {
+  ...config.transformer,
+  getTransformOptions: async () => ({
+    transform: {
+      experimentalImportSupport: false,
+      inlineRequires: true
     }
-  };
-})();
+  })
+};
+
+module.exports = config;

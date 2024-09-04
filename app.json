@@ -104,6 +104,9 @@
       "expo-image-picker",
       "expo-localization",
       "sentry-expo",
+      "expo-asset",
+      "expo-font",
+      "expo-secure-store",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }

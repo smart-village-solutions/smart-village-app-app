@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { SvgCss, SvgUri } from 'react-native-svg';
+import { SvgCss } from 'react-native-svg/css';
+import { SvgUri } from 'react-native-svg';
 
 import { IconProps, colors, getHitSlops, normalize } from '../config';
 
