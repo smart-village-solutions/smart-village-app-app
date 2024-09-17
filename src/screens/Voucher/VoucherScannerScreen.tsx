@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import { BarCodeScanningResult, Camera } from 'expo-camera';
+import { BarCodeScanningResult, Camera } from 'expo-camera/legacy';
 import * as Linking from 'expo-linking';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
