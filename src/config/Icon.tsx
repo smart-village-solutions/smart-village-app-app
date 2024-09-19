@@ -1,6 +1,9 @@
+import _camelCase from 'lodash/camelCase';
+import _upperFirst from 'lodash/upperFirst';
 import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import * as Tabler from 'tabler-icons-react-native';
 
 import {
   addImage,
@@ -42,6 +45,7 @@ import {
   send,
   service,
   share,
+  sueBroom,
   sueCheckSmall,
   sueClock,
   sueClockSmall,
@@ -55,13 +59,11 @@ import {
   verifiedBadge,
   visible,
   voucher
-} from '../../icons';
-import { sueBroom } from '../../icons/SUE/broom';
+} from '../icons';
 
-import { colors } from './../colors';
-import { device } from './../device';
-import { normalize } from './../normalize';
-import { Tabler } from './Tabler';
+import { colors } from './colors';
+import { device } from './device';
+import { normalize } from './normalize';
 
 export type IconProps = {
   accessibilityLabel?: string;
@@ -110,17 +112,32 @@ const SvgIcon = ({
   );
 };
 
+type TablerIconName = keyof typeof Tabler;
+
 const NamedIcon = ({
   accessibilityLabel,
   color = colors.primary,
   iconStyle,
   name,
+  stroke = 1,
   size = normalize(26),
   style
-}: IconProps & { name?: ComponentProps<typeof IconSet>['name'] }) => {
+}: IconProps & {
+  name: ComponentProps<typeof IconSet>['name'];
+  stroke?: number;
+}) => {
+  let IconComponent: any;
+
+  if (IconSet === Tabler) {
+    const TablerName = ('Icon' + _upperFirst(_camelCase(name))) as TablerIconName;
+    IconComponent = Tabler?.[TablerName] || Tabler['IconQuestionMark'];
+  } else {
+    IconComponent = IconSet;
+  }
+
   return (
     <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
-      <IconSet name={name} size={size} color={color} style={iconStyle} />
+      <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={stroke} />
     </View>
   );
 };
