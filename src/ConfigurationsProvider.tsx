@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from './SettingsProvider';
@@ -45,18 +45,25 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const { data: sueProgress } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
-    type: 'json'
+    type: 'json',
+    skip: !Object.keys(sue).length
   });
 
-  useEffect(() => {
-    const config = {
+  const mergedConfig = useMemo(() => {
+    if (!Object.keys(sue).length) {
+      return defaultConfiguration;
+    }
+
+    return mergeDefaultConfiguration(defaultConfiguration, {
       appDesignSystem,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
-    };
+    });
+  }, [appDesignSystem, sue, sueConfigData, sueProgress]);
 
-    setConfigurations((prev) => mergeDefaultConfiguration(prev, config));
-    storageHelper.setConfigurations(config);
-  }, [sueConfigData]);
+  useEffect(() => {
+    setConfigurations(mergedConfig);
+    storageHelper.setConfigurations(mergedConfig);
+  }, [mergedConfig]);
 
   return (
     <ConfigurationsContext.Provider value={configurations}>

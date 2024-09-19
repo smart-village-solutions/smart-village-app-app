@@ -4,7 +4,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import { Divider, normalize } from 'react-native-elements';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors } from '../../../config';
+import { colors, texts } from '../../../config';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper, WrapperRow } from '../../Wrapper';
 
@@ -27,23 +27,33 @@ export const SueReportProgress = ({
   return (
     <Wrapper style={styles.noPaddingBottom}>
       <WrapperRow spaceBetween>
-        <CircularProgress
-          value={(100 * currentProgress) / progress.length}
-          activeStrokeColor={colors.primary}
-          inActiveStrokeColor={colors.primary + '10'}
-          progressValueColor={colors.darkText}
-          radius={normalize(30)}
-          showProgressValue={false}
-          title={`${currentProgress} / ${progress.length}`}
-          titleColor={colors.darkText}
-          titleStyle={{ fontSize: normalize(12) }}
-        />
+        <View accessibilityElementsHidden>
+          <CircularProgress
+            value={(100 * currentProgress) / progress.length}
+            activeStrokeColor={colors.primary}
+            inActiveStrokeColor={colors.primary + '10'}
+            progressValueColor={colors.darkText}
+            radius={normalize(30)}
+            showProgressValue={false}
+            title={`${currentProgress} / ${progress.length}`}
+            titleColor={colors.darkText}
+            titleStyle={{ fontSize: normalize(12) }}
+          />
+        </View>
 
         {progress?.map(
           (item, index) =>
             index === currentProgress - 1 && (
-              <View style={[styles.textContainer, !!textContainer && textContainer]}>
-                <BoldText style={!!titleStyle && titleStyle}>{item.title}</BoldText>
+              <View
+                key={`progress-${currentProgress}`}
+                style={[styles.textContainer, !!textContainer && textContainer]}
+              >
+                <BoldText
+                  accessibilityLabel={`${texts.components.sueReportProgress(currentProgress, progress.length)} (${item.title})`}
+                  style={!!titleStyle && titleStyle}
+                >
+                  {item.title}
+                </BoldText>
                 <RegularText small style={!!subtitleStyle && subtitleStyle}>
                   {item.subtitle}
                 </RegularText>

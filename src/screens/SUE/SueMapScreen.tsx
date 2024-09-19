@@ -19,16 +19,26 @@ import {
   SueImageFallback,
   SueStatus,
   Touchable,
-  Wrapper
+  Wrapper,
+  locationServiceEnabledAlert
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
-import { useLastKnownPosition, usePosition, useSystemPermission } from '../../hooks';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 
 const CloseButton = ({ onPress }: { onPress: () => void }) => (
-  <TouchableOpacity onPress={onPress} style={styles.closeButton}>
+  <TouchableOpacity
+    accessibilityLabel={consts.a11yLabel.closeIcon}
+    onPress={onPress}
+    style={styles.closeButton}
+  >
     <Icon.Close size={normalize(16)} color={colors.surface} />
   </TouchableOpacity>
 );
@@ -44,14 +54,16 @@ type ItemProps = {
 
 export const mapToMapMarkers = (
   items: ItemProps[],
-  statusViewColors: Record<string, string | undefined>,
-  statusTextColors: Record<string, string | undefined>
+  statusBorderColors: Record<string, string | undefined>,
+  statusTextColors: Record<string, string | undefined>,
+  statusViewColors: Record<string, string | undefined>
 ): MapMarker[] | undefined =>
   items
     ?.filter((item) => item.lat && item.long)
     ?.map((item: ItemProps) => ({
       ...item,
       iconBackgroundColor: statusViewColors?.[item.status],
+      iconBorderColor: statusBorderColors?.[item.status],
       iconColor: statusTextColors?.[item.status],
       iconName: `Sue${_upperFirst(item.iconName)}`,
       id: item.serviceRequestId,
@@ -69,6 +81,8 @@ type Props = {
 
 /* eslint-disable complexity */
 export const SueMapScreen = ({ navigation, route }: Props) => {
+  const { locationSettings = {} } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings;
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
@@ -81,7 +95,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
 
-  const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
+  const { statusBorderColors = {}, statusTextColors = {}, statusViewColors = {} } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
   };
@@ -102,8 +116,9 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
           appDesignSystem
         }),
-        statusViewColors,
-        statusTextColors
+        statusBorderColors,
+        statusTextColors,
+        statusViewColors
       ),
     [data]
   );
@@ -153,6 +168,12 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         onMyLocationButtonPress={() => {
           const location = position || lastKnownPosition;
 
+          locationServiceEnabledAlert({
+            currentPosition: location,
+            locationServiceEnabled,
+            navigation
+          });
+
           setUpdatedRegion(true);
           setCurrentPosition(location?.coords);
 
@@ -182,7 +203,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
       {!detailsLoading && !!selectedRequestId && !!item && (
         <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
           <ListItem
-            accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+            accessibilityLabel={`${item.title} ${consts.a11yLabel.button}`}
             containerStyle={styles.listItem}
             Component={Touchable}
             delayPressIn={0}

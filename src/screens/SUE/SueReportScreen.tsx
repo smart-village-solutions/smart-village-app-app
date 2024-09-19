@@ -3,7 +3,16 @@ import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import parsePhoneNumber from 'libphonenumber-js';
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -42,15 +51,6 @@ type TRequiredFields = {
   };
 };
 
-// we had to apply this mapping because the input keys from ConfigAPI and the keys in the code do not match.
-// TODO: this part of the code can be removed after the API update.
-const keyMapping = {
-  [INPUT_KEYS.SUE.NAME]: INPUT_KEYS.SUE.FIRST_NAME,
-  [INPUT_KEYS.SUE.FAMILY_NAME]: INPUT_KEYS.SUE.LAST_NAME
-};
-
-export const getMappedKey = (inputKey: string) => keyMapping[inputKey] || inputKey;
-
 const sueProgressWithRequiredInputs = (
   requiredFields: TRequiredFields,
   geoMap: { locationIsRequired: boolean; locationStreetIsRequired: boolean },
@@ -58,10 +58,9 @@ const sueProgressWithRequiredInputs = (
 ): TProgress[] => {
   const requiredInputs: { [key: string]: boolean } = {};
 
-  if (requiredFields?.contact) {
-    for (const field in requiredFields.contact) {
-      const mappedKey = getMappedKey(field);
-      requiredInputs[mappedKey] = requiredFields.contact[field];
+  if (requiredFields) {
+    for (const field in requiredFields) {
+      requiredInputs[field] = requiredFields[field];
     }
   }
 
@@ -71,13 +70,12 @@ const sueProgressWithRequiredInputs = (
 
   return progress.map((item) => {
     item.requiredInputs = (item.requiredInputs || []).filter(
-      (key: string) => requiredInputs?.[getMappedKey(key)]
+      (key: string) => requiredInputs?.[key]
     );
 
     for (const key of item.inputs || []) {
-      const mappedKey = getMappedKey(key);
-      if (requiredInputs[mappedKey] && !item.requiredInputs.includes(mappedKey)) {
-        item.requiredInputs.push(mappedKey);
+      if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
+        item.requiredInputs.push(key);
       }
     }
 
@@ -225,6 +223,8 @@ type TProgress = {
   title: string;
 };
 
+const MemoizedContent = memo(Content);
+
 /* eslint-disable complexity */
 export const SueReportScreen = ({
   navigation,
@@ -246,7 +246,6 @@ export const SueReportScreen = ({
   } = limitOfArea;
 
   const [showCoordinatesFromImageAlert, setShowCoordinatesFromImageAlert] = useState(false);
-  const [sueProgressWithConfig, setSueProgressWithConfig] = useState<TProgress[]>([]);
   const [currentProgress, setCurrentProgress] = useState(0);
   const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -256,6 +255,15 @@ export const SueReportScreen = ({
   const [storedValues, setStoredValues] = useState<TReports>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
   const [contentHeights, setContentHeights] = useState([]);
+
+  const memoizedConfiguration = useMemo(
+    () => ({
+      limitation,
+      geoMap,
+      requiredFields
+    }),
+    [limitation, geoMap, requiredFields]
+  );
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef([]);
@@ -317,70 +325,12 @@ export const SueReportScreen = ({
 
   const { mutateAsync } = useMutation(postRequests);
 
-  const onSubmit = async (sueReportData: TReports) => {
-    Keyboard.dismiss();
-
-    storeReportValues();
-
-    if (alertTextGeneratorForMissingData()) {
-      return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
-    }
-
-    let addressString;
-    if (
-      !!sueReportData.street ||
-      !!sueReportData.houseNumber ||
-      !!sueReportData.postalCode ||
-      !!sueReportData.city
-    ) {
-      addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.postalCode}; ${sueReportData.city}`;
-    }
-
-    const formData = {
-      addressString,
-      lat: selectedPosition?.latitude,
-      long: selectedPosition?.longitude,
-      serviceCode: service?.serviceCode,
-      ...sueReportData,
-      phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational(),
-      description: sueReportData.description || '-'
-    };
-
-    setIsLoading(true);
-    await mutateAsync(formData, {
-      onError: () => {
-        setIsLoading(false);
-        setCurrentProgress(0);
-
-        return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-      },
-      onSuccess: (data) => {
-        if (data?.status && data.status !== 200) {
-          setIsLoading(false);
-          setCurrentProgress(0);
-
-          return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-        }
-
-        setTimeout(
-          () => {
-            setIsDone(true);
-            resetStoredValues();
-            setIsLoading(false);
-          },
-          JSON.parse(sueReportData?.images).length ? 0 : 3000
-        );
-      }
-    });
-  };
-
   /* eslint-disable complexity */
   const alertTextGeneratorForMissingData = () => {
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
 
     const isAnyInputMissing = requiredInputs?.some((inputKey: string) => {
-      const mappedKey = getMappedKey(inputKey);
-      return !getValues(mappedKey);
+      return !getValues(inputKey);
     });
 
     switch (currentProgress) {
@@ -393,7 +343,18 @@ export const SueReportScreen = ({
         if (!getValues(INPUT_KEYS.SUE.TITLE).trim()) {
           return texts.sue.report.alerts.title;
         } else if (getValues(INPUT_KEYS.SUE.IMAGES)) {
-          const images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
+          let images;
+
+          try {
+            images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
+          } catch (error) {
+            console.error('Invalid JSON in images:', error);
+            return;
+          }
+
+          if (!images?.length) {
+            return;
+          }
 
           let totalSize = 0;
           const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
@@ -414,16 +375,22 @@ export const SueReportScreen = ({
               formatSizeStandard(totalSizeLimit, 0)
             );
           }
+
+          if (selectedPosition && !showCoordinatesFromImageAlert) {
+            setShowCoordinatesFromImageAlert(true);
+
+            Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
+          }
+
+          if (selectedPosition && !showCoordinatesFromImageAlert) {
+            setShowCoordinatesFromImageAlert(true);
+
+            Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
+          }
         }
 
         if (isAnyInputMissing) {
           return texts.sue.report.alerts.missingAnyInput;
-        }
-
-        if (selectedPosition && !showCoordinatesFromImageAlert) {
-          setShowCoordinatesFromImageAlert(true);
-
-          Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
         }
         break;
       case 2:
@@ -474,7 +441,7 @@ export const SueReportScreen = ({
             animated: true
           });
 
-          return texts.sue.report.alerts.termsOfService;
+          return texts.sue.report.alerts.terms;
         }
         break;
       default:
@@ -487,17 +454,18 @@ export const SueReportScreen = ({
     readReportValuesFromStore();
   }, []);
 
-  useEffect(() => {
-    setSueProgressWithConfig(sueProgressWithRequiredInputs(requiredFields, geoMap, sueProgress));
-  }, [sueProgress, requiredFields, geoMap]);
+  const sueProgressWithConfig = useMemo(
+    () => sueProgressWithRequiredInputs(requiredFields, geoMap, sueProgress),
+    [requiredFields, geoMap, sueProgress]
+  );
 
-  const storeReportValues = async () => {
+  const storeReportValues = useCallback(async () => {
     await addToStore(SUE_REPORT_VALUES, {
       selectedPosition,
       service,
       ...getValues()
     });
-  };
+  }, [selectedPosition, service, getValues]);
 
   const readReportValuesFromStore = async () => {
     const storedValues = await readFromStore(SUE_REPORT_VALUES);
@@ -512,7 +480,7 @@ export const SueReportScreen = ({
     setIsLoadingStoredData(false);
   };
 
-  const resetStoredValues = async () => {
+  const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
     await AsyncStorage.removeItem(SUE_REPORT_VALUES);
     setStoredValues(undefined);
@@ -526,15 +494,16 @@ export const SueReportScreen = ({
     });
     setCurrentProgress(0);
     setIsLoadingStoredData(false);
-  };
+  }, [reset]);
 
-  const handleNextPage = async () => {
+  const handleNextPage = useCallback(async () => {
     Keyboard.dismiss();
+
     if (alertTextGeneratorForMissingData()) {
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    storeReportValues();
+    await storeReportValues();
 
     if (currentProgress < sueProgressWithConfig.length - 1) {
       setCurrentProgress(currentProgress + 1);
@@ -544,9 +513,14 @@ export const SueReportScreen = ({
         animated: true
       });
     }
-  };
+  }, [
+    alertTextGeneratorForMissingData,
+    storeReportValues,
+    currentProgress,
+    sueProgressWithConfig.length
+  ]);
 
-  const handlePrevPage = () => {
+  const handlePrevPage = useCallback(() => {
     Keyboard.dismiss();
     if (currentProgress > 0) {
       setCurrentProgress(currentProgress - 1);
@@ -556,7 +530,74 @@ export const SueReportScreen = ({
         animated: true
       });
     }
-  };
+  }, [currentProgress]);
+
+  const onSubmit = useCallback(
+    async (sueReportData: TReports) => {
+      Keyboard.dismiss();
+
+      await storeReportValues();
+
+      if (alertTextGeneratorForMissingData()) {
+        return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
+      }
+
+      let addressString;
+      if (
+        !!sueReportData.street ||
+        !!sueReportData.houseNumber ||
+        !!sueReportData.postalCode ||
+        !!sueReportData.city
+      ) {
+        addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.postalCode}; ${sueReportData.city}`;
+      }
+
+      const formData = {
+        addressString,
+        lat: selectedPosition?.latitude,
+        long: selectedPosition?.longitude,
+        serviceCode: service?.serviceCode,
+        ...sueReportData,
+        phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational() || '',
+        description: sueReportData.description || '-'
+      };
+
+      setIsLoading(true);
+      await mutateAsync(formData, {
+        onError: () => {
+          setIsLoading(false);
+          setCurrentProgress(0);
+
+          return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
+        },
+        onSuccess: (data) => {
+          if (data?.status && data.status !== 200) {
+            setIsLoading(false);
+            setCurrentProgress(0);
+
+            return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
+          }
+
+          setTimeout(
+            () => {
+              setIsDone(true);
+              resetStoredValues();
+              setIsLoading(false);
+            },
+            JSON.parse(sueReportData?.images).length ? 0 : 3000
+          );
+        }
+      });
+    },
+    [
+      alertTextGeneratorForMissingData,
+      selectedPosition,
+      service,
+      mutateAsync,
+      resetStoredValues,
+      storeReportValues
+    ]
+  );
 
   useLayoutEffect(() => {
     if (storedValues) {
@@ -630,28 +671,24 @@ export const SueReportScreen = ({
                   <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               ) : (
-                Content({
-                  areaServiceData,
-                  configuration: {
-                    limitation,
-                    geoMap,
-                    requiredFields
-                  },
-                  content: item.content,
-                  control,
-                  errorMessage,
-                  errors,
-                  getValues,
-                  requiredInputs: item.requiredInputs,
-                  selectedPosition,
-                  service,
-                  setSelectedPosition,
-                  setService,
-                  setShowCoordinatesFromImageAlert,
-                  setUpdateRegionFromImage,
-                  setValue,
-                  updateRegionFromImage
-                })
+                <MemoizedContent
+                  areaServiceData={areaServiceData}
+                  configuration={memoizedConfiguration}
+                  content={item.content}
+                  control={control}
+                  errorMessage={errorMessage}
+                  errors={errors}
+                  getValues={getValues}
+                  requiredInputs={item.requiredInputs}
+                  selectedPosition={selectedPosition}
+                  service={service}
+                  setSelectedPosition={setSelectedPosition}
+                  setService={setService}
+                  setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
+                  setUpdateRegionFromImage={setUpdateRegionFromImage}
+                  setValue={setValue}
+                  updateRegionFromImage={updateRegionFromImage}
+                />
               )}
 
               {device.platform === 'android' && (

@@ -1,13 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors, device, normalize } from '../../../config';
+import { colors, consts, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { TService } from '../../../screens';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
+
+const { a11yLabel } = consts;
+
+const ServiceTile = memo(({ accessibilityLabel, item, selected, onPress }) => (
+  <TouchableOpacity
+    accessibilityLabel={accessibilityLabel}
+    onPress={onPress}
+    style={[
+      styles.tile,
+      {
+        backgroundColor: selected ? colors.primary + '10' : colors.transparent,
+        borderColor: selected ? colors.primary : colors.gray40
+      }
+    ]}
+  >
+    <BoldText center>{item.serviceName}</BoldText>
+  </TouchableOpacity>
+));
 
 export const SueReportServices = ({
   service,
@@ -26,10 +44,12 @@ export const SueReportServices = ({
     refresh();
   }, []);
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     await refetch();
     setLoading(false);
-  };
+  }, [refetch]);
+
+  const memoizedData = useMemo(() => data || [], [data]);
 
   if (isLoading || loading) {
     return <LoadingSpinner loading />;
@@ -37,23 +57,16 @@ export const SueReportServices = ({
 
   return (
     <View style={styles.container}>
-      {data?.map((item, index) => {
+      {memoizedData.map((item, index) => {
         const selected = service?.serviceCode === item.serviceCode;
-
         return (
-          <TouchableOpacity
+          <ServiceTile
+            accessibilityLabel={`${item.serviceName} ${a11yLabel.button}`}
+            item={item}
             key={index}
             onPress={() => setService(item)}
-            style={[
-              styles.tile,
-              {
-                backgroundColor: selected ? colors.primary + '10' : colors.transparent,
-                borderColor: selected ? colors.primary : colors.gray40
-              }
-            ]}
-          >
-            <BoldText center>{item.serviceName}</BoldText>
-          </TouchableOpacity>
+            selected={selected}
+          />
         );
       })}
     </View>

@@ -65,6 +65,7 @@ import {
   routePlanner,
   send,
   service,
+  sueBroom,
   sueCheckSmall,
   sueClock,
   sueClockSmall,
@@ -77,24 +78,24 @@ import {
   verifiedBadge,
   visible,
   voucher
-} from '../icons';
-import { sueBroom } from '../icons/SUE/broom';
-import Tabler from '../icons/tabler-icons';
-
-import { colors } from './colors';
-import { normalize } from './normalize';
+} from '../../icons';
+import Tabler from '../../icons/tabler-icons';
+import { colors } from '../colors';
+import { normalize } from '../normalize';
 
 export const IconSet = Tabler;
 
 export type IconProps = {
+  accessibilityLabel?: string;
   color?: string;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
-  stroke?: number;
+  strokeColor?: string;
+  strokeWidth?: number;
   style?: StyleProp<ViewStyle>;
 };
 
-export const getHitSlops = (size: number) => {
+const getHitSlops = (size: number) => {
   const hitSlop = (normalize(44) - size) / 2;
 
   return hitSlop > 0
@@ -108,16 +109,17 @@ export const getHitSlops = (size: number) => {
 };
 
 const SvgIcon = ({
+  accessibilityLabel,
   color = colors.primary,
   iconStyle,
   size = normalize(24),
+  strokeColor = colors.transparent,
+  strokeWidth = 0,
   style,
-  strokeColor,
-  strokeWidth,
   xml
 }: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
   return (
-    <View style={style} hitSlop={getHitSlops(size)}>
+    <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
       <SvgXml
         xml={xml(color, strokeColor, strokeWidth)}
         width={size}
@@ -129,6 +131,7 @@ const SvgIcon = ({
 };
 
 const NamedIcon = ({
+  accessibilityLabel,
   color = colors.primary,
   iconStyle,
   name,
@@ -136,7 +139,7 @@ const NamedIcon = ({
   style
 }: IconProps & { name?: ComponentProps<typeof IconSet>['name'] }) => {
   return (
-    <View style={style} hitSlop={getHitSlops(size)}>
+    <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
       <IconSet name={name} size={size} color={color} style={iconStyle} />
     </View>
   );
@@ -146,14 +149,14 @@ const TablerIcon = ({
   color = colors.primary,
   IconComponent,
   size = normalize(24),
-  stroke = 1,
+  strokeWidth = 1,
   style
 }: IconProps & {
   IconComponent: React.ComponentType<{ color: string; size: number; stroke: number }>;
 }) => {
   return (
     <View style={style}>
-      <IconComponent color={color} size={size} stroke={stroke} />
+      <IconComponent color={color} size={size} stroke={strokeWidth} />
     </View>
   );
 };

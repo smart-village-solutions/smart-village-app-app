@@ -4,7 +4,7 @@ import React from 'react';
 import { OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
 import { colors } from '../colors';
-import { Icon } from '../Icon';
+import { Icon } from '../icons';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
 
@@ -22,6 +22,7 @@ const homeTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.home} (Tab 1 von 5)`,
     tabBarLabel: texts.tabBarLabel.home,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon color={color} Icon={Icon.Home} />
@@ -74,6 +75,7 @@ const aboutTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.about} (Tab 5 von 5)`,
     tabBarLabel: texts.tabBarLabel.about,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon

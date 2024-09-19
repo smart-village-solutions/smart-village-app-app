@@ -9,12 +9,12 @@ import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, normalize } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
-const { LIST_TYPES } = consts;
+const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
 
 const getListType = (query, listTypesSettings) => {
   switch (query) {

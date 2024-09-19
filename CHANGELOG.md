@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.0.1]
+
+This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs
+
+### Added
+
+- added adaptiveIcon feature for Android
+  - due to the adaptiveIcon update for Android, `assets/adaptive-icon.png` needs to be created and
+    updated according to the necessary guidelines
+    - https://developer.android.com/develop/ui/views/launch/icon_design_adaptive
+- added the option to add multiple links to the checkbox on the report creation screen in the sue module
+- added `showOpeningTimes` property to hide the opening time section in `DetailScreen` via `globalSettings`
+- added `useFonts` to load fonts in app
+- added the ability to display serial events correctly in the app
+- added the ability to add different noticeboard categories
+- added new `CustomWidget` widget to navigate to different screens within the app
+- added possibility for border on icons to make them more visible on the map
+
+### Changed
+
+- upgraded Expo to version 51.0.28
+- improved coordinate retrieval from image for sue module
+- updated `Font.loadAsync` with `useFonts`
+
+### Fixed
+
+- fixed a bug in the sue module that did not cause reports to be sent
+- fixed http pages not opening on ios devices
+- fixed bug in `ConfigurationsProvider` that prevented app from opening
+- fixed issue with input keys in configApi not matching with app for sue module
+
 ## [v4.0.0] :dizzy:
 
 This version includes the Expo SDK 50 and SDK 51 update, a new the defect report module and a new voucher module. Theming feature coming soon.

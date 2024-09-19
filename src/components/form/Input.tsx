@@ -38,6 +38,7 @@ export const Input = forwardRef(
       inputContainerStyle,
       inputStyle,
       containerStyle,
+      accessibilityLabel,
       ...furtherProps
     }: Props,
     ref
@@ -82,7 +83,10 @@ export const Input = forwardRef(
             styles.chatInput,
             multiline && device.platform === 'ios' && styles.chatMultiline
           ]}
-          accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
+          accessibilityLabel={
+            accessibilityLabel ||
+            `${!!a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
+          }
         />
       );
     }
@@ -143,7 +147,10 @@ export const Input = forwardRef(
         errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
         placeholderTextColor={colors.placeholder}
         disabledInputStyle={styles.inputDisabled}
-        accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
+        accessibilityLabel={
+          accessibilityLabel ||
+          `${!!a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
+        }
       />
     );
   }

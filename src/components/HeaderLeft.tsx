@@ -5,8 +5,16 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { colors, consts, device, Icon, normalize } from '../config';
 
 // TODO: can this be exchanged with https://reactnavigation.org/docs/elements/#headerbackbutton?
-export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) =>
-  onPress ? (
+export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) => {
+  if (!onPress && !backImage) {
+    return device.platform == 'android' ? <Icon.ArrowLeft color={colors.surface} /> : null;
+  }
+
+  if (!onPress && backImage) {
+    return <View>{backImage({ tintColor: colors.darkText })}</View>;
+  }
+
+  return (
     <View>
       <TouchableOpacity
         onPress={onPress}
@@ -20,9 +28,8 @@ export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) =>
         )}
       </TouchableOpacity>
     </View>
-  ) : device.platform == 'android' ? (
-    <Icon.ArrowLeft color={colors.surface} />
-  ) : null;
+  );
+};
 
 const styles = StyleSheet.create({
   icon: {

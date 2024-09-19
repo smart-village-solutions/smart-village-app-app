@@ -1,9 +1,8 @@
 const apiDefaults = {
   apiKey: '',
   areaService: { apiKey: '', id: '', serverUrl: '' },
-  jurisdictionId: '',
   serverUrl: '',
-  testApi: { apiKey: '', jurisdictionId: '', serverUrl: '' },
+  testApi: { apiKey: '', serverUrl: '' },
   whichApi: ''
 };
 
@@ -43,21 +42,18 @@ const limitationDefaults = {
 };
 
 const requiredFieldsDefaults = {
-  address: {
-    city: false,
-    street: false,
-    zipCode: false
-  },
-  contact: {
-    email: false,
-    familyName: false,
-    name: false,
-    phone: false
-  }
+  email: false,
+  firstName: false,
+  lastName: false,
+  phone: false
 };
 
 const sueReportScreenDefaults = {
   showFeedbackSection: false,
+  reportTerms: {
+    termsOfService: {},
+    termsOfUse: {}
+  },
   reportSendDone: {
     subtitle: '',
     title: ''

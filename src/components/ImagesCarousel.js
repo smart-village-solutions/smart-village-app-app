@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
@@ -39,6 +40,13 @@ export const ImagesCarousel = ({
   const [carouselImageIndex, setCarouselImageIndex] = useState(0);
 
   const carouselRef = useRef();
+  const isFocused = useIsFocused();
+
+  if (isFocused) {
+    carouselRef.current?.startAutoplay();
+  } else {
+    carouselRef.current?.stopAutoplay();
+  }
 
   useEffect(() => {
     isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();

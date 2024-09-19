@@ -10,8 +10,6 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
-const MAX_INITIAL_NUM_TO_RENDER = 15;
-
 const TimeBox = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
@@ -26,7 +24,11 @@ const DateBox = styled(TimeBox)`
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const OpeningTimesCard = ({ openingHours }) => {
+export const OpeningTimesCard = ({
+  openingHours,
+  MAX_INITIAL_NUM_TO_RENDER = 15,
+  appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton
+}) => {
   const [moreData, setMoreData] = useState(1);
 
   const loadMoreItems = () => {
@@ -67,8 +69,12 @@ export const OpeningTimesCard = ({ openingHours }) => {
                   {(open === undefined || open === true) && (!!timeFrom || !!timeTo) && (
                     <TimeBox>
                       {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                      {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                      {!!timeTo && <RegularText> {timeTo}</RegularText>}
+                      {!!timeFrom && !!timeTo && timeFrom !== timeTo && (
+                        <>
+                          <RegularText> -</RegularText>
+                          <RegularText> {timeTo}</RegularText>
+                        </>
+                      )}
                     </TimeBox>
                   )}
                   {open === false && (
@@ -108,7 +114,7 @@ export const OpeningTimesCard = ({ openingHours }) => {
       {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
         <Touchable onPress={loadMoreItems}>
           <BoldText primary underline center>
-            {texts.eventRecord.appointmentsShowMoreButton}
+            {appointmentsShowMoreButton}
           </BoldText>
         </Touchable>
       )}

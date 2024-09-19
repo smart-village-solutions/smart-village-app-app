@@ -2,8 +2,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
+import React, { useContext, useState } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
 
@@ -20,8 +20,10 @@ import {
   WrapperHorizontal,
   WrapperRow
 } from '../../components';
-import { Icon, colors, consts, normalize, texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { colors, consts, Icon, normalize, texts } from '../../config';
+import { graphqlFetchPolicy, momentFormat, parseListItemsFromQuery } from '../../helpers';
+import { NetworkContext } from '../../NetworkProvider';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { NOTICEBOARD_TYPES } from '../../types';
@@ -44,25 +46,19 @@ type TNoticeboardCreateData = {
   title: string;
 };
 
-const NOTICEBOARD_TYPE_OPTIONS = [
-  { value: NOTICEBOARD_TYPES.OFFER, title: texts.noticeboard.categoryNames.offer },
-  { value: NOTICEBOARD_TYPES.SEARCH, title: texts.noticeboard.categoryNames.search },
-  {
-    value: NOTICEBOARD_TYPES.NEIGHBOURLY_HELP,
-    title: texts.noticeboard.categoryNames.neighbourlyHelp
-  }
-];
-
-/* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
   data,
   navigation,
+  queryVariables,
   route
 }: {
   data: any;
   navigation: StackNavigationProp<any>;
+  queryVariables: { [key: string]: any };
   route: any;
 }) => {
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const isEdit = !!Object.keys(data).length;
   const subQuery = route.params?.subQuery ?? {};
   const consentForDataProcessingText =
@@ -72,6 +68,17 @@ export const NoticeboardCreateForm = ({
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
   const [isLoading, setIsLoading] = useState(false);
+
+  const { data: categories } = useQuery(getQuery(QUERY_TYPES.CATEGORIES), {
+    fetchPolicy,
+    variables: queryVariables
+  });
+
+  const NOTICEBOARD_TYPE_OPTIONS = parseListItemsFromQuery(QUERY_TYPES.CATEGORIES, categories, '', {
+    queryVariables
+  }).map((item) => ({ value: item.title, title: item.title }));
+
+  const existingImageUrl = data?.mediaContents?.[0]?.sourceUrl?.url;
 
   const {
     control,
@@ -144,7 +151,7 @@ export const NoticeboardCreateForm = ({
       await createGenericItem({
         variables: {
           id: noticeboardNewData.id,
-          categoryName: texts.noticeboard.categoryNames[noticeboardNewData.noticeboardType],
+          categoryName: noticeboardNewData.noticeboardType,
           genericType,
           publishedAt: momentFormat(noticeboardNewData.dateStart),
           title: noticeboardNewData.title,
@@ -213,7 +220,7 @@ export const NoticeboardCreateForm = ({
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
           render={({ field: { onChange, value } }) => (
             <>
-              {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
+              {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem: { value: string; title: string }) => (
                 <Checkbox
                   checked={value === noticeboardItem.value}
                   checkedIcon={<Icon.CircleCheckFilled />}

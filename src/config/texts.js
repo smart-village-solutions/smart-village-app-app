@@ -121,6 +121,15 @@ export const texts = {
     commercial: 'Angebot',
     commercials: 'Angebote'
   },
+  components: {
+    search: 'Suche starten',
+    map: 'Eigenen Standort verwenden?',
+    sueReportProgress: (step, ofStep) => `Schritt ${step} von ${ofStep}`,
+    sueStatus: {
+      inactive: 'Inaktiver Status:',
+      active: 'Aktiver Status:'
+    }
+  },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
@@ -508,11 +517,6 @@ export const texts = {
     },
     all: 'Alles',
     backToConversation: 'Zurück zur Unterhaltung',
-    categoryNames: {
-      neighbourlyHelp: 'Nachbarschaftshilfe',
-      offer: 'Angebot',
-      search: 'Gesuch'
-    },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     delete: 'Löschen',
     description: 'Beschreibung',
@@ -989,12 +993,17 @@ export const texts = {
       abort: 'Abbrechen',
       alternativePositionHint:
         'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
+      cancel: 'Abbrechen',
       chooseAlternateLocationButton: 'Alternativen Standort wählen',
       next: 'Weiter',
-      onSystemPermissionMissing:
+      ok: 'OK',
+      onLocationServiceMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
+      onSystemPermissionMissing:
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes müssen Sie die App neu starten.',
       save: 'Speichern',
-      setting: 'Standort'
+      setting: 'Standort',
+      settings: 'Einstellungen'
     },
     mowasRegion: {
       setting: 'MoWaS-Regionen'
@@ -1089,9 +1098,11 @@ export const texts = {
         missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort als Adresse übernehmen?',
+        ok: 'OK',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
+        settings: 'Einstellungen',
         street: 'Bitte geben Sie die Straße an',
-        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
+        terms: 'Bitte akzeptieren Sie die Datenschutzbestimmung und Nutzungsbedingung.',
         title: 'Bitte kurz beschreiben, worum es geht.',
         yes: 'Ja',
         postalCode: 'Bitte geben Sie die Postleitzahl an',
@@ -1108,7 +1119,8 @@ export const texts = {
       houseNumber: 'Hausnummer',
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
       lastName: 'Nachname',
-      mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
+      mapHint:
+        'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen Standort verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',
@@ -1121,7 +1133,9 @@ export const texts = {
         toEntryList: 'Zur Meldungsliste'
       },
       street: 'Straße',
-      termsOfService: 'Datenschutzbestimmungen',
+      termsInputCheckbox: 'Ich stimme den folgenden Bedingungen zu:',
+      termsOfService: 'Datenschutzbestimmung',
+      termsOfUse: 'Nutzungsbedingung',
       title: 'Kurze Beschreibung',
       postalCode: 'Postleitzahl'
     },
@@ -1393,7 +1407,7 @@ export const texts = {
       yearly: 'pro Jahr'
     },
     indexLoginDescription:
-      'Um die Angebote einlösen zu können, melden Sie sich bitte in Ihrem Kundenkonto an. Voraussetzung ist ein aktiver Stromvertrag bei den Stadtwerken Detmold.',
+      'Um die Angebote einlösen zu können, melden Sie sich bitte mit Ihrem Strom- oder Gas-Vertragskonto an.',
     indexLoginTitle: 'Bitte einloggen',
     key: 'Nachname Vertragspartner',
     login: 'Anmelden',
@@ -1447,11 +1461,12 @@ export const texts = {
   },
   widgets: {
     constructionSites: 'Baustellen',
+    custom: 'Benutzerdefiniert',
     events: 'Events',
     lunch: 'Gastro',
     surveys: 'Umfragen',
+    vouchers: 'Angebote',
     water: 'Wasser',
-    weather: 'Wetter',
-    vouchers: 'Angebote'
+    weather: 'Wetter'
   }
 };

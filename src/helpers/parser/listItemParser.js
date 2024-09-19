@@ -49,7 +49,7 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
     overtitle: subtitle(
       withDate ? eventDate(eventRecord.listDate) : undefined,
       eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city,
-      withTime ? eventRecord?.dates?.[0]?.timeFrom : undefined
+      withTime ? eventRecord?.date?.timeFrom || eventRecord?.dates?.[0]?.timeFrom : undefined
     ),
     title: eventRecord.title,
     picture: {

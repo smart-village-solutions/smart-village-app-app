@@ -4,7 +4,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth, trimNewLines } from '../helpers';
+import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
 import { SueCategory, SueImageFallback, SueStatus } from './SUE';
@@ -124,12 +124,32 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
 /* eslint-enable complexity */
 
 export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle, sue }) => {
-  const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
+  const {
+    appDesignSystem = {},
+    params,
+    routeName: name,
+    serviceName,
+    requestedDatetime,
+    subtitle,
+    title,
+    topTitle
+  } = item;
   const { containerStyle, contentContainerStyle } = appDesignSystem;
+
+  const accessibilityLabel = [
+    !!requestedDatetime && momentFormat(requestedDatetime),
+    !!serviceName && serviceName,
+    !!topTitle && topTitle,
+    !!title && title,
+    !!subtitle && subtitle
+  ]
+    .filter((text) => !!text)
+    .map((text) => `(${text})`)
+    .join(' ');
 
   return (
     <Touchable
-      accessibilityLabel={`${subtitle} (${title}) ${consts.a11yLabel.button}`}
+      accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
       onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >

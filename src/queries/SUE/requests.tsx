@@ -8,7 +8,7 @@ export const requests = async (queryVariables) => {
   const { sueFetchObj = {}, sueRequestsUrl = '' } = await fetchSueEndpoints();
 
   const response = await (
-    await fetch(`${sueRequestsUrl}&${queryParams.toString()}`, sueFetchObj)
+    await fetch(`${sueRequestsUrl}?${queryParams.toString()}`, sueFetchObj)
   ).json();
 
   return new Promise((resolve) => {
@@ -28,20 +28,21 @@ export const requests = async (queryVariables) => {
 
 /* eslint-disable complexity */
 export const postRequests = async (data: any) => {
-  const { apiKey = '', jurisdictionId = '', suePostRequest = '' } = await fetchSueEndpoints();
+  const { apiKey = '', suePostRequest = '' } = await fetchSueEndpoints();
   const formData = new FormData();
 
-  data?.addressString && formData.append('address_string', data.addressString);
-  data?.description && formData.append('description', data.description);
-  data?.email && formData.append('email', data.email);
-  data?.firstName && formData.append('first_name', data.firstName);
-  formData.append('jurisdiction_id', jurisdictionId);
-  data?.lastName && formData.append('last_name', data.lastName);
-  data?.lat && formData.append('lat', data.lat);
-  data?.long && formData.append('long', data.long);
-  data?.phone && formData.append('phone', data.phone);
-  data?.serviceCode && formData.append('service_code', data.serviceCode);
-  data?.title && formData.append('title', data.title);
+  if (data) {
+    data.addressString && formData.append('address_string', data.addressString);
+    data.description && formData.append('description', data.description);
+    data.email && formData.append('email', data.email);
+    data.firstName && formData.append('first_name', data.firstName);
+    data.lastName && formData.append('last_name', data.lastName);
+    data.lat && formData.append('lat', data.lat);
+    data.long && formData.append('long', data.long);
+    data.phone && formData.append('phone', data.phone);
+    data.serviceCode && formData.append('service_code', data.serviceCode);
+    data.title && formData.append('title', data.title);
+  }
 
   const images = JSON.parse(data?.images) || [];
   for (let i = 0; i < images.length; i++) {

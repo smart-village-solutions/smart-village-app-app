@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { SvgCss, SvgUri } from 'react-native-svg';
 
-import { IconProps, colors, getHitSlops, normalize } from '../config';
+import { IconProps, colors, getHitSlops, normalize } from '../../config';
 
 export const IconUrl = ({
   color = colors.primary,
