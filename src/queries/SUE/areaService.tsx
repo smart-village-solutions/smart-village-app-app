@@ -1,3 +1,5 @@
+import _uniq from 'lodash/uniq';
+
 import { storageHelper } from '../../helpers';
 
 export const areaService = async () => {
@@ -17,7 +19,15 @@ export const areaService = async () => {
     }
   };
 
-  return await (
-    await fetch(`${serverUrl}/${id}?selectAttributes=postalCodes`, areaServiceFetchObj)
+  const rs = (
+    await (await fetch(`${serverUrl}/${id}?selectAttributes=rs`, areaServiceFetchObj)).json()
+  )?.rs;
+
+  const postalCodes = await (
+    await fetch(`${serverUrl}/getByRs?rs=${rs}*&selectAttributes=postalCodes`, areaServiceFetchObj)
   ).json();
+
+  return {
+    postalCodes: _uniq(postalCodes?.values?.flatMap((item: any) => item.postalCodes || []))
+  };
 };
