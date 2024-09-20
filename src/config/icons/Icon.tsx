@@ -1,6 +1,6 @@
 import _camelCase from 'lodash/camelCase';
 import _upperFirst from 'lodash/upperFirst';
-import React, { ComponentProps } from 'react';
+import React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import * as Tabler from 'tabler-icons-react-native';
@@ -114,10 +114,7 @@ const NamedIcon = ({
   strokeWidth = 2,
   size = normalize(26),
   style
-}: IconProps & {
-  name: ComponentProps<typeof IconSet>['name'];
-  strokeWidth?: number;
-}) => {
+}: IconProps & { name?: string }) => {
   let IconComponent: any;
 
   if (IconSet === Tabler) {
