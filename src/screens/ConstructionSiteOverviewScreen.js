@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { RegularText, SafeAreaViewFlex, TextListItem, Wrapper } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 
@@ -68,10 +68,17 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
             tintColor={colors.refreshControl}
           />
         }
+        style={styles.container}
       />
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(16)
+  }
+});
 
 ConstructionSiteOverviewScreen.propTypes = {
   navigation: PropTypes.object.isRequired
