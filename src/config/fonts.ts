@@ -5,6 +5,5 @@ export const fontConfig = {
   italic: require('../../assets/fonts/OpenSans-Italic.ttf'),
   condbold: require('../../assets/fonts/OpenSans_Condensed-Bold.ttf'),
   'condbold-italic': require('../../assets/fonts/OpenSans_Condensed-BoldItalic.ttf'),
-  'condbold-regular': require('../../assets/fonts/OpenSans_Condensed-Regular.ttf'),
-  'tabler-icons': require('../../assets/tabler-icons/2.31.0/tabler-icons.ttf')
+  'condbold-regular': require('../../assets/fonts/OpenSans_Condensed-Regular.ttf')
 };
