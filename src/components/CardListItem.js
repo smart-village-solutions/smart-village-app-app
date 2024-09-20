@@ -154,7 +154,13 @@ export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, b
       disabled={!navigation}
     >
       <View>
-        <Card containerStyle={[styles.container, containerStyle]}>
+        <Card
+          containerStyle={[
+            styles.container,
+            stylesWithProps({ horizontal }).container,
+            containerStyle
+          ]}
+        >
           <View
             style={[
               stylesWithProps({ horizontal }).contentContainer,
@@ -176,7 +182,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     borderWidth: 0,
     margin: 0,
-    paddingHorizontal: 0,
     paddingVertical: normalize(16),
     ...Platform.select({
       android: {
@@ -224,6 +229,9 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
   const maxWidth = width - 2 * normalize(16); // width of an image minus paddings
 
   return StyleSheet.create({
+    container: {
+      paddingHorizontal: horizontal ? normalize(14) : 0
+    },
     contentContainer: {
       width: maxWidth
     },
