@@ -1,3 +1,4 @@
+export * from './broom';
 export * from './checkSmall';
 export * from './clock';
 export * from './clockSmall';

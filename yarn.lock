@@ -11582,6 +11582,11 @@ table@^6.0.9:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
+tabler-icons-react-native@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/tabler-icons-react-native/-/tabler-icons-react-native-3.1.0.tgz#f3e42052a7509c6a6729ba8b6bbdc8a5c52a8dea"
+  integrity sha512-HHepAnE31cc1b3jEVIE37BBhL+wF78hqegwIpMgwzvjBuTrzQkHIyf0UTllG9iSpgSqNwbF/9KGmg4sHgS/16g==
+
 tar@^6.0.5:
   version "6.1.15"
   resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.15.tgz#c9738b0b98845a3b344d334b8fa3041aaba53a69"
