@@ -19,8 +19,8 @@ import {
   Search,
   StatusProps,
   SueLoadingIndicator,
-  Wrapper,
-  WrapperHorizontal
+  WrapperHorizontal,
+  WrapperVertical
 } from '../../components';
 import { colors, consts, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
@@ -174,11 +174,11 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         }
         ListHeaderComponent={
           <>
-            <Wrapper>
+            <WrapperVertical>
               <Search setQueryVariables={setQueryVariables} placeholder={texts.filter.search} />
-            </Wrapper>
+            </WrapperVertical>
 
-            <Wrapper>
+            <WrapperVertical>
               <Filter
                 filterTypes={[
                   {
@@ -213,7 +213,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                 initialFilters={initialQueryVariables}
                 setQueryVariables={setQueryVariables}
               />
-            </Wrapper>
+            </WrapperVertical>
 
             {!!listItems?.length && (
               <WrapperHorizontal>
