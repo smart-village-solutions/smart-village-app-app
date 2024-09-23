@@ -39,6 +39,7 @@ import { GET_POINTS_OF_INTEREST, GET_POINT_OF_INTEREST } from './pointsOfInteres
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
+import { GET_RESOURCE_FILTERS } from './resourceFilters';
 import { GET_TOUR, GET_TOURS, GET_TOUR_STOPS } from './tours';
 import { QUERY_TYPES } from './types';
 import {
@@ -93,6 +94,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: GET_POINTS_OF_INTEREST_AND_TOURS,
     [QUERY_TYPES.PUBLIC_HTML_FILE]: GET_PUBLIC_HTML_FILE,
     [QUERY_TYPES.PUBLIC_JSON_FILE]: GET_PUBLIC_JSON_FILE,
+    [QUERY_TYPES.RESOURCE_FILTERS]: GET_RESOURCE_FILTERS,
     [QUERY_TYPES.WASTE_ADDRESSES]: WASTE_ADDRESSES,
     [QUERY_TYPES.WASTE_STREET]: WASTE_STREET,
     [QUERY_TYPES.VOUCHER]: GET_VOUCHER,
