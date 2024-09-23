@@ -212,6 +212,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                 ]}
                 initialFilters={initialQueryVariables}
                 setQueryVariables={setQueryVariables}
+                widthSearch
               />
             </Wrapper>
 
