@@ -16,7 +16,6 @@ export * from './Navigation';
 export * from './NoticeboardType';
 export * from './OParlObjectTypes';
 export * from './OpeningHour';
-export * from './PermanentFilter';
 export * from './SubQuery';
 export * from './Survey';
 export * from './WasteCalendar';
