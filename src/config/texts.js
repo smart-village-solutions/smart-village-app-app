@@ -458,6 +458,7 @@ export const texts = {
   filter: {
     date: 'Datum',
     hideFilter: 'Filter ausblenden',
+    filter: 'Filter',
     resetFilter: 'Filter zurücksetzen',
     showFilter: 'Filter anzeigen',
     search: 'Was suchen Sie?',
