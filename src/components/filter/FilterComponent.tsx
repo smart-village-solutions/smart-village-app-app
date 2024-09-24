@@ -9,6 +9,7 @@ import { Checkbox } from '../Checkbox';
 import { WrapperVertical } from './../Wrapper';
 import { DateFilter } from './DateFilter';
 import { DropdownFilter } from './DropdownFilter';
+import { SliderFilter } from './SliderFilter';
 import { StatusFilter } from './Sue';
 
 const { FILTER_TYPES } = consts;
@@ -66,6 +67,22 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
                   })
                 );
               }}
+            />
+          )}
+
+          {item.type === FILTER_TYPES.SLIDER && (
+            <SliderFilter
+              label={item.label}
+              onValueChange={(value) => {
+                setFilters(
+                  updateFilters({
+                    currentFilters: filters,
+                    name: item.name,
+                    value
+                  })
+                );
+              }}
+              value={filters[item.name] || 0}
             />
           )}
         </WrapperVertical>
