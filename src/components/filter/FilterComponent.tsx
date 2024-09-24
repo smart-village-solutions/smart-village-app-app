@@ -2,7 +2,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { consts, device } from '../../config';
+import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
+import { Checkbox } from '../Checkbox';
 
 import { WrapperVertical } from './../Wrapper';
 import { DateFilter } from './DateFilter';
@@ -47,6 +49,23 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
               setFilters={setFilters}
               {...item}
               data={item.data as StatusProps[]}
+            />
+          )}
+
+          {item.type === FILTER_TYPES.CHECKBOX && (
+            <Checkbox
+              title={item.placeholder}
+              checked={filters[item.name] || false}
+              onPress={() => {
+                setFilters(
+                  updateFilters({
+                    currentFilters: filters,
+                    name: item.name,
+                    removeFromFilter: !!item.checked,
+                    value: !filters[item.name]
+                  })
+                );
+              }}
             />
           )}
         </WrapperVertical>

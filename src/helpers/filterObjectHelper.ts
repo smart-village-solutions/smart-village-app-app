@@ -1,4 +1,4 @@
-import { FilterProps } from '../components';
+import { FilterProps } from '../types';
 
 type TFilter = {
   currentFilters: FilterProps;
