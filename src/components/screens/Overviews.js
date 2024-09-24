@@ -17,6 +17,7 @@ import {
   CategoryList,
   DropdownHeader,
   EmptyMessage,
+  Filter,
   HeaderLeft,
   HtmlView,
   IndexFilterWrapperAndList,
@@ -30,7 +31,9 @@ import {
   Wrapper
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
+  filterTypesHelper,
   graphqlFetchPolicy,
   isOpen,
   openLink,
@@ -99,6 +102,7 @@ const hasFilterSelection = (query, queryVariables) => {
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const Overviews = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { resourceFilters } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
@@ -243,6 +247,16 @@ export const Overviews = ({ navigation, route }) => {
     setRefreshing(false);
   }, [isConnected, setRefreshing, refetch]);
 
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data,
+      query,
+      resourceFilters,
+      categories,
+      queryVariables
+    });
+  }, [data]);
+
   useEffect(() => {
     // we want to ensure when changing from one index screen to another of the same resource, that
     // the query variables are taken freshly. otherwise the mounted screen can have query variables
@@ -349,6 +363,15 @@ export const Overviews = ({ navigation, route }) => {
           <ListComponent
             ListHeaderComponent={
               <>
+                <Filter
+                  filterTypes={filterTypes}
+                  initialFilters={queryVariables}
+                  isOverlay
+                  setQueryVariables={setQueryVariables}
+                />
+
+                <Divider />
+
                 {!!showFilter && (
                   <>
                     <DropdownHeader
