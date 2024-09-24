@@ -13,6 +13,7 @@ import {
   CalendarListToggle,
   DropdownHeader,
   EmptyMessage,
+  Filter,
   ListComponent,
   LoadingContainer,
   OptionToggle,
@@ -22,12 +23,13 @@ import {
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
-import { openLink, parseListItemsFromQuery } from '../../helpers';
+import { filterTypesHelper, openLink, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';
@@ -58,6 +60,7 @@ const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 export const EventRecords = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const { resourceFilters } = useContext(ConfigurationsContext);
   const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
     filter;
@@ -257,6 +260,17 @@ export const EventRecords = ({ navigation, route }) => {
     showVolunteerEvents
   ]);
 
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data,
+      query,
+      resourceFilters,
+      categories: eventRecordsCategoriesData,
+      locations: eventRecordsAddressesData,
+      queryVariables
+    });
+  }, [data]);
+
   const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
 
@@ -308,6 +322,16 @@ export const EventRecords = ({ navigation, route }) => {
                 <Divider />
               </>
             )}
+
+            <Filter
+              filterTypes={filterTypes}
+              initialFilters={queryVariables}
+              isOverlay
+              setQueryVariables={setQueryVariables}
+            />
+
+            <Divider />
+
             {!!showFilter && (
               <>
                 {!!eventRecordsCategoriesData && (
