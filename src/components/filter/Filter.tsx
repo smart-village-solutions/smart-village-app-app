@@ -5,6 +5,7 @@ import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 
 import { Icon, colors, consts, normalize, texts } from '../../config';
+import { FilterProps, FilterTypesProps } from '../../types';
 
 import { Button } from './../Button';
 import { BoldText } from './../Text';
@@ -12,41 +13,6 @@ import { Wrapper, WrapperRow, WrapperVertical } from './../Wrapper';
 import { FilterComponent } from './FilterComponent';
 
 const { a11yLabel } = consts;
-
-export type FilterProps = {
-  date: string;
-  end_date: string;
-  service_code: string;
-  sort: string;
-  sortBy: string;
-  start_date: string;
-  initial_start_date: string;
-  status: string;
-};
-
-export type DropdownProps = {
-  id: number;
-  index: number;
-  selected: boolean;
-  value: string;
-  filterValue?: string;
-};
-
-export type StatusProps = {
-  status: string;
-  matchingStatuses: string[];
-  codesForFilter: string;
-  iconName: string;
-};
-
-export type FilterTypesProps = {
-  data: DropdownProps[] | { name: keyof FilterProps; placeholder: string }[] | StatusProps[];
-  label?: string;
-  name: keyof FilterProps;
-  placeholder?: string;
-  type: string;
-  value?: string;
-};
 
 type Props = {
   filterTypes?: FilterTypesProps[];
@@ -59,17 +25,18 @@ type Props = {
 export const Filter = ({
   filterTypes,
   initialFilters,
-  isOverlay,
+  isOverlay = false,
   setQueryVariables,
   widthSearch = false
 }: Props) => {
   const [filters, setFilters] = useState<FilterProps>(initialFilters);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  useEffect(
-    () => setQueryVariables((prev) => ({ search: prev.search || '', ...filters })),
-    [filters]
-  );
+  useEffect(() => {
+    if (!isOverlay) {
+      setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
+    }
+  }, [filters]);
 
   if (!filterTypes?.length) {
     return null;
@@ -117,11 +84,11 @@ export const Filter = ({
             }}
           />
           <Divider />
-          <Wrapper>
+          <Wrapper style={styles.noPaddingBottom}>
             <FilterComponent filters={filters} filterTypes={filterTypes} setFilters={setFilters} />
           </Wrapper>
 
-          <WrapperVertical style={styles.noPaddingBottom}>
+          <WrapperVertical style={styles.noPaddingTop}>
             <WrapperRow center spaceAround>
               <Button
                 disabled={!!isNoFilterSet}
@@ -141,6 +108,7 @@ export const Filter = ({
                 notFullWidth
                 onPress={() => {
                   setIsCollapsed(!isCollapsed);
+                  setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
                 }}
                 title={texts.filter.filter}
               />
@@ -149,7 +117,11 @@ export const Filter = ({
         </Modal>
       ) : (
         <Collapsible collapsed={isCollapsed}>
-          <FilterComponent filters={filters} filterTypes={filterTypes} setFilters={setFilters} />
+          <WrapperVertical style={styles.noPaddingTop}>
+            <FilterComponent filters={filters} filterTypes={filterTypes} setFilters={setFilters} />
+          </WrapperVertical>
+
+          <Divider />
 
           <WrapperVertical style={styles.noPaddingBottom}>
             <Button
@@ -188,5 +160,8 @@ const styles = StyleSheet.create({
   },
   noPaddingBottom: {
     paddingBottom: 0
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
