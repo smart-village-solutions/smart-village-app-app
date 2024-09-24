@@ -5,7 +5,7 @@ import { updateFilters } from '../../../helpers';
 import { Label } from '../../Label';
 import { SueStatus } from '../../SUE';
 import { WrapperRow } from '../../Wrapper';
-import { FilterProps, StatusProps } from '../Filter';
+import { FilterProps, StatusProps } from '../../../types';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
