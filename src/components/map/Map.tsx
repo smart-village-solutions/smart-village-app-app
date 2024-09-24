@@ -101,7 +101,7 @@ const renderCluster = (cluster: TCluster) => {
             }
           ]}
         >
-          <RegularText lightest center smallest>
+          <RegularText darker center smallest>
             {points}
           </RegularText>
         </View>
@@ -176,7 +176,7 @@ export const Map = ({
   return (
     <View style={[styles.container, style]}>
       <MapView
-        clusterColor={colors.primary}
+        clusterColor={colors.lighterPrimary}
         clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
         radius={clusterDistance}
@@ -228,7 +228,12 @@ export const Map = ({
 
           return (
             <Marker
-              centerOffset={marker.iconAnchor || { x: 0, y: -(MARKER_ICON_SIZE / 2) }}
+              centerOffset={
+                marker.iconAnchor || {
+                  x: 0,
+                  y: -(MARKER_ICON_SIZE / (isActiveMarker ? 2.5 : 3))
+                }
+              }
               coordinate={marker.position}
               identifier={marker.id}
               key={`${index}-${marker.id}`}
@@ -246,10 +251,10 @@ export const Map = ({
                           ? marker.iconColor
                           : marker.iconBackgroundColor
                         : isActiveMarker
-                        ? colors.accent
+                        ? colors.darkerPrimary
                         : undefined
                     }
-                    iconStrokeColor={marker.iconBorderColor}
+                    iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                   />
                   <View
                     style={[
@@ -272,7 +277,7 @@ export const Map = ({
                       }
                       iconName={marker.iconName}
                       iconSize={MARKER_ICON_SIZE / 3.25}
-                      iconStrokeColor={marker.iconBorderColor}
+                      iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                     />
                   </View>
                 </>
@@ -282,12 +287,12 @@ export const Map = ({
                     marker.iconName == 'ownLocation'
                       ? colors.lighterPrimary
                       : isActiveMarker
-                      ? colors.secondary
+                      ? colors.primary
                       : colors.lighterPrimary
                   }
                   iconName={isActiveMarker ? 'locationActive' : marker.iconName}
                   iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
-                  iconStrokeColor={marker.iconBorderColor}
+                  iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                 />
               )}
 
@@ -376,7 +381,7 @@ const styles = StyleSheet.create({
     top: normalize(6)
   },
   mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.secondary
+    backgroundColor: colors.darkerPrimary
   },
   maximizeMapButton: {
     alignItems: 'center',

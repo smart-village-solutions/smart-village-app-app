@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import {
   Button,
@@ -342,6 +343,7 @@ export const Overviews = ({ navigation, route }) => {
                   options={{ bold: true }}
                   value={filterByOpeningTimes}
                 />
+                <Divider />
               </WrapperHorizontal>
             )}
           </>

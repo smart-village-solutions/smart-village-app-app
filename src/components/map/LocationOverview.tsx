@@ -147,14 +147,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         clusteringEnabled
         isMultipleMarkersMap
         locations={mapMarkers}
-        mapCenterPosition={
-          defaultAlternativePosition?.coords
-            ? {
-                latitude: defaultAlternativePosition.coords.lat,
-                longitude: defaultAlternativePosition.coords.lng
-              }
-            : undefined
-        }
         mapStyle={styles.map}
         onMarkerPress={setSelectedPointOfInterest}
         selectedMarker={selectedPointOfInterest}
