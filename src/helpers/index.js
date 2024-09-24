@@ -13,6 +13,7 @@ export * from './deleteArrayItem';
 export * from './encounterHelper';
 export * from './fileSizeHelper';
 export * from './filterObjectHelper';
+export * from './filterTypesHelper';
 export * from './formatHelper';
 export * from './genericTypeHelper';
 export * from './graphqlHelper';
