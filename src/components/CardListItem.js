@@ -52,12 +52,7 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
         <HeadlineText
           smallest
           uppercase
-          style={[
-            picture?.url && styles.overtitleMarginTop,
-            styles.overtitleMarginBottom,
-            generalStyle,
-            overtitleStyle
-          ]}
+          style={[styles.overtitleMarginBottom, generalStyle, overtitleStyle]}
         >
           {trimNewLines(overtitle)}
         </HeadlineText>
@@ -195,10 +190,9 @@ const styles = StyleSheet.create({
   overtitleMarginBottom: {
     marginBottom: normalize(4)
   },
-  overtitleMarginTop: {
-    marginTop: normalize(14)
+  imageContainer: {
+    marginBottom: normalize(12)
   },
-  imageContainer: {},
   noPaddingTop: {
     paddingTop: 0
   },
