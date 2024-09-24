@@ -37,9 +37,10 @@ export const DropdownSelect = ({
   const adjustFrame = useCallback(
     (styles) => ({
       ...styles,
-      height: styles.height + normalize(36), // space for four entries
+      height: 'auto',
       left: marginHorizontal,
-      marginTop: device.platform === 'android' ? -normalize(24) : 0
+      marginTop: device.platform === 'android' ? -normalize(24) : 0,
+      maxHeight: normalize(320)
     }),
     [marginHorizontal]
   );
@@ -92,6 +93,7 @@ export const DropdownSelect = ({
         ref={dropdownRef}
         options={data.map((entry) => entry.value)}
         multipleSelect={multipleSelect}
+        adjustFrame={adjustFrame}
         dropdownStyle={[
           styles.dropdownDropdown,
           {
@@ -100,7 +102,6 @@ export const DropdownSelect = ({
           }
         ]}
         dropdownTextStyle={styles.dropdownDropdownText}
-        adjustFrame={adjustFrame}
         renderRow={renderRow}
         renderSeparator={() => <View style={styles.dropdownSeparator} />}
         onDropdownWillShow={() => setArrow('up')}
@@ -171,8 +172,6 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: StyleSheet.hairlineWidth,
     elevation: 2,
-    height: 'auto',
-    maxHeight: normalize(320),
     shadowColor: colors.shadow,
     shadowOffset: { height: 5, width: 0 },
     shadowOpacity: 0.5,
