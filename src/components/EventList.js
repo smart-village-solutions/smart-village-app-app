@@ -41,6 +41,7 @@ const sectionData = (data) => {
 };
 
 export const EventList = ({
+  contentContainerStyle,
   data,
   fetchMoreData,
   ListEmptyComponent,
@@ -126,7 +127,7 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       stickyHeaderIndices={stickyHeaderIndices}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={{ ...styles.contentContainer, ...contentContainerStyle }}
     />
   );
 };
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
 });
 
 EventList.propTypes = {
+  contentContainerStyle: PropTypes.object,
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   ListEmptyComponent: PropTypes.object,

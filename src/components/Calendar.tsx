@@ -221,17 +221,18 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   const listItems = useMemo(() => {
     if (!subList) return [];
 
-    const parsedListItems = parseListItemsFromQuery(
-      QUERY_TYPES.EVENT_RECORDS,
-      {
-        [query]: dataSubList?.pages?.flatMap((page) => page?.[query])
-      },
-      undefined,
-      {
-        withDate: false,
-        withTime: true
-      }
-    );
+    const parsedListItems =
+      parseListItemsFromQuery(
+        QUERY_TYPES.EVENT_RECORDS,
+        {
+          [query]: dataSubList?.pages?.flatMap((page) => page?.[query])
+        },
+        undefined,
+        {
+          withDate: false,
+          withTime: true
+        }
+      ) || [];
 
     if (additionalData?.length) {
       const filteredAdditionalData = additionalData.filter((item) => item.listDate === selectedDay);
@@ -283,8 +284,8 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   }, [dataSubList, fetchNextPageSubList, hasNextPageSubList]);
 
   const disableArrowLeft =
-    (today || moment().startOf('month').format('YYYY-MM-DD')) ===
-    queryVariablesWithDateRange.dateRange[0];
+    moment().endOf('month').add(7, 'days').format('YYYY-MM-DD') ===
+    queryVariablesWithDateRange.dateRange[1];
 
   return (
     <>
@@ -317,6 +318,7 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
 
       {subList && (
         <ListComponent
+          contentContainerStyle={{ paddingHorizontal: normalize(1) }}
           data={loadingSubList || isRefetchingSubList ? [] : listItems}
           fetchMoreData={fetchMoreData}
           ListEmptyComponent={
