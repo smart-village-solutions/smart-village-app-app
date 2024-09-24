@@ -14,6 +14,7 @@ export type ResourceFilters = {
 };
 
 export type FilterTypesProps = {
+  checked?: boolean;
   data: DropdownProps[] | { name: keyof FilterProps; placeholder: string }[] | StatusProps[];
   label?: string;
   name: keyof FilterProps;

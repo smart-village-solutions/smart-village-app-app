@@ -128,6 +128,7 @@ export const filterTypesHelper = ({
       case FILTER_KEYS.SAVEABLE:
         filterType.label = getLabel(key);
         filterType.placeholder = getPlaceholder(key, query);
+        filterType.checked = false;
         break;
       case FILTER_KEYS.RADIUS_SEARCH:
         filterType.label = getLabel(key);
