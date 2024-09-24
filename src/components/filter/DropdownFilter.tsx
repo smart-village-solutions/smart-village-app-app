@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { normalize } from '../../config';
 import { updateFilters } from '../../helpers';
+import { DropdownProps, FilterProps } from '../../types';
 import { DropdownSelect } from '../DropdownSelect';
-import { Label } from '../Label';
-
-import { DropdownProps, FilterProps } from './Filter';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -28,10 +25,13 @@ export const DropdownFilter = ({
   setFilters
 }: Props) => {
   const initiallySelectedItem = { id: 0, index: 0, value: placeholder || '', selected: true };
-  const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
-    initiallySelectedItem,
-    ...data
-  ]);
+  const [dropdownData, setDropdownData] = useState<DropdownProps[]>(() => {
+    if (data[0]?.value === '- Alle -') {
+      return [...data];
+    }
+
+    return [initiallySelectedItem, ...data];
+  });
 
   useEffect(() => {
     const selectedItem = dropdownData?.find(
@@ -57,9 +57,14 @@ export const DropdownFilter = ({
 
   return (
     <>
-      {!!label && <Label style={styles.label}>{label}</Label>}
       <View style={(styles.container, containerStyle)}>
-        <DropdownSelect data={dropdownData} setData={setDropdownData} placeholder={placeholder} />
+        <DropdownSelect
+          data={dropdownData}
+          label={label}
+          labelWrapperStyle={styles.labelWrapper}
+          placeholder={placeholder}
+          setData={setDropdownData}
+        />
       </View>
     </>
   );
@@ -67,7 +72,8 @@ export const DropdownFilter = ({
 
 const styles = StyleSheet.create({
   container: {},
-  label: {
-    marginBottom: normalize(-10)
+  labelWrapper: {
+    paddingLeft: 0,
+    paddingRight: 0
   }
 });
