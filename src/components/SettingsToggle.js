@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
-    paddingVertical: normalize(16)
+    paddingVertical: normalize(12)
   },
   marginRight: {
     marginRight: normalize(7)

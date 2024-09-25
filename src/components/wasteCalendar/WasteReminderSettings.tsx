@@ -1,3 +1,4 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
   Alert,
@@ -10,25 +11,24 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { ListItem } from 'react-native-elements';
 
+import { colors, consts, device, normalize, texts } from '../../config';
+import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
 import {
   deleteReminderSetting,
   getReminderSettings,
   updateReminderSettings
 } from '../../pushNotifications';
+import { ReminderSettings, WasteTypeData } from '../../types';
+import { Button } from '../Button';
+import { FeedbackFooter } from '../FeedbackFooter';
+import { Radiobutton } from '../Radiobutton';
+import { SectionHeader } from '../SectionHeader';
 import { Switch } from '../Switch';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Radiobutton } from '../Radiobutton';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
-import { colors, consts, device, normalize, texts } from '../../config';
-import { ReminderSettings, WasteTypeData } from '../../types';
-import { Button } from '../Button';
-import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
-import { SectionHeader } from '../SectionHeader';
-import { FeedbackFooter } from '../FeedbackFooter';
 
 import {
   ReminderSettingsAction,
@@ -382,7 +382,8 @@ export const WasteReminderSettings = ({
 const styles = StyleSheet.create({
   switchContainer: {
     backgroundColor: colors.transparent,
-    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+    padding: 0,
+    paddingVertical: normalize(12)
   },
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface

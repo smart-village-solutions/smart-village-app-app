@@ -334,12 +334,15 @@ export const EventRecords = ({ navigation, route }) => {
                 )}
 
                 {showFilterByDailyEvents && (
-                  <OptionToggle
-                    label={texts.eventRecord.filterByDailyEvents}
-                    onToggle={updateListDataByDailySwitch}
-                    options={{ bold: true }}
-                    value={filterByDailyEvents}
-                  />
+                  <>
+                    <OptionToggle
+                      label={texts.eventRecord.filterByDailyEvents}
+                      onToggle={updateListDataByDailySwitch}
+                      options={{ bold: true }}
+                      value={filterByDailyEvents}
+                    />
+                    <Divider />
+                  </>
                 )}
               </>
             )}

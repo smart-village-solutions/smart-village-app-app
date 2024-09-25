@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
   switchContainer: {
     backgroundColor: colors.transparent,
     padding: 0,
-    paddingVertical: normalize(16)
+    paddingVertical: normalize(12)
   }
 });
