@@ -36,9 +36,15 @@ const serviceTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.service} (Tab 2 von 5)`,
     tabBarLabel: texts.tabBarLabel.service,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Service} />
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.Service}
+        size={normalize(22)}
+        style={{ marginTop: normalize(3) }}
+      />
     )
   }
 };
@@ -49,9 +55,15 @@ const pointOfInterestTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.pointsOfInterest} (Tab 3 von 5)`,
     tabBarLabel: texts.tabBarLabel.pointsOfInterest,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Location} size={normalize(30)} />
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.Location}
+        size={normalize(30)}
+        style={{ marginTop: normalize(8) }}
+      />
     )
   }
 };
@@ -62,9 +74,10 @@ const eventsTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.events} (Tab 4 von 5)`,
     tabBarLabel: texts.tabBarLabel.events,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Calendar} size={normalize(24)} />
+      <OrientationAwareIcon color={color} Icon={Icon.Calendar} />
     )
   }
 };
@@ -82,7 +95,6 @@ const aboutTabConfig: TabConfig = {
         color={color}
         Icon={Icon.About}
         landscapeStyle={{ marginRight: -normalize(6) }}
-        size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />
     )
