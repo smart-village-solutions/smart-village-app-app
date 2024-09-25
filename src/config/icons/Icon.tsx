@@ -112,7 +112,7 @@ const NamedIcon = ({
   iconStyle,
   name,
   strokeWidth = 2,
-  size = normalize(26),
+  size = normalize(24),
   style
 }: IconProps & { name?: string }) => {
   let IconComponent: any;
