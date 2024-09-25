@@ -163,19 +163,22 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
     [query, queryVariables, contentContainerId]
   );
 
-  const onMonthChange = useCallback((month: DateData) => {
-    const isCurrentMonth = moment(month.dateString).isSame(moment(), 'month');
+  const onMonthChange = useCallback(
+    (month: DateData) => {
+      const isCurrentMonth = moment(month.dateString).isSame(moment(), 'month');
 
-    setQueryVariablesWithDateRange({
-      ...queryVariablesWithDateRange,
-      dateRange: [
-        isCurrentMonth
-          ? today
-          : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
-        moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
-      ]
-    });
-  }, []);
+      setQueryVariablesWithDateRange({
+        ...queryVariablesWithDateRange,
+        dateRange: [
+          isCurrentMonth
+            ? today
+            : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
+          moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
+        ]
+      });
+    },
+    [queryVariablesWithDateRange]
+  );
 
   const selectedDay = useMemo(() => {
     if (!queryVariablesWithDateRangeSubList?.dateRange?.length) {
@@ -255,8 +258,12 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   }, [selectedDay]);
 
   useEffect(() => {
-    deprecated?.events?.listingWithoutDateFragment &&
-      subList &&
+    setQueryVariablesWithDateRange({
+      ...queryVariables,
+      dateRange: queryVariablesWithDateRange.dateRange
+    });
+
+    subList &&
       setQueryVariablesWithDateRangeSubList({
         ...queryVariables,
         dateRange: queryVariablesWithDateRangeSubList.dateRange
