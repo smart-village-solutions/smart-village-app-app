@@ -7,13 +7,16 @@ import { colors } from '../config';
 
 const trackColor = {
   ...Platform.select({
-    android: { false: colors.gray20, true: colors.lighterPrimary },
-    ios: { false: colors.gray20, true: colors.lighterPrimary }
+    android: { false: colors.shadow, true: colors.primary },
+    ios: { false: colors.shadow, true: colors.primary }
   })
 };
-const thumbColor = colors.lightestText;
+const thumbColor = Platform.select({
+  android: colors.gray20,
+  ios: colors.lightestText
+});
 const thumbColorEnabled = Platform.select({
-  android: colors.secondary,
+  android: colors.gray20,
   ios: colors.lightestText
 });
 
