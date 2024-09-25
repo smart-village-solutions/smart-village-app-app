@@ -3,7 +3,10 @@ import { useQuery as useQueryWithApollo } from 'react-apollo';
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from './SettingsProvider';
-import { defaultAppDesignSystemConfig, defaultFilterConfig } from './config/appDesignSystem';
+import {
+  defaultAppDesignSystemConfig,
+  defaultResourceFilterConfig
+} from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
 import { storageHelper } from './helpers';
 import { useStaticContent } from './hooks';
@@ -39,7 +42,7 @@ const mergeDefaultConfiguration = (target: any, source: any) => {
 
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
-  resourceFilters: defaultFilterConfig,
+  resourceFilters: defaultResourceFilterConfig,
   sueConfig: defaultSueAppConfig
 };
 
@@ -65,7 +68,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     skip: !Object.keys(sue).length
   });
 
-  const { data: filterData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
+  const { data: resourceFilterData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
     skip: !showResourceFilters
   });
 
@@ -74,9 +77,9 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       return defaultConfiguration;
     }
 
-    const resourceFilters = filterData?.resourceFilters?.map((filter: any) => ({
-      ...filter,
-      dataResourceType: FILTER_QUERY_TYPES[filter.dataResourceType]
+    const resourceFilters = resourceFilterData?.resourceFilters?.map((resourceFilter: any) => ({
+      ...resourceFilter,
+      dataResourceType: FILTER_QUERY_TYPES[resourceFilter.dataResourceType]
     }));
 
     return mergeDefaultConfiguration(defaultConfiguration, {

@@ -10,10 +10,11 @@ import {
   MowasFilterAction,
   MowasFilterReducerAction,
   mowasRegionalKeysReducer,
-  OverlayFilterAction,
-  overlayFilterReducer,
-  OverlayFilterReducerAction,
-  permanentFilterReducer
+  permanentFilterReducer,
+  RESOURCE_FILTER_KEY,
+  ResourceFilterAction,
+  resourceFilterReducer,
+  ResourceFilterReducerAction
 } from './reducers';
 
 type PermanentFilterProviderValues = {
@@ -21,17 +22,17 @@ type PermanentFilterProviderValues = {
   dataProviderState: string[];
   mowasRegionalKeysDispatch: React.Dispatch<MowasFilterReducerAction>;
   mowasRegionalKeysState: string[];
-  filterDispatch: React.Dispatch<OverlayFilterReducerAction>;
-  filterState: string[];
+  resourceFilterDispatch: React.Dispatch<ResourceFilterReducerAction>;
+  resourceFilterState: string[];
 };
 
 export const PermanentFilterContext = createContext<PermanentFilterProviderValues>({
-  dataProviderState: [],
   dataProviderDispatch: noop,
-  mowasRegionalKeysState: [],
+  dataProviderState: [],
   mowasRegionalKeysDispatch: noop,
-  filterState: [],
-  filterDispatch: noop
+  mowasRegionalKeysState: [],
+  resourceFilterDispatch: noop,
+  resourceFilterState: []
 });
 
 export const PermanentFilterProvider = ({ children }: { children?: React.ReactNode }) => {
@@ -40,19 +41,22 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
     mowasRegionalKeysReducer,
     []
   );
-  const [filterState, filterDispatch] = useReducer(overlayFilterReducer, []);
+  const [resourceFilterState, resourceFilterDispatch] = useReducer(resourceFilterReducer, []);
 
   const loadFilters = useCallback(async () => {
     const dataProviderIds = ((await readFromStore(DATA_PROVIDER_FILTER_KEY)) ?? []) as string[];
     const mowasRegionalKeys = ((await readFromStore(MOWAS_REGIONAL_KEYS)) ?? []) as string[];
-    const overlayFilter = ((await storageHelper.filter()) ?? []) as string[];
+    const resourceFilter = ((await readFromStore(RESOURCE_FILTER_KEY)) ?? []) as string[];
 
     dataProviderDispatch({ type: FilterAction.OverwriteDataProviders, payload: dataProviderIds });
     mowasRegionalKeysDispatch({
       type: MowasFilterAction.OverwriteMowasRegionalKeys,
       payload: mowasRegionalKeys
     });
-    filterDispatch({ type: OverlayFilterAction.OverwriteFilter, payload: overlayFilter });
+    resourceFilterDispatch({
+      type: ResourceFilterAction.OverwriteResourceFilter,
+      payload: resourceFilter
+    });
   }, []);
 
   useEffect(() => {
@@ -66,8 +70,8 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
         dataProviderState,
         mowasRegionalKeysDispatch,
         mowasRegionalKeysState,
-        filterDispatch,
-        filterState
+        resourceFilterDispatch,
+        resourceFilterState
       }}
     >
       {children}
