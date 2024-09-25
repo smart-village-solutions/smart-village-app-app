@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import { dropdownEntries } from '../components';
 import { usePermanentFilter } from '../hooks';
+import { PermanentFilterContext } from '../PermanentFilterProvider';
 import { QUERY_TYPES } from '../queries';
 import { FilterProps, FilterTypesProps, ResourceFilters } from '../types';
 
@@ -66,7 +68,7 @@ export const filterTypesHelper = ({
   locations: any;
   queryVariables: any;
 }) => {
-  const filtersByQuery = resourceFilters.find((entry) => entry.dataResourceType === query);
+  const filtersByQuery = resourceFilters?.find((entry) => entry.dataResourceType === query);
   const { excludeDataProviderIds } = usePermanentFilter();
 
   if (!filtersByQuery || filtersByQuery.config.active?.default === false) {
@@ -91,8 +93,14 @@ export const filterTypesHelper = ({
       case FILTER_KEYS.DATE_START:
         filterType.label = getLabel(key);
         filterType.data = [
-          { name: QUERY_VARIABLES_ATTRIBUTES.DATE_START, placeholder: getPlaceholder(key, query) },
-          { name: QUERY_VARIABLES_ATTRIBUTES.DATE_END, placeholder: getPlaceholder(key, query) }
+          {
+            name: QUERY_VARIABLES_ATTRIBUTES.DATE_START,
+            placeholder: getPlaceholder(FILTER_KEYS.DATE_START, query)
+          },
+          {
+            name: QUERY_VARIABLES_ATTRIBUTES.DATE_END,
+            placeholder: getPlaceholder(FILTER_KEYS.DATE_END, query)
+          }
         ];
         break;
       case FILTER_KEYS.DATA_PROVIDER:
