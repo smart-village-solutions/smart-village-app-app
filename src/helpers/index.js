@@ -40,4 +40,5 @@ export * from './storageHelper';
 export * from './sueHelper';
 export * from './surveyHelper';
 export * from './textHelper';
+export * from './updateResourceFilterStateHelper';
 export * from './volunteerHelper';
