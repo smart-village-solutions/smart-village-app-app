@@ -1,7 +1,4 @@
-import { useContext } from 'react';
 import { dropdownEntries } from '../components';
-import { usePermanentFilter } from '../hooks';
-import { PermanentFilterContext } from '../PermanentFilterProvider';
 import { QUERY_TYPES } from '../queries';
 import { FilterProps, FilterTypesProps, ResourceFilters } from '../types';
 
@@ -56,20 +53,21 @@ const getPlaceholder = (key: string, query: string) =>
 export const filterTypesHelper = ({
   categories,
   data,
-  query,
-  resourceFilters,
+  excludeDataProviderIds,
   locations,
-  queryVariables
+  query,
+  queryVariables,
+  resourceFilters
 }: {
   categories: any;
   data: any;
-  query: string;
-  resourceFilters: ResourceFilters[];
+  excludeDataProviderIds?: string[];
   locations: any;
+  query: string;
   queryVariables: any;
+  resourceFilters: ResourceFilters[];
 }) => {
   const filtersByQuery = resourceFilters?.find((entry) => entry.dataResourceType === query);
-  const { excludeDataProviderIds } = usePermanentFilter();
 
   if (!filtersByQuery || filtersByQuery.config.active?.default === false) {
     return [];
