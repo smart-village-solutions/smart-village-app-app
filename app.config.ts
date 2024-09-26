@@ -1,10 +1,10 @@
-import { ExpoConfig, ConfigContext } from 'expo/config';
+import { ConfigContext, ExpoConfig } from 'expo/config';
 
 import { secrets } from './src/config/secrets';
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const namespace = config.slug;
-  const sentryApi = secrets[namespace].sentryApi;
+  const sentryApi = namespace ? secrets[namespace]?.sentryApi : undefined;
 
   if (sentryApi?.config) {
     config.plugins?.push([
