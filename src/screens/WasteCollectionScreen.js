@@ -124,7 +124,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
         return address.street || '';
       }
 
-      return `${address.street} (${address.zip} ${address.city})`;
+      return `${address.street} (${[address.zip, address.city].filter(Boolean).join(' ')})`;
     },
     [wasteAddressesTwoStep]
   );
