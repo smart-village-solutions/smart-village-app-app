@@ -1,7 +1,7 @@
 import { noop } from 'lodash';
 import React, { createContext, useCallback, useEffect, useReducer } from 'react';
 
-import { readFromStore, storageHelper } from './helpers';
+import { readFromStore } from './helpers';
 import {
   DATA_PROVIDER_FILTER_KEY,
   FilterAction,
@@ -23,7 +23,7 @@ type PermanentFilterProviderValues = {
   mowasRegionalKeysDispatch: React.Dispatch<MowasFilterReducerAction>;
   mowasRegionalKeysState: string[];
   resourceFilterDispatch: React.Dispatch<ResourceFilterReducerAction>;
-  resourceFilterState: string[];
+  resourceFilterState: { [key: string]: any };
 };
 
 export const PermanentFilterContext = createContext<PermanentFilterProviderValues>({
@@ -46,7 +46,7 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
   const loadFilters = useCallback(async () => {
     const dataProviderIds = ((await readFromStore(DATA_PROVIDER_FILTER_KEY)) ?? []) as string[];
     const mowasRegionalKeys = ((await readFromStore(MOWAS_REGIONAL_KEYS)) ?? []) as string[];
-    const resourceFilter = ((await readFromStore(RESOURCE_FILTER_KEY)) ?? []) as string[];
+    const resourceFilters = ((await readFromStore(RESOURCE_FILTER_KEY)) ?? []) as string[];
 
     dataProviderDispatch({ type: FilterAction.OverwriteDataProviders, payload: dataProviderIds });
     mowasRegionalKeysDispatch({
@@ -55,7 +55,7 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
     });
     resourceFilterDispatch({
       type: ResourceFilterAction.OverwriteResourceFilter,
-      payload: resourceFilter
+      payload: resourceFilters
     });
   }, []);
 
