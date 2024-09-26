@@ -35,7 +35,7 @@ export const locationServiceEnabledAlert = ({
   navigation
 }: {
   currentPosition?: Location.LocationObject;
-  locationServiceEnabled?: Boolean;
+  locationServiceEnabled?: boolean;
   navigation: StackNavigationProp<any>;
 }) => {
   if (!locationServiceEnabled || !currentPosition) {
@@ -162,7 +162,7 @@ export const SueReportLocation = ({
 
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&country=germany&postalcode=${postalCode}`
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&postalcode=${postalCode}&country=germany&countrycodes=de`
       );
 
       const data = await response.json();

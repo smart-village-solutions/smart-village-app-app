@@ -25,7 +25,8 @@ export const useReverseGeocode = () => {
           )
         ).json();
 
-        const city = response?.address?.city || '';
+        const city =
+          response?.address?.city || response?.address?.town || response?.address?.village || '';
         const houseNumber = response?.address?.house_number || '';
         const street = response?.address?.road || '';
         const postalCode = response?.address?.postcode || '';
