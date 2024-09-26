@@ -1,7 +1,7 @@
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -11,7 +11,6 @@ import {
   Button,
   Calendar,
   CalendarListToggle,
-  DropdownHeader,
   EmptyMessage,
   Filter,
   ListComponent,
@@ -25,8 +24,10 @@ import {
 import { colors, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { filterTypesHelper, openLink, parseListItemsFromQuery } from '../../helpers';
+import { updateResourceFilterStateHelper } from '../../helpers/updateResourceFilterStateHelper';
 import { useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
@@ -61,6 +62,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
+  const { resourceFilterState, resourceFilterDispatch } = useContext(PermanentFilterContext);
   const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
     filter;
@@ -68,9 +70,13 @@ export const EventRecords = ({ navigation, route }) => {
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
-  const [queryVariables, setQueryVariables] = useState({
+  const initialQueryVariables = {
     ...(route.params?.queryVariables || {}),
     dateRange: (route.params?.queryVariables || {}).dateRange || [today, todayIn10Years]
+  };
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFilterState[query]
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -148,32 +154,6 @@ export const EventRecords = ({ navigation, route }) => {
     isCalendar: true,
     isSectioned: true
   });
-
-  const updateListDataByDropdown = useCallback(
-    (selectedValue, isLocationFilter) => {
-      if (selectedValue) {
-        setQueryVariables((prevQueryVariables) => {
-          // remove a refetch key if present, which was necessary for the "- Alle -" selection
-          delete prevQueryVariables.refetch;
-
-          return {
-            ...prevQueryVariables,
-            ...getAdditionalQueryVariables(selectedValue, isLocationFilter)
-          };
-        });
-      } else {
-        if (hasFilterSelection(isLocationFilter, queryVariables)) {
-          setQueryVariables((prevQueryVariables) => {
-            // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery(isLocationFilter)];
-
-            return { ...prevQueryVariables, refetch: true };
-          });
-        }
-      }
-    },
-    [query, queryVariables]
-  );
 
   const updateListDataByDailySwitch = useCallback(() => {
     // update switch state as well
@@ -271,6 +251,16 @@ export const EventRecords = ({ navigation, route }) => {
     });
   }, [data]);
 
+  useEffect(() => {
+    updateResourceFilterStateHelper({
+      query,
+      queryVariables,
+      resourceFilterDispatch,
+      resourceFilterState,
+      setQueryVariables
+    });
+  }, [query, queryVariables]);
+
   const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
 
@@ -297,6 +287,14 @@ export const EventRecords = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
+      <Filter
+        filterTypes={filterTypes}
+        initialFilters={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
+
       {calendarToggle && !hasDailyFilterSelection && (
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
       )}
@@ -323,48 +321,12 @@ export const EventRecords = ({ navigation, route }) => {
               </>
             )}
 
-            <Filter
-              filterTypes={filterTypes}
-              initialFilters={queryVariables}
-              isOverlay
-              setQueryVariables={setQueryVariables}
-            />
-
-            <Divider />
-
-            {!!showFilter && (
-              <>
-                {!!eventRecordsCategoriesData && (
-                  <DropdownHeader
-                    {...{
-                      data: eventRecordsCategoriesData,
-                      query,
-                      queryVariables,
-                      updateListData: updateListDataByDropdown
-                    }}
-                  />
-                )}
-
-                {!!eventRecordsAddressesData && (
-                  <DropdownHeader
-                    {...{
-                      data: eventRecordsAddressesData,
-                      isLocationFilter: true,
-                      query,
-                      queryVariables,
-                      updateListData: updateListDataByDropdown
-                    }}
-                  />
-                )}
-
-                {showFilterByDailyEvents && (
-                  <OptionToggle
-                    label={texts.eventRecord.filterByDailyEvents}
-                    onToggle={updateListDataByDailySwitch}
-                    value={filterByDailyEvents}
-                  />
-                )}
-              </>
+            {!!showFilter && showFilterByDailyEvents && (
+              <OptionToggle
+                label={texts.eventRecord.filterByDailyEvents}
+                onToggle={updateListDataByDailySwitch}
+                value={filterByDailyEvents}
+              />
             )}
           </>
         }

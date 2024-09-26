@@ -15,7 +15,6 @@ import { Divider } from 'react-native-elements';
 import {
   Button,
   CategoryList,
-  DropdownHeader,
   EmptyMessage,
   Filter,
   HeaderLeft,
@@ -40,8 +39,10 @@ import {
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
+import { updateResourceFilterStateHelper } from '../../helpers/updateResourceFilterStateHelper';
 import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { GenericType } from '../../types';
@@ -103,6 +104,7 @@ const hasFilterSelection = (query, queryVariables) => {
 export const Overviews = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
+  const { resourceFilterState = {}, resourceFilterDispatch } = useContext(PermanentFilterContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
@@ -131,7 +133,11 @@ export const Overviews = ({ navigation, route }) => {
     }
   ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
-  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
+  const initialQueryVariables = route?.params?.queryVariables || {};
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFilterState[query]
+  });
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
@@ -142,11 +148,6 @@ export const Overviews = ({ navigation, route }) => {
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories;
-  const showFilter =
-    (route.params?.showFilter ?? true) &&
-    {
-      [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-    }[query];
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
@@ -172,37 +173,6 @@ export const Overviews = ({ navigation, route }) => {
         sortByDistance || filterByOpeningTimes ? undefined : route.params?.queryVariables?.limit
     }
   });
-
-  const updateListDataByDropdown = useCallback(
-    (selectedValue) => {
-      if (selectedValue) {
-        setQueryVariables((prevQueryVariables) => {
-          // remove a refetch key if present, which was necessary for the "- Alle -" selection
-          delete prevQueryVariables.refetch;
-
-          return {
-            ...prevQueryVariables,
-            ...getAdditionalQueryVariables(
-              query,
-              selectedValue,
-              excludeDataProviderIds,
-              excludeMowasRegionalKeys
-            )
-          };
-        });
-      } else {
-        if (hasFilterSelection(query, queryVariables)) {
-          setQueryVariables((prevQueryVariables) => {
-            // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery(query)];
-
-            return { ...prevQueryVariables, refetch: true };
-          });
-        }
-      }
-    },
-    [query, queryVariables, excludeDataProviderIds, excludeMowasRegionalKeys]
-  );
 
   const listItems = useMemo(() => {
     let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
@@ -259,12 +229,23 @@ export const Overviews = ({ navigation, route }) => {
   }, [data]);
 
   useEffect(() => {
+    updateResourceFilterStateHelper({
+      query,
+      queryVariables,
+      resourceFilterDispatch,
+      resourceFilterState,
+      setQueryVariables
+    });
+  }, [query, queryVariables]);
+
+  useEffect(() => {
     // we want to ensure when changing from one index screen to another of the same resource, that
     // the query variables are taken freshly. otherwise the mounted screen can have query variables
     // from the previous screen, what does not work. this can result in an unchanged screen because
     // the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
+      ...resourceFilterState?.[query],
       ...getAdditionalQueryVariables(
         query,
         undefined,
@@ -272,7 +253,7 @@ export const Overviews = ({ navigation, route }) => {
         excludeMowasRegionalKeys
       )
     });
-  }, [route.params?.queryVariables, query, excludeDataProviderIds, excludeMowasRegionalKeys]);
+  }, [excludeDataProviderIds, excludeMowasRegionalKeys, query, route.params?.queryVariables]);
 
   useLayoutEffect(() => {
     if (
@@ -334,6 +315,14 @@ export const Overviews = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
+      <Filter
+        filterTypes={filterTypes}
+        initialFilters={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
+
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
         (switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER ||
           showFilterByOpeningTimes) && (
@@ -364,27 +353,6 @@ export const Overviews = ({ navigation, route }) => {
           <ListComponent
             ListHeaderComponent={
               <>
-                <Filter
-                  filterTypes={filterTypes}
-                  initialFilters={queryVariables}
-                  isOverlay
-                  setQueryVariables={setQueryVariables}
-                />
-
-                <Divider />
-
-                {!!showFilter && (
-                  <>
-                    <DropdownHeader
-                      {...{
-                        data,
-                        query,
-                        queryVariables,
-                        updateListData: updateListDataByDropdown
-                      }}
-                    />
-                  </>
-                )}
                 {!!categories?.length && (
                   <CategoryList
                     navigation={navigation}
