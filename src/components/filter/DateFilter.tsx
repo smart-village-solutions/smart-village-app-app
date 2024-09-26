@@ -9,8 +9,7 @@ import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 import { renderArrow } from '../calendarArrows';
-
-import { FilterProps } from './Filter';
+import { FilterProps } from '../../types';
 
 const {
   CALENDAR: { DOT_SIZE }
