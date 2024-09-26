@@ -17,8 +17,8 @@ enum QUERY_VARIABLES_ATTRIBUTES {
   CATEGORY_ID = 'categoryId',
   DATA_PROVIDER = 'dataProvider',
   DATA_PROVIDER_ID = 'dataProviderId',
-  DATE_END = 'dateEnd',
-  DATE_START = 'dateStart',
+  DATE_END = 'end_date',
+  DATE_START = 'start_date',
   LOCATION = 'location'
 }
 
