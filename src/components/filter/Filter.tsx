@@ -19,7 +19,7 @@ type Props = {
   initialFilters: FilterProps;
   isOverlay?: boolean;
   setQueryVariables: React.Dispatch<FilterProps>;
-  widthSearch?: boolean;
+  withSearch?: boolean;
 };
 
 export const Filter = ({
@@ -27,7 +27,7 @@ export const Filter = ({
   initialFilters,
   isOverlay = false,
   setQueryVariables,
-  widthSearch = false
+  withSearch = false
 }: Props) => {
   const [filters, setFilters] = useState<FilterProps>(initialFilters);
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -46,7 +46,7 @@ export const Filter = ({
     filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(initialFilters))).length;
 
   return (
-    <Wrapper style={widthSearch && styles.noPadding}>
+    <Wrapper style={[withSearch && styles.noPadding]}>
       <TouchableOpacity
         onPress={() => setIsCollapsed(!isCollapsed)}
         accessibilityLabel={`${isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter} ${

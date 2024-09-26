@@ -82,16 +82,15 @@ export const filterTypesHelper = ({
   const filterTypes = Object.entries(filtersByQuery?.config ?? {}).map(([key, value]) => {
     const filterType: FilterTypesProps = {
       data: [],
-      label: getLabel('- Alle -'),
+      label: getLabel(key),
       name: key as keyof FilterProps,
-      placeholder: getPlaceholder('- Alle -', query),
+      placeholder: getPlaceholder(key, query),
       type: value.type
     };
 
     switch (key) {
       case FILTER_KEYS.DATE_END:
       case FILTER_KEYS.DATE_START:
-        filterType.label = getLabel(key);
         filterType.data = [
           {
             name: QUERY_VARIABLES_ATTRIBUTES.DATE_START,
@@ -114,9 +113,9 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.value
         }));
-        filterType.label = getLabel(key);
+
         filterType.name = QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER;
-        filterType.placeholder = getPlaceholder(key, query);
+
         break;
       case FILTER_KEYS.CATEGORY:
         filterType.data = dropdownEntries(
@@ -129,18 +128,14 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.id
         }));
-        filterType.label = getLabel(key);
+
         filterType.name = QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
-        filterType.placeholder = getPlaceholder(key, query);
+
         break;
       case FILTER_KEYS.SAVEABLE:
-        filterType.label = getLabel(key);
-        filterType.placeholder = getPlaceholder(key, query);
         filterType.checked = false;
         break;
       case FILTER_KEYS.RADIUS_SEARCH:
-        filterType.label = getLabel(key);
-        filterType.placeholder = getPlaceholder(key, query);
         break;
       case FILTER_KEYS.LOCATION:
         filterType.data = dropdownEntries(
@@ -153,9 +148,9 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.value
         }));
-        filterType.label = getLabel(key);
+
         filterType.name = QUERY_VARIABLES_ATTRIBUTES.LOCATION;
-        filterType.placeholder = getPlaceholder(key, query);
+
         break;
       default:
         break;
