@@ -73,6 +73,8 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
           {item.type === FILTER_TYPES.SLIDER && (
             <SliderFilter
               label={item.label}
+              maximumValue={Math.max(...(item.data || []))}
+              minimumValue={Math.min(...(item.data || []))}
               onValueChange={(value) => {
                 setFilters(
                   updateFilters({

@@ -9,33 +9,44 @@ import { WrapperRow } from '../Wrapper';
 
 type Props = {
   label?: string;
+  maximumValue: number;
+  minimumValue: number;
   onValueChange: (value: number) => void;
+  step: number;
   thumbStyle?: ViewStyle;
   value: number;
 };
 
-export const SliderFilter = ({ label, onValueChange, thumbStyle, value, ...props }: Props) => {
-  return (
-    <>
-      {!!label && <Label>{label}</Label>}
-      <WrapperRow spaceBetween style={styles.alignItemsCenter}>
-        <Slider
-          maximumValue={100}
-          onValueChange={onValueChange}
-          step={10}
-          thumbStyle={[styles.thumbStyle, thumbStyle]}
-          thumbTouchSize={{ width: normalize(20), height: normalize(20) }}
-          value={value}
-          style={styles.slider}
-          {...props}
-        />
-        <View style={styles.textContainer}>
-          <RegularText>{value}</RegularText>
-        </View>
-      </WrapperRow>
-    </>
-  );
-};
+export const SliderFilter = ({
+  label,
+  maximumValue = 100,
+  minimumValue = 0,
+  onValueChange,
+  step = 10,
+  thumbStyle,
+  value = 0,
+  ...props
+}: Props) => (
+  <>
+    {!!label && <Label>{label}</Label>}
+    <WrapperRow spaceBetween style={styles.alignItemsCenter}>
+      <Slider
+        maximumValue={maximumValue}
+        minimumValue={minimumValue}
+        onValueChange={onValueChange}
+        step={step}
+        style={styles.slider}
+        thumbStyle={[styles.thumbStyle, thumbStyle]}
+        thumbTouchSize={{ width: normalize(20), height: normalize(20) }}
+        value={value}
+        {...props}
+      />
+      <View style={styles.textContainer}>
+        <RegularText>{value}</RegularText>
+      </View>
+    </WrapperRow>
+  </>
+);
 
 const styles = StyleSheet.create({
   alignItemsCenter: {

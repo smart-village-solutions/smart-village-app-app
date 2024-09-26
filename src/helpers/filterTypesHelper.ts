@@ -111,9 +111,7 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.value
         }));
-
         filterType.name = QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER;
-
         break;
       case FILTER_KEYS.CATEGORY:
         filterType.data = dropdownEntries(
@@ -126,14 +124,15 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.id
         }));
-
         filterType.name = QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
-
         break;
       case FILTER_KEYS.SAVEABLE:
         filterType.checked = false;
         break;
       case FILTER_KEYS.RADIUS_SEARCH:
+        if (!!value.options?.length) {
+          filterType.data = value.options.map((entry: string) => parseInt(entry));
+        }
         break;
       case FILTER_KEYS.LOCATION:
         filterType.data = dropdownEntries(
@@ -146,9 +145,7 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.value
         }));
-
         filterType.name = QUERY_VARIABLES_ATTRIBUTES.LOCATION;
-
         break;
       default:
         break;
