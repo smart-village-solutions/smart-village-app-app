@@ -17,7 +17,7 @@ type Props = {
 export const SliderFilter = ({ label, onValueChange, thumbStyle, value, ...props }: Props) => {
   return (
     <>
-      <Label>{label}</Label>
+      {!!label && <Label>{label}</Label>}
       <WrapperRow spaceBetween style={styles.alignItemsCenter}>
         <Slider
           maximumValue={100}
