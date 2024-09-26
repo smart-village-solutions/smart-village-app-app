@@ -11,7 +11,7 @@ import { auth } from './src/auth';
 import { fontConfig, namespace, secrets } from './src/config';
 import { SUE_REPORT_VALUES } from './src/screens';
 
-const sentryApi = secrets[namespace].sentryApi;
+const sentryApi = secrets[namespace]?.sentryApi;
 
 if (sentryApi?.dsn) {
   Sentry.init({
