@@ -16,8 +16,9 @@ const { a11yLabel } = consts;
 
 type Props = {
   filterTypes?: FilterTypesProps[];
-  initialFilters: FilterProps;
+  initialFilters?: FilterProps;
   isOverlay?: boolean;
+  queryVariables: FilterProps;
   setQueryVariables: React.Dispatch<FilterProps>;
   withSearch?: boolean;
 };
@@ -26,10 +27,11 @@ export const Filter = ({
   filterTypes,
   initialFilters,
   isOverlay = false,
+  queryVariables,
   setQueryVariables,
   withSearch = false
 }: Props) => {
-  const [filters, setFilters] = useState<FilterProps>(initialFilters);
+  const [filters, setFilters] = useState<FilterProps>(queryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   useEffect(() => {
@@ -43,103 +45,112 @@ export const Filter = ({
   }
 
   const isNoFilterSet =
-    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(initialFilters))).length;
+    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
 
   return (
-    <Wrapper style={[withSearch && styles.noPadding]}>
-      <TouchableOpacity
-        onPress={() => setIsCollapsed(!isCollapsed)}
-        accessibilityLabel={`${isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter} ${
-          a11yLabel.button
-        }`}
-        style={styles.button}
-      >
-        <BoldText small primary={!isCollapsed}>
-          {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
-        </BoldText>
-        <Icon.Filter
-          size={normalize(16)}
-          style={styles.icon}
-          color={!isCollapsed ? colors.primary : colors.darkText}
-        />
-      </TouchableOpacity>
-
-      {isOverlay ? (
-        <Modal
-          animationType="slide"
-          onRequestClose={() => setIsCollapsed(!isCollapsed)}
-          presentationStyle="pageSheet"
-          visible={!isCollapsed}
+    <>
+      <Wrapper style={[withSearch && styles.noPadding]}>
+        <TouchableOpacity
+          onPress={() => setIsCollapsed(!isCollapsed)}
+          accessibilityLabel={`${isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter} ${
+            a11yLabel.button
+          }`}
+          style={styles.button}
         >
-          <Header
-            backgroundColor={colors.transparent}
-            centerComponent={{
-              text: texts.filter.filter,
-              style: { color: colors.darkText, fontSize: normalize(18), fontWeight: '700' }
-            }}
-            rightComponent={{
-              icon: 'close',
-              color: colors.darkText,
-              onPress: () => setIsCollapsed(!isCollapsed)
-            }}
+          <BoldText small primary={!isCollapsed}>
+            {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
+          </BoldText>
+          <Icon.Filter
+            size={normalize(16)}
+            style={styles.icon}
+            color={!isCollapsed ? colors.primary : colors.darkText}
           />
-          <Divider />
-          <Wrapper style={styles.noPaddingBottom}>
-            <FilterComponent filters={filters} filterTypes={filterTypes} setFilters={setFilters} />
-          </Wrapper>
+        </TouchableOpacity>
 
-          <WrapperVertical style={styles.noPaddingTop}>
-            <WrapperRow center spaceAround>
+        {isOverlay ? (
+          <Modal
+            animationType="slide"
+            onRequestClose={() => setIsCollapsed(!isCollapsed)}
+            presentationStyle="pageSheet"
+            visible={!isCollapsed}
+          >
+            <Header
+              backgroundColor={colors.transparent}
+              centerComponent={{
+                text: texts.filter.filter,
+                style: { color: colors.darkText, fontSize: normalize(18), fontWeight: '700' }
+              }}
+              rightComponent={{
+                icon: 'close',
+                color: colors.darkText,
+                onPress: () => setIsCollapsed(!isCollapsed)
+              }}
+            />
+            <Divider />
+            <Wrapper style={styles.noPaddingBottom}>
+              <FilterComponent
+                filters={filters}
+                filterTypes={filterTypes}
+                setFilters={setFilters}
+              />
+            </Wrapper>
+
+            <WrapperVertical style={styles.noPaddingTop}>
+              <WrapperRow center spaceAround>
+                <Button
+                  disabled={!!isNoFilterSet}
+                  invert
+                  notFullWidth
+                  onPress={() => {
+                    setIsCollapsed(!isCollapsed);
+                    setQueryVariables(initialFilters);
+                  }}
+                  title={texts.filter.resetFilter}
+                />
+                <Button
+                  disabled={!!isNoFilterSet}
+                  notFullWidth
+                  onPress={() => {
+                    setIsCollapsed(!isCollapsed);
+                    setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
+                  }}
+                  title={texts.filter.filter}
+                />
+              </WrapperRow>
+            </WrapperVertical>
+          </Modal>
+        ) : (
+          <Collapsible collapsed={isCollapsed}>
+            <WrapperVertical style={styles.noPaddingTop}>
+              <FilterComponent
+                filters={filters}
+                filterTypes={filterTypes}
+                setFilters={setFilters}
+              />
+            </WrapperVertical>
+
+            <Divider />
+
+            <WrapperVertical style={styles.noPaddingBottom}>
               <Button
                 disabled={!!isNoFilterSet}
                 invert
-                notFullWidth
                 onPress={() => {
                   setIsCollapsed(!isCollapsed);
 
                   setTimeout(() => {
-                    setFilters(initialFilters);
+                    setFilters(queryVariables);
                   }, 500);
                 }}
                 title={texts.filter.resetFilter}
               />
-              <Button
-                disabled={!!isNoFilterSet}
-                notFullWidth
-                onPress={() => {
-                  setIsCollapsed(!isCollapsed);
-                  setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
-                }}
-                title={texts.filter.filter}
-              />
-            </WrapperRow>
-          </WrapperVertical>
-        </Modal>
-      ) : (
-        <Collapsible collapsed={isCollapsed}>
-          <WrapperVertical style={styles.noPaddingTop}>
-            <FilterComponent filters={filters} filterTypes={filterTypes} setFilters={setFilters} />
-          </WrapperVertical>
+            </WrapperVertical>
+          </Collapsible>
+        )}
+      </Wrapper>
 
-          <Divider />
-
-          <WrapperVertical style={styles.noPaddingBottom}>
-            <Button
-              disabled={!!isNoFilterSet}
-              invert
-              onPress={() => {
-                setIsCollapsed(true);
-
-                setTimeout(() => {
-                  setFilters(initialFilters);
-                }, 500);
-              }}
-              title={texts.filter.resetFilter}
-            />
-          </WrapperVertical>
-        </Collapsible>
-      )}
-    </Wrapper>
+      {!withSearch && <Divider />}
+    </>
   );
 };
 

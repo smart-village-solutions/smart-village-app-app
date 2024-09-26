@@ -210,7 +210,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                     placeholder: 'Alle Sortierarten'
                   }
                 ]}
-                initialFilters={initialQueryVariables}
+                queryVariables={initialQueryVariables}
                 setQueryVariables={setQueryVariables}
                 withSearch
               />
