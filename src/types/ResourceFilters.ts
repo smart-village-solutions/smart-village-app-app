@@ -15,7 +15,11 @@ export type ResourceFilters = {
 
 export type FilterTypesProps = {
   checked?: boolean;
-  data: DropdownProps[] | { name: keyof FilterProps; placeholder: string }[] | StatusProps[];
+  data:
+    | DropdownProps[]
+    | { name: keyof FilterProps; placeholder: string }[]
+    | StatusProps[]
+    | number[];
   label?: string;
   name: keyof FilterProps;
   placeholder?: string;
