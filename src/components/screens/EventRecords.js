@@ -23,13 +23,13 @@ import {
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { filterTypesHelper, openLink, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
-import { ConfigurationsContext } from '../../ConfigurationsProvider';
 
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';

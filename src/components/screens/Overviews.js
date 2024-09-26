@@ -249,11 +249,12 @@ export const Overviews = ({ navigation, route }) => {
 
   const filterTypes = useMemo(() => {
     return filterTypesHelper({
-      data,
-      query,
-      resourceFilters,
       categories,
-      queryVariables
+      data,
+      excludeDataProviderIds,
+      query,
+      queryVariables,
+      resourceFilters
     });
   }, [data]);
 
