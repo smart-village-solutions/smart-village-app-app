@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
-import { OrientationContext } from '../OrientationProvider';
 import { useOpenWebScreen } from '../hooks';
+import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
@@ -13,7 +13,7 @@ import { WrapperHorizontal } from './Wrapper';
 const { a11yLabel } = consts;
 
 export const Checkbox = ({
-  boldTitle,
+  boldTitle = false,
   center = undefined,
   checked,
   checkedIcon = 'dot-circle-o',
@@ -95,7 +95,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   titleStyle: {
-    color: colors.darkText
+    color: colors.darkText,
+    fontWeight: 'normal'
   }
 });
 

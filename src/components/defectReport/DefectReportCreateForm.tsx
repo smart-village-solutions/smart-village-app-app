@@ -267,7 +267,6 @@ export const DefectReportCreateForm = ({
               uncheckedColor={colors.darkText}
               uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
             />
           )}
           control={control}
@@ -302,9 +301,5 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
   }
 });
