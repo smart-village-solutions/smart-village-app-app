@@ -24,7 +24,7 @@ import {
 import { colors, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { filterTypesHelper, openLink, parseListItemsFromQuery } from '../../helpers';
-import { updateResourceFilterStateHelper } from '../../helpers/updateResourceFilterStateHelper';
+import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import { useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
@@ -62,7 +62,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
-  const { resourceFilterState, resourceFilterDispatch } = useContext(PermanentFilterContext);
+  const { resourceFiltersState, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
     filter;
@@ -76,7 +76,7 @@ export const EventRecords = ({ navigation, route }) => {
   };
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
-    ...resourceFilterState[query]
+    ...resourceFiltersState[query]
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -252,11 +252,11 @@ export const EventRecords = ({ navigation, route }) => {
   }, [data]);
 
   useEffect(() => {
-    updateResourceFilterStateHelper({
+    updateResourceFiltersStateHelper({
       query,
       queryVariables,
-      resourceFilterDispatch,
-      resourceFilterState,
+      resourceFiltersDispatch,
+      resourceFiltersState,
       setQueryVariables
     });
   }, [query, queryVariables]);
