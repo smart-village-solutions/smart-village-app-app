@@ -3,52 +3,52 @@
 
 import { addToStore } from '../helpers';
 
-export const RESOURCE_FILTER_KEY = 'RESOURCE_FILTER_KEY';
+export const RESOURCE_FILTERS_KEY = 'RESOURCE_FILTERS_KEY';
 
-export enum ResourceFilterAction {
+export enum ResourceFiltersAction {
   AddResourceFilter = 'AddResourceFilter',
-  OverwriteResourceFilter = 'OverwriteResourceFilter',
+  OverwriteResourceFilters = 'OverwriteResourceFilters',
   RemoveResourceFilter = 'RemoveResourceFilter'
 }
 
-export type ResourceFilterReducerAction =
+export type ResourceFiltersReducerAction =
   | {
-      type: ResourceFilterAction.AddResourceFilter;
+      type: ResourceFiltersAction.AddResourceFilter;
       payload: { key: string; value: any };
     }
   | {
-      type: ResourceFilterAction.RemoveResourceFilter;
+      type: ResourceFiltersAction.RemoveResourceFilter;
       payload: string;
     }
   | {
-      type: ResourceFilterAction.OverwriteResourceFilter;
+      type: ResourceFiltersAction.OverwriteResourceFilters;
       payload: { [key: string]: any };
     };
 
-export const resourceFilterReducer: React.Reducer<
+export const resourceFiltersReducer: React.Reducer<
   { [key: string]: any },
-  ResourceFilterReducerAction
+  ResourceFiltersReducerAction
 > = (state = {}, action) => {
   let newState = state;
   switch (action.type) {
-    case ResourceFilterAction.AddResourceFilter:
+    case ResourceFiltersAction.AddResourceFilter:
       newState = {
         ...state,
         [action.payload.key]: action.payload.value
       };
       break;
-    case ResourceFilterAction.RemoveResourceFilter:
+    case ResourceFiltersAction.RemoveResourceFilter:
       const { [action.payload]: _, ...rest } = state;
       newState = rest;
       break;
-    case ResourceFilterAction.OverwriteResourceFilter: {
+    case ResourceFiltersAction.OverwriteResourceFilters: {
       newState = { ...action.payload };
       break;
     }
   }
 
   // update the store for next app launch on every change
-  addToStore(RESOURCE_FILTER_KEY, newState);
+  addToStore(RESOURCE_FILTERS_KEY, newState);
 
   return newState;
 };
