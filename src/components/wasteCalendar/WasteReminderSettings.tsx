@@ -64,7 +64,7 @@ const formatTime = (time: Date) => {
   return `${hours}:${minutesString} Uhr`;
 };
 
-const keyExtractor = (item: string) => item;
+const keyExtractor = (item: string, index: number) => `index${index}-item${item}`;
 
 const CategoryEntry = ({
   active,

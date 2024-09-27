@@ -9,7 +9,7 @@ import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
 import { AppIntroSlide } from '../types';
 
-const keyExtractor = (slide: AppIntroSlide) => slide.title + slide.text;
+const keyExtractor = (slide: AppIntroSlide, index: number) => `index${index}-text${slide.text}`;
 
 const SliderButton = ({ label }: { label: string }) => {
   return (
