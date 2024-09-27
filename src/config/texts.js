@@ -1,5 +1,4 @@
 import appJson from '../../app.json';
-import { search } from '../helpers';
 
 export const texts = {
   accessibilityLabels: {
@@ -457,11 +456,13 @@ export const texts = {
   },
   filter: {
     date: 'Datum',
+    header: 'Filter',
     hideFilter: 'Filter ausblenden',
-    filter: 'Filter',
-    resetFilter: 'Filter zurücksetzen',
+    filter: 'Filtern',
+    resetFilter: 'Zurücksetzen',
     showFilter: 'Filter anzeigen',
     search: 'Was suchen Sie?',
+    settings: 'Filtereinstellungen',
     sorting: {
       updatedDatetime: 'Änderungsdatum',
       requestedDatetime: 'Erstelldatum',
