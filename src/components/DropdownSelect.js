@@ -83,7 +83,7 @@ export const DropdownSelect = ({
       accessible
     >
       <WrapperHorizontal style={labelWrapperStyle}>
-        <Label>{label}</Label>
+        <Label bold>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
         accessible={false}

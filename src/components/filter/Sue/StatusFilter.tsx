@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import { updateFilters } from '../../../helpers';
+import { FilterProps, StatusProps } from '../../../types';
 import { Label } from '../../Label';
 import { SueStatus } from '../../SUE';
 import { WrapperRow } from '../../Wrapper';
-import { FilterProps, StatusProps } from '../../../types';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -18,7 +18,7 @@ type Props = {
 
 export const StatusFilter = ({ containerStyle, data, filters, label, name, setFilters }: Props) => (
   <View style={(styles.container, containerStyle)}>
-    <Label>{label}</Label>
+    <Label bold>{label}</Label>
     <WrapperRow spaceBetween>
       {data?.map((item: StatusProps, index: number) => (
         <TouchableOpacity

@@ -5,6 +5,7 @@ import { colors, consts, device } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
 import { Checkbox } from '../Checkbox';
+import { BoldText } from '../Text';
 
 import { WrapperVertical } from './../Wrapper';
 import { DateFilter } from './DateFilter';
@@ -54,25 +55,28 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
           )}
 
           {item.type === FILTER_TYPES.CHECKBOX && (
-            <Checkbox
-              checked={filters[item.name] || false}
-              onPress={() => {
-                setFilters(
-                  updateFilters({
-                    currentFilters: filters,
-                    name: item.name,
-                    removeFromFilter: !!item.checked,
-                    value: !filters[item.name]
-                  })
-                );
-              }}
-              title={item.placeholder}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
-            />
+            <>
+              <BoldText>{item.label}</BoldText>
+              <Checkbox
+                checked={filters[item.name] || false}
+                onPress={() => {
+                  setFilters(
+                    updateFilters({
+                      currentFilters: filters,
+                      name: item.name,
+                      removeFromFilter: !!item.checked,
+                      value: !filters[item.name]
+                    })
+                  );
+                }}
+                title={item.placeholder}
+                checkedColor={colors.accent}
+                checkedIcon="check-square-o"
+                uncheckedColor={colors.darkText}
+                uncheckedIcon="square-o"
+                containerStyle={styles.checkboxContainerStyle}
+              />
+            </>
           )}
 
           {item.type === FILTER_TYPES.SLIDER && (
