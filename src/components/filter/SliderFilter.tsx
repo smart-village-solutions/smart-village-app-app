@@ -28,7 +28,7 @@ export const SliderFilter = ({
   ...props
 }: Props) => (
   <>
-    {!!label && <Label>{label}</Label>}
+    {!!label && <Label bold>{label}</Label>}
     <WrapperRow spaceBetween style={styles.alignItemsCenter}>
       <Slider
         maximumValue={maximumValue}

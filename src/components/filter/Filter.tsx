@@ -77,7 +77,7 @@ export const Filter = ({
             <Header
               backgroundColor={colors.transparent}
               centerComponent={{
-                text: texts.filter.filter,
+                text: texts.filter.header,
                 style: { color: colors.darkText, fontSize: normalize(18), fontWeight: '700' }
               }}
               rightComponent={{
@@ -95,8 +95,8 @@ export const Filter = ({
               />
             </Wrapper>
 
-            <WrapperVertical style={styles.noPaddingTop}>
-              <WrapperRow center spaceAround>
+            <Wrapper style={[styles.noPaddingTop, styles.alignLeft]}>
+              <WrapperRow style={{ gap: normalize(16) }}>
                 <Button
                   disabled={!!isNoFilterSet}
                   invert
@@ -117,7 +117,7 @@ export const Filter = ({
                   title={texts.filter.filter}
                 />
               </WrapperRow>
-            </WrapperVertical>
+            </Wrapper>
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
@@ -155,6 +155,9 @@ export const Filter = ({
 };
 
 const styles = StyleSheet.create({
+  alignLeft: {
+    alignItems: 'flex-start'
+  },
   button: {
     flexDirection: 'row',
     alignItems: 'center',

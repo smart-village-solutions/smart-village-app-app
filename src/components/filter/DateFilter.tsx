@@ -5,11 +5,11 @@ import Collapsible from 'react-native-collapsible';
 
 import { Icon, colors, consts, device, normalize, texts } from '../../config';
 import { momentFormat, updateFilters } from '../../helpers';
+import { FilterProps } from '../../types';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 import { renderArrow } from '../calendarArrows';
-import { FilterProps } from '../../types';
 
 const {
   CALENDAR: { DOT_SIZE }
@@ -87,7 +87,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
 
   return (
     <>
-      <Label>{texts.filter.date}</Label>
+      <Label bold>{texts.filter.date}</Label>
       <WrapperRow spaceBetween>
         {data.map((item) => {
           useEffect(() => {
