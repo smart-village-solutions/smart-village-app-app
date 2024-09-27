@@ -39,7 +39,7 @@ import {
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
-import { updateResourceFilterStateHelper } from '../../helpers/updateResourceFilterStateHelper';
+import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
@@ -104,7 +104,7 @@ const hasFilterSelection = (query, queryVariables) => {
 export const Overviews = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
-  const { resourceFilterState = {}, resourceFilterDispatch } = useContext(PermanentFilterContext);
+  const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
@@ -136,7 +136,7 @@ export const Overviews = ({ navigation, route }) => {
   const initialQueryVariables = route?.params?.queryVariables || {};
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
-    ...resourceFilterState[query]
+    ...resourceFiltersState[query]
   });
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
@@ -229,11 +229,11 @@ export const Overviews = ({ navigation, route }) => {
   }, [data]);
 
   useEffect(() => {
-    updateResourceFilterStateHelper({
+    updateResourceFiltersStateHelper({
       query,
       queryVariables,
-      resourceFilterDispatch,
-      resourceFilterState,
+      resourceFiltersDispatch,
+      resourceFiltersState,
       setQueryVariables
     });
   }, [query, queryVariables]);
@@ -245,7 +245,7 @@ export const Overviews = ({ navigation, route }) => {
     // the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...resourceFilterState?.[query],
+      ...resourceFiltersState?.[query],
       ...getAdditionalQueryVariables(
         query,
         undefined,

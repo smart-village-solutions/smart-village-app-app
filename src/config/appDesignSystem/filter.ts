@@ -2,7 +2,7 @@ import { consts } from '../consts';
 
 const { FILTER_TYPES } = consts;
 
-export const defaultResourceFilterConfig = [
+export const defaultResourceFiltersConfig = [
   {
     dataResourceType: 'dataResourceType',
     config: {

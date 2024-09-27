@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { SettingsContext } from './SettingsProvider';
 import {
   defaultAppDesignSystemConfig,
-  defaultResourceFilterConfig
+  defaultResourceFiltersConfig
 } from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
 import { storageHelper } from './helpers';
@@ -42,7 +42,7 @@ const mergeDefaultConfiguration = (target: any, source: any) => {
 
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
-  resourceFilters: defaultResourceFilterConfig,
+  resourceFilters: defaultResourceFiltersConfig,
   sueConfig: defaultSueAppConfig
 };
 
@@ -68,7 +68,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     skip: !Object.keys(sue).length
   });
 
-  const { data: resourceFilterData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
+  const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
     skip: !showResourceFilters
   });
 
@@ -77,7 +77,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       return defaultConfiguration;
     }
 
-    const resourceFilters = resourceFilterData?.resourceFilters?.map((resourceFilter: any) => ({
+    const resourceFilters = resourceFiltersData?.resourceFilters?.map((resourceFilter: any) => ({
       ...resourceFilter,
       dataResourceType: FILTER_QUERY_TYPES[resourceFilter.dataResourceType]
     }));
