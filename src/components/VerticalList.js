@@ -18,13 +18,13 @@ const MAX_INITIAL_NUM_TO_RENDER = 15;
 export const VerticalList = ({
   data,
   fetchMoreData,
-  isIndexStartingAt1,
-  isLoading,
+  isIndexStartingAt1 = false,
+  isLoading = false,
   ListEmptyComponent,
   ListFooterLoadingIndicator,
   ListHeaderComponent,
   navigation,
-  noSubtitle,
+  noSubtitle = false,
   openWebScreen,
   query,
   refetch,
@@ -151,11 +151,4 @@ VerticalList.propTypes = {
   refetch: PropTypes.func,
   refreshControl: PropTypes.object,
   showBackToTop: PropTypes.bool
-};
-
-VerticalList.defaultProps = {
-  isLoading: false,
-  noSubtitle: false,
-  leftImage: false,
-  isIndexStartingAt1: false
 };

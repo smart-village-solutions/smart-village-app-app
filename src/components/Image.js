@@ -29,14 +29,14 @@ const NO_IMAGE = { uri: 'NO_IMAGE' };
 /* eslint-disable complexity */
 export const Image = ({
   aspectRatio,
-  borderRadius,
+  borderRadius = 0,
   button,
   childrenContainerStyle,
   containerStyle,
   message,
-  PlaceholderContent,
+  PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
   refreshInterval,
-  resizeMode,
+  resizeMode = 'cover',
   source: sourceProp,
   style
 }) => {
@@ -122,7 +122,7 @@ export const Image = ({
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={styles.placeholderStyle}
         accessible={!!sourceProp?.captionText}
-        accessibilityLabel={`${sourceProp.captionText ? sourceProp.captionText : ''} ${
+        accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
           device.platform === 'ios' ? consts.a11yLabel.image : ''
         }`}
         resizeMode={resizeMode}
@@ -181,10 +181,4 @@ Image.propTypes = {
   resizeMode: PropTypes.string,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
-};
-
-Image.defaultProps = {
-  borderRadius: 0,
-  PlaceholderContent: <ActivityIndicator color={colors.refreshControl} />,
-  resizeMode: 'cover'
 };

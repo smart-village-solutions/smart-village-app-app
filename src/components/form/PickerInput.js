@@ -5,7 +5,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { colors, device, Icon, normalize } from '../../config';
 import { RegularText } from '../Text';
 
-export const PickerInput = ({ value, onPress, isPlaceholder }) => (
+export const PickerInput = ({ isPlaceholder = false, onPress, value }) => (
   <Pressable
     style={({ pressed }) => [
       styles.pickerInput,
@@ -59,11 +59,7 @@ const styles = StyleSheet.create({
 });
 
 PickerInput.propTypes = {
-  value: PropTypes.string,
+  isPlaceholder: PropTypes.bool,
   onPress: PropTypes.func,
-  isPlaceholder: PropTypes.bool
-};
-
-PickerInput.defaultProps = {
-  isPlaceholder: false
+  value: PropTypes.string
 };
