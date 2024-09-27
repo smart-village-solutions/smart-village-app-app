@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { consts, device } from '../../config';
+import { colors, consts, device } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
 import { Checkbox } from '../Checkbox';
@@ -55,7 +55,6 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
 
           {item.type === FILTER_TYPES.CHECKBOX && (
             <Checkbox
-              title={item.placeholder}
               checked={filters[item.name] || false}
               onPress={() => {
                 setFilters(
@@ -67,6 +66,12 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
                   })
                 );
               }}
+              title={item.placeholder}
+              checkedColor={colors.accent}
+              checkedIcon="check-square-o"
+              uncheckedColor={colors.darkText}
+              uncheckedIcon="square-o"
+              containerStyle={styles.checkboxContainerStyle}
             />
           )}
 
@@ -96,5 +101,11 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
 const styles = StyleSheet.create({
   noPaddingBottom: {
     paddingBottom: 0
+  },
+  checkboxContainerStyle: {
+    backgroundColor: colors.surface,
+    borderWidth: 0,
+    paddingLeft: 0,
+    paddingRight: 0
   }
 });
