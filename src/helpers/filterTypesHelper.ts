@@ -15,6 +15,7 @@ export const FILTER_KEYS = {
 
 enum QUERY_VARIABLES_ATTRIBUTES {
   CATEGORY_ID = 'categoryId',
+  CATEGORY_IDS = 'ids',
   DATA_PROVIDER = 'dataProvider',
   DATA_PROVIDER_ID = 'dataProviderId',
   DATE_END = 'end_date',
@@ -50,6 +51,13 @@ const getPlaceholder = (key: string, query: string) =>
     [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen dauerhaft speichern'
   }[key] || key);
 
+const getSearchPlaceholder = (key: string) =>
+  ({
+    [FILTER_KEYS.CATEGORY]: 'Kategorien suchen',
+    [FILTER_KEYS.DATA_PROVIDER]: 'Datenquellen suchen',
+    [FILTER_KEYS.LOCATION]: 'Orte suchen'
+  }[key] || key);
+
 export const filterTypesHelper = ({
   categories,
   data,
@@ -80,9 +88,12 @@ export const filterTypesHelper = ({
   const filterTypes = Object.entries(filtersByQuery?.config ?? {}).map(([key, value]) => {
     const filterType: FilterTypesProps = {
       data: [],
+      isMultiselect: value.isMultiselect,
       label: getLabel(key),
       name: key as keyof FilterProps,
       placeholder: getPlaceholder(key, query),
+      searchable: value.searchable,
+      searchPlaceholder: getSearchPlaceholder(key),
       type: value.type
     };
 
@@ -124,7 +135,9 @@ export const filterTypesHelper = ({
           ...entry,
           filterValue: entry.id
         }));
-        filterType.name = QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
+        filterType.name = value.isMultiselect
+          ? QUERY_VARIABLES_ATTRIBUTES.CATEGORY_IDS
+          : QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
         break;
       case FILTER_KEYS.SAVEABLE:
         filterType.checked = false;
