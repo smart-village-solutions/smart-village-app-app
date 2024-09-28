@@ -130,7 +130,7 @@ export const filterTypesHelper = ({
         filterType.checked = false;
         break;
       case FILTER_KEYS.RADIUS_SEARCH:
-        if (!!value.options?.length) {
+        if (value.options?.length) {
           filterType.data = value.options.map((entry: string) => parseInt(entry));
         }
         break;
