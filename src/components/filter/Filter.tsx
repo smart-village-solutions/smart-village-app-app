@@ -1,3 +1,4 @@
+import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import React, { useEffect, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity } from 'react-native';
@@ -39,6 +40,12 @@ export const Filter = ({
       setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
     }
   }, [filters]);
+
+  useEffect(() => {
+    if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
+      setFilters(queryVariables);
+    }
+  }, [isCollapsed]);
 
   if (!filterTypes?.length) {
     return null;
@@ -102,8 +109,9 @@ export const Filter = ({
                   invert
                   notFullWidth
                   onPress={() => {
+                    setFilters(initialFilters || {});
                     setIsCollapsed(!isCollapsed);
-                    setQueryVariables(initialFilters);
+                    setQueryVariables(initialFilters || {});
                   }}
                   title={texts.filter.resetFilter}
                 />
@@ -112,7 +120,7 @@ export const Filter = ({
                   notFullWidth
                   onPress={() => {
                     setIsCollapsed(!isCollapsed);
-                    setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
+                    setQueryVariables(filters);
                   }}
                   title={texts.filter.filter}
                 />
