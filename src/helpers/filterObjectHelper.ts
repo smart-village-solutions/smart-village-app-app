@@ -4,7 +4,7 @@ type TFilter = {
   currentFilters: FilterProps;
   name: keyof FilterProps;
   removeFromFilter: boolean;
-  value: string;
+  value: string | string[] | number | number[];
 };
 
 export const updateFilters = ({ currentFilters, name, removeFromFilter, value }: TFilter) => {
