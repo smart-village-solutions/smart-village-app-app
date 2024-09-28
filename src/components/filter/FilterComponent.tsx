@@ -81,19 +81,15 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
 
           {item.type === FILTER_TYPES.SLIDER && (
             <SliderFilter
+              index={filters?.[item.name]?.index || 0}
               label={item.label}
-              maximumValue={Math.max(...(item.data || []))}
-              minimumValue={Math.min(...(item.data || []))}
-              onValueChange={(value) => {
-                setFilters(
-                  updateFilters({
-                    currentFilters: filters,
-                    name: item.name,
-                    value
-                  })
-                );
+              onSlidingComplete={(index) => {
+                setFilters((prev: FilterProps) => ({
+                  ...prev,
+                  [item.name]: { value: item.data[index], index }
+                }));
               }}
-              value={filters[item.name] || 0}
+              values={item.data as number[]}
             />
           )}
         </WrapperVertical>
