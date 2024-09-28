@@ -36,12 +36,15 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
             />
           )}
 
-          {item.type === FILTER_TYPES.DROPDOWN && item.data?.length && (
+          {item.type === FILTER_TYPES.DROPDOWN && !!item.data?.length && (
             <DropdownFilter
               filters={filters}
               setFilters={setFilters}
               {...item}
               data={item.data as DropdownProps[]}
+              multipleSelect={item.isMultiselect}
+              searchPlaceholder={item.searchPlaceholder}
+              showSearch={item.searchable}
             />
           )}
 
@@ -90,6 +93,7 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
                 }));
               }}
               values={item.data as number[]}
+              {...item}
             />
           )}
         </WrapperVertical>

@@ -25,6 +25,9 @@ export type FilterTypesProps = {
   placeholder?: string;
   type?: string;
   value?: string;
+  isMultiselect?: boolean;
+  searchable?: boolean;
+  searchPlaceholder?: string;
 };
 
 export type FilterProps = {

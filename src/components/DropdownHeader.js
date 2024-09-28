@@ -18,23 +18,6 @@ export const dropdownEntries = (
   excludeDataProviderIds,
   isLocationFilter
 ) => {
-  // check if there is something set in the certain `queryVariables`
-  // if not, - Alle - will be selected in the `dropdownData`
-  const selected = {
-    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
-      ? !queryVariables.location
-      : !queryVariables.categoryId,
-    [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider,
-    [QUERY_TYPES.VOUCHERS]: !queryVariables.categoryId
-  }[query];
-
-  const blankEntry = {
-    id: '0',
-    index: 0,
-    value: '- Alle -',
-    selected
-  };
-
   let entries = [];
 
   if (query === QUERY_TYPES.EVENT_RECORDS) {
@@ -86,7 +69,7 @@ export const dropdownEntries = (
     }
   }
 
-  return [blankEntry, ...entries];
+  return entries;
 };
 
 export const DropdownHeader = ({
