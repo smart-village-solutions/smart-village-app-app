@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { Slider } from 'react-native-elements';
 
@@ -8,45 +8,62 @@ import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
 type Props = {
+  index?: number;
   label?: string;
-  maximumValue: number;
-  minimumValue: number;
-  onValueChange: (value: number) => void;
-  step: number;
+  maximumValue?: number;
+  minimumValue?: number;
+  onSlidingComplete?: (value: number) => void;
+  step?: number;
   thumbStyle?: ViewStyle;
-  value: number;
+  values?: number[];
 };
 
 export const SliderFilter = ({
+  index = 0,
   label,
   maximumValue = 100,
   minimumValue = 0,
-  onValueChange,
-  step = 10,
+  onSlidingComplete,
+  step = 1,
   thumbStyle,
-  value = 0,
+  values = [],
   ...props
-}: Props) => (
-  <>
-    {!!label && <Label bold>{label}</Label>}
-    <WrapperRow spaceBetween style={styles.alignItemsCenter}>
-      <Slider
-        maximumValue={maximumValue}
-        minimumValue={minimumValue}
-        onValueChange={onValueChange}
-        step={step}
-        style={styles.slider}
-        thumbStyle={[styles.thumbStyle, thumbStyle]}
-        thumbTouchSize={{ width: normalize(20), height: normalize(20) }}
-        value={value}
-        {...props}
-      />
-      <View style={styles.textContainer}>
-        <RegularText>{value}</RegularText>
-      </View>
-    </WrapperRow>
-  </>
-);
+}: Props) => {
+  const minimumSliderValue: number = values?.length > 0 ? Math.min(...values) : minimumValue;
+  const maximumSliderValue: number = values?.length - 1 || maximumValue;
+
+  const [sliderValue, setSliderValue] = useState({
+    value: values[index] || minimumSliderValue,
+    index
+  });
+
+  return (
+    <>
+      {!!label && <Label bold>{label}</Label>}
+      <WrapperRow spaceBetween style={styles.alignItemsCenter}>
+        <Slider
+          onSlidingComplete={onSlidingComplete}
+          maximumValue={maximumSliderValue}
+          minimumValue={minimumSliderValue}
+          onValueChange={(index) => {
+            const value = values[index] || index;
+
+            setSliderValue({ value, index });
+          }}
+          step={step}
+          style={styles.slider}
+          thumbStyle={[styles.thumbStyle, thumbStyle]}
+          thumbTouchSize={{ width: normalize(20), height: normalize(20) }}
+          value={sliderValue.index}
+          {...props}
+        />
+        <View style={styles.textContainer}>
+          <RegularText>{sliderValue.value}</RegularText>
+        </View>
+      </WrapperRow>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   alignItemsCenter: {
@@ -56,11 +73,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   textContainer: {
+    alignItems: 'center',
     borderRadius: normalize(5),
     borderWidth: normalize(1),
     marginLeft: normalize(10),
-    paddingHorizontal: normalize(20),
-    paddingVertical: normalize(10)
+    paddingVertical: normalize(10),
+    width: normalize(60)
   },
   thumbStyle: {
     backgroundColor: colors.primary,
