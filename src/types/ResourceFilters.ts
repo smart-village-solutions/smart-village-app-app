@@ -1,9 +1,9 @@
 export type ResourceFilters = {
   config: {
     [key in keyof FilterProps]: {
+      dateEnd?: DatesTypes;
+      dateStart?: DatesTypes;
       default: boolean;
-      hasFutureDates?: boolean;
-      hasPastDates?: boolean;
       isMultiselect?: boolean;
       options?: string[];
       searchable?: boolean;
@@ -15,13 +15,7 @@ export type ResourceFilters = {
 
 export type FilterTypesProps = {
   checked?: boolean;
-  data:
-    | DropdownProps[]
-    | { name: keyof FilterProps; placeholder: string }[]
-    | StatusProps[]
-    | number[];
-  hasFutureDates?: boolean;
-  hasPastDates?: boolean;
+  data: DropdownProps[] | DatesTypes[] | StatusProps[] | number[];
   isMultiselect?: boolean;
   label?: string;
   name: keyof FilterProps;
@@ -69,4 +63,11 @@ export type StatusProps = {
   iconName: string;
   matchingStatuses: string[];
   status: string;
+};
+
+export type DatesTypes = {
+  hasFutureDates?: boolean;
+  hasPastDates?: boolean;
+  name: keyof FilterProps;
+  placeholder: string;
 };

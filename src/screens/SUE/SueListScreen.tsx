@@ -187,8 +187,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                     data: [
                       { name: 'start_date', placeholder: 'Erstellt von' },
                       { name: 'end_date', placeholder: 'Erstellt bis' }
-                    ],
-                    hasFutureDates: false
+                    ]
                   },
                   {
                     type: FILTER_TYPES.DROPDOWN,
