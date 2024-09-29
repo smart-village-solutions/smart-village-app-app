@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { colors, consts, device } from '../../config';
+import { consts, device, normalize } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
-import { Checkbox } from '../Checkbox';
-import { BoldText } from '../Text';
+import { Switch } from '../Switch';
+import { BoldText, RegularText } from '../Text';
 
 import { WrapperVertical } from './../Wrapper';
 import { DateFilter } from './DateFilter';
@@ -62,25 +62,22 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
           {item.type === FILTER_TYPES.CHECKBOX && (
             <>
               <BoldText>{item.label}</BoldText>
-              <Checkbox
-                checked={filters[item.name] || false}
-                onPress={() => {
-                  setFilters(
-                    updateFilters({
-                      currentFilters: filters,
-                      name: item.name,
-                      removeFromFilter: !!item.checked,
-                      value: !filters[item.name]
-                    })
-                  );
-                }}
-                title={item.placeholder}
-                checkedColor={colors.accent}
-                checkedIcon="check-square-o"
-                uncheckedColor={colors.darkText}
-                uncheckedIcon="square-o"
-                containerStyle={styles.checkboxContainerStyle}
-              />
+              <View style={styles.checkboxContainerStyle}>
+                <RegularText small>{item.placeholder}</RegularText>
+                <Switch
+                  switchValue={filters[item.name] || false}
+                  toggleSwitch={(value) =>
+                    setFilters(
+                      updateFilters({
+                        currentFilters: filters,
+                        name: item.name,
+                        removeFromFilter: !!item.checked,
+                        value: value
+                      })
+                    )
+                  }
+                />
+              </View>
             </>
           )}
 
@@ -109,9 +106,9 @@ const styles = StyleSheet.create({
     paddingBottom: 0
   },
   checkboxContainerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    paddingLeft: 0,
-    paddingRight: 0
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: normalize(14)
   }
 });
