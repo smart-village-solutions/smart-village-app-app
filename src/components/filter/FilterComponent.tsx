@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { consts, device, normalize } from '../../config';
 import { updateFilters } from '../../helpers';
-import { DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
+import { DatesTypes, DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
 import { Switch } from '../Switch';
 import { BoldText, RegularText } from '../Text';
 
@@ -32,9 +32,7 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
               setFilters={setFilters}
               containerStyle={{ width: device.width * 0.45 }}
               {...item}
-              data={item.data as { name: keyof FilterProps; placeholder: string }[]}
-              hasFutureDates={item.hasFutureDates}
-              hasPastDates={item.hasPastDates}
+              data={item.data as DatesTypes[]}
             />
           )}
 
