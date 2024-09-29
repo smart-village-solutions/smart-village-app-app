@@ -31,7 +31,13 @@ export const updateResourceFiltersStateHelper = ({
         value: { ...variables, ...resourceFiltersState?.[query] }
       }
     });
-  } else {
+  }
+
+  if (
+    typeof variables.saveable === 'boolean' &&
+    !variables.saveable &&
+    resourceFiltersState?.[query]
+  ) {
     resourceFiltersDispatch({
       type: ResourceFiltersAction.RemoveResourceFilter,
       payload: query
