@@ -23,9 +23,14 @@ import {
 } from '../../components';
 import { colors, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
-import { filterTypesHelper, openLink, parseListItemsFromQuery } from '../../helpers';
+import {
+  filterLocationsWithinRadius,
+  filterTypesHelper,
+  openLink,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
-import { useOpenWebScreen, useVolunteerData } from '../../hooks';
+import { useLocationSettings, useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -90,6 +95,7 @@ export const EventRecords = ({ navigation, route }) => {
   const hasDailyFilterSelection =
     !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
+  const { locationSettings } = useLocationSettings();
 
   // https://github.com/ndraaditiya/React-Query-GraphQL/blob/main/src/services/index.jsx
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -212,6 +218,20 @@ export const EventRecords = ({ navigation, route }) => {
 
       parsedListItems.push(...(filteredAdditionalData ?? additionalData));
       parsedListItems = _sortBy(parsedListItems, (item) => item.listDate);
+    }
+
+    if (queryVariables?.radiusSearch?.value) {
+      const { alternativePosition, defaultAlternativePosition } = locationSettings;
+
+      const lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
+      const lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
+
+      parsedListItems = filterLocationsWithinRadius(
+        parsedListItems,
+        lat,
+        lng,
+        queryVariables.radiusSearch.value
+      );
     }
 
     return parsedListItems;

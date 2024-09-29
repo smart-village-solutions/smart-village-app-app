@@ -51,6 +51,7 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
       eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city,
       withTime ? eventRecord?.date?.timeFrom || eventRecord?.dates?.[0]?.timeFrom : undefined
     ),
+    addresses: eventRecord.addresses,
     title: eventRecord.title,
     picture: {
       url: mainImageOfMediaContents(eventRecord.mediaContents)
@@ -152,6 +153,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },
+    addresses: pointOfInterest.addresses,
     routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.pointOfInterest,
@@ -178,6 +180,7 @@ const parseTours = (data, skipLastDivider) => {
     picture: {
       url: mainImageOfMediaContents(tour.mediaContents)
     },
+    addresses: tour.addresses,
     routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.tour,
