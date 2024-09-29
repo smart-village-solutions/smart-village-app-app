@@ -5,13 +5,14 @@ import { Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, colors, consts, device, normalize, texts } from '../../config';
 import { FilterProps, FilterTypesProps } from '../../types';
 
 import { Button } from './../Button';
 import { BoldText } from './../Text';
 import { Wrapper, WrapperRow, WrapperVertical } from './../Wrapper';
 import { FilterComponent } from './FilterComponent';
+import { momentFormat } from '../../helpers';
 
 const { a11yLabel } = consts;
 
@@ -85,12 +86,19 @@ export const Filter = ({
               backgroundColor={colors.transparent}
               centerComponent={{
                 text: texts.filter.header,
-                style: { color: colors.darkText, fontSize: normalize(18), fontWeight: '700' }
+                style: {
+                  color: colors.darkText,
+                  fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
+                  fontSize: normalize(20),
+                  fontWeight: '400',
+                  lineHeight: normalize(29)
+                }
               }}
               rightComponent={{
-                icon: 'close',
                 color: colors.darkText,
-                onPress: () => setIsCollapsed(!isCollapsed)
+                icon: 'close',
+                onPress: () => setIsCollapsed(!isCollapsed),
+                type: 'ionicon'
               }}
             />
             <Divider />
