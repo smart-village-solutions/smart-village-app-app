@@ -29,7 +29,7 @@ export const SliderFilter = ({
   values = [],
   ...props
 }: Props) => {
-  const minimumSliderValue: number = values?.length > 0 ? Math.min(...values) : minimumValue;
+  const minimumSliderValue: number = values?.length ? 0 : minimumValue;
   const maximumSliderValue: number = values?.length - 1 || maximumValue;
 
   const [sliderValue, setSliderValue] = useState({

@@ -16,6 +16,7 @@ export * from './filterObjectHelper';
 export * from './filterTypesHelper';
 export * from './formatHelper';
 export * from './genericTypeHelper';
+export * from './geolocationRadiusFilterHelper';
 export * from './graphqlHelper';
 export * from './headerHelper';
 export * from './htmlViewHelper';

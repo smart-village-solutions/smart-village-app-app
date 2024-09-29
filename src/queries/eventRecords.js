@@ -35,6 +35,10 @@ const defaultFields = `
     zip
     kind
     addition
+    geoLocation {
+      latitude
+      longitude
+    }
   }
   contacts {
     id
