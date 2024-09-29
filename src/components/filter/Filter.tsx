@@ -120,7 +120,20 @@ export const Filter = ({
                   notFullWidth
                   onPress={() => {
                     setIsCollapsed(!isCollapsed);
-                    setQueryVariables(filters);
+                    let dateRange = filters.dateRange || null;
+
+                    if (filters.start_date && filters.end_date) {
+                      dateRange = [
+                        momentFormat(filters.start_date, 'YYYY-MM-DD'),
+                        momentFormat(filters.end_date, 'YYYY-MM-DD')
+                      ];
+                    }
+
+                    if (dateRange?.length) {
+                      setQueryVariables({ ...filters, dateRange });
+                    } else {
+                      setQueryVariables({ ...filters });
+                    }
                   }}
                   title={texts.filter.filter}
                 />

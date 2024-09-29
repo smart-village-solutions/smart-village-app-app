@@ -1,6 +1,9 @@
 import { dropdownEntries } from '../components';
+import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { FilterProps, FilterTypesProps, ResourceFilters } from '../types';
+
+const { FILTER_TYPES } = consts;
 
 export const FILTER_KEYS = {
   CATEGORY: 'category',
@@ -82,6 +85,12 @@ export const filterTypesHelper = ({
   }
 
   if (filtersByQuery.config.dateStart && filtersByQuery.config.dateEnd) {
+    filtersByQuery.config.dateStart = {
+      dateStart: filtersByQuery.config.dateStart,
+      dateEnd: filtersByQuery.config.dateEnd,
+      type: FILTER_TYPES.DATE
+    };
+
     delete filtersByQuery.config.dateEnd;
   }
 
@@ -102,10 +111,14 @@ export const filterTypesHelper = ({
       case FILTER_KEYS.DATE_START:
         filterType.data = [
           {
+            hasFutureDates: value.dateStart?.hasFutureDates,
+            hasPastDates: value.dateStart?.hasPastDates,
             name: QUERY_VARIABLES_ATTRIBUTES.DATE_START,
             placeholder: getPlaceholder(FILTER_KEYS.DATE_START, query)
           },
           {
+            hasFutureDates: value.dateEnd?.hasFutureDates,
+            hasPastDates: value.dateEnd?.hasPastDates,
             name: QUERY_VARIABLES_ATTRIBUTES.DATE_END,
             placeholder: getPlaceholder(FILTER_KEYS.DATE_END, query)
           }

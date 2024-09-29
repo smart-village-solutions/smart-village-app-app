@@ -5,7 +5,7 @@ import Collapsible from 'react-native-collapsible';
 
 import { Icon, colors, consts, device, normalize, texts } from '../../config';
 import { momentFormat, updateFilters } from '../../helpers';
-import { FilterProps } from '../../types';
+import { DatesTypes, FilterProps } from '../../types';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
@@ -17,24 +17,25 @@ const {
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
-  data: { name: keyof FilterProps; placeholder: string }[];
+  data: DatesTypes[];
   filters: FilterProps;
-  hasFutureDates?: boolean;
-  hasPastDates?: boolean;
   setFilters: React.Dispatch<FilterProps>;
 };
 
+/* eslint-disable complexity */
 const CalendarView = ({
   date,
-  hasFutureDates = false,
-  hasPastDates = false,
+  dates,
+  data,
   isCollapsed,
+  name,
   setDate
 }: {
   date: string;
-  hasFutureDates?: boolean;
-  hasPastDates?: boolean;
+  dates: FilterProps;
+  data: DatesTypes[];
   isCollapsed: boolean;
+  name?: string;
   setDate: Dispatch<SetStateAction<string>>;
 }) => {
   const markedDates = useMemo(() => {
@@ -50,13 +51,36 @@ const CalendarView = ({
     return dates;
   }, [date]);
 
+  const selectedDateData = data.find((item) => item.name === name);
+  const hasFutureDates = selectedDateData?.hasFutureDates ?? false;
+  const hasPastDates = selectedDateData?.hasPastDates ?? false;
+
+  const hasEndDateFutureDates = name === 'end_date' && hasFutureDates;
+  const hasEndDatePastDates = name === 'end_date' && hasPastDates;
+  const hasStartDateFutureDates = name === 'start_date' && hasFutureDates;
+  const hasStartDatePastDates = name === 'start_date' && hasPastDates;
+
+  const minDate =
+    hasStartDateFutureDates || hasEndDatePastDates
+      ? new Date().toDateString()
+      : name === 'end_date' && dates.start_date
+      ? momentFormat(dates.start_date, 'YYYY-MM-DD')
+      : undefined;
+
+  const maxDate =
+    hasStartDatePastDates || hasEndDateFutureDates
+      ? new Date().toDateString()
+      : name === 'start_date' && dates.end_date
+      ? momentFormat(dates.end_date, 'YYYY-MM-DD')
+      : undefined;
+
   return (
     <Collapsible collapsed={isCollapsed}>
       <Calendar
         renderArrow={renderArrow}
         firstDay={1}
-        minDate={hasFutureDates ? new Date().toDateString() : undefined}
-        maxDate={hasPastDates ? new Date().toDateString() : undefined}
+        minDate={minDate}
+        maxDate={maxDate}
         onDayPress={(date: { dateString: string }) =>
           setDate(momentFormat(date.dateString, 'YYYY-MM-DD'))
         }
@@ -75,15 +99,9 @@ const CalendarView = ({
     </Collapsible>
   );
 };
+/* eslint-enable complexity */
 
-export const DateFilter = ({
-  containerStyle,
-  data,
-  filters,
-  hasFutureDates,
-  hasPastDates,
-  setFilters
-}: Props) => {
+export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState<{ [key: string]: boolean }>(
     data.reduce((acc: { [key: string]: boolean }, item) => {
       acc[item.name] = true;
@@ -152,15 +170,16 @@ export const DateFilter = ({
 
       {data.map((item) => (
         <CalendarView
+          date={selectedDate[item.name] || momentFormat(filters?.[item.name], 'YYYY-MM-DD')}
+          dates={filters}
+          data={data}
+          isCollapsed={isCollapsed[item.name]}
           key={`calendar-${item.name}`}
-          date={selectedDate[item.name]}
-          hasFutureDates={hasFutureDates}
-          hasPastDates={hasPastDates}
+          name={item.name}
           setDate={(date: string) => {
             setIsCollapsed((prev) => ({ ...prev, [item.name]: true }));
             setSelectedDate((prev) => ({ ...prev, [item.name]: date }));
           }}
-          isCollapsed={isCollapsed[item.name]}
         />
       ))}
     </>
