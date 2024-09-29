@@ -233,8 +233,7 @@ export const Overviews = ({ navigation, route }) => {
       query,
       queryVariables,
       resourceFiltersDispatch,
-      resourceFiltersState,
-      setQueryVariables
+      resourceFiltersState
     });
   }, [query, queryVariables]);
 

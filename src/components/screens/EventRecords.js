@@ -256,8 +256,7 @@ export const EventRecords = ({ navigation, route }) => {
       query,
       queryVariables,
       resourceFiltersDispatch,
-      resourceFiltersState,
-      setQueryVariables
+      resourceFiltersState
     });
   }, [query, queryVariables]);
 

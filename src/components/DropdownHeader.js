@@ -40,7 +40,8 @@ export const dropdownEntries = (
           index: index + 1,
           id: category.id,
           value: category.name,
-          selected: category.id === queryVariables.categoryId
+          selected:
+            category.id === queryVariables.categoryId || queryVariables.ids?.includes(category.id)
         }));
     }
   } else if (query === QUERY_TYPES.NEWS_ITEMS) {
