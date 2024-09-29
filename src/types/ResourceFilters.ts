@@ -20,14 +20,16 @@ export type FilterTypesProps = {
     | { name: keyof FilterProps; placeholder: string }[]
     | StatusProps[]
     | number[];
+  hasFutureDates?: boolean;
+  hasPastDates?: boolean;
+  isMultiselect?: boolean;
   label?: string;
   name: keyof FilterProps;
   placeholder?: string;
-  type?: string;
-  value?: string;
-  isMultiselect?: boolean;
   searchable?: boolean;
   searchPlaceholder?: string;
+  type?: string;
+  value?: string;
 };
 
 export type FilterProps = {
