@@ -33,6 +33,8 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
               containerStyle={{ width: device.width * 0.45 }}
               {...item}
               data={item.data as { name: keyof FilterProps; placeholder: string }[]}
+              hasFutureDates={item.hasFutureDates}
+              hasPastDates={item.hasPastDates}
             />
           )}
 
