@@ -32,6 +32,7 @@ import {
 import { colors, Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
+  filterLocationsWithinRadius,
   filterTypesHelper,
   graphqlFetchPolicy,
   isOpen,
@@ -40,7 +41,13 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
-import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } from '../../hooks';
+import {
+  useLocationSettings,
+  useOpenWebScreen,
+  usePermanentFilter,
+  usePosition,
+  useStaticContent
+} from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
@@ -149,6 +156,7 @@ export const Overviews = ({ navigation, route }) => {
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories;
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
+  const { locationSettings } = useLocationSettings();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
@@ -195,6 +203,20 @@ export const Overviews = ({ navigation, route }) => {
 
     if (sortByDistance && position && parsedListItems?.length) {
       parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, position.coords);
+    }
+
+    if (queryVariables?.radiusSearch?.value) {
+      const { alternativePosition, defaultAlternativePosition } = locationSettings;
+
+      const lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
+      const lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
+
+      parsedListItems = filterLocationsWithinRadius(
+        parsedListItems,
+        lat,
+        lng,
+        queryVariables.radiusSearch.value
+      );
     }
 
     return parsedListItems;
