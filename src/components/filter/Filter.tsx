@@ -1,18 +1,18 @@
 import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import React, { useEffect, useState } from 'react';
-import { Modal, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 
 import { Icon, colors, consts, device, normalize, texts } from '../../config';
+import { momentFormat } from '../../helpers';
 import { FilterProps, FilterTypesProps } from '../../types';
 
 import { Button } from './../Button';
 import { BoldText } from './../Text';
 import { Wrapper, WrapperRow, WrapperVertical } from './../Wrapper';
 import { FilterComponent } from './FilterComponent';
-import { momentFormat } from '../../helpers';
 
 const { a11yLabel } = consts;
 
@@ -57,7 +57,7 @@ export const Filter = ({
 
   return (
     <>
-      <Wrapper style={[withSearch && styles.noPadding]}>
+      <View style={[!withSearch && styles.container]}>
         <TouchableOpacity
           onPress={() => setIsCollapsed(!isCollapsed)}
           accessibilityLabel={`${isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter} ${
@@ -176,7 +176,7 @@ export const Filter = ({
             </WrapperVertical>
           </Collapsible>
         )}
-      </Wrapper>
+      </View>
 
       {!withSearch && <Divider />}
     </>
@@ -192,14 +192,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-end'
   },
+  container: {
+    padding: normalize(14)
+  },
   icon: {
     paddingLeft: normalize(8)
-  },
-  noPadding: {
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0
   },
   noPaddingBottom: {
     paddingBottom: 0
