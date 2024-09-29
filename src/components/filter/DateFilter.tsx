@@ -19,17 +19,23 @@ type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   data: { name: keyof FilterProps; placeholder: string }[];
   filters: FilterProps;
+  hasFutureDates?: boolean;
+  hasPastDates?: boolean;
   setFilters: React.Dispatch<FilterProps>;
 };
 
 const CalendarView = ({
   date,
-  setDate,
-  isCollapsed
+  hasFutureDates = false,
+  hasPastDates = false,
+  isCollapsed,
+  setDate
 }: {
   date: string;
-  setDate: Dispatch<SetStateAction<string>>;
+  hasFutureDates?: boolean;
+  hasPastDates?: boolean;
   isCollapsed: boolean;
+  setDate: Dispatch<SetStateAction<string>>;
 }) => {
   const markedDates = useMemo(() => {
     const dates: CalendarProps['markedDates'] = {};
@@ -49,7 +55,8 @@ const CalendarView = ({
       <Calendar
         renderArrow={renderArrow}
         firstDay={1}
-        maxDate={new Date().toDateString()}
+        minDate={hasFutureDates ? new Date().toDateString() : undefined}
+        maxDate={hasPastDates ? new Date().toDateString() : undefined}
         onDayPress={(date: { dateString: string }) =>
           setDate(momentFormat(date.dateString, 'YYYY-MM-DD'))
         }
@@ -69,7 +76,14 @@ const CalendarView = ({
   );
 };
 
-export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props) => {
+export const DateFilter = ({
+  containerStyle,
+  data,
+  filters,
+  hasFutureDates,
+  hasPastDates,
+  setFilters
+}: Props) => {
   const [isCollapsed, setIsCollapsed] = useState<{ [key: string]: boolean }>(
     data.reduce((acc: { [key: string]: boolean }, item) => {
       acc[item.name] = true;
@@ -140,6 +154,8 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
         <CalendarView
           key={`calendar-${item.name}`}
           date={selectedDate[item.name]}
+          hasFutureDates={hasFutureDates}
+          hasPastDates={hasPastDates}
           setDate={(date: string) => {
             setIsCollapsed((prev) => ({ ...prev, [item.name]: true }));
             setSelectedDate((prev) => ({ ...prev, [item.name]: date }));
