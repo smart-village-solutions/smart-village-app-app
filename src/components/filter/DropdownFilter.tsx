@@ -31,7 +31,12 @@ export const DropdownFilter = ({
   placeholder,
   setFilters
 }: Props) => {
-  const initiallySelectedItem = { id: 0, index: 0, value: placeholder || '', selected: true };
+  const initiallySelectedItem = {
+    id: 0,
+    index: 0,
+    value: placeholder || '',
+    selected: filters[name] ? false : true
+  };
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
     initiallySelectedItem,
     ...data
