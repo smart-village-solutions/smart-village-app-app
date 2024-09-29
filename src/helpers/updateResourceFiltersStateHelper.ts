@@ -28,7 +28,7 @@ export const updateResourceFiltersStateHelper = ({
       type: ResourceFiltersAction.AddResourceFilter,
       payload: {
         key: query,
-        value: { ...variables, ...resourceFiltersState?.[query] }
+        value: { ...resourceFiltersState?.[query], ...variables }
       }
     });
   }
