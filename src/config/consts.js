@@ -123,6 +123,11 @@ export const consts = {
     FULL_SCREEN_MAX_WIDTH: 504
   },
 
+  MEDIA_TYPES: {
+    DOCUMENT: 'pdf',
+    IMAGE: 'jpg'
+  },
+
   // this section has been added to optimise AR on low RAM devices and to prevent some features of AR from being used
   GB_TO_BYTES: {
     1: 1073741824,

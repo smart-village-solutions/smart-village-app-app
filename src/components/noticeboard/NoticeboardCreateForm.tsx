@@ -23,15 +23,17 @@ import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { NOTICEBOARD_TYPES } from '../../types';
+import { uploadMediaContent } from '../../queries/mediaContent';
 import { SettingsContext } from '../../SettingsProvider';
 
-const { EMAIL_REGEX } = consts;
+const { EMAIL_REGEX, MEDIA_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
   body: string;
   dateEnd: string;
   dateStart: string;
+  documents: string;
   email: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
@@ -86,6 +88,7 @@ export const NoticeboardCreateForm = ({
   });
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
+  let documentUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -103,6 +106,53 @@ export const NoticeboardCreateForm = ({
     }
 
     try {
+      const documents = JSON.parse(noticeboardNewData.documents);
+      const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
+        .filter((document: { id: number }) => !!document.id)
+        .map((document: { mimeType: string; cachedAttachment: string }) => ({
+          contentType: document.mimeType,
+          sourceUrl: { url: document.cachedAttachment }
+        }));
+      const documentsSize = documents.reduce(
+        (acc: number, document: any) => acc + document.size,
+        0
+      );
+
+      // check if documents size is bigger than 25MB
+      if (documentsSize > 26214400) {
+        return Alert.alert(
+          texts.noticeboard.alerts.hint,
+          texts.noticeboard.alerts.documentsSizeError
+        );
+      }
+
+      if (documents?.length) {
+        for (const document of documents) {
+          if (!document.id) {
+            try {
+              documentUrl = await uploadMediaContent(
+                document,
+                document.mimeType,
+                'document',
+                MEDIA_TYPES.DOCUMENT
+              );
+
+              documentUrl &&
+                documentsUrl.push({
+                  sourceUrl: { url: documentUrl },
+                  contentType: document.mimeType
+                });
+            } catch (error) {
+              Alert.alert(
+                texts.noticeboard.alerts.hint,
+                texts.noticeboard.alerts.documentUploadError
+              );
+              return;
+            }
+          }
+        }
+      }
+
       await createGenericItem({
         variables: {
           categoryName: noticeboardNewData.noticeboardType,
@@ -111,6 +161,7 @@ export const NoticeboardCreateForm = ({
           title: noticeboardNewData.title,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
+          mediaContents: documentsUrl,
           dates: [
             {
               dateEnd: momentFormat(noticeboardNewData.dateEnd),

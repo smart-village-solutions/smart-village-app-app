@@ -1,14 +1,21 @@
 import * as SecureStore from 'expo-secure-store';
 
-import { namespace, secrets } from '../config';
+import { consts, namespace, secrets } from '../config';
 
-export const uploadMediaContent = async (image, contentType) => {
+const { MEDIA_TYPES } = consts;
+
+export const uploadMediaContent = async (
+  content,
+  contentType,
+  contentName = 'image',
+  type = 'jpg'
+) => {
   const formData = new FormData();
   formData.append('media_content[content_type]', contentType);
   formData.append('media_content[attachment]', {
-    uri: image.uri,
-    type: 'image/jpg',
-    name: 'image.jpg'
+    uri: content.uri || content.cachedAttachment,
+    type: type === MEDIA_TYPES.IMAGE ? 'image/jpg' : 'application/pdf',
+    name: `${contentName}.${type}`
   });
 
   // get the authentication token from local SecureStore if it exists
