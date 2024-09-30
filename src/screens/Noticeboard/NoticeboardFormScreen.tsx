@@ -4,7 +4,10 @@ import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
   BoldText,
+  ConsulDocumentList,
+  ConsulListItem,
   DefaultKeyboardAvoidingView,
+  DocumentList,
   HtmlView,
   LoadingContainer,
   NoticeboardCreateForm,
@@ -105,6 +108,8 @@ export const NoticeboardFormScreen = ({
               )}
             </Wrapper>
           )}
+
+          {!!details?.mediaContents?.length && <DocumentList documents={details?.mediaContents} />}
 
           <Component {...{ data: details, navigation, route, queryVariables }} />
         </ScrollView>

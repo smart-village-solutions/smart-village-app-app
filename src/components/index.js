@@ -39,6 +39,8 @@ export * from './DeleteHeader';
 export * from './DefaultKeyboardAvoidingView';
 export * from './DiagonalGradient';
 export * from './Disturber';
+export * from './DocumentList';
+export * from './DocumentListItem';
 export * from './DrawerHeader';
 export * from './DropdownHeader';
 export * from './DropdownSelect';

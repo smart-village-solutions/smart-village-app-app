@@ -516,6 +516,7 @@ export const texts = {
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
+    documents: 'Dokumente',
     documentsInfo:
       'Sie können maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
