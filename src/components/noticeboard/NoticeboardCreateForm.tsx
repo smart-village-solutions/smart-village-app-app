@@ -10,6 +10,7 @@ import {
   Button,
   Checkbox,
   DateTimeInput,
+  DocumentSelector,
   HtmlView,
   Input,
   RegularText,
@@ -22,6 +23,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { NOTICEBOARD_TYPES } from '../../types';
+import { SettingsContext } from '../../SettingsProvider';
 
 const { EMAIL_REGEX } = consts;
 const extendedMoment = extendMoment(moment);
@@ -48,6 +50,10 @@ export const NoticeboardCreateForm = ({
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showNoticeboardMediaContent = {} } = settings;
+  const { document: showDocument = false } = showNoticeboardMediaContent;
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
@@ -70,6 +76,7 @@ export const NoticeboardCreateForm = ({
       body: '',
       dateEnd: new Date(),
       dateStart: new Date(),
+      documents: '[]',
       email: '',
       name: '',
       noticeboardType: '',
@@ -243,6 +250,24 @@ export const NoticeboardCreateForm = ({
           control={control}
         />
       </Wrapper>
+
+      {showDocument && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="documents"
+            control={control}
+            render={({ field }) => (
+              <DocumentSelector
+                {...{ control, field }}
+                item={{
+                  buttonTitle: texts.noticeboard.addDocuments,
+                  infoTitle: texts.noticeboard.documentsInfo
+                }}
+              />
+            )}
+          />
+        </Wrapper>
+      )}
 
       <Wrapper style={styles.noPaddingTop}>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}

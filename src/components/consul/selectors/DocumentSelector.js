@@ -94,7 +94,7 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
 
     setDocumentsAttributes([
       ...documentsAttributes,
-      isVolunteer ? { uri, mimeType } : { title, cachedAttachment: uri }
+      isVolunteer ? { uri, mimeType } : { title, cachedAttachment: uri, size, mimeType }
     ]);
 
     setInfoAndErrorText([
