@@ -1,21 +1,23 @@
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
 import { LoadingContainer, SafeAreaViewFlex } from '../components';
-import { colors, consts } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
+import { onDownloadAndSharePdf } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-export const WebScreen = ({ route }) => {
+export const WebScreen = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
+  const documentData = route.params?.documentData ?? '';
   const injectedJavaScript = route.params?.injectedJavaScript ?? '';
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `webUrl`
@@ -23,6 +25,21 @@ export const WebScreen = ({ route }) => {
   useEffect(() => {
     isConnected && webUrl && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.WEB} / ${webUrl}`);
   }, [webUrl]);
+
+  useEffect(() => {
+    if (documentData?.title) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+            style={styles.headerRight}
+            onPress={() => onDownloadAndSharePdf(documentData)}
+          >
+            <Icon.ArrowDownCircle color={colors.lightestText} />
+          </TouchableOpacity>
+        )
+      });
+    }
+  }, [documentData]);
 
   if (!webUrl) return null;
 
@@ -50,6 +67,13 @@ export const WebScreen = ({ route }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  headerRight: {
+    paddingRight: normalize(7)
+  }
+});
+
 WebScreen.propTypes = {
+  navigation: PropTypes.object,
   route: PropTypes.object.isRequired
 };

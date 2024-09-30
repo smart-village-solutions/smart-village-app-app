@@ -12,6 +12,7 @@ export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
   const navigation = useNavigation();
 
   const { contentType, id, sourceUrl, title } = item;
+  const { url } = sourceUrl;
 
   if (contentType !== 'application/pdf') {
     return null;
@@ -20,6 +21,16 @@ export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
   return (
     <TouchableOpacity
       style={styles.container}
+      onPress={() =>
+        navigation.navigate(ScreenName.Web, {
+          webUrl: `https://docs.google.com/gview?embedded=true&url=${url}`,
+          title: title || `${id}.pdf`,
+          documentData: {
+            title: title || `${id}`,
+            url
+          }
+        })
+      }
     >
       <RegularText>{title || `${id}.pdf`}</RegularText>
       <Icon.ArrowRight color={colors.primary} size={normalize(20)} />
