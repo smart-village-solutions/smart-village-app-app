@@ -144,7 +144,7 @@ export const Filter = ({
                   onPress={() => {
                     setFilters(initialFilters || {});
                     setIsCollapsed(!isCollapsed);
-                    setQueryVariables(initialFilters || {});
+                    setQueryVariables({ saveable: false, ...(initialFilters || {}) });
                   }}
                   title={texts.filter.resetFilter}
                 />
