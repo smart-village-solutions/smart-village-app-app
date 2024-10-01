@@ -83,18 +83,37 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
             )}
 
             {item.type === FILTER_TYPES.SLIDER && (
-              <SliderFilter
-                index={filters?.[item.name]?.index || 0}
-                label={item.label}
-                onSlidingComplete={(index) => {
-                  setFilters((prev: FilterProps) => ({
-                    ...prev,
-                    [item.name]: { value: item.data[index], index }
-                  }));
-                }}
-                values={item.data as number[]}
-                {...item}
-              />
+              <>
+                {item.currentPosition && (
+                  <>
+                    <Label bold>{item.currentPosition.label}</Label>
+                    <View style={styles.checkboxContainerStyle}>
+                      <RegularText small>{item.currentPosition.placeholder}</RegularText>
+                      <Switch
+                        switchValue={filters[item.name]?.currentPosition || false}
+                        toggleSwitch={(value) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            [item.name]: { ...prev[item.name], currentPosition: value }
+                          }))
+                        }
+                      />
+                    </View>
+                  </>
+                )}
+                <SliderFilter
+                  index={filters?.[item.name]?.index || 0}
+                  label={item.label}
+                  onSlidingComplete={(index) => {
+                    setFilters((prev: FilterProps) => ({
+                      ...prev,
+                      [item.name]: { ...prev?.[item.name], value: item.data[index], index }
+                    }));
+                  }}
+                  values={item.data as number[]}
+                  {...item}
+                />
+              </>
             )}
           </WrapperVertical>
         ))}

@@ -1,3 +1,4 @@
+import * as Location from 'expo-location';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -15,6 +16,7 @@ import {
   Filter,
   ListComponent,
   LoadingContainer,
+  locationServiceEnabledAlert,
   OptionToggle,
   REFRESH_CALENDAR,
   RegularText,
@@ -30,10 +32,17 @@ import {
   parseListItemsFromQuery
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
-import { useLocationSettings, useOpenWebScreen, useVolunteerData } from '../../hooks';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  useOpenWebScreen,
+  usePosition,
+  useSystemPermission,
+  useVolunteerData
+} from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
-import { QUERY_TYPES, getQuery } from '../../queries';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 
@@ -96,6 +105,17 @@ export const EventRecords = ({ navigation, route }) => {
     !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
   const { locationSettings } = useLocationSettings();
+  const systemPermission = useSystemPermission();
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const { alternativePosition, defaultAlternativePosition } = locationSettings;
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
+  const { position } = usePosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
+  const currentPosition = position || lastKnownPosition;
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   // https://github.com/ndraaditiya/React-Query-GraphQL/blob/main/src/services/index.jsx
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -221,10 +241,25 @@ export const EventRecords = ({ navigation, route }) => {
     }
 
     if (queryVariables?.radiusSearch?.value) {
-      const { alternativePosition, defaultAlternativePosition } = locationSettings;
+      let lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
+      let lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
 
-      const lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
-      const lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
+      if (queryVariables.radiusSearch.currentPosition) {
+        if (!locationServiceEnabled || !currentPosition) {
+          if (!isLocationAlertShow) {
+            locationServiceEnabledAlert({
+              currentPosition,
+              locationServiceEnabled,
+              navigation
+            });
+            setIsLocationAlertShow(true);
+          }
+          return;
+        }
+
+        lat = currentPosition?.coords.latitude;
+        lng = currentPosition?.coords.longitude;
+      }
 
       parsedListItems = filterLocationsWithinRadius(
         parsedListItems,
@@ -240,7 +275,8 @@ export const EventRecords = ({ navigation, route }) => {
     data?.pages?.flatMap((page) => page?.[query]),
     hasDailyFilterSelection,
     query,
-    queryVariables.dateRange
+    queryVariables.dateRange,
+    isLocationAlertShow
   ]);
 
   const refresh = useCallback(async () => {
