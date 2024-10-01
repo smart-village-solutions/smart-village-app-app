@@ -1,7 +1,7 @@
 import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import React, { useEffect, useState } from 'react';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 
@@ -103,13 +103,15 @@ export const Filter = ({
               rightContainerStyle={styles.headerRightContainer}
             />
             <Divider />
-            <Wrapper style={[styles.noPaddingBottom, styles.noPaddingTop]}>
-              <FilterComponent
-                filters={filters}
-                filterTypes={filterTypes}
-                setFilters={setFilters}
-              />
-            </Wrapper>
+            <ScrollView>
+              <Wrapper style={[styles.noPaddingBottom, styles.noPaddingTop]}>
+                <FilterComponent
+                  filters={filters}
+                  filterTypes={filterTypes}
+                  setFilters={setFilters}
+                />
+              </Wrapper>
+            </ScrollView>
 
             <Wrapper style={[styles.noPaddingTop, styles.alignLeft]}>
               <WrapperRow style={{ gap: normalize(16) }}>
