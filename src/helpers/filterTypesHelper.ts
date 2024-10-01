@@ -171,6 +171,10 @@ export const filterTypesHelper = ({
         if (value.options?.length) {
           filterType.data = value.options.map((entry: string) => parseInt(entry));
         }
+        filterType.currentPosition = {
+          label: 'Umkreis',
+          placeholder: 'Aktuelle Position nutzen'
+        };
         break;
       case FILTER_KEYS.LOCATION:
         filterType.data = dropdownEntries(
