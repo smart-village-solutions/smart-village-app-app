@@ -1,7 +1,7 @@
 import { dropdownEntries } from '../components';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { FilterProps, FilterTypesProps, ResourceFilters } from '../types';
+import { FilterProps, FilterTypesProps, GenericType, ResourceFilters } from '../types';
 
 const { FILTER_TYPES } = consts;
 
@@ -42,10 +42,22 @@ const getPlaceholder = (key: string, query: string) =>
     [FILTER_KEYS.CATEGORY]: 'Kategorien wählen',
     [FILTER_KEYS.DATA_PROVIDER]: 'Datenquellen wählen',
     [FILTER_KEYS.DATE_END]: {
+      [GenericType.Commercial]: 'Bis',
+      [GenericType.ConstructionSite]: 'Bis',
+      [GenericType.Deadline]: 'Bis',
+      [GenericType.DefectReport]: 'Bis',
+      [GenericType.Job]: 'Bis',
+      [GenericType.Noticeboard]: 'Bis',
       [QUERY_TYPES.EVENT_RECORDS]: 'Bis',
       [QUERY_TYPES.NEWS_ITEMS]: 'Bis'
     }[query],
     [FILTER_KEYS.DATE_START]: {
+      [GenericType.Commercial]: 'Von',
+      [GenericType.ConstructionSite]: 'Von',
+      [GenericType.Deadline]: 'Von',
+      [GenericType.DefectReport]: 'Von',
+      [GenericType.Job]: 'Von',
+      [GenericType.Noticeboard]: 'Von',
       [QUERY_TYPES.EVENT_RECORDS]: 'Von',
       [QUERY_TYPES.NEWS_ITEMS]: 'Von'
     }[query],

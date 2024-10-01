@@ -9,9 +9,9 @@ import { ConstructionSite, ConstructionSitePayload, GenericItem } from '../types
 
 import { useRefreshTime } from './TimeHooks';
 
-export const useConstructionSites = (
-  id?: string
-): {
+export const useConstructionSites = (queryVariables?: {
+  ids?: string;
+}): {
   constructionSites: ConstructionSite[];
   loading: boolean;
   refresh: () => void;
@@ -27,7 +27,7 @@ export const useConstructionSites = (
   const { data, loading, refetch } = useQuery<{
     constructionSites: GenericItem<ConstructionSitePayload>[];
   }>(getQuery(QUERY_TYPES.CONSTRUCTION_SITES), {
-    variables: { ids: id },
+    variables: queryVariables,
     fetchPolicy
   });
 
