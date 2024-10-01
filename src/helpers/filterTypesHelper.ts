@@ -102,8 +102,6 @@ export const filterTypesHelper = ({
       dateEnd: filtersByQuery.config.dateEnd,
       type: FILTER_TYPES.DATE
     };
-
-    delete filtersByQuery.config.dateEnd;
   }
 
   const filterTypes = Object.entries(filtersByQuery?.config ?? {}).map(([key, value]) => {
@@ -119,7 +117,6 @@ export const filterTypesHelper = ({
     };
 
     switch (key) {
-      case FILTER_KEYS.DATE_END:
       case FILTER_KEYS.DATE_START:
         filterType.data = [
           {
