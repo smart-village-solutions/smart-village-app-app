@@ -429,6 +429,7 @@ export const VolunteerFormCalendar = ({
                 control,
                 field,
                 isVolunteer: true,
+                maxFileSize: '10485760',
                 item: {
                   name: 'documents',
                   label: texts.volunteer.documents,

@@ -510,6 +510,7 @@ export const texts = {
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
       documentsSizeError: 'Die ausgewählten Dokumente dürfen maximal 25 MB groß sein.',
+      documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
       documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
       error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',

@@ -41,6 +41,7 @@ type TNoticeboardCreateData = {
   title: string;
 };
 
+/* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
   navigation,
   queryVariables,
@@ -55,7 +56,7 @@ export const NoticeboardCreateForm = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showNoticeboardMediaContent = {} } = settings;
-  const { document: showDocument = false } = showNoticeboardMediaContent;
+  const { document: showDocument = false, documentMaxSizes = {} } = showNoticeboardMediaContent;
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
@@ -119,7 +120,7 @@ export const NoticeboardCreateForm = ({
       );
 
       // check if documents size is bigger than 25MB
-      if (documentsSize > 26214400) {
+      if (documentMaxSizes.total && documentsSize > documentMaxSizes.total) {
         return Alert.alert(
           texts.noticeboard.alerts.hint,
           texts.noticeboard.alerts.documentsSizeError
@@ -310,6 +311,7 @@ export const NoticeboardCreateForm = ({
             render={({ field }) => (
               <DocumentSelector
                 {...{ control, field }}
+                maxFileSize={documentMaxSizes.file}
                 item={{
                   buttonTitle: texts.noticeboard.addDocuments,
                   infoTitle: texts.noticeboard.documentsInfo
@@ -359,6 +361,7 @@ export const NoticeboardCreateForm = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   noPaddingTop: {

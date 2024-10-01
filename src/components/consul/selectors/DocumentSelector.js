@@ -9,6 +9,7 @@ import {
   deleteArrayItem,
   documentErrorMessageGenerator,
   formatSize,
+  formatSizeStandard,
   jsonParser
 } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
@@ -38,7 +39,7 @@ const deleteDocumentAlert = (onPress) =>
     ]
   );
 
-export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
+export const DocumentSelector = ({ control, field, isVolunteer, item, maxFileSize }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -88,9 +89,8 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
 
     if (!uri) return;
 
-    /* the server does not support files more than 10MB in size. */
-    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
-    const consulErrorText = await documentErrorMessageGenerator(uri);
+    /* the server does not support files more than maxFileSize in size. */
+    const errorText = await documentErrorMessageGenerator(uri, maxFileSize);
 
     setDocumentsAttributes([
       ...documentsAttributes,
@@ -100,7 +100,7 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
     setInfoAndErrorText([
       ...infoAndErrorText,
       {
-        errorText: isVolunteer ? volunteerErrorText : texts.consul.startNew[consulErrorText],
+        errorText,
         infoText: isVolunteer ? `${title}` : `(${mimeType}, ${formatSize(size)})`
       }
     ]);
@@ -208,5 +208,6 @@ DocumentSelector.propTypes = {
   control: PropTypes.object,
   field: PropTypes.object,
   isVolunteer: PropTypes.bool,
-  item: PropTypes.object
+  item: PropTypes.object,
+  maxFileSize: PropTypes.number
 };
