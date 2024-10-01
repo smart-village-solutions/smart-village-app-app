@@ -41,6 +41,7 @@ export const SliderFilter = ({
     <>
       {!!label && <Label bold>{label}</Label>}
       <WrapperRow spaceBetween style={styles.alignItemsCenter}>
+        <RegularText>{values?.length ? Math.min(...values) : minimumValue}</RegularText>
         <Slider
           onSlidingComplete={onSlidingComplete}
           maximumValue={maximumSliderValue}
@@ -57,6 +58,7 @@ export const SliderFilter = ({
           value={sliderValue.index}
           {...props}
         />
+        <RegularText>{values?.length ? Math.max(...values) : minimumValue}</RegularText>
         <View style={styles.textContainer}>
           <RegularText>{sliderValue.value}</RegularText>
         </View>
@@ -70,7 +72,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   slider: {
-    flex: 1
+    flex: 1,
+    marginHorizontal: normalize(10)
   },
   textContainer: {
     alignItems: 'center',
