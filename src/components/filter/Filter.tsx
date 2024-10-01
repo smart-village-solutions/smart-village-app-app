@@ -10,7 +10,7 @@ import { momentFormat } from '../../helpers';
 import { FilterProps, FilterTypesProps } from '../../types';
 
 import { Button } from './../Button';
-import { BoldText } from './../Text';
+import { BoldText, RegularText } from './../Text';
 import { Wrapper, WrapperRow, WrapperVertical } from './../Wrapper';
 import { FilterComponent } from './FilterComponent';
 
@@ -35,6 +35,7 @@ export const Filter = ({
 }: Props) => {
   const [filters, setFilters] = useState<FilterProps>(queryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [filterCount, setFilterCount] = useState(0);
 
   useEffect(() => {
     if (!isOverlay) {
@@ -47,6 +48,20 @@ export const Filter = ({
       setFilters(queryVariables);
     }
   }, [isCollapsed]);
+
+  useEffect(() => {
+    if (isOverlay) {
+      const activeFilters = _omit(filters, Object.keys(initialFilters || {}));
+      const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
+        if (key !== 'saveable' || activeFilters[key] !== false) {
+          acc[key] = activeFilters[key];
+        }
+
+        return acc;
+      }, {} as FilterProps);
+      setFilterCount(Object.keys(filteredActiveFilters).length);
+    }
+  }, [filters, initialFilters, isCollapsed]);
 
   if (!filterTypes?.length) {
     return null;
@@ -68,6 +83,13 @@ export const Filter = ({
           <BoldText small primary={!isCollapsed}>
             {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
           </BoldText>
+          {filterCount > 0 && (
+            <View style={styles.countContainer}>
+              <RegularText small lightest>
+                {filterCount}
+              </RegularText>
+            </View>
+          )}
           <Icon.Filter
             size={normalize(16)}
             style={styles.icon}
@@ -194,6 +216,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end'
+  },
+  countContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: normalize(10),
+    height: normalize(20),
+    justifyContent: 'center',
+    marginLeft: normalize(8),
+    width: normalize(20)
   },
   container: {
     padding: normalize(14)
