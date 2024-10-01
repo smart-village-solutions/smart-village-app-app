@@ -15,6 +15,10 @@ export type ResourceFilters = {
 
 export type FilterTypesProps = {
   checked?: boolean;
+  currentPosition?: {
+    label?: string;
+    placeholder?: string;
+  };
   data: DropdownProps[] | DatesTypes[] | StatusProps[] | number[];
   isMultiselect?: boolean;
   label?: string;

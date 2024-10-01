@@ -1,3 +1,4 @@
+import * as Location from 'expo-location';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
@@ -24,6 +25,7 @@ import {
   ListComponent,
   LoadingContainer,
   LocationOverview,
+  locationServiceEnabledAlert,
   OptionToggle,
   RegularText,
   SafeAreaViewFlex,
@@ -42,11 +44,13 @@ import {
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
+  useLastKnownPosition,
   useLocationSettings,
   useOpenWebScreen,
   usePermanentFilter,
   usePosition,
-  useStaticContent
+  useStaticContent,
+  useSystemPermission
 } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
@@ -156,7 +160,6 @@ export const Overviews = ({ navigation, route }) => {
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories;
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
-  const { locationSettings } = useLocationSettings();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
@@ -167,6 +170,15 @@ export const Overviews = ({ navigation, route }) => {
     refreshTimeKey: `${query}-${queryVariables.category}`,
     skip: !htmlContentName
   });
+  const { locationSettings } = useLocationSettings();
+  const systemPermission = useSystemPermission();
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const { alternativePosition, defaultAlternativePosition } = locationSettings;
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
+  const currentPosition = position || lastKnownPosition;
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     fetchPolicy,
@@ -207,10 +219,25 @@ export const Overviews = ({ navigation, route }) => {
     }
 
     if (queryVariables?.radiusSearch?.value) {
-      const { alternativePosition, defaultAlternativePosition } = locationSettings;
+      let lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
+      let lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
 
-      const lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
-      const lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
+      if (queryVariables.radiusSearch.currentPosition) {
+        if (!locationServiceEnabled || !currentPosition) {
+          if (!isLocationAlertShow) {
+            locationServiceEnabledAlert({
+              currentPosition,
+              locationServiceEnabled,
+              navigation
+            });
+            setIsLocationAlertShow(true);
+          }
+          return;
+        }
+
+        lat = currentPosition?.coords.latitude;
+        lng = currentPosition?.coords.longitude;
+      }
 
       parsedListItems = filterLocationsWithinRadius(
         parsedListItems,
@@ -229,7 +256,8 @@ export const Overviews = ({ navigation, route }) => {
     bookmarkable,
     filterByOpeningTimes,
     sortByDistance,
-    position
+    position,
+    isLocationAlertShow
   ]);
 
   const refresh = useCallback(() => {
