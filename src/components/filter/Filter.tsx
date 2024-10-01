@@ -100,9 +100,10 @@ export const Filter = ({
                 onPress: () => setIsCollapsed(!isCollapsed),
                 type: 'ionicon'
               }}
+              rightContainerStyle={styles.headerRightContainer}
             />
             <Divider />
-            <Wrapper style={styles.noPaddingBottom}>
+            <Wrapper style={[styles.noPaddingBottom, styles.noPaddingTop]}>
               <FilterComponent
                 filters={filters}
                 filterTypes={filterTypes}
@@ -194,6 +195,9 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: normalize(14)
+  },
+  headerRightContainer: {
+    justifyContent: 'center'
   },
   icon: {
     paddingLeft: normalize(8)
