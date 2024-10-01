@@ -160,6 +160,7 @@ export const Overviews = ({ navigation, route }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
+  const filterQuery = query === QUERY_TYPES.GENERIC_ITEMS ? queryVariables.genericType : query;
   const { data: htmlContent } = useStaticContent({
     name: htmlContentName,
     type: 'html',
@@ -244,7 +245,7 @@ export const Overviews = ({ navigation, route }) => {
       categories,
       data,
       excludeDataProviderIds,
-      query,
+      query: filterQuery,
       queryVariables,
       resourceFilters
     });
