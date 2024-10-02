@@ -218,7 +218,7 @@ export const Overviews = ({ navigation, route }) => {
       parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, position.coords);
     }
 
-    if (queryVariables?.radiusSearch?.value) {
+    if (queryVariables?.radiusSearch?.distance) {
       let lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
       let lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
 
@@ -243,7 +243,7 @@ export const Overviews = ({ navigation, route }) => {
         parsedListItems,
         lat,
         lng,
-        queryVariables.radiusSearch.value
+        queryVariables.radiusSearch.distance
       );
     }
 
