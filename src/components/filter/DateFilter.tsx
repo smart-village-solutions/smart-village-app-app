@@ -55,24 +55,30 @@ const CalendarView = ({
   const hasFutureDates = selectedDateData?.hasFutureDates ?? false;
   const hasPastDates = selectedDateData?.hasPastDates ?? false;
 
-  const hasEndDateFutureDates = name === 'end_date' && hasFutureDates;
-  const hasEndDatePastDates = name === 'end_date' && hasPastDates;
-  const hasStartDateFutureDates = name === 'start_date' && hasFutureDates;
-  const hasStartDatePastDates = name === 'start_date' && hasPastDates;
+  let minDate: string | undefined;
+  let maxDate: string | undefined;
 
-  const minDate =
-    hasStartDateFutureDates || hasEndDatePastDates
-      ? new Date().toDateString()
-      : name === 'end_date' && dates.start_date
-      ? momentFormat(dates.start_date, 'YYYY-MM-DD')
-      : undefined;
+  if (name === 'start_date') {
+    if (!hasPastDates) {
+      minDate = new Date().toDateString();
+    }
 
-  const maxDate =
-    hasStartDatePastDates || hasEndDateFutureDates
-      ? new Date().toDateString()
-      : name === 'start_date' && dates.end_date
-      ? momentFormat(dates.end_date, 'YYYY-MM-DD')
-      : undefined;
+    if (dates.end_date) {
+      maxDate = momentFormat(dates.end_date, 'YYYY-MM-DD');
+    } else if (!hasFutureDates) {
+      maxDate = new Date().toDateString();
+    }
+  } else if (name === 'end_date') {
+    if (dates.start_date) {
+      minDate = momentFormat(dates.start_date, 'YYYY-MM-DD');
+    } else if (!hasPastDates) {
+      minDate = new Date().toDateString();
+    }
+
+    if (!hasFutureDates) {
+      maxDate = new Date().toDateString();
+    }
+  }
 
   return (
     <Collapsible collapsed={isCollapsed}>
