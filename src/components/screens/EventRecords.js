@@ -240,7 +240,7 @@ export const EventRecords = ({ navigation, route }) => {
       parsedListItems = _sortBy(parsedListItems, (item) => item.listDate);
     }
 
-    if (queryVariables?.radiusSearch?.value) {
+    if (queryVariables?.radiusSearch?.distance) {
       let lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
       let lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
 
@@ -265,7 +265,7 @@ export const EventRecords = ({ navigation, route }) => {
         parsedListItems,
         lat,
         lng,
-        queryVariables.radiusSearch.value
+        queryVariables.radiusSearch.distance
       );
     }
 

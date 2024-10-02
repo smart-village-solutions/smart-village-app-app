@@ -45,7 +45,11 @@ export type FilterProps = {
   ids?: string;
   initial_start_date?: string;
   location?: string;
-  radiusSearch?: string;
+  radiusSearch?: {
+    currentPosition?: boolean;
+    distance?: number;
+    index?: number;
+  };
   saveable?: string;
   service_code?: string;
   sort?: string;
