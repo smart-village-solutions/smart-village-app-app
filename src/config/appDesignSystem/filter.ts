@@ -11,7 +11,7 @@ export const defaultResourceFiltersConfig = [
       },
       category: {
         isMultiSelect: null,
-        isSearchable: null,
+        searchable: null,
         default: null,
         type: FILTER_TYPES.DROPDOWN
       },
@@ -29,7 +29,7 @@ export const defaultResourceFiltersConfig = [
       },
       location: {
         isMultiSelect: null,
-        isSearchable: null,
+        searchable: null,
         default: null,
         type: FILTER_TYPES.DROPDOWN
       },

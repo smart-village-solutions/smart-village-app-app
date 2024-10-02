@@ -101,17 +101,17 @@ export const filterTypesHelper = ({
     return [];
   }
 
-  const configCopy = { ...filtersByQuery.config };
+  const config = { ...filtersByQuery.config };
 
-  if (configCopy.dateStart && configCopy.dateEnd) {
-    configCopy.dates = {
-      dateStart: configCopy.dateStart,
-      dateEnd: configCopy.dateEnd,
+  if (config.dateStart && config.dateEnd) {
+    config.dates = {
+      dateStart: config.dateStart,
+      dateEnd: config.dateEnd,
       type: FILTER_TYPES.DATE
     };
   }
 
-  const filterTypes = Object.entries(configCopy)
+  const filterTypes = Object.entries(config)
     .sort(([keyA], [keyB]) => {
       const orderA = Object.values(FILTER_KEYS).indexOf(keyA);
       const orderB = Object.values(FILTER_KEYS).indexOf(keyB);
