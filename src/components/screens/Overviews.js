@@ -144,9 +144,15 @@ export const Overviews = ({ navigation, route }) => {
   ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const initialQueryVariables = route?.params?.queryVariables || {};
+  const filterQuery =
+    query === QUERY_TYPES.GENERIC_ITEMS
+      ? initialQueryVariables.genericType
+      : query === QUERY_TYPES.POINTS_OF_INTEREST
+      ? initialQueryVariables.category
+      : query;
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
-    ...resourceFiltersState[query]
+    ...resourceFiltersState[filterQuery]
   });
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
@@ -162,7 +168,7 @@ export const Overviews = ({ navigation, route }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
-  const filterQuery = query === QUERY_TYPES.GENERIC_ITEMS ? queryVariables.genericType : query;
+
   const { data: htmlContent } = useStaticContent({
     name: htmlContentName,
     type: 'html',
@@ -252,6 +258,7 @@ export const Overviews = ({ navigation, route }) => {
   const filterTypes = useMemo(() => {
     return filterTypesHelper({
       categories,
+      category: initialQueryVariables?.category,
       data,
       excludeDataProviderIds,
       query: filterQuery,
@@ -262,7 +269,7 @@ export const Overviews = ({ navigation, route }) => {
 
   useEffect(() => {
     updateResourceFiltersStateHelper({
-      query,
+      query: filterQuery,
       queryVariables,
       resourceFiltersDispatch,
       resourceFiltersState
@@ -276,7 +283,7 @@ export const Overviews = ({ navigation, route }) => {
     // the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...resourceFiltersState?.[query],
+      ...resourceFiltersState?.[filterQuery],
       ...getAdditionalQueryVariables(
         query,
         undefined,

@@ -1,3 +1,4 @@
+import { LocationObject } from 'expo-location';
 import { locationServiceEnabledAlert } from '../components';
 
 const deg2rad = (deg: number) => deg * (Math.PI / 180);
@@ -34,7 +35,7 @@ export const filterLocationsWithinRadius = (
   });
 
 type GeoLocationListItemProps = {
-  currentPosition: any;
+  currentPosition: LocationObject;
   isLocationAlertShow: boolean;
   listItem: any;
   locationSettings: any;
@@ -55,24 +56,30 @@ export const geoLocationFilteredListItem = ({
   const { locationService: locationServiceEnabled } = locationSettings;
   const { alternativePosition, defaultAlternativePosition } = locationSettings;
 
-  let lat = alternativePosition?.coords.latitude || defaultAlternativePosition?.coords.latitude;
-  let lng = alternativePosition?.coords.longitude || defaultAlternativePosition?.coords.latitude;
+  const lat =
+    currentPosition?.coords.latitude ||
+    alternativePosition?.coords.latitude ||
+    defaultAlternativePosition?.coords.latitude;
+  const lng =
+    currentPosition?.coords.longitude ||
+    alternativePosition?.coords.longitude ||
+    defaultAlternativePosition?.coords.latitude;
 
   if (queryVariables.radiusSearch.currentPosition) {
-    if (!locationServiceEnabled || !currentPosition) {
-      if (!isLocationAlertShow) {
-        locationServiceEnabledAlert({
-          currentPosition,
-          locationServiceEnabled,
-          navigation
-        });
-        setIsLocationAlertShow(true);
-      }
-      return;
+    if (!locationServiceEnabled && !isLocationAlertShow) {
+      locationServiceEnabledAlert({
+        currentPosition,
+        locationServiceEnabled,
+        navigation
+      });
+      setIsLocationAlertShow(true);
+      return listItem;
     }
 
-    lat = currentPosition?.coords.latitude;
-    lng = currentPosition?.coords.longitude;
+    // only proceed if currentPosition is available
+    if (!currentPosition?.coords.latitude && !currentPosition?.coords.longitude) {
+      return listItem;
+    }
   }
 
   return filterLocationsWithinRadius(listItem, lat, lng, queryVariables.radiusSearch.distance);
