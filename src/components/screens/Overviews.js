@@ -25,7 +25,6 @@ import {
   ListComponent,
   LoadingContainer,
   LocationOverview,
-  locationServiceEnabledAlert,
   OptionToggle,
   RegularText,
   SafeAreaViewFlex,
@@ -34,8 +33,8 @@ import {
 import { colors, Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
-  filterLocationsWithinRadius,
   filterTypesHelper,
+  geoLocationFilteredListItem,
   graphqlFetchPolicy,
   isOpen,
   openLink,
@@ -173,7 +172,6 @@ export const Overviews = ({ navigation, route }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
   const { locationService: locationServiceEnabled } = locationSettings;
-  const { alternativePosition, defaultAlternativePosition } = locationSettings;
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
   );
@@ -219,32 +217,15 @@ export const Overviews = ({ navigation, route }) => {
     }
 
     if (queryVariables?.radiusSearch?.distance) {
-      let lat = alternativePosition?.coords.lat || defaultAlternativePosition?.coords.lat;
-      let lng = alternativePosition?.coords.lng || defaultAlternativePosition?.coords.lng;
-
-      if (queryVariables.radiusSearch.currentPosition) {
-        if (!locationServiceEnabled || !currentPosition) {
-          if (!isLocationAlertShow) {
-            locationServiceEnabledAlert({
-              currentPosition,
-              locationServiceEnabled,
-              navigation
-            });
-            setIsLocationAlertShow(true);
-          }
-          return;
-        }
-
-        lat = currentPosition?.coords.latitude;
-        lng = currentPosition?.coords.longitude;
-      }
-
-      parsedListItems = filterLocationsWithinRadius(
-        parsedListItems,
-        lat,
-        lng,
-        queryVariables.radiusSearch.distance
-      );
+      parsedListItems = geoLocationFilteredListItem({
+        currentPosition,
+        isLocationAlertShow,
+        listItem: parsedListItems,
+        locationSettings,
+        navigation,
+        queryVariables,
+        setIsLocationAlertShow
+      });
     }
 
     return parsedListItems;
@@ -397,6 +378,7 @@ export const Overviews = ({ navigation, route }) => {
           route={route}
           position={position}
           queryVariables={queryVariables}
+          currentPosition={currentPosition}
         />
       ) : (
         <>
