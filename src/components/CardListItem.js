@@ -108,7 +108,7 @@ const renderCardContent = (item, horizontal, sue) => {
 };
 /* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal, item, sue }) => {
+export const CardListItem = memo(({ navigation, horizontal = false, item, sue = false }) => {
   const {
     appDesignSystem = {},
     params,
@@ -220,9 +220,4 @@ CardListItem.propTypes = {
   item: PropTypes.object.isRequired,
   horizontal: PropTypes.bool,
   sue: PropTypes.bool
-};
-
-CardListItem.defaultProps = {
-  horizontal: false,
-  sue: false
 };

@@ -6,7 +6,13 @@ import { CheckBox as RNECheckbox } from 'react-native-elements';
 import { colors, Icon, normalize, texts } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 
-export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle }) => (
+export const Radiobutton = ({
+  containerStyle,
+  disabled = false,
+  onPress,
+  selected = false,
+  title
+}) => (
   <RNECheckbox
     accessibilityLabel={`${
       selected
@@ -62,14 +68,9 @@ const styles = StyleSheet.create({
 });
 
 Radiobutton.propTypes = {
-  title: PropTypes.string,
+  containerStyle: PropTypes.object,
   disabled: PropTypes.bool,
-  selected: PropTypes.bool,
   onPress: PropTypes.func,
-  containerStyle: PropTypes.object
-};
-
-Radiobutton.defaultProps = {
-  disabled: false,
-  selected: false
+  selected: PropTypes.bool,
+  title: PropTypes.string
 };

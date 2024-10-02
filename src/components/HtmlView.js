@@ -69,7 +69,7 @@ const htmlConfig = {
   }
 };
 
-export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
+export const HtmlView = memo(({ html, tagsStyles = {}, openWebScreen, width }) => {
   const { isBoldTextEnabled } = useContext(AccessibilityContext);
 
   let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
@@ -132,8 +132,4 @@ HtmlView.propTypes = {
   tagsStyles: PropTypes.object,
   openWebScreen: PropTypes.func,
   width: PropTypes.number
-};
-
-HtmlView.defaultProps = {
-  tagsStyles: {}
 };

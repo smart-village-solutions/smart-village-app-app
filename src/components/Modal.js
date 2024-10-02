@@ -11,11 +11,11 @@ import { Touchable } from './Touchable';
 export const Modal = ({
   children,
   closeButton,
-  height,
+  height = 'auto',
   isBackdropPress,
   isListView,
   isVisible,
-  modalHiddenButtonName,
+  modalHiddenButtonName = texts.settingsTitles.arListLayouts.hide,
   onModalVisible,
   overlayStyle
 }) => {
@@ -63,9 +63,4 @@ Modal.propTypes = {
   modalHiddenButtonName: PropTypes.string,
   onModalVisible: PropTypes.func.isRequired,
   overlayStyle: PropTypes.object
-};
-
-Modal.defaultProps = {
-  height: 'auto',
-  modalHiddenButtonName: texts.settingsTitles.arListLayouts.hide
 };

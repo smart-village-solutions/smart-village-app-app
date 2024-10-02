@@ -33,128 +33,135 @@ export type ItemData = {
 
 type Props = {
   item: ItemData;
-  leftImage?: boolean | undefined;
+  leftImage?: boolean;
   navigation: StackNavigationProp<Record<string, any>>;
-  noSubtitle?: boolean | undefined;
-  rightImage?: boolean | undefined;
-  withCard?: boolean | undefined;
+  noSubtitle?: boolean;
+  rightImage?: boolean;
+  withCard?: boolean;
 };
 
 /* eslint-disable complexity */
 export const TextListItem: NamedExoticComponent<Props> & {
   propTypes?: Record<string, Validator<any>>;
-} & {
-  defaultProps?: Partial<Props>;
-} = memo<Props>(({ item, leftImage, navigation, noSubtitle, rightImage, withCard }) => {
-  const {
-    badge,
-    bottomDivider,
-    count,
-    leftIcon,
-    onPress,
-    params,
-    picture,
-    rightIcon,
-    routeName: name,
-    statustitle,
-    statustitleIcon,
-    subtitle,
-    teaserTitle,
-    title,
-    topDivider
-  } = item;
-  const navigate = () => navigation && navigation.push(name, params);
-  let titleText = withCard ? (
-    <HeadlineText small style={{ marginTop: normalize(4) }}>
-      {trimNewLines(title)}
-    </HeadlineText>
-  ) : (
-    <BoldText>{trimNewLines(title)}</BoldText>
-  );
-
-  if (teaserTitle) {
-    titleText = (
-      <>
-        {titleText}
-        <RegularText small>{teaserTitle}</RegularText>
-      </>
+} = memo<Props>(
+  ({
+    item,
+    leftImage = false,
+    navigation,
+    noSubtitle = false,
+    rightImage = false,
+    withCard = false
+  }) => {
+    const {
+      badge,
+      bottomDivider,
+      count,
+      leftIcon,
+      onPress,
+      params,
+      picture,
+      rightIcon,
+      routeName: name,
+      statustitle,
+      statustitleIcon,
+      subtitle,
+      teaserTitle,
+      title,
+      topDivider
+    } = item;
+    const navigate = () => navigation && navigation.push(name, params);
+    let titleText = withCard ? (
+      <HeadlineText small style={{ marginTop: normalize(4) }}>
+        {trimNewLines(title)}
+      </HeadlineText>
+    ) : (
+      <BoldText>{trimNewLines(title)}</BoldText>
     );
-  }
 
-  if (statustitle) {
-    titleText = (
-      <>
-        {titleText}
-        <WrapperRow style={styles.statustitleWrapper}>
-          {!!statustitleIcon && statustitleIcon}
-          <RegularText small placeholder>
-            {statustitle}
-          </RegularText>
-        </WrapperRow>
-      </>
-    );
-  }
+    if (teaserTitle) {
+      titleText = (
+        <>
+          {titleText}
+          <RegularText small>{teaserTitle}</RegularText>
+        </>
+      );
+    }
 
-  // `title` is the first line and `subtitle` the second line, so `title` is used with our subtitle
-  // content and `subtitle` is used with the main title
-  return (
-    <ListItem
-      bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
-      topDivider={topDivider !== undefined ? topDivider : false}
-      containerStyle={styles.container}
-      badge={badge}
-      onPress={() => (onPress ? onPress(navigation) : navigate())}
-      disabled={!navigation}
-      delayPressIn={0}
-      Component={Touchable}
-      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
-    >
-      {leftIcon ||
-        (leftImage && !!picture?.url ? (
-          <Image
-            source={{ uri: picture.url }}
-            childrenContainerStyle={styles.smallImage}
-            borderRadius={normalize(8)}
-            containerStyle={styles.smallImageContainer}
-          />
-        ) : undefined)}
-
-      {withCard ? (
-        <ListItem.Content>
-          {noSubtitle || !subtitle ? undefined : titleText}
-          {noSubtitle || !subtitle ? (
-            titleText
-          ) : (
-            <RegularText small style={{ marginTop: normalize(6) }}>
-              {subtitle}
+    if (statustitle) {
+      titleText = (
+        <>
+          {titleText}
+          <WrapperRow style={styles.statustitleWrapper}>
+            {!!statustitleIcon && statustitleIcon}
+            <RegularText small placeholder>
+              {statustitle}
             </RegularText>
-          )}
-        </ListItem.Content>
-      ) : (
-        <ListItem.Content>
-          {noSubtitle || !subtitle ? undefined : titleText}
-          {noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
-        </ListItem.Content>
-      )}
+          </WrapperRow>
+        </>
+      );
+    }
 
-      {rightIcon ||
-        (rightImage && !!picture?.url ? (
-          <Image
-            source={{ uri: picture.url }}
-            childrenContainerStyle={styles.smallImage}
-            borderRadius={normalize(8)}
-            containerStyle={styles.smallImageContainer}
-          />
-        ) : undefined)}
+    // `title` is the first line and `subtitle` the second line, so `title` is used with our subtitle
+    // content and `subtitle` is used with the main title
+    return (
+      <ListItem
+        bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
+        topDivider={topDivider !== undefined ? topDivider : false}
+        containerStyle={styles.container}
+        badge={badge}
+        onPress={() => (onPress ? onPress(navigation) : navigate())}
+        disabled={!navigation}
+        delayPressIn={0}
+        Component={Touchable}
+        accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+      >
+        {leftIcon ||
+          (leftImage && !!picture?.url ? (
+            <Image
+              source={{ uri: picture.url }}
+              childrenContainerStyle={styles.smallImage}
+              borderRadius={normalize(8)}
+              containerStyle={styles.smallImageContainer}
+            />
+          ) : undefined)}
 
-      {!!count && <BoldText>{count}</BoldText>}
+        {withCard ? (
+          <ListItem.Content>
+            {noSubtitle || !subtitle ? undefined : titleText}
+            {noSubtitle || !subtitle ? (
+              titleText
+            ) : (
+              <RegularText small style={{ marginTop: normalize(6) }}>
+                {subtitle}
+              </RegularText>
+            )}
+          </ListItem.Content>
+        ) : (
+          <ListItem.Content>
+            {noSubtitle || !subtitle ? undefined : titleText}
+            {noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
+          </ListItem.Content>
+        )}
 
-      {!!navigation && !withCard && (
-        <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
-      )}
-    </ListItem>
-  );
-});
+        {rightIcon ||
+          (rightImage && !!picture?.url ? (
+            <Image
+              source={{ uri: picture.url }}
+              childrenContainerStyle={styles.smallImage}
+              borderRadius={normalize(8)}
+              containerStyle={styles.smallImageContainer}
+            />
+          ) : undefined)}
+
+        {!!count && <BoldText>{count}</BoldText>}
+
+        {!!navigation && !withCard && (
+          <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+        )}
+      </ListItem>
+    );
+  }
+);
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
@@ -183,11 +190,4 @@ TextListItem.propTypes = {
   noSubtitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   withCard: PropTypes.bool
-};
-
-TextListItem.defaultProps = {
-  leftImage: false,
-  noSubtitle: false,
-  rightImage: false,
-  withCard: false
 };

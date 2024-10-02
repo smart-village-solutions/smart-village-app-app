@@ -16,14 +16,14 @@ export const Checkbox = ({
   boldTitle,
   center = undefined,
   checked,
-  checkedIcon,
+  checkedIcon = 'dot-circle-o',
   containerStyle,
   lightest = false,
   link = undefined,
   linkDescription = undefined,
   onPress,
   title,
-  uncheckedIcon,
+  uncheckedIcon = 'circle-o',
   ...props
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -112,9 +112,4 @@ Checkbox.propTypes = {
   onPress: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   uncheckedIcon: PropTypes.string
-};
-
-CheckBox.defaultProps = {
-  checkedIcon: 'dot-circle-o',
-  uncheckedIcon: 'circle-o'
 };

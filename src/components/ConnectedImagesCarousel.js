@@ -47,7 +47,3 @@ ConnectedImagesCarousel.propTypes = {
   navigation: PropTypes.object.isRequired,
   publicJsonFile: PropTypes.string.isRequired
 };
-
-ConnectedImagesCarousel.defaultProps = {
-  refreshing: false
-};

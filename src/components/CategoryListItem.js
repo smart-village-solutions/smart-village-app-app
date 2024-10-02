@@ -9,7 +9,7 @@ import { Touchable } from './Touchable';
 
 export class CategoryListItem extends React.PureComponent {
   render() {
-    const { navigation, noSubtitle, item, index, section } = this.props;
+    const { navigation, noSubtitle = false, item, index, section } = this.props;
     const {
       routeName: name,
       params,
@@ -58,8 +58,4 @@ CategoryListItem.propTypes = {
   index: PropTypes.number.isRequired,
   section: PropTypes.object.isRequired,
   noSubtitle: PropTypes.bool
-};
-
-CategoryListItem.defaultProps = {
-  noSubtitle: false
 };
