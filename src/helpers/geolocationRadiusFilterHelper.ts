@@ -1,3 +1,5 @@
+import { locationServiceEnabledAlert } from '../components';
+
 const deg2rad = (deg: number) => deg * (Math.PI / 180);
 
 const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -18,7 +20,7 @@ export const filterLocationsWithinRadius = (
   currentLon: number,
   radiusInKm: number
 ) =>
-  listItem.filter((location: any) => {
+  listItem?.filter((location: any) => {
     const latitude = location.addresses?.[0]?.geoLocation?.latitude;
     const longitude = location.addresses?.[0]?.geoLocation?.longitude;
 
@@ -30,3 +32,48 @@ export const filterLocationsWithinRadius = (
 
     return distance <= radiusInKm;
   });
+
+type GeoLocationListItemProps = {
+  currentPosition: any;
+  isLocationAlertShow: boolean;
+  listItem: any;
+  locationSettings: any;
+  navigation: any;
+  queryVariables: any;
+  setIsLocationAlertShow: any;
+};
+
+export const geoLocationFilteredListItem = ({
+  currentPosition,
+  isLocationAlertShow,
+  listItem,
+  locationSettings,
+  navigation,
+  queryVariables,
+  setIsLocationAlertShow
+}: GeoLocationListItemProps) => {
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const { alternativePosition, defaultAlternativePosition } = locationSettings;
+
+  let lat = alternativePosition?.coords.latitude || defaultAlternativePosition?.coords.latitude;
+  let lng = alternativePosition?.coords.longitude || defaultAlternativePosition?.coords.latitude;
+
+  if (queryVariables.radiusSearch.currentPosition) {
+    if (!locationServiceEnabled || !currentPosition) {
+      if (!isLocationAlertShow) {
+        locationServiceEnabledAlert({
+          currentPosition,
+          locationServiceEnabled,
+          navigation
+        });
+        setIsLocationAlertShow(true);
+      }
+      return;
+    }
+
+    lat = currentPosition?.coords.latitude;
+    lng = currentPosition?.coords.longitude;
+  }
+
+  return filterLocationsWithinRadius(listItem, lat, lng, queryVariables.radiusSearch.distance);
+};

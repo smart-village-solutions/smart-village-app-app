@@ -1,5 +1,6 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
@@ -7,25 +8,41 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, normalize, texts } from '../../config';
-import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
+import { colors, normalize } from '../../config';
+import {
+  geoLocationFilteredListItem,
+  graphqlFetchPolicy,
+  isOpen,
+  parseListItemsFromQuery
+} from '../../helpers';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
-import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
 
 import { Map } from './Map';
 
 type Props = {
+  currentPosition?: LocationObject;
   filterByOpeningTimes?: boolean;
-  position?: LocationObject;
   navigation: StackNavigationProp<Record<string, any>>;
+  position?: LocationObject;
   queryVariables: {
     category?: string;
     categoryId?: string | number;
     dataProvider?: string;
+    radiusSearch?: {
+      currentPosition?: boolean;
+      distance: number;
+      index: number;
+    };
   };
   route: RouteProp<any, never>;
 };
@@ -57,12 +74,20 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
+/* eslint-disable complexity */
+export const LocationOverview = ({
+  currentPosition,
+  filterByOpeningTimes,
+  navigation,
+  queryVariables
+}: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { locationSettings } = useLocationSettings();
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
@@ -77,6 +102,18 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
   if (filterByOpeningTimes && pointsOfInterest) {
     pointsOfInterest = pointsOfInterest.filter((entry) => isOpen(entry.openingHours)?.open);
+  }
+
+  if (queryVariables?.radiusSearch?.distance) {
+    pointsOfInterest = geoLocationFilteredListItem({
+      isLocationAlertShow,
+      currentPosition,
+      listItem: pointsOfInterest,
+      locationSettings,
+      navigation,
+      queryVariables,
+      setIsLocationAlertShow
+    });
   }
 
   const { data: detailsData, loading: detailsLoading } = useQuery(
@@ -97,16 +134,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   }
 
   const mapMarkers = mapToMapMarkers(pointsOfInterest);
-
-  if (!mapMarkers?.length) {
-    return (
-      <Wrapper>
-        <RegularText placeholder small center>
-          {texts.map.noGeoLocations}
-        </RegularText>
-      </Wrapper>
-    );
-  }
 
   const item = detailsData
     ? parseListItemsFromQuery(
@@ -150,6 +177,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   listItemContainer: {
