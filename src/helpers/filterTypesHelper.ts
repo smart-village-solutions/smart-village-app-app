@@ -10,6 +10,8 @@ export const FILTER_KEYS = {
   CATEGORY: 'category',
   DATA_PROVIDER: 'dataProvider',
   DATES: 'dates',
+  DATE_END: 'dateEnd',
+  DATE_START: 'dateStart',
   LOCATION: 'location',
   RADIUS_SEARCH: 'radiusSearch',
   SAVEABLE: 'saveable'
@@ -74,6 +76,7 @@ const getSearchPlaceholder = (key: string) =>
 
 export const filterTypesHelper = ({
   categories,
+  category,
   data,
   excludeDataProviderIds,
   locations,
@@ -82,6 +85,7 @@ export const filterTypesHelper = ({
   resourceFilters
 }: {
   categories: any;
+  category: string;
   data: any;
   excludeDataProviderIds?: string[];
   locations: any;
@@ -89,7 +93,9 @@ export const filterTypesHelper = ({
   queryVariables: any;
   resourceFilters: ResourceFilters[];
 }) => {
-  const filtersByQuery = resourceFilters?.find((entry) => entry.dataResourceType === query);
+  const filtersByQuery = resourceFilters?.find(
+    (entry) => entry.dataResourceType === query || !!category
+  );
 
   if (!filtersByQuery || filtersByQuery.config.active?.default === false) {
     return [];
