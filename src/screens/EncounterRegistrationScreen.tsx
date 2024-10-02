@@ -64,7 +64,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
   // globally disable the button, when loading after pressing register
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  const { imageUri, selectImage } = useSelectImage();
+  const { imageUri, selectImage } = useSelectImage({});
 
   const onPressRegister = useCallback(async () => {
     const registrationData = {

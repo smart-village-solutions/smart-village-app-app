@@ -18,7 +18,7 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { consts, secrets, texts } from '../../config';
+import { Icon, colors, consts, secrets, texts } from '../../config';
 import { register } from '../../queries/volunteer';
 import { ScreenName, VolunteerRegistration } from '../../types';
 
@@ -179,14 +179,14 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
 
           <WrapperHorizontal>
             <Checkbox
-              linkDescription={texts.volunteer.privacyCheckLink}
-              link={dataPrivacyLink}
-              title={texts.volunteer.privacyChecked}
-              checkedIcon="check-square-o"
-              uncheckedIcon="square-o"
-              checked={hasAcceptedDataPrivacy}
               center={false}
+              checked={hasAcceptedDataPrivacy}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              link={dataPrivacyLink}
+              linkDescription={texts.volunteer.privacyCheckLink}
               onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
+              title={texts.volunteer.privacyChecked}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           </WrapperHorizontal>
 

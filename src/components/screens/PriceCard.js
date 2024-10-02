@@ -3,13 +3,12 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 import { colors, device, normalize } from '../../config';
-import { DiagonalGradient } from '../DiagonalGradient';
-import { WrapperWrap } from '../Wrapper';
-import { RegularText, BoldText } from '../Text';
 import { priceFormat } from '../../helpers';
+import { BoldText, RegularText } from '../Text';
+import { WrapperHorizontal, WrapperWrap } from '../Wrapper';
 
 const PriceBox = styled.View`
-  background-color: ${colors.darkerPrimaryRgba};
+  background-color: ${colors.lighterPrimary};
   flex-direction: column;
   margin-bottom: ${normalize(14)}px;
   padding: ${normalize(7)}px;
@@ -17,7 +16,7 @@ const PriceBox = styled.View`
 `;
 
 export const PriceCard = ({ prices }) => (
-  <DiagonalGradient style={{ padding: normalize(14) }}>
+  <WrapperHorizontal>
     <WrapperWrap spaceBetween>
       {!!prices &&
         prices.map((item, index) => {
@@ -26,36 +25,16 @@ export const PriceCard = ({ prices }) => (
 
           return (
             <PriceBox key={index}>
-              {!!category && (
-                <BoldText small lightest>
-                  {category}
-                </BoldText>
-              )}
-              {!!formattedAmount && (
-                <BoldText small lightest>
-                  {formattedAmount}
-                </BoldText>
-              )}
-              {!!description && (
-                <RegularText small lightest>
-                  {description}
-                </RegularText>
-              )}
-              {!!maxAdultCount && (
-                <RegularText small lightest>
-                  {maxAdultCount} Erwachsene
-                </RegularText>
-              )}
-              {!!maxChildrenCount && (
-                <RegularText small lightest>
-                  {maxChildrenCount} Kinder
-                </RegularText>
-              )}
+              {!!category && <BoldText small>{category}</BoldText>}
+              {!!formattedAmount && <BoldText small>{formattedAmount}</BoldText>}
+              {!!description && <RegularText small>{description}</RegularText>}
+              {!!maxAdultCount && <RegularText small>{maxAdultCount} Erwachsene</RegularText>}
+              {!!maxChildrenCount && <RegularText small>{maxChildrenCount} Kinder</RegularText>}
             </PriceBox>
           );
         })}
     </WrapperWrap>
-  </DiagonalGradient>
+  </WrapperHorizontal>
 );
 
 PriceCard.propTypes = {

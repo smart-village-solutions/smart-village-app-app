@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { texts } from '../config';
+import { colors, Icon, texts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 
 import { Button } from './Button';
@@ -14,6 +14,8 @@ export const IndexMapSwitch = ({ filter, setFilter }) => {
   return (
     <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
       <Button
+        icon={<Icon.Map color={colors.surface} />}
+        iconPosition="left"
         onPress={() => {
           const selectedFilter = filter.find((entry) => entry.selected);
           const updatedFilter = filter.map((entry) => {

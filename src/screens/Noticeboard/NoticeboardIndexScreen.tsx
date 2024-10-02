@@ -15,8 +15,6 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
-
-  const consentForDataProcessingText = route.params?.consentForDataProcessingText ?? '';
   const content = route.params?.content ?? '';
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
@@ -28,8 +26,8 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   });
 
   const listItems = parseListItemsFromQuery(query, data, '', {
-    consentForDataProcessingText,
-    queryVariables
+    queryVariables,
+    subQuery
   });
 
   const {

@@ -47,6 +47,8 @@ export const consts = {
     mail: '(E-Mail-Adresse)',
     mailHint: '(Wechselt zur E-Mail-App)',
     mapHint: '(Wechselt zur Karten-App)',
+    informationIcon: 'Informationen (Taste)',
+    informationHint: 'Zu den Informationen wechseln',
     openMenuHint: 'Navigiert zum Menü',
     openMenuIcon: 'Menü (Taste)',
     password: 'Kennwort',
@@ -211,6 +213,7 @@ export const consts = {
 
   ROOT_ROUTE_NAMES: {
     COMMERCIALS: 'Commercials',
+    CONVERSATIONS: 'Conversations',
     DEADLINES: 'Deadlines',
     DEFECT_REPORT: 'DefectReport',
     EVENT_RECORDS: 'EventRecords',

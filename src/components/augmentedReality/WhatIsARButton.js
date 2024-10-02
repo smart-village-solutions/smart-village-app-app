@@ -15,7 +15,7 @@ export const WhatIsARButton = ({ data, isLoading, navigation, refetch }) => {
       >
         <WrapperRow spaceBetween>
           <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-          <Icon.ArrowRight color={colors.darkText} size={normalize(20)} />
+          <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
         </WrapperRow>
       </Touchable>
     </Wrapper>

@@ -14,9 +14,9 @@ import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
-import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
-import { Wrapper, WrapperHorizontal } from '../Wrapper';
+import { HeadlineText } from '../Text';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -115,46 +115,59 @@ export const EventRecord = ({ data, route }) => {
 
   return (
     <View>
-      <ImageSection mediaContents={mediaContents} />
-      <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />
-      <Wrapper>
-        {!!logo && <Logo source={{ uri: logo }} />}
+      <WrapperVertical style={styles.noPaddingTop}>
+        <ImageSection mediaContents={mediaContents} />
+      </WrapperVertical>
 
+      {!!category?.name && (
+        <WrapperHorizontal>
+          <HeadlineText smaller uppercase>
+            {category.name}
+          </HeadlineText>
+        </WrapperHorizontal>
+      )}
+
+      {!!title && <SectionHeader big title={title} />}
+
+      {(!!addresses?.length || !!contacts?.length || !!webUrls?.length) && (
+        <SectionHeader title={texts.eventRecord.details} />
+      )}
+
+      <Wrapper>
         <InfoCard
-          category={category}
           addresses={addresses}
           contacts={contacts}
-          webUrls={webUrlsSettings?.displayOnlySummary === 'true' ? [] : webUrls}
           openWebScreen={openWebScreen}
+          webUrls={webUrlsSettings?.displayOnlySummary === 'true' ? [] : webUrls}
         />
       </Wrapper>
 
       {!!openingHours?.length && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.eventRecord.appointments} />
           <OpeningTimesCard
             openingHours={openingHours}
             MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
             appointmentsShowMoreButton={appointmentsShowMoreButton}
           />
-        </View>
+        </WrapperVertical>
       )}
 
       {/* temporary logic in order to show PriceCard just when description is present for the first index */}
-      {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
-        <View>
+      {!!priceInformations?.length && !!priceInformations[0].description && (
+        <WrapperVertical>
           <SectionHeader title={texts.eventRecord.prices} />
           <PriceCard prices={priceInformations} />
-        </View>
+        </WrapperVertical>
       )}
 
       {!!description && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.eventRecord.description} />
-          <Wrapper>
+          <WrapperHorizontal>
             <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        </View>
+          </WrapperHorizontal>
+        </WrapperVertical>
       )}
 
       {!!media.length && media}
@@ -189,6 +202,9 @@ const styles = StyleSheet.create({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
 

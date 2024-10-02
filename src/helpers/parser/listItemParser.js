@@ -29,7 +29,7 @@ const GENERIC_TYPES_WITH_DATES = [
   GenericType.Noticeboard
 ];
 
-const filterGenericItems = (item) => {
+export const filterGenericItems = (item) => {
   if (GENERIC_TYPES_WITH_DATES.includes(item?.genericType)) {
     const dateEnd = item?.dates?.[0]?.dateEnd;
     const hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : true;
@@ -46,7 +46,7 @@ const filterGenericItems = (item) => {
 const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   return data?.map((eventRecord, index) => ({
     id: eventRecord.id,
-    subtitle: subtitle(
+    overtitle: subtitle(
       withDate ? eventDate(eventRecord.listDate) : undefined,
       eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city,
       withTime ? eventRecord?.date?.timeFrom || eventRecord?.dates?.[0]?.timeFrom : undefined
@@ -71,13 +71,14 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) => {
+const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter(filterGenericItems);
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
-    subtitle:
+    categories: genericItem.categories,
+    overtitle:
       genericItem.genericType !== GenericType.Deadline &&
       subtitle(
         momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
@@ -93,13 +94,14 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
             mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
         )[0]?.sourceUrl?.url
     },
-    routeName:
-      genericItem.genericType === GenericType.Noticeboard
-        ? ScreenName.NoticeboardForm
-        : ScreenName.Detail,
+    routeName: ScreenName.Detail,
     params: {
-      title: getGenericItemDetailTitle(genericItem.genericType),
-      consentForDataProcessingText,
+      title: getGenericItemDetailTitle(
+        genericItem.genericType,
+        queryVariables,
+        genericItem?.categories?.[0]?.name
+      ),
+      subQuery,
       suffix: genericItem.genericType,
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${genericItem.id}` },
@@ -116,7 +118,7 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
-    subtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
+    overtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
     title: newsItem.contentBlocks?.[0]?.title,
     picture: {
       url:
@@ -144,11 +146,14 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   }));
 };
 
-const parsePointOfInterest = (data, skipLastDivider) => {
+const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = undefined) => {
   return data?.map((pointOfInterest, index) => ({
+    iconName: pointOfInterest.category?.iconName?.length
+      ? pointOfInterest.category.iconName
+      : undefined,
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
-    subtitle: pointOfInterest.category?.name,
+    overtitle: pointOfInterest.category?.name,
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },
@@ -156,7 +161,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
     params: {
       title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
-      queryVariables: { id: `${pointOfInterest.id}` },
+      queryVariables: { id: `${pointOfInterest.id}`, categoryName: queryVariables?.category },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
@@ -174,7 +179,7 @@ const parseTours = (data, skipLastDivider) => {
   return data?.map((tour, index) => ({
     id: tour.id,
     title: tour.name,
-    subtitle: tour.category?.name,
+    overtitle: tour.category?.name,
     picture: {
       url: mainImageOfMediaContents(tour.mediaContents)
     },
@@ -199,6 +204,7 @@ const parseTours = (data, skipLastDivider) => {
 const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
   return data?.map((category, index) => ({
     id: category.id,
+    iconName: category.iconName?.length ? category.iconName : undefined,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,
@@ -235,6 +241,22 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseConversations = (data) =>
+  data?.map((conversation, index) => ({
+    ...conversation,
+    bottomDivider: index !== data.length - 1,
+    createdAt: conversation.latestMessage?.createdAt,
+    genericItemId: conversation.conversationableId,
+    params: {
+      query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+      queryVariables: conversation,
+      rootRouteName: ROOT_ROUTE_NAMES.CONVERSATIONS,
+      title: texts.detailTitles.conversation
+    },
+    routeName: ScreenName.ProfileMessaging,
+    subtitle: conversation.latestMessage?.messageText
+  }));
+
 /* eslint-disable complexity */
 
 /**
@@ -243,15 +265,15 @@ const parsePointsOfInterestAndTours = (data) => {
  * @param {any} data
  * @param {string | undefined} titleDetail
  * @param {{
+ *    appDesignSystem?: any;
  *    bookmarkable?: boolean;
- *    consentForDataProcessingText?: string;
+ *    isSectioned?: boolean;
+ *    queryKey?: string;
+ *    queryVariables?: any;
  *    skipLastDivider?: boolean;
- *    withDate?: boolean,
- *    withTime?: boolean,
- *    isSectioned?: boolean,
- *    queryVariables?: any,
- *    appDesignSystem?: any
- *    queryKey?: string
+ *    subQuery?: any;
+ *    withDate?: boolean;
+ *    withTime?: boolean;
  *  }} options
  * @returns
  */
@@ -259,32 +281,34 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
   if (!data) return [];
 
   const {
+    appDesignSystem,
     bookmarkable = true,
-    consentForDataProcessingText,
-    skipLastDivider = false,
-    withDate = true,
-    withTime = false,
     isSectioned = false,
     queryVariables,
-    appDesignSystem
+    skipLastDivider = false,
+    subQuery,
+    withDate = true,
+    withTime = false
   } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate, withTime);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(data[query], skipLastDivider, consentForDataProcessingText);
+      return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
-      return parsePointOfInterest(data[query], skipLastDivider);
+      return parsePointOfInterest(data[query], skipLastDivider, queryVariables);
     case QUERY_TYPES.TOURS:
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
       return parseCategories(data[query], skipLastDivider, ScreenName.Category, queryVariables);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.PROFILE.GET_CONVERSATIONS:
+      return parseConversations(data[query]);
 
     // CONSUL
     case QUERY_TYPES.CONSUL.DEBATES:

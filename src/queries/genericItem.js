@@ -208,12 +208,16 @@ export const GET_GENERIC_ITEM = gql`
       }
       publicationDate
       payload
+      priceInformations {
+        description
+      }
     }
   }
 `;
 
 export const CREATE_GENERIC_ITEM = gql`
   mutation createGenericItem(
+    $id: ID
     $addresses: [AddressInput!]
     $categoryName: String
     $contacts: [ContactInput!]
@@ -221,11 +225,13 @@ export const CREATE_GENERIC_ITEM = gql`
     $dates: [DateInput!]
     $genericType: String
     $mediaContents: [MediaContentInput!]
+    $priceInformations: [PriceInput!]
     $publishedAt: String
     $title: String
     $forceCreate: Boolean = false
   ) {
     createGenericItem(
+      id: $id
       addresses: $addresses
       categoryName: $categoryName
       contacts: $contacts
@@ -233,6 +239,7 @@ export const CREATE_GENERIC_ITEM = gql`
       dates: $dates
       genericType: $genericType
       mediaContents: $mediaContents
+      priceInformations: $priceInformations
       publishedAt: $publishedAt
       title: $title
       forceCreate: $forceCreate
@@ -259,6 +266,16 @@ export const CREATE_GENERIC_ITEM_MESSAGE = gql`
       message: $message
       termsOfService: $termsOfService
     ) {
+      statusCode
+    }
+  }
+`;
+
+export const DELETE_GENERIC_ITEM = gql`
+  mutation deleteGenericItem($id: ID!) {
+    changeVisibility(id: $id, recordType: "GenericItem", visible: false) {
+      id
+      status
       statusCode
     }
   }

@@ -9,6 +9,7 @@ import { OParlObjectPreviewData } from '../../../types';
 import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
 import { OParlItemPreview } from '../previews/OParlItemPreview';
 import { SectionHeader } from '../../SectionHeader';
+import { WrapperHorizontal } from '../../Wrapper';
 
 type Props = {
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
@@ -46,7 +47,7 @@ export const OParlPreviewSection = ({
     return (
       <View style={styles.marginTop}>
         {header?.length ? <SectionHeader title={header} /> : <Divider />}
-        {data.map((item) => renderPreview(item))}
+        <WrapperHorizontal>{data.map((item) => renderPreview(item))}</WrapperHorizontal>
       </View>
     );
   } else {

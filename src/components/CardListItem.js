@@ -4,31 +4,36 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth, momentFormat } from '../helpers';
+import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
 import { SueCategory, SueImageFallback, SueStatus } from './SUE';
-import { BoldText, RegularText } from './Text';
+import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 /* eslint-disable complexity */
-const renderCardContent = (item, horizontal, sue) => {
+const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
   const {
     address,
     appDesignSystem = {},
     aspectRatio,
     iconName,
+    overtitle,
     picture,
     requestedDatetime,
     serviceName,
     status,
     subtitle,
-    title,
-    topTitle
+    title
   } = item;
-  const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
-  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
+  const {
+    contentSequence,
+    imageBorderRadius = normalize(8),
+    imageStyle,
+    textsStyle = {}
+  } = appDesignSystem;
+  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
 
@@ -42,6 +47,16 @@ const renderCardContent = (item, horizontal, sue) => {
           source={{ uri: picture.url }}
         />
       ),
+    overtitle: () =>
+      !!overtitle && (
+        <HeadlineText
+          smallest
+          uppercase
+          style={[styles.overtitleMarginBottom, generalStyle, overtitleStyle]}
+        >
+          {trimNewLines(overtitle)}
+        </HeadlineText>
+      ),
     subtitle: () =>
       !!subtitle && (
         <RegularText small style={[generalStyle, subtitleStyle]}>
@@ -50,15 +65,10 @@ const renderCardContent = (item, horizontal, sue) => {
       ),
     title: () =>
       !!title && (
-        <BoldText style={[generalStyle, titleStyle]}>
+        <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-        </BoldText>
+        </HeadlineText>
       ),
-    topTitle: () => (
-      <RegularText small style={[!!topTitleStyle && topTitleStyle]}>
-        {topTitle}
-      </RegularText>
-    ),
 
     // SUE
     sue: {
@@ -90,9 +100,9 @@ const renderCardContent = (item, horizontal, sue) => {
     });
   } else {
     picture?.url && cardContent.push(sequenceMap.picture());
-    topTitle && cardContent.push(sequenceMap.topTitle());
-    subtitle && cardContent.push(sequenceMap.subtitle());
+    !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
     !sue && title && cardContent.push(sequenceMap.title());
+    subtitle && cardContent.push(sequenceMap.subtitle());
 
     if (sue) {
       !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
@@ -108,7 +118,7 @@ const renderCardContent = (item, horizontal, sue) => {
 };
 /* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal, item, sue }) => {
+export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle, sue }) => {
   const {
     appDesignSystem = {},
     params,
@@ -138,17 +148,26 @@ export const CardListItem = memo(({ navigation, horizontal, item, sue }) => {
       onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >
-      <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
-        <View
-          style={[
-            stylesWithProps({ horizontal }).contentContainer,
-            !!contentContainerStyle && contentContainerStyle,
-            sue && styles.sueContentContainer
+      <View>
+        <Card
+          containerStyle={[
+            styles.container,
+            stylesWithProps({ horizontal }).container,
+            containerStyle
           ]}
         >
-          {renderCardContent(item, horizontal, sue)}
-        </View>
-      </Card>
+          <View
+            style={[
+              stylesWithProps({ horizontal }).contentContainer,
+              contentContainerStyle,
+              sue && styles.sueContentContainer
+            ]}
+          >
+            {renderCardContent(item, horizontal, noOvertitle, bigTitle, sue)}
+          </View>
+        </Card>
+        {!horizontal && <Divider />}
+      </View>
     </Touchable>
   );
 });
@@ -158,7 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     borderWidth: 0,
     margin: 0,
-    padding: normalize(14),
+    paddingVertical: normalize(16),
     ...Platform.select({
       android: {
         elevation: 0
@@ -168,9 +187,11 @@ const styles = StyleSheet.create({
       }
     })
   },
+  overtitleMarginBottom: {
+    marginBottom: normalize(4)
+  },
   imageContainer: {
-    alignSelf: 'center',
-    marginBottom: normalize(7)
+    marginBottom: normalize(12)
   },
   noPaddingTop: {
     paddingTop: 0
@@ -199,14 +220,18 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
     width = width * 0.7;
   }
 
-  const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
+  const maxWidth = width - 2 * normalize(16); // width of an image minus paddings
 
   return StyleSheet.create({
+    container: {
+      paddingHorizontal: horizontal ? normalize(14) : 0
+    },
     contentContainer: {
       width: maxWidth
     },
     image: {
       height: imageHeight(maxWidth, aspectRatio),
+      marginBottom: normalize(7),
       width: maxWidth
     }
   });
@@ -216,13 +241,17 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
 CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
-  navigation: PropTypes.object,
-  item: PropTypes.object.isRequired,
+  bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
+  item: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
+  noOvertitle: PropTypes.bool,
   sue: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
+  bigTitle: false,
   horizontal: false,
+  noOvertitle: false,
   sue: false
 };

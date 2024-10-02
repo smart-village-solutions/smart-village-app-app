@@ -220,7 +220,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
               </>
             ) : (
               <>
-                <SueImageFallback style={styles.image} />
+                <SueImageFallback style={[styles.imageContainer, styles.image]} />
                 <CloseButton onPress={() => setSelectedRequestId(undefined)} />
               </>
             )}

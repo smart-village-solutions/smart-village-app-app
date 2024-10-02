@@ -19,7 +19,7 @@ import {
   REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper
+  WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
 import { openLink, parseListItemsFromQuery } from '../../helpers';
@@ -276,7 +276,7 @@ export const EventRecords = ({ navigation, route }) => {
   ) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -292,18 +292,18 @@ export const EventRecords = ({ navigation, route }) => {
             {!!eventListIntro && (
               <>
                 {!!eventListIntro.introText && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <RegularText small>{eventListIntro.introText}</RegularText>
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
 
                 {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <Button
                       onPress={() => openLink(eventListIntro.url, openWebScreen)}
                       title={eventListIntro.buttonTitle}
                     />
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
                 <Divider />
               </>
@@ -334,11 +334,15 @@ export const EventRecords = ({ navigation, route }) => {
                 )}
 
                 {showFilterByDailyEvents && (
-                  <OptionToggle
-                    label={texts.eventRecord.filterByDailyEvents}
-                    onToggle={updateListDataByDailySwitch}
-                    value={filterByDailyEvents}
-                  />
+                  <>
+                    <OptionToggle
+                      label={texts.eventRecord.filterByDailyEvents}
+                      onToggle={updateListDataByDailySwitch}
+                      options={{ bold: true }}
+                      value={filterByDailyEvents}
+                    />
+                    <Divider />
+                  </>
                 )}
               </>
             )}
@@ -347,7 +351,7 @@ export const EventRecords = ({ navigation, route }) => {
         ListEmptyComponent={
           isLoading ? (
             <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
+              <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           ) : showCalendar ? (
             <Calendar

@@ -7,7 +7,8 @@ import {
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
@@ -120,7 +121,9 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
         ListFooterComponent={<LoadingSpinner loading={loadingKeywordList || loadingKeyword} />}
         renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
         renderItem={({ item }) => (
-          <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
+          <WrapperHorizontal key={item.id}>
+            <OParlPreviewComponent data={item} navigation={navigation} />
+          </WrapperHorizontal>
         )}
       />
     </SafeAreaViewFlex>

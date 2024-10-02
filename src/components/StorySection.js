@@ -54,7 +54,7 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
         settings.displayOnlySummary === 'true' &&
         !!settings?.onlySummaryLinkText && (
           <WrapperHorizontal>
-            <Button title={settings.onlySummaryLinkText} onPress={openWebScreen} />
+            <Button invert title={settings.onlySummaryLinkText} onPress={openWebScreen} />
           </WrapperHorizontal>
         )}
     </>

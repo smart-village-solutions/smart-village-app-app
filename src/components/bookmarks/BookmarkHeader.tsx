@@ -1,9 +1,9 @@
 import { RouteProp } from '@react-navigation/core';
 import React, { useCallback, useContext } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { colors, consts, Icon, normalize } from '../../config';
+import { colors, consts, Icon } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { togglePushDeviceAssignment } from '../../pushNotifications';
 
@@ -45,17 +45,10 @@ export const BookmarkHeader = ({ route, style }: Props) => {
       accessibilityHint={a11yLabel.bookmarkListHint}
     >
       {isBookmarked ? (
-        <Icon.HeartFilled color={colors.lightestText} style={[styles.icon, style]} />
+        <Icon.HeartFilled color={colors.lightestText} style={style} />
       ) : (
-        <Icon.HeartEmpty color={colors.lightestText} style={[styles.icon, style]} />
+        <Icon.HeartEmpty color={colors.lightestText} style={style} />
       )}
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(7),
-    paddingVertical: normalize(4)
-  }
-});

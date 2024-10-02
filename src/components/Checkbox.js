@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
-import { OrientationContext } from '../OrientationProvider';
 import { useOpenWebScreen } from '../hooks';
+import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
@@ -13,16 +13,17 @@ import { WrapperHorizontal } from './Wrapper';
 const { a11yLabel } = consts;
 
 export const Checkbox = ({
-  boldTitle,
-  center = undefined,
-  checked,
+  boldTitle = false,
+  center = false,
+  checked = false,
   checkedIcon,
-  containerStyle,
+  containerStyle = {},
   lightest = false,
-  link = undefined,
-  linkDescription = undefined,
+  link = '',
+  linkDescription = '',
+  navigate,
   onPress,
-  title,
+  title = '',
   uncheckedIcon,
   ...props
 }) => {
@@ -59,8 +60,8 @@ export const Checkbox = ({
               {title}
             </RegularText>
           )}
-          {link && (
-            <RegularText small primary onPress={openWebScreen}>
+          {(!!link || !!navigate) && !!linkDescription && (
+            <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
               {linkDescription}
             </RegularText>
           )}
@@ -77,7 +78,7 @@ export const Checkbox = ({
       uncheckedIcon={uncheckedIcon}
       textStyle={styles.titleStyle}
       checkedColor={colors.primary}
-      uncheckedColor={colors.darkText}
+      uncheckedColor={colors.placeholder}
       {...props}
     />
   );
@@ -88,7 +89,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 0,
     marginLeft: 0,
-    marginRight: 0
+    marginRight: 0,
+    padding: 0
   },
   containerStyleLandscape: {
     alignItems: 'center',
@@ -103,15 +105,16 @@ Checkbox.propTypes = {
   boldTitle: PropTypes.bool,
   center: PropTypes.bool,
   checked: PropTypes.bool,
-  checkedIcon: PropTypes.string,
+  checkedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   containerStyle: PropTypes.object,
   disabled: PropTypes.bool,
   lightest: PropTypes.bool,
   link: PropTypes.string,
   linkDescription: PropTypes.string,
+  navigate: PropTypes.func,
   onPress: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  uncheckedIcon: PropTypes.string
+  uncheckedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 
 CheckBox.defaultProps = {

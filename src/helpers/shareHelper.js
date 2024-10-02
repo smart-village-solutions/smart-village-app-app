@@ -1,10 +1,13 @@
 import { Share } from 'react-native';
 
 import appJson from '../../app.json';
+import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
 
 import { mergeWebUrls } from './linkHelper';
 import { momentFormat } from './momentHelper';
+
+const { HOST_NAMES } = consts;
 
 // https://facebook.github.io/react-native/docs/share
 /**
@@ -50,6 +53,7 @@ export const shareMessage = (data, query) => {
   const urlSection = urls.length ? urls.join('\n') : '';
   const spacer = urlSection ? '\n' : '';
 
+  /* eslint-disable complexity */
   const buildMessage = (query) => {
     let message = data.title;
 
@@ -65,10 +69,8 @@ export const shareMessage = (data, query) => {
         }`;
         break;
       case QUERY_TYPES.POINT_OF_INTEREST:
-        message = `${data.category?.name}: ${data.name}`;
-        break;
       case QUERY_TYPES.TOUR:
-        message = `${data.category?.name}: ${data.name}`;
+        message = `${data.category?.name}: ${data.name || data.title}`;
         break;
       case QUERY_TYPES.VOLUNTEER.CALENDAR:
       case QUERY_TYPES.VOLUNTEER.GROUP:
@@ -78,6 +80,11 @@ export const shareMessage = (data, query) => {
 
     return `${message}${spacer}${urlSection ? `\n${urlSection}` : ''}`;
   };
+  /* eslint-enable complexity */
 
-  return `${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
+  const buildSource = (query) => {
+    return `Quelle: ${appJson.expo.scheme}://${HOST_NAMES.DETAIL}?query=${query}&id=${data.id}`;
+  };
+
+  return `${buildMessage(query)}\n\n${buildSource(query)}`;
 };

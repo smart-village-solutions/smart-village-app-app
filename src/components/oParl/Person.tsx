@@ -3,7 +3,7 @@ import React from 'react';
 
 import { texts } from '../../config';
 import { PersonData } from '../../types';
-import { WrapperHorizontal } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { getOrganizationNameString } from './oParlHelpers';
 import { Row, SimpleRow } from './Row';
@@ -54,43 +54,45 @@ export const Person = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Row left={personTexts.name} right={name} leftWidth={leftWidth} fullText />
-      <Row left={personTexts.title} right={title?.join(', ')} leftWidth={leftWidth} fullText />
-      <Row left={personTexts.affix} right={affix} leftWidth={leftWidth} />
-      <Row left={personTexts.formOfAddress} right={formOfAddress} leftWidth={leftWidth} />
-      <Row left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
-      <Row left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
-      <Row
-        left={personTexts.faction}
-        right={faction?.organization && getOrganizationNameString(faction.organization)}
-        leftWidth={leftWidth}
-        onPress={() =>
-          navigation.push('OParlDetail', {
-            id: faction?.id,
-            type: faction?.type,
-            title: texts.oparl.membership.membership
-          })
-        }
-      />
-      <Row left={personTexts.gender} right={gender} leftWidth={leftWidth} />
-      <Row
-        left={personTexts.email}
-        right={email?.length ? email.join(', ') : undefined}
-        leftWidth={leftWidth}
-        fullText
-      />
-      <Row
-        left={personTexts.phone}
-        right={phone?.length ? phone.join(', ') : undefined}
-        leftWidth={leftWidth}
-        fullText
-      />
-      <Row
-        left={personTexts.status}
-        right={status?.length ? status.join(', ') : undefined}
-        leftWidth={leftWidth}
-        fullText
-      />
+      <WrapperHorizontal>
+        <Row left={personTexts.name} right={name} leftWidth={leftWidth} fullText />
+        <Row left={personTexts.title} right={title?.join(', ')} leftWidth={leftWidth} fullText />
+        <Row left={personTexts.affix} right={affix} leftWidth={leftWidth} />
+        <Row left={personTexts.formOfAddress} right={formOfAddress} leftWidth={leftWidth} />
+        <Row left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
+        <Row left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
+        <Row
+          left={personTexts.faction}
+          right={faction?.organization && getOrganizationNameString(faction.organization)}
+          leftWidth={leftWidth}
+          onPress={() =>
+            navigation.push('OParlDetail', {
+              id: faction?.id,
+              type: faction?.type,
+              title: texts.oparl.membership.membership
+            })
+          }
+        />
+        <Row left={personTexts.gender} right={gender} leftWidth={leftWidth} />
+        <Row
+          left={personTexts.email}
+          right={email?.length ? email.join(', ') : undefined}
+          leftWidth={leftWidth}
+          fullText
+        />
+        <Row
+          left={personTexts.phone}
+          right={phone?.length ? phone.join(', ') : undefined}
+          leftWidth={leftWidth}
+          fullText
+        />
+        <Row
+          left={personTexts.status}
+          right={status?.length ? status.join(', ') : undefined}
+          leftWidth={leftWidth}
+          fullText
+        />
+      </WrapperHorizontal>
       <OParlPreviewSection data={location} header={personTexts.location} navigation={navigation} />
       <OParlPreviewSection data={body} header={personTexts.body} navigation={navigation} />
       <OParlPreviewSection
@@ -98,14 +100,14 @@ export const Person = ({ data, navigation }: Props) => {
         header={personTexts.membership}
         navigation={navigation}
       />
-      <WrapperHorizontal>
+      <Wrapper>
         <SimpleRow fullText left={personTexts.life} right={life} />
         <SimpleRow fullText left={personTexts.lifeSource} right={lifeSource} />
         <KeywordSection keyword={keyword} />
         <SimpleRow left={personTexts.license} right={license} />
         <WebRepresentation name={name || personTexts.person} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
-      </WrapperHorizontal>
+      </Wrapper>
     </>
   );
 };

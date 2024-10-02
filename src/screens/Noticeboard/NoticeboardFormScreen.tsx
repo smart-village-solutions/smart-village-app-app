@@ -80,7 +80,7 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
-          <SectionHeader title={details?.contentBlocks?.[0]?.title} />
+          <SectionHeader big title={details?.contentBlocks?.[0]?.title || details?.title} />
 
           {!!html && (
             <Wrapper>

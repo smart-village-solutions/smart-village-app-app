@@ -29,10 +29,9 @@ import {
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+const { a11yLabel, HOST_NAMES } = consts;
 
 const INFO_ICON_SIZE = normalize(16);
-
-const a11yLabels = consts.a11yLabel;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line complexity
@@ -67,7 +66,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   const error = errorQr || errorUser;
   const refreshing = refreshingQr || refreshingUser;
 
-  const qrValue = Linking.createURL('encounter', { queryParams: { qrId } });
+  const qrValue = Linking.createURL(HOST_NAMES.ENCOUNTER, { queryParams: { qrId } });
 
   const onPressInfo = useCallback(() => {
     navigation.navigate(ScreenName.Html, {
@@ -145,7 +144,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
                   {texts.encounter.status}
                 </RegularText>
                 <TouchableOpacity
-                  accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
+                  accessibilityLabel={`${a11yLabel.verifiedInfo} ${a11yLabel.button}`}
                   onPress={onPressInfo}
                 >
                   <Icon.Info

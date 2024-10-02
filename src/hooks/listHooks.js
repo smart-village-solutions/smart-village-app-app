@@ -1,16 +1,15 @@
-/* eslint-disable complexity */
-/* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
+import { View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { SectionHeader, VoucherListItem } from '../components';
+import { ConversationListItem, SectionHeader, VoucherListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -71,7 +70,9 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
  * @param {{
  *          horizontal?: boolean;
  *          isIndexStartingAt1?: boolean
+ *          noOvertitle?: boolean;
  *          noSubtitle?: boolean;
+ *          listType?: boolean
  *          openWebScreen?: () => void;
  *          queryVariables?: object
  *          refetch?: () => void
@@ -79,20 +80,29 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
-  const { listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
 
   const listType = getListType(query, listTypesSettings);
 
   let renderItem;
 
-  switch (listType) {
+  switch (options.listType || listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
 
-        return <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />;
+        return (
+          <CardListItem
+            navigation={navigation}
+            horizontal={options.horizontal}
+            noOvertitle={options.noOvertitle}
+            item={item}
+          />
+        );
       };
       break;
     }
@@ -110,7 +120,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 item.bottomDivider ??
                 (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              leftImage: true
+            }}
           />
         );
       };
@@ -134,13 +149,22 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 item={{ ...item, bottomDivider: true }}
                 navigation={navigation}
                 noSubtitle={options.noSubtitle}
+                noOvertitle={options.noOvertitle}
                 withCard
               />
             );
           }
+        }
 
+        if (index === 0) {
           return (
-            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+            <CardListItem
+              bigTitle
+              horizontal={options.horizontal}
+              item={item}
+              navigation={navigation}
+              noOvertitle={options.noOvertitle}
+            />
           );
         } else {
           return (
@@ -153,7 +177,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
               }}
               navigation={navigation}
               noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
               leftImage
+              rightImage
               withCard
             />
           );
@@ -162,7 +188,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => {
+      /* eslint-disable complexity */
+      renderItem = ({ item, index, section, target }) => {
+        if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
+          return <ConversationListItem item={item} navigation={navigation} />;
+        }
+
         if (query === QUERY_TYPES.SUE.REQUESTS) {
           return <CardListItem navigation={navigation} item={item} sue />;
         }
@@ -206,19 +237,36 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+          return (
+            <View
+              style={{
+                marginLeft: target == 'StickyHeader' ? 0 : -normalize(16),
+                marginRight: target == 'StickyHeader' ? 0 : -normalize(16)
+              }}
+            >
+              <EventSectionHeader {...{ item, navigation, options, query }} />
+            </View>
+          );
+        }
+
+        // `SectionHeader` list item for `Noticeboard`
+        if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
+          return item.component;
         }
 
         return (
           <TextListItem
-            item={{
-              ...item,
-              bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            item={item}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              listsWithoutArrows
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle }}
           />
         );
       };
+      /* eslint-enable complexity */
 
       break;
     }

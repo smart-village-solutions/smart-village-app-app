@@ -1,17 +1,18 @@
 import _upperFirst from 'lodash/upperFirst';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { Icon, colors, normalize, texts } from '../../config';
-import { EmptyMessage } from '../EmptyMessage';
+import { Icon, IconUrl, colors, normalize, texts } from '../../config';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 type AvailableVehiclesProps = {
   id: string;
   name: string;
+  count?: number;
 };
 
 export const AvailableVehicles = ({
@@ -19,7 +20,7 @@ export const AvailableVehicles = ({
   iconName
 }: {
   freeStatusUrl: string;
-  iconName: keyof typeof Icon;
+  iconName: string;
 }) => {
   const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,7 +35,7 @@ export const AvailableVehicles = ({
         const ok = response.ok;
 
         if (ok && status === 200 && !!data?.available) {
-          setAvailableVehiclesData(data.available);
+          setAvailableVehiclesData(getCountArray(data.available));
         }
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
@@ -46,15 +47,30 @@ export const AvailableVehicles = ({
     fetchData();
   }, []);
 
+  const getCountArray = useCallback((vehicles: AvailableVehiclesProps[]) => {
+    const vehicleCounts = vehicles.reduce<Record<string, number>>((accumulator, vehicle) => {
+      accumulator[vehicle.name] = (accumulator[vehicle.name] || 0) + 1;
+      return accumulator;
+    }, {});
+
+    return Object.keys(vehicleCounts).map((key) => ({
+      id: key,
+      name: key,
+      count: vehicleCounts[key]
+    }));
+  }, []);
+
   if (loading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
+      <>
+        <SectionHeader title={texts.pointOfInterest.availableVehicles} />
+
+        <LoadingContainer>
+          <ActivityIndicator color={colors.refreshControl} />
+        </LoadingContainer>
+      </>
     );
   }
-
-  const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
 
   return (
     <>
@@ -63,18 +79,31 @@ export const AvailableVehicles = ({
       {availableVehiclesData?.length ? (
         availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
           <Fragment key={item.id}>
-            <ListItem style={styles.container}>
-              {!!iconName && <CategoryIcon />}
-              <ListItem.Content>
+            <ListItem containerStyle={styles.container}>
+              {!!iconName && <IconUrl iconName={iconName} />}
+              <ListItem.Content style={styles.contentContainer}>
                 <RegularText>{item.name}</RegularText>
+                <RegularText>{item.count}</RegularText>
               </ListItem.Content>
             </ListItem>
-            {index !== availableVehiclesData.length - 1 && <Divider style={styles.divider} />}
+            {index !== availableVehiclesData.length - 1 && (
+              <WrapperHorizontal>
+                <Divider style={styles.divider} />
+              </WrapperHorizontal>
+            )}
           </Fragment>
         ))
       ) : (
-        <EmptyMessage title={texts.pointOfInterest.noAvailableVehicles} showIcon={false} />
+        <Wrapper>
+          <RegularText placeholder small>
+            {texts.pointOfInterest.noAvailableVehicles}
+          </RegularText>
+        </Wrapper>
       )}
+
+      <WrapperHorizontal>
+        <Divider />
+      </WrapperHorizontal>
     </>
   );
 };
@@ -82,7 +111,11 @@ export const AvailableVehicles = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
-    paddingVertical: normalize(12)
+    padding: normalize(14)
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   divider: {
     backgroundColor: colors.placeholder

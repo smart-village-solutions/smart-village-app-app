@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 
-import { RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
+import { RegularText, SafeAreaViewFlex, Wrapper, WrapperHorizontal } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
 import { texts } from '../../config';
@@ -76,7 +76,9 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
       <FlatList
         data={listData}
         renderItem={({ item }) => (
-          <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
+          <WrapperHorizontal key={item.id}>
+            <OParlPreviewComponent data={item} navigation={navigation} />
+          </WrapperHorizontal>
         )}
         onEndReachedThreshold={1.5}
         onEndReached={onEndReached}

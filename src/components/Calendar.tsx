@@ -163,19 +163,22 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
     [query, queryVariables, contentContainerId]
   );
 
-  const onMonthChange = useCallback((month: DateData) => {
-    const isCurrentMonth = moment(month.dateString).isSame(moment(), 'month');
+  const onMonthChange = useCallback(
+    (month: DateData) => {
+      const isCurrentMonth = moment(month.dateString).isSame(moment(), 'month');
 
-    setQueryVariablesWithDateRange({
-      ...queryVariablesWithDateRange,
-      dateRange: [
-        isCurrentMonth
-          ? today
-          : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
-        moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
-      ]
-    });
-  }, []);
+      setQueryVariablesWithDateRange({
+        ...queryVariablesWithDateRange,
+        dateRange: [
+          isCurrentMonth
+            ? today
+            : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
+          moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
+        ]
+      });
+    },
+    [queryVariablesWithDateRange]
+  );
 
   const selectedDay = useMemo(() => {
     if (!queryVariablesWithDateRangeSubList?.dateRange?.length) {
@@ -221,17 +224,18 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   const listItems = useMemo(() => {
     if (!subList) return [];
 
-    const parsedListItems = parseListItemsFromQuery(
-      QUERY_TYPES.EVENT_RECORDS,
-      {
-        [query]: dataSubList?.pages?.flatMap((page) => page?.[query])
-      },
-      undefined,
-      {
-        withDate: false,
-        withTime: true
-      }
-    );
+    const parsedListItems =
+      parseListItemsFromQuery(
+        QUERY_TYPES.EVENT_RECORDS,
+        {
+          [query]: dataSubList?.pages?.flatMap((page) => page?.[query])
+        },
+        undefined,
+        {
+          withDate: false,
+          withTime: true
+        }
+      ) || [];
 
     if (additionalData?.length) {
       const filteredAdditionalData = additionalData.filter((item) => item.listDate === selectedDay);
@@ -254,8 +258,12 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   }, [selectedDay]);
 
   useEffect(() => {
-    deprecated?.events?.listingWithoutDateFragment &&
-      subList &&
+    setQueryVariablesWithDateRange({
+      ...queryVariables,
+      dateRange: queryVariablesWithDateRange.dateRange
+    });
+
+    subList &&
       setQueryVariablesWithDateRangeSubList({
         ...queryVariables,
         dateRange: queryVariablesWithDateRangeSubList.dateRange
@@ -283,8 +291,8 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   }, [dataSubList, fetchNextPageSubList, hasNextPageSubList]);
 
   const disableArrowLeft =
-    (today || moment().startOf('month').format('YYYY-MM-DD')) ===
-    queryVariablesWithDateRange.dateRange[0];
+    moment().endOf('month').add(7, 'days').format('YYYY-MM-DD') ===
+    queryVariablesWithDateRange.dateRange[1];
 
   return (
     <>
@@ -317,6 +325,7 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
 
       {subList && (
         <ListComponent
+          contentContainerStyle={{ paddingHorizontal: normalize(1) }}
           data={loadingSubList || isRefetchingSubList ? [] : listItems}
           fetchMoreData={fetchMoreData}
           ListEmptyComponent={

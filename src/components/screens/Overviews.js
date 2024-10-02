@@ -9,7 +9,7 @@ import React, {
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, View } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import {
@@ -27,7 +27,8 @@ import {
   OptionToggle,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper
+  WrapperHorizontal,
+  WrapperVertical
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
 import {
@@ -104,7 +105,8 @@ export const Overviews = ({ navigation, route }) => {
   const { news: showNewsFilter = false } = filter;
   const {
     showFilterByOpeningTimes = true,
-    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER
+    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER,
+    locationService = {}
   } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
@@ -130,7 +132,8 @@ export const Overviews = ({ navigation, route }) => {
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
-  const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
+  const sortByDistance =
+    query === QUERY_TYPES.POINTS_OF_INTEREST && (locationService.sortByDistance ?? true);
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
   const { loading: loadingPosition, position } = usePosition(!sortByDistance);
@@ -138,6 +141,7 @@ export const Overviews = ({ navigation, route }) => {
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories;
+  const subQuery = route.params?.subQuery;
   const showFilter =
     (route.params?.showFilter ?? true) &&
     {
@@ -204,7 +208,8 @@ export const Overviews = ({ navigation, route }) => {
     let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
       bookmarkable,
       withDate: false,
-      queryVariables
+      queryVariables,
+      subQuery
     });
 
     if (filterByOpeningTimes) {
@@ -271,12 +276,16 @@ export const Overviews = ({ navigation, route }) => {
           <HeaderLeft
             onPress={() => setFilterType(INITIAL_FILTER)}
             backImage={({ tintColor }) => (
-              <Icon.Close color={tintColor} style={{ paddingHorizontal: normalize(14) }} />
+              <Icon.Close
+                color={tintColor}
+                size={normalize(22)}
+                style={{ paddingHorizontal: normalize(14) }}
+              />
             )}
           />
         )
       });
-    } else if (!route.params?.usedAsInitialScreen) {
+    } else {
       navigation.setOptions({
         headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
       });
@@ -312,7 +321,7 @@ export const Overviews = ({ navigation, route }) => {
   if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -322,19 +331,22 @@ export const Overviews = ({ navigation, route }) => {
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
         (switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER ||
           showFilterByOpeningTimes) && (
-          <View>
+          <>
             {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
               <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
             )}
             {showFilterByOpeningTimes && (
-              <OptionToggle
-                label={texts.pointOfInterest.filterByOpeningTime}
-                onToggle={() => setFilterByOpeningTimes((value) => !value)}
-                value={filterByOpeningTimes}
-              />
+              <WrapperHorizontal>
+                <OptionToggle
+                  label={texts.pointOfInterest.filterByOpeningTime}
+                  onToggle={() => setFilterByOpeningTimes((value) => !value)}
+                  options={{ bold: true }}
+                  value={filterByOpeningTimes}
+                />
+                <Divider />
+              </WrapperHorizontal>
             )}
-            <Divider />
-          </View>
+          </>
         )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
@@ -371,25 +383,25 @@ export const Overviews = ({ navigation, route }) => {
                   />
                 )}
                 {query === QUERY_TYPES.CATEGORIES && !!categoryListIntroText && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <RegularText>{categoryListIntroText}</RegularText>
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
                 {!!htmlContent && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <HtmlView html={htmlContent} />
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
               </>
             }
             ListEmptyComponent={
               loading ? (
                 <LoadingContainer>
-                  <ActivityIndicator color={colors.accent} />
+                  <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               ) : (
                 <EmptyMessage
-                  title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                  title={!categories?.length ? texts.empty.list : ''}
                   showIcon={!categories?.length}
                 />
               )
@@ -399,17 +411,17 @@ export const Overviews = ({ navigation, route }) => {
                 {query === QUERY_TYPES.CATEGORIES && !!categoryListFooter && (
                   <>
                     {!!categoryListFooter.footerText && (
-                      <Wrapper>
+                      <WrapperVertical>
                         <RegularText small>{categoryListFooter.footerText}</RegularText>
-                      </Wrapper>
+                      </WrapperVertical>
                     )}
                     {!!categoryListFooter.url && !!categoryListFooter.buttonTitle && (
-                      <Wrapper>
+                      <WrapperVertical>
                         <Button
                           onPress={() => openLink(categoryListFooter.url, openWebScreen)}
                           title={categoryListFooter.buttonTitle}
                         />
-                      </Wrapper>
+                      </WrapperVertical>
                     )}
                   </>
                 )}
@@ -418,6 +430,7 @@ export const Overviews = ({ navigation, route }) => {
             navigation={navigation}
             data={loading ? [] : listItems}
             horizontal={false}
+            noOvertitle={query === QUERY_TYPES.POINTS_OF_INTEREST}
             sectionByDate
             query={query}
             queryVariables={queryVariables}
@@ -434,7 +447,9 @@ export const Overviews = ({ navigation, route }) => {
           />
         </>
       )}
-      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+      {!loading &&
+        !!listItems?.length &&
+        query === QUERY_TYPES.POINTS_OF_INTEREST &&
         switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON &&
         filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
           <IndexMapSwitch filter={filterType} setFilter={setFilterType} />

@@ -61,8 +61,8 @@ Text.propTypes = {
 export const RegularText = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
-  font-size: ${normalize(16)};
-  line-height: ${normalize(22)};
+  font-size: ${normalize(14)};
+  line-height: ${normalize(20)};
 
   ${(props) =>
     props.italic &&
@@ -73,22 +73,22 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.small &&
     css`
-      font-size: ${normalize(14)};
-      line-height: ${normalize(18)};
-    `};
-
-  ${(props) =>
-    props.smallest &&
-    css`
       font-size: ${normalize(12)};
       line-height: ${normalize(16)};
     `};
 
   ${(props) =>
+    props.smallest &&
+    css`
+      font-size: ${normalize(11)};
+      line-height: ${normalize(13)};
+    `};
+
+  ${(props) =>
     props.big &&
     css`
-      font-size: ${normalize(20)};
-      line-height: ${normalize(26)};
+      font-size: ${normalize(16)};
+      line-height: ${normalize(24)};
     `};
 
   ${(props) =>
@@ -156,6 +156,12 @@ export const RegularText = styled(Text)`
     css`
       text-align: right;
     `};
+
+  ${(props) =>
+    props.uppercase &&
+    css`
+      text-transform: uppercase;
+    `};
 `;
 
 export const BoldText = styled(RegularText)`
@@ -169,13 +175,41 @@ export const BoldText = styled(RegularText)`
 `;
 
 export const HeadlineText = styled(RegularText)`
-  font-weight: 700;
-  font-family: bold;
+  font-family: condbold;
+  font-size: ${normalize(18)};
+  line-height: ${normalize(23)};
 
   ${(props) =>
     props.small &&
     css`
       font-size: ${normalize(16)};
       line-height: ${normalize(21)};
+    `};
+
+  ${(props) =>
+    props.smaller &&
+    css`
+      font-size: ${normalize(14)};
+      line-height: ${normalize(16)};
+    `};
+
+  ${(props) =>
+    props.smallest &&
+    css`
+      font-size: ${normalize(12)};
+      line-height: ${normalize(14)};
+    `};
+
+  ${(props) =>
+    props.big &&
+    css`
+      font-size: ${normalize(21)};
+      line-height: ${normalize(27)};
+    `};
+
+  ${(props) =>
+    props.italic &&
+    css`
+      font-family: condbold-italic;
     `};
 `;

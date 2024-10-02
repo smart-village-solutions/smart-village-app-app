@@ -2,15 +2,17 @@ import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
-import { SectionList } from 'react-native';
+import { SectionList, View } from 'react-native';
 
-import { HtmlView, SafeAreaViewFlex, SectionHeader, TextListItem, Wrapper } from '../components';
+import { SafeAreaViewFlex, SectionHeader, TextListItem, WrapperHorizontal } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { texts } from '../config';
+import { normalize, texts } from '../config';
 import { combineLanguages } from '../helpers';
 import { usePullToRefetch, useStaticContent, useSurveyLanguages } from '../hooks';
 import { SURVEYS } from '../queries/survey';
 import { Survey } from '../types';
+
+import { ListHeaderComponent } from './NestedInfoScreen';
 
 type Props = {
   route: {
@@ -69,7 +71,12 @@ const renderSectionHeader = ({
 }) => {
   if (!data.length || !title) return null;
 
-  return <SectionHeader title={title} />;
+  return (
+    <>
+      <View style={{ height: normalize(20) }} />
+      <SectionHeader title={title} />
+    </>
+  );
 };
 
 export const SurveyOverviewScreen = ({ route }: Props) => {
@@ -79,7 +86,7 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { additionalProps } = route.params ?? {};
 
-  const { data } = useStaticContent({
+  const { data: dataHtml, loading: loadingHtml } = useStaticContent<string>({
     name: additionalProps?.htmlName,
     type: 'html',
     refreshTimeKey: `publicHtmlFile-${additionalProps?.htmlName}`,
@@ -90,7 +97,11 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
     ({ item: survey }: { item: Survey }) => {
       const parsedSurvey = parseSurveyToItem(survey, languages);
 
-      return <TextListItem item={parsedSurvey} navigation={navigation} />;
+      return (
+        <WrapperHorizontal>
+          <TextListItem item={parsedSurvey} navigation={navigation} />
+        </WrapperHorizontal>
+      );
     },
     [languages, navigation]
   );
@@ -103,11 +114,14 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
     <SafeAreaViewFlex>
       <SectionList
         ListHeaderComponent={
-          data ? (
-            <Wrapper>
-              <HtmlView html={data} />
-            </Wrapper>
-          ) : null
+          <WrapperHorizontal>
+            <ListHeaderComponent
+              html={dataHtml}
+              loading={loadingHtml}
+              navigation={navigation}
+              navigationTitle=""
+            />
+          </WrapperHorizontal>
         }
         refreshControl={RefreshControl}
         renderItem={renderSurvey}

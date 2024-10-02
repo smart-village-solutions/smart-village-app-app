@@ -15,25 +15,27 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import appJson from '../app.json';
 
 import { AccessibilityProvider } from './AccessibilityProvider';
-import { BookmarkProvider } from './BookmarkProvider';
-import { ConfigurationsProvider } from './ConfigurationsProvider';
-import { NetworkContext, NetworkProvider } from './NetworkProvider';
-import { OnboardingManager } from './OnboardingManager';
-import { OrientationProvider } from './OrientationProvider';
-import { PermanentFilterProvider } from './PermanentFilterProvider';
-import { ReactQueryProvider } from './ReactQueryProvider';
-import { SettingsProvider } from './SettingsProvider';
 import { auth } from './auth';
+import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
 import { colors, consts, namespace, secrets } from './config';
+import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
+  PROFILE_AUTH_TOKEN,
   storageHelper
 } from './helpers';
 import { Navigator } from './navigation/Navigator';
-import { QUERY_TYPES, getQuery } from './queries';
+import { NetworkContext, NetworkProvider } from './NetworkProvider';
+import { OnboardingManager } from './OnboardingManager';
+import { OrientationProvider } from './OrientationProvider';
+import { PermanentFilterProvider } from './PermanentFilterProvider';
+import { getQuery, QUERY_TYPES } from './queries';
+import { ReactQueryProvider } from './ReactQueryProvider';
+import { SettingsProvider } from './SettingsProvider';
+import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -61,12 +63,14 @@ const MainAppWithApolloProvider = () => {
     const authLink = setContext(async (_, { headers }) => {
       // get the authentication token from local SecureStore if it exists
       const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+      const authToken = await SecureStore.getItemAsync(PROFILE_AUTH_TOKEN);
 
       // return the headers to the context so httpLink can read them
       return {
         headers: {
           ...headers,
-          authorization: accessToken ? `Bearer ${accessToken}` : ''
+          authorization: accessToken ? `Bearer ${accessToken}` : '',
+          'X-Authorization': authToken || ''
         }
       };
     });
@@ -220,7 +224,9 @@ const MainAppWithApolloProvider = () => {
       >
         <ConfigurationsProvider>
           <OnboardingManager>
-            <Navigator navigationType={initialGlobalSettings.navigation} />
+            <UnreadMessagesProvider>
+              <Navigator navigationType={initialGlobalSettings.navigation} />
+            </UnreadMessagesProvider>
           </OnboardingManager>
         </ConfigurationsProvider>
       </SettingsProvider>

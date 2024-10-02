@@ -1,7 +1,9 @@
 import { FlashList } from '@shopify/flash-list';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
+import { normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
@@ -39,6 +41,7 @@ const sectionData = (data) => {
 };
 
 export const EventList = ({
+  contentContainerStyle,
   data,
   fetchMoreData,
   ListEmptyComponent,
@@ -105,6 +108,10 @@ export const EventList = ({
       data={sectionedData}
       refreshing={refreshing}
       estimatedItemSize={queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER}
+      getItemType={(item) => {
+        // To achieve better performance, specify the type based on the item
+        return typeof item === 'string' ? 'sectionHeader' : 'row';
+      }}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
         if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
@@ -120,11 +127,19 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       stickyHeaderIndices={stickyHeaderIndices}
+      contentContainerStyle={{ ...styles.contentContainer, ...contentContainerStyle }}
     />
   );
 };
 
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingHorizontal: normalize(16)
+  }
+});
+
 EventList.propTypes = {
+  contentContainerStyle: PropTypes.object,
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   ListEmptyComponent: PropTypes.object,

@@ -20,7 +20,8 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
   };
 
   if (navigationType != 'drawer') {
-    const index = 1; // HINT: needs to be the index of the tab config where encounters is present
+    // TODO: needs to be the index of the tab config where in-app links should navigate in
+    const index = 0;
 
     navigatorConfig = {
       type: 'tab',
