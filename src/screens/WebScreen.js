@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
-import { LoadingContainer, SafeAreaViewFlex } from '../components';
+import { LoadingContainer, SafeAreaViewFlex, WrapperRow } from '../components';
 import { colors, consts, Icon, normalize } from '../config';
 import { onDownloadAndSharePdf } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
@@ -30,12 +30,11 @@ export const WebScreen = ({ navigation, route }) => {
     if (documentData?.title) {
       navigation.setOptions({
         headerRight: () => (
-          <TouchableOpacity
-            style={styles.headerRight}
-            onPress={() => onDownloadAndSharePdf(documentData)}
-          >
-            <Icon.ArrowDownCircle color={colors.lightestText} />
-          </TouchableOpacity>
+          <WrapperRow style={styles.headerRight}>
+            <TouchableOpacity onPress={() => onDownloadAndSharePdf(documentData)}>
+              <Icon.ArrowDownCircle color={colors.lightestText} style={styles.icon} />
+            </TouchableOpacity>
+          </WrapperRow>
         )
       });
     }
@@ -69,7 +68,11 @@ export const WebScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   headerRight: {
+    alignItems: 'center',
     paddingRight: normalize(7)
+  },
+  icon: {
+    paddingHorizontal: normalize(10)
   }
 });
 
