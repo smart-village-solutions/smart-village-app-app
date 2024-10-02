@@ -39,23 +39,24 @@ const renderCardContent = (item, horizontal, sue) => {
           borderRadius={sue ? 0 : imageBorderRadius}
           childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
           containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
+          key={picture.url}
           source={{ uri: picture.url }}
         />
       ),
     subtitle: () =>
       !!subtitle && (
-        <RegularText small style={[generalStyle, subtitleStyle]}>
+        <RegularText key={subtitle} small style={[generalStyle, subtitleStyle]}>
           {subtitle}
         </RegularText>
       ),
     title: () =>
       !!title && (
-        <BoldText style={[generalStyle, titleStyle]}>
+        <BoldText key={title} style={[generalStyle, titleStyle]}>
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </BoldText>
       ),
     topTitle: () => (
-      <RegularText small style={[!!topTitleStyle && topTitleStyle]}>
+      <RegularText key={topTitle} small style={[!!topTitleStyle && topTitleStyle]}>
         {topTitle}
       </RegularText>
     ),
