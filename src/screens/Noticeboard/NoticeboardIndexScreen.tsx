@@ -35,9 +35,12 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const query = route.params?.query ?? '';
   const initialQueryVariables = route.params?.queryVariables ?? {};
   const subQuery = route.params?.subQuery ?? '';
-  const [queryVariables, setQueryVariables] = useState({ ...initialQueryVariables });
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFiltersState[GenericType.Noticeboard]
+  });
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
