@@ -6,14 +6,13 @@ import { FilterProps, FilterTypesProps, GenericType, ResourceFilters } from '../
 const { FILTER_TYPES } = consts;
 
 export const FILTER_KEYS = {
+  ACTIVE: 'active',
   CATEGORY: 'category',
   DATA_PROVIDER: 'dataProvider',
-  DATE_END: 'dateEnd',
-  DATE_START: 'dateStart',
+  DATES: 'dates',
   LOCATION: 'location',
   RADIUS_SEARCH: 'radiusSearch',
-  SAVEABLE: 'saveable',
-  ACTIVE: 'active'
+  SAVEABLE: 'saveable'
 };
 
 enum QUERY_VARIABLES_ATTRIBUTES {
@@ -96,102 +95,111 @@ export const filterTypesHelper = ({
     return [];
   }
 
-  if (filtersByQuery.config.dateStart && filtersByQuery.config.dateEnd) {
-    filtersByQuery.config.dateStart = {
-      dateStart: filtersByQuery.config.dateStart,
-      dateEnd: filtersByQuery.config.dateEnd,
+  const configCopy = { ...filtersByQuery.config };
+
+  if (configCopy.dateStart && configCopy.dateEnd) {
+    configCopy.dates = {
+      dateStart: configCopy.dateStart,
+      dateEnd: configCopy.dateEnd,
       type: FILTER_TYPES.DATE
     };
   }
 
-  const filterTypes = Object.entries(filtersByQuery?.config ?? {}).map(([key, value]) => {
-    const filterType: FilterTypesProps = {
-      data: [],
-      isMultiselect: value.isMultiselect,
-      label: getLabel(key),
-      name: key as keyof FilterProps,
-      placeholder: getPlaceholder(key, query),
-      searchable: value.searchable,
-      searchPlaceholder: getSearchPlaceholder(key),
-      type: value.type
-    };
+  const filterTypes = Object.entries(configCopy)
+    .sort(([keyA], [keyB]) => {
+      const orderA = Object.values(FILTER_KEYS).indexOf(keyA);
+      const orderB = Object.values(FILTER_KEYS).indexOf(keyB);
 
-    switch (key) {
-      case FILTER_KEYS.DATE_START:
-        filterType.data = [
-          {
-            hasFutureDates: value.dateStart?.hasFutureDates,
-            hasPastDates: value.dateStart?.hasPastDates,
-            name: QUERY_VARIABLES_ATTRIBUTES.DATE_START,
-            placeholder: getPlaceholder(FILTER_KEYS.DATE_START, query)
-          },
-          {
-            hasFutureDates: value.dateEnd?.hasFutureDates,
-            hasPastDates: value.dateEnd?.hasPastDates,
-            name: QUERY_VARIABLES_ATTRIBUTES.DATE_END,
-            placeholder: getPlaceholder(FILTER_KEYS.DATE_END, query)
+      return orderA - orderB;
+    })
+    .map(([key, value]) => {
+      const filterType: FilterTypesProps = {
+        data: [],
+        isMultiselect: value.isMultiselect,
+        label: getLabel(key),
+        name: key as keyof FilterProps,
+        placeholder: getPlaceholder(key, query),
+        searchable: value.searchable,
+        searchPlaceholder: getSearchPlaceholder(key),
+        type: value.type
+      };
+
+      switch (key) {
+        case FILTER_KEYS.DATES:
+          filterType.data = [
+            {
+              hasFutureDates: value.dateStart?.hasFutureDates,
+              hasPastDates: value.dateStart?.hasPastDates,
+              name: QUERY_VARIABLES_ATTRIBUTES.DATE_START,
+              placeholder: getPlaceholder(FILTER_KEYS.DATE_START, query)
+            },
+            {
+              hasFutureDates: value.dateEnd?.hasFutureDates,
+              hasPastDates: value.dateEnd?.hasPastDates,
+              name: QUERY_VARIABLES_ATTRIBUTES.DATE_END,
+              placeholder: getPlaceholder(FILTER_KEYS.DATE_END, query)
+            }
+          ];
+          break;
+        case FILTER_KEYS.DATA_PROVIDER:
+          filterType.data = dropdownEntries(
+            query,
+            queryVariables,
+            data,
+            excludeDataProviderIds,
+            false
+          )?.map((entry: any) => ({
+            ...entry,
+            filterValue: entry.value
+          }));
+          filterType.name = QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER;
+          break;
+        case FILTER_KEYS.CATEGORY:
+          filterType.data = dropdownEntries(
+            query,
+            queryVariables,
+            categories,
+            excludeDataProviderIds,
+            false
+          )?.map((entry: any) => ({
+            ...entry,
+            filterValue: entry.id
+          }));
+          filterType.name = value.isMultiselect
+            ? QUERY_VARIABLES_ATTRIBUTES.CATEGORY_IDS
+            : QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
+          break;
+        case FILTER_KEYS.SAVEABLE:
+          filterType.checked = false;
+          break;
+        case FILTER_KEYS.RADIUS_SEARCH:
+          if (value.options?.length) {
+            filterType.data = value.options.map((entry: string) => parseInt(entry));
           }
-        ];
-        break;
-      case FILTER_KEYS.DATA_PROVIDER:
-        filterType.data = dropdownEntries(
-          query,
-          queryVariables,
-          data,
-          excludeDataProviderIds,
-          false
-        )?.map((entry: any) => ({
-          ...entry,
-          filterValue: entry.value
-        }));
-        filterType.name = QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER;
-        break;
-      case FILTER_KEYS.CATEGORY:
-        filterType.data = dropdownEntries(
-          query,
-          queryVariables,
-          categories,
-          excludeDataProviderIds,
-          false
-        )?.map((entry: any) => ({
-          ...entry,
-          filterValue: entry.id
-        }));
-        filterType.name = value.isMultiselect
-          ? QUERY_VARIABLES_ATTRIBUTES.CATEGORY_IDS
-          : QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
-        break;
-      case FILTER_KEYS.SAVEABLE:
-        filterType.checked = false;
-        break;
-      case FILTER_KEYS.RADIUS_SEARCH:
-        if (value.options?.length) {
-          filterType.data = value.options.map((entry: string) => parseInt(entry));
-        }
-        filterType.currentPosition = {
-          label: 'Umkreis',
-          placeholder: 'Aktuelle Position nutzen'
-        };
-        break;
-      case FILTER_KEYS.LOCATION:
-        filterType.data = dropdownEntries(
-          query,
-          queryVariables,
-          locations,
-          excludeDataProviderIds,
-          true
-        )?.map((entry: any) => ({
-          ...entry,
-          filterValue: entry.value
-        }));
-        filterType.name = QUERY_VARIABLES_ATTRIBUTES.LOCATION;
-        break;
-      default:
-        break;
-    }
+          filterType.currentPosition = {
+            label: 'Umkreis',
+            placeholder: 'Aktuelle Position nutzen'
+          };
+          break;
+        case FILTER_KEYS.LOCATION:
+          filterType.data = dropdownEntries(
+            query,
+            queryVariables,
+            locations,
+            excludeDataProviderIds,
+            true
+          )?.map((entry: any) => ({
+            ...entry,
+            filterValue: entry.value
+          }));
+          filterType.name = QUERY_VARIABLES_ATTRIBUTES.LOCATION;
+          break;
+        default:
+          break;
+      }
 
-    return filterType;
-  });
+      return filterType;
+    });
 
   return filterTypes;
 };
