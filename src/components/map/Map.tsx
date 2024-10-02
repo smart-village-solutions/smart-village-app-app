@@ -379,11 +379,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: colors.lighterPrimary,
     position: 'absolute',
-    top: normalize(6)
+    top: normalize(8)
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.darkerPrimary,
-    top: normalize(10)
+    top: normalize(11)
   },
   maximizeMapButton: {
     alignItems: 'center',
