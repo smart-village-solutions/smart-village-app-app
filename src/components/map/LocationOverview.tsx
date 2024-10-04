@@ -152,6 +152,7 @@ export const LocationOverview = ({
   return (
     <>
       <Map
+        currentPosition={currentPosition}
         isMultipleMarkersMap
         locations={mapMarkers}
         mapStyle={styles.map}
