@@ -22,13 +22,9 @@ export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
     <TouchableOpacity
       style={styles.container}
       onPress={() =>
-        navigation.navigate(ScreenName.Web, {
-          webUrl: `https://docs.google.com/gview?embedded=true&url=${url}`,
-          title: title || `${id}.pdf`,
-          documentData: {
-            title: title || `${id}`,
-            url
-          }
+        navigation.navigate(ScreenName.Pdf, {
+          pdfUrl: url,
+          title: title || `${id}.pdf`
         })
       }
     >

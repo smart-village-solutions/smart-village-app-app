@@ -1,13 +1,12 @@
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
-import { LoadingContainer, SafeAreaViewFlex, WrapperRow } from '../components';
-import { colors, consts, Icon, normalize } from '../config';
-import { onDownloadAndSharePdf } from '../helpers';
+import { LoadingContainer, SafeAreaViewFlex } from '../components';
+import { colors, consts, normalize } from '../config';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 
@@ -17,7 +16,6 @@ export const WebScreen = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
-  const documentData = route.params?.documentData ?? '';
   const injectedJavaScript = route.params?.injectedJavaScript ?? '';
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `webUrl`
@@ -25,20 +23,6 @@ export const WebScreen = ({ navigation, route }) => {
   useEffect(() => {
     isConnected && webUrl && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.WEB} / ${webUrl}`);
   }, [webUrl]);
-
-  useEffect(() => {
-    if (documentData?.title) {
-      navigation.setOptions({
-        headerRight: () => (
-          <WrapperRow style={styles.headerRight}>
-            <TouchableOpacity onPress={() => onDownloadAndSharePdf(documentData)}>
-              <Icon.ArrowDownCircle color={colors.lightestText} style={styles.icon} />
-            </TouchableOpacity>
-          </WrapperRow>
-        )
-      });
-    }
-  }, [documentData]);
 
   if (!webUrl) return null;
 

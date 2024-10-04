@@ -1455,6 +1455,16 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@config-plugins/react-native-blob-util@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@config-plugins/react-native-blob-util/-/react-native-blob-util-8.0.0.tgz#56ac0e9788754185144982ab780f8d40f422b129"
+  integrity sha512-+6xiWfOU2q7aMkl4L7eLnsMB7DgcibZrs4Y6EjAkf5q5WIKL58aNBWvHlmaC7ejuWYud9q9MTjRGM3r8PDz4Pw==
+
+"@config-plugins/react-native-pdf@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@config-plugins/react-native-pdf/-/react-native-pdf-8.0.0.tgz#a39c0fd8e9c5909243ee3a2e272a65308a47f891"
+  integrity sha512-mYJSdg9TwuZo5in4l2eLWglsciS7RLzxaKrL6ja+Fs8znurtourKg3cpwSGLaPDmGePjrMvLgHQI3Ml2PfMEpg==
+
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
@@ -4452,6 +4462,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+base-64@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+  integrity sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==
+
 base64-js@^1.2.3, base64-js@^1.3.1, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
@@ -5088,7 +5103,7 @@ crypt@0.0.2, crypt@~0.0.1:
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
   integrity sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==
 
-crypto-js@^3.1.9-1, crypto-js@~4.2.0:
+crypto-js@4.2.0, crypto-js@^3.1.9-1, crypto-js@~4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
   integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
@@ -6805,6 +6820,18 @@ glob@^10.2.2:
   version "10.4.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-10.4.2.tgz#bed6b95dade5c1f80b4434daced233aee76160e5"
   integrity sha512-GwMlUF6PkPo3Gk21UxkCohOv0PLcIXVtKyLlpEI28R/cO/4eNOdmLk3CMW1wROV/WR/EsZOWAfBbBOqYvs88/w==
+  dependencies:
+    foreground-child "^3.1.0"
+    jackspeak "^3.1.2"
+    minimatch "^9.0.4"
+    minipass "^7.1.2"
+    package-json-from-dist "^1.0.0"
+    path-scurry "^1.11.1"
+
+glob@^10.3.10:
+  version "10.4.5"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-10.4.5.tgz#f4d9f0b90ffdbab09c9d77f5f29b4262517b0956"
+  integrity sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==
   dependencies:
     foreground-child "^3.1.0"
     jackspeak "^3.1.2"
@@ -10068,6 +10095,14 @@ react-native-autocomplete-input@^5.1.0:
   dependencies:
     deprecated-react-native-prop-types "^2.3.0"
 
+react-native-blob-util@^0.19.11:
+  version "0.19.11"
+  resolved "https://registry.yarnpkg.com/react-native-blob-util/-/react-native-blob-util-0.19.11.tgz#20c0ca589e975fee849cba1cdba712cc6adb4f59"
+  integrity sha512-lxaeDzFLYffR6lbRiOce0oTYO6pE3/PyT8Sa7qiz8B+IT9oe4G85SlVCdl5F9xMJh/Zer2onBLw7u+B1AS+GFA==
+  dependencies:
+    base-64 "0.1.0"
+    glob "^10.3.10"
+
 react-native-calendars@1.1293.0:
   version "1.1293.0"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1293.0.tgz#3b06a7cbc050a074ec876a5accc90e49e9db84a1"
@@ -10211,6 +10246,14 @@ react-native-parsed-text@0.0.22:
   integrity sha512-hfD83RDXZf9Fvth3DowR7j65fMnlqM9PpxZBGWkzVcUTFtqe6/yPcIoIAgrJbKn6YmtzkivmhWE2MCE4JKBXrQ==
   dependencies:
     prop-types "^15.7.x"
+
+react-native-pdf@^6.7.5:
+  version "6.7.5"
+  resolved "https://registry.yarnpkg.com/react-native-pdf/-/react-native-pdf-6.7.5.tgz#1bc5479f2161189f938912b4080ea9eef8a9d84d"
+  integrity sha512-d1S76p2Vwax2iG+kTnjINiUMvpjtJJvtMiYwHRbgGczT8GJjtXH49YCWOd+HfnUAU29cB+knzsKGYoZBMQM8Ow==
+  dependencies:
+    crypto-js "4.2.0"
+    deprecated-react-native-prop-types "^2.3.0"
 
 react-native-progress@^5.0.0:
   version "5.0.0"

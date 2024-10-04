@@ -192,6 +192,7 @@ export const consts = {
       LUNCH: 'Lunch',
       NEWS_ITEMS: 'News',
       NOTICEBOARD: 'Noticeboard',
+      PDF: 'PDF',
       POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
       POINTS_OF_INTEREST: 'Points of interest',
       SERVICE: 'Service',
