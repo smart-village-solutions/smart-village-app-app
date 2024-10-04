@@ -35,7 +35,7 @@ export const filterLocationsWithinRadius = (
   });
 
 type GeoLocationListItemProps = {
-  currentPosition: LocationObject;
+  currentPosition?: LocationObject;
   isLocationAlertShow: boolean;
   listItem: any;
   locationSettings: any;

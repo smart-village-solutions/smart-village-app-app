@@ -62,7 +62,7 @@ const getPlaceholder = (key: string, query: string) =>
       [QUERY_TYPES.EVENT_RECORDS]: 'Von',
       [QUERY_TYPES.NEWS_ITEMS]: 'Von'
     }[query],
-    [FILTER_KEYS.LOCATION]: 'Orte wählen',
+    [FILTER_KEYS.LOCATION]: 'Alle Orte',
     [FILTER_KEYS.RADIUS_SEARCH]: 'Entfernung wählen',
     [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen dauerhaft speichern'
   }[key] || key);
