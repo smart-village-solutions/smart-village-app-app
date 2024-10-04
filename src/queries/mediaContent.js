@@ -14,7 +14,7 @@ export const uploadMediaContent = async (
   formData.append('media_content[content_type]', contentType);
   formData.append('media_content[attachment]', {
     uri: content.uri || content.cachedAttachment,
-    type: type === MEDIA_TYPES.IMAGE ? 'image/jpg' : 'application/pdf',
+    type: type === MEDIA_TYPES.DOCUMENT ? 'application/pdf' : 'image/jpg',
     name: `${contentName}.${type}`
   });
 

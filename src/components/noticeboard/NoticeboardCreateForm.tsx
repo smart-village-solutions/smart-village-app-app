@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
@@ -13,6 +13,7 @@ import {
   DocumentSelector,
   HtmlView,
   Input,
+  LoadingSpinner,
   RegularText,
   Touchable,
   Wrapper
@@ -60,6 +61,7 @@ export const NoticeboardCreateForm = ({
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: categories } = useQuery(getQuery(QUERY_TYPES.CATEGORIES), {
     fetchPolicy,
@@ -106,6 +108,8 @@ export const NoticeboardCreateForm = ({
       return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.dateDifference);
     }
 
+    setIsLoading(true);
+
     try {
       const documents = JSON.parse(noticeboardNewData.documents);
       const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
@@ -119,7 +123,7 @@ export const NoticeboardCreateForm = ({
         0
       );
 
-      // check if documents size is bigger than 25MB
+      // check if documents size is bigger than `documentMaxSizes.total`
       if (documentMaxSizes.total && documentsSize > documentMaxSizes.total) {
         return Alert.alert(
           texts.noticeboard.alerts.hint,
@@ -175,6 +179,7 @@ export const NoticeboardCreateForm = ({
       navigation.goBack();
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
   };
@@ -345,12 +350,12 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title={texts.noticeboard.send}
-          disabled={loading}
-        />
+      <Wrapper>
+        {isLoading || loading ? (
+          <LoadingSpinner loading={isLoading} />
+        ) : (
+          <Button onPress={handleSubmit(onSubmit)} title={texts.noticeboard.send} />
+        )}
 
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>
