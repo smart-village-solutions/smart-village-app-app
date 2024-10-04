@@ -51,6 +51,7 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
         onPageChanged={(page, numberOfPages) => setPageCount(`${page}/${numberOfPages}`)}
         source={{ uri: pdfUrl, cache: true }}
         style={styles.pdf}
+        trustAllCerts={false}
       />
 
       {!!pageCount && (
