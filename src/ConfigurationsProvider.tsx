@@ -51,7 +51,7 @@ export const ConfigurationsContext = createContext(defaultConfiguration);
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = {} } = globalSettings;
-  const { sue = {}, showResourceFilters = false } = settings || {};
+  const { sue = {} } = settings || {};
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
 
@@ -68,12 +68,13 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     skip: !Object.keys(sue).length
   });
 
-  const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
-    skip: !showResourceFilters
-  });
+  const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS));
 
   const mergedConfig = useMemo(() => {
-    if (!Object.keys(sue).length || !showResourceFilters) {
+    const isSueConfigEmpty = !Object.keys(sue).length;
+    const isResourceFiltersEmpty = !resourceFiltersData?.resourceFilters?.length;
+
+    if (isSueConfigEmpty && isResourceFiltersEmpty) {
       return defaultConfiguration;
     }
 
@@ -87,7 +88,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [appDesignSystem, sue, sueConfigData, sueProgress]);
+  }, [appDesignSystem, sue, sueConfigData, sueProgress, resourceFiltersData]);
 
   useEffect(() => {
     setConfigurations(mergedConfig);
