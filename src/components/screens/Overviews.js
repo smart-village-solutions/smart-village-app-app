@@ -159,7 +159,11 @@ export const Overviews = ({ navigation, route }) => {
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
-  const { loading: loadingPosition, position } = usePosition(!sortByDistance);
+  const { loading: loadingPosition, position } = usePosition(
+    !sortByDistance ||
+      systemPermission?.status !== Location.PermissionStatus.GRANTED ||
+      !locationServiceEnabled
+  );
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
