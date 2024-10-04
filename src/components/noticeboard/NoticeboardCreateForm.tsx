@@ -19,13 +19,18 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
-import { graphqlFetchPolicy, momentFormat, parseListItemsFromQuery } from '../../helpers';
+import {
+  formatSizeStandard,
+  graphqlFetchPolicy,
+  momentFormat,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
-import { NOTICEBOARD_TYPES } from '../../types';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { SettingsContext } from '../../SettingsProvider';
+import { NOTICEBOARD_TYPES } from '../../types';
 
 const { EMAIL_REGEX, MEDIA_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
@@ -123,11 +128,23 @@ export const NoticeboardCreateForm = ({
         0
       );
 
+      // check if any document size is bigger than `documentMaxSizes.file`
+      for (const document of documents) {
+        if (documentMaxSizes.file && document.size > documentMaxSizes.file) {
+          setIsLoading(false);
+          return Alert.alert(
+            texts.noticeboard.alerts.hint,
+            texts.noticeboard.alerts.documentSizeError(formatSizeStandard(documentMaxSizes.file))
+          );
+        }
+      }
+
       // check if documents size is bigger than `documentMaxSizes.total`
       if (documentMaxSizes.total && documentsSize > documentMaxSizes.total) {
+        setIsLoading(false);
         return Alert.alert(
           texts.noticeboard.alerts.hint,
-          texts.noticeboard.alerts.documentsSizeError
+          texts.noticeboard.alerts.documentsSizeError(formatSizeStandard(documentMaxSizes.total))
         );
       }
 
