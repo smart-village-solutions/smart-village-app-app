@@ -632,6 +632,10 @@ export const SueReportScreen = ({
     }
   }, [storedValues, service, selectedPosition]);
 
+  if (!sueProgressWithConfig.length) {
+    return null;
+  }
+
   if (areaServiceLoading) {
     return (
       <LoadingContainer>
