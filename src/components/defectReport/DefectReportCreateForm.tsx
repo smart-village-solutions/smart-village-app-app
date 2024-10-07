@@ -10,7 +10,6 @@ import {
   Checkbox,
   DropdownInput,
   HtmlView,
-  ImageSelector,
   Input,
   RegularText,
   Touchable,
@@ -20,6 +19,7 @@ import { Icon, colors, consts, texts } from '../../config';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { GenericType } from '../../types';
+import { ImageSelector } from '../selectors';
 
 const { EMAIL_REGEX } = consts;
 

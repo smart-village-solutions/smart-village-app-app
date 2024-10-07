@@ -27,8 +27,8 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
             <Image
               source={image}
               childrenContainerStyle={{
-                height: normalize(image?.height ?? 24),
-                width: normalize(image?.width ?? 30)
+                height: normalize(image?.height ?? 26),
+                width: normalize(image?.width ?? 33)
               }}
             />
           ) : (
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   iconWithCount: {
-    paddingRight: normalize(4)
+    paddingRight: normalize(8)
   }
 });

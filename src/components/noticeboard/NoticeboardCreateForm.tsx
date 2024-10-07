@@ -12,7 +12,6 @@ import {
   Checkbox,
   DateTimeInput,
   HtmlView,
-  ImageSelector,
   Input,
   RegularText,
   Touchable,
@@ -27,8 +26,9 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { NOTICEBOARD_TYPES } from '../../types';
+import { MultiImageSelector } from '../selectors';
 
-const { EMAIL_REGEX } = consts;
+const { EMAIL_REGEX, IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
@@ -46,6 +46,7 @@ type TNoticeboardCreateData = {
   title: string;
 };
 
+/* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
   data,
   navigation,
@@ -320,28 +321,28 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      {(!!existingImageUrl || !isEdit) && (
-        <Wrapper style={styles.noPaddingTop}>
-          <Controller
-            name="image"
-            render={({ field }) => (
-              <ImageSelector
-                {...{
-                  isDeletable: !isEdit,
-                  control,
-                  field,
-                  item: {
-                    name: 'image',
-                    label: texts.volunteer.images,
-                    buttonTitle: texts.volunteer.addImage
-                  }
-                }}
-              />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="image"
+          render={({ field }) => (
+            <MultiImageSelector
+              {...{
+                control,
+                errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
+                field,
+                isDeletable: !isEdit,
+                isMultiImages: true,
+                item: {
+                  buttonTitle: texts.noticeboard.addImages,
+                  name: 'image'
+                },
+                selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
 
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>

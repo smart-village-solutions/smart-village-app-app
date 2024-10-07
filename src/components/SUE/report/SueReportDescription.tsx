@@ -6,8 +6,8 @@ import { StyleSheet, View } from 'react-native';
 import { consts, normalize, texts } from '../../../config';
 import { TValues } from '../../../screens';
 import { Wrapper } from '../../Wrapper';
-import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
+import { ImageSelector } from '../../selectors';
 
 const { a11yLabel, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 

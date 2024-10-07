@@ -506,11 +506,13 @@ export const texts = {
   },
   noticeboard: {
     abort: 'Abbrechen',
+    addImages: 'Bilder hinzufügen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
       delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
       error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',
+      imagesSizeError: 'Die ausgewählten Bilder dürfen insgesamt maximal 10 MB groß sein.',
       imageUploadError: 'Beim Hochladen des Bildes ist ein Fehler aufgetreten.',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
@@ -518,12 +520,16 @@ export const texts = {
     all: 'Alles',
     backToConversation: 'Zurück zur Unterhaltung',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    chooseFromGallery: 'Galerie öffnen',
+    close: 'Schließen',
     delete: 'Löschen',
     description: 'Beschreibung',
     details: 'Details',
     duration: 'Laufzeit',
     edit: 'Bearbeiten',
+    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuche es später noch einmal.',
     expiryDate: 'Ablaufdatum',
+    images: 'Aussagekäftiges Bild',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
     inputDescription: 'Beschreibung',
@@ -548,6 +554,7 @@ export const texts = {
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
     },
+    takePhoto: 'Bild aufnehmen',
     toConversation: 'Zur Unterhaltung',
     toRelated: 'Zu der zugehörigen Anzeige',
     writeMessage: 'Unterhaltung starten'
