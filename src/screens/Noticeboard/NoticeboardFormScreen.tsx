@@ -109,7 +109,13 @@ export const NoticeboardFormScreen = ({
             </Wrapper>
           )}
 
-          {!!details?.mediaContents?.length && <DocumentList documents={details?.mediaContents} />}
+          {!!details?.mediaContents?.some((media) => media.contentType === 'application/pdf') && (
+            <DocumentList
+              documents={details.mediaContents.filter(
+                (media) => media.contentType === 'application/pdf'
+              )}
+            />
+          )}
 
           <Component {...{ data: details, navigation, route, queryVariables }} />
         </ScrollView>

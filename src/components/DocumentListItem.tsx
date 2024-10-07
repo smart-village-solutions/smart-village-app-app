@@ -14,10 +14,6 @@ export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
   const { contentType, id, sourceUrl, title } = item;
   const { url } = sourceUrl;
 
-  if (contentType !== 'application/pdf') {
-    return null;
-  }
-
   return (
     <TouchableOpacity
       style={styles.container}

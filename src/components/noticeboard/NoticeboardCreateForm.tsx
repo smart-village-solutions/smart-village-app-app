@@ -118,8 +118,8 @@ export const NoticeboardCreateForm = ({
     try {
       const documents = JSON.parse(noticeboardNewData.documents);
       const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
-        .filter((document: { id: number }) => !!document.id)
-        .map((document: { mimeType: string; cachedAttachment: string }) => ({
+        ?.filter((document: { id: number }) => !!document.id)
+        ?.map((document: { mimeType: string; cachedAttachment: string }) => ({
           contentType: document.mimeType,
           sourceUrl: { url: document.cachedAttachment }
         }));
@@ -130,7 +130,7 @@ export const NoticeboardCreateForm = ({
 
       // check if any document size is bigger than `documentMaxSizes.file`
       for (const document of documents) {
-        if (documentMaxSizes.file && document.size > documentMaxSizes.file) {
+        if (!!documentMaxSizes.file && document.size > documentMaxSizes.file) {
           setIsLoading(false);
           return Alert.alert(
             texts.noticeboard.alerts.hint,
