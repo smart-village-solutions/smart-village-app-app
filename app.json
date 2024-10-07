@@ -89,6 +89,7 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
         }
       ],
+      "@reactvision/react-viro",
       "expo-asset",
       "expo-font",
       "expo-image-picker",

@@ -4,7 +4,7 @@ import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/asy
 import { setUpTests } from 'react-native-reanimated/src/reanimated2/jestUtils';
 
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
-jest.mock('@viro-community/react-viro', () => ({ ViroMaterials: {} }));
+jest.mock('@reactvision/react-viro', () => ({ ViroMaterials: {} }));
 jest.mock('expo-linking', () => ({ createURL: jest.fn() }));
 jest.mock('react-native-webview', () => ({ default: () => jest.fn() }));
 setUpTests();
