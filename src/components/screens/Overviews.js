@@ -144,6 +144,8 @@ export const Overviews = ({ navigation, route }) => {
   ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const initialQueryVariables = route?.params?.queryVariables || {};
+  const resourceFiltersQuery =
+    query === QUERY_TYPES.GENERIC_ITEMS ? initialQueryVariables.genericType : query;
   const filterQuery =
     query === QUERY_TYPES.GENERIC_ITEMS
       ? initialQueryVariables.genericType
@@ -199,7 +201,9 @@ export const Overviews = ({ navigation, route }) => {
       // have any open POIs in the next batch that would result in the list not getting any new
       // items and not reliably triggering another `fetchMore`
       limit:
-        sortByDistance || filterByOpeningTimes ? undefined : route.params?.queryVariables?.limit
+        sortByDistance || queryVariables.onlyCurrentlyOpen
+          ? undefined
+          : route.params?.queryVariables?.limit
     }
   });
 
@@ -210,7 +214,7 @@ export const Overviews = ({ navigation, route }) => {
       queryVariables
     });
 
-    if (filterByOpeningTimes) {
+    if (queryVariables.onlyCurrentlyOpen) {
       parsedListItems = parsedListItems?.filter(
         (entry) => isOpen(entry.params?.details?.openingHours)?.open
       );
@@ -265,7 +269,7 @@ export const Overviews = ({ navigation, route }) => {
       category: initialQueryVariables?.category,
       data,
       excludeDataProviderIds,
-      query: filterQuery,
+      query: resourceFiltersQuery,
       queryVariables,
       resourceFilters
     });
@@ -366,19 +370,9 @@ export const Overviews = ({ navigation, route }) => {
       />
 
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
-        (switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER ||
-          showFilterByOpeningTimes) && (
+        switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
           <View>
-            {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
-              <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
-            )}
-            {showFilterByOpeningTimes && (
-              <OptionToggle
-                label={texts.pointOfInterest.filterByOpeningTime}
-                onToggle={() => setFilterByOpeningTimes((value) => !value)}
-                value={filterByOpeningTimes}
-              />
-            )}
+            <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
             <Divider />
           </View>
         )}

@@ -9,10 +9,11 @@ export const FILTER_KEYS = {
   ACTIVE: 'active',
   CATEGORY: 'category',
   DATA_PROVIDER: 'dataProvider',
-  DATES: 'dates',
   DATE_END: 'dateEnd',
   DATE_START: 'dateStart',
+  DATES: 'dates',
   LOCATION: 'location',
+  ONLY_CURRENTLY_OPEN: 'onlyCurrentlyOpen',
   RADIUS_SEARCH: 'radiusSearch',
   SAVEABLE: 'saveable'
 };
@@ -34,6 +35,7 @@ const getLabel = (key: string) =>
     [FILTER_KEYS.DATE_END]: 'Bis',
     [FILTER_KEYS.DATE_START]: 'Von',
     [FILTER_KEYS.LOCATION]: 'Orte',
+    [FILTER_KEYS.ONLY_CURRENTLY_OPEN]: 'Nur aktuell geöffnete',
     [FILTER_KEYS.RADIUS_SEARCH]: 'Entfernung (km)',
     [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen'
   }[key] || key);
@@ -63,6 +65,7 @@ const getPlaceholder = (key: string, query: string) =>
       [QUERY_TYPES.NEWS_ITEMS]: 'Von'
     }[query],
     [FILTER_KEYS.LOCATION]: 'Alle Orte',
+    [FILTER_KEYS.ONLY_CURRENTLY_OPEN]: 'Nur aktuell geöffnete anzeigen',
     [FILTER_KEYS.RADIUS_SEARCH]: 'Entfernung wählen',
     [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen dauerhaft speichern'
   }[key] || key);
@@ -93,9 +96,7 @@ export const filterTypesHelper = ({
   queryVariables: any;
   resourceFilters: ResourceFilters[];
 }) => {
-  const filtersByQuery = resourceFilters?.find(
-    (entry) => entry.dataResourceType === query || !!category
-  );
+  const filtersByQuery = resourceFilters?.find((entry) => entry.dataResourceType === query);
 
   if (!filtersByQuery || filtersByQuery.config.active?.default === false) {
     return [];
@@ -175,6 +176,7 @@ export const filterTypesHelper = ({
             ? QUERY_VARIABLES_ATTRIBUTES.CATEGORY_IDS
             : QUERY_VARIABLES_ATTRIBUTES.CATEGORY_ID;
           break;
+        case FILTER_KEYS.ONLY_CURRENTLY_OPEN:
         case FILTER_KEYS.SAVEABLE:
           filterType.checked = false;
           break;
