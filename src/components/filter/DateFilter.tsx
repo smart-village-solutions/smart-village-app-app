@@ -116,7 +116,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
   );
   const [selectedDate, setSelectedDate] = useState<{ [key: string]: string }>(
     data.reduce((acc: { [key: string]: string }, item) => {
-      acc[item.name] = '';
+      acc[item.name] = filters[item.name] || '';
       return acc;
     }, {})
   );
@@ -176,7 +176,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
 
       {data.map((item) => (
         <CalendarView
-          date={selectedDate[item.name] || momentFormat(filters?.[item.name], 'YYYY-MM-DD')}
+          date={momentFormat(selectedDate[item.name], 'YYYY-MM-DD')}
           dates={filters}
           data={data}
           isCollapsed={isCollapsed[item.name]}
