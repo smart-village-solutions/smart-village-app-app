@@ -77,8 +77,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { resourceFilters } = useContext(ConfigurationsContext);
   const { resourceFiltersState, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
-  const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
-    filter;
+  const { eventLocations: showEventLocationsFilter = false } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
@@ -93,13 +92,8 @@ export const EventRecords = ({ navigation, route }) => {
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [filterByDailyEvents, setFilterByDailyEvents] = useState(
-    route.params?.filterByDailyEvents ?? false
-  );
+
   const title = route.params?.title ?? '';
-  const showFilter = (route.params?.showFilter ?? true) && showEventsFilter;
-  const showFilterByDailyEvents =
-    (route.params?.showFilterByDailyEvents ?? showFilter) && !showCalendar;
   const hasDailyFilterSelection =
     !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
@@ -165,10 +159,7 @@ export const EventRecords = ({ navigation, route }) => {
   );
 
   const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES),
-    {
-      skip: !showEventsFilter
-    }
+    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES)
   );
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
@@ -178,28 +169,6 @@ export const EventRecords = ({ navigation, route }) => {
     isCalendar: true,
     isSectioned: true
   });
-
-  const updateListDataByDailySwitch = useCallback(() => {
-    // update switch state as well
-    setFilterByDailyEvents((oldSwitchValue) => {
-      // if `oldSwitchValue` was false, we now activate the daily filter and set a date range
-      if (!oldSwitchValue) {
-        setQueryVariables((prevQueryVariables) => {
-          // remove a refetch key if present, which was necessary for unselecting daily events
-          delete prevQueryVariables.refetchDate;
-
-          // add the filter key for the specific query, when filtering for daily events
-          return { ...prevQueryVariables, dateRange: [today, today] };
-        });
-      } else {
-        setQueryVariables((prevQueryVariables) => {
-          return { ...prevQueryVariables, dateRange: [today, todayIn10Years], refetchDate: true };
-        });
-      }
-
-      return !oldSwitchValue;
-    });
-  }, [filterByDailyEvents, queryVariables]);
 
   // apply additional data if volunteer events should be presented and no filter selection is made,
   // because filtered data for category or location has nothing to do with volunteer data
@@ -355,14 +324,6 @@ export const EventRecords = ({ navigation, route }) => {
                 )}
                 <Divider />
               </>
-            )}
-
-            {!!showFilter && showFilterByDailyEvents && (
-              <OptionToggle
-                label={texts.eventRecord.filterByDailyEvents}
-                onToggle={updateListDataByDailySwitch}
-                value={filterByDailyEvents}
-              />
             )}
           </>
         }
