@@ -49,6 +49,7 @@ export type FilterProps = {
   ids?: string;
   initial_start_date?: string;
   location?: string;
+  onlyCurrentlyOpen?: string;
   radiusSearch?: {
     currentPosition?: boolean;
     distance?: number;
