@@ -519,7 +519,11 @@ export const texts = {
     },
     all: 'Alles',
     backToConversation: 'Zurück zur Unterhaltung',
-    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    categoryNames: {
+      neighbourlyHelp: 'Nachbarschaftshilfe',
+      offer: 'Angebote',
+      search: 'Gesuche'
+    },
     chooseFromGallery: 'Galerie öffnen',
     close: 'Schließen',
     delete: 'Löschen',
@@ -527,7 +531,7 @@ export const texts = {
     details: 'Details',
     duration: 'Laufzeit',
     edit: 'Bearbeiten',
-    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuche es später noch einmal.',
+    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     images: 'Aussagekäftiges Bild',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
