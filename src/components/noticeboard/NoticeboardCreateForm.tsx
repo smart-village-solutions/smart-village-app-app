@@ -136,16 +136,32 @@ export const NoticeboardCreateForm = ({
       if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
       }
-      const image = JSON.parse(noticeboardNewData.image);
 
-      if (image?.length) {
-        try {
-          imageUrl = await uploadMediaContent(image[0], 'image');
-        } catch (error) {
-          setIsLoading(false);
+      const images = JSON.parse(noticeboardNewData.image);
+      const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
+        .filter((image) => !!image.id)
+        .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
+      const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
 
-          Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
-          return;
+      // check if images size is bigger than 10MB
+      if (imagesSize > 10485760) {
+        setIsLoading(false);
+        return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imagesSizeError);
+      }
+
+      if (images?.length) {
+        for (const image of images) {
+          if (!image.id) {
+            try {
+              imageUrl = await uploadMediaContent(image, 'image');
+
+              imageUrl && imageUrls.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
+            } catch (error) {
+              setIsLoading(false);
+              Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+              return;
+            }
+          }
         }
       }
 
@@ -164,7 +180,7 @@ export const NoticeboardCreateForm = ({
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
-          mediaContents: [{ sourceUrl: { url: imageUrl }, contentType: 'image' }],
+          mediaContents: imageUrls,
           priceInformations: [{ description: price }]
         }
       });
