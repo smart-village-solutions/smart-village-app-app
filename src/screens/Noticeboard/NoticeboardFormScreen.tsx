@@ -6,6 +6,7 @@ import {
   BoldText,
   DefaultKeyboardAvoidingView,
   HtmlView,
+  ImageSection,
   LoadingContainer,
   NoticeboardCreateForm,
   NoticeboardMessageForm,
@@ -64,6 +65,8 @@ export const NoticeboardFormScreen = ({
     );
   }
 
+  const images = details?.mediaContents?.filter((item) => item.contentType === 'image');
+
   const Component = isNewEntryForm ? NoticeboardCreateForm : NoticeboardMessageForm;
 
   return (
@@ -80,6 +83,8 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
+          {!!images?.length && <ImageSection mediaContents={images} />}
+
           <SectionHeader big title={details?.contentBlocks?.[0]?.title || details?.title} />
 
           {!!html && (
