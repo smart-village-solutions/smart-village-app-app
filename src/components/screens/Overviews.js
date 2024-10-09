@@ -1,3 +1,4 @@
+import * as Location from 'expo-location';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
@@ -15,8 +16,8 @@ import { Divider } from 'react-native-elements';
 import {
   Button,
   CategoryList,
-  DropdownHeader,
   EmptyMessage,
+  Filter,
   HeaderLeft,
   HtmlView,
   IndexFilterWrapperAndList,
@@ -30,15 +31,28 @@ import {
   Wrapper
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
+  filterTypesHelper,
+  geoLocationFilteredListItem,
   graphqlFetchPolicy,
   isOpen,
   openLink,
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
-import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } from '../../hooks';
+import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  useOpenWebScreen,
+  usePermanentFilter,
+  usePosition,
+  useStaticContent,
+  useSystemPermission
+} from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { GenericType } from '../../types';
@@ -99,6 +113,8 @@ const hasFilterSelection = (query, queryVariables) => {
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const Overviews = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { resourceFilters } = useContext(ConfigurationsContext);
+  const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
@@ -127,32 +143,52 @@ export const Overviews = ({ navigation, route }) => {
     }
   ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
-  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
+  const initialQueryVariables = route?.params?.queryVariables || {};
+  const resourceFiltersQuery =
+    query === QUERY_TYPES.GENERIC_ITEMS ? initialQueryVariables.genericType : query;
+  const filterQuery =
+    query === QUERY_TYPES.GENERIC_ITEMS
+      ? initialQueryVariables.genericType
+      : query === QUERY_TYPES.POINTS_OF_INTEREST
+      ? initialQueryVariables.category
+      : query;
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFiltersState[filterQuery]
+  });
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
-  const { loading: loadingPosition, position } = usePosition(!sortByDistance);
+  const { loading: loadingPosition, position } = usePosition(
+    !sortByDistance ||
+      systemPermission?.status !== Location.PermissionStatus.GRANTED ||
+      !locationServiceEnabled
+  );
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories;
-  const showFilter =
-    (route.params?.showFilter ?? true) &&
-    {
-      [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-    }[query];
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
+
   const { data: htmlContent } = useStaticContent({
     name: htmlContentName,
     type: 'html',
     refreshTimeKey: `${query}-${queryVariables.category}`,
     skip: !htmlContentName
   });
+  const { locationSettings } = useLocationSettings();
+  const systemPermission = useSystemPermission();
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
+  const currentPosition = position || lastKnownPosition;
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     fetchPolicy,
@@ -165,40 +201,11 @@ export const Overviews = ({ navigation, route }) => {
       // have any open POIs in the next batch that would result in the list not getting any new
       // items and not reliably triggering another `fetchMore`
       limit:
-        sortByDistance || filterByOpeningTimes ? undefined : route.params?.queryVariables?.limit
+        sortByDistance || queryVariables.onlyCurrentlyOpen
+          ? undefined
+          : route.params?.queryVariables?.limit
     }
   });
-
-  const updateListDataByDropdown = useCallback(
-    (selectedValue) => {
-      if (selectedValue) {
-        setQueryVariables((prevQueryVariables) => {
-          // remove a refetch key if present, which was necessary for the "- Alle -" selection
-          delete prevQueryVariables.refetch;
-
-          return {
-            ...prevQueryVariables,
-            ...getAdditionalQueryVariables(
-              query,
-              selectedValue,
-              excludeDataProviderIds,
-              excludeMowasRegionalKeys
-            )
-          };
-        });
-      } else {
-        if (hasFilterSelection(query, queryVariables)) {
-          setQueryVariables((prevQueryVariables) => {
-            // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery(query)];
-
-            return { ...prevQueryVariables, refetch: true };
-          });
-        }
-      }
-    },
-    [query, queryVariables, excludeDataProviderIds, excludeMowasRegionalKeys]
-  );
 
   const listItems = useMemo(() => {
     let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
@@ -207,7 +214,7 @@ export const Overviews = ({ navigation, route }) => {
       queryVariables
     });
 
-    if (filterByOpeningTimes) {
+    if (queryVariables.onlyCurrentlyOpen) {
       parsedListItems = parsedListItems?.filter(
         (entry) => isOpen(entry.params?.details?.openingHours)?.open
       );
@@ -223,6 +230,18 @@ export const Overviews = ({ navigation, route }) => {
       parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, position.coords);
     }
 
+    if (queryVariables?.radiusSearch?.distance) {
+      parsedListItems = geoLocationFilteredListItem({
+        currentPosition,
+        isLocationAlertShow,
+        listItem: parsedListItems,
+        locationSettings,
+        navigation,
+        queryVariables,
+        setIsLocationAlertShow
+      });
+    }
+
     return parsedListItems;
   }, [
     query,
@@ -232,7 +251,8 @@ export const Overviews = ({ navigation, route }) => {
     bookmarkable,
     filterByOpeningTimes,
     sortByDistance,
-    position
+    position,
+    isLocationAlertShow
   ]);
 
   const refresh = useCallback(() => {
@@ -243,6 +263,27 @@ export const Overviews = ({ navigation, route }) => {
     setRefreshing(false);
   }, [isConnected, setRefreshing, refetch]);
 
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      categories,
+      category: initialQueryVariables?.category,
+      data,
+      excludeDataProviderIds,
+      query: resourceFiltersQuery,
+      queryVariables,
+      resourceFilters
+    });
+  }, [data]);
+
+  useEffect(() => {
+    updateResourceFiltersStateHelper({
+      query: filterQuery,
+      queryVariables,
+      resourceFiltersDispatch,
+      resourceFiltersState
+    });
+  }, [query, queryVariables]);
+
   useEffect(() => {
     // we want to ensure when changing from one index screen to another of the same resource, that
     // the query variables are taken freshly. otherwise the mounted screen can have query variables
@@ -250,6 +291,7 @@ export const Overviews = ({ navigation, route }) => {
     // the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
+      ...resourceFiltersState?.[filterQuery],
       ...getAdditionalQueryVariables(
         query,
         undefined,
@@ -257,7 +299,7 @@ export const Overviews = ({ navigation, route }) => {
         excludeMowasRegionalKeys
       )
     });
-  }, [route.params?.queryVariables, query, excludeDataProviderIds, excludeMowasRegionalKeys]);
+  }, [excludeDataProviderIds, excludeMowasRegionalKeys, query, route.params?.queryVariables]);
 
   useLayoutEffect(() => {
     if (
@@ -319,20 +361,18 @@ export const Overviews = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
+      <Filter
+        filterTypes={filterTypes}
+        initialFilters={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
+
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
-        (switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER ||
-          showFilterByOpeningTimes) && (
+        switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
           <View>
-            {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
-              <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
-            )}
-            {showFilterByOpeningTimes && (
-              <OptionToggle
-                label={texts.pointOfInterest.filterByOpeningTime}
-                onToggle={() => setFilterByOpeningTimes((value) => !value)}
-                value={filterByOpeningTimes}
-              />
-            )}
+            <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
             <Divider />
           </View>
         )}
@@ -343,24 +383,13 @@ export const Overviews = ({ navigation, route }) => {
           route={route}
           position={position}
           queryVariables={queryVariables}
+          currentPosition={currentPosition}
         />
       ) : (
         <>
           <ListComponent
             ListHeaderComponent={
               <>
-                {!!showFilter && (
-                  <>
-                    <DropdownHeader
-                      {...{
-                        data,
-                        query,
-                        queryVariables,
-                        updateListData: updateListDataByDropdown
-                      }}
-                    />
-                  </>
-                )}
                 {!!categories?.length && (
                   <CategoryList
                     navigation={navigation}

@@ -8,8 +8,8 @@ export const usePermanentFilter = () => {
     dataProviderState,
     mowasRegionalKeysDispatch,
     mowasRegionalKeysState,
-    filterDispatch,
-    filterState
+    resourceFiltersDispatch,
+    resourceFiltersState
   } = useContext(PermanentFilterContext);
 
   return {
@@ -17,7 +17,7 @@ export const usePermanentFilter = () => {
     excludeDataProviderIds: dataProviderState,
     excludeMowasRegionalKeys: mowasRegionalKeysState,
     mowasRegionalKeysDispatch,
-    filterDispatch,
-    filterState
+    resourceFiltersDispatch,
+    resourceFiltersState
   };
 };

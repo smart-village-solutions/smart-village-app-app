@@ -3,7 +3,10 @@ import { useQuery as useQueryWithApollo } from 'react-apollo';
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from './SettingsProvider';
-import { defaultAppDesignSystemConfig, defaultFilterConfig } from './config/appDesignSystem';
+import {
+  defaultAppDesignSystemConfig,
+  defaultResourceFiltersConfig
+} from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
 import { storageHelper } from './helpers';
 import { useStaticContent } from './hooks';
@@ -39,7 +42,7 @@ const mergeDefaultConfiguration = (target: any, source: any) => {
 
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
-  resourceFilters: defaultFilterConfig,
+  resourceFilters: defaultResourceFiltersConfig,
   sueConfig: defaultSueAppConfig
 };
 
@@ -48,7 +51,7 @@ export const ConfigurationsContext = createContext(defaultConfiguration);
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = {} } = globalSettings;
-  const { sue = {}, showResourceFilters = false } = settings || {};
+  const { sue = {} } = settings || {};
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
 
@@ -65,18 +68,19 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     skip: !Object.keys(sue).length
   });
 
-  const { data: filterData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
-    skip: !showResourceFilters
-  });
+  const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS));
 
   const mergedConfig = useMemo(() => {
-    if (!Object.keys(sue).length || !showResourceFilters) {
+    const isSueConfigEmpty = !Object.keys(sue).length;
+    const isResourceFiltersEmpty = !resourceFiltersData?.resourceFilters?.length;
+
+    if (isSueConfigEmpty && isResourceFiltersEmpty) {
       return defaultConfiguration;
     }
 
-    const resourceFilters = filterData?.resourceFilters?.map((filter: any) => ({
-      ...filter,
-      dataResourceType: FILTER_QUERY_TYPES[filter.dataResourceType]
+    const resourceFilters = resourceFiltersData?.resourceFilters?.map((resourceFilter: any) => ({
+      ...resourceFilter,
+      dataResourceType: FILTER_QUERY_TYPES[resourceFilter.dataResourceType]
     }));
 
     return mergeDefaultConfiguration(defaultConfiguration, {
@@ -84,7 +88,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [appDesignSystem, sue, sueConfigData, sueProgress]);
+  }, [appDesignSystem, sue, sueConfigData, sueProgress, resourceFiltersData]);
 
   useEffect(() => {
     setConfigurations(mergedConfig);

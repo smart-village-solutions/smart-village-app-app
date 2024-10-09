@@ -185,8 +185,18 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                     type: FILTER_TYPES.DATE,
                     name: 'date',
                     data: [
-                      { name: 'start_date', placeholder: 'Erstellt von' },
-                      { name: 'end_date', placeholder: 'Erstellt bis' }
+                      {
+                        hasFutureDates: false,
+                        hasPastDates: true,
+                        name: 'start_date',
+                        placeholder: 'Erstellt von'
+                      },
+                      {
+                        hasFutureDates: false,
+                        hasPastDates: true,
+                        name: 'end_date',
+                        placeholder: 'Erstellt bis'
+                      }
                     ]
                   },
                   {
@@ -210,8 +220,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                     placeholder: 'Alle Sortierarten'
                   }
                 ]}
-                initialFilters={initialQueryVariables}
+                queryVariables={initialQueryVariables}
                 setQueryVariables={setQueryVariables}
+                withSearch
               />
             </Wrapper>
 

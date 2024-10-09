@@ -172,7 +172,6 @@ export const NoticeboardCreateForm = ({
                   checkedColor={colors.accent}
                   uncheckedColor={colors.darkText}
                   containerStyle={styles.checkboxContainerStyle}
-                  textStyle={styles.checkboxTextStyle}
                   link={undefined}
                   center={undefined}
                   linkDescription={undefined}
@@ -260,7 +259,6 @@ export const NoticeboardCreateForm = ({
               uncheckedColor={colors.darkText}
               uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
             />
           )}
           control={control}
@@ -293,9 +291,5 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
   }
 });
