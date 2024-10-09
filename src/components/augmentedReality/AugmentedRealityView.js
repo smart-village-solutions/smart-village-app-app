@@ -11,7 +11,7 @@ import {
   ViroSpatialSound,
   ViroSpotLight,
   ViroVideo
-} from '@viro-community/react-viro';
+} from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 
@@ -185,9 +185,7 @@ const ViroSoundAnd3DObject = (item) => {
 
       {object?.quad && isMore2GBRam && (
         <ViroQuad
-          height={object.quad.height}
           position={object.quad.position}
-          width={object.quad.width}
           arShadowReceiver
           lightReceivingBitMask={2}
           rotation={[-90, 0, 0]}

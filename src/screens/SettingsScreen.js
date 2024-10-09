@@ -1,4 +1,4 @@
-import { isARSupportedOnDevice } from '@viro-community/react-viro';
+import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
@@ -293,19 +293,18 @@ export const SettingsScreen = ({ navigation, route }) => {
         data: [SETTINGS_SCREENS.LIST]
       });
 
-      if (settings.ar) {
+      if (!!settings.ar?.tourId) {
         try {
-          isARSupportedOnDevice(
-            () => null,
-            () => {
-              settingsList.push({
-                data: [SETTINGS_SCREENS.AR]
-              });
-            }
-          );
+          const isARSupported = (await isARSupportedOnDevice())?.isARSupported;
+
+          if (isARSupported) {
+            settingsList.push({
+              data: [SETTINGS_SCREENS.AR]
+            });
+          }
         } catch (error) {
           // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
-          console.warn(error);
+          console.error(error);
         }
       }
 
@@ -340,7 +339,7 @@ export const SettingsScreen = ({ navigation, route }) => {
       Component = <ListSettings />;
       break;
     case SETTINGS_SCREENS.AR:
-      Component = <AugmentedReality id={settings.ar.tourId} onSettingsScreen />;
+      Component = <AugmentedReality id={settings.ar?.tourId} onSettingsScreen />;
       break;
     default:
       Component = (

@@ -1617,7 +1617,7 @@
     node-forge "^1.2.1"
     nullthrows "^1.1.1"
 
-"@expo/config-plugins@8.0.10", "@expo/config-plugins@^4.0.16", "@expo/config-plugins@~7.3.0", "@expo/config-plugins@~8.0.0", "@expo/config-plugins@~8.0.8":
+"@expo/config-plugins@8.0.10", "@expo/config-plugins@^7.2.5", "@expo/config-plugins@~7.3.0", "@expo/config-plugins@~8.0.0", "@expo/config-plugins@~8.0.8":
   version "8.0.8"
   resolved "https://registry.yarnpkg.com/@expo/config-plugins/-/config-plugins-8.0.8.tgz#294a71905a498ea02c8b79bea950b5e37ab5d748"
   integrity sha512-Fvu6IO13EUw0R9WeqxUO37FkM62YJBNcZb9DyJAOgMz7Ez/vaKQGEjKt9cwT+Q6uirtCATMgaq6VWAW7YW8xXw==
@@ -3096,6 +3096,14 @@
     color "^4.2.3"
     warn-once "^0.1.0"
 
+"@reactvision/react-viro@^2.41.6":
+  version "2.41.6"
+  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.41.6.tgz#e313ee7a2260709e8e48c930c66ca372469c7b87"
+  integrity sha512-WlL/D86on5IxfPM5yqkrb1QQHoWSDULrEpnSbOTSbZO0xCQL4fyqUk5GXtWQTgoHOXaRoGL2e1rSEt006+w9Gw==
+  dependencies:
+    "@expo/config-plugins" "^7.2.5"
+    react "^18.2.0"
+
 "@rnx-kit/chromium-edge-launcher@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@rnx-kit/chromium-edge-launcher/-/chromium-edge-launcher-1.0.0.tgz#c0df8ea00a902c7a417cd9655aab06de398b939c"
@@ -3805,14 +3813,6 @@
   dependencies:
     "@urql/core" ">=2.3.1"
     wonka "^4.0.14"
-
-"@viro-community/react-viro@^2.23.0":
-  version "2.23.0"
-  resolved "https://registry.yarnpkg.com/@viro-community/react-viro/-/react-viro-2.23.0.tgz#ebafdf9f20eb704dc800677dab2b2d2efd55d851"
-  integrity sha512-mi1oA0lRLbfXtSSszXhdfrfoAhWNCJ+VkJWdtsfGLwZsg3x+cyaN5qcP1gWW2OqqVRTVLicbNmYoom85/a1CjA==
-  dependencies:
-    "@expo/config-plugins" "^4.0.16"
-    react "^17.0.2"
 
 "@wry/context@^0.4.0":
   version "0.4.4"
@@ -10568,13 +10568,12 @@ react@18.2.0:
   dependencies:
     loose-envify "^1.1.0"
 
-react@^17.0.2:
-  version "17.0.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
-  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+react@^18.2.0:
+  version "18.3.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
+  integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
   dependencies:
     loose-envify "^1.1.0"
-    object-assign "^4.1.1"
 
 readable-stream@^3.4.0:
   version "3.6.2"
