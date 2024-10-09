@@ -47,9 +47,9 @@ export const DropdownFilter = ({
       const selectedItems = dropdownData
         ?.filter(
           (item: { selected: boolean; value: string; id: string | number }) =>
-            item.selected && item.value && parseInt(item?.id.toString()) !== 0
+            item.selected && item.value && parseInt(item?.id?.toString()) !== 0
         )
-        ?.map((item) => item.id);
+        ?.map((item) => item.id || item.value);
 
       setFilters(
         updateFilters({
