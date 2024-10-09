@@ -23,6 +23,7 @@ enum QUERY_VARIABLES_ATTRIBUTES {
   CATEGORY_IDS = 'ids',
   DATA_PROVIDER = 'dataProvider',
   DATA_PROVIDER_ID = 'dataProviderId',
+  DATA_PROVIDER_IDS = 'dataProviderIds',
   DATE_END = 'end_date',
   DATE_START = 'start_date',
   LOCATION = 'location',
@@ -160,7 +161,9 @@ export const filterTypesHelper = ({
             ...entry,
             filterValue: entry.value
           }));
-          filterType.name = QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER;
+          filterType.name = value.isMultiselect
+            ? QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER_IDS
+            : QUERY_VARIABLES_ATTRIBUTES.DATA_PROVIDER;
           break;
         case FILTER_KEYS.CATEGORY:
           filterType.data = dropdownEntries(

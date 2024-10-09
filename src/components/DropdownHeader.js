@@ -56,7 +56,9 @@ export const dropdownEntries = (
         index: index + 1,
         id: dataProvider.id,
         value: dataProvider.name,
-        selected: dataProvider.name === queryVariables.dataProvider
+        selected:
+          dataProvider.name === queryVariables.dataProvider ||
+          queryVariables.dataProviderIds?.includes(dataProvider.id)
       }));
     }
   } else if (query === QUERY_TYPES.VOUCHERS) {

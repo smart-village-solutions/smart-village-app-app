@@ -37,6 +37,7 @@ export type FilterProps = {
   categoryIds?: string;
   dataProvider?: string;
   dataProviderId?: string;
+  dataProviderIds?: string;
   dates?: {
     dateEnd?: DatesTypes;
     dateStart?: DatesTypes;
