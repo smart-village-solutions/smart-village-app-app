@@ -89,6 +89,8 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
         }
       ],
+      "@config-plugins/react-native-blob-util",
+      "@config-plugins/react-native-pdf",
       "expo-asset",
       "expo-font",
       "expo-image-picker",

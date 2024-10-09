@@ -1,18 +1,18 @@
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
 import { LoadingContainer, SafeAreaViewFlex } from '../components';
-import { colors, consts } from '../config';
+import { colors, consts, normalize } from '../config';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-export const WebScreen = ({ route }) => {
+export const WebScreen = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
@@ -50,6 +50,17 @@ export const WebScreen = ({ route }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(7)
+  },
+  icon: {
+    paddingHorizontal: normalize(10)
+  }
+});
+
 WebScreen.propTypes = {
+  navigation: PropTypes.object,
   route: PropTypes.object.isRequired
 };

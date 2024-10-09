@@ -45,6 +45,7 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  PdfScreen,
   SettingsScreen,
   SueListScreen,
   SueMapScreen,
@@ -335,6 +336,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.OParlSearch,
       screenComponent: OParlSearchScreen
+    },
+    {
+      routeName: ScreenName.Pdf,
+      screenComponent: PdfScreen
     },
     {
       routeName: ScreenName.Service,

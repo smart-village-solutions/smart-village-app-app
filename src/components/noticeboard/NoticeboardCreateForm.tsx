@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
@@ -10,26 +10,36 @@ import {
   Button,
   Checkbox,
   DateTimeInput,
+  DocumentSelector,
   HtmlView,
   Input,
+  LoadingSpinner,
   RegularText,
   Touchable,
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
-import { graphqlFetchPolicy, momentFormat, parseListItemsFromQuery } from '../../helpers';
+import {
+  formatSizeStandard,
+  graphqlFetchPolicy,
+  momentFormat,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
+import { uploadMediaContent } from '../../queries/mediaContent';
+import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
 
-const { EMAIL_REGEX } = consts;
+const { EMAIL_REGEX, MEDIA_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
   body: string;
   dateEnd: string;
   dateStart: string;
+  documents: string;
   email: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
@@ -37,6 +47,7 @@ type TNoticeboardCreateData = {
   title: string;
 };
 
+/* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
   navigation,
   queryVariables,
@@ -48,9 +59,14 @@ export const NoticeboardCreateForm = ({
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showNoticeboardMediaContent = {} } = settings;
+  const { document: showDocument = false, documentMaxSizes = {} } = showNoticeboardMediaContent;
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: categories } = useQuery(getQuery(QUERY_TYPES.CATEGORIES), {
     fetchPolicy,
@@ -70,6 +86,7 @@ export const NoticeboardCreateForm = ({
       body: '',
       dateEnd: new Date(),
       dateStart: new Date(),
+      documents: '[]',
       email: '',
       name: '',
       noticeboardType: '',
@@ -79,6 +96,7 @@ export const NoticeboardCreateForm = ({
   });
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
+  let documentUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -95,7 +113,68 @@ export const NoticeboardCreateForm = ({
       return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.dateDifference);
     }
 
+    setIsLoading(true);
+
     try {
+      const documents = JSON.parse(noticeboardNewData.documents);
+      const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
+        ?.filter((document: { id: number }) => !!document.id)
+        ?.map((document: { mimeType: string; cachedAttachment: string }) => ({
+          contentType: document.mimeType,
+          sourceUrl: { url: document.cachedAttachment }
+        }));
+      const documentsSize = documents.reduce(
+        (acc: number, document: any) => acc + document.size,
+        0
+      );
+
+      // check if any document size is bigger than `documentMaxSizes.file`
+      for (const document of documents) {
+        if (!!documentMaxSizes.file && document.size > documentMaxSizes.file) {
+          setIsLoading(false);
+          return Alert.alert(
+            texts.noticeboard.alerts.hint,
+            texts.noticeboard.alerts.documentSizeError(formatSizeStandard(documentMaxSizes.file))
+          );
+        }
+      }
+
+      // check if documents size is bigger than `documentMaxSizes.total`
+      if (documentMaxSizes.total && documentsSize > documentMaxSizes.total) {
+        setIsLoading(false);
+        return Alert.alert(
+          texts.noticeboard.alerts.hint,
+          texts.noticeboard.alerts.documentsSizeError(formatSizeStandard(documentMaxSizes.total))
+        );
+      }
+
+      if (documents?.length) {
+        for (const document of documents) {
+          if (!document.id) {
+            try {
+              documentUrl = await uploadMediaContent(
+                document,
+                document.mimeType,
+                'document',
+                MEDIA_TYPES.DOCUMENT
+              );
+
+              documentUrl &&
+                documentsUrl.push({
+                  sourceUrl: { url: documentUrl },
+                  contentType: document.mimeType
+                });
+            } catch (error) {
+              Alert.alert(
+                texts.noticeboard.alerts.hint,
+                texts.noticeboard.alerts.documentUploadError
+              );
+              return;
+            }
+          }
+        }
+      }
+
       await createGenericItem({
         variables: {
           categoryName: noticeboardNewData.noticeboardType,
@@ -104,6 +183,7 @@ export const NoticeboardCreateForm = ({
           title: noticeboardNewData.title,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
+          mediaContents: documentsUrl,
           dates: [
             {
               dateEnd: momentFormat(noticeboardNewData.dateEnd),
@@ -116,6 +196,7 @@ export const NoticeboardCreateForm = ({
       navigation.goBack();
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
   };
@@ -244,6 +325,25 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
+      {showDocument && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="documents"
+            control={control}
+            render={({ field }) => (
+              <DocumentSelector
+                {...{ control, field }}
+                maxFileSize={documentMaxSizes.file}
+                item={{
+                  buttonTitle: texts.noticeboard.addDocuments,
+                  infoTitle: texts.noticeboard.documentsInfo
+                }}
+              />
+            )}
+          />
+        </Wrapper>
+      )}
+
       <Wrapper style={styles.noPaddingTop}>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
         <HtmlView html={consentForDataProcessingText} />
@@ -267,12 +367,12 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title={texts.noticeboard.send}
-          disabled={loading}
-        />
+      <Wrapper>
+        {isLoading || loading ? (
+          <LoadingSpinner loading={isLoading} />
+        ) : (
+          <Button onPress={handleSubmit(onSubmit)} title={texts.noticeboard.send} />
+        )}
 
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>
@@ -283,6 +383,7 @@ export const NoticeboardCreateForm = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   noPaddingTop: {

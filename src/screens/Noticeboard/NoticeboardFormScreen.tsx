@@ -4,7 +4,10 @@ import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
   BoldText,
+  ConsulDocumentList,
+  ConsulListItem,
   DefaultKeyboardAvoidingView,
+  DocumentList,
   HtmlView,
   LoadingContainer,
   NoticeboardCreateForm,
@@ -104,6 +107,14 @@ export const NoticeboardFormScreen = ({
                 </WrapperRow>
               )}
             </Wrapper>
+          )}
+
+          {!!details?.mediaContents?.some((media) => media.contentType === 'application/pdf') && (
+            <DocumentList
+              documents={details.mediaContents.filter(
+                (media) => media.contentType === 'application/pdf'
+              )}
+            />
           )}
 
           <Component {...{ data: details, navigation, route, queryVariables }} />

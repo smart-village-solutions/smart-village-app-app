@@ -50,6 +50,7 @@ export enum ScreenName {
   OParlOverview = 'OParlOverview',
   OParlPersons = 'OParlPersons',
   OParlSearch = 'OParlSearch',
+  Pdf = 'Pdf',
   Service = 'Service',
   Settings = 'Settings',
   SueList = 'SueList',
