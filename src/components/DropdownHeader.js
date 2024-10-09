@@ -29,7 +29,9 @@ export const dropdownEntries = (
       ).map((location, index) => ({
         index: index + 1,
         value: location.city,
-        selected: location.city === queryVariables.location
+        selected:
+          location.city === queryVariables.location ||
+          queryVariables.locations?.includes(location.city)
       }));
     }
 

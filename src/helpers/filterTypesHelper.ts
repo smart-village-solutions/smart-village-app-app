@@ -25,7 +25,8 @@ enum QUERY_VARIABLES_ATTRIBUTES {
   DATA_PROVIDER_ID = 'dataProviderId',
   DATE_END = 'end_date',
   DATE_START = 'start_date',
-  LOCATION = 'location'
+  LOCATION = 'location',
+  LOCATIONS = 'locations'
 }
 
 const getLabel = (key: string) =>
@@ -200,7 +201,9 @@ export const filterTypesHelper = ({
             ...entry,
             filterValue: entry.value
           }));
-          filterType.name = QUERY_VARIABLES_ATTRIBUTES.LOCATION;
+          filterType.name = value.isMultiselect
+            ? QUERY_VARIABLES_ATTRIBUTES.LOCATIONS
+            : QUERY_VARIABLES_ATTRIBUTES.LOCATION;
           break;
         default:
           break;
