@@ -7,13 +7,17 @@ export const usePermanentFilter = () => {
     dataProviderDispatch,
     dataProviderState,
     mowasRegionalKeysDispatch,
-    mowasRegionalKeysState
+    mowasRegionalKeysState,
+    filterDispatch,
+    filterState
   } = useContext(PermanentFilterContext);
 
   return {
     dataProviderDispatch,
     excludeDataProviderIds: dataProviderState,
     excludeMowasRegionalKeys: mowasRegionalKeysState,
-    mowasRegionalKeysDispatch
+    mowasRegionalKeysDispatch,
+    filterDispatch,
+    filterState
   };
 };
