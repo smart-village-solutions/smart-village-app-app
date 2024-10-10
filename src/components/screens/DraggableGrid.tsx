@@ -58,7 +58,7 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
         <DraggableItem
           key={child.props.key}
           positions={positions}
-          id={child.props.draggableId?.replace('​', '')}
+          id={child.props.draggableId}
           onDragEnd={onDragEnd}
           scrollView={scrollView}
           scrollY={scrollY}
