@@ -1,7 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
-import { TServiceTile } from '../components';
+import { TServiceTile, umlautSwitcher } from '../components';
 import { Positions } from '../components/screens/DraggableItem';
 import { addToStore, readFromStore } from '../helpers';
 
@@ -44,8 +44,8 @@ export const usePersonalizedTiles = (
     if (sorter) {
       personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
         const sortTitles = {
-          a: a.title?.replace('​', '') || a.accessibilityLabel,
-          b: b.title?.replace('​', '') || b.accessibilityLabel
+          a: umlautSwitcher(a.title) || umlautSwitcher(a.accessibilityLabel),
+          b: umlautSwitcher(b.title) || umlautSwitcher(b.accessibilityLabel)
         };
         const sortA =
           sorter?.[sortTitles.a] ?? tiles.findIndex((d: TServiceTile) => d.title === a.title);
