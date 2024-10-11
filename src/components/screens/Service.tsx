@@ -17,7 +17,7 @@ import { ServiceTile, TServiceTile } from './ServiceTile';
 
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
 
-const umlautSwitcher = (text: string) => {
+export const umlautSwitcher = (text: string) => {
   if (!text) return;
 
   const umlautReplacements = {
@@ -30,7 +30,9 @@ const umlautSwitcher = (text: string) => {
     ß: 'ss'
   };
 
-  const replacedText = text.replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match]);
+  const replacedText = text
+    .replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match])
+    ?.replace('​', '');
 
   return replacedText;
 };
