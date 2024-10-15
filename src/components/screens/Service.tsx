@@ -76,10 +76,11 @@ export const Service = ({
     (item: TServiceTile, index: number) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
+        draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
         item={item}
-        key={index + (item.title || item.accessibilityLabel)}
+        key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         tileSizeFactor={tileSizeFactor}
       />

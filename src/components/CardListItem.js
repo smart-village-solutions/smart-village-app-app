@@ -12,8 +12,10 @@ import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
+const keyExtractor = (item, index) => `item${item}-index${index}`;
+
 /* eslint-disable complexity */
-const renderCardContent = (item, horizontal, sue) => {
+const renderCardContent = (item, index, horizontal, sue) => {
   const {
     address,
     appDesignSystem = {},
@@ -39,24 +41,32 @@ const renderCardContent = (item, horizontal, sue) => {
           borderRadius={sue ? 0 : imageBorderRadius}
           childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
           containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
-          key={picture.url}
+          key={keyExtractor(picture.url, index)}
           source={{ uri: picture.url }}
         />
       ),
     subtitle: () =>
       !!subtitle && (
-        <RegularText key={subtitle} small style={[generalStyle, subtitleStyle]}>
+        <RegularText
+          key={keyExtractor(subtitle, index)}
+          small
+          style={[generalStyle, subtitleStyle]}
+        >
           {subtitle}
         </RegularText>
       ),
     title: () =>
       !!title && (
-        <BoldText key={title} style={[generalStyle, titleStyle]}>
+        <BoldText key={keyExtractor(title, index)} style={[generalStyle, titleStyle]}>
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </BoldText>
       ),
     topTitle: () => (
-      <RegularText key={topTitle} small style={[!!topTitleStyle && topTitleStyle]}>
+      <RegularText
+        key={keyExtractor(topTitle, index)}
+        small
+        style={[!!topTitleStyle && topTitleStyle]}
+      >
         {topTitle}
       </RegularText>
     ),
@@ -64,24 +74,31 @@ const renderCardContent = (item, horizontal, sue) => {
     // SUE
     sue: {
       address: () => (
-        <Wrapper>
+        <Wrapper key={keyExtractor(address, index)}>
           <RegularText small>{address}</RegularText>
         </Wrapper>
       ),
       category: () => (
-        <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
+        <SueCategory
+          key={keyExtractor(serviceName, index)}
+          serviceName={serviceName}
+          requestedDatetime={requestedDatetime}
+        />
       ),
       divider: () => (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper key={keyExtractor('divider', index)} style={styles.noPaddingTop}>
           <Divider />
         </Wrapper>
       ),
       pictureFallback: () => (
         <SueImageFallback
+          key={keyExtractor('fallbackImage', index)}
           style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImageContainer]}
         />
       ),
-      status: () => <SueStatus iconName={iconName} status={status} />
+      status: () => (
+        <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
+      )
     }
   };
 
@@ -99,7 +116,12 @@ const renderCardContent = (item, horizontal, sue) => {
       !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
       serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.category());
       serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.divider());
-      title && cardContent.push(<WrapperHorizontal>{sequenceMap.title()}</WrapperHorizontal>);
+      title &&
+        cardContent.push(
+          <WrapperHorizontal key={keyExtractor(title, index)}>
+            {sequenceMap.title()}
+          </WrapperHorizontal>
+        );
       address && cardContent.push(sequenceMap.sue.address());
       status && cardContent.push(sequenceMap.sue.status());
     }
@@ -109,7 +131,7 @@ const renderCardContent = (item, horizontal, sue) => {
 };
 /* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal = false, item, sue = false }) => {
+export const CardListItem = memo(({ horizontal = false, index, item, sue = false, navigation }) => {
   const {
     appDesignSystem = {},
     params,
@@ -147,7 +169,7 @@ export const CardListItem = memo(({ navigation, horizontal = false, item, sue = 
             sue && styles.sueContentContainer
           ]}
         >
-          {renderCardContent(item, horizontal, sue)}
+          {renderCardContent(item, index, horizontal, sue)}
         </View>
       </Card>
     </Touchable>
@@ -217,8 +239,9 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
 CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
-  navigation: PropTypes.object,
-  item: PropTypes.object.isRequired,
   horizontal: PropTypes.bool,
+  index: PropTypes.number,
+  item: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
   sue: PropTypes.bool
 };

@@ -87,12 +87,19 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
   switch (listType) {
     case LIST_TYPES.CARD_LIST: {
-      renderItem = ({ item }) => {
+      renderItem = ({ item, index }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
 
-        return <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />;
+        return (
+          <CardListItem
+            navigation={navigation}
+            horizontal={options.horizontal}
+            item={item}
+            index={index}
+          />
+        );
       };
       break;
     }
@@ -140,7 +147,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
           }
 
           return (
-            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+            <CardListItem
+              navigation={navigation}
+              horizontal={options.horizontal}
+              item={item}
+              index={index}
+            />
           );
         } else {
           return (
@@ -164,7 +176,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
     default: {
       renderItem = ({ item, index, section }) => {
         if (query === QUERY_TYPES.SUE.REQUESTS) {
-          return <CardListItem navigation={navigation} item={item} sue />;
+          return <CardListItem navigation={navigation} item={item} index={index} sue />;
         }
 
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
