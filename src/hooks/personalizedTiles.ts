@@ -29,7 +29,8 @@ export const usePersonalizedTiles = (
       // if we are not in edit mode we want to filter out tiles entirely.
       // if there is no entry in `toggles`, it means that the tile is new or never toggled, so we
       // want to show it.
-      const isVisible = (item: TServiceTile) => toggles[item.title || item.accessibilityLabel] ?? 1;
+      const isVisible = (item: TServiceTile) =>
+        toggles[umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)] ?? 1;
 
       if (isEditMode) {
         personalizedTiles = personalizedTiles.map((item: TServiceTile) => ({
