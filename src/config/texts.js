@@ -866,6 +866,7 @@ export const texts = {
     weather: 'Wetter'
   },
   serviceTiles: {
+    listEdit: 'Liste bearbeiten',
     done: 'Fertig',
     edit: 'Kacheln bearbeiten'
   },
