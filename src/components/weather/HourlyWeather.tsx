@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
-import { colors, normalize } from '../../config';
+import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { Image } from '../Image';
 import { RegularText } from '../Text';
@@ -23,18 +23,13 @@ export const HourlyWeather = ({
   time
 }: HourlyWeatherData) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
-  const formattedTime = momentFormat(time * 1000, 'HH:mm', 'x');
+  const formattedTime = momentFormat(time * 1000, 'HH [Uhr]', 'x');
 
   return (
-    <View
-      style={[
-        styles.container,
-        isNow && {
-          backgroundColor: isReduceTransparencyEnabled ? colors.primary : colors.lighterPrimary
-        }
-      ]}
-    >
-      <RegularText lightest={isNow && isReduceTransparencyEnabled}>{formattedTime}</RegularText>
+    <View style={styles.container}>
+      <RegularText lightest={isNow && isReduceTransparencyEnabled}>
+        {isNow ? texts.weather.now : formattedTime}
+      </RegularText>
       <Image
         source={{
           uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
@@ -44,7 +39,7 @@ export const HourlyWeather = ({
         resizeMode="contain"
       />
       <RegularText lightest={isNow && isReduceTransparencyEnabled}>
-        {temperature.toFixed(1)}°C
+        {temperature.toFixed(0)}°
       </RegularText>
     </View>
   );
@@ -57,6 +52,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    padding: normalize(7)
+    paddingHorizontal: normalize(10),
+    paddingVertical: normalize(7)
   }
 });
