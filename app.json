@@ -30,7 +30,8 @@
         "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
-        "LSApplicationQueriesSchemes": ["whatsapp"]
+        "LSApplicationQueriesSchemes": ["whatsapp"],
+        "LSMinimumSystemVersion": "13.4"
       },
       "config": {
         "usesNonExemptEncryption": false
