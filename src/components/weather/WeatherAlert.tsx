@@ -1,5 +1,7 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
+import { colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
@@ -18,8 +20,17 @@ export const WeatherAlert = ({ description, end, event, start }: Props) => {
   return (
     <Wrapper>
       <BoldText>{event}</BoldText>
-      <RegularText>{`Zwischen ${from} Uhr und ${to} Uhr.`}</RegularText>
-      <RegularText>{description}</RegularText>
+      <RegularText>{texts.weather.alertsText(from, to)}</RegularText>
+      {!!description && <RegularText>{description}</RegularText>}
+      <View style={styles.separator} />
     </Wrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  separator: {
+    backgroundColor: colors.gray60,
+    height: normalize(1),
+    marginTop: normalize(14)
+  }
+});
