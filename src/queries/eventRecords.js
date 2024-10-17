@@ -106,7 +106,6 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
   }
 `;
 
-
 export const GET_EVENT_RECORDS = gql`
   query EventRecords(
     $ids: [ID]
