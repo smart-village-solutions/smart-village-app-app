@@ -1348,11 +1348,15 @@ export const texts = {
     headerTitle: 'Wassertemperatur'
   },
   weather: {
-    alertsHeadline: 'Wetterwarnungen',
-    currentHeadline: 'Aktuelles Wetter',
+    alertsHeadline: 'Warnungen',
+    alertsText: (from, to) => `Zwischen ${from} Uhr und ${to} Uhr.`,
+    currentHeadline: 'Vorschau',
     nextDaysHeadline: 'Wetter der nächsten Tage',
     noData:
-      'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+      'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.',
+    now: 'Jetzt',
+    today: 'Heute',
+    tomorrow: 'Morgen'
   },
   widgets: {
     constructionSites: 'Baustellen',
