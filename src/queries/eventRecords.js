@@ -122,6 +122,43 @@ export const GET_EVENT_RECORDS = gql`
   }
 `;
 
+export const GET_EVENT_RECORDS_COUNT = gql`
+  query EventRecords(
+    $ids: [ID]
+    $limit: Int
+    $take: Int
+    $location: String
+    $locations: [String]
+    $offset: Int
+    $order: EventRecordsOrder
+    $categoryId: ID
+    $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
+  ) {
+    eventRecords(
+      ids: $ids
+      limit: $limit
+      take: $take
+      location: $location
+      locations: $locations
+      skip: $offset
+      order: $order
+      categoryId: $categoryId
+      dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+    ) {
+      id
+      ...dateFields
+    }
+  }
+
+  fragment dateFields on EventRecord {
+    ${dateFragment}
+  }
+`;
+
 export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
   query EventRecordsAndCategories {
     eventRecords {
