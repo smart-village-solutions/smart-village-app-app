@@ -128,7 +128,6 @@ export const GET_EVENT_RECORDS_COUNT = gql`
     $limit: Int
     $take: Int
     $location: String
-    $locations: [String]
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
@@ -141,7 +140,6 @@ export const GET_EVENT_RECORDS_COUNT = gql`
       limit: $limit
       take: $take
       location: $location
-      locations: $locations
       skip: $offset
       order: $order
       categoryId: $categoryId
