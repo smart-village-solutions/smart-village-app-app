@@ -4,9 +4,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
 import _reverse from 'lodash/reverse';
 import _sortBy from 'lodash/sortBy';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { useQuery } from 'react-query';
+import { useQuery, useInfiniteQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
@@ -80,27 +80,45 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const initialQueryVariables = route.params?.queryVariables ?? {
     initial_start_date: '1900-01-01T00:00:00+01:00'
   };
+  const limit = 20;
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
 
-  const { data, isLoading, refetch } = useQuery(
+  const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     [
       query,
       {
         ...queryVariables,
+        limit,
+        offset: 0,
         start_date: queryVariables.start_date || queryVariables.initial_start_date
       }
     ],
-    () =>
+    ({ pageParam = 0 }) =>
       getQuery(query)({
         ...queryVariables,
+        limit,
+        offset: pageParam,
         start_date: queryVariables.start_date || queryVariables.initial_start_date
-      })
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length < limit) {
+          return undefined;
+        }
+
+        return allPages.length * limit;
+      }
+    }
   );
 
   const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
     getQuery(QUERY_TYPES.SUE.SERVICES)()
+  );
+
+  const { data: dataCount } = useQuery([QUERY_TYPES.SUE.LOCATION, queryVariables], () =>
+    getQuery(QUERY_TYPES.SUE.LOCATION)(queryVariables)
   );
 
   const services = useMemo(() => {
@@ -123,11 +141,16 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   }, []);
 
   const listItems = useMemo(() => {
-    if (!data?.length) return [];
+    if (!data?.pages?.length) return [];
 
-    let parsedListItem = parseListItemsFromQuery(query, data, undefined, {
-      appDesignSystem
-    });
+    let parsedListItem = parseListItemsFromQuery(
+      query,
+      data.pages.flatMap((page) => page),
+      undefined,
+      {
+        appDesignSystem
+      }
+    );
 
     if (queryVariables.sortBy) {
       const { sortBy } = queryVariables;
@@ -161,14 +184,24 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     setRefreshing(false);
   };
 
+  const fetchMoreData = useCallback(async () => {
+    if (hasNextPage) {
+      return await fetchNextPage();
+    }
+
+    return {};
+  }, [data, fetchNextPage, hasNextPage, query]);
+
   if (isOpening) return null;
 
   return (
     <SafeAreaViewFlex>
+      <RegularText>{listItems?.length}</RegularText>
       <ListComponent
         navigation={navigation}
         query={query}
         data={listItems}
+        fetchMoreData={fetchMoreData}
         ListEmptyComponent={
           isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.sue.empty.list} />
         }
@@ -215,10 +248,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
               />
             </Wrapper>
 
-            {!!listItems?.length && (
+            {!!dataCount?.length && (
               <WrapperHorizontal>
                 <RegularText small>
-                  {listItems.length} {listItems.length === 1 ? texts.sue.result : texts.sue.results}
+                  {dataCount.length} {dataCount.length === 1 ? texts.sue.result : texts.sue.results}
                 </RegularText>
               </WrapperHorizontal>
             )}

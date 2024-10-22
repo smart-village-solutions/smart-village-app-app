@@ -56,9 +56,10 @@ export const QUERY_TYPES = {
   SUE: {
     AREA_SERVICE: 'areaService',
     CONFIGURATIONS: 'configurations',
+    LOCATION: 'location',
     PRIORITIES: 'priorities',
-    REQUESTS: 'requests',
     REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',
+    REQUESTS: 'requests',
     SERVICES: 'services',
     STATUSES: 'statuses'
   },
