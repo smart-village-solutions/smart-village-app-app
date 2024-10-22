@@ -2,7 +2,7 @@ import { consts } from '../consts';
 
 const { FILTER_TYPES } = consts;
 
-export const defaultFilterConfig = [
+export const defaultResourceFiltersConfig = [
   {
     dataResourceType: 'dataResourceType',
     config: {
@@ -11,7 +11,7 @@ export const defaultFilterConfig = [
       },
       category: {
         isMultiSelect: null,
-        isSearchable: null,
+        searchable: null,
         default: null,
         type: FILTER_TYPES.DROPDOWN
       },
@@ -29,7 +29,7 @@ export const defaultFilterConfig = [
       },
       location: {
         isMultiSelect: null,
-        isSearchable: null,
+        searchable: null,
         default: null,
         type: FILTER_TYPES.DROPDOWN
       },

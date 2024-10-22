@@ -147,7 +147,6 @@ export const VolunteerFormGroup = ({
                   checkedColor={colors.accent}
                   uncheckedColor={colors.darkText}
                   containerStyle={styles.checkboxContainerStyle}
-                  textStyle={styles.checkboxTextStyle}
                 />
               ))}
             </>
@@ -172,7 +171,6 @@ export const VolunteerFormGroup = ({
                     checkedColor={colors.accent}
                     uncheckedColor={colors.darkText}
                     containerStyle={styles.checkboxContainerStyle}
-                    textStyle={styles.checkboxTextStyle}
                   />
                 ))}
               </>
@@ -215,9 +213,5 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
   }
 });

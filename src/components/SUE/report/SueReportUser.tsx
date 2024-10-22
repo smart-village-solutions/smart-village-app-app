@@ -158,7 +158,6 @@ export const SueReportUser = ({
                 uncheckedColor={colors.darkText}
                 uncheckedIcon="square-o"
                 containerStyle={styles.checkboxContainerStyle}
-                textStyle={styles.checkboxTextStyle}
               />
               <WrapperHorizontal>
                 <WrapperHorizontal>
@@ -190,10 +189,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
   },
   container: {
     paddingTop: normalize(14),

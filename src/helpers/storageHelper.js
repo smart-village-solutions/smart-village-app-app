@@ -17,9 +17,7 @@ export const storageHelper = {
   listTypesSettings: () => readFromStore('listTypesSettings'),
   setListTypesSettings: (listTypesSettings) => addToStore('listTypesSettings', listTypesSettings),
   configurations: () => readFromStore('configurations'),
-  setConfigurations: (configurations) => addToStore('configurations', configurations),
-  filter: () => readFromStore('filter'),
-  setFilter: (filter) => addToStore('filter', filter)
+  setConfigurations: (configurations) => addToStore('configurations', configurations)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {
