@@ -161,6 +161,7 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
   query EventRecordsAndCategories {
     eventRecords {
       id
+      ...dateFields
     }
     categories {
       id
