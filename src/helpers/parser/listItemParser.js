@@ -144,11 +144,11 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   }));
 };
 
-const parsePointOfInterest = (data, skipLastDivider) => {
+const parsePointOfInterest = (data, skipLastDivider, queryVariables = undefined) => {
   return data?.map((pointOfInterest, index) => ({
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
-    subtitle: pointOfInterest.category?.name,
+    subtitle: queryVariables?.category || pointOfInterest.category?.name,
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },
@@ -156,7 +156,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
     params: {
       title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
-      queryVariables: { id: `${pointOfInterest.id}` },
+      queryVariables: { id: `${pointOfInterest.id}`, categoryName: queryVariables?.category },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
@@ -278,7 +278,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
-      return parsePointOfInterest(data[query], skipLastDivider);
+      return parsePointOfInterest(data[query], skipLastDivider, queryVariables);
     case QUERY_TYPES.TOURS:
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:

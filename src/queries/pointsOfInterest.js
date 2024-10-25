@@ -96,6 +96,11 @@ export const GET_POINT_OF_INTEREST = gql`
       id
       title: name
       payload
+      categories {
+        id
+        name
+        iconName
+      }
       category {
         id
         name
