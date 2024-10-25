@@ -91,6 +91,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
+  const categoryName = route.params?.queryVariables?.categoryName;
+  let nestedCategory;
+  if (categoryName) {
+    nestedCategory = categories.find((category) => category.name === categoryName);
+  }
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -100,7 +106,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
         <InfoCard
           addresses={addresses}
-          category={category}
+          category={nestedCategory}
           contact={contact}
           openingHours={openingHours}
           openWebScreen={openWebScreen}
