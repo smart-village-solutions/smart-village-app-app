@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
 import { TValues } from '../screens';
+import appJson from '../../app.json';
 
 export const useReverseGeocode = () => {
   return useCallback(
@@ -19,9 +20,15 @@ export const useReverseGeocode = () => {
       const { latitude, longitude } = position;
 
       try {
+        // https://operations.osmfoundation.org/policies/nominatim/
         const response = await (
           await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+            {
+              headers: {
+                'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}`
+              }
+            }
           )
         ).json();
 
