@@ -9,6 +9,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
   About,
+  Button,
   ConnectedImagesCarousel,
   Disturber,
   HomeSection,

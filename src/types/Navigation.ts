@@ -80,6 +80,7 @@ export enum ScreenName {
   WasteReminder = 'WasteReminder',
   Weather = 'Weather',
   Web = 'Web',
+  WhistleblowCode = 'WhistleblowCode',
   WhistleblowForm = 'WhistleblowForm'
 }
 
