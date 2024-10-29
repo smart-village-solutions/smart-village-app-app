@@ -74,7 +74,8 @@ import {
   WasteReminderScreen,
   WeatherScreen,
   WebScreen,
-  getTilesScreen
+  getTilesScreen,
+  WhistleblowFormScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -503,6 +504,10 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Web,
       screenComponent: WebScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
+    },
+    {
+      routeName: ScreenName.WhistleblowForm,
+      screenComponent: WhistleblowFormScreen
     }
   ]
 });

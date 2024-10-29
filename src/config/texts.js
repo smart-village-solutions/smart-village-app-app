@@ -1358,6 +1358,16 @@ export const texts = {
     today: 'Heute',
     tomorrow: 'Morgen'
   },
+  whistleblow: {
+    abort: 'Abbrechen',
+    inputDescription: 'Inhalt',
+    inputErrorText: 'muss ausgefüllt werden',
+    inputFile: 'Anhang',
+    inputMail: 'E-Mail',
+    inputTitle: 'Betreff',
+    invalidMail: '-Adresse ist nicht gültig.',
+    send: 'Hinweis senden'
+  },
   widgets: {
     constructionSites: 'Baustellen',
     custom: 'Benutzerdefiniert',

@@ -79,7 +79,8 @@ export enum ScreenName {
   WasteCollection = 'WasteCollection',
   WasteReminder = 'WasteReminder',
   Weather = 'Weather',
-  Web = 'Web'
+  Web = 'Web',
+  WhistleblowForm = 'WhistleblowForm'
 }
 
 export type ScreenOptions =

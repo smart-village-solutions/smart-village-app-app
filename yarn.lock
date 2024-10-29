@@ -4489,7 +4489,7 @@ base-64@0.1.0:
   resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
   integrity sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==
 
-base64-js@^1.2.3, base64-js@^1.3.1, base64-js@^1.5.1:
+base64-js@^1.2.3, base64-js@^1.3.0, base64-js@^1.3.1, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
@@ -6148,6 +6148,13 @@ expo-constants@~16.0.0, expo-constants@~16.0.2:
   dependencies:
     "@expo/config" "~9.0.0"
     "@expo/env" "~0.3.0"
+
+expo-crypto@~12.4.1:
+  version "12.4.1"
+  resolved "https://registry.yarnpkg.com/expo-crypto/-/expo-crypto-12.4.1.tgz#f3ee7156fd8167c3c3304b6e21dcfb0dc8a44bba"
+  integrity sha512-/en03oPNAX6gP0bKpwA1EyLBnGG9uv0+Q7uvGYyOXaQQEvj31a+8cEvNPkv75x6GuK1hcaBfO25RtX9AGOMwVA==
+  dependencies:
+    base64-js "^1.3.0"
 
 expo-dev-client@~4.0.28:
   version "4.0.28"
