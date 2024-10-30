@@ -222,6 +222,7 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
         category: `${category.name}`,
         location: queryVariables?.location
       },
+      usedAsInitialScreen: false,
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
