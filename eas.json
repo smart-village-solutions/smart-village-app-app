@@ -8,7 +8,7 @@
       "yarn": "1.22.19",
       "channel": "production",
       "ios": {
-        "image": "macos-sonoma-14.5-xcode-15.4"
+        "image": "latest"
       }
     },
     "preview": {
