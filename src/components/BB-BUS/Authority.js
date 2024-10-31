@@ -18,8 +18,8 @@ export const Authority = ({ data, bottomDivider, openWebScreen }) => {
   const address = getAddress(addresses);
   const contact = getContact(communications);
 
-  const elevator = address.elevator;
-  const wheelchairAccessible = address.wheelchairAccessible;
+  const elevator = address?.elevator;
+  const wheelchairAccessible = address?.wheelchairAccessible;
 
   return (
     <Block title={name} bottomDivider={bottomDivider}>
