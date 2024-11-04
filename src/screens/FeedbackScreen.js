@@ -9,6 +9,7 @@ import {
   Checkbox,
   DefaultKeyboardAvoidingView,
   Input,
+  RegularText,
   SafeAreaViewFlex
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
@@ -162,6 +163,10 @@ export const FeedbackScreen = () => {
               }
               disabled={loading}
             />
+
+            <RegularText smallest placeholder>
+              {texts.feedbackScreen.inputsLabel.requiredFields}
+            </RegularText>
           </View>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
