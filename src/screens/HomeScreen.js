@@ -310,7 +310,7 @@ export const HomeScreen = ({ navigation, route }) => {
       navigate: 'EVENT_RECORDS_INDEX',
       navigation,
       query: QUERY_TYPES.EVENT_RECORDS,
-      queryVariables: { limit: 3, order: 'listDate_ASC', dateRange: [today, todayIn10Years] },
+      queryVariables: { take: 3, order: 'listDate_ASC', dateRange: [today, todayIn10Years] },
       showData: showEvents,
       showVolunteerEvents,
       title: headlineEvents

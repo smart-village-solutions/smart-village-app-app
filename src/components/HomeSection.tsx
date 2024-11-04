@@ -22,7 +22,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: string;
-  queryVariables: { limit?: number };
+  queryVariables: { limit?: number; take?: number };
   showVolunteerEvents?: boolean;
   title: string;
   titleDetail?: string;
@@ -79,7 +79,7 @@ export const HomeSection = ({
       additionalData={additionalData}
       buttonTitle={buttonTitle}
       isIndexStartingAt1={isIndexStartingAt1}
-      limit={queryVariables?.limit}
+      limit={queryVariables?.limit || queryVariables?.take}
       loading={loading}
       navigate={navigate}
       navigateButton={navigate}
