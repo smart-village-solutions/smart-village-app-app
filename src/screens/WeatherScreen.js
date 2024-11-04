@@ -61,7 +61,7 @@ const markNow = (data) => {
 export const WeatherScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { weather = {} } = settings;
+  const { flat = false, weather = {} } = settings;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const queryVariables =
@@ -164,9 +164,11 @@ export const WeatherScreen = () => {
             </WrapperRow>
           </WrapperVertical>
         </WrapperHorizontal>
-        <Wrapper>
-          <View style={styles.separator} />
-        </Wrapper>
+        {!!flat && (
+          <Wrapper>
+            <View style={styles.separator} />
+          </Wrapper>
+        )}
 
         {!!alerts?.length && (
           <>
