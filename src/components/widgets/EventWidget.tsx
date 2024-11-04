@@ -15,19 +15,18 @@ import { DefaultWidget } from './DefaultWidget';
 const { ROOT_ROUTE_NAMES } = consts;
 
 const today = moment().format('YYYY-MM-DD');
+// we need to set a date range to correctly sort the results by list date, so we set it far in the future
+const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
   const { globalSettings } = useContext(SettingsContext);
   const { deprecated = {}, hdvt = {} } = globalSettings;
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
-  const [queryVariables] = useState<{ dateRange?: string[] }>({
-    dateRange: [today, today]
+  const [queryVariables] = useState<{ dateRange?: string[]; order?: string }>({
+    dateRange: [today, additionalProps?.noFilterByDailyEvents ? todayIn10Years : today],
+    order: 'listDate_ASC'
   });
-
-  if (additionalProps?.noFilterByDailyEvents) {
-    delete queryVariables.dateRange;
-  }
 
   const {
     data,
