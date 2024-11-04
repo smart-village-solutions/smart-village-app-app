@@ -55,6 +55,6 @@ const styles = StyleSheet.create({
     paddingRight: normalize(8)
   },
   iconWithoutCount: {
-    paddingBottom: normalize(3)
+    paddingBottom: normalize(2)
   }
 });
