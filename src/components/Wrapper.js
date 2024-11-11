@@ -6,6 +6,12 @@ export const Wrapper = styled.View`
   padding: ${normalize(16)}px;
 
   ${(props) =>
+    props.itemsCenter &&
+    css`
+      align-items: center;
+    `};
+
+  ${(props) =>
     props.small &&
     css`
       padding: ${normalize(7)}px;
@@ -23,6 +29,12 @@ export const WrapperHorizontal = styled.View`
   padding-right: ${normalize(16)}px;
 
   ${(props) =>
+    props.itemsCenter &&
+    css`
+      align-items: center;
+    `};
+
+  ${(props) =>
     props.big &&
     css`
       padding-left: ${normalize(17)}px;
@@ -33,6 +45,12 @@ export const WrapperHorizontal = styled.View`
 export const WrapperVertical = styled.View`
   padding-bottom: ${normalize(16)}px;
   padding-top: ${normalize(16)}px;
+
+  ${(props) =>
+    props.itemsCenter &&
+    css`
+      align-items: center;
+    `};
 `;
 
 export const WrapperRow = styled.View`
@@ -42,6 +60,12 @@ export const WrapperRow = styled.View`
     props.center &&
     css`
       justify-content: center;
+    `};
+
+  ${(props) =>
+    props.itemsCenter &&
+    css`
+      align-items: center;
     `};
 
   ${(props) =>

@@ -29,6 +29,7 @@ type Props = WebUrlProps & {
   name?: string;
   openingHours?: OpeningHour[];
   openWebScreen?: (link: string) => void;
+  showOpeningTimes: boolean;
 };
 
 /* TODO: add a logic to display info category and url that fit the screen even if long text
@@ -41,9 +42,10 @@ export const InfoCard = ({
   contacts,
   dates,
   name,
-  webUrls,
   openingHours,
-  openWebScreen
+  openWebScreen,
+  showOpeningTimes,
+  webUrls
 }: Props) => (
   <View>
     {!!name && (
@@ -63,7 +65,7 @@ export const InfoCard = ({
 
     <Divider style={styles.divider} />
 
-    <OpenStatus openingHours={openingHours} />
+    {showOpeningTimes && <OpenStatus openingHours={openingHours} />}
 
     <AddressSection address={address} addresses={addresses} openWebScreen={openWebScreen} />
 

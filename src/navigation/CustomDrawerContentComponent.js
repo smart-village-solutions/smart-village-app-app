@@ -28,7 +28,7 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
             delayPressIn={0}
           >
             <Icon
-              name="ios-close"
+              name="close"
               type="ionicon"
               color={colors.lightestText}
               containerStyle={stylesWithProps({ orientation }).icon}

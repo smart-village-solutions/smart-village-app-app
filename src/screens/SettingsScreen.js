@@ -1,4 +1,4 @@
-import { isARSupportedOnDevice } from '@viro-community/react-viro';
+import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
@@ -41,8 +41,16 @@ const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
-const renderItem = ({ item, navigation }) => {
-  if (item === 'locationSettings') {
+export const SETTINGS_SCREENS = {
+  AR: 'augmentedRealitySettings',
+  LIST: 'listSettings',
+  LOCATION: 'locationSettings',
+  MOWAS_REGION: 'mowasRegionSettings',
+  PERMANENT_FILTER: 'permanentFilterSettings'
+};
+
+const renderItem = ({ item, navigation, listsWithoutArrows }) => {
+  if (item === SETTINGS_SCREENS.LOCATION) {
     return (
       <TextListItem
         item={{
@@ -52,13 +60,13 @@ const renderItem = ({ item, navigation }) => {
           title: texts.settingsContents.locationService.setting,
           topDivider: true
         }}
-        listsWithoutArrows
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
   }
 
-  if (item === 'permanentFilterSettings') {
+  if (item === SETTINGS_SCREENS.PERMANENT_FILTER) {
     return (
       <TextListItem
         item={{
@@ -67,13 +75,13 @@ const renderItem = ({ item, navigation }) => {
           routeName: ScreenName.Settings,
           title: texts.settingsContents.permanentFilter.setting
         }}
-        listsWithoutArrows
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
   }
 
-  if (item === 'mowasRegionSettings') {
+  if (item === SETTINGS_SCREENS.MOWAS_REGION) {
     return (
       <TextListItem
         item={{
@@ -82,13 +90,13 @@ const renderItem = ({ item, navigation }) => {
           routeName: ScreenName.Settings,
           title: texts.settingsContents.mowasRegion.setting
         }}
-        listsWithoutArrows
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
   }
 
-  if (item === 'listSettings') {
+  if (item === SETTINGS_SCREENS.LIST) {
     return (
       <TextListItem
         item={{
@@ -97,13 +105,13 @@ const renderItem = ({ item, navigation }) => {
           routeName: ScreenName.Settings,
           title: texts.settingsContents.list.setting
         }}
-        listsWithoutArrows
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
   }
 
-  if (item === 'augmentedRealitySettings') {
+  if (item === SETTINGS_SCREENS.AR) {
     return (
       <TextListItem
         item={{
@@ -112,7 +120,7 @@ const renderItem = ({ item, navigation }) => {
           routeName: ScreenName.Settings,
           title: texts.settingsContents.ar.setting
         }}
-        listsWithoutArrows
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
@@ -164,6 +172,7 @@ const onDeactivatePushNotifications = (revert) => {
 export const SettingsScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
 
@@ -277,36 +286,36 @@ export const SettingsScreen = ({ navigation, route }) => {
 
       if (settings.locationService) {
         settingsList.push({
-          data: ['locationSettings']
+          data: [SETTINGS_SCREENS.LOCATION]
         });
       }
 
       settingsList.push({
-        data: ['permanentFilterSettings']
+        data: [SETTINGS_SCREENS.PERMANENT_FILTER]
       });
 
       if (mowas?.regionalKeys?.length) {
         settingsList.push({
-          data: ['mowasRegionSettings']
+          data: [SETTINGS_SCREENS.MOWAS_REGION]
         });
       }
 
       // settingsList.push({
-      //   data: ['listSettings']
+      //   data: [SETTINGS_SCREENS.LIST]
       // });
 
-      if (settings.ar) {
+      if (settings.ar?.tourId) {
         try {
-          isARSupportedOnDevice(
-            () => null,
-            () =>
-              settingsList.push({
-                data: ['augmentedRealitySettings']
-              })
-          );
+          const isARSupported = (await isARSupportedOnDevice())?.isARSupported;
+
+          if (isARSupported) {
+            settingsList.push({
+              data: [SETTINGS_SCREENS.AR]
+            });
+          }
         } catch (error) {
           // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
-          console.warn(error);
+          console.error(error);
         }
       }
 
@@ -328,27 +337,27 @@ export const SettingsScreen = ({ navigation, route }) => {
   let Component;
 
   switch (setting) {
-    case 'locationSettings':
+    case SETTINGS_SCREENS.LOCATION:
       Component = <LocationSettings />;
       break;
-    case 'permanentFilterSettings':
+    case SETTINGS_SCREENS.PERMANENT_FILTER:
       Component = <PermanentFilterSettings />;
       break;
-    case 'mowasRegionSettings':
+    case SETTINGS_SCREENS.MOWAS_REGION:
       Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
       break;
-    case 'listSettings':
+    case SETTINGS_SCREENS.LIST:
       Component = <ListSettings />;
       break;
-    case 'augmentedRealitySettings':
-      Component = <AugmentedReality id={settings.ar.tourId} onSettingsScreen />;
+    case SETTINGS_SCREENS.AR:
+      Component = <AugmentedReality id={settings.ar?.tourId} onSettingsScreen />;
       break;
     default:
       Component = (
         <SectionList
           keyExtractor={keyExtractor}
           sections={data}
-          renderItem={({ item }) => renderItem({ item, navigation })}
+          renderItem={({ item }) => renderItem({ item, navigation, listsWithoutArrows })}
           ListHeaderComponent={
             !!texts.settingsScreen.intro && (
               <Wrapper>
@@ -367,7 +376,7 @@ export const SettingsScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   }
 });
 

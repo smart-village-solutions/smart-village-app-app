@@ -2,23 +2,23 @@
 import * as FileSystem from 'expo-file-system';
 
 import { consts, texts } from '../../config';
-import { formatSize } from '../fileSizeHelper';
+import { formatSize, formatSizeStandard } from '../fileSizeHelper';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, JPG_TYPE_REGEX, PDF_TYPE_REGEX } = consts;
 
-export const documentErrorMessageGenerator = async (uri) => {
+export const documentErrorMessageGenerator = async (uri, maxFileSize = 3145728) => {
   const { size } = await FileSystem.getInfoAsync(uri);
 
   const isPDF = PDF_TYPE_REGEX.test(uri);
-  const isGreater3MB = size > 3145728;
+  const isGreaterMaxFileSize = size > maxFileSize;
 
   const errorMessage =
-    !isPDF && isGreater3MB
-      ? 'documentTypeAndSizeError'
+    !isPDF && isGreaterMaxFileSize
+      ? texts.consul.startNew.documentTypeAndSizeError
       : !isPDF
-      ? 'documentTypeError'
-      : isGreater3MB
-      ? 'documentSizeError'
+      ? texts.consul.startNew.documentTypeError
+      : isGreaterMaxFileSize
+      ? texts.noticeboard.alerts.documentSizeError(formatSizeStandard(maxFileSize))
       : '';
 
   return errorMessage;
@@ -75,6 +75,15 @@ export const errorTextGenerator = async ({
         {
           errorText: size > 10485760 && texts.volunteer.imageGreater10MBError,
           infoText: `${imageName}`
+        }
+      ]);
+      break;
+    case IMAGE_SELECTOR_ERROR_TYPES.SUE:
+      /* the server does not support files more than 10MB in size. */
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText: size > 10485760 && texts.sue.report.alerts.imageGreater10MBError
         }
       ]);
       break;

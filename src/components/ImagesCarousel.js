@@ -1,5 +1,6 @@
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
@@ -15,12 +16,19 @@ import { SettingsContext } from '../SettingsProvider';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 
-export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }) => {
+export const ImagesCarousel = ({
+  aspectRatio,
+  autoplayInterval,
+  data,
+  isDisturber,
+  navigation,
+  refreshTimeKey
+}) => {
   const { dimensions } = useContext(OrientationContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { sliderPauseButton = {} } = settings;
+  const { sliderPauseButton = {}, sliderSettings = {} } = settings;
   const {
     horizontalPosition = 'right',
     show: showSliderPauseButton = false,
@@ -31,6 +39,21 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
   const [isPaused, setIsPaused] = useState(false);
   const [carouselImageIndex, setCarouselImageIndex] = useState(0);
 
+  const carouselRef = useRef();
+  const isFocused = useIsFocused();
+
+  if (isFocused) {
+    carouselRef.current?.startAutoplay();
+  } else {
+    carouselRef.current?.stopAutoplay();
+  }
+
+  useEffect(() => {
+    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
+  }, [isPaused]);
+
+  const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
+
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
@@ -39,7 +62,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
   const itemWidth = imageWidth();
 
   const renderItem = useCallback(
-    ({ item }) => {
+    ({ item, refreshInterval }) => {
       const { routeName: name, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
@@ -81,7 +104,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
                   containerStyle={styles.imageContainer}
                   message={item.message}
                   navigation={navigation}
-                  refreshInterval={item.refreshInterval}
+                  refreshInterval={item.refreshInterval || refreshInterval}
                   source={item.picture}
                 />
               );
@@ -97,7 +120,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
           containerStyle={styles.imageContainer}
           message={item.message}
           navigation={navigation}
-          refreshInterval={item.refreshInterval}
+          refreshInterval={item.refreshInterval || refreshInterval}
           source={item.picture}
         />
       );
@@ -126,7 +149,10 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
       ) : (
         <Carousel
           data={carouselData}
-          renderItem={renderItem}
+          ref={carouselRef}
+          renderItem={({ item }) =>
+            renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
+          }
           sliderWidth={dimensions.width}
           itemWidth={itemWidth}
           inactiveSlideOpacity={1}
@@ -136,14 +162,14 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
           loop
           loopClonesPerSide={carouselData.length}
           autoplayDelay={0}
-          autoplayInterval={4000}
+          autoplayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
           containerCustomStyle={styles.center}
           onScrollIndexChanged={setCarouselImageIndex}
           removeClippedSubviews={false}
         />
       )}
 
-      {showSliderPauseButton &&
+      {shouldShowPauseButton &&
         pauseButton(
           horizontalPosition,
           isCopyrighted,
@@ -185,7 +211,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   imageContainer: {
-    alignSelf: 'center'
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: '100%'
   },
   pauseButton: {
     alignItems: 'center',
@@ -198,9 +226,11 @@ const styles = StyleSheet.create({
 });
 
 ImagesCarousel.propTypes = {
-  data: PropTypes.array.isRequired,
-  navigation: PropTypes.object,
-  refreshTimeKey: PropTypes.string,
   aspectRatio: PropTypes.object,
-  autoplay: PropTypes.bool
+  autoplay: PropTypes.bool,
+  autoplayInterval: PropTypes.number,
+  data: PropTypes.array.isRequired,
+  isDisturber: PropTypes.bool,
+  navigation: PropTypes.object,
+  refreshTimeKey: PropTypes.string
 };

@@ -14,19 +14,23 @@ const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
+/* eslint-disable complexity */
 export const VerticalList = ({
   data,
-  refetch,
   fetchMoreData,
+  isIndexStartingAt1 = false,
+  isLoading = false,
   ListEmptyComponent,
+  ListFooterLoadingIndicator,
   ListHeaderComponent,
-  navigation,
-  noSubtitle,
-  noOvertitle,
   listType,
+  navigation,
+  noOvertitle,
+  noSubtitle = false,
   openWebScreen,
   query,
   queryVariables,
+  refetch,
   refreshControl,
   showBackToTop,
   stickyHeaderIndices
@@ -39,11 +43,12 @@ export const VerticalList = ({
   const [listEndReached, setListEndReached] = useState(false);
 
   const renderItem = useRenderItem(query, navigation, {
-    noSubtitle,
+    isIndexStartingAt1,
+    listType,
     noOvertitle,
+    noSubtitle,
     openWebScreen,
-    refetch,
-    listType
+    refetch
   });
 
   const onEndReached = async () => {
@@ -69,8 +74,12 @@ export const VerticalList = ({
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
+            if (ListFooterLoadingIndicator) {
+              return <ListFooterLoadingIndicator />;
+            }
+
             return (
-              <ActivityIndicator color={colors.refreshControl} style={{ margin: normalize(14) }} />
+              <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
             );
           } else if (listEndReached && showBackToTop) {
             return (
@@ -92,6 +101,14 @@ export const VerticalList = ({
               </>
             );
           }
+        } else if (isLoading) {
+          if (ListFooterLoadingIndicator) {
+            return <ListFooterLoadingIndicator />;
+          }
+
+          return (
+            <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
+          );
         } else if (
           isPartOfIndexScreen &&
           query == QUERY_TYPES.POINTS_OF_INTEREST &&
@@ -115,6 +132,7 @@ export const VerticalList = ({
     />
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
@@ -123,6 +141,9 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1
   },
+  loadingIndicator: {
+    margin: normalize(14)
+  },
   spacer: {
     height: normalize(70)
   }
@@ -130,10 +151,11 @@ const styles = StyleSheet.create({
 
 VerticalList.propTypes = {
   data: PropTypes.array,
-  refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
-  leftImage: PropTypes.bool,
+  isIndexStartingAt1: PropTypes.bool,
+  isLoading: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
+  ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
@@ -142,13 +164,8 @@ VerticalList.propTypes = {
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
   queryVariables: PropTypes.object,
+  refetch: PropTypes.func,
   refreshControl: PropTypes.object,
   showBackToTop: PropTypes.bool,
   stickyHeaderIndices: PropTypes.array
-};
-
-VerticalList.defaultProps = {
-  noSubtitle: false,
-  noOvertitle: false,
-  leftImage: false
 };

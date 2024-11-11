@@ -22,6 +22,7 @@ const homeTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.home} (Tab 1 von 5)`,
     tabBarLabel: texts.tabBarLabel.home,
     tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon
@@ -87,6 +88,7 @@ const aboutTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.about} (Tab 5 von 5)`,
     tabBarLabel: texts.tabBarLabel.about,
     tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon

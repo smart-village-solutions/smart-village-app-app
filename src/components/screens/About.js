@@ -88,7 +88,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   },
   sectionHeader: {
     paddingLeft: 0,

@@ -31,7 +31,7 @@ const keyExtractor = (
   index: number
 ) => `index${index}-id${item.id}`;
 
-export const Filter = ({ queryVariables, refetch }: Props) => {
+export const MapFilter = ({ queryVariables, refetch }: Props) => {
   const [categoryIds, setCategoryIds] = useState<string[]>(
     queryVariables.categoryIds?.map((item) => item.toString()) || []
   );

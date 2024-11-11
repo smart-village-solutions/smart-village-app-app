@@ -96,10 +96,7 @@ export const Chat = ({
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
-    aspect: undefined,
-    mediaTypes: MediaTypeOptions.All,
-    onChange: undefined,
-    quality: undefined
+    mediaTypes: MediaTypeOptions.All
   });
 
   const { selectDocument } = useSelectDocument();
@@ -225,8 +222,8 @@ export const Chat = ({
         <MessageText
           {...props}
           textStyle={{
-            left: messageTextStyleLeft || styles.textStyle,
-            right: messageTextStyleRight || styles.textStyle
+            left: [styles.textStyle, messageTextStyleLeft],
+            right: [styles.textStyle, messageTextStyleRight]
           }}
         />
       )}
@@ -258,7 +255,7 @@ const renderFooter = (medias, setMedias) => (
               borderRadius={normalize(4)}
               resizeMode="cover"
               source={{ uri }}
-              style={styles.mediaPreview}
+              childrenContainerStyle={styles.mediaPreview}
             />
           )}
           {type === 'video' && (
@@ -366,7 +363,8 @@ const styles = StyleSheet.create({
   textStyle: {
     color: colors.darkText,
     fontFamily: 'regular',
-    fontSize: normalize(14)
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   videoBubble: {
     alignSelf: 'center',

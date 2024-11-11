@@ -9,6 +9,7 @@ import { CategoryList } from './CategoryList';
 import { EventList } from './EventList';
 import { HorizontalList } from './HorizontalList';
 import { VerticalList } from './VerticalList';
+import { VoucherList } from './vouchers';
 
 const { LIST_TYPES } = consts;
 
@@ -36,6 +37,9 @@ const getComponent = (query, horizontal, sectionByDate) => {
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
       return sectionByDate ? EventList : VerticalList;
+    case QUERY_TYPES.VOUCHERS:
+    case QUERY_TYPES.VOUCHERS_REDEEMED:
+      return VoucherList;
     default:
       return VerticalList;
   }
@@ -45,11 +49,13 @@ const getComponent = (query, horizontal, sectionByDate) => {
 // which can be overwritten by passing in the horizontal prop
 export const ListComponent = ({
   data,
-  refetch,
   fetchMoreData,
   horizontal,
+  isIndexStartingAt1,
+  isLoading,
   ListEmptyComponent,
   ListFooterComponent,
+  ListFooterLoadingIndicator,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -58,6 +64,7 @@ export const ListComponent = ({
   openWebScreen,
   query,
   queryVariables,
+  refetch,
   refreshControl,
   sectionByDate,
   showBackToTop,
@@ -79,8 +86,10 @@ export const ListComponent = ({
       data={data}
       refetch={refetch}
       fetchMoreData={fetchMoreData}
+      isLoading={isLoading}
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={ListFooterComponent}
+      ListFooterLoadingIndicator={ListFooterLoadingIndicator}
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
@@ -89,6 +98,7 @@ export const ListComponent = ({
       openWebScreen={openWebScreen}
       query={query}
       queryVariables={queryVariables}
+      isIndexStartingAt1={isIndexStartingAt1}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
       stickyHeaderIndices={stickyHeaderIndices}
@@ -98,11 +108,13 @@ export const ListComponent = ({
 
 ListComponent.propTypes = {
   data: PropTypes.array,
-  refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
+  isIndexStartingAt1: PropTypes.bool,
+  isLoading: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterComponent: PropTypes.object,
+  ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
@@ -111,6 +123,7 @@ ListComponent.propTypes = {
   openWebScreen: PropTypes.func,
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object,
+  refetch: PropTypes.func,
   refreshControl: PropTypes.object,
   sectionByDate: PropTypes.bool,
   showBackToTop: PropTypes.bool,

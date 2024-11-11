@@ -41,7 +41,7 @@ export const Title = styled(Text)`
 // thx to https://github.com/styled-components/styled-components/issues/709#issuecomment-377968412
 export const TitleContainer = styled.View`
   background-color: ${colors.surface};
-  padding: ${normalize(7)}px ${normalize(14)}px;
+  padding: ${normalize(8)}px ${normalize(16)}px;
 
   ${(props) =>
     !props.flat &&

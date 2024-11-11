@@ -13,7 +13,7 @@ export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   renderSectionHeader = ({ section: { title, data } }) => {
-    const { hasSectionHeader } = this.props;
+    const { hasSectionHeader = true } = this.props;
 
     if (!title || !data?.length || !hasSectionHeader) return null;
 
@@ -31,7 +31,7 @@ export class CategoryList extends React.PureComponent {
       ListFooterComponent,
       ListHeaderComponent,
       navigation,
-      noSubtitle,
+      noSubtitle = false,
       queryVariables,
       refreshControl
     } = this.props;
@@ -109,9 +109,4 @@ CategoryList.propTypes = {
   noSubtitle: PropTypes.bool,
   queryVariables: PropTypes.object,
   refreshControl: PropTypes.object
-};
-
-CategoryList.defaultProps = {
-  noSubtitle: false,
-  hasSectionHeader: true
 };

@@ -2,14 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { colors, normalize, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
 import { AppIntroSlide } from '../types';
 
-const keyExtractor = (slide: AppIntroSlide) => slide.title + slide.text;
+const keyExtractor = (slide: AppIntroSlide, index: number) => `index${index}-text${slide.text}`;
 
 const SliderButton = ({ label }: { label: string }) => {
   return (
@@ -82,6 +83,7 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
         renderItem={renderSlide}
         renderNextButton={() => <SliderButton label={texts.appIntro.continue} />}
         scrollEnabled={false}
+        style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
     </SafeAreaViewFlex>
   );

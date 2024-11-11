@@ -4,108 +4,212 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth, trimNewLines } from '../helpers';
+import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
+import { SueCategory, SueImageFallback, SueStatus } from './SUE';
 import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
+import { Wrapper, WrapperHorizontal } from './Wrapper';
 
-const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
-  const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
+const keyExtractor = (item, index) => `item${item}-index${index}`;
+
+/* eslint-disable complexity */
+const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) => {
+  const {
+    address,
+    appDesignSystem = {},
+    aspectRatio,
+    iconName,
+    picture,
+    requestedDatetime,
+    serviceName,
+    status,
+    subtitle,
+    title,
+    topTitle
+  } = item;
   const {
     contentSequence,
     imageBorderRadius = normalize(8),
     imageStyle,
     textsStyle = {}
   } = appDesignSystem;
-  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
+  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
 
   const cardContent = [];
 
   const sequenceMap = {
-    picture: () => (
-      <Image
-        source={{ uri: picture.url }}
-        style={stylesWithProps({ horizontal }).image}
-        containerStyle={[styles.imageContainer, !!imageStyle && imageStyle]}
-        borderRadius={imageBorderRadius}
-      />
-    ),
-    overtitle: () => (
-      <HeadlineText
-        smallest
-        uppercase
-        style={[
-          picture?.url && styles.overtitleMarginTop,
-          styles.overtitleMarginBottom,
-          !!generalStyle && generalStyle,
-          !!overtitleStyle && overtitleStyle
-        ]}
-      >
-        {trimNewLines(overtitle)}
-      </HeadlineText>
-    ),
-    subtitle: () => (
-      <RegularText
-        small
-        style={[styles.subtitle, !!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}
-      >
-        {subtitle}
-      </RegularText>
-    ),
-    title: () => (
-      <HeadlineText
-        small={!bigTitle}
-        style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}
-      >
-        {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-      </HeadlineText>
-    )
+    picture: () =>
+      !!picture?.url && (
+        <Image
+          borderRadius={sue ? 0 : imageBorderRadius}
+          childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
+          containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
+          key={keyExtractor(picture.url, index)}
+          source={{ uri: picture.url }}
+        />
+      ),
+    subtitle: () =>
+      !!subtitle && (
+        <RegularText
+          key={keyExtractor(subtitle, index)}
+          small
+          style={[styles.subtitle, generalStyle, subtitleStyle]}
+        >
+          {subtitle}
+        </RegularText>
+      ),
+    title: () =>
+      !!title && (
+        <HeadlineText
+          key={keyExtractor(title, index)}
+          small={!bigTitle}
+          style={[generalStyle, titleStyle]}
+        >
+          {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+        </HeadlineText>
+      ),
+    topTitle: () =>
+      !!topTitle && (
+        <HeadlineText
+          key={keyExtractor(topTitle, index)}
+          smallest
+          uppercase
+          style={[
+            picture?.url && styles.overtitleMarginTop,
+            styles.overtitleMarginBottom,
+            generalStyle,
+            topTitleStyle
+          ]}
+        >
+          {trimNewLines(topTitle)}
+        </HeadlineText>
+      ),
+
+    // SUE
+    sue: {
+      address: () => (
+        <Wrapper key={keyExtractor(address, index)}>
+          <RegularText small>{address}</RegularText>
+        </Wrapper>
+      ),
+      category: () => (
+        <SueCategory
+          key={keyExtractor(serviceName, index)}
+          serviceName={serviceName}
+          requestedDatetime={requestedDatetime}
+        />
+      ),
+      divider: () => (
+        <Wrapper key={keyExtractor('divider', index)} style={styles.noPaddingTop}>
+          <Divider />
+        </Wrapper>
+      ),
+      pictureFallback: () => (
+        <SueImageFallback
+          key={keyExtractor('fallbackImage', index)}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImageContainer]}
+        />
+      ),
+      status: () => (
+        <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
+      )
+    }
   };
 
   if (contentSequence?.length) {
     contentSequence.forEach((item) => {
-      if (sequenceMap[item]) {
-        cardContent.push(sequenceMap[item]());
-      }
+      sequenceMap[item] && cardContent.push(sequenceMap[item]());
     });
   } else {
     picture?.url && cardContent.push(sequenceMap.picture());
-    !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
-    title && cardContent.push(sequenceMap.title());
+    !noOvertitle && topTitle && cardContent.push(sequenceMap.topTitle());
+    !sue && title && cardContent.push(sequenceMap.title());
     subtitle && cardContent.push(sequenceMap.subtitle());
+
+    if (sue) {
+      !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
+      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.category());
+      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.divider());
+      title &&
+        cardContent.push(
+          <WrapperHorizontal key={keyExtractor(title, index)}>
+            {sequenceMap.title()}
+          </WrapperHorizontal>
+        );
+      address && cardContent.push(sequenceMap.sue.address());
+      status && cardContent.push(sequenceMap.sue.status());
+    }
   }
 
   return cardContent;
 };
+/* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle }) => {
-  const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
-  const { containerStyle, contentContainerStyle } = appDesignSystem;
+export const CardListItem = memo(
+  ({
+    horizontal = false,
+    index,
+    item,
+    sue = false,
+    navigation,
+    noOvertitle = false,
+    bigTitle = false
+  }) => {
+    const {
+      appDesignSystem = {},
+      params,
+      routeName: name,
+      serviceName,
+      requestedDatetime,
+      subtitle,
+      title,
+      topTitle
+    } = item;
+    const { containerStyle, contentContainerStyle } = appDesignSystem;
 
-  // TODO: count articles logic could to be implemented
-  return (
-    <Touchable
-      accessibilityLabel={`${subtitle} (${title}) ${consts.a11yLabel.button}`}
-      onPress={() => navigation && navigation.push(name, params)}
-      disabled={!navigation}
-    >
-      <View>
-        <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
-          <View
-            style={[
-              stylesWithProps({ horizontal }).contentContainer,
-              !!contentContainerStyle && contentContainerStyle
+    const accessibilityLabel = [
+      !!requestedDatetime && momentFormat(requestedDatetime),
+      !!serviceName && serviceName,
+      !!topTitle && topTitle,
+      !!title && title,
+      !!subtitle && subtitle
+    ]
+      .filter((text) => !!text)
+      .map((text) => `(${text})`)
+      .join(' ');
+
+    return (
+      <Touchable
+        accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
+        onPress={() => navigation && navigation.push(name, params)}
+        disabled={!navigation}
+      >
+        <View>
+          <Card
+            containerStyle={[
+              styles.container,
+              stylesWithProps({ horizontal }).container,
+              containerStyle
             ]}
           >
-            {renderCardContent(item, horizontal, noOvertitle, bigTitle)}
-          </View>
-        </Card>
-        <Divider />
-      </View>
-    </Touchable>
-  );
-});
+            <View
+              style={[
+                stylesWithProps({ horizontal }).contentContainer,
+                contentContainerStyle,
+                sue && styles.sueContentContainer
+              ]}
+            >
+              {renderCardContent(item, index, horizontal, noOvertitle, bigTitle, sue)}
+            </View>
+          </Card>
+          {!horizontal && <Divider />}
+        </View>
+      </Touchable>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -127,17 +231,35 @@ const styles = StyleSheet.create({
     marginBottom: normalize(4)
   },
   overtitleMarginTop: {
-    marginTop: normalize(14)
+    marginTop: normalize(6)
   },
-  imageContainer: {},
   subtitle: {
     marginTop: normalize(6)
+  },
+  imageContainer: {
+    alignSelf: 'center',
+    marginBottom: normalize(7)
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  sueContentContainer: {
+    borderColor: colors.gray20,
+    borderRadius: normalize(8),
+    borderWidth: 1,
+    width: '100%'
+  },
+  sueImageContainer: {
+    alignSelf: 'auto',
+    borderTopLeftRadius: normalize(8),
+    borderTopRightRadius: normalize(8),
+    width: '100%'
   }
 });
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal }) => {
+const stylesWithProps = ({ aspectRatio, horizontal }) => {
   let width = imageWidth();
 
   if (horizontal) {
@@ -153,8 +275,8 @@ const stylesWithProps = ({ horizontal }) => {
     },
     image: {
       marginBottom: normalize(7),
-      height: imageHeight(width),
-      width: width
+      height: imageHeight(maxWidth, aspectRatio),
+      width: maxWidth
     }
   });
 };
@@ -163,15 +285,11 @@ const stylesWithProps = ({ horizontal }) => {
 CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
-  navigation: PropTypes.object,
-  item: PropTypes.object.isRequired,
+  bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
+  index: PropTypes.number,
+  item: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,
-  bigTitle: PropTypes.bool
-};
-
-CardListItem.defaultProps = {
-  horizontal: false,
-  noOvertitle: false,
-  bigTitle: false
+  sue: PropTypes.bool
 };

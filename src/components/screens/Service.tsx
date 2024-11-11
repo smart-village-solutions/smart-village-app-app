@@ -15,7 +15,27 @@ import { WrapperWrap } from '../Wrapper';
 import { DraggableGrid } from './DraggableGrid';
 import { ServiceTile, TServiceTile } from './ServiceTile';
 
-const { MATOMO_TRACKING } = consts;
+const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
+
+export const umlautSwitcher = (text: string) => {
+  if (!text) return;
+
+  const umlautReplacements = {
+    ü: 'ue',
+    ä: 'ae',
+    ö: 'oe',
+    Ü: 'UE',
+    Ä: 'AE',
+    Ö: 'OE',
+    ß: 'ss'
+  };
+
+  const replacedText = text
+    .replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match])
+    ?.replace('​', '');
+
+  return replacedText;
+};
 
 export const Service = ({
   data,
@@ -55,11 +75,12 @@ export const Service = ({
   const renderItem = useCallback(
     (item: TServiceTile, index: number) => (
       <ServiceTile
-        draggableId={item.title || item.accessibilityLabel}
+        draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
+        draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
         item={item}
-        key={index + (item.title || item.accessibilityLabel)}
+        key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         tileSizeFactor={tileSizeFactor}
       />

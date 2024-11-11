@@ -13,7 +13,7 @@ import { TextBlock } from '../../components/BB-BUS/TextBlock';
 import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, device, normalize } from '../../config';
-import { matomoTrackingString, openLink } from '../../helpers';
+import { matomoTrackingString, openLink, rootRouteName } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_SERVICE } from '../../queries/BB-BUS';
@@ -42,22 +42,33 @@ const TEXT_BLOCKS_SORTER = {
   'Zuständige Stelle': 15
 };
 
-const FormButton = ({ link, name }) => {
+const FormButton = ({ headerTitle, link, name, rootRouteName }) => {
   const { url } = link;
+  const openWebScreen = useOpenWebScreen(headerTitle, url, rootRouteName);
 
-  return <Button title={name} onPress={() => openLink(url)} invert />;
+  return <Button title={name} onPress={() => openLink(url, openWebScreen)} invert />;
 };
 
 FormButton.propTypes = {
+  headerTitle: PropTypes.string,
   link: PropTypes.object.isRequired,
-  name: PropTypes.string
+  name: PropTypes.string,
+  rootRouteName: PropTypes.string
 };
 
-const renderForm = (form) => {
+const renderForm = (headerTitle, form, rootRouteName) => {
   const { links, name } = form;
 
   return links.map((link) => {
-    return <FormButton name={name} key={link.url} link={link} />;
+    return (
+      <FormButton
+        headerTitle={headerTitle}
+        key={link.url}
+        link={link}
+        name={name}
+        rootRouteName={rootRouteName}
+      />
+    );
   });
 };
 
@@ -157,7 +168,9 @@ export const DetailScreen = ({ route }) => {
         }
       >
         {!!forms?.length && (
-          <View style={styles.formContainer}>{forms.map((form) => renderForm(form))}</View>
+          <View style={styles.formContainer}>
+            {forms.map((form) => renderForm(headerTitle, form, rootRouteName))}
+          </View>
         )}
 
         {firstTextBlocks?.map((textBlock, index) => {

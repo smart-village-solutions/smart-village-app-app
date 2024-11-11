@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Divider } from 'react-native-elements';
 
-import { normalize } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { Image } from '../Image';
-import { BoldText, RegularText } from '../Text';
+import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 type Props = {
   date: number;
   description: string;
   icon: string;
+  index: number;
   temperatures: {
     day: number;
     eve: number;
@@ -22,76 +22,56 @@ type Props = {
   };
 };
 
-export const DailyWeather = ({ date, description, icon, temperatures }: Props) => {
-  const { day, eve, max, min, morn, night } = temperatures;
+export const DailyWeather = ({ date, description, icon, temperatures, index }: Props) => {
+  const { max, min } = temperatures;
 
   return (
-    <View>
-      <View style={styles.dayContainer}>
-        <WrapperHorizontal>
+    <WrapperHorizontal>
+      <WrapperRow spaceBetween itemsCenter>
+        <View style={styles.textWrapper}>
+          {index === 0 && <RegularText>{texts.weather.today}</RegularText>}
+          {index === 1 && <RegularText>{texts.weather.tomorrow}</RegularText>}
+          {index > 1 && <RegularText>{momentFormat(date * 1000, 'DD.MM.', 'x')}</RegularText>}
+        </View>
+        <Image
+          source={{
+            uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
+            captionText: description
+          }}
+          childrenContainerStyle={styles.icon}
+          resizeMode="contain"
+        />
+        <WrapperRow>
           <WrapperRow>
-            <BoldText>{momentFormat(date * 1000, 'dddd', 'x')}</BoldText>
-            <RegularText>{momentFormat(date * 1000, ' DD.MM.YYYY', 'x')}</RegularText>
-          </WrapperRow>
-          <WrapperRow center>
-            <View style={styles.iconContainer}>
-              <Image
-                source={{
-                  uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
-                  captionText: description
-                }}
-                style={styles.icon}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={[styles.maxMinContainer, styles.dayTimeEntry]}>
-              <BoldText big>{max.toFixed(1)}°C</BoldText>
-              <RegularText>{min.toFixed(1)}°C</RegularText>
-            </View>
-          </WrapperRow>
-          <RegularText />
-          <WrapperRow spaceBetween>
-            <RegularText center>
-              Morgens{'\n'}
-              {morn.toFixed(1)}°C
-            </RegularText>
-            <RegularText center>
-              Mittags{'\n'}
-              {day.toFixed(1)}°C
-            </RegularText>
-            <RegularText center>
-              Abends{'\n'}
-              {eve.toFixed(1)}°C
-            </RegularText>
-            <RegularText center>
-              Nachts{'\n'}
-              {night.toFixed(1)}°C
+            <Icon.MinTemperature color={colors.darkText} />
+            <RegularText>
+              {min < 10 ? ' ' : ''}
+              {min.toFixed(0)}°
             </RegularText>
           </WrapperRow>
-        </WrapperHorizontal>
-      </View>
-      <Divider />
-    </View>
+          <View style={styles.marginHorizontal} />
+          <WrapperRow>
+            <Icon.MaxTemperature color={colors.darkText} />
+            <RegularText>
+              {max < 10 ? ' ' : ''}
+              {max.toFixed(0)}°
+            </RegularText>
+          </WrapperRow>
+        </WrapperRow>
+      </WrapperRow>
+    </WrapperHorizontal>
   );
 };
 
 const styles = StyleSheet.create({
-  dayContainer: {
-    paddingVertical: normalize(14)
-  },
-  dayTimeEntry: {
-    alignItems: 'center'
+  marginHorizontal: {
+    marginHorizontal: normalize(5)
   },
   icon: {
     aspectRatio: 1,
-    width: normalize(64)
+    width: normalize(44)
   },
-  iconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: normalize(44)
-  },
-  maxMinContainer: {
-    justifyContent: 'center'
+  textWrapper: {
+    width: normalize(70)
   }
 });

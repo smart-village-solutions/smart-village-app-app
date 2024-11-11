@@ -10,6 +10,7 @@ config.resolver = {
 };
 config.transformer = {
   ...config.transformer,
+  babelTransformerPath: require.resolve('react-native-svg-transformer'),
   getTransformOptions: async () => ({
     transform: {
       experimentalImportSupport: false,

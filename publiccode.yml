@@ -77,18 +77,30 @@ intendedAudience:
   countries:
     - de
   scope:
+    - citizen-participation
+    - commerce-and-services
+    - communication-and-information
+    - community
+    - cultural-and-leisure-activities
     - culture
+    - education
     - emergency-services
     - employment
     - environment
     - finance-and-economic-development
     - government
+    - healthcare
+    - housing
     - infrastructures
     - local-authorities
+    - mobility-and-accessibility
+    - security
     - society
     - sport
     - tourism
     - transportation
+    - voluntary-work
+    - waste-management
 landingURL: 'https://smart-village.app'
 legal:
   license: GPL-3.0-or-later
@@ -99,6 +111,11 @@ localisation:
     - de
   localisationReady: false
 maintenance:
+  contacts:
+    - email: p.wilimzig@smart-village.solutions
+      name: Philipp Wilimzig
+      affiliation: Smart Village Solutions SVS GmbH
+      phone: +4930549064215
   contractors:
     - name: Smart Village Solutions SVS GmbH
       until: '2027-12-31'
@@ -108,14 +125,35 @@ name: Smart Village App
 platforms:
   - ios
   - android
-releaseDate: '2022-07-05'
+releaseDate: '2024-06-28'
 softwareType: standalone/mobile
-softwareVersion: 2.6.0
+softwareVersion: 4.0.0
 url: 'https://github.com/ikuseiGmbH/smart-village-app-app'
 usedBy:
-  - Stadt Bad Belzig
-  - Stadt Herzberg/Elster
-  - Stadt Frankfurt (Oder)
+  - Angermünde
+  - Bad Belzig
+  - Bernau bei Berlin
+  - Birkenwerder
+  - Detmold
+  - Eberswalde
+  - Eichenzell
+  - Eisenhüttenstadt
+  - Falkenberg/Elster
+  - Frankfurt (Oder)
+  - Gransee
+  - Guben
+  - Hagenow
+  - Herzberg/Elster
+  - Hohen Neuendorf
+  - Kyritz
+  - Landkreis Havelland
+  - Landkreis Mayen-Koblenz
   - Landkreis Uckermark
-  - Amt Gransee und Gemeinden
-  - Gemeinde Schönefeld
+  - Michendorf
+  - Nuthetal
+  - Panketal
+  - Prenzlau
+  - Rüdersdorf
+  - Schönefeld
+  - Seelow
+  - Spremberg

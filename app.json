@@ -7,7 +7,7 @@
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
-    "version": "3.3.9",
+    "version": "4.0.2",
     "extra": { "eas": { "projectId": "84611212-b1ac-47b3-8f2d-065898fab1cb" } },
     "updates": { "url": "https://u.expo.dev/84611212-b1ac-47b3-8f2d-065898fab1cb" },
     "runtimeVersion": { "policy": "nativeVersion" },
@@ -28,10 +28,11 @@
       "usesIcloudStorage": true,
       "requireFullScreen": true,
       "infoPlist": {
+        "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": true },
         "NSCameraUsageDescription": "Diese App nutzt die Kamera zur Aufnahme von Bildern.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
-        "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
+        "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryDiskSpace",
@@ -44,7 +45,8 @@
         ],
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
-        "LSApplicationQueriesSchemes": ["whatsapp"]
+        "LSApplicationQueriesSchemes": ["whatsapp"],
+        "LSMinimumSystemVersion": "12.0"
       },
       "config": {
         "usesNonExemptEncryption": false
@@ -96,16 +98,26 @@
         }
       ],
       [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
         "expo-media-library",
         {
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
         }
       ],
-      "expo-image-picker",
-      "expo-localization",
-      "sentry-expo",
+      "@config-plugins/react-native-blob-util",
+      "@config-plugins/react-native-pdf",
+      "@reactvision/react-viro",
       "expo-asset",
       "expo-font",
+      "expo-image-picker",
+      "expo-localization",
       "expo-secure-store",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]

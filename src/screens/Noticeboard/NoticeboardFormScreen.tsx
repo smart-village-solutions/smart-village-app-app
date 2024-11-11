@@ -4,6 +4,7 @@ import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
+  DocumentList,
   HtmlView,
   LoadingContainer,
   NoticeboardCreateForm,
@@ -29,6 +30,7 @@ export const NoticeboardFormScreen = ({
   const name = route?.params?.name ?? '';
   const isNewEntryForm = route?.params?.isNewEntryForm ?? false;
   const details = route?.params?.details ?? {};
+  const queryVariables = route?.params?.queryVariables ?? {};
 
   const {
     data: dataHtml,
@@ -74,7 +76,15 @@ export const NoticeboardFormScreen = ({
         >
           <Wrapper>{!!dataHtml && <HtmlView html={dataHtml} />}</Wrapper>
 
-          <Component {...{ data: details, navigation, route }} />
+          {!!details?.mediaContents?.some((media) => media.contentType === 'application/pdf') && (
+            <DocumentList
+              documents={details.mediaContents.filter(
+                (media) => media.contentType === 'application/pdf'
+              )}
+            />
+          )}
+
+          <Component {...{ data: details, navigation, route, queryVariables }} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

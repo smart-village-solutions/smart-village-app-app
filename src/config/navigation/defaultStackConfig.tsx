@@ -46,6 +46,7 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  PdfScreen,
   ProfileConversationsScreen,
   ProfileEditMailScreen,
   ProfileEditPasswordScreen,
@@ -57,6 +58,10 @@ import {
   ProfileSignupScreen,
   ProfileUpdateScreen,
   SettingsScreen,
+  SueListScreen,
+  SueMapScreen,
+  SueMapViewScreen,
+  SueReportScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
   TilesScreen,
@@ -71,6 +76,11 @@ import {
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   VolunteerSignupScreen,
+  VoucherDetailScreen,
+  VoucherHomeScreen,
+  VoucherIndexScreen,
+  VoucherLoginScreen,
+  VoucherScannerScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -338,6 +348,10 @@ export const defaultStackConfig = ({
       screenComponent: OParlSearchScreen
     },
     {
+      routeName: ScreenName.Pdf,
+      screenComponent: PdfScreen
+    },
+    {
       routeName: ScreenName.Profile,
       screenComponent: ProfileHomeScreen,
       screenOptions: getScreenOptions({ withInfo: true }),
@@ -411,6 +425,38 @@ export const defaultStackConfig = ({
       initialParams: { title: texts.screenTitles.settings }
     },
     {
+      routeName: ScreenName.SueList,
+      screenComponent: SueListScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.listView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueMap,
+      screenComponent: SueMapScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.mapView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueReport,
+      screenComponent: SueReportScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.reportView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueReportMapView,
+      screenComponent: SueMapViewScreen,
+      screenOptions: { title: texts.screenTitles.mapView }
+    },
+    {
       routeName: ScreenName.SurveyDetail,
       screenComponent: SurveyDetailScreen,
       screenOptions: { title: texts.screenTitles.survey }
@@ -481,6 +527,30 @@ export const defaultStackConfig = ({
       routeName: ScreenName.VolunteerSignup,
       screenComponent: VolunteerSignupScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VoucherDetail,
+      screenComponent: VoucherDetailScreen,
+      screenOptions: getScreenOptions({ withBookmark: false })
+    },
+    {
+      routeName: ScreenName.VoucherHome,
+      screenComponent: VoucherHomeScreen,
+      screenOptions: { title: texts.screenTitles.voucher.home }
+    },
+    {
+      routeName: ScreenName.VoucherIndex,
+      screenComponent: VoucherIndexScreen
+    },
+    {
+      routeName: ScreenName.VoucherLogin,
+      screenComponent: VoucherLoginScreen,
+      screenOptions: { title: texts.screenTitles.voucher.home }
+    },
+    {
+      routeName: ScreenName.VoucherScanner,
+      screenComponent: VoucherScannerScreen,
+      screenOptions: { title: texts.screenTitles.voucher.qr }
     },
     {
       routeName: ScreenName.WasteCollection,

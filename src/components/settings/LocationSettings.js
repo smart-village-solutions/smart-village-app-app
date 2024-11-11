@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Linking, ScrollView, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 import { normalize, texts } from '../../config';
@@ -19,7 +19,7 @@ export const baseLocationMarker = {
 };
 
 export const getLocationMarker = (locationObject) => ({
-  ...baseLocationMarker,
+  iconName: locationObject?.iconName || baseLocationMarker.iconName,
   position: {
     ...locationObject.coords,
     latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
@@ -76,7 +76,16 @@ export const LocationSettings = () => {
         revert();
         Alert.alert(
           texts.settingsTitles.locationService,
-          texts.settingsContents.locationService.onSystemPermissionMissing
+          texts.settingsContents.locationService.onSystemPermissionMissing,
+          [
+            {
+              text: texts.settingsContents.locationService.cancel
+            },
+            {
+              text: texts.settingsContents.locationService.settings,
+              onPress: () => Linking.openSettings()
+            }
+          ]
         );
       });
     },

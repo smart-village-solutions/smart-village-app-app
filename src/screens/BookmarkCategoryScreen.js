@@ -14,18 +14,20 @@ import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
-import { getQuery } from '../queries';
+import { getQuery, QUERY_TYPES } from '../queries';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
+  const queryKey = query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query;
+  const queryVariables = route.params?.queryVariables ?? {};
   const suffix = route.params?.suffix ?? '';
   const categoryTitleDetail = route.params?.categoryTitleDetail ?? '';
   const bookmarks = useBookmarks(query, suffix);
   const listType = route.params?.listType ?? LIST_TYPES.TEXT_LIST;
 
-  const variables = { ids: bookmarks };
+  const variables = { ids: bookmarks, ...queryVariables };
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -69,7 +71,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
       </Wrapper>
     );
   }
-  const listItems = parseListItemsFromQuery(query, data, categoryTitleDetail);
+  const listItems = parseListItemsFromQuery(query, data, categoryTitleDetail, { queryKey });
 
   return (
     <SafeAreaViewFlex>

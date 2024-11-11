@@ -3,7 +3,7 @@ import React, { createContext, useState } from 'react';
 
 export const SettingsContext = createContext({
   globalSettings: {
-    appDesignSystem: {},
+    deprecated: {},
     filter: {},
     hdvt: {},
     navigation: 'tab',

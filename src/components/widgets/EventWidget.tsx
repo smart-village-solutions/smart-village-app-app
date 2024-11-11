@@ -1,44 +1,57 @@
 import { useNavigation } from '@react-navigation/core';
 import moment from 'moment';
 import React, { useCallback, useContext, useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery } from 'react-query';
 
 import { consts, Icon, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useHomeRefresh, useRefreshTime, useVolunteerData } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
+import { useHomeRefresh, useVolunteerData } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-const { REFRESH_INTERVALS, ROOT_ROUTE_NAMES } = consts;
+const { ROOT_ROUTE_NAMES } = consts;
 
 const today = moment().format('YYYY-MM-DD');
+// we need to set a date range to correctly sort the results by list date, so we set it far in the future
+const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
-  const refreshTime = useRefreshTime('event-widget', REFRESH_INTERVALS.ONCE_A_DAY);
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { hdvt = {} } = globalSettings;
+  const { deprecated = {}, hdvt = {} } = globalSettings;
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
-  const [queryVariables] = useState<{ dateRange?: string[]; limit?: number; order: string }>({
-    dateRange: [today, today],
+  const [queryVariables] = useState<{ dateRange?: string[]; order?: string }>({
+    dateRange: [today, additionalProps?.noFilterByDailyEvents ? todayIn10Years : today],
     order: 'listDate_ASC'
   });
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  if (additionalProps?.noFilterByDailyEvents) {
-    delete queryVariables.dateRange;
-  }
+  const {
+    data,
+    isLoading: loading,
+    refetch
+  } = useQuery(
+    [
+      deprecated?.events?.listingWithoutDateFragment
+        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+        : QUERY_TYPES.EVENT_RECORDS_COUNT,
+      queryVariables
+    ],
+    async () => {
+      const client = await ReactQueryClient();
 
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-    fetchPolicy,
-    variables: queryVariables,
-    skip: !refreshTime
-  });
+      return await client.request(
+        getQuery(
+          deprecated?.events?.listingWithoutDateFragment
+            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+            : QUERY_TYPES.EVENT_RECORDS_COUNT
+        ),
+        queryVariables
+      );
+    }
+  );
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,

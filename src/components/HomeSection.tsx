@@ -1,15 +1,14 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery } from 'react-query';
 
 import { useHomeRefresh, useVolunteerData } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { ReactQueryClient } from '../ReactQueryClient';
 
 import { DataListSection } from './DataListSection';
 
 type Props = {
-  title: string;
-  titleDetail?: string;
   buttonTitle: string;
   fetchPolicy:
     | 'cache-first'
@@ -18,29 +17,33 @@ type Props = {
     | 'no-cache'
     | 'standby'
     | 'cache-and-network';
+  isIndexStartingAt1: boolean;
   navigate: () => void;
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: string;
-  queryVariables: { limit?: number };
+  queryVariables: { limit?: number; take?: number };
   showVolunteerEvents?: boolean;
+  title: string;
+  titleDetail?: string;
 };
 
 export const HomeSection = ({
   buttonTitle,
-  title,
-  titleDetail,
-  fetchPolicy,
+  isIndexStartingAt1 = false,
   navigate,
   navigation,
   placeholder,
   query,
   queryVariables,
-  showVolunteerEvents = false
+  showVolunteerEvents = false,
+  title,
+  titleDetail
 }: Props) => {
-  const { data, loading: isLoading, refetch } = useQuery(getQuery(query), {
-    variables: queryVariables,
-    fetchPolicy
+  const { data, isLoading, refetch } = useQuery([query, queryVariables], async () => {
+    const client = await ReactQueryClient();
+
+    return await client.request(getQuery(query), queryVariables);
   });
 
   const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
@@ -73,8 +76,10 @@ export const HomeSection = ({
 
   return (
     <DataListSection
+      additionalData={additionalData}
       buttonTitle={buttonTitle}
-      limit={queryVariables?.limit}
+      isIndexStartingAt1={isIndexStartingAt1}
+      limit={queryVariables?.limit || queryVariables?.take}
       loading={loading}
       navigate={navigate}
       navigateButton={navigate}
@@ -82,7 +87,6 @@ export const HomeSection = ({
       placeholder={placeholder}
       query={query}
       sectionData={data}
-      additionalData={additionalData}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}

@@ -12,30 +12,35 @@ export const consts = {
     birthDateHint: 'Öffnet Datumsauswahl',
     bookmarkList: 'Lesezeichenliste (Taste)',
     bookmarkListHint: '(Zu der Lesezeichenliste hinzufügen)',
+    bookmarksHint: 'Zu den Lesezeichen wechseln',
+    bookmarksIcon: 'Lesezeichen (Taste)',
     button: '(Taste)',
-    calendarIcon: 'Neuer Termin (Taste)',
     calendarHint: 'Einen neuen Termin erstellen',
+    calendarIcon: 'Neuer Termin (Taste)',
     category: '(Kategorie)',
     changeImage: 'Bild ändern',
-    chatIcon: 'Neue Unterhaltung (Taste)',
     chatHint: 'Eine neue Unterhaltung beginnen',
-    closeMenuIcon: 'Schließen (Taste)',
+    chatIcon: 'Neue Unterhaltung (Taste)',
+    checkbox: '(Checkbox)',
+    closeIcon: 'Schließen (Taste)',
     closeMenuHint: 'Menü schließen',
+    closeMenuIcon: 'Schließen (Taste)',
+    deleteHint: 'Die eingetragenen Meldungsinformationen löschen',
+    deleteIcon: 'Löschen (Taste)',
     dropDownMenu: 'Dropdown-Menü (Taste)',
     dropDownMenuItem: 'Dropdown-Menü-Eintrag (Taste)',
-    editIcon: 'Bearbeiten (Taste)',
     editHint: 'Diesen Eintrag bearbeiten',
+    editIcon: 'Bearbeiten (Taste)',
     encounterId: 'Identifikationsnummer',
     encounterIdInfo: 'Informationen zur Identifikationsnummer',
     fax: '(Fax)',
     firstName: 'Vorname',
-    groupIcon: 'Neue Gruppe/Verein (Taste)',
     groupHint: 'Eine neue Gruppe oder einen neuen Verein erstellen',
+    groupIcon: 'Neue Gruppe/Verein (Taste)',
     heading: '(Überschrift)',
     image: '(Bild)',
     imageCarousel: '(Bild des Bildkarussells)',
     infoProvider: 'Anbieterinformationen (Taste)',
-    password: 'Kennwort',
     lastName: 'Nachname',
     link: '(Link)',
     lunch: 'Mittagstisch(Gerichtname)',
@@ -46,18 +51,18 @@ export const consts = {
     informationHint: 'Zu den Informationen wechseln',
     openMenuHint: 'Navigiert zum Menü',
     openMenuIcon: 'Menü (Taste)',
-    phoneNumber: '(Telefonnummer)',
+    password: 'Kennwort',
     phoneAppHint: '(Wechselt zur Telefon-App)',
+    phoneNumber: '(Telefonnummer)',
+    poiCount: '(Anzahl verfügbarer Einträge)',
     price: '(Preis)',
     privacy: 'Datenschutz',
-    poiCount: '(Anzahl verfügbarer Einträge)',
-    settingsIcon: 'Einstellungen (Taste)',
+    required: '(Erforderlich)',
     settingsHint: 'Anpassen des Layouts von',
+    settingsIcon: 'Einstellungen (Taste)',
     settingsIconHint: 'Zu den Einstellungen wechseln',
-    bookmarksIcon: 'Lesezeichen (Taste)',
-    bookmarksHint: 'Zu den Lesezeichen wechseln',
-    shareIcon: 'Teilen (Taste)',
     shareHint: 'Inhalte auf der Seite teilen',
+    shareIcon: 'Teilen (Taste)',
     tabs: 'Tabs',
     textInput: 'Texteingabe',
     username: 'Benutzername',
@@ -79,6 +84,9 @@ export const consts = {
   URL_REGEX:
     /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
   VIDEO_TYPE_REGEX: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4)$/i,
+  UMLAUT_REGEX: /[üäöÜÄÖß]/g,
+  PHONE_NUMBER_REGEX:
+    /(((\+([0-9]+) )|0)([1-9][0-9]+)(( ([0-9]) ([0-9]+))| ([0-9]+)([-]([0-9]+))?))|([1-9][0-9][0-9])/,
 
   CALENDAR: {
     DOT_SIZE: 6,
@@ -104,9 +112,22 @@ export const consts = {
     TOURS: ONCE_A_DAY
   },
 
+  FILTER_TYPES: {
+    DATE: 'date',
+    DROPDOWN: 'dropdown',
+    SUE: {
+      STATUS: 'status'
+    }
+  },
+
   DIMENSIONS: {
     // the max screen size we want to render full screen
     FULL_SCREEN_MAX_WIDTH: 504
+  },
+
+  MEDIA_TYPES: {
+    DOCUMENT: 'pdf',
+    IMAGE: 'jpg'
   },
 
   // this section has been added to optimise AR on low RAM devices and to prevent some features of AR from being used
@@ -119,6 +140,7 @@ export const consts = {
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
     NOTICEBOARD: 'Noticeboard',
+    SUE: 'Sue',
     VOLUNTEER: 'Volunteer'
   },
 
@@ -128,7 +150,8 @@ export const consts = {
 
   IMAGE_FROM: {
     CAMERA: 'Camera',
-    GALLERY: 'Gallery'
+    GALLERY: 'Gallery',
+    SUE: 'Sue'
   },
 
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
@@ -137,6 +160,25 @@ export const consts = {
     // default image aspect ratio is 2:1
     HEIGHT: 1,
     WIDTH: 2
+  },
+
+  INPUT_KEYS: {
+    SUE: {
+      CITY: 'city',
+      DESCRIPTION: 'description',
+      EMAIL: 'email',
+      FAMILY_NAME: 'familyName',
+      FIRST_NAME: 'firstName',
+      HOUSE_NUMBER: 'houseNumber',
+      IMAGES: 'images',
+      LAST_NAME: 'lastName',
+      NAME: 'name',
+      PHONE: 'phone',
+      POSTAL_CODE: 'postalCode',
+      STREET: 'street',
+      TERMS_OF_SERVICE: 'termsOfService',
+      TITLE: 'title'
+    }
   },
 
   MATOMO_TRACKING: {
@@ -159,6 +201,7 @@ export const consts = {
       LUNCH: 'Lunch',
       NEWS_ITEMS: 'News',
       NOTICEBOARD: 'Noticeboard',
+      PDF: 'PDF',
       POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
       POINTS_OF_INTEREST: 'Points of interest',
       SERVICE: 'Service',
@@ -192,7 +235,9 @@ export const consts = {
     NOTICEBOARD: 'Noticeboard',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
+    SUE: 'Sue',
     TOURS: 'Tours',
+    VOUCHER: 'Voucher',
     VOLUNTEER: 'Volunteer',
     CONSOLE_HOME: 'ConsulHome'
   }

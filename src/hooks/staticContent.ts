@@ -59,7 +59,12 @@ export const useStaticContent = <T>({
       refreshTime
     });
 
-  const { data, error: queryError, loading, refetch } = useQuery(
+  const {
+    data,
+    error: queryError,
+    loading,
+    refetch
+  } = useQuery(
     getQuery(type === 'json' ? QUERY_TYPES.PUBLIC_JSON_FILE : QUERY_TYPES.PUBLIC_HTML_FILE),
     {
       variables: { name, version: appJson.expo.version },
@@ -87,11 +92,9 @@ export const useStaticContent = <T>({
       } else if (!loading && data) {
         // set error true if there is bad data without `publicJsonFile.content`
         setError(true);
-        console.warn(error, data);
       }
     } catch (error) {
       setError(true);
-      console.warn(error, data);
     }
   }, [data, parseFromJson]);
 

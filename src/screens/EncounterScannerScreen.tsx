@@ -1,4 +1,4 @@
-import { BarCodeScanningResult, Camera } from 'expo-camera';
+import { BarCodeScanningResult, Camera } from 'expo-camera/legacy';
 import * as Linking from 'expo-linking';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useCallback, useEffect, useRef, useState } from 'react';

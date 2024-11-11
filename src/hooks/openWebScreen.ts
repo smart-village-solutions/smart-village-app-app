@@ -6,7 +6,8 @@ export const useOpenWebScreen = (
   title: string,
   link?: string,
   rootRouteName?: string,
-  shareContent?: ShareContent
+  shareContent?: ShareContent,
+  injectedJavaScript?: string
 ) => {
   const navigation = useNavigation();
 
@@ -18,10 +19,11 @@ export const useOpenWebScreen = (
           title: specificTitle ?? title,
           webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
           rootRouteName,
-          shareContent
+          shareContent,
+          injectedJavaScript
         }
       }),
-    [title, link, navigation, rootRouteName]
+    [navigation, title, link, shareContent, rootRouteName, injectedJavaScript]
   );
 
   return openWebScreen;

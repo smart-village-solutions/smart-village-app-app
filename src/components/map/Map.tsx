@@ -1,37 +1,43 @@
 /* eslint-disable complexity */
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
-import { PixelRatio, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView from 'react-native-map-clustering';
-import { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
+import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
-import { colors, device, Icon, IconUrl, normalize } from '../../config';
-import { imageHeight, imageWidth } from '../../helpers';
+import { colors, consts, device, Icon, IconUrl, normalize, texts } from '../../config';
+import { imageHeight, imageWidth, truncateText } from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
-import { RegularText } from '../Text';
+import { BoldText, RegularText } from '../Text';
+
+const { a11yLabel } = consts;
 
 type Props = {
+  calloutTextEnabled?: boolean;
+  clusterDistance?: number;
   clusteringEnabled?: boolean;
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
   isMultipleMarkersMap?: boolean;
+  isMyLocationButtonVisible?: boolean;
   locations?: MapMarker[];
   logoContainerStyle?: StyleProp<ViewStyle>;
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
+  minZoom?: number;
   onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
+  onMyLocationButtonPress?: () => void;
   selectedMarker?: string;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
+  updatedRegion?: Region;
 };
 
-const isSmallerPixelRatio = PixelRatio.get() <= 2;
-const isTablet = device.isTablet;
-const MARKER_ICON_SIZE = isSmallerPixelRatio ? normalize(50) : normalize(40);
+const MARKER_ICON_SIZE = normalize(40);
 const CIRCLE_SIZES = [60, 50, 40, 30];
 
 export const MapIcon = ({
@@ -39,7 +45,7 @@ export const MapIcon = ({
   iconName = 'location',
   iconSize = MARKER_ICON_SIZE,
   iconStrokeColor = colors.darkerPrimary,
-  iconStrokeWidth = 1.5
+  iconStrokeWidth = normalize(1.25)
 }: {
   iconColor?: string;
   iconName?: string;
@@ -104,20 +110,27 @@ const renderCluster = (cluster: TCluster) => {
   );
 };
 
+/* eslint-disable complexity */
 export const Map = ({
+  calloutTextEnabled = false,
+  clusterDistance,
   clusteringEnabled = false,
   geometryTourData,
   isMaximizeButtonVisible = false,
   isMultipleMarkersMap = false,
+  isMyLocationButtonVisible = false,
   locations,
   logoContainerStyle,
   mapCenterPosition,
   mapStyle,
+  minZoom,
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
+  onMyLocationButtonPress,
   selectedMarker,
   style,
+  updatedRegion,
   ...otherProps
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
@@ -164,9 +177,12 @@ export const Map = ({
     <View style={[styles.container, style]}>
       <MapView
         clusterColor={colors.surface}
+        clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
+        radius={clusterDistance}
         renderCluster={renderCluster}
         initialRegion={initialRegion}
+        region={updatedRegion}
         mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.STANDARD}
         onPress={onMapPress}
         ref={refForMapView}
@@ -178,6 +194,7 @@ export const Map = ({
         toolbarEnabled={false}
         style={[stylesForMap().map, mapStyle]}
         userLocationPriority="balanced"
+        minZoom={minZoom}
         mapPadding={{
           top: 0,
           right: 0,
@@ -205,6 +222,8 @@ export const Map = ({
         )}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
+          const serviceName = truncateText(marker.serviceName);
+          const title = truncateText(marker.title);
 
           return (
             <Marker
@@ -221,35 +240,49 @@ export const Map = ({
               zIndex={isActiveMarker ? 1010 : 1}
               cluster={marker.iconName != 'ownLocation'}
             >
-              {!!marker.iconName && marker.iconName != 'ownLocation' ? (
+              {!!marker.iconName &&
+              marker.iconName != 'ownLocation' &&
+              marker.iconName != 'location' ? (
                 <>
                   <MapIcon
-                    iconColor={isActiveMarker ? colors.secondary : colors.lighterPrimary}
-                    iconName={isActiveMarker ? 'locationActive' : 'location'}
+                    iconColor={
+                      marker.iconBackgroundColor
+                        ? isActiveMarker
+                          ? marker.iconColor
+                          : marker.iconBackgroundColor
+                        : isActiveMarker
+                        ? colors.secondary
+                        : undefined
+                    }
+                    iconName={isActiveMarker ? 'locationActive' : undefined}
                     iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
+                    iconStrokeColor={isActiveMarker ? colors.darkerPrimary : marker.iconBorderColor}
                   />
                   <View
                     style={[
                       styles.mapIconOnLocationMarkerContainer,
-                      isActiveMarker ? styles.mapIconOnLocationMarkerContainerActive : undefined
+                      isActiveMarker ? styles.mapIconOnLocationMarkerContainerActive : undefined,
+                      !!marker.iconBackgroundColor && {
+                        backgroundColor: isActiveMarker
+                          ? marker.iconColor
+                          : marker.iconBackgroundColor
+                      }
                     ]}
                   >
                     <View
                       style={[
                         styles.mapIconOnLocationMarker,
-                        isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined
+                        isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined,
+                        !!marker.iconBackgroundColor && {
+                          backgroundColor: isActiveMarker
+                            ? marker.iconColor
+                            : marker.iconBackgroundColor
+                        }
                       ]}
                     >
                       <IconUrl
-                        color={colors.primary}
                         iconName={marker.iconName}
-                        size={
-                          (MARKER_ICON_SIZE /
-                            (!isTablet && isSmallerPixelRatio
-                              ? normalize(1.95)
-                              : normalize(2.35))) *
-                          (isActiveMarker ? normalize(1.1) : normalize(0.9))
-                        }
+                        size={MARKER_ICON_SIZE * (isActiveMarker ? 0.475 : 0.4)}
                       />
                     </View>
                   </View>
@@ -263,23 +296,46 @@ export const Map = ({
                       ? colors.secondary
                       : colors.lighterPrimary
                   }
-                  iconName={
-                    marker.iconName
-                      ? isActiveMarker
-                        ? 'locationActive'
-                        : marker.iconName
-                      : undefined
-                  }
+                  iconName={isActiveMarker ? 'locationActive' : marker.iconName}
                   iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
+                  iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                 />
+              )}
+
+              {calloutTextEnabled && (
+                <Callout style={styles.callout}>
+                  {!!serviceName && (
+                    <BoldText smallest center>
+                      {serviceName}
+                    </BoldText>
+                  )}
+                  {!!title && (
+                    <RegularText smallest center>
+                      {title}
+                    </RegularText>
+                  )}
+                </Callout>
               )}
             </Marker>
           );
         })}
       </MapView>
       {isMaximizeButtonVisible && (
-        <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
+        <TouchableOpacity
+          accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          style={styles.maximizeMapButton}
+          onPress={onMaximizeButtonPress}
+        >
           <Icon.ExpandMap size={normalize(18)} />
+        </TouchableOpacity>
+      )}
+      {isMyLocationButtonVisible && (
+        <TouchableOpacity
+          accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
+          style={styles.myLocationButton}
+          onPress={onMyLocationButtonPress}
+        >
+          <Icon.GPS size={normalize(18)} />
         </TouchableOpacity>
       )}
       {device.platform === 'android' && (
@@ -290,8 +346,12 @@ export const Map = ({
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  callout: {
+    width: normalize(120)
+  },
   clusterCircle: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -315,15 +375,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: normalize(30),
     justifyContent: 'center',
-    left: 0,
+    left: normalize(13),
     position: 'absolute',
-    width: normalize(110),
-    zIndex: 1
+    width: normalize(100)
   },
   mapIconOnLocationMarker: {
     alignSelf: 'center',
-    bottom: normalize(5),
-    backgroundColor: colors.lighterPrimary
+    backgroundColor: colors.lighterPrimary,
+    bottom: normalize(5)
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.secondary,
@@ -333,11 +392,11 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     position: 'absolute',
-    top: isSmallerPixelRatio ? normalize(13) : normalize(11),
+    top: normalize(11),
     backgroundColor: colors.transparent
   },
   mapIconOnLocationMarkerContainerActive: {
-    top: isSmallerPixelRatio ? normalize(11) : normalize(10)
+    top: normalize(10)
   },
   maximizeMapButton: {
     alignItems: 'center',
@@ -346,7 +405,18 @@ const styles = StyleSheet.create({
     bottom: normalize(15),
     height: normalize(48),
     justifyContent: 'center',
-    opacity: 0.6,
+    position: 'absolute',
+    right: normalize(15),
+    width: normalize(48),
+    zIndex: 1
+  },
+  myLocationButton: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: 50,
+    top: normalize(15),
+    height: normalize(48),
+    justifyContent: 'center',
     position: 'absolute',
     right: normalize(15),
     width: normalize(48),
@@ -354,13 +424,14 @@ const styles = StyleSheet.create({
   }
 });
 
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
 // the map should have the same aspect ratio as images in portrait and a full width on landscape.
 // we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
 // which could be overwritten by server global settings. otherwise (as default prop) the style
 // would be set before the overwriting occurred.
 const stylesForMap = () => {
   return StyleSheet.create({
-    // eslint-disable-next-line react-native/no-unused-styles
     map: {
       alignSelf: 'center',
       height: imageHeight(imageWidth(), { HEIGHT: 272, WIDTH: 362 }),

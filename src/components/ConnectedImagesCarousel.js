@@ -11,7 +11,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { ImagesCarousel } from './ImagesCarousel';
 import { LoadingContainer } from './LoadingContainer';
 
-export const ConnectedImagesCarousel = ({ alternateAspectRatio, navigation, publicJsonFile }) => {
+export const ConnectedImagesCarousel = ({ navigation, publicJsonFile }) => {
   const { data, loading, refetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
     name: publicJsonFile,
@@ -35,8 +35,8 @@ export const ConnectedImagesCarousel = ({ alternateAspectRatio, navigation, publ
       data={_shuffle(data)}
       refreshTimeKey={`publicJsonFile-${publicJsonFile}`}
       aspectRatio={
-        alternateAspectRatio
-          ? parsedImageAspectRatio(globalSettings?.homeCarousel?.imageAspectRatio)
+        globalSettings?.[publicJsonFile]?.imageAspectRatio
+          ? parsedImageAspectRatio(globalSettings[publicJsonFile].imageAspectRatio)
           : undefined
       }
     />
@@ -44,12 +44,6 @@ export const ConnectedImagesCarousel = ({ alternateAspectRatio, navigation, publ
 };
 
 ConnectedImagesCarousel.propTypes = {
-  alternateAspectRatio: PropTypes.bool,
   navigation: PropTypes.object.isRequired,
   publicJsonFile: PropTypes.string.isRequired
-};
-
-ConnectedImagesCarousel.defaultProps = {
-  alternateAspectRatio: false,
-  refreshing: false
 };

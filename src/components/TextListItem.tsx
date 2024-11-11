@@ -16,9 +16,9 @@ export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  count?: number;
   isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
-  overtitle?: string;
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
   picture?: { url: string };
@@ -30,6 +30,7 @@ export type ItemData = {
   teaserTitle?: string;
   title: string;
   topDivider?: boolean;
+  topTitle?: string;
 };
 
 type Props = {
@@ -41,8 +42,8 @@ type Props = {
   listItemStyle?: ViewStyle;
   listsWithoutArrows?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
-  noSubtitle?: boolean;
   noOvertitle?: boolean;
+  noSubtitle?: boolean;
   rightImage?: boolean;
   showOpenStatus?: boolean;
   withCard?: boolean;
@@ -59,23 +60,23 @@ export const TextListItem: NamedExoticComponent<Props> & {
     imageContainerStyle,
     imageStyle,
     item,
-    leftImage,
+    leftImage = false,
     listItemStyle,
     listsWithoutArrows,
     navigation,
-    noSubtitle,
     noOvertitle,
-    rightImage,
+    noSubtitle = false,
+    rightImage = false,
     showOpenStatus,
-    withCard
+    withCard = false
   }) => {
     const {
       badge,
       bottomDivider,
+      count,
       isHeadlineTitle = true,
       leftIcon,
       onPress,
-      overtitle,
       params,
       picture,
       rightIcon,
@@ -85,13 +86,18 @@ export const TextListItem: NamedExoticComponent<Props> & {
       subtitle,
       teaserTitle,
       title,
-      topDivider
+      topDivider,
+      topTitle
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
     let titleText = isHeadlineTitle ? (
       <HeadlineText small>{trimNewLines(title)}</HeadlineText>
+    ) : withCard ? (
+      <BoldText small style={{ marginTop: normalize(4) }}>
+        {trimNewLines(title)}
+      </BoldText>
     ) : (
-      <BoldText>{trimNewLines(title)}</BoldText>
+      <BoldText small>{trimNewLines(title)}</BoldText>
     );
 
     let status = '';
@@ -140,9 +146,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
           (leftImage && !!picture?.url ? (
             <Image
               source={{ uri: picture.url }}
-              style={[
+              childrenContainerStyle={[
                 styles.smallImage,
-                imageStyle && imageStyle,
+                imageStyle,
                 withCard && styles.withBigCardStyle
               ]}
               borderRadius={withCard ? normalize(8) : undefined}
@@ -152,9 +158,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
 
         {withCard ? (
           <ListItem.Content>
-            {!!overtitle && (
+            {!!topTitle && (
               <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
-                {trimNewLines(overtitle)}
+                {trimNewLines(topTitle)}
               </HeadlineText>
             )}
             {noSubtitle || !subtitle ? undefined : titleText}
@@ -168,9 +174,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
           </ListItem.Content>
         ) : (
           <ListItem.Content style={listItemStyle}>
-            {!noOvertitle && !!overtitle && (
+            {!noOvertitle && !!topTitle && (
               <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
-                {trimNewLines(overtitle)}
+                {trimNewLines(topTitle)}
               </HeadlineText>
             )}
             {noSubtitle || !subtitle ? undefined : titleText}
@@ -189,11 +195,13 @@ export const TextListItem: NamedExoticComponent<Props> & {
           (rightImage && !!picture?.url ? (
             <Image
               source={{ uri: picture.url }}
-              style={[styles.smallImage, withCard && styles.withBigCardStyle]}
+              childrenContainerStyle={[styles.smallImage, withCard && styles.withBigCardStyle]}
               borderRadius={withCard ? normalize(8) : undefined}
               containerStyle={styles.smallImageContainer}
             />
           ) : undefined)}
+
+        {!!count && <BoldText>{count}</BoldText>}
 
         {!listsWithoutArrows && !!navigation && !withCard && (
           <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
@@ -214,8 +222,8 @@ const styles = StyleSheet.create({
     marginBottom: normalize(4)
   },
   smallImage: {
-    height: normalize(33),
-    width: normalize(66)
+    height: normalize(72),
+    width: normalize(96)
   },
   smallImageContainer: {
     alignSelf: 'flex-start'
@@ -243,18 +251,9 @@ TextListItem.propTypes = {
   listItemStyle: PropTypes.object,
   listsWithoutArrows: PropTypes.bool,
   navigation: PropTypes.object,
-  noSubtitle: PropTypes.bool,
   noOvertitle: PropTypes.bool,
+  noSubtitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
   withCard: PropTypes.bool
-};
-
-TextListItem.defaultProps = {
-  leftImage: false,
-  listsWithoutArrows: false,
-  noSubtitle: false,
-  noOvertitle: false,
-  rightImage: false,
-  withCard: false
 };

@@ -4,11 +4,13 @@ import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
-import { OrientationContext } from '../OrientationProvider';
 import { useOpenWebScreen } from '../hooks';
+import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
+
+const { a11yLabel } = consts;
 
 export const Checkbox = ({
   boldTitle = false,
@@ -16,6 +18,7 @@ export const Checkbox = ({
   checked = false,
   checkedIcon,
   containerStyle = {},
+  lightest = false,
   link = '',
   linkDescription = '',
   navigate,
@@ -34,19 +37,28 @@ export const Checkbox = ({
   return (
     <CheckBox
       accessibilityRole="button"
-      accessibilityLabel={`${
+      accessibilityLabel={`${a11yLabel.checkbox} (${
         checked
           ? texts.accessibilityLabels.checkbox.active
           : texts.accessibilityLabels.checkbox.inactive
-      } ${title}`}
+      }) ${title}`}
+      accessibilityValue={
+        checked
+          ? texts.accessibilityLabels.checkbox.active
+          : texts.accessibilityLabels.checkbox.inactive
+      }
       size={normalize(21)}
       center={center}
       title={
         <WrapperHorizontal>
           {boldTitle ? (
-            <BoldText small>{title}</BoldText>
+            <BoldText small lightest={lightest}>
+              {title}
+            </BoldText>
           ) : (
-            <RegularText small>{title}</RegularText>
+            <RegularText small lightest={lightest}>
+              {title}
+            </RegularText>
           )}
           {(!!link || !!navigate) && !!linkDescription && (
             <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
@@ -96,15 +108,11 @@ Checkbox.propTypes = {
   checkedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   containerStyle: PropTypes.object,
   disabled: PropTypes.bool,
+  lightest: PropTypes.bool,
   link: PropTypes.string,
   linkDescription: PropTypes.string,
   navigate: PropTypes.func,
   onPress: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   uncheckedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
-};
-
-CheckBox.defaultProps = {
-  checkedIcon: 'dot-circle-o',
-  uncheckedIcon: 'circle-o'
 };

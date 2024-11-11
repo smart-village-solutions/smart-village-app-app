@@ -1,6 +1,57 @@
 import gql from 'graphql-tag';
 
-export const GET_EVENT_RECORDS = gql`
+const defaultFragment = `
+  id
+  title
+  listDate
+  dates {
+    id
+    weekday
+    dateFrom: dateStart
+    dateTo: dateEnd
+    timeFrom: timeStart
+    timeTo: timeEnd
+    description: timeDescription
+  }
+  mediaContents {
+    id
+    contentType
+    captionText
+    copyright
+    sourceUrl {
+      id
+      url
+    }
+  }
+  addresses {
+    id
+    city
+    street
+    zip
+    kind
+    addition
+    geoLocation {
+      id
+      latitude
+      longitude
+    }
+  }
+`;
+
+const dateFragment = `
+  date {
+    id
+    dateFrom: dateStart
+    dateTo: dateEnd
+    timeFrom: timeStart
+    timeTo: timeEnd
+  }
+`;
+
+/**
+ * @deprecated use GET_EVENT_RECORDS instead
+ */
+export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
   query EventRecords(
     $ids: [ID]
     $limit: Int
@@ -23,65 +74,86 @@ export const GET_EVENT_RECORDS = gql`
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
     ) {
-      id
-      category {
-        id
-        name
-      }
-      dates {
-        id
-        weekday
-        dateFrom: dateStart
-        dateTo: dateEnd
-        timeFrom: timeStart
-        timeTo: timeEnd
-        description: timeDescription
-      }
-      listDate
-      title
-      description
-      mediaContents {
-        id
-        contentType
-        captionText
-        copyright
-        sourceUrl {
-          id
-          url
-        }
-      }
-      addresses {
-        id
-        city
-        street
-        zip
-        kind
-        addition
-      }
-      contacts {
-        id
-        firstName
-        lastName
-        phone
-        email
-        fax
-        webUrls {
-          id
-          url
-          description
-        }
-      }
-      webUrls: urls {
-        id
-        url
-        description
-      }
-      priceInformations {
-        id
-        name
-        amount
-      }
+      ...defaultFields
     }
+  }
+
+  fragment defaultFields on EventRecord {
+    ${defaultFragment}
+  }
+`;
+
+export const GET_EVENT_RECORDS = gql`
+  query EventRecords(
+    $ids: [ID]
+    $limit: Int
+    $take: Int
+    $location: String
+    $offset: Int
+    $order: EventRecordsOrder
+    $categoryId: ID
+    $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
+  ) {
+    eventRecords(
+      ids: $ids
+      limit: $limit
+      take: $take
+      location: $location
+      skip: $offset
+      order: $order
+      categoryId: $categoryId
+      dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+    ) {
+      ...defaultFields
+      ...dateFields
+    }
+  }
+
+  fragment defaultFields on EventRecord {
+    ${defaultFragment}
+  }
+
+  fragment dateFields on EventRecord {
+    ${dateFragment}
+  }
+`;
+
+export const GET_EVENT_RECORDS_COUNT = gql`
+  query EventRecords(
+    $ids: [ID]
+    $limit: Int
+    $take: Int
+    $location: String
+    $offset: Int
+    $order: EventRecordsOrder
+    $categoryId: ID
+    $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
+  ) {
+    eventRecords(
+      ids: $ids
+      limit: $limit
+      take: $take
+      location: $location
+      skip: $offset
+      order: $order
+      categoryId: $categoryId
+      dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+    ) {
+      id
+      ...dateFields
+    }
+  }
+
+  fragment dateFields on EventRecord {
+    ${dateFragment}
   }
 `;
 
@@ -89,6 +161,7 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
   query EventRecordsAndCategories {
     eventRecords {
       id
+      ...dateFields
     }
     categories {
       id
@@ -96,12 +169,19 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
       upcomingEventRecordsCount
     }
   }
+
+  fragment dateFields on EventRecord {
+    ${dateFragment}
+  }
 `;
 
 export const GET_EVENT_RECORD = gql`
   query EventRecord($id: ID!) {
     eventRecord(id: $id) {
-      id
+      ...defaultFields
+      ...dateFields
+      recurring
+      description
       category {
         id
         name
@@ -109,59 +189,6 @@ export const GET_EVENT_RECORD = gql`
       categories {
         id
         name
-      }
-      dates {
-        id
-        weekday
-        dateFrom: dateStart
-        dateTo: dateEnd
-        timeFrom: timeStart
-        timeTo: timeEnd
-        description: timeDescription
-      }
-      listDate
-      title
-      description
-      mediaContents {
-        id
-        contentType
-        captionText
-        copyright
-        sourceUrl {
-          id
-          url
-        }
-      }
-      addresses {
-        id
-        city
-        street
-        zip
-        kind
-        addition
-        geoLocation {
-          id
-          latitude
-          longitude
-        }
-      }
-      contacts {
-        id
-        firstName
-        lastName
-        phone
-        email
-        fax
-        webUrls {
-          id
-          url
-          description
-        }
-      }
-      webUrls: urls {
-        id
-        url
-        description
       }
       dataProvider {
         id
@@ -176,6 +203,24 @@ export const GET_EVENT_RECORD = gql`
       settings {
         displayOnlySummary
         onlySummaryLinkText
+      }
+      contacts {
+        id
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          id
+          url
+          description
+        }
+      }
+      webUrls: urls {
+        id
+        url
+        description
       }
       priceInformations {
         id
@@ -217,6 +262,14 @@ export const GET_EVENT_RECORD = gql`
         }
       }
     }
+  }
+
+  fragment defaultFields on EventRecord {
+    ${defaultFragment}
+  }
+
+  fragment dateFields on EventRecord {
+    ${dateFragment}
   }
 `;
 

@@ -41,6 +41,7 @@ import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } f
 import { NetworkContext } from '../../NetworkProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
+import { GenericType } from '../../types';
 
 const FILTER_TYPES = {
   LIST: 'list',
@@ -64,7 +65,12 @@ const keyForSelectedValueByQuery = (query) => {
   return QUERIES[query];
 };
 
-const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderIds) => {
+const getAdditionalQueryVariables = (
+  query,
+  selectedValue,
+  excludeDataProviderIds,
+  excludeMowasRegionalKeys
+) => {
   const keyForSelectedValue = keyForSelectedValueByQuery(query);
   const additionalQueryVariables = {};
 
@@ -74,6 +80,10 @@ const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderId
 
   if (excludeDataProviderIds?.length) {
     additionalQueryVariables.excludeDataProviderIds = excludeDataProviderIds;
+  }
+
+  if (excludeMowasRegionalKeys?.length) {
+    additionalQueryVariables.excludeMowasRegionalKeys = excludeMowasRegionalKeys;
   }
 
   return additionalQueryVariables;
@@ -124,7 +134,7 @@ export const Overviews = ({ navigation, route }) => {
   const sortByDistance =
     query === QUERY_TYPES.POINTS_OF_INTEREST && (locationService.sortByDistance ?? true);
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
-  const { state: excludeDataProviderIds } = usePermanentFilter();
+  const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
   const { loading: loadingPosition, position } = usePosition(!sortByDistance);
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
@@ -170,7 +180,12 @@ export const Overviews = ({ navigation, route }) => {
 
           return {
             ...prevQueryVariables,
-            ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+            ...getAdditionalQueryVariables(
+              query,
+              selectedValue,
+              excludeDataProviderIds,
+              excludeMowasRegionalKeys
+            )
           };
         });
       } else {
@@ -184,7 +199,7 @@ export const Overviews = ({ navigation, route }) => {
         }
       }
     },
-    [query, queryVariables, excludeDataProviderIds]
+    [query, queryVariables, excludeDataProviderIds, excludeMowasRegionalKeys]
   );
 
   const listItems = useMemo(() => {
@@ -197,6 +212,12 @@ export const Overviews = ({ navigation, route }) => {
     if (filterByOpeningTimes) {
       parsedListItems = parsedListItems?.filter(
         (entry) => isOpen(entry.params?.details?.openingHours)?.open
+      );
+    }
+
+    if (queryVariables?.genericType === GenericType.Voucher) {
+      parsedListItems = parsedListItems?.filter(
+        (entry) => !!entry.params?.details?.vouchers?.length
       );
     }
 
@@ -231,9 +252,14 @@ export const Overviews = ({ navigation, route }) => {
     // the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
+      ...getAdditionalQueryVariables(
+        query,
+        undefined,
+        excludeDataProviderIds,
+        excludeMowasRegionalKeys
+      )
     });
-  }, [route.params?.queryVariables, query, excludeDataProviderIds]);
+  }, [route.params?.queryVariables, query, excludeDataProviderIds, excludeMowasRegionalKeys]);
 
   useLayoutEffect(() => {
     if (

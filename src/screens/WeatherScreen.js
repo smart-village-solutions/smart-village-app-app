@@ -1,6 +1,15 @@
+import moment from 'moment';
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, FlatList, RefreshControl, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 
 import {
   DailyWeather,
@@ -10,14 +19,18 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   WeatherAlert,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal,
+  WrapperRow,
+  WrapperVertical
 } from '../components';
-import { colors, consts, texts } from '../config';
-import { graphqlFetchPolicy } from '../helpers';
+import { colors, consts, Icon, normalize, texts } from '../config';
+import { graphqlFetchPolicy, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { hasDailyWeather, hasHourlyWeather, parseValidAlerts } from '../jsonValidation';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING, POLL_INTERVALS } = consts;
 
@@ -44,7 +57,11 @@ const markNow = (data) => {
   return data;
 };
 
+/* eslint-disable complexity */
 export const WeatherScreen = () => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { flat = false, weather = {} } = settings;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const queryVariables =
@@ -62,7 +79,6 @@ export const WeatherScreen = () => {
       </LoadingContainer>
     );
   }
-
   const refreshControl = (
     <RefreshControl
       refreshing={loading}
@@ -72,44 +88,105 @@ export const WeatherScreen = () => {
     />
   );
 
-  if (!data?.weatherMap)
+  if (!data?.weatherMap) {
+    // when loading is true the previous early return should be applied
     return (
       <SafeAreaViewFlex>
-        <ScrollView
-          refreshControl={
-            // when loading is true the previous early return should be applied
-            refreshControl
-          }
-        >
+        <ScrollView refreshControl={refreshControl}>
           <Wrapper>
             <RegularText>{texts.weather.noData}</RegularText>
           </Wrapper>
         </ScrollView>
       </SafeAreaViewFlex>
     );
+  }
 
   const { weatherMap } = data;
-  const alerts = parseValidAlerts(weatherMap);
+
+  if (!weatherMap) {
+    return null;
+  }
+
+  const alerts = weather?.showAlerts ? parseValidAlerts(weatherMap) : [];
+  const currentDailyWeather = weatherMap.daily[0];
+  const currentWeather = weatherMap.current;
+
+  if (!currentDailyWeather || !currentWeather) {
+    return null;
+  }
+
+  const todayTemperatures = currentDailyWeather.temp;
+  const { min, max } = todayTemperatures;
+  const todaysRainChance = currentDailyWeather.rain ?? 0;
+  const sunriseTime = momentFormat(moment.unix(currentWeather.sunrise), 'HH:mm');
+  const sunsetTime = momentFormat(moment.unix(currentWeather.sunset), 'HH:mm');
+  const currentTemp = currentWeather.temp.toFixed(0);
+  const currentWeatherDescription = currentWeather.weather.description;
 
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={refreshControl}>
+        <WrapperHorizontal>
+          <WrapperRow spaceBetween>
+            <WrapperVertical itemsCenter>
+              <Icon.SunUp color={colors.primary} strokeColor={colors.primary} strokeWidth="2" />
+              <RegularText>{sunriseTime}</RegularText>
+            </WrapperVertical>
+            <Wrapper itemsCenter>
+              <Icon.SunDown color={colors.primary} strokeColor={colors.primary} strokeWidth="2" />
+              <RegularText>{sunsetTime}</RegularText>
+            </Wrapper>
+          </WrapperRow>
+          <Wrapper tiny itemsCenter>
+            <Text style={styles.currentTemp}>{currentTemp}°</Text>
+            {!!currentWeatherDescription && <RegularText>{currentWeatherDescription}</RegularText>}
+            <WrapperRow>
+              <WrapperRow>
+                <Icon.MinTemperature color={colors.darkText} />
+                <RegularText>{min.toFixed(0)}°</RegularText>
+              </WrapperRow>
+              <View style={styles.marginHorizontal} />
+              <WrapperRow>
+                <Icon.MaxTemperature color={colors.darkText} />
+                <RegularText>{max.toFixed(0)}°</RegularText>
+              </WrapperRow>
+            </WrapperRow>
+          </Wrapper>
+          <WrapperVertical>
+            <WrapperRow itemsCenter>
+              <Icon.Rain
+                color={colors.transparent}
+                size={normalize(20)}
+                strokeColor={colors.primary}
+                strokeWidth="2"
+              />
+              <RegularText blue>{todaysRainChance.toFixed(0)}%</RegularText>
+            </WrapperRow>
+          </WrapperVertical>
+        </WrapperHorizontal>
+        {!!flat && (
+          <Wrapper>
+            <View style={styles.separator} />
+          </Wrapper>
+        )}
+
         {!!alerts?.length && (
           <>
             <SectionHeader title={texts.weather.alertsHeadline} />
             {alerts.map((alert, index) => (
               <WeatherAlert
-                key={index}
                 description={alert.description}
-                event={alert.event}
-                start={alert.start}
                 end={alert.end}
+                event={alert.event}
+                key={index}
+                start={alert.start}
               />
             ))}
           </>
         )}
+
         {hasHourlyWeather(weatherMap) && (
-          <View>
+          <>
             <SectionHeader title={texts.weather.currentHeadline} />
             <FlatList
               data={markNow(weatherMap.hourly)}
@@ -118,23 +195,42 @@ export const WeatherScreen = () => {
               renderItem={renderHourlyWeather}
               showsHorizontalScrollIndicator={false}
             />
-          </View>
-        )}
-        {hasDailyWeather(weatherMap) && (
-          <>
-            <SectionHeader title={texts.weather.nextDaysHeadline} />
-            {weatherMap.daily.map((day, index) => (
-              <DailyWeather
-                description={day.weather[0].description}
-                key={index}
-                icon={day.weather[0].icon}
-                temperatures={day.temp}
-                date={day.dt}
-              />
-            ))}
+            <Wrapper>
+              <View style={styles.separator} />
+            </Wrapper>
           </>
         )}
+
+        {hasDailyWeather(weatherMap) &&
+          weatherMap.daily.map((day, index) => (
+            <DailyWeather
+              date={day.dt}
+              description={day.weather[0].description}
+              icon={day.weather[0].icon}
+              index={index}
+              key={index}
+              temperatures={day.temp}
+            />
+          ))}
       </ScrollView>
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  currentTemp: {
+    color: colors.primary,
+    fontSize: normalize(72),
+    lineHeight: normalize(72),
+    marginTop: -normalize(20),
+    paddingLeft: normalize(30)
+  },
+  marginHorizontal: {
+    marginHorizontal: normalize(5)
+  },
+  separator: {
+    backgroundColor: colors.gray40,
+    height: normalize(1)
+  }
+});

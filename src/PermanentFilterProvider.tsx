@@ -2,26 +2,46 @@ import { noop } from 'lodash';
 import React, { createContext, useCallback, useEffect, useReducer } from 'react';
 
 import { readFromStore } from './helpers';
-import { DATA_PROVIDER_FILTER_KEY, permanentFilterReducer } from './reducers';
+import {
+  DATA_PROVIDER_FILTER_KEY,
+  MOWAS_REGIONAL_KEYS,
+  MowasFilterAction,
+  MowasFilterReducerAction,
+  mowasRegionalKeysReducer,
+  permanentFilterReducer
+} from './reducers';
 import { FilterAction, FilterReducerAction } from './types';
 
 type PermanentFilterProviderValues = {
-  state: string[];
-  dispatch: React.Dispatch<FilterReducerAction>;
+  dataProviderDispatch: React.Dispatch<FilterReducerAction>;
+  dataProviderState: string[];
+  mowasRegionalKeysDispatch: React.Dispatch<MowasFilterReducerAction>;
+  mowasRegionalKeysState: string[];
 };
 
 export const PermanentFilterContext = createContext<PermanentFilterProviderValues>({
-  dispatch: noop,
-  state: []
+  dataProviderState: [],
+  dataProviderDispatch: noop,
+  mowasRegionalKeysState: [],
+  mowasRegionalKeysDispatch: noop
 });
 
 export const PermanentFilterProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(permanentFilterReducer, []);
+  const [dataProviderState, dataProviderDispatch] = useReducer(permanentFilterReducer, []);
+  const [mowasRegionalKeysState, mowasRegionalKeysDispatch] = useReducer(
+    mowasRegionalKeysReducer,
+    []
+  );
 
   const loadFilters = useCallback(async () => {
     const dataProviderIds = ((await readFromStore(DATA_PROVIDER_FILTER_KEY)) ?? []) as string[];
+    const mowasRegionalKeys = ((await readFromStore(MOWAS_REGIONAL_KEYS)) ?? []) as string[];
 
-    dispatch({ type: FilterAction.OverwriteDataProviders, payload: dataProviderIds });
+    dataProviderDispatch({ type: FilterAction.OverwriteDataProviders, payload: dataProviderIds });
+    mowasRegionalKeysDispatch({
+      type: MowasFilterAction.OverwriteMowasRegionalKeys,
+      payload: mowasRegionalKeys
+    });
   }, []);
 
   useEffect(() => {
@@ -29,7 +49,14 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
   }, [loadFilters]);
 
   return (
-    <PermanentFilterContext.Provider value={{ dispatch, state }}>
+    <PermanentFilterContext.Provider
+      value={{
+        dataProviderDispatch,
+        dataProviderState,
+        mowasRegionalKeysDispatch,
+        mowasRegionalKeysState
+      }}
+    >
       {children}
     </PermanentFilterContext.Provider>
   );

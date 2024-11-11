@@ -17,8 +17,10 @@ import { Touchable } from './Touchable';
 import { Wrapper } from './Wrapper';
 
 type Props = {
+  additionalData?: unknown[];
   buttonTitle?: string;
   horizontal?: boolean;
+  isIndexStartingAt1?: boolean;
   isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
@@ -31,7 +33,6 @@ type Props = {
   placeholder?: React.ReactElement;
   query: string;
   sectionData?: unknown[];
-  additionalData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -40,8 +41,10 @@ type Props = {
 
 // eslint-disable-next-line complexity
 export const DataListSection = ({
+  additionalData,
   buttonTitle,
   horizontal,
+  isIndexStartingAt1,
   isRandom = false,
   limit = 3,
   linkTitle,
@@ -54,7 +57,6 @@ export const DataListSection = ({
   placeholder,
   query,
   sectionData,
-  additionalData,
   sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
   showButton,
@@ -78,7 +80,8 @@ export const DataListSection = ({
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
-    skipLastDivider: true
+    skipLastDivider: true,
+    queryKey: query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query
   });
 
   if (listData?.length && additionalData?.length) {
@@ -97,6 +100,7 @@ export const DataListSection = ({
           navigation={navigation}
           listType={listType}
           query={query}
+          isIndexStartingAt1={isIndexStartingAt1}
         />
 
         {!!linkTitle && !!navigateLink && showLink && (

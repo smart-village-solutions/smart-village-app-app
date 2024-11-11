@@ -6,11 +6,11 @@ import { StyleSheet } from 'react-native';
 
 import { Button, Chat, LoadingSpinner, Wrapper } from '../../components';
 import { colors, normalize, texts } from '../../config';
+import { shareMessage } from '../../helpers';
 import { useProfileUser } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 import { ScreenName } from '../../types';
-import { shareMessage } from '../../helpers';
 
 type Message = {
   createdAt: string;
@@ -154,8 +154,6 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
           padding: normalize(12)
         }}
         bubbleWrapperStyleLeft={{ backgroundColor: colors.lightestText, padding: normalize(12) }}
-        messageTextStyleRight={{ color: colors.darkText }}
-        messageTextStyleLeft={{ color: colors.darkText }}
         userId={currentUserId}
       />
     </>

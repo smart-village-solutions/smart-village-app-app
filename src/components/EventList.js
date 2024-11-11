@@ -1,11 +1,12 @@
 import { FlashList } from '@shopify/flash-list';
+import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
-import { normalize } from '../config';
 
 import { LoadingSpinner } from './LoadingSpinner';
 
@@ -24,6 +25,15 @@ const sectionData = (data) => {
         grouped[item.listDate].push(item);
       }
     });
+
+    for (const listDate in grouped) {
+      grouped[listDate] = _sortBy(
+        grouped[listDate],
+        (item) =>
+          item.params?.details?.dates?.[0]?.timeFrom || item.params?.details?.dates?.[0]?.timeTo
+      );
+    }
+
     return grouped;
   };
 
@@ -41,6 +51,7 @@ const sectionData = (data) => {
 };
 
 export const EventList = ({
+  contentContainerStyle,
   data,
   fetchMoreData,
   ListEmptyComponent,
@@ -56,7 +67,7 @@ export const EventList = ({
 
   useEffect(() => {
     setRefreshing(true);
-    setSectionedData(sectionData(data));
+    !!data && setSectionedData(sectionData(data));
     setRefreshing(false);
   }, [data]);
 
@@ -66,7 +77,21 @@ export const EventList = ({
       // from partially fetching, so we need to check the data to determine the lists end
       const { data: moreData } = await fetchMoreData();
 
-      setListEndReached(!moreData[QUERY_TYPES.EVENT_RECORDS].length);
+      const hasLastPageEventRecords = () => {
+        if (!moreData?.pages) {
+          return false;
+        }
+
+        const lastPage = moreData.pages[moreData.pages.length - 1];
+
+        return (
+          (lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length > 0 &&
+            lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length < queryVariables?.limit) ||
+          MAX_INITIAL_NUM_TO_RENDER
+        );
+      };
+
+      setListEndReached(!hasLastPageEventRecords());
     } else {
       setListEndReached(true);
     }
@@ -74,7 +99,8 @@ export const EventList = ({
 
   const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, {
     noSubtitle,
-    queryVariables
+    queryVariables,
+    isIndexStartingAt1: true
   });
 
   const stickyHeaderIndices = sectionedData
@@ -91,14 +117,14 @@ export const EventList = ({
     <FlashList
       data={sectionedData}
       refreshing={refreshing}
-      estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
+      estimatedItemSize={queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER}
       getItemType={(item) => {
         // To achieve better performance, specify the type based on the item
         return typeof item === 'string' ? 'sectionHeader' : 'row';
       }}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
-        if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
+        if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
           return <LoadingSpinner loading={!listEndReached} />;
         }
 
@@ -111,7 +137,7 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       stickyHeaderIndices={stickyHeaderIndices}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={{ ...styles.contentContainer, ...contentContainerStyle }}
     />
   );
 };
@@ -123,6 +149,7 @@ const styles = StyleSheet.create({
 });
 
 EventList.propTypes = {
+  contentContainerStyle: PropTypes.object,
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   ListEmptyComponent: PropTypes.object,

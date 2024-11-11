@@ -38,7 +38,9 @@ export const QUERY_TYPES = {
   EVENT_RECORD: 'eventRecord',
   EVENT_RECORDS_ADDRESSES: 'eventRecordsAddresses',
   EVENT_RECORDS_AND_CATEGORIES: 'eventRecordsAndCategories',
+  EVENT_RECORDS_WITHOUT_DATE_FRAGMENT: 'eventRecordsWithoutDateFragment',
   EVENT_RECORDS: 'eventRecords',
+  EVENT_RECORDS_COUNT: 'eventRecordsCount',
   GENERIC_ITEM: 'genericItem',
   GENERIC_ITEMS: 'genericItems',
   LUNCHES: 'lunches',
@@ -58,6 +60,15 @@ export const QUERY_TYPES = {
   PUBLIC_JSON_FILE: 'publicJsonFile',
   STATIC_CONTENT_LIST: 'staticContentList',
   TOUR: 'tour',
+  SUE: {
+    AREA_SERVICE: 'areaService',
+    CONFIGURATIONS: 'configurations',
+    PRIORITIES: 'priorities',
+    REQUESTS: 'requests',
+    REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',
+    SERVICES: 'services',
+    STATUSES: 'statuses'
+  },
   TOUR_STOPS: 'tourStops',
   TOURS: 'tours',
   VOLUNTEER: {
@@ -81,6 +92,10 @@ export const QUERY_TYPES = {
     USER: 'volunteerUser',
     USERS: 'volunteerUsers'
   } as const,
+  VOUCHER: 'voucher',
+  VOUCHERS_CATEGORIES: 'vouchersCategories',
+  VOUCHERS_REDEEMED: 'vouchersRedeemed',
+  VOUCHERS: 'vouchers',
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WATER_TEMPERATURE: 'waterTemperature',

@@ -16,8 +16,8 @@ import { LoadingContainer } from '../LoadingContainer';
 import { TextListItem } from '../TextListItem';
 import { getLocationMarker } from '../settings';
 
-import { Filter } from './Filter';
 import { Map } from './Map';
+import { MapFilter } from './MapFilter';
 
 type Props = {
   filterByOpeningTimes?: boolean;
@@ -140,7 +140,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   return (
     <>
       {(queryVariables?.categoryIds?.length || 0) > 1 && (
-        <Filter queryVariables={queryVariables} refetch={refetch} />
+        <MapFilter queryVariables={queryVariables} refetch={refetch} />
       )}
 
       <Map

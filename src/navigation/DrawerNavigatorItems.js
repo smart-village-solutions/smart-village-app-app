@@ -3,7 +3,7 @@ import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { BoldText, Wrapper, WrapperHorizontal } from '../components';
-import { colors, normalize, texts } from '../config';
+import { normalize, texts } from '../config';
 
 import { DrawerNavigatorItem } from './DrawerNavigatorItem';
 
@@ -82,13 +82,6 @@ DrawerNavigatorItems.propTypes = {
   drawerRoutes: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   state: PropTypes.object.isRequired
-};
-
-DrawerNavigatorItems.defaultProps = {
-  activeTintColor: colors.lightestText,
-  activeBackgroundColor: 'transparent',
-  inactiveTintColor: colors.lightestText,
-  inactiveBackgroundColor: 'transparent'
 };
 
 export default DrawerNavigatorItems;

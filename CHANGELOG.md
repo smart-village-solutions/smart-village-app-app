@@ -5,6 +5,140 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.0.2]
+
+This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs
+
+### Added
+
+- integrated tabler icon family
+- added filtering feature for bbBus module that can be set via server
+- added pdf upload and view feature to noticeboard module
+- added the ability to configure via globalSettings for slider
+- added minimum system version value for macOS platform to `app.json`
+
+### Changed
+
+- upgraded Expo to version 51.0.28
+- upgraded `@reactvision/react-viro` to version 2.41.6
+- reducing logs that make development difficult in the app
+- redesign for weather screen
+
+### Fixed
+
+- fixed an issue in the sue module where areaService could not retrieve zip codes
+- fixed the problem of address inputs not being filled automatically with the pin added to the map in the sue module
+- fixed a bug that prevented personalized tiles from being ordered as desired
+- updated event query to improve performance
+
+## [v4.0.1]
+
+This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs
+
+### Added
+
+- added adaptiveIcon feature for Android
+  - due to the adaptiveIcon update for Android, `assets/adaptive-icon.png` needs to be created and
+    updated according to the necessary guidelines
+    - https://developer.android.com/develop/ui/views/launch/icon_design_adaptive
+- added the option to add multiple links to the checkbox on the report creation screen in the sue module
+- added `showOpeningTimes` property to hide the opening time section in `DetailScreen` via `globalSettings`
+- added `useFonts` to load fonts in app
+- added the ability to display serial events correctly in the app
+- added the ability to add different noticeboard categories
+- added new `CustomWidget` widget to navigate to different screens within the app
+- added possibility for border on icons to make them more visible on the map
+
+### Changed
+
+- upgraded Expo to version 51.0.28
+- improved coordinate retrieval from image for sue module
+- updated `Font.loadAsync` with `useFonts`
+
+### Fixed
+
+- fixed a bug in the sue module that did not cause reports to be sent
+- fixed http pages not opening on ios devices
+- fixed bug in `ConfigurationsProvider` that prevented app from opening
+- fixed issue with input keys in configApi not matching with app for sue module
+
+## [v4.0.0] :dizzy:
+
+This version includes the Expo SDK 50 and SDK 51 update, a new the defect report module and a new voucher module. Theming feature coming soon.
+
+### Added
+
+- added new defect report module (Sag's uns einfach)
+- added new voucher module
+- added the option to add time subtitle to the event list
+- added options to add html at the top and bottom of the tile screen
+
+### Changed
+
+- upgraded Expo to version 50: https://blog.expo.dev/expo-sdk-50-afb524038906
+- upgraded Expo to version 51: https://blog.expo.dev/expo-sdk-51-b73ed1798672
+- updated `normalize` function according to current device sizes
+- updated sentry integration
+
+### Fixed
+
+- fixed a bug in the development app that caused images not to be displayed on the Android platform
+- fixed a bug that caused the app to crash in map view when `iconName` was missing
+- fixed a bug that caused the settings screen to fail to load
+- fixed a bug that caused street names on the map to appear twice on the iOS platform
+
+## [v3.3.5]
+
+This version fixes minor known issues and adds a new tab to the settings screen for mowas keys
+
+### Added
+
+- added the ability to set the usability of keys for mowas on the settings screen
+- added the ability to create builds in the latest version of Xcode with eas
+
+### Fixed
+
+- fixed a bug that caused the app to crash in editable tile
+- fixed bugs with different list views in `HomeScreen`
+- fixed a bug with a gap under the logo in `DetailScreen`
+- fixed the problem of opening links from external browsers in BBBus
+- fixed the application crashes if the location data in BBBus is undefined
+- fixed an issue where the Carousel would reset after pausing
+- fixed the problem that images on the onboarding screen appear above the status bar
+
+## [v3.3.4]
+
+This version includes a new list option and fixes some bugs
+
+## Breaking
+
+icon names need to be updated due to a failure to display icons caused by updating the icon package
+
+### Fixed
+
+- fixed the error of dates not appearing in the event list
+- fixed prop error in Image component that caused images not to display correctly
+
+## [v3.3.3]
+
+This version includes a new list option and fixes some bugs
+
+### Added
+
+- added a new list view option with a large image as the first item
+- added multiple images for disturber
+- added the ability to click on images in disturber and navigate within the app
+- added new settings screen appearance that can be set via the server
+- added a new list that can be added to `HomeScreen` and updated via the server
+- added option to add button to `Carousel` in `HomeScreen`
+
+### Fixed
+
+- fixed a bug that did not allow http pages to be open
+- fixed the problem of not selecting the document
+- fixed the error of sections in the event list in different list types not showing the date
+- fixed a bug in the settings screen that caused the app to crash
+
 ## [v3.3.2]
 
 This update includes bug fixes

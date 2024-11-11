@@ -36,14 +36,14 @@ const initialAZFilterData = alphabetWithUmlauts.map((value, index) => ({
 /* *** */
 
 export const IndexFilter = ({
-  selectedFilter,
-  results,
-  listItems,
-  setListItems,
   areaId,
-  setAreaId,
   areas,
-  loading
+  listItems,
+  loading,
+  results,
+  selectedFilter,
+  setAreaId,
+  setListItems
 }) => {
   const [serviceSearchData, setServiceSearchData] = useState('');
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
@@ -141,7 +141,7 @@ export const IndexFilter = ({
         const searchResults = search({
           results,
           previousResults: listItems,
-          location: !!locationFilterData && locationFilterData.find((item) => item.selected).value,
+          location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
           category: categoryFilterData.find((item) => item.selected).value
         });
 
@@ -157,7 +157,7 @@ export const IndexFilter = ({
       const searchResults = search({
         results,
         previousResults: listItems,
-        location: !!locationFilterData && locationFilterData.find((item) => item.selected).value,
+        location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
         keyword: serviceSearchData
       });
 
@@ -173,7 +173,7 @@ export const IndexFilter = ({
         const searchResults = search({
           results,
           previousResults: listItems,
-          location: !!locationFilterData && locationFilterData.find((item) => item.selected).value,
+          location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
           character
         });
 
@@ -211,9 +211,9 @@ const styles = StyleSheet.create({
     lineHeight: normalize(30)
   },
   searchInput: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderRgba,
     borderWidth: 0,
-    borderBottomWidth: StyleSheet.hairlineWidth,
     color: colors.darkText,
     fontFamily: 'regular',
     fontSize: normalize(16),
@@ -225,16 +225,12 @@ const styles = StyleSheet.create({
 });
 
 IndexFilter.propTypes = {
-  selectedFilter: PropTypes.object.isRequired,
-  results: PropTypes.array.isRequired,
-  listItems: PropTypes.array.isRequired,
-  setListItems: PropTypes.func.isRequired,
   areaId: PropTypes.string.isRequired,
-  setAreaId: PropTypes.func.isRequired,
   areas: PropTypes.array,
-  loading: PropTypes.bool.isRequired
-};
-
-IndexFilter.defaultProps = {
-  communities: []
+  listItems: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
+  results: PropTypes.array.isRequired,
+  selectedFilter: PropTypes.object.isRequired,
+  setAreaId: PropTypes.func.isRequired,
+  setListItems: PropTypes.func.isRequired
 };

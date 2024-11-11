@@ -1,15 +1,12 @@
-import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
-import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useInfiniteQuery } from 'react-query';
 
-import { NetworkContext } from '../../NetworkProvider';
-import { SettingsContext } from '../../SettingsProvider';
 import {
   Button,
   Calendar,
@@ -19,14 +16,18 @@ import {
   ListComponent,
   LoadingContainer,
   OptionToggle,
+  REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
   WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
-import { graphqlFetchPolicy, openLink, parseListItemsFromQuery } from '../../helpers';
+import { openLink, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVolunteerData } from '../../hooks';
-import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../../queries';
+import { NetworkContext } from '../../NetworkProvider';
+import { QUERY_TYPES, getQuery } from '../../queries';
+import { ReactQueryClient } from '../../ReactQueryClient';
+import { SettingsContext } from '../../SettingsProvider';
 
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';
@@ -49,20 +50,25 @@ const hasFilterSelection = (isLocationFilter, queryVariables) => {
 };
 
 const today = moment().format('YYYY-MM-DD');
+// we need to set a date range to correctly sort the results by list date, so we set it far in the future
+const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecords = ({ navigation, route }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
+  const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
     filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
-  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
+  const [queryVariables, setQueryVariables] = useState({
+    ...(route.params?.queryVariables || {}),
+    dateRange: (route.params?.queryVariables || {}).dateRange || [today, todayIn10Years]
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [filterByDailyEvents, setFilterByDailyEvents] = useState(
@@ -72,18 +78,51 @@ export const EventRecords = ({ navigation, route }) => {
   const showFilter = (route.params?.showFilter ?? true) && showEventsFilter;
   const showFilterByDailyEvents =
     (route.params?.showFilterByDailyEvents ?? showFilter) && !showCalendar;
-  const hasDailyFilterSelection = !!queryVariables.dateRange;
+  const hasDailyFilterSelection =
+    !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data, loading, fetchMore, refetch, networkStatus } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS),
-    {
-      fetchPolicy,
-      variables: queryVariables,
-      skip: showCalendar
-    }
-  );
+  // https://github.com/ndraaditiya/React-Query-GraphQL/blob/main/src/services/index.jsx
+  const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      [
+        deprecated?.events?.listingWithoutDateFragment
+          ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+          : QUERY_TYPES.EVENT_RECORDS,
+        {
+          ...queryVariables,
+          limit: undefined,
+          take: queryVariables.limit
+        }
+      ],
+      async ({ pageParam = 0 }) => {
+        const client = await ReactQueryClient();
+
+        return await client.request(
+          getQuery(
+            deprecated?.events?.listingWithoutDateFragment
+              ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+              : QUERY_TYPES.EVENT_RECORDS
+          ),
+          {
+            ...queryVariables,
+            limit: undefined,
+            take: queryVariables.limit,
+            offset: pageParam
+          }
+        );
+      },
+      {
+        enabled: !showCalendar,
+        getNextPageParam: (lastPage, allPages) => {
+          if (lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length < queryVariables.limit) {
+            return undefined;
+          }
+
+          return allPages.length * queryVariables.limit;
+        }
+      }
+    );
 
   const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
     getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES),
@@ -102,7 +141,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
     queryVariables: route.params?.queryVariables,
-    queryOptions: { enabled: showVolunteerEvents && !loading },
+    queryOptions: { enabled: showVolunteerEvents && !isLoading },
     isCalendar: true,
     isSectioned: true
   });
@@ -147,10 +186,7 @@ export const EventRecords = ({ navigation, route }) => {
         });
       } else {
         setQueryVariables((prevQueryVariables) => {
-          // remove the filter key for the specific query, when unselecting daily events
-          delete prevQueryVariables.dateRange;
-
-          return { ...prevQueryVariables, refetchDate: true };
+          return { ...prevQueryVariables, dateRange: [today, todayIn10Years], refetchDate: true };
         });
       }
 
@@ -168,9 +204,18 @@ export const EventRecords = ({ navigation, route }) => {
       : undefined;
 
   const listItems = useMemo(() => {
-    let parsedListItems = parseListItemsFromQuery(QUERY_TYPES.EVENT_RECORDS, data, undefined, {
-      withDate: false
-    });
+    let parsedListItems =
+      parseListItemsFromQuery(
+        query,
+        {
+          [query]: data?.pages?.flatMap((page) => page?.[query])
+        },
+        undefined,
+        {
+          withDate: false,
+          withTime: true
+        }
+      ) || [];
 
     if (additionalData?.length) {
       let filteredAdditionalData;
@@ -187,53 +232,45 @@ export const EventRecords = ({ navigation, route }) => {
     }
 
     return parsedListItems;
-  }, [additionalData, data, hasDailyFilterSelection, query, queryVariables]);
+  }, [
+    additionalData,
+    data?.pages?.flatMap((page) => page?.[query]),
+    hasDailyFilterSelection,
+    query,
+    queryVariables.dateRange
+  ]);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
+      showCalendar && DeviceEventEmitter.emit(REFRESH_CALENDAR);
       await refetch();
       showVolunteerEvents && refetchVolunteerEvents();
     }
     setRefreshing(false);
-  }, [isConnected, refetch, refetchVolunteerEvents, setRefreshing, showVolunteerEvents]);
+  }, [
+    isConnected,
+    refetch,
+    refetchVolunteerEvents,
+    setRefreshing,
+    showCalendar,
+    showVolunteerEvents
+  ]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (isConnected && !showCalendar) {
-        refetch();
-        showVolunteerEvents && refetchVolunteerEvents();
-      }
-    }, [isConnected, refetch, refetchVolunteerEvents, showCalendar, showVolunteerEvents])
-  );
-
-  const fetchMoreData = () => {
+  const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
 
-    return fetchMore({
-      query: getFetchMoreQuery(query),
-      variables: {
-        ...queryVariables,
-        offset: data?.[query]?.length
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[query]?.length) return prevResult;
+    if (hasNextPage) {
+      return await fetchNextPage();
+    }
 
-        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
-
-        return {
-          ...prevResult,
-          [query]: uniqueData
-        };
-      }
-    });
-  };
+    return {};
+  }, [data, fetchNextPage, showCalendar, hasNextPage, query]);
 
   if (!query) return null;
 
   if (
-    // show loading indicator if loading but not if refetching (network status 4 means refetch)
-    (!data && loading && networkStatus !== 4) ||
+    (!listItems && isLoading && !isRefetching && !isFetchingNextPage) ||
     eventRecordsAddressesLoading ||
     eventRecordsCategoriesLoading
   ) {
@@ -309,13 +346,12 @@ export const EventRecords = ({ navigation, route }) => {
           </>
         }
         ListEmptyComponent={
-          loading ? (
+          isLoading ? (
             <LoadingContainer>
               <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           ) : showCalendar ? (
             <Calendar
-              isListRefreshing={refreshing}
               query={query}
               queryVariables={queryVariables}
               navigation={navigation}
@@ -326,7 +362,7 @@ export const EventRecords = ({ navigation, route }) => {
           )
         }
         navigation={navigation}
-        data={loading || showCalendar ? [] : listItems}
+        data={isLoading || showCalendar ? [] : listItems}
         horizontal={false}
         sectionByDate={!showCalendar}
         query={query}

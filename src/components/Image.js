@@ -4,10 +4,11 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Image as RNEImage } from 'react-native-elements';
 import { CacheManager } from 'react-native-expo-image-cache';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
-import { SettingsContext } from '../SettingsProvider';
 
 import { ImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
@@ -28,19 +29,23 @@ const NO_IMAGE = { uri: 'NO_IMAGE' };
 /* eslint-disable complexity */
 export const Image = ({
   aspectRatio,
-  borderRadius,
+  borderRadius = 0,
   button,
+  childrenContainerStyle,
   containerStyle,
   message,
-  PlaceholderContent,
+  PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
   refreshInterval,
-  resizeMode,
+  resizeMode = 'cover',
   source: sourceProp,
   style
 }) => {
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
   const timestamp = useInterval(refreshInterval);
+  const { sueConfig = {} } = useContext(ConfigurationsContext);
+  const { apiConfig = {} } = sueConfig;
+  const { apiKey = '' } = apiConfig[apiConfig?.whichApi] || apiConfig;
 
   // only use cache when refreshInterval is undefined
   // if there is a source.uri to fetch, do it with the CacheManager and set the local path to show.
@@ -82,8 +87,15 @@ export const Image = ({
         break effect;
       }
 
+      // we needed this control to solve the problem of image not loading on android devices in development environment
+      if (__DEV__ && device.platform === 'android') {
+        setSource({ uri: sourceProp.uri });
+
+        break effect;
+      }
+
       sourceProp.uri
-        ? CacheManager.get(sourceProp.uri)
+        ? CacheManager.get(sourceProp.uri, apiKey ? { headers: { api_key: apiKey } } : {})
             .getPath()
             .then((path) => {
               mounted && setSource({ uri: path ?? NO_IMAGE.uri });
@@ -111,12 +123,13 @@ export const Image = ({
     <View>
       <RNEImage
         source={source}
-        childrenContainerStyle={style || stylesForImage(aspectRatio).defaultStyle}
+        childrenContainerStyle={childrenContainerStyle || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
+        style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={styles.placeholderStyle}
         accessible={!!sourceProp?.captionText}
-        accessibilityLabel={`${sourceProp.captionText ? sourceProp.captionText : ''} ${
+        accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
           device.platform === 'ios' ? consts.a11yLabel.image : ''
         }`}
         resizeMode={resizeMode}
@@ -167,6 +180,7 @@ Image.propTypes = {
   aspectRatio: PropTypes.object,
   borderRadius: PropTypes.number,
   button: PropTypes.object,
+  childrenContainerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
@@ -174,10 +188,4 @@ Image.propTypes = {
   resizeMode: PropTypes.string,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
-};
-
-Image.defaultProps = {
-  borderRadius: 0,
-  PlaceholderContent: <ActivityIndicator color={colors.refreshControl} />,
-  resizeMode: 'cover'
 };

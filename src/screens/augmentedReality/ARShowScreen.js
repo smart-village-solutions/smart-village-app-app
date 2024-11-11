@@ -1,4 +1,4 @@
-import { ViroARSceneNavigator } from '@viro-community/react-viro';
+import { ViroARSceneNavigator } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';

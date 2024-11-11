@@ -71,7 +71,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     []
   );
 
-  const { imageUri, selectImage } = useSelectImage(onChange);
+  const { imageUri, selectImage } = useSelectImage({ onChange });
 
   const {
     error: errorSupportId,

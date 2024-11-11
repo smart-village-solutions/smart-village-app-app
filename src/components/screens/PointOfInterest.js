@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useMemo, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import { consts, normalize, texts } from '../../config';
-import { matomoTrackingString } from '../../helpers';
+import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -16,6 +18,7 @@ import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
+import { VoucherListItem } from '../vouchers';
 
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -24,14 +27,19 @@ import { PriceCard } from './PriceCard';
 import { TravelTimes } from './TravelTimes';
 
 const { MATOMO_TRACKING } = consts;
+export const INITIAL_VOUCHER_COUNT = 3;
+export const INCREMENT_VOUCHER_COUNT = 5;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showOpeningTimes = true } = settings;
+  const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const {
     addresses,
-    payload,
     categories,
     category,
     contact,
@@ -43,8 +51,10 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     mediaContents,
     openingHours,
     operatingCompany,
+    payload,
     priceInformations,
     title,
+    vouchers,
     webUrls
   } = data;
 
@@ -65,6 +75,18 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       title
     ])
   );
+
+  const voucherListItems = useMemo(() => {
+    return parseListItemsFromQuery(
+      QUERY_TYPES.VOUCHERS,
+      { [QUERY_TYPES.VOUCHERS]: vouchers },
+      undefined,
+      {
+        withDate: false,
+        queryKey: QUERY_TYPES.VOUCHERS
+      }
+    );
+  }, [vouchers]);
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
@@ -102,9 +124,32 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             contact={contact}
             openingHours={openingHours}
             openWebScreen={openWebScreen}
+            showOpeningTimes={showOpeningTimes}
             webUrls={webUrls}
           />
         </Wrapper>
+      )}
+
+      {!!voucherListItems?.length && (
+        <View>
+          <SectionHeader title={texts.pointOfInterest.vouchers} />
+          <FlatList
+            data={voucherListItems.slice(0, loadedVoucherDataCount)}
+            renderItem={({ item }) => <VoucherListItem item={item} navigation={navigation} />}
+            ListFooterComponent={() =>
+              voucherListItems.length > loadedVoucherDataCount && (
+                <Wrapper>
+                  <Button
+                    title={texts.pointOfInterest.loadMoreVouchers}
+                    onPress={() =>
+                      setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)
+                    }
+                  />
+                </Wrapper>
+              )
+            }
+          />
+        </View>
       )}
 
       {!!payload?.freeStatusUrl && (

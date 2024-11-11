@@ -5,9 +5,11 @@ import { WrapperRow } from '../Wrapper';
 
 import { ConstructionSiteNewsWidget } from './ConstructionSiteNewsWidget';
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
+import { CustomWidget } from './CustomWidget';
 import { EventWidget } from './EventWidget';
 import { LunchWidget } from './LunchWidget';
 import { SurveyWidget } from './SurveyWidget';
+import { VoucherWidget } from './VoucherWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WebWidget } from './WebWidget';
@@ -27,9 +29,11 @@ const EXISTING_WIDGETS: {
 } = {
   constructionSite: ConstructionSiteWidget,
   constructionSiteNews: ConstructionSiteNewsWidget,
+  custom: CustomWidget,
   event: EventWidget,
   lunch: LunchWidget,
   survey: SurveyWidget,
+  voucher: VoucherWidget,
   water: WaterTemperatureWidget,
   weather: WeatherWidget,
   web: WebWidget

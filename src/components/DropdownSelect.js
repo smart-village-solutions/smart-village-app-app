@@ -22,6 +22,7 @@ export const DropdownSelect = ({
   setData,
   label,
   labelWrapperStyle,
+  placeholder,
   showSearch,
   searchInputStyle,
   renderSearch,
@@ -62,7 +63,9 @@ export const DropdownSelect = ({
           accessible
           style={styles.dropdownRowWrapper}
         >
-          <RegularText primary={highlighted}>{rowData}</RegularText>
+          <RegularText primary={highlighted} placeholder={rowData == placeholder}>
+            {rowData}
+          </RegularText>
         </Wrapper>
       );
     },
@@ -134,7 +137,11 @@ export const DropdownSelect = ({
         <WrapperRow
           style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
         >
-          <RegularText style={styles.selectedValueText} numberOfLines={1}>
+          <RegularText
+            style={styles.selectedValueText}
+            placeholder={selectedValue == placeholder}
+            numberOfLines={1}
+          >
             {multipleSelect ? selectedMultipleValues : selectedValue}
           </RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
@@ -164,7 +171,6 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: StyleSheet.hairlineWidth,
     elevation: 2,
-    height: 'auto',
     maxHeight: normalize(320),
     shadowColor: colors.shadow,
     shadowOffset: { height: 5, width: 0 },
@@ -190,6 +196,7 @@ DropdownSelect.propTypes = {
   multipleSelect: PropTypes.bool,
   setData: PropTypes.func,
   label: PropTypes.string,
+  placeholder: PropTypes.string,
   labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
   showSearch: PropTypes.bool,
   searchInputStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),

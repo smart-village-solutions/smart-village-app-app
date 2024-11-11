@@ -93,7 +93,7 @@ export const texts = {
     },
     textSearch: {
       label: 'Dienstleistung',
-      placeholder: 'Was suchen Sie?'
+      placeholder: 'Was suchst du?'
     }
   },
   bookmarks: {
@@ -118,6 +118,15 @@ export const texts = {
   commercial: {
     commercial: 'Angebot',
     commercials: 'Angebote'
+  },
+  components: {
+    search: 'Suche starten',
+    map: 'Eigenen Standort verwenden?',
+    sueReportProgress: (step, ofStep) => `Schritt ${step} von ${ofStep}`,
+    sueStatus: {
+      inactive: 'Inaktiver Status:',
+      active: 'Aktiver Status:'
+    }
   },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
@@ -338,6 +347,7 @@ export const texts = {
       task: 'Aufgabe',
       user: 'Profil'
     },
+    voucher: 'Gutschein',
     tour: 'Tour'
   },
   dropdownFilter: {
@@ -444,6 +454,19 @@ export const texts = {
       enabled: 'Senden'
     }
   },
+  filter: {
+    date: 'Datum',
+    hideFilter: 'Filter ausblenden',
+    resetFilter: 'Filter zurücksetzen',
+    showFilter: 'Filter anzeigen',
+    search: 'Was suchen Sie?',
+    sorting: {
+      updatedDatetime: 'Änderungsdatum',
+      requestedDatetime: 'Erstelldatum',
+      status: 'Status',
+      title: 'Betreff'
+    }
+  },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
@@ -482,9 +505,13 @@ export const texts = {
   noticeboard: {
     abort: 'Abbrechen',
     addImages: 'Bilder hinzufügen',
+    addDocuments: 'Dokumente hinzufügen',
     alerts: {
       dateDifference: 'Bitte wähle eine maximale Laufzeit von drei Monaten.',
       delete: 'Willst du diesen Eintrag wirklich löschen?',
+      documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
+      documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
+      documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
       error: 'Bitte versuche es erneut.',
       hint: 'Hinweis',
       imagesSizeError: 'Die ausgewählten Bilder dürfen insgesamt maximal 10 MB groß sein.',
@@ -504,8 +531,12 @@ export const texts = {
     delete: 'Löschen',
     description: 'Beschreibung',
     details: 'Details',
+    documents: 'Dokumente',
+    documentsInfo:
+      'Du kannst maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
     duration: 'Laufzeit',
     edit: 'Bearbeiten',
+    editButton: 'Anzeige ändern',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuche es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     images: 'Aussagekäftiges Bild',
@@ -526,8 +557,8 @@ export const texts = {
     myNoticeboard: 'Meine Anzeige',
     noticeboard: 'Anzeige',
     publicationDate: 'Erscheinungsdatum',
-    send: 'Anzeige erstellen',
-    editButton: 'Anzeige ändern',
+    send: 'Senden',
+    sendButton: 'Anzeige erstellen',
     successScreen: {
       application: 'Die Nachricht wurde gesendet.',
       entry:
@@ -784,6 +815,7 @@ export const texts = {
     departureTimesShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
+    loadMoreVouchers: 'Mehr anzeigen',
     location: 'Karte',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
@@ -806,11 +838,13 @@ export const texts = {
     },
     showLunches: 'Zum aktuellen Gastro-Angebot',
     today: 'Heute',
+    vouchers: 'Aktuelle Angebote',
+    vouchersMore: 'Weitere Angebote',
     yourPosition: 'Ihre Position'
   },
   profile: {
     abort: 'Abbrechen',
-    alreadyRegistered: 'du bist schon registriert? ',
+    alreadyRegistered: 'Du bist schon registriert? ',
     back: 'Zurück',
     birthday: 'Geburtsdatum',
     birthdayInvalid: 'Mindestalter nicht erreicht',
@@ -847,7 +881,7 @@ export const texts = {
     loginTitle: 'Login',
     logout: 'Abmelden',
     next: 'Weiter',
-    notYetRegistered: 'du bist noch nicht registriert? ',
+    notYetRegistered: 'Du bist noch nicht registriert? ',
     ok: 'OK',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
@@ -928,6 +962,11 @@ export const texts = {
     pointsOfInterest: 'Orte und Touren',
     service: 'Service',
     settings: 'Einstellungen',
+    sue: {
+      mapView: 'Meldungskarte',
+      listView: 'Meldungsliste',
+      reportView: 'Etwas melden'
+    },
     survey: 'Umfrage',
     surveys: 'Umfragen',
     volunteer: {
@@ -939,6 +978,12 @@ export const texts = {
       messages: 'Mein Postfach',
       personal: 'Mein Bereich',
       tasks: 'Meine Aufgaben'
+    },
+    voucher: {
+      home: 'TreueClub',
+      index: 'Neue Angebote',
+      partner: 'Kooperationspartner',
+      qr: 'Code scannen'
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
@@ -968,12 +1013,17 @@ export const texts = {
       abort: 'Abbrechen',
       alternativePositionHint:
         'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
+      cancel: 'Abbrechen',
       chooseAlternateLocationButton: 'Alternativen Standort wählen',
       next: 'Weiter',
-      onSystemPermissionMissing:
+      ok: 'OK',
+      onLocationServiceMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
+      onSystemPermissionMissing:
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes musst du die App neu starten.',
       save: 'Speichern',
-      setting: 'Standort'
+      setting: 'Standort',
+      settings: 'Einstellungen'
     },
     mowasRegion: {
       setting: 'MoWaS-Regionen'
@@ -1023,6 +1073,94 @@ export const texts = {
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
     pushNotifications: 'Push-Benachrichtigungen'
+  },
+  sue: {
+    answer: 'Antworten',
+    currentStatus: 'Aktueller Status',
+    datetime: 'Datum und Uhrzeit der Meldung',
+    description: 'Beschreibung',
+    empty: {
+      list: 'Schade, es wurden keine passenden Einträge gefunden.'
+    },
+    location: 'Ort',
+    report: {
+      addImage: 'Bilder hinzufügen',
+      alerts: {
+        address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
+        close: 'Schließen',
+        contact: 'Bitte geben Sie mindestens eine Kontaktinformation ein',
+        city: 'Bitte geben Sie den Ort an',
+        dataDeleteAlert: {
+          cancel: 'Nein',
+          deleteButton: 'Löschen',
+          message: 'Sind Sie sicher, dass Sie Ihre eingegebenen Meldungsdaten löschen möchten?',
+          ok: 'Ja',
+          title: 'Eingabe löschen'
+        },
+        hint: 'Hinweis',
+        imageType: 'Der verwendete Dateityp wird nicht unterstützt.',
+        imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
+        imageLocation: 'Die Adressinformationen wurden dem Bild entnommen und vorausgefüllt.',
+        imagesTotalSizeError: (size) =>
+          `Die ausgewählten Bilder dürfen insgesamt nicht größer als ${size} sein.`,
+        imageSelectAlert: {
+          camera: 'Bild aufnehmen',
+          cancel: 'Abbrechen',
+          description:
+            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Galerie auswählen?',
+          gallery: 'Galerie öffnen',
+          title: 'Bildquelle auswählen'
+        },
+        invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
+        invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
+        limitOfArea: (city) => `Bitte geben Sie nur Standorte für ${city} ein.`,
+        location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
+        no: 'Nein',
+        myLocation: 'Möchten Sie Ihren aktuellen Standort als Adresse übernehmen?',
+        ok: 'OK',
+        serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
+        settings: 'Einstellungen',
+        street: 'Bitte geben Sie die Straße an',
+        terms: 'Bitte akzeptieren Sie die Datenschutzbestimmung und Nutzungsbedingung.',
+        title: 'Bitte kurz beschreiben, worum es geht.',
+        yes: 'Ja',
+        postalCode: 'Bitte geben Sie die Postleitzahl an',
+        postalCodeLength: 'Postleitzahl muss 5-stellig sein.'
+      },
+      back: 'Zurück',
+      city: 'Ort',
+      description: 'Ausführliche Beschreibung',
+      email: 'E-Mail-Adresse',
+      emailHint:
+        'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
+      errorText: 'muss ausgefüllt werden',
+      firstName: 'Vorname',
+      houseNumber: 'Hausnummer',
+      imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
+      lastName: 'Nachname',
+      mapHint:
+        'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen Standort verwenden.',
+      next: 'Weiter',
+      phone: 'Telefonnummer',
+      sendReport: 'Meldung senden',
+      sendReportDone: {
+        feedbackHeader: 'Gib uns dein Feedback',
+        messagePlaceholder: 'Deine Verbesserungsidee',
+        messageTitle: 'Hast du noch eine Verbesserungsidee?',
+        ratingTitle: 'Wie zufrieden bist du mit der App?',
+        sendButton: 'Absenden',
+        toEntryList: 'Zur Meldungsliste'
+      },
+      street: 'Straße',
+      termsInputCheckbox: 'Ich stimme den folgenden Bedingungen zu:',
+      termsOfService: 'Datenschutzbestimmung',
+      termsOfUse: 'Nutzungsbedingung',
+      title: 'Kurze Beschreibung',
+      postalCode: 'Postleitzahl'
+    },
+    result: 'Ergebnis',
+    results: 'Ergebnisse'
   },
   survey: {
     archive: 'Umfrage-Archiv',
@@ -1099,6 +1237,12 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
+  },
+  updateAlert: {
+    updateNow: 'Jetzt aktualisieren',
+    updateRequiredMessage:
+      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisiere jetzt, um von den neuesten Verbesserungen zu profitieren.',
+    updateRequiredTitle: 'Aktualisierung erforderlich'
   },
   volunteer: {
     abort: 'Abbrechen',
@@ -1246,6 +1390,64 @@ export const texts = {
     xmpp: 'xmpp',
     youtube: 'Youtube'
   },
+  voucher: {
+    abort: 'Abbrechen',
+    detailScreen: {
+      available: 'Verfügbar',
+      availableFrom: 'Verfügbar ab',
+      availableTo: 'Verfügbar bis',
+      cancel: 'Abbrechen',
+      checkboxLabel: 'Ja, ich habe die Konditionen verstanden.',
+      close: 'Schließen',
+      daily: 'pro Tag',
+      desiredQuantity: 'Gewünschte Anzahl',
+      emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
+      frequency: (maxPerPerson, frequency) =>
+        `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
+      isNotAvailable: 'Gutschein derzeit nicht verfügbar',
+      limit: (availableQuantity, maxQuantity) =>
+        `Limitiert: ${availableQuantity}/${maxQuantity} verfügbar`,
+      monthly: 'pro Monat',
+      once: 'einmalig',
+      progressSubtitle: 'Minuten',
+      progressTitle: 'Der Coupon läuft ab in',
+      quarterly: 'pro Quartal',
+      redeem: 'Gutschein einlösen',
+      redeemDescription: 'Bitte zeigen Sie den Coupon beim Bezahlen vor.',
+      redeemed: 'Gutschein eingelöst',
+      redeemErrorDescription: 'Dieser Coupon ist nur einmal einlösbar',
+      redeemErrorTitle: 'Fehler beim Einlösen',
+      redeemNow: 'Jetzt einlösen',
+      redeemTitle: 'Sie können den Gutschein nun verwenden',
+      sheetDescription:
+        'Sie haben nach Bestätigung 15 Minuten Zeit den automatisch erzeugten Coupon beim Bezahlen vorzuzeigen. Nach 15 Minuten läuft der Coupon ab. Sie brauchen keinen Internetempfang um einen Coupon zu erstellen.',
+      sheetTitle: 'Möchten Sie den Gutschein einlösen?',
+      toPartnerButton: 'Zum Kooperationspartner',
+      weekly: 'pro Woche',
+      yearly: 'pro Jahr'
+    },
+    indexLoginDescription:
+      'Um die Angebote einlösen zu können, melden Sie sich bitte mit Ihrem Strom- oder Gas-Vertragskonto an.',
+    indexLoginTitle: 'Bitte einloggen',
+    key: 'Nachname Vertragspartner',
+    login: 'Anmelden',
+    loginButton: 'Zum Login',
+    loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    loginFailedTitle: 'Fehler bei der Anmeldung',
+    loginTitle: 'Anmelden',
+    offersCategories: 'Angebote Kategorien',
+    result: 'Ergebnis',
+    results: 'Ergebnisse',
+    scannerScreen: {
+      errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      errorButton: 'Erneut versuchen',
+      errorTitle: 'Fehler',
+      cameraPermissionMissing:
+        'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+      scannerTitle: 'QR-Code scannen'
+    },
+    secret: 'Vertragskonto-Nr.'
+  },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
@@ -1271,16 +1473,22 @@ export const texts = {
     headerTitle: 'Wassertemperatur'
   },
   weather: {
-    alertsHeadline: 'Wetterwarnungen',
-    currentHeadline: 'Aktuelles Wetter',
+    alertsHeadline: 'Warnungen',
+    alertsText: (from, to) => `Zwischen ${from} Uhr und ${to} Uhr.`,
+    currentHeadline: 'Vorschau',
     nextDaysHeadline: 'Wetter der nächsten Tage',
-    noData: 'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuche es später erneut.'
+    noData: 'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
+    now: 'Jetzt',
+    today: 'Heute',
+    tomorrow: 'Morgen'
   },
   widgets: {
     constructionSites: 'Baustellen',
+    custom: 'Benutzerdefiniert',
     events: 'Events',
     lunch: 'Gastro',
     surveys: 'Umfragen',
+    vouchers: 'Angebote',
     water: 'Wasser',
     weather: 'Wetter'
   }

@@ -4,6 +4,7 @@ import { Query } from 'react-apollo';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import {
+  EmptyMessage,
   EventRecord,
   LoadingContainer,
   NewsItem,
@@ -14,16 +15,17 @@ import {
   Tour
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, consts } from '../config';
+import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
-import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 
 import { DefectReportFormScreen } from './DefectReport';
+import { SueDetailScreen } from './SUE';
 
 const getGenericComponent = (genericType) => {
   switch (genericType) {
@@ -96,6 +98,11 @@ export const DetailScreen = ({ navigation, route }) => {
 
   useRootRouteByCategory(details, navigation);
 
+  // Render SUE detail screen without the need of processing the rest of the code here
+  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID) {
+    return <SueDetailScreen navigation={navigation} route={route} />;
+  }
+
   if (!refreshTime) {
     return (
       <LoadingContainer>
@@ -139,7 +146,9 @@ export const DetailScreen = ({ navigation, route }) => {
 
         // we can have `data` from GraphQL or `details` from the previous list view.
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-        if ((!data || !data[query]) && !details) return null;
+        if ((!data || !data[query]) && !details) {
+          return <EmptyMessage title={texts.empty.content} />;
+        }
 
         const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
 

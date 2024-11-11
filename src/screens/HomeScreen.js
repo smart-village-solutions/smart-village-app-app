@@ -1,8 +1,13 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
+import { NetworkContext } from '../NetworkProvider';
+import { OrientationContext } from '../OrientationProvider';
+import { SettingsContext } from '../SettingsProvider';
 import {
   About,
   ConnectedImagesCarousel,
@@ -17,7 +22,8 @@ import {
   SectionHeader,
   ServiceTiles,
   Widgets,
-  Wrapper
+  Wrapper,
+  WrapperVertical
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import {
@@ -30,16 +36,19 @@ import {
   useMatomoTrackScreenView,
   usePermanentFilter,
   usePushNotifications,
-  useStaticContent
+  useRedeemLocalVouchers,
+  useStaticContent,
+  useVersionCheck
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
-import { NetworkContext } from '../NetworkProvider';
-import { getQueryType, QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
+import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
-import { OrientationContext } from '../OrientationProvider';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+
+const today = moment().format('YYYY-MM-DD');
+// we need to set a date range to correctly sort the results by list date, so we set it far in the future
+const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 const renderItem = ({ item }) => {
   const {
@@ -82,12 +91,12 @@ const renderItem = ({ item }) => {
       indexCategoryIds,
       rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS
     }) => {
-      const queryVariables = { limit };
+      const indexQueryVariables = { limit };
 
       if (indexCategoryIds?.length) {
-        queryVariables.categoryIds = indexCategoryIds;
+        indexQueryVariables.categoryIds = indexCategoryIds;
       } else {
-        queryVariables.categoryId = categoryId;
+        indexQueryVariables.categoryId = categoryId;
       }
 
       return {
@@ -96,7 +105,7 @@ const renderItem = ({ item }) => {
           title,
           titleDetail,
           query: QUERY_TYPES.NEWS_ITEMS,
-          queryVariables,
+          queryVariables: indexQueryVariables,
           rootRouteName
         }
       };
@@ -152,6 +161,7 @@ const renderItem = ({ item }) => {
       {...{
         buttonTitle,
         fetchPolicy,
+        isIndexStartingAt1: false,
         navigate: () => navigation.navigate(NAVIGATION[navigate]),
         navigation,
         query,
@@ -168,13 +178,9 @@ export const HomeScreen = ({ navigation, route }) => {
   const { orientation } = useContext(OrientationContext);
   const isPortrait = orientation === 'portrait';
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
-  const {
-    appDesignSystem = {},
-    sections = {},
-    widgets: widgetConfigs = [],
-    hdvt = {}
-  } = globalSettings;
+  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
     staticContentList = {},
     showNews = true,
@@ -205,7 +211,7 @@ export const HomeScreen = ({ navigation, route }) => {
   } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
-  const { state: excludeDataProviderIds } = usePermanentFilter();
+  const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
 
   const interactionHandler = useCallback(
     (response) => {
@@ -251,6 +257,9 @@ export const HomeScreen = ({ navigation, route }) => {
     globalSettings?.settings?.pushNotifications
   );
 
+  useVersionCheck();
+  useRedeemLocalVouchers();
+
   const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticContentName}`,
     name: staticContentName,
@@ -258,13 +267,13 @@ export const HomeScreen = ({ navigation, route }) => {
     skip: !showStaticContentList
   });
 
-  // function to add customised styles from `globalSettings` to `contentList`
+  // function to add customized styles from `globalSettings` to the list items
   const staticContentListItem = useMemo(() => {
     if (!staticContentListData) {
       return [];
     }
 
-    let listItem = [...staticContentListData];
+    let listItem = staticContentListData;
 
     if (appDesignSystem?.staticContentList) {
       listItem = listItem?.map((item: any) => ({
@@ -274,7 +283,7 @@ export const HomeScreen = ({ navigation, route }) => {
     }
 
     return listItem;
-  }, [staticContentListData]);
+  }, [appDesignSystem, staticContentListData]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
@@ -302,7 +311,7 @@ export const HomeScreen = ({ navigation, route }) => {
       limit: limitNews,
       navigation,
       query: QUERY_TYPES.NEWS_ITEMS,
-      queryVariables: { limit: 5, excludeDataProviderIds },
+      queryVariables: { limit: 5, excludeDataProviderIds, excludeMowasRegionalKeys },
       showData: showNews
     },
     {
@@ -323,7 +332,7 @@ export const HomeScreen = ({ navigation, route }) => {
       navigate: 'EVENT_RECORDS_INDEX',
       navigation,
       query: QUERY_TYPES.EVENT_RECORDS,
-      queryVariables: { limit: 3, order: 'listDate_ASC' },
+      queryVariables: { take: 3, order: 'listDate_ASC', dateRange: [today, todayIn10Years] },
       showData: showEvents,
       showVolunteerEvents,
       title: headlineEvents
@@ -338,7 +347,6 @@ export const HomeScreen = ({ navigation, route }) => {
           <>
             <ServiceTiles staticJsonName="homeService" title={headlineService} />
             <ConnectedImagesCarousel
-              alternateAspectRatio
               navigation={navigation}
               publicJsonFile="homeCarousel"
               refreshTimeKey="publicJsonFile-homeCarousel"
@@ -351,9 +359,14 @@ export const HomeScreen = ({ navigation, route }) => {
         }
         ListFooterComponent={
           <>
-            {showStaticContentList && !!staticContentListItem?.length && (
+            {!!staticContentListItem?.length && (
               <>
-                {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
+                {!!staticContentListTitle && (
+                  <WrapperVertical style={styles.noPaddingBottom}>
+                    <SectionHeader title={staticContentListTitle} />
+                  </WrapperVertical>
+                )}
+
                 {!!staticContentListDescription && (
                   <Wrapper>
                     <RegularText>{staticContentListDescription}</RegularText>
@@ -363,6 +376,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 <ListComponent
                   data={staticContentListItem}
                   horizontal={horizontal}
+                  navigation={navigation}
                   query={QUERY_TYPES.STATIC_CONTENT_LIST}
                 />
               </>
@@ -399,6 +413,9 @@ const styles = StyleSheet.create({
   logoLandscape: {
     height: normalize(43 / 1.5),
     width: normalize(70 / 1.5)
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
   }
 });
 

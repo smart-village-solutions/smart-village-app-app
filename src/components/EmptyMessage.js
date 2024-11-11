@@ -9,7 +9,7 @@ import { SafeAreaViewFlex } from './SafeAreaViewFlex';
 import { RegularText } from './Text';
 import { Wrapper } from './Wrapper';
 
-export const EmptyMessage = ({ title, showIcon }) => {
+export const EmptyMessage = ({ title, showIcon = true }) => {
   return (
     <SafeAreaViewFlex>
       <Wrapper>
@@ -37,8 +37,4 @@ const styles = StyleSheet.create({
 EmptyMessage.propTypes = {
   title: PropTypes.string.isRequired,
   showIcon: PropTypes.bool
-};
-
-EmptyMessage.defaultProps = {
-  showIcon: true
 };

@@ -10,11 +10,12 @@ import { Touchable } from './Touchable';
 
 export const Modal = ({
   children,
-  height,
+  closeButton,
+  height = 'auto',
   isBackdropPress,
   isListView,
   isVisible,
-  modalHiddenButtonName,
+  modalHiddenButtonName = texts.settingsTitles.arListLayouts.hide,
   onModalVisible,
   overlayStyle
 }) => {
@@ -31,11 +32,13 @@ export const Modal = ({
       <>
         {children}
 
-        <Touchable onPress={onModalVisible}>
-          <BoldText center underline primary>
-            {modalHiddenButtonName}
-          </BoldText>
-        </Touchable>
+        {closeButton || (
+          <Touchable onPress={onModalVisible}>
+            <BoldText center underline primary>
+              {modalHiddenButtonName}
+            </BoldText>
+          </Touchable>
+        )}
       </>
     </Overlay>
   );
@@ -53,6 +56,7 @@ const styles = StyleSheet.create({
 
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
+  closeButton: PropTypes.node,
   height: PropTypes.string,
   isBackdropPress: PropTypes.bool,
   isListView: PropTypes.bool,

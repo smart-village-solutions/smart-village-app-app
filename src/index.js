@@ -19,6 +19,7 @@ import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
 import { colors, consts, namespace, secrets } from './config';
+import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
   geoLocationToLocationObject,
   graphqlFetchPolicy,
@@ -221,11 +222,13 @@ const MainAppWithApolloProvider = () => {
           initialLocationSettings
         }}
       >
-        <OnboardingManager>
-          <UnreadMessagesProvider>
-            <Navigator navigationType={initialGlobalSettings.navigation} />
-          </UnreadMessagesProvider>
-        </OnboardingManager>
+        <ConfigurationsProvider>
+          <OnboardingManager>
+            <UnreadMessagesProvider>
+              <Navigator navigationType={initialGlobalSettings.navigation} />
+            </UnreadMessagesProvider>
+          </OnboardingManager>
+        </ConfigurationsProvider>
       </SettingsProvider>
     </ApolloProvider>
   );
