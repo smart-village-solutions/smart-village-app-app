@@ -162,6 +162,18 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             navigation={navigation}
             noSubtitle
           />
+
+          <TextListItem
+            item={{
+              bottomDivider: true,
+              isHeadlineTitle: false,
+              onPress: () => navigation.navigate(ScreenName.ProfileDelete),
+              routeName: ScreenName.ProfileDelete,
+              title: texts.profile.deleteProfile
+            }}
+            navigation={navigation}
+            noSubtitle
+          />
         </WrapperHorizontal>
 
         <Wrapper>

@@ -48,6 +48,7 @@ import {
   OParlSearchScreen,
   PdfScreen,
   ProfileConversationsScreen,
+  ProfileDeleteScreen,
   ProfileEditMailScreen,
   ProfileEditPasswordScreen,
   ProfileHomeScreen,
@@ -367,6 +368,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ProfileConversations,
       screenComponent: ProfileConversationsScreen
+    },
+    {
+      routeName: ScreenName.ProfileDelete,
+      screenComponent: ProfileDeleteScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
     },
     {
       routeName: ScreenName.ProfileEditMail,

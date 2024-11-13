@@ -850,6 +850,13 @@ export const texts = {
     birthdayInvalid: 'Mindestalter nicht erreicht',
     birthdayPlaceholder: 'Mindestalter: 18 Jahre',
     city: 'Ort',
+    deleteProfile: 'Meine Daten löschen',
+    deleteProfileAlertTitle: 'Anfrage',
+    deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
+    deleteProfileConsent: 'Ich bin mit dem Löschen meiner Daten einverstanden.',
+    deleteProfileConsentOptIn:
+      'Bitte bestätige, dass du mit dem Löschen deiner Daten einverstanden bist.',
+    deleteProfileSubject: 'Anfrage zur Löschung des Nutzerprofils',
     editMail: 'E-Mail-Adresse ändern',
     editPassword: 'Passwort ändern',
     editPasswordAlertMessage:
@@ -870,6 +877,7 @@ export const texts = {
     firstname: 'Vorname',
     firstnameError: 'Vorname muss ausgefüllt werden',
     gender: 'Anrede',
+    hint: 'Hinweis',
     invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
     invalidUrl: '-URL ist keine gültige URL',
     lastName: 'Nachname',
