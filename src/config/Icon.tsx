@@ -203,6 +203,8 @@ export const Icon = {
   Pencil: (props: IconProps) => <NamedIcon name="pencil" {...props} />,
   PencilPlus: (props: IconProps) => <NamedIcon name="pencil-plus" {...props} />,
   Phone: (props: IconProps) => <NamedIcon name="phone" {...props} />,
+  Pin: (props: IconProps) => <NamedIcon name="pin" {...props} />,
+  PinFilled: (props: IconProps) => <NamedIcon name="pin-filled" {...props} />,
   Play: (props: IconProps) => <NamedIcon name="player-play-filled" {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="plus" {...props} />,
   Profile: (props: IconProps) => <NamedIcon name="user" {...props} />,

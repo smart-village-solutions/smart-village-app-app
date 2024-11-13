@@ -26,7 +26,7 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
+      // refetch();
     }, [])
   );
 

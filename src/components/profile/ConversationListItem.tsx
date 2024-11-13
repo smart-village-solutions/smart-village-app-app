@@ -13,6 +13,8 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { VolunteerAvatar } from '../volunteer';
 
+import { ConversationActions } from './ConversationActions';
+
 type TConversation = {
   item: {
     bottomDivider: boolean;
@@ -39,14 +41,14 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
   const { currentUserData } = useProfileUser();
   const currentUserId = currentUserData?.member?.id;
 
-  if (loading) {
-    return <LoadingSpinner loading />;
-  }
-
   const message = item;
   const genericItem = data?.[query];
 
   if (!genericItem) return null;
+
+  if (loading) {
+    return <LoadingSpinner loading />;
+  }
 
   const {
     bottomDivider = true,
@@ -104,6 +106,7 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
           {subtitle}
         </RegularText>
       </View>
+      <ConversationActions />
     </ListItem>
   );
 };

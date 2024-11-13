@@ -509,6 +509,8 @@ export const texts = {
     alerts: {
       dateDifference: 'Bitte wähle eine maximale Laufzeit von drei Monaten.',
       delete: 'Willst du diesen Eintrag wirklich löschen?',
+      deleteConversation: 'Willst du diese Unterhaltung wirklich löschen?',
+      deleteButton: 'Löschen',
       documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
       documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
       documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
