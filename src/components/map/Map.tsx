@@ -375,9 +375,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: normalize(30),
     justifyContent: 'center',
-    left: normalize(13),
+    left: normalize(4),
     position: 'absolute',
-    width: normalize(100)
+    width: normalize(106)
   },
   mapIconOnLocationMarker: {
     alignSelf: 'center',

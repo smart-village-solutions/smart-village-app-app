@@ -29,10 +29,11 @@ export const Switch = ({ switchValue, toggleSwitch }) => {
       value={switchValue}
       accessibilityRole="button"
       style={[
-        !device.isTablet && {
-          right: -6,
-          transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
-        }
+        device.platform === 'ios' &&
+          !device.isTablet && {
+            right: -6,
+            transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
+          }
       ]}
     />
   );
