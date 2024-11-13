@@ -54,6 +54,7 @@ export enum ScreenName {
   Pdf = 'Pdf',
   Profile = 'Profile',
   ProfileConversations = 'ProfileConversations',
+  ProfileDelete = 'ProfileDelete',
   ProfileEditMail = 'ProfileEditMail',
   ProfileEditPassword = 'ProfileEditPassword',
   ProfileLogin = 'ProfileLogin',
