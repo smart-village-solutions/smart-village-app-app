@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MeinQuartier",
+    "name": "Mein Quartier",
     "slug": "meinquartier",
     "owner": "ikusei",
     "privacy": "unlisted",
@@ -23,7 +23,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.hb.meinquartier.smartvillage.app",
-      "buildNumber": "3",
+      "buildNumber": "1",
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "requireFullScreen": true,
@@ -58,7 +58,7 @@
         "backgroundColor": "#F7F5F0"
       },
       "package": "de.hb.meinquartier.smartvillage.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
