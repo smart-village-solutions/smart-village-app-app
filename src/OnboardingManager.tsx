@@ -3,12 +3,13 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { CustomMatomoProvider } from './CustomMatomoProvider';
-import { addToStore, readFromStore } from './helpers/storageHelper';
 import { Initializer, Initializers } from './helpers/initializationHelper';
+import { addToStore, readFromStore } from './helpers/storageHelper';
 import { AppIntroScreen } from './screens/AppIntroScreen';
 import { SettingsContext } from './SettingsProvider';
 
 export const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
+export const TERMS_AND_CONDITIONS_STORE_KEY = 'TERMS_AND_CONDITIONS_STORE_KEY';
 
 // this hook ensures that all settings will be properly initialized, even when onboarding
 // was completed before the settings where available, or an error occurred
@@ -50,6 +51,9 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
   const [onboardingStatus, setOnboardingStatus] = useState<'loading' | 'complete' | 'incomplete'>(
     'loading'
   );
+  const [termsAndConditionsStatus, setTermsAndConditionsStatus] = useState<
+    'unknown' | 'accepted' | 'declined'
+  >('unknown');
   const {
     globalSettings: {
       settings: {
@@ -61,20 +65,29 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
 
   const setOnboardingComplete = () => {
     setOnboardingStatus('complete');
-
     addToStore(ONBOARDING_STORE_KEY, 'complete');
+    setTermsAndConditionsAccepted();
+  };
+
+  const setTermsAndConditionsAccepted = () => {
+    setTermsAndConditionsStatus('accepted');
+    addToStore(TERMS_AND_CONDITIONS_STORE_KEY, 'accepted');
   };
 
   useEffect(() => {
     const loadAndSetOnboardingStatus = async () => {
       try {
         const onboardingComplete = await readFromStore(ONBOARDING_STORE_KEY);
+        const termsAndConditionsAccepted = await readFromStore(TERMS_AND_CONDITIONS_STORE_KEY);
 
         if (onboardingComplete === 'complete') {
           setOnboardingStatus('complete');
         } else {
           setOnboardingStatus('incomplete');
         }
+
+        termsAndConditionsAccepted != null &&
+          setTermsAndConditionsStatus(termsAndConditionsAccepted);
       } catch (e) {
         setOnboardingStatus('complete');
 
@@ -95,12 +108,24 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
   useInitializeAfterOnboarding(onboardingStatus === 'complete');
 
   // render null while onboarding status is loading from AsyncStorage
-  if (onboardingStatus === 'loading') {
+  if (
+    onboardingStatus === 'loading' ||
+    (onboardingStatus === 'complete' && termsAndConditionsStatus === 'unknown')
+  ) {
     return null;
   }
 
   if (onboardingStatus === 'incomplete') {
     return <AppIntroScreen setOnboardingComplete={setOnboardingComplete} />;
+  }
+
+  if (onboardingStatus === 'complete' && termsAndConditionsStatus === 'declined') {
+    return (
+      <AppIntroScreen
+        setOnboardingComplete={setTermsAndConditionsAccepted}
+        onlyTermsAndConditions
+      />
+    );
   }
 
   return <CustomMatomoProvider>{children}</CustomMatomoProvider>;

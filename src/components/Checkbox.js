@@ -12,6 +12,7 @@ import { WrapperHorizontal } from './Wrapper';
 
 const { a11yLabel } = consts;
 
+// eslint-disable-next-line complexity
 export const Checkbox = ({
   boldTitle = false,
   center = false,
@@ -32,7 +33,7 @@ export const Checkbox = ({
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
   const headerTitle = title ?? '';
   const rootRouteName = '';
-  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
+  const openWebScreen = link ? useOpenWebScreen(headerTitle, link, rootRouteName) : undefined;
 
   return (
     <CheckBox

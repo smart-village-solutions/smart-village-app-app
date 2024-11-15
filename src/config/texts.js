@@ -1045,6 +1045,13 @@ export const texts = {
     },
     permanentFilter: {
       setting: 'Datenquellen'
+    },
+    termsAndConditions: {
+      abort: 'Abbrechen',
+      onActivate: '',
+      onDeactivate:
+        'Beim nächsten Start wird die Einwilligung zu den Datenschutz- und Nutzungsbedingungen erneut abgefragt. Ohne deine Zustimmung zu unseren Datenschutz- und Nutzungsbedingungen kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt.',
+      ok: 'Einverstanden'
     }
   },
   settingsScreen: {
@@ -1082,7 +1089,8 @@ export const texts = {
     },
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
-    pushNotifications: 'Push-Benachrichtigungen'
+    pushNotifications: 'Push-Benachrichtigungen',
+    termsAndConditions: 'Einwilligung Datenschutz- und Nutzungsbedingungen'
   },
   sue: {
     answer: 'Antworten',
