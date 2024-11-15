@@ -6,12 +6,13 @@ import { Badge, ListItem } from 'react-native-elements';
 
 import { colors, normalize } from '../../config';
 import { momentFormat } from '../../helpers';
-import { useProfileUser } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { VolunteerAvatar } from '../volunteer';
+
+import { ConversationActions } from './ConversationActions';
 
 type TConversation = {
   item: {
@@ -29,26 +30,23 @@ type TConversation = {
     unreadMessagesCount: number;
   };
   navigation: StackNavigationProp<any>;
+  currentUserId?: string | number;
 };
 
-export const ConversationListItem = ({ item, navigation }: TConversation) => {
+export const ConversationListItem = ({ item, navigation, currentUserId }: TConversation) => {
+  const message = item;
   const query = QUERY_TYPES.GENERIC_ITEM;
-
   const { data, loading } = useQuery(getQuery(query), { variables: { id: item.genericItemId } });
+  const genericItem = data?.[query];
 
-  const { currentUserData } = useProfileUser();
-  const currentUserId = currentUserData?.member?.id;
+  if (!genericItem) return null;
 
   if (loading) {
     return <LoadingSpinner loading />;
   }
 
-  const message = item;
-  const genericItem = data?.[query];
-
-  if (!genericItem) return null;
-
   const {
+    id,
     bottomDivider = true,
     createdAt,
     subtitle,
@@ -104,6 +102,7 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
           {subtitle}
         </RegularText>
       </View>
+      <ConversationActions conversationId={id} />
     </ListItem>
   );
 };

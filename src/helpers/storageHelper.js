@@ -16,6 +16,9 @@ export const storageHelper = {
   setMatomoSettings: (matomoSettings) => addToStore('matomoSettings', matomoSettings),
   listTypesSettings: () => readFromStore('listTypesSettings'),
   setListTypesSettings: (listTypesSettings) => addToStore('listTypesSettings', listTypesSettings),
+  conversationSettings: () => readFromStore('conversationSettings'),
+  setConversationSettings: (conversationSettings) =>
+    addToStore('conversationSettings', conversationSettings),
   configurations: () => readFromStore('configurations'),
   setConfigurations: (configurations) => addToStore('configurations', configurations)
 };

@@ -53,6 +53,7 @@ const MainAppWithApolloProvider = () => {
   });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
+  const [initialConversationSettings, setInitialConversationSettings] = useState({});
   const [authRetried, setAuthRetried] = useState(false);
 
   const setupApolloClient = async () => {
@@ -179,6 +180,7 @@ const MainAppWithApolloProvider = () => {
     setInitialLocationSettings(locationSettings);
     setInitialListTypesSettings(listTypesSettings);
     setInitialGlobalSettings(globalSettings);
+    setInitialConversationSettings((await storageHelper.conversationSettings()) || {});
 
     // this is currently the last point where something was done, so the app startup is done
     setLoading(false);
@@ -219,7 +221,8 @@ const MainAppWithApolloProvider = () => {
         {...{
           initialGlobalSettings,
           initialListTypesSettings,
-          initialLocationSettings
+          initialLocationSettings,
+          initialConversationSettings
         }}
       >
         <ConfigurationsProvider>

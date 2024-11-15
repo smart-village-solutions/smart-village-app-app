@@ -48,6 +48,7 @@ export const VerticalList = ({
     noOvertitle,
     noSubtitle,
     openWebScreen,
+    queryVariables,
     refetch
   });
 
