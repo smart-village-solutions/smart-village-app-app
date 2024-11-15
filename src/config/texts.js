@@ -557,7 +557,7 @@ export const texts = {
     invalidMail: '-Adresse ist nicht gültig.',
     member: 'Anbieter',
     myNoticeboard: 'Meine Anzeige',
-    noticeboard: 'Anzeige',
+    noticeboard: 'Angebote & Gesuche',
     publicationDate: 'Erscheinungsdatum',
     send: 'Senden',
     sendButton: 'Anzeige erstellen',
