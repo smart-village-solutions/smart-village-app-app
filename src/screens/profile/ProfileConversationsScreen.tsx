@@ -9,7 +9,7 @@ import { colors, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 
-// eslint-disable-next-line complexity
+/* eslint-disable complexity */
 export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>) => {
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
@@ -26,7 +26,7 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
 
   useFocusEffect(
     useCallback(() => {
-      // refetch();
+      refetch();
     }, [])
   );
 
@@ -55,3 +55,4 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */

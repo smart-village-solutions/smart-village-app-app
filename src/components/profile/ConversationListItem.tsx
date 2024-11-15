@@ -51,6 +51,7 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
   }
 
   const {
+    id,
     bottomDivider = true,
     createdAt,
     subtitle,
@@ -106,7 +107,7 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
           {subtitle}
         </RegularText>
       </View>
-      <ConversationActions />
+      <ConversationActions conversationId={id} />
     </ListItem>
   );
 };
