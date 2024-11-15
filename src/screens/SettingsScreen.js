@@ -27,7 +27,7 @@ import {
   removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
+import { ONBOARDING_STORE_KEY, TERMS_AND_CONDITIONS_STORE_KEY } from '../OnboardingManager';
 import {
   handleSystemPermissions,
   PushNotificationStorageKeys,
@@ -278,6 +278,39 @@ export const SettingsScreen = ({ navigation, route }) => {
                       onPress: () => addToStore(ONBOARDING_STORE_KEY, 'complete')
                     }
                   ]
+                )
+            }
+          ]
+        });
+      }
+
+      const termsAndConditionsAccepted = await readFromStore(TERMS_AND_CONDITIONS_STORE_KEY);
+
+      if (termsAndConditionsAccepted != null && termsAndConditionsAccepted != 'unknown') {
+        settingsList.push({
+          data: [
+            {
+              title: texts.settingsTitles.termsAndConditions,
+              topDivider: true,
+              value: termsAndConditionsAccepted === 'accepted',
+              onActivate: () => null,
+              onDeactivate: (revert) =>
+                Alert.alert(
+                  texts.settingsTitles.termsAndConditions,
+                  texts.settingsContents.termsAndConditions.onDeactivate,
+                  [
+                    {
+                      text: texts.settingsContents.termsAndConditions.abort,
+                      onPress: revert,
+                      style: 'cancel'
+                    },
+                    {
+                      text: texts.settingsContents.termsAndConditions.ok,
+                      onPress: () => addToStore(TERMS_AND_CONDITIONS_STORE_KEY, 'declined'),
+                      style: 'destructive'
+                    }
+                  ],
+                  { cancelable: false }
                 )
             }
           ]
