@@ -1,5 +1,3 @@
-/* eslint-disable complexity */
-/* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 import { View } from 'react-native';
@@ -200,7 +198,11 @@ export const useRenderItem = (query, navigation, options = {}) => {
       /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
-          return <ConversationListItem item={item} navigation={navigation} />;
+          return (
+            <ConversationListItem
+              {...{ item, navigation, currentUserId: options.queryVariables?.currentUserId }}
+            />
+          );
         }
 
         if (query === QUERY_TYPES.SUE.REQUESTS) {
@@ -280,13 +282,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
   }
-  /* eslint-enable complexity */
 
   return useCallback(renderItem, [
     query,
     listType,
     navigation,
     options.horizontal,
-    options.noSubtitle
+    options.noSubtitle,
+    options.queryVariables
   ]);
 };

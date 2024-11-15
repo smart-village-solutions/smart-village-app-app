@@ -1,12 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { ActivityIndicator, Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, Icon, texts } from '../../config';
+import { storageHelper } from '../../helpers';
 import { DELETE_CONVERSATION, GET_CONVERSATIONS } from '../../queries/profile';
+import { SettingsContext } from '../../SettingsProvider';
 
 export const ConversationActions = ({ conversationId }: { conversationId: string | number }) => {
-  const [isPinned, setIsPinned] = useState(false);
+  const { conversationSettings, setConversationSettings } = useContext(SettingsContext);
+  const [isPinned, setIsPinned] = useState(
+    conversationSettings?.pinned?.includes(conversationId) || false
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [deleteConversation, { data }] = useMutation(DELETE_CONVERSATION, {
@@ -20,8 +25,21 @@ export const ConversationActions = ({ conversationId }: { conversationId: string
   }, [data]);
 
   const onPressPin = useCallback(() => {
+    // if `isPinned` is true, it gets unpinned, so remove conversation from pinned conversations.
+    // if `isPinned` is false, it gets pinned, so add conversation to pinned conversations.
+    const updatedPinnedConversations = isPinned
+      ? conversationSettings?.pinned?.filter((id: string | number) => id !== conversationId)
+      : [...(conversationSettings?.pinned || []), conversationId];
+
+    const updatedConversationSettings = {
+      ...conversationSettings,
+      pinned: updatedPinnedConversations
+    };
+
     setIsPinned(!isPinned);
-  }, [isPinned]);
+    setConversationSettings(updatedConversationSettings);
+    storageHelper.setConversationSettings(updatedConversationSettings);
+  }, [isPinned, conversationSettings]);
 
   const onPressTrash = useCallback(() => {
     Alert.alert(
