@@ -181,6 +181,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             invert
             onPress={() => {
               storeProfileAuthToken();
+              storeProfileUserData();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
             }}
             title={texts.profile.logout}

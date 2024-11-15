@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { ScrollView } from 'react-native';
@@ -7,7 +8,12 @@ import { BookmarkSection, RegularText, SafeAreaViewFlex, Wrapper } from '../comp
 import { consts, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
 import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
-import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
+import {
+  useBookmarks,
+  useMatomoTrackScreenView,
+  useNewsCategories,
+  useProfileUser
+} from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
 
@@ -41,6 +47,7 @@ const getBookmarkCount = (bookmarks) => {
 
 export const BookmarkScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks();
+  const { isLoggedIn, refresh } = useProfileUser();
   const categoriesNews = useNewsCategories();
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
@@ -78,6 +85,12 @@ export const BookmarkScreen = ({ navigation, route }) => {
   );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARKS);
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [])
+  );
 
   if (!bookmarks || getBookmarkCount(bookmarks) === 0) {
     return (
@@ -123,11 +136,13 @@ export const BookmarkScreen = ({ navigation, route }) => {
           getGenericItemSectionTitle(GenericType.Job),
           GenericType.Job
         )}
-        {getSection(
-          QUERY_TYPES.GENERIC_ITEMS,
-          getGenericItemSectionTitle(GenericType.Noticeboard),
-          GenericType.Noticeboard
-        )}
+        {/* TODO: what about bookmarks for noticeboards without profiles? that would never be listed here. maybe we need some global setting to flag noticeboards usage with or without profiles=? */}
+        {!!isLoggedIn &&
+          getSection(
+            QUERY_TYPES.GENERIC_ITEMS,
+            getGenericItemSectionTitle(GenericType.Noticeboard),
+            GenericType.Noticeboard
+          )}
       </ScrollView>
     </SafeAreaViewFlex>
   );

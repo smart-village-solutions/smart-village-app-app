@@ -70,6 +70,8 @@ export const BookmarkSection = ({
       });
   }, [data, bookmarkKey, loading, setConnectionState]);
 
+  if (!data?.[query]?.length) return null;
+
   return (
     <WrapperVertical>
       <DataListSection
