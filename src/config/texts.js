@@ -901,7 +901,7 @@ export const texts = {
     passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
     postcode: 'Postleitzahl',
     postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
-    privacyChecked: 'Mit der Registrierung akzeptierst du die',
+    privacyChecked: 'Mit der Registrierung willigst du ein in die',
     privacyCheckLink: 'Datenschutzbestimmungen',
     privacyCheckRequireBody: 'Bitte bestätige die Datenschutzbestimmungen.',
     privacyCheckRequireTitle: 'Hinweis',
@@ -937,10 +937,14 @@ export const texts = {
       'Dein Profil wurde erfolgreich aktualisiert. Bitte bestätige deine E-Mail-Adresse und melde dich mit der neuen E-Mail-Adresse erneut an.',
     showUpdateSuccessAlertBody: 'Dein Profil wurde erfolgreich aktualisiert.',
     showUpdateSuccessAlertTitle: 'Erfolg',
-    termsOfUseChecked: 'Mit der Registrierung akzeptierst du die',
+    termsOfUseChecked: 'Mit der Registrierung willigst du ein in die',
     termsOfUseLink: 'Nutzungsbedingungen',
     termsOfUseCheckRequireBody: 'Bitte bestätige die Nutzungsbedingungen.',
-    termsOfUseCheckRequireTitle: 'Hinweis'
+    termsOfUseCheckRequireTitle: 'Hinweis',
+    termsAndConditionsAlertTitle: 'Hinweis',
+    termsAndConditionsAlertMessage:
+      'Ohne deine Zustimmung zu unseren Datenschutz- und Nutzungsbedingungen kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt. Falls du die Einwilligung doch erteilen möchtest, folge bitte dem Button.',
+    termsAndConditionsAlertOk: 'Zur Einwilligung'
   },
   pushNotifications: {
     abort: 'Abbrechen',

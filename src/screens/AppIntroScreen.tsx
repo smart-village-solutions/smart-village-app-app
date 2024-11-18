@@ -1,7 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { ListRenderItem, Modal, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  ListRenderItem,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
@@ -16,10 +25,20 @@ import { HtmlScreen } from './HtmlScreen';
 
 const keyExtractor = (slide: AppIntroSlide, index: number) => `index${index}-text${slide.text}`;
 
-const SliderButton = ({ label }: { label: string }) => {
+const SliderButton = ({
+  label,
+  style,
+  isPlaceholder = false
+}: {
+  label: string;
+  style?: any;
+  isPlaceholder?: boolean;
+}) => {
   return (
-    <View style={styles.sliderButton}>
-      <BoldText>{label.toUpperCase()}</BoldText>
+    <View style={[styles.sliderButtonContainer]}>
+      <View style={[styles.sliderButton, style]}>
+        <BoldText placeholder={isPlaceholder}>{label.toUpperCase()}</BoldText>
+      </View>
     </View>
   );
 };
@@ -55,7 +74,16 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
         presentationStyle="pageSheet"
         visible={isModalVisibleDataPrivacy}
       >
-        <View style={styles.spacer} />
+        <View style={styles.spacer}>
+          {device.platform === 'android' && (
+            <TouchableOpacity
+              onPress={() => setModalVisibleDataPrivacy(false)}
+              style={styles.termsAndConditionsCloseButton}
+            >
+              <Icon.Close />
+            </TouchableOpacity>
+          )}
+        </View>
         <HtmlScreen
           navigation={undefined}
           route={{
@@ -91,7 +119,16 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
         presentationStyle="pageSheet"
         visible={isModalVisibleTermsOfUse}
       >
-        <View style={styles.spacer} />
+        <View style={styles.spacer}>
+          {device.platform === 'android' && (
+            <TouchableOpacity
+              onPress={() => setModalVisibleTermsOfUse(false)}
+              style={styles.termsAndConditionsCloseButton}
+            >
+              <Icon.Close />
+            </TouchableOpacity>
+          )}
+        </View>
         <HtmlScreen
           navigation={undefined}
           route={{
@@ -141,6 +178,7 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({ item, setShowButtonTermsAn
 export const AppIntroScreen = ({ setOnboardingComplete, onlyTermsAndConditions }: Props) => {
   const [showNextButtonTermsAndConditions, setShowNextButtonTermsAndConditions] = useState(true);
   const [showDoneButtonTermsAndConditions, setShowDoneButtonTermsAndConditions] = useState(true);
+  const { bottom: safeAreaBottom } = useSafeAreaInsets();
 
   const { data, error, loading } = useStaticContent({
     name: 'appIntroSlides',
@@ -205,6 +243,35 @@ export const AppIntroScreen = ({ setOnboardingComplete, onlyTermsAndConditions }
         showNextButton={showNextButtonTermsAndConditions}
         style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
+      {(!showNextButtonTermsAndConditions || !showDoneButtonTermsAndConditions) && (
+        <View
+          style={[styles.termsAndConditionsNextButtonContainer, { bottom: safeAreaBottom + 16 }]}
+        >
+          <View style={styles.termsAndConditionsNextButton}>
+            <TouchableOpacity
+              onPress={() =>
+                Alert.alert(
+                  texts.profile.termsAndConditionsAlertTitle,
+                  texts.profile.termsAndConditionsAlertMessage,
+                  [
+                    {
+                      text: texts.profile.termsAndConditionsAlertOk
+                    }
+                  ]
+                )
+              }
+            >
+              <SliderButton
+                isPlaceholder
+                label={texts.appIntro.continue}
+                style={{
+                  borderBottomColor: colors.placeholder
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </SafeAreaViewFlex>
   );
 };
@@ -240,6 +307,10 @@ const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
   },
+  sliderButtonContainer: {
+    justifyContent: 'center',
+    height: 48
+  },
   sliderButton: {
     borderBottomColor: colors.darkText,
     borderBottomWidth: 1,
@@ -247,5 +318,22 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: normalize(40)
+  },
+  termsAndConditionsCloseButton: {
+    justifyContent: 'center',
+    height: normalize(40),
+    position: 'absolute',
+    right: 0,
+    width: normalize(40)
+  },
+  termsAndConditionsNextButton: {
+    bottom: 0,
+    height: 48,
+    position: 'absolute',
+    right: 0
+  },
+  termsAndConditionsNextButtonContainer: {
+    position: 'absolute',
+    right: 16
   }
 });
