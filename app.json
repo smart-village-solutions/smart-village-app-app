@@ -23,7 +23,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.hb.meinquartier.smartvillage.app",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "requireFullScreen": true,
@@ -58,7 +58,7 @@
         "backgroundColor": "#F7F5F0"
       },
       "package": "de.hb.meinquartier.smartvillage.app",
-      "versionCode": 3,
+      "versionCode": 4,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
