@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -18,19 +18,23 @@ import {
   Wrapper
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
+  filterTypesHelper,
   graphqlFetchPolicy,
   parseListItemsFromQuery,
   profileAuthToken,
   profileUserData,
   storeProfileAuthToken,
-  storeProfileUserData
+  storeProfileUserData,
+  updateResourceFiltersStateHelper
 } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
-import { ProfileMember } from '../../types';
+import { GenericType, ProfileMember } from '../../types';
 import { ListHeaderComponent } from '../NestedInfoScreen';
 import { ProfileUpdateScreen } from '../profile';
 
@@ -46,11 +50,17 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const isLoginRequired = route.params?.isLoginRequired || false;
   const content = route.params?.content ?? '';
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
+  const initialQueryVariables = route.params?.queryVariables ?? {};
   const subQuery = route.params?.subQuery ?? '';
   const rootRouteName = route.params?.rootRouteName ?? '';
-  const categoryIds = queryVariables?.categoryIds ?? [];
-  const currentMember = queryVariables?.currentMember ?? false;
+  const categoryIds = initialQueryVariables?.categoryIds ?? [];
+  const currentMember = initialQueryVariables?.currentMember ?? false;
+  const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
+  const { resourceFilters } = useContext(ConfigurationsContext);
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFiltersState[GenericType.Noticeboard]
+  });
 
   const [selectedCategory, setSelectedCategory] = useState<number>();
 
@@ -113,6 +123,24 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     }
     setRefreshing(false);
   }, [isConnected, refetch]);
+
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data,
+      query: GenericType.Noticeboard,
+      queryVariables,
+      resourceFilters
+    });
+  }, [data]);
+
+  useEffect(() => {
+    updateResourceFiltersStateHelper({
+      query: GenericType.Noticeboard,
+      queryVariables,
+      resourceFiltersDispatch,
+      resourceFiltersState
+    });
+  }, [query, queryVariables]);
 
   useFocusEffect(
     useCallback(() => {
@@ -211,6 +239,13 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   return (
     <SafeAreaViewFlex>
+      <Filter
+        filterTypes={filterTypes}
+        initialFilters={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
       <ListComponent
         data={filteredListItems}
         ListHeaderComponent={

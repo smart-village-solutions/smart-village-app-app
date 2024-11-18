@@ -58,6 +58,7 @@ export const QUERY_TYPES = {
   },
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
+  RESOURCE_FILTERS: 'resourceFilters',
   STATIC_CONTENT_LIST: 'staticContentList',
   TOUR: 'tour',
   SUE: {

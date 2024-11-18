@@ -1,7 +1,8 @@
+import * as Location from 'expo-location';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -11,21 +12,35 @@ import {
   Button,
   Calendar,
   CalendarListToggle,
-  DropdownHeader,
   EmptyMessage,
+  Filter,
   ListComponent,
   LoadingContainer,
-  OptionToggle,
   REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
   WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
-import { openLink, parseListItemsFromQuery } from '../../helpers';
-import { useOpenWebScreen, useVolunteerData } from '../../hooks';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import {
+  filterTypesHelper,
+  geoLocationFilteredListItem,
+  openLink,
+  parseListItemsFromQuery
+} from '../../helpers';
+import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  useOpenWebScreen,
+  usePosition,
+  useSystemPermission,
+  useVolunteerData
+} from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { QUERY_TYPES, getQuery } from '../../queries';
+import { PermanentFilterContext } from '../../PermanentFilterProvider';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 
@@ -58,29 +73,40 @@ const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 export const EventRecords = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const { resourceFilters } = useContext(ConfigurationsContext);
+  const { resourceFiltersState, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
-  const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
-    filter;
+  const { eventLocations: showEventLocationsFilter = false } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
-  const [queryVariables, setQueryVariables] = useState({
+  const initialQueryVariables = {
     ...(route.params?.queryVariables || {}),
     dateRange: (route.params?.queryVariables || {}).dateRange || [today, todayIn10Years]
+  };
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFiltersState[query]
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [filterByDailyEvents, setFilterByDailyEvents] = useState(
-    route.params?.filterByDailyEvents ?? false
-  );
+
   const title = route.params?.title ?? '';
-  const showFilter = (route.params?.showFilter ?? true) && showEventsFilter;
-  const showFilterByDailyEvents =
-    (route.params?.showFilterByDailyEvents ?? showFilter) && !showCalendar;
   const hasDailyFilterSelection =
     !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
+  const { locationSettings } = useLocationSettings();
+  const systemPermission = useSystemPermission();
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
+  const { position } = usePosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
+  );
+  const currentPosition = position || lastKnownPosition;
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   // https://github.com/ndraaditiya/React-Query-GraphQL/blob/main/src/services/index.jsx
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -132,10 +158,7 @@ export const EventRecords = ({ navigation, route }) => {
   );
 
   const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES),
-    {
-      skip: !showEventsFilter
-    }
+    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES)
   );
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
@@ -145,54 +168,6 @@ export const EventRecords = ({ navigation, route }) => {
     isCalendar: true,
     isSectioned: true
   });
-
-  const updateListDataByDropdown = useCallback(
-    (selectedValue, isLocationFilter) => {
-      if (selectedValue) {
-        setQueryVariables((prevQueryVariables) => {
-          // remove a refetch key if present, which was necessary for the "- Alle -" selection
-          delete prevQueryVariables.refetch;
-
-          return {
-            ...prevQueryVariables,
-            ...getAdditionalQueryVariables(selectedValue, isLocationFilter)
-          };
-        });
-      } else {
-        if (hasFilterSelection(isLocationFilter, queryVariables)) {
-          setQueryVariables((prevQueryVariables) => {
-            // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery(isLocationFilter)];
-
-            return { ...prevQueryVariables, refetch: true };
-          });
-        }
-      }
-    },
-    [query, queryVariables]
-  );
-
-  const updateListDataByDailySwitch = useCallback(() => {
-    // update switch state as well
-    setFilterByDailyEvents((oldSwitchValue) => {
-      // if `oldSwitchValue` was false, we now activate the daily filter and set a date range
-      if (!oldSwitchValue) {
-        setQueryVariables((prevQueryVariables) => {
-          // remove a refetch key if present, which was necessary for unselecting daily events
-          delete prevQueryVariables.refetchDate;
-
-          // add the filter key for the specific query, when filtering for daily events
-          return { ...prevQueryVariables, dateRange: [today, today] };
-        });
-      } else {
-        setQueryVariables((prevQueryVariables) => {
-          return { ...prevQueryVariables, dateRange: [today, todayIn10Years], refetchDate: true };
-        });
-      }
-
-      return !oldSwitchValue;
-    });
-  }, [filterByDailyEvents, queryVariables]);
 
   // apply additional data if volunteer events should be presented and no filter selection is made,
   // because filtered data for category or location has nothing to do with volunteer data
@@ -231,13 +206,26 @@ export const EventRecords = ({ navigation, route }) => {
       parsedListItems = _sortBy(parsedListItems, (item) => item.listDate);
     }
 
+    if (queryVariables?.radiusSearch?.distance) {
+      parsedListItems = geoLocationFilteredListItem({
+        currentPosition,
+        isLocationAlertShow,
+        listItem: parsedListItems,
+        locationSettings,
+        navigation,
+        queryVariables,
+        setIsLocationAlertShow
+      });
+    }
+
     return parsedListItems;
   }, [
     additionalData,
     data?.pages?.flatMap((page) => page?.[query]),
     hasDailyFilterSelection,
     query,
-    queryVariables.dateRange
+    queryVariables.dateRange,
+    isLocationAlertShow
   ]);
 
   const refresh = useCallback(async () => {
@@ -256,6 +244,26 @@ export const EventRecords = ({ navigation, route }) => {
     showCalendar,
     showVolunteerEvents
   ]);
+
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data,
+      query,
+      resourceFilters,
+      categories: eventRecordsCategoriesData,
+      locations: eventRecordsAddressesData,
+      queryVariables
+    });
+  }, [data]);
+
+  useEffect(() => {
+    updateResourceFiltersStateHelper({
+      query,
+      queryVariables,
+      resourceFiltersDispatch,
+      resourceFiltersState
+    });
+  }, [query, queryVariables]);
 
   const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
@@ -283,6 +291,14 @@ export const EventRecords = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
+      <Filter
+        filterTypes={filterTypes}
+        initialFilters={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
+
       {calendarToggle && !hasDailyFilterSelection && (
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
       )}
@@ -306,41 +322,6 @@ export const EventRecords = ({ navigation, route }) => {
                   </WrapperVertical>
                 )}
                 <Divider />
-              </>
-            )}
-            {!!showFilter && (
-              <>
-                {!!eventRecordsCategoriesData && (
-                  <DropdownHeader
-                    {...{
-                      data: eventRecordsCategoriesData,
-                      query,
-                      queryVariables,
-                      updateListData: updateListDataByDropdown
-                    }}
-                  />
-                )}
-
-                {!!eventRecordsAddressesData && (
-                  <DropdownHeader
-                    {...{
-                      data: eventRecordsAddressesData,
-                      isLocationFilter: true,
-                      query,
-                      queryVariables,
-                      updateListData: updateListDataByDropdown
-                    }}
-                  />
-                )}
-
-                {showFilterByDailyEvents && (
-                  <OptionToggle
-                    label={texts.eventRecord.filterByDailyEvents}
-                    onToggle={updateListDataByDailySwitch}
-                    options={{ bold: true }}
-                    value={filterByDailyEvents}
-                  />
-                )}
               </>
             )}
           </>

@@ -113,8 +113,10 @@ export const consts = {
   },
 
   FILTER_TYPES: {
+    CHECKBOX: 'checkbox',
     DATE: 'date',
     DROPDOWN: 'dropdown',
+    SLIDER: 'slider',
     SUE: {
       STATUS: 'status'
     }

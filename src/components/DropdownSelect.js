@@ -63,7 +63,7 @@ export const DropdownSelect = ({
           accessible
           style={styles.dropdownRowWrapper}
         >
-          <RegularText primary={highlighted} placeholder={rowData == placeholder}>
+          <RegularText secondary={highlighted} placeholder={rowData == placeholder}>
             {rowData}
           </RegularText>
         </Wrapper>
@@ -116,6 +116,12 @@ export const DropdownSelect = ({
 
               return entry;
             });
+
+            const anyOtherSelected = updatedData.some(
+              (entry, index) => index !== 0 && entry.selected
+            );
+
+            updatedData[0].selected = !anyOtherSelected;
           } else {
             // only trigger onPress if a new selection is made
             if (selectedValue === value) return;
@@ -166,7 +172,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(12)
   },
   dropdownDropdown: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.lightestText,
     borderColor: colors.borderRgba,
     borderRadius: 0,
     borderWidth: StyleSheet.hairlineWidth,
@@ -179,7 +185,7 @@ const styles = StyleSheet.create({
   },
   dropdownDropdownText: baseFontStyle,
   dropdownRowWrapper: {
-    backgroundColor: colors.surface
+    backgroundColor: colors.lightestText
   },
   dropdownSeparator: {
     backgroundColor: colors.gray40,

@@ -456,10 +456,13 @@ export const texts = {
   },
   filter: {
     date: 'Datum',
+    header: 'Filter',
     hideFilter: 'Filter ausblenden',
-    resetFilter: 'Filter zurücksetzen',
+    filter: 'Filtern',
+    resetFilter: 'Zurücksetzen',
     showFilter: 'Filter anzeigen',
     search: 'Was suchen Sie?',
+    settings: 'Filtereinstellungen',
     sorting: {
       updatedDatetime: 'Änderungsdatum',
       requestedDatetime: 'Erstelldatum',

@@ -332,6 +332,7 @@ export const NoticeboardCreateForm = ({
                 <Checkbox
                   checked={value === noticeboardItem.value}
                   checkedIcon={<Icon.CircleCheckFilled />}
+                  containerStyle={styles.checkboxContainerStyle}
                   key={noticeboardItem.title}
                   onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
@@ -497,6 +498,12 @@ export const NoticeboardCreateForm = ({
 const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
+  },
+  checkboxContainerStyle: {
+    backgroundColor: colors.surface,
+    borderWidth: 0,
+    marginLeft: 0,
+    marginRight: 0
   },
   textArea: {
     height: normalize(100),

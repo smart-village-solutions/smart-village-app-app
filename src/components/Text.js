@@ -111,6 +111,13 @@ export const RegularText = styled(Text)`
     `};
 
   ${(props) =>
+    props.secondary &&
+    css`
+      color: ${colors.secondary};
+      text-decoration-color: ${colors.secondary};
+    `};
+
+  ${(props) =>
     props.lighter &&
     css`
       color: ${colors.gray60};

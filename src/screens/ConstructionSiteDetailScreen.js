@@ -39,7 +39,8 @@ const formatDates = (startDate, endDate) => {
 // eslint-disable-next-line complexity
 export const ConstructionSiteDetailScreen = ({ route }) => {
   const id = route.params?.id;
-  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(id);
+  const queryVariables = { ids: id };
+  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(queryVariables);
 
   useMatomoTrackScreenView(
     `${MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL} / ${

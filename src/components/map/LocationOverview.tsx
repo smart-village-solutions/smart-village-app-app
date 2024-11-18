@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -8,7 +9,12 @@ import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { IconUrl, colors, device, normalize } from '../../config';
-import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
+import {
+  geoLocationFilteredListItem,
+  graphqlFetchPolicy,
+  isOpen,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
@@ -20,14 +26,21 @@ import { Map } from './Map';
 import { MapFilter } from './MapFilter';
 
 type Props = {
+  currentPosition?: LocationObject;
   filterByOpeningTimes?: boolean;
   navigation: StackNavigationProp<Record<string, any>>;
+  position?: LocationObject;
   queryVariables: {
     category?: string;
     categoryId?: string | number;
     categoryIds?: string[] | number[];
     dataProvider?: string;
     initialFilter?: 'map' | 'list';
+    radiusSearch?: {
+      currentPosition?: boolean;
+      distance: number;
+      index: number;
+    };
   };
 };
 
@@ -66,7 +79,12 @@ const mapToMapMarkers = (
 };
 
 /* eslint-disable complexity */
-export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
+export const LocationOverview = ({
+  currentPosition,
+  filterByOpeningTimes,
+  navigation,
+  queryVariables
+}: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
@@ -76,6 +94,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   const {
     data: overviewData,
@@ -94,6 +113,18 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
   if (filterByOpeningTimes && pointsOfInterest) {
     pointsOfInterest = pointsOfInterest.filter((entry) => isOpen(entry.openingHours)?.open);
+  }
+
+  if (queryVariables?.radiusSearch?.distance) {
+    pointsOfInterest = geoLocationFilteredListItem({
+      isLocationAlertShow,
+      currentPosition,
+      listItem: pointsOfInterest,
+      locationSettings,
+      navigation,
+      queryVariables,
+      setIsLocationAlertShow
+    });
   }
 
   const { data: detailsData, loading: detailsLoading } = useQuery(
@@ -145,6 +176,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
       <Map
         clusteringEnabled
+        currentPosition={currentPosition}
         isMultipleMarkersMap
         locations={mapMarkers}
         mapCenterPosition={

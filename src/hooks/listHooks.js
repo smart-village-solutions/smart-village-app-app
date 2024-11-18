@@ -39,8 +39,7 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
                 ...options.queryVariables,
                 dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
               },
-              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
-              showFilterByDailyEvents: false
+              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
             })
         : undefined
     }

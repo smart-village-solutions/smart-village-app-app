@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   titleStyle: {
-    color: colors.darkText
+    color: colors.darkText,
+    fontWeight: 'normal'
   }
 });
 
