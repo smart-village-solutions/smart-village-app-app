@@ -86,8 +86,11 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
           setOnboardingStatus('incomplete');
         }
 
-        termsAndConditionsAccepted != null &&
-          setTermsAndConditionsStatus(termsAndConditionsAccepted);
+        if (termsAndConditionsAccepted === 'accepted') {
+          setTermsAndConditionsStatus('accepted');
+        } else {
+          setTermsAndConditionsStatus('declined');
+        }
       } catch (e) {
         setOnboardingStatus('complete');
 
