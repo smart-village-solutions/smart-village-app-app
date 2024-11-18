@@ -1,5 +1,4 @@
 import appJson from '../../app.json';
-import { search } from '../helpers';
 
 export const texts = {
   accessibilityLabels: {
@@ -442,7 +441,8 @@ export const texts = {
       email: 'E-Mail',
       phone: 'Telefon',
       message: 'Ihre Mitteilung',
-      checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+      checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
+      requiredFields: '* Pflichtfelder'
     },
     inputsErrorMessages: {
       checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
