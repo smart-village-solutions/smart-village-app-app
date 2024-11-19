@@ -507,6 +507,7 @@ export const texts = {
   noticeboard: {
     abort: 'Abbrechen',
     addDocuments: 'Dokumente hinzufügen',
+    addImage: 'Bild hinzufügen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
       documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
@@ -514,6 +515,9 @@ export const texts = {
       documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
       error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',
+      imageHint: (count) => `ⓘ Es können bis zu ${count} Bilder hochgeladen werden.`,
+      imageSizeError: (size) => `Das ausgewählte Bild darf maximal ${size} groß sein.`,
+      imagesSizeError: (size) => `Die ausgewählten Bilder dürfen maximal ${size} groß sein.`,
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },

@@ -137,11 +137,13 @@ export const consts = {
 
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
+    NOTICEBOARD: 'Noticeboard',
     SUE: 'Sue',
     VOLUNTEER: 'Volunteer'
   },
 
   IMAGE_SELECTOR_TYPES: {
+    NOTICEBOARD: 'Noticeboard',
     SUE: 'Sue'
   },
 

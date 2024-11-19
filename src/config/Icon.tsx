@@ -124,7 +124,7 @@ const NamedIcon = ({
   color = colors.primary,
   iconStyle,
   name,
-  stroke = 1,
+  strokeWidth = 1,
   size = normalize(26),
   style
 }: IconProps & {
@@ -142,7 +142,7 @@ const NamedIcon = ({
 
   return (
     <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
-      <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={stroke} />
+      <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={strokeWidth} />
     </View>
   );
 };

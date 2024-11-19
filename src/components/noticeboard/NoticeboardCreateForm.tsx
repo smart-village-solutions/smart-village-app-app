@@ -12,6 +12,7 @@ import {
   DateTimeInput,
   DocumentSelector,
   HtmlView,
+  ImageSelector,
   Input,
   LoadingSpinner,
   RegularText,
@@ -32,7 +33,7 @@ import { uploadMediaContent } from '../../queries/mediaContent';
 import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
 
-const { EMAIL_REGEX, MEDIA_TYPES } = consts;
+const { EMAIL_REGEX, MEDIA_TYPES, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
@@ -62,7 +63,14 @@ export const NoticeboardCreateForm = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showNoticeboardMediaContent = {} } = settings;
-  const { document: showDocument = false, documentMaxSizes = {} } = showNoticeboardMediaContent;
+  const {
+    document: showDocument = false,
+    documentMaxSizes = {},
+    image: showImage = false,
+    imageMaxSizes = {},
+    maxDocumentCount = 0,
+    maxImageCount = 0
+  } = showNoticeboardMediaContent;
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
@@ -87,6 +95,7 @@ export const NoticeboardCreateForm = ({
       dateEnd: new Date(),
       dateStart: new Date(),
       documents: '[]',
+      images: '[]',
       email: '',
       name: '',
       noticeboardType: '',
@@ -337,6 +346,30 @@ export const NoticeboardCreateForm = ({
                 item={{
                   buttonTitle: texts.noticeboard.addDocuments,
                   infoTitle: texts.noticeboard.documentsInfo
+      {showImage && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="images"
+            control={control}
+            render={({ field }) => (
+              <ImageSelector
+                {...{
+                  control,
+                  configuration: {
+                    limitation: {
+                      maxCount: maxImageCount,
+                      maxFileSize: imageMaxSizes?.file
+                    }
+                  },
+                  errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
+                  field,
+                  isMultiImages: true,
+                  item: {
+                    buttonTitle: texts.noticeboard.addImage,
+                    infoText: maxImageCount && texts.noticeboard.alerts.imageHint(maxImageCount),
+                    name: 'images'
+                  },
+                  selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
                 }}
               />
             )}

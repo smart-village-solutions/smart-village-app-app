@@ -73,6 +73,7 @@ export const ImageSelector = ({
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+  const { maxCount, maxFileSize } = configuration?.limitation;
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
@@ -202,7 +203,14 @@ export const ImageSelector = ({
       }
     }
 
-    errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
+    errorTextGenerator({
+      errorType,
+      infoAndErrorText,
+      maxFileSize,
+      mimeType,
+      setInfoAndErrorText,
+      uri
+    });
 
     setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size, exif }]);
     setIsModalVisible(!isModalVisible);
@@ -211,14 +219,17 @@ export const ImageSelector = ({
   const values = jsonParser(value);
 
   if (isMultiImages) {
-    if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+    if (
+      selectorType === IMAGE_SELECTOR_TYPES.SUE ||
+      selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
+    ) {
       return (
         <>
           <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
           <Button
-            disabled={values?.length >= parseInt(configuration?.limitation?.maxFileUploads?.value)}
-            icon={<Icon.Camera size={normalize(16)} />}
+            disabled={maxCount && values?.length >= parseInt(maxCount)}
+            icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
             iconPosition="left"
             invert
             onPress={() => setIsModalVisible(!isModalVisible)}
@@ -290,14 +301,14 @@ export const ImageSelector = ({
 
             <WrapperVertical>
               <Button
-                icon={<Icon.Camera size={normalize(16)} />}
+                icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
                 iconPosition="left"
                 invert
                 onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
                 title={texts.sue.report.alerts.imageSelectAlert.camera}
               />
               <Button
-                icon={<Icon.Albums size={normalize(16)} />}
+                icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
                 iconPosition="left"
                 invert
                 onPress={() => imageSelect(selectImage)}
