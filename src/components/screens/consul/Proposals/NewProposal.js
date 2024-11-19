@@ -414,7 +414,18 @@ export const NewProposal = ({ navigation, data, query }) => {
                     }}
                   />
                 ) : (
-                  <DocumentSelector {...{ control, field, item }} />
+                  <DocumentSelector
+                    {...{
+                      configuration: {
+                        limitation: {
+                          maxCount: 3
+                        }
+                      },
+                      control,
+                      field,
+                      item
+                    }}
+                  />
                 )
               }
             />

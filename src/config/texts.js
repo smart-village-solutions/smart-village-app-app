@@ -510,8 +510,9 @@ export const texts = {
     addImage: 'Bild hinzufügen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
-      documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
+      documentHint: (count) => `ⓘ Es können bis zu ${count} Dokumente hochgeladen werden.`,
       documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
+      documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
       documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
       error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',
@@ -522,8 +523,6 @@ export const texts = {
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
     documents: 'Dokumente',
-    documentsInfo:
-      'Sie können maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',

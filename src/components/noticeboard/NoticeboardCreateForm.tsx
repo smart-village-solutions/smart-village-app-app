@@ -341,11 +341,27 @@ export const NoticeboardCreateForm = ({
             control={control}
             render={({ field }) => (
               <DocumentSelector
-                {...{ control, field }}
-                maxFileSize={documentMaxSizes.file}
+                {...{
+                  configuration: {
+                    limitation: {
+                      maxCount: maxDocumentCount,
+                      maxFileSize: documentMaxSizes?.file
+                    }
+                  },
+                  control,
+                  field
+                }}
                 item={{
                   buttonTitle: texts.noticeboard.addDocuments,
-                  infoTitle: texts.noticeboard.documentsInfo
+                  infoText:
+                    maxDocumentCount && texts.noticeboard.alerts.documentHint(maxDocumentCount)
+                }}
+              />
+            )}
+          />
+        </Wrapper>
+      )}
+
       {showImage && (
         <Wrapper style={styles.noPaddingTop}>
           <Controller

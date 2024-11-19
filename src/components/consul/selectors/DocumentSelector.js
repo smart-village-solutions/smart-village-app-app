@@ -9,7 +9,6 @@ import {
   deleteArrayItem,
   documentErrorMessageGenerator,
   formatSize,
-  formatSizeStandard,
   jsonParser
 } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
@@ -39,9 +38,10 @@ const deleteDocumentAlert = (onPress) =>
     ]
   );
 
-export const DocumentSelector = ({ control, field, isVolunteer, item, maxFileSize }) => {
+export const DocumentSelector = ({ configuration, control, field, isVolunteer, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+  const { maxCount, maxFileSize } = configuration?.limitation;
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [documentsAttributes, setDocumentsAttributes] = useState(JSON.parse(value));
@@ -147,9 +147,6 @@ export const DocumentSelector = ({ control, field, isVolunteer, item, maxFileSiz
   return (
     <>
       <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
-      <RegularText smallest placeholder>
-        {infoText}
-      </RegularText>
 
       {values?.map((item, index) => (
         <View key={index} style={styles.container}>
@@ -174,11 +171,20 @@ export const DocumentSelector = ({ control, field, isVolunteer, item, maxFileSiz
         </View>
       ))}
 
-      {/* users can upload a maximum of 3 PDF files
-          if 3 PDFs are selected, the new add button will not be displayed. */}
-      {!value || values.length < 3 ? (
-        <Button title={buttonTitle} invert onPress={documentSelect} />
-      ) : null}
+      <Button
+        icon={<Icon.Document size={normalize(16)} strokeWidth={normalize(2)} />}
+        disabled={maxCount && values?.length >= parseInt(maxCount)}
+        iconPosition="left"
+        invert
+        onPress={documentSelect}
+        title={buttonTitle}
+      />
+
+      {!!infoText && (
+        <RegularText small style={styles.infoText}>
+          {infoText}
+        </RegularText>
+      )}
     </>
   );
 };
@@ -186,6 +192,10 @@ export const DocumentSelector = ({ control, field, isVolunteer, item, maxFileSiz
 const styles = StyleSheet.create({
   container: {
     marginVertical: normalize(10)
+  },
+  infoText: {
+    marginTop: normalize(-7),
+    marginBottom: normalize(5)
   },
   volunteerContainer: {
     marginBottom: normalize(8)
@@ -205,6 +215,7 @@ const styles = StyleSheet.create({
 });
 
 DocumentSelector.propTypes = {
+  configuration: PropTypes.object,
   control: PropTypes.object,
   field: PropTypes.object,
   isVolunteer: PropTypes.bool,
