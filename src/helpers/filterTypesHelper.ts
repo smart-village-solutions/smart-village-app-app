@@ -114,6 +114,7 @@ export const filterTypesHelper = ({
     };
   }
 
+  /* eslint-disable complexity */
   const filterTypes = Object.entries(config)
     .sort(([keyA], [keyB]) => {
       const orderA = Object.values(FILTER_KEYS).indexOf(keyA);
@@ -216,4 +217,5 @@ export const filterTypesHelper = ({
     });
 
   return filterTypes;
+  /* eslint-enable complexity */
 };

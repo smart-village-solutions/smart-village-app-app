@@ -68,7 +68,9 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     skip: !Object.keys(sue).length
   });
 
-  const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS));
+  const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
+    fetchPolicy: 'network-only'
+  });
 
   const mergedConfig = useMemo(() => {
     const isSueConfigEmpty = !Object.keys(sue).length;
