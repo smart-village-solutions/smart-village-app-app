@@ -42,6 +42,7 @@ type TNoticeboardCreateData = {
   dateStart: string;
   documents: string;
   email: string;
+  images: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
   termsOfService: boolean;
@@ -95,8 +96,8 @@ export const NoticeboardCreateForm = ({
       dateEnd: new Date(),
       dateStart: new Date(),
       documents: '[]',
-      images: '[]',
       email: '',
+      images: '[]',
       name: '',
       noticeboardType: '',
       termsOfService: false,
@@ -106,6 +107,7 @@ export const NoticeboardCreateForm = ({
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
   let documentUrl: string | undefined;
+  let imageUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -125,6 +127,45 @@ export const NoticeboardCreateForm = ({
     setIsLoading(true);
 
     try {
+      const images = JSON.parse(noticeboardNewData.images);
+      const imagesUrl: { sourceUrl: { url: string }; contentType: string }[] = images
+        .filter((image) => !!image.id)
+        .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
+      const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
+
+      // check if any document size is bigger than `imageMaxSizes.file`
+      for (const image of images) {
+        if (!!imageMaxSizes.file && image.size > imageMaxSizes.file) {
+          setIsLoading(false);
+          return Alert.alert(
+            texts.noticeboard.alerts.hint,
+            texts.noticeboard.alerts.imageSizeError(formatSizeStandard(imageMaxSizes.file))
+          );
+        }
+      }
+
+      // check if documents size is bigger than `imageMaxSizes.total`
+      if (imageMaxSizes.total && imagesSize > imageMaxSizes.total) {
+        setIsLoading(false);
+        return Alert.alert(
+          texts.noticeboard.alerts.hint,
+          texts.noticeboard.alerts.imagesSizeError(formatSizeStandard(imageMaxSizes.total))
+        );
+      }
+
+      if (images?.length) {
+        for (const image of images) {
+          try {
+            imageUrl = await uploadMediaContent(image, 'image');
+
+            imageUrl && imagesUrl.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
+          } catch (error) {
+            Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+            return;
+          }
+        }
+      }
+
       const documents = JSON.parse(noticeboardNewData.documents);
       const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
         ?.filter((document: { id: number }) => !!document.id)
@@ -184,6 +225,8 @@ export const NoticeboardCreateForm = ({
         }
       }
 
+      const mediaContents = documentsUrl.concat(imagesUrl);
+
       await createGenericItem({
         variables: {
           categoryName: noticeboardNewData.noticeboardType,
@@ -192,7 +235,7 @@ export const NoticeboardCreateForm = ({
           title: noticeboardNewData.title,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
-          mediaContents: documentsUrl,
+          mediaContents,
           dates: [
             {
               dateEnd: momentFormat(noticeboardNewData.dateEnd),

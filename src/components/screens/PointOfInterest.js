@@ -3,6 +3,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { FlatList, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import { consts, texts } from '../../config';
 import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
@@ -19,7 +20,6 @@ import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 import { VoucherListItem } from '../vouchers';
 
-import { SettingsContext } from '../../SettingsProvider';
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';

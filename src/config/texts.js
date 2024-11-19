@@ -519,6 +519,7 @@ export const texts = {
       imageHint: (count) => `ⓘ Es können bis zu ${count} Bilder hochgeladen werden.`,
       imageSizeError: (size) => `Das ausgewählte Bild darf maximal ${size} groß sein.`,
       imagesSizeError: (size) => `Die ausgewählten Bilder dürfen maximal ${size} groß sein.`,
+      imageUploadError: 'Beim Hochladen des Bildes ist ein Fehler aufgetreten.',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
