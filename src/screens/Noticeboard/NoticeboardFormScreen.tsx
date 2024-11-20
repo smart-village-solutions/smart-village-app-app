@@ -9,6 +9,7 @@ import {
   DefaultKeyboardAvoidingView,
   DocumentList,
   HtmlView,
+  ImageSection,
   LoadingContainer,
   NoticeboardCreateForm,
   NoticeboardMessageForm,
@@ -83,6 +84,7 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
+          <ImageSection mediaContents={details?.mediaContents} />
           <SectionHeader title={details?.contentBlocks?.[0]?.title} />
 
           {!!html && (

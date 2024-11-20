@@ -41,7 +41,13 @@ export const SueReportDescription = ({
 
   const imageSelectorProps = useMemo(
     () => ({
-      configuration,
+      configuration: {
+        ...configuration,
+        limitation: {
+          ...configuration.limitation,
+          maxCount: configuration?.limitation?.maxFileUploads?.value
+        }
+      },
       control,
       coordinateCheck: {
         areaServiceData,

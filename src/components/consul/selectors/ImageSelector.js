@@ -23,6 +23,7 @@ import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
+import { LoadingSpinner } from '../../LoadingSpinner';
 import { Modal } from '../../Modal';
 import { BoldText, RegularText } from '../../Text';
 import { WrapperRow, WrapperVertical } from '../../Wrapper';
@@ -73,10 +74,12 @@ export const ImageSelector = ({
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+  const { maxCount, maxFileSize } = configuration?.limitation;
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [deleteImage] = useMutation(DELETE_IMAGE, {
     client: ConsulClient
@@ -147,6 +150,7 @@ export const ImageSelector = ({
   };
 
   const imageSelect = async (imageFunction, from = IMAGE_FROM.GALLERY) => {
+    setLoading(true);
     const { uri, type, exif } = await imageFunction();
 
     setIsModalVisible(!isModalVisible);
@@ -181,6 +185,7 @@ export const ImageSelector = ({
 
       if (!configuration.limitation.allowedAttachmentTypes.value.includes(extension)) {
         setIsModalVisible(!isModalVisible);
+        setLoading(false);
         return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageType);
       }
 
@@ -202,23 +207,34 @@ export const ImageSelector = ({
       }
     }
 
-    errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
+    errorTextGenerator({
+      errorType,
+      infoAndErrorText,
+      maxFileSize,
+      mimeType,
+      setInfoAndErrorText,
+      uri
+    });
 
     setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size, exif }]);
     setIsModalVisible(!isModalVisible);
+    setLoading(false);
   };
 
   const values = jsonParser(value);
 
   if (isMultiImages) {
-    if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+    if (
+      selectorType === IMAGE_SELECTOR_TYPES.SUE ||
+      selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
+    ) {
       return (
         <>
           <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
           <Button
-            disabled={values?.length >= parseInt(configuration?.limitation?.maxFileUploads?.value)}
-            icon={<Icon.Camera size={normalize(16)} />}
+            disabled={maxCount && values?.length >= parseInt(maxCount)}
+            icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
             iconPosition="left"
             invert
             onPress={() => setIsModalVisible(!isModalVisible)}
@@ -267,6 +283,7 @@ export const ImageSelector = ({
             onModalVisible={() => setIsModalVisible(false)}
             closeButton={
               <TouchableOpacity
+                disabled={loading}
                 onPress={() => setIsModalVisible(false)}
                 style={styles.overlayCloseButton}
               >
@@ -289,20 +306,28 @@ export const ImageSelector = ({
             </WrapperVertical>
 
             <WrapperVertical>
-              <Button
-                icon={<Icon.Camera size={normalize(16)} />}
-                iconPosition="left"
-                invert
-                onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
-                title={texts.sue.report.alerts.imageSelectAlert.camera}
-              />
-              <Button
-                icon={<Icon.Albums size={normalize(16)} />}
-                iconPosition="left"
-                invert
-                onPress={() => imageSelect(selectImage)}
-                title={texts.sue.report.alerts.imageSelectAlert.gallery}
-              />
+              {loading ? (
+                <LoadingSpinner loading={loading} />
+              ) : (
+                <>
+                  <Button
+                    icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
+                    disabled={loading}
+                    iconPosition="left"
+                    invert
+                    onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
+                    title={texts.sue.report.alerts.imageSelectAlert.camera}
+                  />
+                  <Button
+                    icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
+                    disabled={loading}
+                    iconPosition="left"
+                    invert
+                    onPress={() => imageSelect(selectImage)}
+                    title={texts.sue.report.alerts.imageSelectAlert.gallery}
+                  />
+                </>
+              )}
             </WrapperVertical>
           </Modal>
         </>

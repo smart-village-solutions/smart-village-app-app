@@ -12,6 +12,7 @@ import {
   DateTimeInput,
   DocumentSelector,
   HtmlView,
+  ImageSelector,
   Input,
   LoadingSpinner,
   RegularText,
@@ -32,7 +33,7 @@ import { uploadMediaContent } from '../../queries/mediaContent';
 import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
 
-const { EMAIL_REGEX, MEDIA_TYPES } = consts;
+const { EMAIL_REGEX, MEDIA_TYPES, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
@@ -41,6 +42,7 @@ type TNoticeboardCreateData = {
   dateStart: string;
   documents: string;
   email: string;
+  images: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
   termsOfService: boolean;
@@ -62,7 +64,14 @@ export const NoticeboardCreateForm = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showNoticeboardMediaContent = {} } = settings;
-  const { document: showDocument = false, documentMaxSizes = {} } = showNoticeboardMediaContent;
+  const {
+    document: showDocument = false,
+    documentMaxSizes = {},
+    image: showImage = false,
+    imageMaxSizes = {},
+    maxDocumentCount = 0,
+    maxImageCount = 0
+  } = showNoticeboardMediaContent;
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
@@ -88,6 +97,7 @@ export const NoticeboardCreateForm = ({
       dateStart: new Date(),
       documents: '[]',
       email: '',
+      images: '[]',
       name: '',
       noticeboardType: '',
       termsOfService: false,
@@ -97,6 +107,7 @@ export const NoticeboardCreateForm = ({
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
   let documentUrl: string | undefined;
+  let imageUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -116,6 +127,45 @@ export const NoticeboardCreateForm = ({
     setIsLoading(true);
 
     try {
+      const images = JSON.parse(noticeboardNewData.images);
+      const imagesUrl: { sourceUrl: { url: string }; contentType: string }[] = images
+        .filter((image) => !!image.id)
+        .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
+      const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
+
+      // check if any document size is bigger than `imageMaxSizes.file`
+      for (const image of images) {
+        if (!!imageMaxSizes.file && image.size > imageMaxSizes.file) {
+          setIsLoading(false);
+          return Alert.alert(
+            texts.noticeboard.alerts.hint,
+            texts.noticeboard.alerts.imageSizeError(formatSizeStandard(imageMaxSizes.file))
+          );
+        }
+      }
+
+      // check if documents size is bigger than `imageMaxSizes.total`
+      if (imageMaxSizes.total && imagesSize > imageMaxSizes.total) {
+        setIsLoading(false);
+        return Alert.alert(
+          texts.noticeboard.alerts.hint,
+          texts.noticeboard.alerts.imagesSizeError(formatSizeStandard(imageMaxSizes.total))
+        );
+      }
+
+      if (images?.length) {
+        for (const image of images) {
+          try {
+            imageUrl = await uploadMediaContent(image, 'image');
+
+            imageUrl && imagesUrl.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
+          } catch (error) {
+            Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+            return;
+          }
+        }
+      }
+
       const documents = JSON.parse(noticeboardNewData.documents);
       const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
         ?.filter((document: { id: number }) => !!document.id)
@@ -175,6 +225,8 @@ export const NoticeboardCreateForm = ({
         }
       }
 
+      const mediaContents = documentsUrl.concat(imagesUrl);
+
       await createGenericItem({
         variables: {
           categoryName: noticeboardNewData.noticeboardType,
@@ -183,7 +235,7 @@ export const NoticeboardCreateForm = ({
           title: noticeboardNewData.title,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
-          mediaContents: documentsUrl,
+          mediaContents,
           dates: [
             {
               dateEnd: momentFormat(noticeboardNewData.dateEnd),
@@ -332,11 +384,51 @@ export const NoticeboardCreateForm = ({
             control={control}
             render={({ field }) => (
               <DocumentSelector
-                {...{ control, field }}
-                maxFileSize={documentMaxSizes.file}
+                {...{
+                  configuration: {
+                    limitation: {
+                      maxCount: maxDocumentCount,
+                      maxFileSize: documentMaxSizes?.file
+                    }
+                  },
+                  control,
+                  field
+                }}
                 item={{
                   buttonTitle: texts.noticeboard.addDocuments,
-                  infoTitle: texts.noticeboard.documentsInfo
+                  infoText:
+                    maxDocumentCount && texts.noticeboard.alerts.documentHint(maxDocumentCount)
+                }}
+              />
+            )}
+          />
+        </Wrapper>
+      )}
+
+      {showImage && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="images"
+            control={control}
+            render={({ field }) => (
+              <ImageSelector
+                {...{
+                  control,
+                  configuration: {
+                    limitation: {
+                      maxCount: maxImageCount,
+                      maxFileSize: imageMaxSizes?.file
+                    }
+                  },
+                  errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
+                  field,
+                  isMultiImages: true,
+                  item: {
+                    buttonTitle: texts.noticeboard.addImage,
+                    infoText: maxImageCount && texts.noticeboard.alerts.imageHint(maxImageCount),
+                    name: 'images'
+                  },
+                  selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
                 }}
               />
             )}
