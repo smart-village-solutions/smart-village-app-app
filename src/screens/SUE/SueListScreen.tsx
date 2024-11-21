@@ -2,11 +2,10 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
-import _reverse from 'lodash/reverse';
-import _sortBy from 'lodash/sortBy';
+import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { useQuery, useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
@@ -29,10 +28,10 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 const { FILTER_TYPES } = consts;
 
 const SORT_BY = {
-  REQUESTED_DATE_TIME: 'requestedDatetime',
-  STATUS: 'status',
-  TITLE: 'title',
-  UPDATED_DATE_TIME: 'updatedDatetime'
+  REQUESTED_DATE_TIME: 'requested_datetime DESC',
+  STATUS: 'status ASC',
+  TITLE: 'title ASC',
+  UPDATED_DATE_TIME: 'updated_datetime DESC'
 };
 
 const SORT_OPTIONS = [
@@ -77,10 +76,17 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const { sueStatus = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
   const query = route.params?.query ?? '';
-  const initialQueryVariables = route.params?.queryVariables ?? {
-    initial_start_date: '1900-01-01T00:00:00+01:00'
-  };
+
   const limit = 20;
+  const initial_start_date = '1900-01-01T00:00:00+01:00';
+  const dataCountQueryVariables = {
+    start_date: initial_start_date
+  };
+  const initialQueryVariables = route.params?.queryVariables ?? {
+    initial_start_date,
+    limit,
+    offset: 0
+  };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
@@ -90,17 +96,14 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       query,
       {
         ...queryVariables,
-        limit,
-        offset: 0,
-        start_date: queryVariables.start_date || queryVariables.initial_start_date
+        sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME
       }
     ],
     ({ pageParam = 0 }) =>
       getQuery(query)({
         ...queryVariables,
-        limit,
-        offset: pageParam,
-        start_date: queryVariables.start_date || queryVariables.initial_start_date
+        sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME,
+        offset: pageParam
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -109,7 +112,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         }
 
         return allPages.length * limit;
-      }
+      },
+      cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
     }
   );
 
@@ -117,8 +121,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     getQuery(QUERY_TYPES.SUE.SERVICES)()
   );
 
-  const { data: dataCount } = useQuery([QUERY_TYPES.SUE.LOCATION, queryVariables], () =>
-    getQuery(QUERY_TYPES.SUE.LOCATION)(queryVariables)
+  const { data: dataCount } = useQuery(
+    [QUERY_TYPES.SUE.LOCATION, { dataCountQueryVariables }],
+    () => getQuery(QUERY_TYPES.SUE.LOCATION)(dataCountQueryVariables)
   );
 
   const services = useMemo(() => {
@@ -152,20 +157,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       }
     );
 
-    if (queryVariables.sortBy) {
-      const { sortBy } = queryVariables;
-
-      if (sortBy === SORT_BY.REQUESTED_DATE_TIME || sortBy === SORT_BY.UPDATED_DATE_TIME) {
-        parsedListItem = _sortBy(parsedListItem, (item) => new Date(item[sortBy]));
-      } else {
-        parsedListItem = _sortBy(parsedListItem, (item) => item[sortBy]?.toLowerCase());
-      }
-    }
-
-    if (!queryVariables.sortBy || queryVariables.sortBy !== SORT_BY.TITLE) {
-      parsedListItem = _reverse(parsedListItem);
-    }
-
     if (queryVariables.search) {
       parsedListItem = _filter(
         parsedListItem,
@@ -196,7 +187,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <RegularText>{listItems?.length}</RegularText>
       <ListComponent
         navigation={navigation}
         query={query}

@@ -27,8 +27,7 @@ export const locations = async (queryVariables) => {
     resolve(
       response.map((item: any) => {
         const camelCasedItem = _mapKeys(item, (value, key) => _camelCase(key));
-        const statusCode = item.status_code;
-        const status = StatusMapping[statusCode as keyof typeof StatusMapping];
+        const status = StatusMapping[item.status_code as keyof typeof StatusMapping];
 
         return { ...camelCasedItem, status };
       })
