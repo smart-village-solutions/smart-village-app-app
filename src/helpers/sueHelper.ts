@@ -15,6 +15,7 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
     }
   };
 
+  const sueLocationsUrl = `${serverUrl}/locations`;
   const suePostRequest = `${serverUrl}/requests`;
   const suePrioritiesUrl = `${serverUrl}/priorities`;
   const sueRequestsUrl = `${serverUrl}/requests`;
@@ -32,6 +33,7 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
     sueContactRequiredFieldConfigurationUrl,
     sueFetchObj,
     sueGeoMapConfigurationUrl,
+    sueLocationsUrl,
     suePostRequest,
     suePrioritiesUrl,
     sueRequestsUrl,

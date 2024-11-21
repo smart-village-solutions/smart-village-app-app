@@ -106,8 +106,8 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   >();
   const [updateRegion, setUpdatedRegion] = useState<boolean>(false);
 
-  const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
-    getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
+  const { data, isLoading } = useQuery([QUERY_TYPES.SUE.LOCATION, queryVariables], () =>
+    getQuery(QUERY_TYPES.SUE.LOCATION)(queryVariables)
   );
 
   const mapMarkers = useMemo(

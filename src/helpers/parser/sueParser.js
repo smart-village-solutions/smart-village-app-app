@@ -12,16 +12,18 @@ export const parseSueData = (data, appDesignSystem) => {
   return data?.map((item) => {
     let parsedMediaUrl = [];
 
-    try {
-      const mediaArray = item.mediaUrl || JSON.parse(item.media_url);
-      parsedMediaUrl = mediaArray.map((mediaItem) => ({
-        id: mediaItem.id,
-        sourceUrl: { url: mediaItem.url },
-        visible: mediaItem.visible,
-        contentType: 'image'
-      }));
-    } catch (error) {
-      console.error('Error parsing media_url:', error);
+    if (item?.mediaUrl) {
+      try {
+        const mediaArray = item.mediaUrl || JSON.parse(item.media_url);
+        parsedMediaUrl = mediaArray.map((mediaItem) => ({
+          id: mediaItem.id,
+          sourceUrl: { url: mediaItem.url },
+          visible: mediaItem.visible,
+          contentType: 'image'
+        }));
+      } catch (error) {
+        console.error('Error parsing media_url:', error);
+      }
     }
 
     const matchedStatus = statuses?.find((status) => status.matchingStatuses.includes(item.status));
