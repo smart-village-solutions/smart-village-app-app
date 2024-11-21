@@ -56,9 +56,11 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
     $ids: [ID]
     $limit: Int
     $location: String
+    $locations: [String]
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
+    $categoryIds: [ID]
     $dateRange: [String]
     $dataProvider: String
     $dataProviderId: ID
@@ -67,9 +69,11 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
       ids: $ids
       limit: $limit
       location: $location
+      locations: $locations
       skip: $offset
       order: $order
       categoryId: $categoryId
+      categoryIds: $categoryIds
       dateRange: $dateRange
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
@@ -89,9 +93,11 @@ export const GET_EVENT_RECORDS = gql`
     $limit: Int
     $take: Int
     $location: String
+    $locations: [String]
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
+    $categoryIds: [ID]
     $dateRange: [String]
     $dataProvider: String
     $dataProviderId: ID
@@ -101,9 +107,11 @@ export const GET_EVENT_RECORDS = gql`
       limit: $limit
       take: $take
       location: $location
+      locations: $locations
       skip: $offset
       order: $order
       categoryId: $categoryId
+      categoryIds: $categoryIds
       dateRange: $dateRange
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
@@ -128,6 +136,7 @@ export const GET_EVENT_RECORDS_COUNT = gql`
     $limit: Int
     $take: Int
     $location: String
+    $locations: [String]
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
@@ -140,6 +149,7 @@ export const GET_EVENT_RECORDS_COUNT = gql`
       limit: $limit
       take: $take
       location: $location
+      locations: $locations
       skip: $offset
       order: $order
       categoryId: $categoryId
