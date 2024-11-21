@@ -20,7 +20,7 @@ export const FILTER_KEYS = {
 
 enum QUERY_VARIABLES_ATTRIBUTES {
   CATEGORY_ID = 'categoryId',
-  CATEGORY_IDS = 'ids',
+  CATEGORY_IDS = 'categoryIds',
   DATA_PROVIDER = 'dataProvider',
   DATA_PROVIDER_ID = 'dataProviderId',
   DATA_PROVIDER_IDS = 'dataProviderIds',

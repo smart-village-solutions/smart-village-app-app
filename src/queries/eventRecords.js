@@ -60,6 +60,7 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
+    $categoryIds: [ID]
     $dateRange: [String]
     $dataProvider: String
     $dataProviderId: ID
@@ -72,6 +73,7 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
       skip: $offset
       order: $order
       categoryId: $categoryId
+      categoryIds: $categoryIds
       dateRange: $dateRange
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
@@ -95,6 +97,7 @@ export const GET_EVENT_RECORDS = gql`
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
+    $categoryIds: [ID]
     $dateRange: [String]
     $dataProvider: String
     $dataProviderId: ID
@@ -108,6 +111,7 @@ export const GET_EVENT_RECORDS = gql`
       skip: $offset
       order: $order
       categoryId: $categoryId
+      categoryIds: $categoryIds
       dateRange: $dateRange
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
