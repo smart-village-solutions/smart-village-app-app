@@ -44,7 +44,8 @@ export const dropdownEntries = (
           id: category.id,
           value: category.name,
           selected:
-            category.id === queryVariables.categoryId || queryVariables.ids?.includes(category.id)
+            category.id === queryVariables.categoryId ||
+            queryVariables.categoryIds?.includes(category.id)
         }));
     }
   } else if (query === QUERY_TYPES.NEWS_ITEMS) {
