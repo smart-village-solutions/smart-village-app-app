@@ -3,5 +3,6 @@ export type SubQuery = {
   buttonTitle: string;
   params: { rootRouteName: string; routeName: string; title: string; webUrl: string };
   routeName: string;
+  title?: string;
   webUrl?: string;
 };

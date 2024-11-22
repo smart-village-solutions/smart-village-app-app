@@ -15,17 +15,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import appJson from '../app.json';
 
 import { AccessibilityProvider } from './AccessibilityProvider';
-import { BookmarkProvider } from './BookmarkProvider';
-import { ConfigurationsProvider } from './ConfigurationsProvider';
-import { NetworkContext, NetworkProvider } from './NetworkProvider';
-import { OnboardingManager } from './OnboardingManager';
-import { OrientationProvider } from './OrientationProvider';
-import { PermanentFilterProvider } from './PermanentFilterProvider';
-import { ReactQueryProvider } from './ReactQueryProvider';
-import { SettingsProvider } from './SettingsProvider';
 import { auth } from './auth';
+import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
 import { colors, consts, namespace, secrets } from './config';
+import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
   geoLocationToLocationObject,
   graphqlFetchPolicy,
@@ -33,7 +27,13 @@ import {
   storageHelper
 } from './helpers';
 import { Navigator } from './navigation/Navigator';
-import { QUERY_TYPES, getQuery } from './queries';
+import { NetworkContext, NetworkProvider } from './NetworkProvider';
+import { OnboardingManager } from './OnboardingManager';
+import { OrientationProvider } from './OrientationProvider';
+import { PermanentFilterProvider } from './PermanentFilterProvider';
+import { getQuery, QUERY_TYPES } from './queries';
+import { ReactQueryProvider } from './ReactQueryProvider';
+import { initialContext, SettingsProvider } from './SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -41,14 +41,7 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
-  const [initialGlobalSettings, setInitialGlobalSettings] = useState({
-    filter: {},
-    hdvt: {},
-    navigation: 'tab',
-    sections: {},
-    settings: {},
-    widgets: []
-  });
+  const [initialGlobalSettings, setInitialGlobalSettings] = useState(initialContext.globalSettings);
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
   const [authRetried, setAuthRetried] = useState(false);

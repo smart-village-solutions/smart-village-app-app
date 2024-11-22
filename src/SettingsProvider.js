@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useState } from 'react';
 
-export const SettingsContext = createContext({
+export const initialContext = {
   globalSettings: {
     deprecated: {},
     filter: {},
@@ -9,11 +9,14 @@ export const SettingsContext = createContext({
     navigation: 'tab',
     sections: {},
     settings: {},
+    whistleblow: {},
     widgets: []
   },
   listTypesSettings: {},
   locationSettings: {}
-});
+};
+
+export const SettingsContext = createContext(initialContext);
 
 export const SettingsProvider = ({
   initialGlobalSettings,

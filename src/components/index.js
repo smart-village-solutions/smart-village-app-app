@@ -14,6 +14,7 @@ export * from './SUE';
 export * from './volunteer';
 export * from './wasteCalendar';
 export * from './weather';
+export * from './whistleblow';
 export * from './widgets';
 export * from './vouchers';
 

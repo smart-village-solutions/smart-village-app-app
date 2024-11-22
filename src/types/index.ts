@@ -1,6 +1,7 @@
 export * from './encounter';
 export * from './volunteer';
 export * from './voucher';
+export * from './whistleblow';
 
 export * from './Accessibility';
 export * from './Address';

@@ -7,6 +7,7 @@ export * from './OParl';
 export * from './SUE';
 export * from './volunteer';
 export * from './Voucher';
+export * from './whistleblow';
 
 export * from './AppIntroScreen';
 export * from './AboutScreen';
