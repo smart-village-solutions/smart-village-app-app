@@ -118,11 +118,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
 
         <Divider />
 
-        <SectionHeader
-          big
-          containerStyle={styles.settingsContainer}
-          title={texts.profile.settings}
-        />
+        <SectionHeader containerStyle={styles.settingsContainer} title={texts.profile.settings} />
 
         <WrapperHorizontal>
           <TextListItem

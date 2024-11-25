@@ -93,11 +93,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
     let titleText = isHeadlineTitle ? (
       <HeadlineText small>{trimNewLines(title)}</HeadlineText>
     ) : withCard ? (
-      <BoldText small style={{ marginTop: normalize(4) }}>
-        {trimNewLines(title)}
-      </BoldText>
+      <BoldText style={{ marginTop: normalize(4) }}>{trimNewLines(title)}</BoldText>
     ) : (
-      <BoldText small>{trimNewLines(title)}</BoldText>
+      <BoldText>{trimNewLines(title)}</BoldText>
     );
 
     let status = '';

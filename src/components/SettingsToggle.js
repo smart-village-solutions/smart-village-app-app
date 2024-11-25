@@ -46,7 +46,7 @@ export const SettingsToggle = ({ item }) => {
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     >
-      <ListItem.Content>{title && <BoldText small>{title}</BoldText>}</ListItem.Content>
+      <ListItem.Content>{title && <BoldText>{title}</BoldText>}</ListItem.Content>
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
