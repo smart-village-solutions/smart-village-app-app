@@ -93,7 +93,6 @@ export const Chat = ({
       throw errorText;
     }
   };
-
   const { selectImage } = useSelectImage({
     allowsEditing: false,
     mediaTypes: MediaTypeOptions.All
@@ -107,6 +106,7 @@ export const Chat = ({
       bottomOffset={device.platform === 'ios' && normalize(96)}
       keyboardShouldPersistTaps="handled"
       locale="de"
+      isStatusBarTranslucentAndroid
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
@@ -114,6 +114,8 @@ export const Chat = ({
       scrollToBottomComponent={() => <Icon.ArrowDown />}
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
+        if (!showActionButton) return null;
+
         const mediaActionSheet = {
           'Foto wählen': async () => {
             const { uri, type } = await selectImage();
@@ -142,8 +144,6 @@ export const Chat = ({
           },
           Abbrechen: () => null
         };
-
-        if (!showActionButton) return null;
 
         return (
           <Actions

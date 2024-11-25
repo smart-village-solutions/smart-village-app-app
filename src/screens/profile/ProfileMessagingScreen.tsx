@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 
-import { Button, Chat, LoadingSpinner, Wrapper } from '../../components';
+import { Button, Chat, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { shareMessage } from '../../helpers';
 import { useProfileUser } from '../../hooks';
@@ -110,7 +110,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
   }
 
   return (
-    <>
+    <SafeAreaViewFlex>
       <Wrapper style={styles.noPaddingBottom}>
         <Button
           invert
@@ -156,7 +156,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
         bubbleWrapperStyleLeft={{ backgroundColor: colors.lightestText, padding: normalize(12) }}
         userId={currentUserId}
       />
-    </>
+    </SafeAreaViewFlex>
   );
 };
 

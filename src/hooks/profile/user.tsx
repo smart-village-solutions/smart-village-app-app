@@ -24,10 +24,10 @@ export const useProfileUser = (): {
 
     try {
       const storedProfileAuthToken = await profileAuthToken();
-      const { currentUserData } = await profileUserData();
+      const { currentUserData: userData } = await profileUserData();
 
       setIsLoggedIn(!!storedProfileAuthToken);
-      setCurrentUserData(currentUserData);
+      setCurrentUserData(userData);
     } catch (e) {
       console.warn(e);
       setIsError(true);
