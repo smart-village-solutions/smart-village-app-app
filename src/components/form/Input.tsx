@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
   },
   inputError: {
     color: colors.error,
-    fontSize: normalize(12),
-    lineHeight: normalize(16)
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   inputErrorHeight: {
     height: 0

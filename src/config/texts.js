@@ -906,8 +906,6 @@ export const texts = {
     postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
     privacyChecked: 'Ich verstehe die ',
     privacyCheckLink: 'Datenschutzhinweise',
-    privacyCheckRequireBody: 'Bitte bestätige die Datenschutzbestimmungen.',
-    privacyCheckRequireTitle: 'Hinweis',
     register: 'Registrieren',
     registrationAllFieldsRequiredBody:
       'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
@@ -940,9 +938,9 @@ export const texts = {
       'Dein Profil wurde erfolgreich aktualisiert. Bitte bestätige deine E-Mail-Adresse und melde dich mit der neuen E-Mail-Adresse erneut an.',
     showUpdateSuccessAlertBody: 'Dein Profil wurde erfolgreich aktualisiert.',
     showUpdateSuccessAlertTitle: 'Erfolg',
-    termsOfUseChecked: 'Mit der Registrierung willigst du ein in die',
+    termsOfUseChecked: 'Ich akzeptiere die ',
     termsOfUseLink: 'Nutzungsbedingungen',
-    termsOfUseCheckRequireBody: 'Bitte bestätige die Nutzungsbedingungen.',
+    termsOfUseCheckRequireBody: 'Bitte akzeptiere die Nutzungsbedingungen.',
     termsOfUseCheckRequireTitle: 'Hinweis',
     termsAndConditionsAlertTitle: 'Hinweis',
     termsAndConditionsAlertMessage:
