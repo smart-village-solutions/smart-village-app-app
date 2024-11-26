@@ -32,6 +32,7 @@ import { NetworkContext, NetworkProvider } from './NetworkProvider';
 import { OnboardingManager } from './OnboardingManager';
 import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
+import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import { SettingsProvider } from './SettingsProvider';
@@ -227,9 +228,11 @@ const MainAppWithApolloProvider = () => {
       >
         <ConfigurationsProvider>
           <OnboardingManager>
-            <UnreadMessagesProvider>
-              <Navigator navigationType={initialGlobalSettings.navigation} />
-            </UnreadMessagesProvider>
+            <ProfileProvider>
+              <UnreadMessagesProvider>
+                <Navigator navigationType={initialGlobalSettings.navigation} />
+              </UnreadMessagesProvider>
+            </ProfileProvider>
           </OnboardingManager>
         </ConfigurationsProvider>
       </SettingsProvider>

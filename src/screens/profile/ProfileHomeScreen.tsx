@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { useProfileContext } from '../../ProfileProvider';
 import {
   EmptyMessage,
   HeadlineText,
@@ -17,7 +18,7 @@ import {
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../../config';
 import { profileAuthToken } from '../../helpers';
-import { useProfileUser, useStaticContent, useTrackScreenViewAsync } from '../../hooks';
+import { useStaticContent, useTrackScreenViewAsync } from '../../hooks';
 import { ScreenName } from '../../types';
 
 import { ProfileScreen } from './ProfileScreen';
@@ -26,7 +27,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
-  const { refresh, isLoading, isLoggedIn } = useProfileUser();
+  const { refresh, isLoading, isLoggedIn } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(isLoggedIn);

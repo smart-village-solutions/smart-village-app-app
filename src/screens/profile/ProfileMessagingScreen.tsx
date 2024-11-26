@@ -7,7 +7,7 @@ import { StyleSheet } from 'react-native';
 import { Button, Chat, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { shareMessage } from '../../helpers';
-import { useProfileUser } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 import { ScreenName } from '../../types';
@@ -31,7 +31,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
   const query = route.params?.query;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [messageData, setMessageData] = useState<Messages>([]);
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
   const currentUserId = currentUserData?.member?.id;
   const displayName = route.params?.displayName;
 
@@ -105,7 +105,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     }, [])
   );
 
-  if (loading || !currentUserId) {
+  if (loading) {
     return <LoadingSpinner loading />;
   }
 

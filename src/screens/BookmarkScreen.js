@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { ScrollView } from 'react-native';
 
+import { useProfileContext } from '../ProfileProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { BookmarkSection, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { consts, texts } from '../config';
@@ -11,8 +12,7 @@ import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import {
   useBookmarks,
   useMatomoTrackScreenView,
-  useNewsCategories,
-  useProfileUser
+  useNewsCategories
 } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
@@ -47,7 +47,7 @@ const getBookmarkCount = (bookmarks) => {
 
 export const BookmarkScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks();
-  const { isLoggedIn, refresh } = useProfileUser();
+  const { isLoggedIn, refresh } = useProfileContext();
   const categoriesNews = useNewsCategories();
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
