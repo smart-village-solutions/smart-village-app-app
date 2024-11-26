@@ -117,9 +117,7 @@ export const NoticeboardCreateForm = ({
       dateEnd: data?.dates?.[0]?.dateEnd
         ? moment(data?.dates?.[0]?.dateEnd)?.toDate()
         : moment().add(requestedDateDifference, 'months').toDate(),
-      dateStart: data?.dates?.[0]?.dateStart
-        ? moment(data?.dates?.[0]?.dateStart)?.toDate()
-        : moment().toDate(),
+      dateStart: moment().toDate(),
       documents: '[]',
       email: data?.contacts?.[0]?.email ?? '',
       image: formImages?.length ? JSON.stringify(formImages) : '[]',
