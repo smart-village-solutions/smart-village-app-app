@@ -6,9 +6,11 @@ import { colors, consts, Icon, texts } from '../../config';
 import { storageHelper } from '../../helpers';
 import { DELETE_CONVERSATION, GET_CONVERSATIONS } from '../../queries/profile';
 import { SettingsContext } from '../../SettingsProvider';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
 export const ConversationActions = ({ conversationId }: { conversationId: string | number }) => {
   const { conversationSettings, setConversationSettings } = useContext(SettingsContext);
+  const { refetch: refetchUnreadMessages } = useMessagesContext();
   const [isPinned, setIsPinned] = useState(
     conversationSettings?.pinned?.includes(conversationId) || false
   );
@@ -57,6 +59,7 @@ export const ConversationActions = ({ conversationId }: { conversationId: string
             deleteConversation({
               variables: { conversationId }
             });
+            refetchUnreadMessages();
           },
           style: 'destructive'
         }

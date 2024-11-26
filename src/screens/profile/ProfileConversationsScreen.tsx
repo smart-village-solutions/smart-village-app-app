@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl } from 'react-native';
 
@@ -10,10 +10,12 @@ import { parseListItemsFromQuery } from '../../helpers';
 import { useProfileUser } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
 /* eslint-disable complexity */
 export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>) => {
   const { conversationSettings } = useContext(SettingsContext);
+  const { refetch: refetchUnreadMessages } = useMessagesContext();
   const { currentUserData } = useProfileUser();
   const currentUserId = useMemo(() => currentUserData?.member?.id, [currentUserData]);
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
@@ -22,7 +24,7 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
     data: conversationData,
     loading,
     refetch
-  } = useQuery(getQuery(query), { pollInterval: 10000 });
+  } = useQuery(getQuery(query), { pollInterval: 10000 }); // 10 seconds
 
   const listItems = useMemo(
     () => parseListItemsFromQuery(query, conversationData, undefined),
@@ -43,8 +45,15 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
   useFocusEffect(
     useCallback(() => {
       refetch();
+      refetchUnreadMessages();
     }, [])
   );
+
+  useEffect(() => {
+    if (conversationData) {
+      refetchUnreadMessages();
+    }
+  }, [conversationData]);
 
   if (loading && !currentUserId) {
     return <LoadingSpinner loading />;

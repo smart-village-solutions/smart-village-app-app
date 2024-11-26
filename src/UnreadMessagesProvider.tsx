@@ -5,7 +5,7 @@ import { useQuery } from 'react-apollo';
 
 import { QUERY_TYPES, getQuery } from './queries';
 
-const defaultUnreadMessage = { count: 0, loading: false };
+const defaultUnreadMessage = { count: 0, loading: false, refetch: () => {} };
 const defaultPollInterval = 15 * 60 * 1000; // 15 minutes
 
 export const UnreadMessagesContext = createContext(defaultUnreadMessage);
@@ -14,7 +14,11 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
-  const { data: conversationData, loading } = useQuery(getQuery(query), {
+  const {
+    data: conversationData,
+    loading,
+    refetch
+  } = useQuery(getQuery(query), {
     pollInterval: defaultPollInterval,
     variables: {
       conversationableType: 'GenericItem'
@@ -42,7 +46,8 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     <UnreadMessagesContext.Provider
       value={{
         count: unreadMessagesCount,
-        loading
+        loading,
+        refetch
       }}
     >
       {children}
