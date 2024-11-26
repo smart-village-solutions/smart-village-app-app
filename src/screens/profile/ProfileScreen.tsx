@@ -5,7 +5,6 @@ import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
-import { NetworkContext } from '../../NetworkProvider';
 import {
   Button,
   LoadingSpinner,
@@ -20,9 +19,11 @@ import {
 import { colors, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { useProfileUser } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
 import { ProfileUpdateScreen } from './ProfileUpdateScreen';
 
@@ -35,6 +36,7 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
   ]);
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+  const { reset: resetUnreadMessages } = useMessagesContext();
   const { currentUserData } = useProfileUser();
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
@@ -176,6 +178,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
           <Button
             invert
             onPress={() => {
+              resetUnreadMessages();
               storeProfileAuthToken();
               storeProfileUserData();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
