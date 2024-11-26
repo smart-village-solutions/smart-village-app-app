@@ -296,7 +296,7 @@ export const SettingsScreen = ({ navigation, route }) => {
               onActivate: () => null,
               onDeactivate: (revert) =>
                 Alert.alert(
-                  texts.settingsTitles.termsAndConditions,
+                  texts.profile.termsAndConditionsAlertTitle,
                   texts.settingsContents.termsAndConditions.onDeactivate,
                   [
                     {

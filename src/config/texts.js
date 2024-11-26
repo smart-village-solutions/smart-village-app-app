@@ -904,8 +904,8 @@ export const texts = {
     passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
     postcode: 'Postleitzahl',
     postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
-    privacyChecked: 'Mit der Registrierung willigst du ein in die',
-    privacyCheckLink: 'Datenschutzbestimmungen',
+    privacyChecked: 'Ich verstehe die ',
+    privacyCheckLink: 'Datenschutzhinweise',
     privacyCheckRequireBody: 'Bitte bestätige die Datenschutzbestimmungen.',
     privacyCheckRequireTitle: 'Hinweis',
     register: 'Registrieren',
@@ -946,8 +946,8 @@ export const texts = {
     termsOfUseCheckRequireTitle: 'Hinweis',
     termsAndConditionsAlertTitle: 'Hinweis',
     termsAndConditionsAlertMessage:
-      'Ohne deine Zustimmung zu unseren Datenschutz- und Nutzungsbedingungen kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt. Falls du die Einwilligung doch erteilen möchtest, folge bitte dem Button.',
-    termsAndConditionsAlertOk: 'Zur Einwilligung'
+      'Ohne die Bestätigung unserer Datenschutzhinweise kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt. Falls du die App nutzen möchtest, folge bitte dem Button.',
+    termsAndConditionsAlertOk: 'Zur Bestätigung'
   },
   pushNotifications: {
     abort: 'Abbrechen',
@@ -1057,7 +1057,7 @@ export const texts = {
       abort: 'Abbrechen',
       onActivate: '',
       onDeactivate:
-        'Beim nächsten Start wird die Einwilligung zu den Datenschutz- und Nutzungsbedingungen erneut abgefragt. Ohne deine Zustimmung zu unseren Datenschutz- und Nutzungsbedingungen kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt.',
+        'Beim nächsten Start wird die Einwilligung zu den Datenschutzhinweisen erneut abgefragt. Ohne die Bestätigung unserer Datenschutzhinweise kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt.',
       ok: 'Einverstanden'
     }
   },
@@ -1097,7 +1097,7 @@ export const texts = {
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
     pushNotifications: 'Push-Benachrichtigungen',
-    termsAndConditions: 'Einwilligung Datenschutz- und Nutzungsbedingungen'
+    termsAndConditions: 'Einwilligung zu Datenschutzhinweisen'
   },
   sue: {
     answer: 'Antworten',

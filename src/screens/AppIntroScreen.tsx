@@ -45,9 +45,7 @@ const SliderButton = ({
 
 const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
-  const [hasAcceptedTermsOfUse, setHasAcceptedTermsOfUse] = useState(false);
   const [isModalVisibleDataPrivacy, setModalVisibleDataPrivacy] = useState(false);
-  const [isModalVisibleTermsOfUse, setModalVisibleTermsOfUse] = useState(false);
 
   return (
     <>
@@ -61,7 +59,7 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
           linkDescription={texts.profile.privacyCheckLink}
           onPress={() => {
             setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy);
-            setShowButtonTermsAndConditions(!hasAcceptedDataPrivacy && hasAcceptedTermsOfUse);
+            setShowButtonTermsAndConditions(!hasAcceptedDataPrivacy);
           }}
           title={texts.profile.privacyChecked}
           uncheckedIcon={<Icon.Square color={colors.placeholder} />}
@@ -91,51 +89,6 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
               title: texts.profile.privacyCheckLink,
               query: QUERY_TYPES.PUBLIC_HTML_FILE,
               queryVariables: { name: 'datenschutzProfile' }
-            }
-          }}
-        />
-      </Modal>
-
-      <Wrapper style={styles.noPaddingTop}>
-        <Checkbox
-          boldTitle={false}
-          center={false}
-          checked={hasAcceptedTermsOfUse}
-          checkedIcon={<Icon.SquareCheckFilled />}
-          navigate={() => setModalVisibleTermsOfUse(true)}
-          linkDescription={texts.profile.termsOfUseLink}
-          onPress={() => {
-            setHasAcceptedTermsOfUse(!hasAcceptedTermsOfUse);
-            setShowButtonTermsAndConditions(hasAcceptedDataPrivacy && !hasAcceptedTermsOfUse);
-          }}
-          title={texts.profile.termsOfUseChecked}
-          uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-        />
-      </Wrapper>
-
-      <Modal
-        animationType="slide"
-        onRequestClose={() => setModalVisibleTermsOfUse(false)}
-        presentationStyle="pageSheet"
-        visible={isModalVisibleTermsOfUse}
-      >
-        <View style={styles.spacer}>
-          {device.platform === 'android' && (
-            <TouchableOpacity
-              onPress={() => setModalVisibleTermsOfUse(false)}
-              style={styles.termsAndConditionsCloseButton}
-            >
-              <Icon.Close />
-            </TouchableOpacity>
-          )}
-        </View>
-        <HtmlScreen
-          navigation={undefined}
-          route={{
-            params: {
-              title: texts.profile.termsOfUseLink,
-              query: QUERY_TYPES.PUBLIC_HTML_FILE,
-              queryVariables: { name: 'nutzungsbedingungenProfile' }
             }
           }}
         />

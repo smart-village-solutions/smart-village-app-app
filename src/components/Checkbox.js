@@ -8,7 +8,7 @@ import { useOpenWebScreen } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
-import { WrapperHorizontal } from './Wrapper';
+import { WrapperHorizontal, WrapperRow } from './Wrapper';
 
 const { a11yLabel } = consts;
 
@@ -52,20 +52,22 @@ export const Checkbox = ({
       center={center}
       title={
         <WrapperHorizontal>
-          {boldTitle ? (
-            <BoldText small lightest={lightest}>
-              {title}
-            </BoldText>
-          ) : (
-            <RegularText small lightest={lightest}>
-              {title}
-            </RegularText>
-          )}
-          {(!!link || !!navigate) && !!linkDescription && (
-            <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
-              {linkDescription}
-            </RegularText>
-          )}
+          <WrapperRow>
+            {boldTitle ? (
+              <BoldText small lightest={lightest}>
+                {title}
+              </BoldText>
+            ) : (
+              <RegularText small lightest={lightest}>
+                {title}
+              </RegularText>
+            )}
+            {(!!link || !!navigate) && !!linkDescription && (
+              <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
+                {linkDescription}
+              </RegularText>
+            )}
+          </WrapperRow>
         </WrapperHorizontal>
       }
       onPress={onPress}
