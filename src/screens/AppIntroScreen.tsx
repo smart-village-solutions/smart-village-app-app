@@ -73,14 +73,12 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
         visible={isModalVisibleDataPrivacy}
       >
         <View style={styles.spacer}>
-          {device.platform === 'android' && (
-            <TouchableOpacity
-              onPress={() => setModalVisibleDataPrivacy(false)}
-              style={styles.termsAndConditionsCloseButton}
-            >
-              <Icon.Close />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            onPress={() => setModalVisibleDataPrivacy(false)}
+            style={styles.termsAndConditionsCloseButton}
+          >
+            <Icon.Close />
+          </TouchableOpacity>
         </View>
         <HtmlScreen
           navigation={undefined}
