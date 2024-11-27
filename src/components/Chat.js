@@ -103,7 +103,6 @@ export const Chat = ({
   return (
     <GiftedChat
       alwaysShowSend
-      bottomOffset={device.platform === 'ios' && normalize(96)}
       keyboardShouldPersistTaps="handled"
       locale="de"
       isStatusBarTranslucentAndroid
