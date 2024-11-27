@@ -39,8 +39,6 @@ import { ScreenName } from '../types';
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
 const today = moment().format('YYYY-MM-DD');
-// we need to set a date range to correctly sort the results by list date, so we set it far in the future
-const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 const renderItem = ({ item }) => {
   const {
@@ -310,7 +308,7 @@ export const HomeScreen = ({ navigation, route }) => {
       navigate: 'EVENT_RECORDS_INDEX',
       navigation,
       query: QUERY_TYPES.EVENT_RECORDS,
-      queryVariables: { take: 3, order: 'listDate_ASC', dateRange: [today, todayIn10Years] },
+      queryVariables: { take: 3, order: 'listDate_ASC' },
       showData: showEvents,
       showVolunteerEvents,
       title: headlineEvents

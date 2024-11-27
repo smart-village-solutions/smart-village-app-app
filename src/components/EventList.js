@@ -1,5 +1,4 @@
 import { FlashList } from '@shopify/flash-list';
-import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -24,13 +23,6 @@ const sectionData = (data) => {
         grouped[item.listDate].push(item);
       }
     });
-
-    for (const dateKey in grouped) {
-      grouped[dateKey] = _sortBy(
-        grouped[dateKey],
-        (item) => item?.params?.details?.date?.timeFrom || item?.params?.details?.date?.timeTo
-      );
-    }
 
     return grouped;
   };

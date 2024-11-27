@@ -15,7 +15,6 @@ import {
   EmptyMessage,
   ListComponent,
   LoadingContainer,
-  OptionToggle,
   REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
@@ -50,8 +49,6 @@ const hasFilterSelection = (isLocationFilter, queryVariables) => {
 };
 
 const today = moment().format('YYYY-MM-DD');
-// we need to set a date range to correctly sort the results by list date, so we set it far in the future
-const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -65,9 +62,10 @@ export const EventRecords = ({ navigation, route }) => {
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
+  const initialQueryVariables = route.params?.queryVariables || {};
   const [queryVariables, setQueryVariables] = useState({
-    ...(route.params?.queryVariables || {}),
-    dateRange: (route.params?.queryVariables || {}).dateRange || [today, todayIn10Years]
+    ...initialQueryVariables,
+    ...resourceFiltersState[query]
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -186,7 +184,7 @@ export const EventRecords = ({ navigation, route }) => {
         });
       } else {
         setQueryVariables((prevQueryVariables) => {
-          return { ...prevQueryVariables, dateRange: [today, todayIn10Years], refetchDate: true };
+          return { ...prevQueryVariables, refetchDate: true };
         });
       }
 
