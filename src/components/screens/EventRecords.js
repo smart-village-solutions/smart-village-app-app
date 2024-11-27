@@ -65,8 +65,6 @@ const hasFilterSelection = (isLocationFilter, queryVariables) => {
 };
 
 const today = moment().format('YYYY-MM-DD');
-// we need to set a date range to correctly sort the results by list date, so we set it far in the future
-const todayIn10Years = moment().add(10, 'years').format('YYYY-MM-DD');
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -81,10 +79,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
-  const initialQueryVariables = {
-    ...(route.params?.queryVariables || {}),
-    dateRange: (route.params?.queryVariables || {}).dateRange || [today, todayIn10Years]
-  };
+  const initialQueryVariables = route.params?.queryVariables || {};
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
     ...resourceFiltersState[query]
