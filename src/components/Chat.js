@@ -101,6 +101,9 @@ export const Chat = ({
   return (
     <GiftedChat
       alwaysShowSend
+      keyboardShouldPersistTaps="handled"
+      locale="de"
+      isStatusBarTranslucentAndroid
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
