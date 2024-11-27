@@ -6,7 +6,8 @@ import { useQuery } from 'react-query';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
-import { useProfileUser, useStaticContent } from '../../hooks';
+import { useStaticContent } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
@@ -32,7 +33,7 @@ interface DataItem {
 
 /* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
-  const { isLoading, isLoggedIn, currentUserData } = useProfileUser();
+  const { isLoading, isLoggedIn, currentUserData } = useProfileContext();
   const [isVisible, setIsVisible] = useState(false);
   const isProfileUpdated =
     !!Object.keys(currentUserData?.member?.preferences || {}).length &&

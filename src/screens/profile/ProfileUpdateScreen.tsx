@@ -22,7 +22,8 @@ import {
 } from '../../components';
 import { colors, texts } from '../../config';
 import { storeProfileUserData } from '../../helpers';
-import { useProfileUser, useStaticContent } from '../../hooks';
+import { useStaticContent } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
 
@@ -45,7 +46,7 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
   const member = route.params?.member ?? {};
   const from = route.params?.from ?? '';
   const { preferences = {}, first_name, last_name } = member;

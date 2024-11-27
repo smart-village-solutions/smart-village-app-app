@@ -1,6 +1,5 @@
 export * from './consul';
 export * from './encounter';
-export * from './profile';
 export * from './volunteer';
 
 export * from './apollo';
@@ -21,10 +20,10 @@ export * from './permanentFilter';
 export * from './personalizedTiles';
 export * from './pullToRefetch';
 export * from './PushNotification';
-export * from './TimeHooks';
 export * from './reverseGeocode';
 export * from './staticContent';
 export * from './surveyHooks';
+export * from './TimeHooks';
 export * from './versionCheck';
-export * from './waterTemperature';
 export * from './voucherHooks';
+export * from './waterTemperature';

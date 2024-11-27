@@ -17,12 +17,13 @@ import {
   WrapperVertical
 } from '../../components';
 import { colors, Icon, texts } from '../../config';
-import { useAppInfo, useProfileUser, useStaticContent } from '../../hooks';
+import { useAppInfo, useStaticContent } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { createQuery, QUERY_TYPES } from '../../queries';
 
 export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
   const [loading, setLoading] = useState(false);
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
 
   const {
     control,

@@ -18,8 +18,8 @@ import {
 } from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
-import { useProfileUser } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
@@ -37,7 +37,7 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
   const { reset: resetUnreadMessages } = useMessagesContext();
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
   const isProfileUpdated =

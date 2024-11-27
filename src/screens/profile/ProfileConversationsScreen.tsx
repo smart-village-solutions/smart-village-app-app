@@ -7,7 +7,7 @@ import { RefreshControl } from 'react-native';
 import { EmptyMessage, ListComponent, LoadingSpinner, SafeAreaViewFlex } from '../../components';
 import { colors, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
-import { useProfileUser } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
@@ -16,7 +16,7 @@ import { useMessagesContext } from '../../UnreadMessagesProvider';
 export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>) => {
   const { conversationSettings } = useContext(SettingsContext);
   const { refetch: refetchUnreadMessages } = useMessagesContext();
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
   const currentUserId = useMemo(() => currentUserData?.member?.id, [currentUserData]);
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
