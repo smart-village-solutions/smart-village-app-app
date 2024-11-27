@@ -36,7 +36,7 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
   ]);
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
-  const { reset: resetUnreadMessages } = useMessagesContext();
+  const { refetch: refetchUnreadMessages, reset: resetUnreadMessages } = useMessagesContext();
   const { currentUserData } = useProfileContext();
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
@@ -64,7 +64,10 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
 
   const refreshHome = useCallback(async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
+    if (isConnected) {
+      await refetch();
+      refetchUnreadMessages();
+    }
     setRefreshing(false);
   }, [isConnected, refetch]);
 
@@ -73,7 +76,9 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
       if (!isProfileUpdated) {
         refetch();
       }
-    }, [isConnected, refetch, route.params?.refreshUser])
+
+      refetchUnreadMessages();
+    }, [isConnected, isProfileUpdated, refetch, refetchUnreadMessages, route.params?.refreshUser])
   );
 
   if (isLoading) {
