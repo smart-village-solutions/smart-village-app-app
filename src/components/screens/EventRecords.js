@@ -64,8 +64,7 @@ export const EventRecords = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const initialQueryVariables = route.params?.queryVariables || {};
   const [queryVariables, setQueryVariables] = useState({
-    ...initialQueryVariables,
-    ...resourceFiltersState[query]
+    ...initialQueryVariables
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
