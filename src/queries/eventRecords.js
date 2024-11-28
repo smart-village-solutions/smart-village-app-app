@@ -4,15 +4,6 @@ const defaultFragment = `
   id
   title
   listDate
-  dates {
-    id
-    weekday
-    dateFrom: dateStart
-    dateTo: dateEnd
-    timeFrom: timeStart
-    timeTo: timeEnd
-    description: timeDescription
-  }
   mediaContents {
     id
     contentType
@@ -75,6 +66,15 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
       dataProviderId: $dataProviderId
     ) {
       ...defaultFields
+      dates {
+        id
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
+      }
     }
   }
 
@@ -180,6 +180,15 @@ export const GET_EVENT_RECORD = gql`
     eventRecord(id: $id) {
       ...defaultFields
       ...dateFields
+      dates {
+        id
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
+      }
       description
       category {
         id
