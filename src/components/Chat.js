@@ -4,7 +4,7 @@ import { MediaTypeOptions } from 'expo-image-picker';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   Actions,
@@ -56,6 +56,7 @@ export const Chat = ({
 }) => {
   const [messages, setMessages] = useState(data);
   const [medias, setMedias] = useState([]);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
     // this screen is set to portrait mode because half of the screen is visible in landscape
@@ -98,6 +99,22 @@ export const Chat = ({
 
   const { selectDocument } = useSelectDocument();
 
+  // thx to: https://github.com/FaridSafi/react-native-gifted-chat/issues/2544#issuecomment-2398233334
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
     <GiftedChat
       alwaysShowSend
@@ -109,6 +126,11 @@ export const Chat = ({
       placeholder={placeholder}
       scrollToBottom
       scrollToBottomComponent={() => <Icon.ArrowDown />}
+      listViewProps={{
+        contentContainerStyle: {
+          paddingBottom: keyboardHeight
+        }
+      }}
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
         const mediaActionSheet = {
