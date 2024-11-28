@@ -110,11 +110,7 @@ export const EventRecords = ({ navigation, route }) => {
         deprecated?.events?.listingWithoutDateFragment
           ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
           : QUERY_TYPES.EVENT_RECORDS,
-        {
-          ...queryVariables,
-          limit: undefined,
-          take: queryVariables.limit
-        }
+        queryVariables
       ],
       async ({ pageParam = 0 }) => {
         const client = await ReactQueryClient();
@@ -127,8 +123,6 @@ export const EventRecords = ({ navigation, route }) => {
           ),
           {
             ...queryVariables,
-            limit: undefined,
-            take: queryVariables.limit,
             offset: pageParam
           }
         );
