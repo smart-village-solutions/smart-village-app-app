@@ -13,6 +13,8 @@ import {
   CalendarListToggle,
   DropdownHeader,
   EmptyMessage,
+  EventSuggestionButton,
+  IndexMapSwitch,
   ListComponent,
   LoadingContainer,
   OptionToggle,
@@ -28,6 +30,12 @@ import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
+import { ScreenName } from '../../types';
+
+export const EVENT_SUGGESTION_BUTTON = {
+  TOP: 'top',
+  BOTTOM_FLOATING: 'bottom-floating'
+};
 
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';
@@ -295,14 +303,24 @@ export const EventRecords = ({ navigation, route }) => {
                   </Wrapper>
                 )}
 
-                {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
-                  <Wrapper>
-                    <Button
-                      onPress={() => openLink(eventListIntro.url, openWebScreen)}
-                      title={eventListIntro.buttonTitle}
-                    />
-                  </Wrapper>
-                )}
+                {!!eventListIntro.url &&
+                  !!eventListIntro.buttonTitle &&
+                  eventListIntro.buttonType === EVENT_SUGGESTION_BUTTON.TOP && (
+                    <Wrapper>
+                      <EventSuggestionButton
+                        buttonTitle={eventListIntro.buttonTitle}
+                        onPress={() => {
+                          if (eventListIntro.url) {
+                            openLink(eventListIntro.url, openWebScreen);
+                          } else {
+                            navigation.navigate(ScreenName.EventSuggestion, {
+                              formIntroText: eventListIntro.formIntroText
+                            });
+                          }
+                        }}
+                      />
+                    </Wrapper>
+                  )}
                 <Divider />
               </>
             )}
@@ -375,6 +393,20 @@ export const EventRecords = ({ navigation, route }) => {
         }
         showBackToTop
       />
+      {eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
+        <EventSuggestionButton
+          buttonTitle={eventListIntro.buttonTitle}
+          onPress={() => {
+            if (eventListIntro.url) {
+              openLink(eventListIntro.url, openWebScreen);
+            } else {
+              navigation.navigate(ScreenName.EventSuggestion, {
+                formIntroText: eventListIntro.formIntroText
+              });
+            }
+          }}
+        />
+      )}
     </SafeAreaViewFlex>
   );
 };

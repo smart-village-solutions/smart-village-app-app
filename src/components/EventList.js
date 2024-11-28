@@ -1,11 +1,15 @@
 import { FlashList } from '@shopify/flash-list';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
 import { LoadingSpinner } from './LoadingSpinner';
+import { SettingsContext } from '../SettingsProvider';
+import { EVENT_SUGGESTION_BUTTON } from './screens';
+import { StyleSheet, View } from 'react-native';
+import { normalize } from '../config';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -50,6 +54,10 @@ export const EventList = ({
   queryVariables,
   refreshControl
 }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { sections = {} } = globalSettings;
+  const { eventListIntro } = sections;
+
   const [listEndReached, setListEndReached] = useState(false);
   const [sectionedData, setSectionedData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -111,6 +119,8 @@ export const EventList = ({
       ListFooterComponent={() => {
         if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
           return <LoadingSpinner loading={!listEndReached} />;
+        } else if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
+          return <View style={styles.spacer} />;
         }
 
         return null;
@@ -125,6 +135,12 @@ export const EventList = ({
     />
   );
 };
+
+const styles = StyleSheet.create({
+  spacer: {
+    height: normalize(70)
+  }
+});
 
 EventList.propTypes = {
   data: PropTypes.array,
