@@ -31,6 +31,7 @@ export const MainTabNavigator = ({
         tabBarActiveTintColor: tabNavigatorConfig.activeTintColor,
         tabBarInactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
         tabBarInactiveTintColor: tabNavigatorConfig.inactiveTintColor,
+        tabBarHideOnKeyboard: true,
         tabBarItemStyle: { marginTop: normalize(0) },
         tabBarStyle: {
           backgroundColor: colors.surface,
