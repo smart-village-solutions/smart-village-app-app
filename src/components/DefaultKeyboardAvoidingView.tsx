@@ -9,8 +9,8 @@ export const DefaultKeyboardAvoidingView = ({ children }: { children: React.Reac
 
   return (
     <KeyboardAvoidingView
-      behavior={device.platform === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={device.platform === 'ios' ? headerHeight : undefined}
+      behavior={device.platform === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={headerHeight}
       style={styles.flex}
     >
       {children}
