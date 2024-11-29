@@ -1,6 +1,15 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
-import { profileAuthToken, profileUserData } from './helpers';
+import {
+  profileAuthToken,
+  profileUserData,
+  storeProfileAuthToken,
+  storeProfileUserData
+} from './helpers';
+import { useHomeRefresh } from './hooks';
+import { QUERY_TYPES } from './queries';
+import { member } from './queries/profile';
 import { ProfileMember } from './types';
 
 const defaultProfile = {
@@ -18,6 +27,20 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const { isLoading: isLoadingMember } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
+        storeProfileAuthToken();
+        setIsLoggedIn(false);
+        setCurrentUserData(null);
+
+        return;
+      }
+
+      storeProfileUserData(responseData);
+    }
+  });
 
   const logInCallback = useCallback(async () => {
     setIsLoading(true);
@@ -37,6 +60,8 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
     setIsLoading(false);
   }, []);
 
+  useHomeRefresh(logInCallback);
+
   useEffect(() => {
     if (!isLoggedIn) {
       logInCallback();
@@ -51,7 +76,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
       value={{
         currentUserData,
         isError,
-        isLoading,
+        isLoading: isLoading || isLoadingMember,
         isLoggedIn,
         refresh: logInCallback
       }}

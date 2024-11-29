@@ -77,23 +77,17 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     data
   } = useMutation(profileUpdate);
 
-  const {
-    data: dataProfileUpdateScreenTop,
-    loading: loadingProfileUpdateScreenTop,
-    refetch: refetchProfileUpdateScreenTop
-  } = useStaticContent({
-    name: 'profileUpdateScreenTop',
-    type: 'html'
-  });
+  const { data: dataProfileUpdateScreenTop, refetch: refetchProfileUpdateScreenTop } =
+    useStaticContent({
+      name: 'profileUpdateScreenTop',
+      type: 'html'
+    });
 
-  const {
-    data: dataProfileUpdateScreenBottom,
-    loading: loadingProfileUpdateScreenBottom,
-    refetch: refetchProfileUpdateScreenBottom
-  } = useStaticContent({
-    name: 'profileUpdateScreenBottom',
-    type: 'html'
-  });
+  const { data: dataProfileUpdateScreenBottom, refetch: refetchProfileUpdateScreenBottom } =
+    useStaticContent({
+      name: 'profileUpdateScreenBottom',
+      type: 'html'
+    });
 
   const onSubmit = (updateData: ProfileUpdate) =>
     mutateUpdate(updateData, {
@@ -138,7 +132,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
-              refreshing={loadingProfileUpdateScreenTop || loadingProfileUpdateScreenBottom}
+              refreshing={false}
               onRefresh={() => {
                 refetchProfileUpdateScreenTop();
                 refetchProfileUpdateScreenBottom();

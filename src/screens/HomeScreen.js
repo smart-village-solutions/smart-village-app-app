@@ -1,7 +1,14 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react';
 import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
@@ -301,6 +308,14 @@ export const HomeScreen = ({ navigation, route }) => {
       setRefreshing(false);
     }, 500);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
+      // components.
+      DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+    }, 500);
+  }, []);
 
   const data = [
     {

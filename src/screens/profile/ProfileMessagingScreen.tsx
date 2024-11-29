@@ -11,6 +11,7 @@ import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 import { ScreenName } from '../../types';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
 type Message = {
   createdAt: string;
@@ -32,6 +33,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [messageData, setMessageData] = useState<Messages>([]);
   const { currentUserData } = useProfileContext();
+  const { refetch: refetchUnreadMessages } = useMessagesContext();
   const currentUserId = currentUserData?.member?.id;
   const displayName = route.params?.displayName;
 
@@ -41,7 +43,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     refetch
   } = useQuery(getQuery(query), {
     variables: { conversationId: queryVariables.id },
-    pollInterval: 10000,
+    pollInterval: 10000, // 10 seconds
     skip: !queryVariables.id
   });
 
@@ -102,6 +104,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
   useFocusEffect(
     useCallback(() => {
       refetch();
+      refetchUnreadMessages();
     }, [])
   );
 

@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
@@ -38,7 +38,6 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
   const { refetch: refetchUnreadMessages, reset: resetUnreadMessages } = useMessagesContext();
   const { currentUserData } = useProfileContext();
-  const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
   const isProfileUpdated =
     !!Object.keys(currentUserData?.member?.preferences || {}).length &&
@@ -63,22 +62,16 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
   });
 
   const refreshHome = useCallback(async () => {
-    setRefreshing(true);
     if (isConnected) {
       await refetch();
       refetchUnreadMessages();
     }
-    setRefreshing(false);
-  }, [isConnected, refetch]);
+  }, [isConnected, refetch, refetchUnreadMessages]);
 
   useFocusEffect(
     useCallback(() => {
-      if (!isProfileUpdated) {
-        refetch();
-      }
-
-      refetchUnreadMessages();
-    }, [isConnected, isProfileUpdated, refetch, refetchUnreadMessages, route.params?.refreshUser])
+      refreshHome();
+    }, [refreshHome, route.params?.refreshUser])
   );
 
   if (isLoading) {
@@ -102,7 +95,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={false}
             onRefresh={refreshHome}
             colors={[colors.refreshControl]}
             tintColor={colors.refreshControl}

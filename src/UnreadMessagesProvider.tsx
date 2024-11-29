@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
+import { useHomeRefresh } from './hooks';
 import { useProfileContext } from './ProfileProvider';
 import { QUERY_TYPES, getQuery } from './queries';
 
@@ -28,6 +29,8 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     }
   });
 
+  useHomeRefresh(refetch);
+
   const getUnreadMessagesCount = useCallback(() => {
     // return 0 if data is missing or not loaded yet
     if (!conversationData || !conversationData[query]) {
@@ -42,6 +45,10 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
   useEffect(() => {
     setUnreadMessagesCount(getUnreadMessagesCount());
   }, [getUnreadMessagesCount]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <UnreadMessagesContext.Provider

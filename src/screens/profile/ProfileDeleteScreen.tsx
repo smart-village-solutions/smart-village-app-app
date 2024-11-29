@@ -42,23 +42,17 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
 
   const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
 
-  const {
-    data: dataProfileDeleteScreenTop,
-    loading: loadingProfileDeleteScreenTop,
-    refetch: refetchProfileDeleteScreenTop
-  } = useStaticContent({
-    name: 'profileDeleteScreenTop',
-    type: 'html'
-  });
+  const { data: dataProfileDeleteScreenTop, refetch: refetchProfileDeleteScreenTop } =
+    useStaticContent({
+      name: 'profileDeleteScreenTop',
+      type: 'html'
+    });
 
-  const {
-    data: dataProfileDeleteScreenBottom,
-    loading: loadingProfileDeleteScreenBottom,
-    refetch: refetchProfileDeleteScreenBottom
-  } = useStaticContent({
-    name: 'profileDeleteScreenBottom',
-    type: 'html'
-  });
+  const { data: dataProfileDeleteScreenBottom, refetch: refetchProfileDeleteScreenBottom } =
+    useStaticContent({
+      name: 'profileDeleteScreenBottom',
+      type: 'html'
+    });
 
   const onSubmit = async (createAppUserContentNewData) => {
     Keyboard.dismiss();
@@ -105,7 +99,7 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
-              refreshing={loadingProfileDeleteScreenTop || loadingProfileDeleteScreenBottom}
+              refreshing={false}
               onRefresh={() => {
                 refetchProfileDeleteScreenTop();
                 refetchProfileDeleteScreenBottom();
