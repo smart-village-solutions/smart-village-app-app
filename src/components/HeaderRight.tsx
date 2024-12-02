@@ -8,8 +8,8 @@ import { normalize } from '../config';
 
 import { CalendarHeader } from './CalendarHeader';
 import { ChatHeader } from './ChatHeader';
-import { DrawerHeader } from './DrawerHeader';
 import { DeleteHeader } from './DeleteHeader';
+import { DrawerHeader } from './DrawerHeader';
 import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
 import { InfoHeader } from './InfoHeader';

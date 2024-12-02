@@ -67,6 +67,7 @@ import { normalize } from './normalize';
 export type IconProps = {
   accessibilityLabel?: string;
   color?: string;
+  hasNoHitSlop?: boolean;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
   strokeColor?: string;
@@ -116,6 +117,7 @@ type TablerIconName = keyof typeof Tabler;
 const NamedIcon = ({
   accessibilityLabel,
   color = colors.primary,
+  hasNoHitSlop = false,
   iconStyle,
   name,
   strokeWidth = 1,
@@ -135,7 +137,11 @@ const NamedIcon = ({
   }
 
   return (
-    <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
+    <View
+      accessibilityLabel={accessibilityLabel}
+      style={style}
+      hitSlop={hasNoHitSlop ? undefined : getHitSlops(size)}
+    >
       <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={strokeWidth} />
     </View>
   );

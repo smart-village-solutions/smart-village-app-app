@@ -23,7 +23,7 @@ export const ShareHeader = ({ shareContent, style }: Props) => {
         accessibilityLabel={a11yLabel.shareIcon}
         accessibilityHint={a11yLabel.shareHint}
       >
-        <Icon.Share color={colors.darkText} style={style} />
+        <Icon.Share color={colors.darkText} style={style} hasNoHitSlop />
       </TouchableOpacity>
     )
   );
