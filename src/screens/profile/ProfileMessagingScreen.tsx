@@ -98,6 +98,10 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
       markMessagesAsRead({
         variables: { conversationId: parseInt(queryVariables.id), updateAllMessages: true }
       });
+
+      setTimeout(() => {
+        refetchUnreadMessages();
+      }, 1000);
     }
   }, [messages, loading]);
 

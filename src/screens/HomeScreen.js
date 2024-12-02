@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { DeviceEventEmitter } from 'expo-modules-core';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -316,6 +317,16 @@ export const HomeScreen = ({ navigation, route }) => {
       DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
     }, 500);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setTimeout(() => {
+        // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
+        // components.
+        DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+      }, 500);
+    }, [])
+  );
 
   const data = [
     {
