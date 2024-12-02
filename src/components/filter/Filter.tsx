@@ -1,5 +1,6 @@
 import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
@@ -158,6 +159,17 @@ export const Filter = ({
                     if (filters.start_date && filters.end_date) {
                       dateRange = [
                         momentFormat(filters.start_date, 'YYYY-MM-DD'),
+                        momentFormat(filters.end_date, 'YYYY-MM-DD')
+                      ];
+                    } else if (filters.start_date && !filters.end_date) {
+                      // because of the requirement to specify the start and end date of the `dateRange`,
+                      // if only `startDate` is selected, `endDate` is set to 31.12.9999
+                      dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
+                    } else if (!filters.start_date && filters.end_date) {
+                      // because of the requirement to specify the start and end date of the `dateRange`,
+                      // if only `endDate` is selected, `startDate` is set to today's date.
+                      dateRange = [
+                        moment().format('YYYY-MM-DD'),
                         momentFormat(filters.end_date, 'YYYY-MM-DD')
                       ];
                     }
