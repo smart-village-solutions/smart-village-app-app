@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
-import { Divider } from 'react-native-elements';
 
 import {
   Button,
@@ -114,10 +113,10 @@ export const EventSuggestionScreen = ({
           <Wrapper>
             <HtmlView html={introText} />
 
-            <WrapperVertical>
-              <Divider />
-            </WrapperVertical>
+            <WrapperVertical />
+
             <HeadlineText big>{texts.eventSuggestionScreen.eventOwnerInfo}</HeadlineText>
+
             <Input
               boldLabel
               control={control}
@@ -156,9 +155,7 @@ export const EventSuggestionScreen = ({
               placeholder={texts.feedbackScreen.inputsLabel.phone}
             />
 
-            <WrapperVertical>
-              <Divider />
-            </WrapperVertical>
+            <WrapperVertical />
 
             <HeadlineText big>{texts.eventSuggestionScreen.eventInfo}</HeadlineText>
 
