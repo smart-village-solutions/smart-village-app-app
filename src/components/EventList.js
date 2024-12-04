@@ -1,15 +1,15 @@
 import { FlashList } from '@shopify/flash-list';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
+import { normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 import { LoadingSpinner } from './LoadingSpinner';
-import { SettingsContext } from '../SettingsProvider';
 import { EVENT_SUGGESTION_BUTTON } from './screens';
-import { StyleSheet, View } from 'react-native';
-import { normalize } from '../config';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -118,9 +118,16 @@ export const EventList = ({
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
         if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
+          if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
+            return (
+              <>
+                <LoadingSpinner loading={!listEndReached} />
+                <View style={styles.spacer} />
+              </>
+            );
+          }
+
           return <LoadingSpinner loading={!listEndReached} />;
-        } else if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
-          return <View style={styles.spacer} />;
         }
 
         return null;
