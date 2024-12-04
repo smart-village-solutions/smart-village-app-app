@@ -1,22 +1,16 @@
-import React, { useContext } from 'react';
+import { useHeaderHeight } from '@react-navigation/elements';
+import React from 'react';
 import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 
-import { OrientationContext } from '../OrientationProvider';
 import { device } from '../config';
-import { getHeaderHeight, statusBarHeight } from '../helpers';
 
 export const DefaultKeyboardAvoidingView = ({ children }: { children: React.ReactNode }) => {
-  const { orientation } = useContext(OrientationContext);
+  const headerHeight = useHeaderHeight();
 
   return (
     <KeyboardAvoidingView
-      enabled={device.platform === 'ios'}
-      behavior={device.platform === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={
-        device.platform === 'ios'
-          ? getHeaderHeight(orientation) + statusBarHeight(orientation)
-          : undefined
-      }
+      behavior={device.platform === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={headerHeight}
       style={styles.flex}
     >
       {children}
