@@ -29,6 +29,7 @@ import {
   EncounterRegistrationScreen,
   EncounterScannerScreen,
   EncounterUserDetailScreen,
+  EventSuggestionScreen,
   FeedbackScreen,
   HomeScreen,
   HtmlScreen,
@@ -254,6 +255,11 @@ export const defaultStackConfig = ({
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' }
       }
+    },
+    {
+      routeName: ScreenName.EventSuggestion,
+      screenComponent: EventSuggestionScreen,
+      screenOptions: { title: texts.screenTitles.eventSuggestion }
     },
     {
       routeName: ScreenName.Form,

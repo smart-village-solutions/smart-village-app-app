@@ -428,6 +428,15 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
   },
+  eventSuggestionScreen: {
+    alert: {
+      title: 'Veranstaltungsvorschlag',
+      message: 'Vielen Dank für Ihren Vorschlag!',
+      ok: 'OK'
+    },
+    eventInfo: 'Informationen zur Veranstaltung',
+    eventOwnerInfo: 'Kontaktangaben des Veranstalters'
+  },
   feedbackLink: 'Feedback',
   feedbackScreen: {
     alert: {
@@ -437,18 +446,25 @@ export const texts = {
     },
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
     inputsLabel: {
-      name: 'Name',
-      email: 'E-Mail',
-      phone: 'Telefon',
-      message: 'Ihre Mitteilung',
+      address: 'Veranstaltungsort',
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
+      description: 'Beschreibung',
+      email: 'E-Mail',
+      eventName: 'Veranstaltungsname',
+      message: 'Ihre Mitteilung',
+      name: 'Name',
+      phone: 'Telefon',
       requiredFields: '* Pflichtfelder'
     },
     inputsErrorMessages: {
+      address: 'Bitte geben Sie den Veranstaltungsort ein.',
       checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
+      description: 'Bitte geben Sie eine Beschreibung ein.',
       email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      eventName: 'Bitte geben Sie den Namen des Veranstalters ein',
       hint: 'Hinweis',
-      message: 'Bitte geben Sie eine Mitteilung ein.'
+      message: 'Bitte geben Sie eine Mitteilung ein.',
+      name: 'Bitte geben Sie Ihren Namen ein.'
     },
     sendButton: {
       disabled: 'Bitte warten...',
@@ -836,6 +852,7 @@ export const texts = {
     },
     encounterHome: 'Mitfahrbank',
     events: 'Veranstaltungen',
+    eventSuggestion: 'Veranstaltungsvorschlag',
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',

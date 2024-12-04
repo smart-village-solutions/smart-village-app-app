@@ -8,11 +8,11 @@ import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
 import {
-  Button,
   Calendar,
   CalendarListToggle,
   DropdownHeader,
   EmptyMessage,
+  EventSuggestionButton,
   ListComponent,
   LoadingContainer,
   OptionToggle,
@@ -28,6 +28,12 @@ import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
+import { ScreenName } from '../../types';
+
+export const EVENT_SUGGESTION_BUTTON = {
+  TOP: 'top',
+  BOTTOM_FLOATING: 'bottom-floating'
+};
 
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';
@@ -259,6 +265,16 @@ export const EventRecords = ({ navigation, route }) => {
     return {};
   }, [data, fetchNextPage, showCalendar, hasNextPage, query]);
 
+  const eventSuggestionOnPress = useCallback(() => {
+    if (eventListIntro.url) {
+      openLink(eventListIntro.url, openWebScreen);
+    } else {
+      navigation.navigate(ScreenName.EventSuggestion, {
+        formIntroText: eventListIntro.formIntroText
+      });
+    }
+  }, [eventListIntro.url, eventListIntro.formIntroText, navigation, openWebScreen]);
+
   if (!query) return null;
 
   if (
@@ -289,14 +305,16 @@ export const EventRecords = ({ navigation, route }) => {
                   </Wrapper>
                 )}
 
-                {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
-                  <Wrapper>
-                    <Button
-                      onPress={() => openLink(eventListIntro.url, openWebScreen)}
-                      title={eventListIntro.buttonTitle}
-                    />
-                  </Wrapper>
-                )}
+                {!!eventListIntro.url &&
+                  !!eventListIntro.buttonTitle &&
+                  eventListIntro.buttonType === EVENT_SUGGESTION_BUTTON.TOP && (
+                    <Wrapper>
+                      <EventSuggestionButton
+                        buttonTitle={eventListIntro.buttonTitle}
+                        onPress={eventSuggestionOnPress}
+                      />
+                    </Wrapper>
+                  )}
                 <Divider />
               </>
             )}
@@ -369,6 +387,12 @@ export const EventRecords = ({ navigation, route }) => {
         }
         showBackToTop
       />
+      {eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
+        <EventSuggestionButton
+          buttonTitle={eventListIntro.buttonTitle}
+          onPress={eventSuggestionOnPress}
+        />
+      )}
     </SafeAreaViewFlex>
   );
 };

@@ -21,6 +21,7 @@ export * from './EncounterHomeScreen';
 export * from './EncounterRegistrationScreen';
 export * from './EncounterScannerScreen';
 export * from './EncounterUserDetailScreen';
+export * from './EventSuggestionScreen';
 export * from './FeedbackScreen';
 export * from './HomeScreen';
 export * from './HtmlScreen';
