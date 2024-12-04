@@ -17,10 +17,9 @@ import {
   WrapperVertical
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
-import { useMatomoTrackScreenView } from '../hooks';
 import { createQuery, QUERY_TYPES } from '../queries';
 
-const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
+const { EMAIL_REGEX } = consts;
 
 type TAppUserContent = {
   address: string;
@@ -58,8 +57,6 @@ export const EventSuggestionScreen = ({
       phone: ''
     }
   });
-
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
   const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
 
