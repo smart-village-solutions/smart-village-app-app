@@ -17,6 +17,7 @@ export const navigateWithSubQuery = ({
   title?: string;
   params?:
     | {
+        isExternal?: boolean;
         routeName: string;
         webUrl: string;
         paramsForButton?: {
@@ -55,6 +56,7 @@ export const navigateWithSubQuery = ({
     // if `params` is an object and does not contain the `paramsForButton` object,
     // it contains a `routeName` and a `webUrl`
     return navigation.push(params.routeName, {
+      isExternal: params.isExternal,
       rootRouteName,
       title,
       webUrl: params.webUrl
@@ -68,6 +70,7 @@ export const navigateWithSubQuery = ({
   // will be ignored
   return navigation.push(subQuery.routeName, {
     ...subParams,
+    isExternal: subQuery.isExternal,
     rootRouteName,
     title,
     webUrl: subQuery.webUrl
