@@ -8,13 +8,11 @@ import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
 import {
-  Button,
   Calendar,
   CalendarListToggle,
   DropdownHeader,
   EmptyMessage,
   EventSuggestionButton,
-  IndexMapSwitch,
   ListComponent,
   LoadingContainer,
   OptionToggle,
@@ -273,6 +271,16 @@ export const EventRecords = ({ navigation, route }) => {
     return {};
   }, [data, fetchNextPage, showCalendar, hasNextPage, query]);
 
+  const eventSuggestionOnPress = useCallback(() => {
+    if (eventListIntro.url) {
+      openLink(eventListIntro.url, openWebScreen);
+    } else {
+      navigation.navigate(ScreenName.EventSuggestion, {
+        formIntroText: eventListIntro.formIntroText
+      });
+    }
+  }, [eventListIntro.url, eventListIntro.formIntroText, navigation, openWebScreen]);
+
   if (!query) return null;
 
   if (
@@ -309,15 +317,7 @@ export const EventRecords = ({ navigation, route }) => {
                     <Wrapper>
                       <EventSuggestionButton
                         buttonTitle={eventListIntro.buttonTitle}
-                        onPress={() => {
-                          if (eventListIntro.url) {
-                            openLink(eventListIntro.url, openWebScreen);
-                          } else {
-                            navigation.navigate(ScreenName.EventSuggestion, {
-                              formIntroText: eventListIntro.formIntroText
-                            });
-                          }
-                        }}
+                        onPress={eventSuggestionOnPress}
                       />
                     </Wrapper>
                   )}
@@ -396,15 +396,7 @@ export const EventRecords = ({ navigation, route }) => {
       {eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
         <EventSuggestionButton
           buttonTitle={eventListIntro.buttonTitle}
-          onPress={() => {
-            if (eventListIntro.url) {
-              openLink(eventListIntro.url, openWebScreen);
-            } else {
-              navigation.navigate(ScreenName.EventSuggestion, {
-                formIntroText: eventListIntro.formIntroText
-              });
-            }
-          }}
+          onPress={eventSuggestionOnPress}
         />
       )}
     </SafeAreaViewFlex>
