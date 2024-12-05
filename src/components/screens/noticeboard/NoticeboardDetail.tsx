@@ -228,6 +228,8 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, rout
                   navigation.push(ScreenName.NoticeboardMemberIndex, {
                     data: dataMemberIndex,
                     isCurrentUser,
+                    memberId,
+                    memberEmail: contacts[0].email,
                     memberName: contacts[0].firstName,
                     query: QUERY_TYPES.GENERIC_ITEMS,
                     title: texts.noticeboard.member
