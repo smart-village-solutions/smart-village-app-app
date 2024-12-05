@@ -8,11 +8,11 @@
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "4.0.2",
+    "runtimeVersion": { "policy": "nativeVersion" },
     "extra": { "eas": { "projectId": "84611212-b1ac-47b3-8f2d-065898fab1cb" } },
     "updates": { "url": "https://u.expo.dev/84611212-b1ac-47b3-8f2d-065898fab1cb" },
-    "runtimeVersion": { "policy": "nativeVersion" },
     "orientation": "portrait",
-    "primaryColor": "#3F7193",
+    "primaryColor": "#F7F5F0",
     "icon": "./assets/icon.png",
     "scheme": "mq",
     "splash": {
@@ -29,20 +29,11 @@
       "requireFullScreen": true,
       "infoPlist": {
         "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": true },
-        "NSCameraUsageDescription": "Diese App nutzt die Kamera zur Aufnahme von Bildern.",
+        "NSCameraUsageDescription": "Diese App nutzt die Kamera, um Fotos aufzunehmen. Die Fotos werden ausschließlich für die von dir gewählten Zwecke verwendet.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
-        "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
+        "NSPhotoLibraryAddUsageDescription": "Diese App benötigt Zugriff, um von dir aufgenommene Fotos in deiner Medienbibliothek zu speichern.",
+        "NSLocationWhenInUseUsageDescription": "Diese App benötigt deinen Standort, um dir standortbasierte Inhalte anzuzeigen oder danach zu filtern. Deine Daten werden nicht gespeichert oder weitergegeben.",
         "NSMicrophoneUsageDescription": "Diese App benötigt Zugriff auf das Mikrofon, um die Kamera zu benutzen",
-        "NSPrivacyAccessedAPITypes": [
-          {
-            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryDiskSpace",
-            "NSPrivacyAccessedAPIReason": "Die App benötigt Informationen über den verfügbaren Speicherplatz, um sicherzustellen, dass genügend Platz für die Ausführung von Download- und Speicheroperationen vorhanden ist."
-          },
-          {
-            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryFileTimestamp",
-            "NSPrivacyAccessedAPIReason": "Die App verwendet Dateizeitstempel, um die Synchronisierung von Dateien zu verwalten und sicherzustellen, dass der Nutzer immer die neuesten Dateiversionen hat."
-          }
-        ],
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp"],
@@ -101,12 +92,7 @@
           }
         }
       ],
-      [
-        "expo-media-library",
-        {
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
-        }
-      ],
+      "expo-media-library",
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
       "@reactvision/react-viro",
