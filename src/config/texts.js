@@ -222,7 +222,7 @@ export const texts = {
       emptyError: 'darf nicht leer sein',
       generalDataUploadError:
         'Beim Hochladen des Fotos oder Dokuments ist ein Problem aufgetreten. Bitte überprüfen.',
-      imageDeleteAlertBody: 'Möchten Sie das Bild löschen?',
+      imageDeleteAlertBody: 'Möchtest du das Bild löschen?',
       imageSizeError: 'Das ausgewählte Bild darf maximal 1 MB groß sein.',
       imageTypeAndSizeError:
         'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',

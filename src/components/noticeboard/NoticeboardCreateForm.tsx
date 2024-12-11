@@ -15,6 +15,7 @@ import {
   DocumentSelector,
   HtmlView,
   Input,
+  LoadingSpinner,
   MultiImageSelector,
   RegularText,
   Touchable,
@@ -476,11 +477,14 @@ export const NoticeboardCreateForm = ({
       )}
 
       <Wrapper style={styles.noPaddingTop}>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
-          disabled={loading || isLoading}
-        />
+        {loading || isLoading ? (
+          <LoadingSpinner loading />
+        ) : (
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
+          />
+        )}
 
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>
