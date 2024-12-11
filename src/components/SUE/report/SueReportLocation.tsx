@@ -290,6 +290,7 @@ export const SueReportLocation = ({
       <WrapperHorizontal>
         <Map
           calloutTextEnabled
+          clusteringEnabled
           isMaximizeButtonVisible
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
@@ -300,6 +301,7 @@ export const SueReportLocation = ({
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
+              clusteringEnabled: true,
               currentPosition,
               isMyLocationButtonVisible: !!locationService,
               locations,
