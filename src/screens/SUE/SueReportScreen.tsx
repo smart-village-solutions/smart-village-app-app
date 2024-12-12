@@ -230,7 +230,11 @@ export const SueReportScreen = ({
   navigation,
   route
 }: { navigation: any } & StackScreenProps<any>) => {
-  const { sueConfig = {} } = useContext(ConfigurationsContext);
+  const {
+    isLoading: isConfigLoading,
+    refetch: configRefetch,
+    sueConfig = {}
+  } = useContext(ConfigurationsContext);
   const {
     geoMap = {},
     limitation = {},
@@ -599,6 +603,10 @@ export const SueReportScreen = ({
     ]
   );
 
+  useEffect(() => {
+    configRefetch();
+  }, []);
+
   useLayoutEffect(() => {
     if (storedValues) {
       navigation.setOptions({
@@ -632,7 +640,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, service, selectedPosition]);
 
-  if (areaServiceLoading) {
+  if (areaServiceLoading || isConfigLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
