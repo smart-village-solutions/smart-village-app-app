@@ -152,7 +152,7 @@ export const SueReportUser = ({
               <Checkbox
                 checked={!!value}
                 onPress={() => onChange(!value)}
-                title={`${texts.sue.report.termsInputCheckbox} *`}
+                title={`${texts.sue.report.termsInputCheckbox}`}
                 checkedColor={colors.accent}
                 checkedIcon="check-square-o"
                 uncheckedColor={colors.darkText}
@@ -164,11 +164,11 @@ export const SueReportUser = ({
                 <WrapperHorizontal>
                   <WrapperHorizontal>
                     <RegularText underline primary onPress={openWebScreenTermsOfService}>
-                      - {texts.sue.report.termsOfService}
+                      - {texts.sue.report.termsOfService} *
                     </RegularText>
                     {!!linkTermsOfUse && (
                       <RegularText underline primary onPress={openWebScreenTermsOfUse}>
-                        - {texts.sue.report.termsOfUse}
+                        - {texts.sue.report.termsOfUse} *
                       </RegularText>
                     )}
                   </WrapperHorizontal>
