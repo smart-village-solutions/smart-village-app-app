@@ -1,8 +1,16 @@
-import React, { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from './SettingsProvider';
-import { useStaticContent } from './hooks';
+import { useHomeRefresh, useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 import { storageHelper } from './helpers';
 import { defaultAppDesignSystemConfig } from './config/appDesignSystem';
@@ -24,6 +32,8 @@ const mergeDefaultConfiguration = (target: any, source: any) => {
 
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
+  refetch: () => {},
+  isLoading: true,
   sueConfig: defaultSueAppConfig
 };
 
@@ -35,14 +45,15 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const { sue = {} } = settings || {};
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { data: sueConfigData } = useQuery(
+  const { data: sueConfigData, refetch: refetchSueConfig } = useQuery(
     [QUERY_TYPES.SUE.CONFIGURATIONS],
     () => getQuery(QUERY_TYPES.SUE.CONFIGURATIONS)(),
     { enabled: !!Object.keys(sue).length }
   );
 
-  const { data: sueProgress } = useStaticContent({
+  const { data: sueProgress, refetch: refetchSueProgress } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
     type: 'json',
@@ -60,13 +71,33 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     });
   }, [appDesignSystem, sue, sueConfigData, sueProgress]);
 
+  const reloadCallback = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      await refetchSueConfig();
+      await refetchSueProgress();
+    } catch (e) {
+      console.warn(e);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useHomeRefresh(reloadCallback);
+
   useEffect(() => {
+    setIsLoading(true);
+
     setConfigurations(mergedConfig);
     storageHelper.setConfigurations(mergedConfig);
+
+    setIsLoading(false);
   }, [mergedConfig]);
 
   return (
-    <ConfigurationsContext.Provider value={configurations}>
+    <ConfigurationsContext.Provider
+      value={{ ...configurations, refetch: reloadCallback, isLoading }}
+    >
       {children}
     </ConfigurationsContext.Provider>
   );
