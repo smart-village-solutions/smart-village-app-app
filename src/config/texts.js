@@ -1053,7 +1053,7 @@ export const texts = {
       street: 'Straße',
       termsInputCheckbox: 'Ich stimme den folgenden Bedingungen zu:',
       termsOfService: 'Datenschutzbestimmung',
-      termsOfUse: 'Nutzungsbedingung',
+      termsOfUse: 'Nutzungsbedingungen',
       title: 'Kurze Beschreibung',
       postalCode: 'Postleitzahl'
     },
