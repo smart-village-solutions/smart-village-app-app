@@ -29,7 +29,9 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     }
   });
 
-  useHomeRefresh(refetch);
+  useHomeRefresh(() => {
+    isLoggedIn && refetch();
+  });
 
   const getUnreadMessagesCount = useCallback(() => {
     // return 0 if data is missing or not loaded yet
@@ -47,8 +49,8 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
   }, [getUnreadMessagesCount]);
 
   useEffect(() => {
-    refetch();
-  }, []);
+    isLoggedIn && refetch();
+  }, [isLoggedIn]);
 
   return (
     <UnreadMessagesContext.Provider
