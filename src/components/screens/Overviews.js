@@ -158,15 +158,22 @@ export const Overviews = ({ navigation, route }) => {
   });
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
-  const sortByDistance =
-    query === QUERY_TYPES.POINTS_OF_INTEREST && (locationService.sortByDistance ?? true);
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
+  const { locationSettings } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const systemPermission = useSystemPermission();
+  const sortByDistance =
+    query === QUERY_TYPES.POINTS_OF_INTEREST &&
+    locationServiceEnabled &&
+    (locationService.sortByDistance ?? true);
   const { loading: loadingPosition, position } = usePosition(
-    !sortByDistance ||
-      systemPermission?.status !== Location.PermissionStatus.GRANTED ||
-      !locationServiceEnabled
+    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
+  const currentPosition = position || lastKnownPosition;
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
@@ -175,20 +182,12 @@ export const Overviews = ({ navigation, route }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
-
   const { data: htmlContent } = useStaticContent({
     name: htmlContentName,
     type: 'html',
     refreshTimeKey: `${query}-${queryVariables.category}`,
     skip: !htmlContentName
   });
-  const { locationSettings } = useLocationSettings();
-  const systemPermission = useSystemPermission();
-  const { locationService: locationServiceEnabled } = locationSettings;
-  const { position: lastKnownPosition } = useLastKnownPosition(
-    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
-  );
-  const currentPosition = position || lastKnownPosition;
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
@@ -330,8 +329,8 @@ export const Overviews = ({ navigation, route }) => {
     }
   }, [query, showMap]);
 
-  const fetchMoreData = () =>
-    fetchMore({
+  const fetchMoreData = useCallback(() => {
+    return fetchMore({
       query: getFetchMoreQuery(query),
       variables: {
         ...queryVariables,
@@ -348,6 +347,7 @@ export const Overviews = ({ navigation, route }) => {
         };
       }
     });
+  }, [data, query, queryVariables]);
 
   if (!query) return null;
 
