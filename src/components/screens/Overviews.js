@@ -37,7 +37,14 @@ import {
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
-import { useOpenWebScreen, usePermanentFilter, usePosition, useStaticContent } from '../../hooks';
+import {
+  useLocationSettings,
+  useOpenWebScreen,
+  usePermanentFilter,
+  usePosition,
+  useStaticContent,
+  useSystemPermission
+} from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
@@ -130,10 +137,15 @@ export const Overviews = ({ navigation, route }) => {
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
-  const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
-  const { loading: loadingPosition, position } = usePosition(!sortByDistance);
+  const { locationSettings } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings;
+  const systemPermission = useSystemPermission();
+  const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST && locationServiceEnabled;
+  const { loading: loadingPosition, position } = usePosition(
+    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
@@ -283,8 +295,8 @@ export const Overviews = ({ navigation, route }) => {
     }
   }, [query, showMap]);
 
-  const fetchMoreData = () =>
-    fetchMore({
+  const fetchMoreData = useCallback(() => {
+    return fetchMore({
       query: getFetchMoreQuery(query),
       variables: {
         ...queryVariables,
@@ -301,6 +313,7 @@ export const Overviews = ({ navigation, route }) => {
         };
       }
     });
+  }, [data, query, queryVariables]);
 
   if (!query) return null;
 
