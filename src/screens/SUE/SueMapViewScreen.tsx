@@ -19,6 +19,7 @@ export const SueMapViewScreen = ({
 
   const {
     calloutTextEnabled,
+    clusteringEnabled,
     currentPosition,
     geometryTourData,
     isMaximizeButtonVisible,
@@ -53,6 +54,7 @@ export const SueMapViewScreen = ({
       <Map
         {...{
           calloutTextEnabled,
+          clusteringEnabled,
           geometryTourData,
           isMaximizeButtonVisible,
           isMyLocationButtonVisible,
