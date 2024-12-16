@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
@@ -13,7 +13,9 @@ import { RegularText } from '../Text';
 import { WrapperWrap } from '../Wrapper';
 
 import { DraggableGrid } from './DraggableGrid';
+import { DraggableList } from './DraggableList';
 import { ServiceTile, TServiceTile } from './ServiceTile';
+import { LIST_TYPES } from './ServiceTiles';
 
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
 
@@ -39,14 +41,16 @@ export const umlautSwitcher = (text: string) => {
 
 export const Service = ({
   data,
+  hasDiagonalGradientBackground,
   isEditMode,
-  staticJsonName,
-  hasDiagonalGradientBackground
+  listType,
+  staticJsonName
 }: {
   data: any;
-  isEditMode: boolean;
-  staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
+  isEditMode: boolean;
+  listType?: string;
+  staticJsonName: string;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -64,14 +68,16 @@ export const Service = ({
       isEditMode
         ? navigation.goBack()
         : navigation.push(ScreenName.TilesScreen, {
+            hasDiagonalGradientBackground,
+            isEditMode: true,
+            listType,
             matomoString: MATOMO_TRACKING.SCREEN_VIEW.SERVICE,
             staticJsonName,
-            titleFallback: texts.homeTitles.service,
-            isEditMode: true,
-            hasDiagonalGradientBackground
+            titleFallback: texts.homeTitles.service
           }),
-    [isEditMode, hasDiagonalGradientBackground]
+    [isEditMode, hasDiagonalGradientBackground, listType]
   );
+
   const renderItem = useCallback(
     (item: TServiceTile, index: number) => (
       <ServiceTile
@@ -81,17 +87,23 @@ export const Service = ({
         isEditMode={isEditMode}
         item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
+        listType={listType}
         onToggleVisibility={onToggleVisibility}
         tileSizeFactor={tileSizeFactor}
       />
     ),
-    [isEditMode, hasDiagonalGradientBackground]
+    [isEditMode, hasDiagonalGradientBackground, listType]
   );
+
   const toggler = personalizedTiles && (
     <View style={styles.toggler}>
       <TouchableOpacity onPress={onPress}>
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>
-          {isEditMode ? texts.serviceTiles.done : texts.serviceTiles.edit}
+          {isEditMode
+            ? texts.serviceTiles.done
+            : listType === LIST_TYPES.grid
+            ? texts.serviceTiles.edit
+            : texts.serviceTiles.listEdit}
         </RegularText>
       </TouchableOpacity>
     </View>
@@ -104,12 +116,20 @@ export const Service = ({
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
       style={styles.diagonalGradient}
     >
-      <DraggableGrid onDragEnd={onDragEnd}>{tiles?.map(renderItem)}</DraggableGrid>
+      {listType === LIST_TYPES.grid ? (
+        <DraggableGrid onDragEnd={onDragEnd}>{tiles?.map(renderItem)}</DraggableGrid>
+      ) : (
+        <DraggableList onDragEnd={onDragEnd}>{tiles?.map(renderItem)}</DraggableList>
+      )}
       {toggler}
     </DiagonalGradient>
   ) : (
     <>
-      <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
+      {listType === LIST_TYPES.grid ? (
+        <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
+      ) : (
+        tiles?.map(renderItem)
+      )}
       {!!tiles?.length && toggler}
     </>
   );

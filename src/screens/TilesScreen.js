@@ -6,13 +6,14 @@ import { useMatomoTrackScreenView } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
 
 export const getTilesScreen = ({
+  hasDiagonalGradientBackground,
+  imageKey,
+  isEditMode,
+  listType,
   matomoString,
   staticJsonName,
   titleFallback,
-  titleKey,
-  imageKey,
-  hasDiagonalGradientBackground,
-  isEditMode
+  titleKey
 }) => {
   const TilesScreen = () => {
     const { globalSettings } = useContext(SettingsContext);
@@ -23,11 +24,12 @@ export const getTilesScreen = ({
 
     return (
       <ServiceTiles
+        hasDiagonalGradientBackground={hasDiagonalGradientBackground}
+        image={image}
+        isEditMode={isEditMode}
+        listTypeProp={listType}
         staticJsonName={staticJsonName}
         title={title}
-        image={image}
-        hasDiagonalGradientBackground={hasDiagonalGradientBackground}
-        isEditMode={isEditMode}
       />
     );
   };
