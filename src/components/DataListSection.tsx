@@ -31,6 +31,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: string;
+  queryVariables?: Record<string, unknown>;
   sectionData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
@@ -38,7 +39,7 @@ type Props = {
   showLink?: boolean;
 };
 
-// eslint-disable-next-line complexity
+/* eslint-disable complexity */
 export const DataListSection = ({
   additionalData,
   buttonTitle,
@@ -54,6 +55,7 @@ export const DataListSection = ({
   navigation,
   placeholder,
   query,
+  queryVariables,
   sectionData,
   sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
@@ -74,10 +76,11 @@ export const DataListSection = ({
 
   let listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
     withDate:
-      query === QUERY_TYPES.EVENT_RECORDS ||
+      (query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents) ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
+    withTime: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
     skipLastDivider: true,
     queryKey: query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query
   });
@@ -131,3 +134,4 @@ export const DataListSection = ({
     </View>
   );
 };
+/* eslint-enable complexity */
