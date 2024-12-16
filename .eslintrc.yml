@@ -55,6 +55,9 @@ rules:
     - always
   react/display-name:
     - off
+  import/no-cycle:
+    - error
+    - maxDepth: 1
   import/order:
     - error
     - newlines-between: always
