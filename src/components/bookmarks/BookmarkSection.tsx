@@ -43,6 +43,10 @@ export const BookmarkSection = ({
   // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items
   const variables = query === QUERY_TYPES.VOUCHERS ? { ids } : { ids: ids.slice(0, 3) };
 
+  if (query === QUERY_TYPES.EVENT_RECORDS) {
+    variables.onlyUniqEvents = true;
+  }
+
   const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
@@ -57,6 +61,7 @@ export const BookmarkSection = ({
       navigation.navigate(ScreenName.BookmarkCategory, {
         suffix,
         query,
+        queryVariables: variables,
         title: sectionTitle,
         categoryTitleDetail,
         listType
@@ -98,6 +103,7 @@ export const BookmarkSection = ({
         navigate={onPressShowMore}
         navigation={navigation}
         query={query}
+        queryVariables={variables}
         sectionData={data}
         sectionTitle={sectionTitle}
         sectionTitleDetail={categoryTitleDetail}
