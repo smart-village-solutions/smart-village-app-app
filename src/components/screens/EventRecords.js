@@ -273,7 +273,7 @@ export const EventRecords = ({ navigation, route }) => {
         formIntroText: eventListIntro.formIntroText
       });
     }
-  }, [eventListIntro.url, eventListIntro.formIntroText, navigation, openWebScreen]);
+  }, [eventListIntro?.url, eventListIntro?.formIntroText, navigation, openWebScreen]);
 
   if (!query) return null;
 
