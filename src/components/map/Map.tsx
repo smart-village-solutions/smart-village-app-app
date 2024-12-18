@@ -38,7 +38,7 @@ type Props = {
 const MARKER_ICON_SIZE = normalize(40);
 const CIRCLE_SIZES = [60, 50, 40, 30];
 
-const MapIcon = ({
+export const MapIcon = ({
   iconColor,
   iconName = 'location',
   iconSize = MARKER_ICON_SIZE,

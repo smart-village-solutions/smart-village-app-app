@@ -90,6 +90,12 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
         }
       ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "sk...."
+        }
+      ],
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
       "@reactvision/react-viro",
