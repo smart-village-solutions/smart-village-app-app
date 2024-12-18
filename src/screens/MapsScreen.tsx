@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
-import { Map, MapboxComponent } from '../components';
+import { Map, MapboxComponent, MaplibreComponent, RNMapComponent } from '../components';
 import { service } from '../icons';
 
 export const MapsScreen = ({ route }: { route: { params: any } }) => {
@@ -37,7 +37,17 @@ export const MapsScreen = ({ route }: { route: { params: any } }) => {
     );
   } else if (mapComponent === 'react-native-maps') {
     return (
-      <Map
+      <RNMapComponent
+        calloutTextEnabled
+        locations={locations}
+        mapStyle={{ flex: 1 }}
+        onMarkerPress={setSelectedMarker}
+        selectedMarker={selectedMarker}
+      />
+    );
+  } else if (mapComponent === 'Maplibre') {
+    return (
+      <MaplibreComponent
         calloutTextEnabled
         locations={locations}
         mapStyle={{ flex: 1 }}

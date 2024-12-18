@@ -327,6 +327,16 @@ export const HomeScreen = ({ navigation, route }) => {
             })
           }
         />
+
+        <Button
+          title="Maplibre"
+          onPress={() =>
+            navigation.navigate(ScreenName.Maps, {
+              mapComponent: 'Maplibre'
+            })
+          }
+        />
+
         <Button
           title="RN-Maps"
           onPress={() =>

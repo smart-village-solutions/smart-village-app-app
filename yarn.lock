@@ -2341,6 +2341,23 @@
   resolved "https://registry.yarnpkg.com/@mapbox/sphericalmercator/-/sphericalmercator-1.1.0.tgz#f3b1af042620716a1289fc41e1e97f610823aefe"
   integrity sha512-pEsfZyG4OMThlfFQbCte4gegvHUjxXCjz0KZ4Xk8NdOYTQBLflj6U8PL05RPAiuRAMAQNUUKJuL6qYZ5Y4kAWA==
 
+"@maplibre/maplibre-react-native@^10.0.0-alpha.28":
+  version "10.0.0-alpha.28"
+  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-react-native/-/maplibre-react-native-10.0.0-alpha.28.tgz#2197ef3b3b1be73cae8bce991804be15fd5a7e52"
+  integrity sha512-dLnTSfg0RY0j7pUqE8chDElHTiN4bq//SohVXZ5P7klrGpKVNVKrdnK6Sa/jjKAC7NCa3WUAaDpc3w3LqhFroQ==
+  dependencies:
+    "@turf/distance" "^7.1.0"
+    "@turf/helpers" "^7.1.0"
+    "@turf/length" "^7.1.0"
+    "@turf/nearest-point-on-line" "^7.1.0"
+    "@types/debounce" "^1.2.1"
+    "@types/geojson" "^7946.0.14"
+    "@types/jest" "^29.5.12"
+    "@types/node" "^18.11.18"
+    "@types/react" "^18.2.79"
+    "@types/react-native" "0.67.8"
+    debounce "^2.0.0"
+
 "@native-html/css-processor@1.11.0":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@native-html/css-processor/-/css-processor-1.11.0.tgz#27d02e5123b0849f4986d44060ba3f235a15f552"
@@ -3460,6 +3477,16 @@
     "@turf/helpers" "^6.5.0"
     "@turf/invariant" "^6.5.0"
 
+"@turf/bearing@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/bearing/-/bearing-7.1.0.tgz#77e2db3667f19b62a6b89669be1c4060faa9941d"
+  integrity sha512-X5lackrZ6FW+YhgjWxwVFRgWD1j4xm4t5VvE6EE6v/1PVaHQ5OCjf6u1oaLx5LSG+gaHUhjTlAHrn9MYPFaeTA==
+  dependencies:
+    "@turf/helpers" "^7.1.0"
+    "@turf/invariant" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.6.2"
+
 "@turf/destination@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/destination/-/destination-6.5.0.tgz#30a84702f9677d076130e0440d3223ae503fdae1"
@@ -3468,6 +3495,16 @@
     "@turf/helpers" "^6.5.0"
     "@turf/invariant" "^6.5.0"
 
+"@turf/destination@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/destination/-/destination-7.1.0.tgz#2e11330f331c0fc699f5a22d02bd54d7fd958c14"
+  integrity sha512-97XuvB0iaAiMg86hrnZ529WwP44TQAA9mmI5PMlchACiA4LFrEtWjjDzvO6234coieoqhrw6dZYcJvd5O2PwrQ==
+  dependencies:
+    "@turf/helpers" "^7.1.0"
+    "@turf/invariant" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.6.2"
+
 "@turf/distance@6.5.0", "@turf/distance@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-6.5.0.tgz#21f04d5f86e864d54e2abde16f35c15b4f36149a"
@@ -3475,6 +3512,16 @@
   dependencies:
     "@turf/helpers" "^6.5.0"
     "@turf/invariant" "^6.5.0"
+
+"@turf/distance@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-7.1.0.tgz#12317573f9774e1c9d6fb08bf90338d9904d2f1d"
+  integrity sha512-hhNHhxCHB3ddzAGCNY4BtE29OZh+DAJPvUapQz+wOjISnlwvMcwLKvslgHWSYF536QDVe/93FEU2q67+CsZTPA==
+  dependencies:
+    "@turf/helpers" "^7.1.0"
+    "@turf/invariant" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.6.2"
 
 "@turf/helpers@6.5.0", "@turf/helpers@6.x", "@turf/helpers@^6.5.0":
   version "6.5.0"
@@ -3496,6 +3543,15 @@
   dependencies:
     "@turf/helpers" "^6.5.0"
 
+"@turf/invariant@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-7.1.0.tgz#c90cffa093291316b597212396d68bf9e465cf2e"
+  integrity sha512-OCLNqkItBYIP1nE9lJGuIUatWGtQ4rhBKAyTfFu0z8npVzGEYzvguEeof8/6LkKmTTEHW53tCjoEhSSzdRh08Q==
+  dependencies:
+    "@turf/helpers" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.6.2"
+
 "@turf/length@6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/length/-/length-6.5.0.tgz#ff4e9072d5f997e1c32a1311d214d184463f83fa"
@@ -3504,6 +3560,17 @@
     "@turf/distance" "^6.5.0"
     "@turf/helpers" "^6.5.0"
     "@turf/meta" "^6.5.0"
+
+"@turf/length@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/length/-/length-7.1.0.tgz#bd04f024e1dfa8c4d767175ebbe6411bb8c52c82"
+  integrity sha512-wUJj9WLKEudG1ngNao2ZwD+Dt6UkvWIbubuJ6lR6FndFDL3iezFhNGy0IXS+0xH9kXi2apiTnM9Vk5+i8BTEvQ==
+  dependencies:
+    "@turf/distance" "^7.1.0"
+    "@turf/helpers" "^7.1.0"
+    "@turf/meta" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.6.2"
 
 "@turf/line-intersect@^6.5.0":
   version "6.5.0"
@@ -3515,6 +3582,16 @@
     "@turf/line-segment" "^6.5.0"
     "@turf/meta" "^6.5.0"
     geojson-rbush "3.x"
+
+"@turf/line-intersect@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/line-intersect/-/line-intersect-7.1.0.tgz#60c46a62143e42d6663be93f893de1cfac584cf9"
+  integrity sha512-JI3dvOsAoCqd4vUJ134FIzgcC42QpC/tBs+b4OJoxWmwDek3REv4qGaZY6wCg9X4hFSlCKFcnhMIQQZ/n720Qg==
+  dependencies:
+    "@turf/helpers" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    sweepline-intersections "^1.5.0"
+    tslib "^2.6.2"
 
 "@turf/line-segment@^6.5.0":
   version "6.5.0"
@@ -3553,6 +3630,21 @@
     "@turf/line-intersect" "^6.5.0"
     "@turf/meta" "^6.5.0"
 
+"@turf/nearest-point-on-line@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@turf/nearest-point-on-line/-/nearest-point-on-line-7.1.0.tgz#002dce6723ff6a01bff4ed6168ee36f62cc66f41"
+  integrity sha512-aTjAOm7ab0tl5JoxGYRx/J/IbRL1DY1ZCIYQDMEQjK5gOllhclgeBC0wDXDkEZFGaVftjw0W2RtE2I0jX7RG4A==
+  dependencies:
+    "@turf/bearing" "^7.1.0"
+    "@turf/destination" "^7.1.0"
+    "@turf/distance" "^7.1.0"
+    "@turf/helpers" "^7.1.0"
+    "@turf/invariant" "^7.1.0"
+    "@turf/line-intersect" "^7.1.0"
+    "@turf/meta" "^7.1.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.6.2"
+
 "@types/babel__core@^7.1.14", "@types/babel__core@^7.1.7":
   version "7.20.1"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.1.tgz#916ecea274b0c776fec721e333e55762d3a9614b"
@@ -3586,12 +3678,17 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
+"@types/debounce@^1.2.1":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@types/debounce/-/debounce-1.2.4.tgz#cb7e85d9ad5ababfac2f27183e8ac8b576b2abb3"
+  integrity sha512-jBqiORIzKDOToaF63Fm//haOCHuwQuLa2202RK4MozpA6lh93eCBc+/8+wZn5OzjJt3ySdc+74SXWXB55Ewtyw==
+
 "@types/geojson@7946.0.8":
   version "7946.0.8"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.8.tgz#30744afdb385e2945e22f3b033f897f76b1f12ca"
   integrity sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==
 
-"@types/geojson@^7946.0.10", "@types/geojson@^7946.0.7":
+"@types/geojson@^7946.0.10", "@types/geojson@^7946.0.14", "@types/geojson@^7946.0.7":
   version "7946.0.15"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.15.tgz#f9d55fd5a0aa2de9dc80b1b04e437538b7298868"
   integrity sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==
@@ -3656,6 +3753,14 @@
     expect "^29.0.0"
     pretty-format "^29.0.0"
 
+"@types/jest@^29.5.12":
+  version "29.5.14"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.14.tgz#2b910912fa1d6856cadcd0c1f95af7df1d6049e5"
+  integrity sha512-ZN+4sdnLUbo8EVvVc2ao0GFW6oVrQRPn4K2lglySj7APvSrgzxHiNNK99us4WDMi57xxA2yggblIAMNhXOotLQ==
+  dependencies:
+    expect "^29.0.0"
+    pretty-format "^29.0.0"
+
 "@types/jsdom@^20.0.0":
   version "20.0.1"
   resolved "https://registry.yarnpkg.com/@types/jsdom/-/jsdom-20.0.1.tgz#07c14bc19bd2f918c1929541cdaacae894744808"
@@ -3696,6 +3801,13 @@
   version "18.19.39"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.39.tgz#c316340a5b4adca3aee9dcbf05de385978590593"
   integrity sha512-nPwTRDKUctxw3di5b4TfT3I0sWDiWoPQCZjXhvdkINntwr8lcoVCKsTgnXeRubKIlfnV+eN/HYk6Jb40tbcEAQ==
+  dependencies:
+    undici-types "~5.26.4"
+
+"@types/node@^18.11.18":
+  version "18.19.68"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.68.tgz#f4f10d9927a7eaf3568c46a6d739cc0967ccb701"
+  integrity sha512-QGtpFH1vB99ZmTa63K4/FU8twThj4fuVSBkGddTp7uIL/cuoLWIUSL2RcOaigBhfR+hg5pgGkBnkoOxrTVBMKw==
   dependencies:
     undici-types "~5.26.4"
 
@@ -3742,6 +3854,13 @@
     "@types/react" "*"
     "@types/react-native" "^0.70"
 
+"@types/react-native@0.67.8":
+  version "0.67.8"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.67.8.tgz#edaaa0527b835fffbfc34c09874722b6e4a4d1f3"
+  integrity sha512-xA8rYiTHvO6RoZv/LFnmEeqRuhA2y34mGB8zX3bGHe/pCt9jEStUPyUO4q1KcDc9GiGIOBD8ArfRtThprAjSfQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-native@^0.70":
   version "0.70.14"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.70.14.tgz#8619b8c94296f6456c5362d74a3d1b4fad3f54ab"
@@ -3756,6 +3875,14 @@
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^18.2.79":
+  version "18.3.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.17.tgz#d86ca0e081c7a5e979b7db175f9515a41038cea7"
+  integrity sha512-opAQ5no6LqJNo9TqnxBKsgnkIYHozW9KSTlFVoSUJYh1Fl/sswkEoqIugRSm7tbh6pABtYjGAjW+GOS23j8qbw==
+  dependencies:
+    "@types/prop-types" "*"
     csstype "^3.0.2"
 
 "@types/react@~18.2.79":
@@ -5413,6 +5540,11 @@ debounce@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
   integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
+
+debounce@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-2.2.0.tgz#f895fa2fbdb579a0f0d3dcf5dde19657e50eaad5"
+  integrity sha512-Xks6RUDLZFdz8LIdR6q0MTH44k7FikOmnh5xkSjMig6ch45afc8sjTjRQf3P6ax8dMgcQrYO/AR2RGWURrruqw==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.6.9:
   version "2.6.9"
@@ -11783,6 +11915,13 @@ svgo@^3.0.2:
     csso "^5.0.5"
     picocolors "^1.0.0"
 
+sweepline-intersections@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/sweepline-intersections/-/sweepline-intersections-1.5.0.tgz#85ab3629a291875926fae0acd508496430d8a647"
+  integrity sha512-AoVmx72QHpKtItPu72TzFL+kcYjd67BPLDoR0LarIk+xyaRg+pDTMFXndIEvZf9xEKnJv6JdhgRMnocoG0D3AQ==
+  dependencies:
+    tinyqueue "^2.0.0"
+
 symbol-observable@^1.0.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
@@ -11933,6 +12072,11 @@ through@2:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==
+
+tinyqueue@^2.0.0:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/tinyqueue/-/tinyqueue-2.0.3.tgz#64d8492ebf39e7801d7bd34062e29b45b2035f08"
+  integrity sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==
 
 tmp@^0.0.33:
   version "0.0.33"
