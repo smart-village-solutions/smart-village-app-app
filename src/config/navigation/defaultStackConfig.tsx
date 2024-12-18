@@ -84,6 +84,7 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
+import { MapsScreen } from '../../screens/MapsScreen';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -97,6 +98,11 @@ export const defaultStackConfig = ({
   initialRouteName,
   screenOptions: getScreenOptions({ withDrawer: isDrawer }),
   screenConfigs: [
+    {
+      routeName: ScreenName.Maps,
+      screenComponent: MapsScreen,
+      screenOptions: { title: texts.screenTitles.mapView }
+    },
     {
       routeName: ScreenName.About,
       screenComponent: AboutScreen,

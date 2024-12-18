@@ -9,6 +9,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
   About,
+  Button,
   ConnectedImagesCarousel,
   Disturber,
   HomeSection,
@@ -317,6 +318,24 @@ export const HomeScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
+      <Wrapper>
+        <Button
+          title="Mapbox"
+          onPress={() =>
+            navigation.navigate(ScreenName.Maps, {
+              mapComponent: 'Mapbox'
+            })
+          }
+        />
+        <Button
+          title="RN-Maps"
+          onPress={() =>
+            navigation.navigate(ScreenName.Maps, {
+              mapComponent: 'react-native-maps'
+            })
+          }
+        />
+      </Wrapper>
       <FlatList
         data={data}
         ListHeaderComponent={

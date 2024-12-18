@@ -3,6 +3,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationOptions } from '@react-navigation/stack';
 
 export enum ScreenName {
+  Maps = 'Maps',
   About = 'About',
   ARShow = 'ARShow',
   ARInfo = 'ARInfo',
