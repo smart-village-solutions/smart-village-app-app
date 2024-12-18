@@ -212,6 +212,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                     errors,
                     label: texts.profile.birthday,
                     maximumDate: moment().subtract(18, 'years').toDate(),
+                    minimumDate: moment().subtract(100, 'years').toDate(),
                     mode: 'date',
                     name,
                     onChange,
