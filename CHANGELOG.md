@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.0.3]
+
+This update includes a new image upload feature for the noticeboard module, improvements for sue module, performance optimizations
+
+## Breaking
+
+Bookmark overviews for events no longer display date and time a events can have multiple different appointments. Therefore a `onlyUniqEvents` option is used from the main-server, which version needs to correspond
+
+### Added
+
+- added image upload feature for noticeboard
+- added required field information to feedback screen
+- added pagination to reduce load times in sue module
+- added new location endpoint for map view in sue module
+- added the feature of refreshing the config when the report screen is opened for the sue module
+- added clustering feature to the map view on the report screen for sue module
+- added a feature that allows websites to be opened with an external browser
+- added a button to the event list to create an event suggestion
+
+### Changed
+
+- improved logic for sorting by location and added option to deactivate it
+
+### Fixed
+
+- fixed the issue of not being able to switch from map view to list view while on the subcategory screen
+- fixed problem with inputs under the keyboard
+- fixed display issues in the bookmark event list caused by incorrect handling of event details
+
 ## [v4.0.2]
 
 This update integrates tabler icon family, config for slider and pdf upload feature for noticeboard
