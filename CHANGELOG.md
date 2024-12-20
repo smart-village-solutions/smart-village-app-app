@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [v4.0.2]
 
-This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs
+This update integrates tabler icon family, config for slider and pdf upload feature for noticeboard
 
 ### Added
 
@@ -33,7 +33,7 @@ This update includes a new `CustomWidget`, improvements for sue module and and f
 
 ## [v4.0.1]
 
-This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs
+This update includes a new `CustomWidget`, improvements for sue module and fixes some bugs
 
 ### Added
 
@@ -112,7 +112,7 @@ This version includes a new list option and fixes some bugs
 
 ## Breaking
 
-icon names need to be updated due to a failure to display icons caused by updating the icon package
+Icon names need to be updated due to a failure to display icons caused by updating the icon package
 
 ### Fixed
 
