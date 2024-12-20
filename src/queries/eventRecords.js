@@ -95,6 +95,7 @@ export const GET_EVENT_RECORDS = gql`
     $dateRange: [String]
     $dataProvider: String
     $dataProviderId: ID
+    $onlyUniqEvents: Boolean
   ) {
     eventRecords(
       ids: $ids
@@ -107,6 +108,7 @@ export const GET_EVENT_RECORDS = gql`
       dateRange: $dateRange
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
+      onlyUniqEvents: $onlyUniqEvents
     ) {
       ...defaultFields
       ...dateFields
