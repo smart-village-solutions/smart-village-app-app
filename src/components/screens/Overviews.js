@@ -111,7 +111,8 @@ export const Overviews = ({ navigation, route }) => {
   const { news: showNewsFilter = false } = filter;
   const {
     showFilterByOpeningTimes = true,
-    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER
+    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER,
+    locationService = {}
   } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
@@ -142,7 +143,10 @@ export const Overviews = ({ navigation, route }) => {
   const { locationSettings } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
   const systemPermission = useSystemPermission();
-  const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST && locationServiceEnabled;
+  const sortByDistance =
+    query === QUERY_TYPES.POINTS_OF_INTEREST &&
+    locationServiceEnabled &&
+    (locationService.sortByDistance ?? true);
   const { loading: loadingPosition, position } = usePosition(
     !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
