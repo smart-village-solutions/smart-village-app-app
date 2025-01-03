@@ -1,6 +1,7 @@
 export * from './noticeboard';
 
 export * from './ProfileConversationsScreen';
+export * from './ProfileDeleteScreen';
 export * from './ProfileEditMailScreen';
 export * from './ProfileEditPasswordScreen';
 export * from './ProfileHomeScreen';

@@ -1,23 +1,9 @@
 import gql from 'graphql-tag';
 
-const defaultFields = `
+const defaultFragment = `
   id
-  category {
-    id
-    name
-  }
-  dates {
-    id
-    weekday
-    dateFrom: dateStart
-    dateTo: dateEnd
-    timeFrom: timeStart
-    timeTo: timeEnd
-    description: timeDescription
-  }
-  listDate
   title
-  description
+  listDate
   mediaContents {
     id
     contentType
@@ -35,29 +21,11 @@ const defaultFields = `
     zip
     kind
     addition
-  }
-  contacts {
-    id
-    firstName
-    lastName
-    phone
-    email
-    fax
-    webUrls {
+    geoLocation {
       id
-      url
-      description
+      latitude
+      longitude
     }
-  }
-  webUrls: urls {
-    id
-    url
-    description
-  }
-  priceInformations {
-    id
-    name
-    amount
   }
 `;
 
@@ -79,9 +47,11 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
     $ids: [ID]
     $limit: Int
     $location: String
+    $locations: [String]
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
+    $categoryIds: [ID]
     $dateRange: [String]
     $dataProvider: String
     $dataProviderId: ID
@@ -90,22 +60,32 @@ export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
       ids: $ids
       limit: $limit
       location: $location
+      locations: $locations
       skip: $offset
       order: $order
       categoryId: $categoryId
+      categoryIds: $categoryIds
       dateRange: $dateRange
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
     ) {
       ...defaultFields
+      dates {
+        id
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
+      }
     }
   }
 
   fragment defaultFields on EventRecord {
-    ${defaultFields}
+    ${defaultFragment}
   }
 `;
-
 
 export const GET_EVENT_RECORDS = gql`
   query EventRecords(
@@ -113,6 +93,52 @@ export const GET_EVENT_RECORDS = gql`
     $limit: Int
     $take: Int
     $location: String
+    $locations: [String]
+    $offset: Int
+    $order: EventRecordsOrder
+    $categoryId: ID
+    $categoryIds: [ID]
+    $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
+    $onlyUniqEvents: Boolean
+  ) {
+    eventRecords(
+      ids: $ids
+      limit: $limit
+      take: $take
+      location: $location
+      locations: $locations
+      skip: $offset
+      order: $order
+      categoryId: $categoryId
+      categoryIds: $categoryIds
+      dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+      onlyUniqEvents: $onlyUniqEvents
+    ) {
+      ...defaultFields
+      ...dateFields
+    }
+  }
+
+  fragment defaultFields on EventRecord {
+    ${defaultFragment}
+  }
+
+  fragment dateFields on EventRecord {
+    ${dateFragment}
+  }
+`;
+
+export const GET_EVENT_RECORDS_COUNT = gql`
+  query EventRecords(
+    $ids: [ID]
+    $limit: Int
+    $take: Int
+    $location: String
+    $locations: [String]
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
@@ -125,6 +151,7 @@ export const GET_EVENT_RECORDS = gql`
       limit: $limit
       take: $take
       location: $location
+      locations: $locations
       skip: $offset
       order: $order
       categoryId: $categoryId
@@ -132,13 +159,9 @@ export const GET_EVENT_RECORDS = gql`
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
     ) {
-      ...defaultFields
+      id
       ...dateFields
     }
-  }
-
-  fragment defaultFields on EventRecord {
-    ${defaultFields}
   }
 
   fragment dateFields on EventRecord {
@@ -169,22 +192,23 @@ export const GET_EVENT_RECORD = gql`
     eventRecord(id: $id) {
       ...defaultFields
       ...dateFields
-      categories {
+      dates {
+        id
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
+      }
+      description
+      category {
         id
         name
       }
-      addresses {
+      categories {
         id
-        city
-        street
-        zip
-        kind
-        addition
-        geoLocation {
-          id
-          latitude
-          longitude
-        }
+        name
       }
       dataProvider {
         id
@@ -199,6 +223,24 @@ export const GET_EVENT_RECORD = gql`
       settings {
         displayOnlySummary
         onlySummaryLinkText
+      }
+      contacts {
+        id
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          id
+          url
+          description
+        }
+      }
+      webUrls: urls {
+        id
+        url
+        description
       }
       priceInformations {
         id
@@ -243,7 +285,7 @@ export const GET_EVENT_RECORD = gql`
   }
 
   fragment defaultFields on EventRecord {
-    ${defaultFields}
+    ${defaultFragment}
   }
 
   fragment dateFields on EventRecord {

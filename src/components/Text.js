@@ -61,8 +61,8 @@ Text.propTypes = {
 export const RegularText = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
-  font-size: ${normalize(14)};
-  line-height: ${normalize(20)};
+  font-size: ${normalize(16)};
+  line-height: ${normalize(22)};
 
   ${(props) =>
     props.italic &&
@@ -73,21 +73,21 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.small &&
     css`
-      font-size: ${normalize(12)};
-      line-height: ${normalize(16)};
+      font-size: ${normalize(14)};
+      line-height: ${normalize(18)};
     `};
 
   ${(props) =>
     props.smallest &&
     css`
-      font-size: ${normalize(11)};
-      line-height: ${normalize(13)};
+      font-size: ${normalize(12)};
+      line-height: ${normalize(14)};
     `};
 
   ${(props) =>
     props.big &&
     css`
-      font-size: ${normalize(16)};
+      font-size: ${normalize(18)};
       line-height: ${normalize(24)};
     `};
 
@@ -108,6 +108,13 @@ export const RegularText = styled(Text)`
     css`
       color: ${colors.primary};
       text-decoration-color: ${colors.primary};
+    `};
+
+  ${(props) =>
+    props.secondary &&
+    css`
+      color: ${colors.secondary};
+      text-decoration-color: ${colors.secondary};
     `};
 
   ${(props) =>
@@ -176,28 +183,28 @@ export const BoldText = styled(RegularText)`
 
 export const HeadlineText = styled(RegularText)`
   font-family: condbold;
-  font-size: ${normalize(18)};
-  line-height: ${normalize(23)};
+  font-size: ${normalize(19)};
+  line-height: ${normalize(25)};
 
   ${(props) =>
     props.small &&
     css`
-      font-size: ${normalize(16)};
-      line-height: ${normalize(21)};
+      font-size: ${normalize(17)};
+      line-height: ${normalize(23)};
     `};
 
   ${(props) =>
     props.smaller &&
     css`
-      font-size: ${normalize(14)};
-      line-height: ${normalize(16)};
+      font-size: ${normalize(15)};
+      line-height: ${normalize(19)};
     `};
 
   ${(props) =>
     props.smallest &&
     css`
-      font-size: ${normalize(12)};
-      line-height: ${normalize(14)};
+      font-size: ${normalize(13)};
+      line-height: ${normalize(15)};
     `};
 
   ${(props) =>

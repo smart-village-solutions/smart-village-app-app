@@ -1,9 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery } from 'react-query';
 
 import { useHomeRefresh, useVolunteerData } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { ReactQueryClient } from '../ReactQueryClient';
 
 import { DataListSection } from './DataListSection';
 
@@ -21,7 +22,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: string;
-  queryVariables: { limit?: number };
+  queryVariables: { limit?: number; take?: number };
   showVolunteerEvents?: boolean;
   title: string;
   titleDetail?: string;
@@ -29,7 +30,6 @@ type Props = {
 
 export const HomeSection = ({
   buttonTitle,
-  fetchPolicy,
   isIndexStartingAt1 = false,
   navigate,
   navigation,
@@ -40,13 +40,10 @@ export const HomeSection = ({
   title,
   titleDetail
 }: Props) => {
-  const {
-    data,
-    loading: isLoading,
-    refetch
-  } = useQuery(getQuery(query), {
-    variables: queryVariables,
-    fetchPolicy
+  const { data, isLoading, refetch } = useQuery([query, queryVariables], async () => {
+    const client = await ReactQueryClient();
+
+    return await client.request(getQuery(query), queryVariables);
   });
 
   const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
@@ -82,7 +79,7 @@ export const HomeSection = ({
       additionalData={additionalData}
       buttonTitle={buttonTitle}
       isIndexStartingAt1={isIndexStartingAt1}
-      limit={queryVariables?.limit}
+      limit={queryVariables?.limit || queryVariables?.take}
       loading={loading}
       navigate={navigate}
       navigateButton={navigate}

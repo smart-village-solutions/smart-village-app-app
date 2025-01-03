@@ -95,7 +95,7 @@ export const texts = {
     },
     textSearch: {
       label: 'Dienstleistung',
-      placeholder: 'Was suchen Sie?'
+      placeholder: 'Was suchst du?'
     }
   },
   bookmarks: {
@@ -224,7 +224,7 @@ export const texts = {
       emptyError: 'darf nicht leer sein',
       generalDataUploadError:
         'Beim Hochladen des Fotos oder Dokuments ist ein Problem aufgetreten. Bitte überprüfen.',
-      imageDeleteAlertBody: 'Möchten Sie das Bild löschen?',
+      imageDeleteAlertBody: 'Möchtest du das Bild löschen?',
       imageSizeError: 'Das ausgewählte Bild darf maximal 1 MB groß sein.',
       imageTypeAndSizeError:
         'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',
@@ -458,10 +458,13 @@ export const texts = {
   },
   filter: {
     date: 'Datum',
+    header: 'Filter',
     hideFilter: 'Filter ausblenden',
-    resetFilter: 'Filter zurücksetzen',
+    filter: 'Filtern',
+    resetFilter: 'Zurücksetzen',
     showFilter: 'Filter anzeigen',
     search: 'Was suchen Sie?',
+    settings: 'Filtereinstellungen',
     sorting: {
       updatedDatetime: 'Änderungsdatum',
       requestedDatetime: 'Erstelldatum',
@@ -507,10 +510,16 @@ export const texts = {
   noticeboard: {
     abort: 'Abbrechen',
     addImages: 'Bilder hinzufügen',
+    addDocuments: 'Dokumente hinzufügen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
       delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
-      error: 'Bitte versuchen Sie es erneut.',
+      deleteConversation: 'Wollen Sie diese Unterhaltung wirklich löschen?',
+      deleteButton: 'Löschen',
+      documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
+      documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
+      documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
+      error: 'Bitte versuche es erneut.',
       hint: 'Hinweis',
       imagesSizeError: 'Die ausgewählten Bilder dürfen insgesamt maximal 10 MB groß sein.',
       imageUploadError: 'Beim Hochladen des Bildes ist ein Fehler aufgetreten.',
@@ -529,8 +538,12 @@ export const texts = {
     delete: 'Löschen',
     description: 'Beschreibung',
     details: 'Details',
+    documents: 'Dokumente',
+    documentsInfo:
+      'Du kannst maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
     duration: 'Laufzeit',
     edit: 'Bearbeiten',
+    editButton: 'Anzeige ändern',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     images: 'Aussagekäftiges Bild',
@@ -549,9 +562,10 @@ export const texts = {
     invalidMail: '-Adresse ist nicht gültig.',
     member: 'Anbieter',
     myNoticeboard: 'Meine Anzeige',
-    noticeboard: 'Anzeige',
+    noticeboard: 'Angebote & Gesuche',
     publicationDate: 'Erscheinungsdatum',
     send: 'Senden',
+    sendButton: 'Anzeige erstellen',
     successScreen: {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
@@ -843,6 +857,13 @@ export const texts = {
     birthdayInvalid: 'Mindestalter nicht erreicht',
     birthdayPlaceholder: 'Mindestalter: 18 Jahre',
     city: 'Ort',
+    deleteProfile: 'Meine Daten löschen',
+    deleteProfileAlertTitle: 'Anfrage',
+    deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
+    deleteProfileConsent: 'Ich bin mit dem Löschen meiner Daten einverstanden.',
+    deleteProfileConsentOptIn:
+      'Bitte bestätige, dass du mit dem Löschen deiner Daten einverstanden bist.',
+    deleteProfileSubject: 'Anfrage zur Löschung des Nutzerprofils',
     editMail: 'E-Mail-Adresse ändern',
     editPassword: 'Passwort ändern',
     editPasswordAlertMessage:
@@ -861,7 +882,14 @@ export const texts = {
     enterCode: 'Code eingeben',
     firstName: 'Vorname',
     firstnameError: 'Vorname muss ausgefüllt werden',
+    flag: 'Melden',
+    flagProfile: 'Anbieter melden',
+    flagProfileAlertDoneTitle: 'Vielen Dank',
+    flagProfileAlertDoneMessage: 'Anbieter wurde erfolgreich gemeldet.',
+    flagProfileAlertMessage: 'Bist du sicher, dass du diesen Anbieter jetzt melden möchtest?',
+    flagProfileSubject: 'Nutzerprofil melden',
     gender: 'Anrede',
+    hint: 'Hinweis',
     invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
     invalidUrl: '-URL ist keine gültige URL',
     lastName: 'Nachname',
@@ -882,7 +910,7 @@ export const texts = {
     passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
     postcode: 'Postleitzahl',
     postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
-    privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
+    privacyChecked: 'Mit der Registrierung akzeptieren Sie die ',
     privacyCheckLink: 'Datenschutzbestimmungen',
     privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',
     privacyCheckRequireTitle: 'Hinweis',
@@ -918,10 +946,14 @@ export const texts = {
       'Ihr Profil wurde erfolgreich aktualisiert. Bitte bestätigen Sie Ihre E-Mail-Adresse und melden Sie sich mit der neuen E-Mail-Adresse erneut an.',
     showUpdateSuccessAlertBody: 'Ihr Profil wurde erfolgreich aktualisiert.',
     showUpdateSuccessAlertTitle: 'Erfolg',
-    termsOfUseChecked: 'Mit der Registrierung akzeptieren Sie die',
+    termsOfUseChecked: 'Mit der Registrierung akzeptieren Sie die ',
     termsOfUseLink: 'Nutzungsbedingungen',
     termsOfUseCheckRequireBody: 'Bitte bestätigen Sie die Nutzungsbedingungen.',
-    termsOfUseCheckRequireTitle: 'Hinweis'
+    termsOfUseCheckRequireTitle: 'Hinweis',
+    termsAndConditionsAlertTitle: 'Hinweis',
+    termsAndConditionsAlertMessage:
+      'Ohne die Bestätigung unserer Datenschutzhinweise können Sie die App leider nicht nutzen. Wir behandeln Ihre Daten dabei stets vertraulich und mit höchster Sorgfalt. Falls Sie die App nutzen möchten, folgen Sie bitte dem Button.',
+    termsAndConditionsAlertOk: 'Zur Bestätigung'
   },
   pushNotifications: {
     abort: 'Abbrechen',
@@ -1011,7 +1043,7 @@ export const texts = {
       onLocationServiceMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       onSystemPermissionMissing:
-        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes müssen Sie die App neu starten.',
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes musst du die App neu starten.',
       save: 'Speichern',
       setting: 'Standort',
       settings: 'Einstellungen'
@@ -1026,6 +1058,13 @@ export const texts = {
     },
     permanentFilter: {
       setting: 'Datenquellen'
+    },
+    termsAndConditions: {
+      abort: 'Abbrechen',
+      onActivate: '',
+      onDeactivate:
+        'Beim nächsten Start wird die Einwilligung zu den Datenschutzhinweisen erneut abgefragt. Ohne die Bestätigung unserer Datenschutzhinweise kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt.',
+      ok: 'Einverstanden'
     }
   },
   settingsScreen: {
@@ -1063,7 +1102,8 @@ export const texts = {
     },
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
-    pushNotifications: 'Push-Benachrichtigungen'
+    pushNotifications: 'Push-Benachrichtigungen',
+    termsAndConditions: 'Einwilligung zu Datenschutzhinweisen'
   },
   sue: {
     answer: 'Antworten',
@@ -1232,7 +1272,7 @@ export const texts = {
   updateAlert: {
     updateNow: 'Jetzt aktualisieren',
     updateRequiredMessage:
-      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisieren Sie jetzt, um von den neuesten Verbesserungen zu profitieren.',
+      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisiere jetzt, um von den neuesten Verbesserungen zu profitieren.',
     updateRequiredTitle: 'Aktualisierung erforderlich'
   },
   volunteer: {
@@ -1464,11 +1504,15 @@ export const texts = {
     headerTitle: 'Wassertemperatur'
   },
   weather: {
-    alertsHeadline: 'Wetterwarnungen',
-    currentHeadline: 'Aktuelles Wetter',
+    alertsHeadline: 'Warnungen',
+    alertsText: (from, to) => `Zwischen ${from} Uhr und ${to} Uhr.`,
+    currentHeadline: 'Vorschau',
     nextDaysHeadline: 'Wetter der nächsten Tage',
     noData:
-      'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+      'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.',
+    now: 'Jetzt',
+    today: 'Heute',
+    tomorrow: 'Morgen'
   },
   widgets: {
     constructionSites: 'Baustellen',

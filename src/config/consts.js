@@ -113,8 +113,10 @@ export const consts = {
   },
 
   FILTER_TYPES: {
+    CHECKBOX: 'checkbox',
     DATE: 'date',
     DROPDOWN: 'dropdown',
+    SLIDER: 'slider',
     SUE: {
       STATUS: 'status'
     }
@@ -123,6 +125,11 @@ export const consts = {
   DIMENSIONS: {
     // the max screen size we want to render full screen
     FULL_SCREEN_MAX_WIDTH: 504
+  },
+
+  MEDIA_TYPES: {
+    DOCUMENT: 'pdf',
+    IMAGE: 'jpg'
   },
 
   // this section has been added to optimise AR on low RAM devices and to prevent some features of AR from being used
@@ -140,13 +147,13 @@ export const consts = {
   },
 
   IMAGE_SELECTOR_TYPES: {
-    NOTICEBOARD: 'Noticeboard',
-    SUE: 'Sue'
+    NOTICEBOARD: 'Noticeboard'
   },
 
   IMAGE_FROM: {
     CAMERA: 'Camera',
-    GALLERY: 'Gallery'
+    GALLERY: 'Gallery',
+    SUE: 'Sue'
   },
 
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
@@ -196,6 +203,7 @@ export const consts = {
       LUNCH: 'Lunch',
       NEWS_ITEMS: 'News',
       NOTICEBOARD: 'Noticeboard',
+      PDF: 'PDF',
       POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
       POINTS_OF_INTEREST: 'Points of interest',
       SERVICE: 'Service',

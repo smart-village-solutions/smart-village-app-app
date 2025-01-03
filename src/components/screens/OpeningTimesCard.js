@@ -112,11 +112,13 @@ export const OpeningTimesCard = ({
         })}
 
       {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
-        <Touchable onPress={loadMoreItems}>
-          <BoldText primary underline center>
-            {appointmentsShowMoreButton}
-          </BoldText>
-        </Touchable>
+        <WrapperVertical style={styles.noPaddingBottom}>
+          <Touchable onPress={loadMoreItems}>
+            <BoldText primary underline center>
+              {appointmentsShowMoreButton}
+            </BoldText>
+          </Touchable>
+        </WrapperVertical>
       )}
     </WrapperHorizontal>
   );

@@ -6,15 +6,15 @@ import { VerticalList } from '../VerticalList';
 import { IndexFilter } from './IndexFilter';
 
 export const ServiceList = ({
-  navigation,
-  selectedFilter,
-  results,
   areaId,
-  setAreaId,
   areas,
-  top10,
   loading,
-  refreshControl
+  navigation,
+  refreshControl,
+  results = [],
+  selectedFilter,
+  setAreaId,
+  top10
 }) => {
   const [listItems, setListItems] = useState(selectedFilter.id === 1 ? top10 : []);
 
@@ -48,17 +48,13 @@ export const ServiceList = ({
 };
 
 ServiceList.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  selectedFilter: PropTypes.object.isRequired,
-  results: PropTypes.array,
   areaId: PropTypes.string.isRequired,
-  setAreaId: PropTypes.func.isRequired,
   areas: PropTypes.array,
-  top10: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
-  refreshControl: PropTypes.object
-};
-
-ServiceList.defaultProps = {
-  results: []
+  navigation: PropTypes.object.isRequired,
+  refreshControl: PropTypes.object,
+  results: PropTypes.array,
+  selectedFilter: PropTypes.object.isRequired,
+  setAreaId: PropTypes.func.isRequired,
+  top10: PropTypes.array.isRequired
 };

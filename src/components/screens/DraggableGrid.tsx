@@ -12,7 +12,7 @@ import { OrientationContext } from '../../OrientationProvider';
 import { DraggableItem, Positions } from './DraggableItem';
 
 type Props = {
-  children: ReactElement<{ draggableId: string; key: string }>[];
+  children: ReactElement<{ draggableId: string; draggableKey: string }>[];
   onDragEnd: (diff: Positions) => void;
 };
 
@@ -56,9 +56,9 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
     >
       {children.map((child) => (
         <DraggableItem
-          key={child.props.key}
+          key={child.props.draggableKey}
           positions={positions}
-          id={child.props.draggableId?.replace('​', '')}
+          id={child.props.draggableId}
           onDragEnd={onDragEnd}
           scrollView={scrollView}
           scrollY={scrollY}

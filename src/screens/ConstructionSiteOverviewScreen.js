@@ -1,19 +1,29 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
-import { RegularText, SafeAreaViewFlex, TextListItem, Wrapper } from '../components';
+import { Filter, RegularText, SafeAreaViewFlex, TextListItem, Wrapper } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../config';
-import { momentFormat } from '../helpers';
+import { ConfigurationsContext } from '../ConfigurationsProvider';
+import { filterTypesHelper, momentFormat, updateResourceFiltersStateHelper } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
+import { PermanentFilterContext } from '../PermanentFilterProvider';
+import { GenericType } from '../types';
 
 const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => index + item.title + item.startDate;
 
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
-  const { constructionSites, loading, refresh, refreshing } = useConstructionSites();
+  const initialQueryVariables = {};
+  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(queryVariables);
+  const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
+  const { resourceFilters } = useContext(ConfigurationsContext);
+  const [queryVariables, setQueryVariables] = useState({
+    ...initialQueryVariables,
+    ...resourceFiltersState[GenericType.ConstructionSite]
+  });
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITES);
 
   const renderItem = useCallback(
@@ -40,6 +50,24 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
     [navigation]
   );
 
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data: constructionSites,
+      query: GenericType.ConstructionSite,
+      queryVariables,
+      resourceFilters
+    });
+  }, [constructionSites]);
+
+  useEffect(() => {
+    updateResourceFiltersStateHelper({
+      query: GenericType.ConstructionSite,
+      queryVariables,
+      resourceFiltersDispatch,
+      resourceFiltersState
+    });
+  }, [constructionSites]);
+
   if (loading && !refreshing) {
     return <LoadingSpinner loading />;
   }
@@ -56,6 +84,14 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
+      <Filter
+        filterTypes={filterTypes}
+        initialFilters={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
+
       <FlatList
         data={constructionSites}
         keyExtractor={keyExtractor}

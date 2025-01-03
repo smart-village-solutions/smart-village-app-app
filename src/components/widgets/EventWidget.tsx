@@ -1,49 +1,57 @@
 import { useNavigation } from '@react-navigation/core';
 import moment from 'moment';
 import React, { useCallback, useContext, useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery } from 'react-query';
 
 import { consts, Icon, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useHomeRefresh, useRefreshTime, useVolunteerData } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
+import { useHomeRefresh, useVolunteerData } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-const { REFRESH_INTERVALS, ROOT_ROUTE_NAMES } = consts;
+const { ROOT_ROUTE_NAMES } = consts;
 
 const today = moment().format('YYYY-MM-DD');
 
 export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
-  const refreshTime = useRefreshTime('event-widget', REFRESH_INTERVALS.ONCE_A_DAY);
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { deprecated = {}, hdvt = {} } = globalSettings;
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
-  const [queryVariables] = useState<{ dateRange?: string[]; limit?: number; order: string }>({
-    dateRange: [today, today],
-    order: 'listDate_ASC'
-  });
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const [queryVariables] = useState<{ dateRange?: string[]; order?: string }>(
+    additionalProps?.noFilterByDailyEvents
+      ? { order: 'listDate_ASC' }
+      : {
+          dateRange: [today, today],
+          order: 'listDate_ASC'
+        }
+  );
 
-  if (additionalProps?.noFilterByDailyEvents) {
-    delete queryVariables.dateRange;
-  }
-
-  const { data, loading, refetch } = useQuery(
-    getQuery(
+  const {
+    data,
+    isLoading: loading,
+    refetch
+  } = useQuery(
+    [
       deprecated?.events?.listingWithoutDateFragment
         ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-        : QUERY_TYPES.EVENT_RECORDS
-    ),
-    {
-      fetchPolicy,
-      variables: queryVariables,
-      skip: !refreshTime
+        : QUERY_TYPES.EVENT_RECORDS_COUNT,
+      queryVariables
+    ],
+    async () => {
+      const client = await ReactQueryClient();
+
+      return await client.request(
+        getQuery(
+          deprecated?.events?.listingWithoutDateFragment
+            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
+            : QUERY_TYPES.EVENT_RECORDS_COUNT
+        ),
+        queryVariables
+      );
     }
   );
 
@@ -60,7 +68,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
       title: text ?? texts.homeTitles.events,
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables: {
-        ...queryVariables,
+        order: 'listDate_ASC',
         limit: additionalProps?.limit || 15
       },
       rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,

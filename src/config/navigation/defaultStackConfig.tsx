@@ -45,7 +45,9 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  PdfScreen,
   ProfileConversationsScreen,
+  ProfileDeleteScreen,
   ProfileEditMailScreen,
   ProfileEditPasswordScreen,
   ProfileHomeScreen,
@@ -345,6 +347,10 @@ export const defaultStackConfig = ({
       screenComponent: OParlSearchScreen
     },
     {
+      routeName: ScreenName.Pdf,
+      screenComponent: PdfScreen
+    },
+    {
       routeName: ScreenName.Profile,
       screenComponent: ProfileHomeScreen,
       screenOptions: getScreenOptions({ withInfo: true }),
@@ -360,6 +366,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ProfileConversations,
       screenComponent: ProfileConversationsScreen
+    },
+    {
+      routeName: ScreenName.ProfileDelete,
+      screenComponent: ProfileDeleteScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
     },
     {
       routeName: ScreenName.ProfileEditMail,

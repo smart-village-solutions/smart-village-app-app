@@ -40,6 +40,7 @@ export const QUERY_TYPES = {
   EVENT_RECORDS_AND_CATEGORIES: 'eventRecordsAndCategories',
   EVENT_RECORDS_WITHOUT_DATE_FRAGMENT: 'eventRecordsWithoutDateFragment',
   EVENT_RECORDS: 'eventRecords',
+  EVENT_RECORDS_COUNT: 'eventRecordsCount',
   GENERIC_ITEM: 'genericItem',
   GENERIC_ITEMS: 'genericItems',
   LUNCHES: 'lunches',
@@ -57,6 +58,7 @@ export const QUERY_TYPES = {
   },
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
+  RESOURCE_FILTERS: 'resourceFilters',
   STATIC_CONTENT_LIST: 'staticContentList',
   TOUR: 'tour',
   SUE: {

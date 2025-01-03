@@ -1,36 +1,61 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl } from 'react-native';
 
 import { EmptyMessage, ListComponent, LoadingSpinner, SafeAreaViewFlex } from '../../components';
 import { colors, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
-// eslint-disable-next-line complexity
+/* eslint-disable complexity */
 export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { conversationSettings } = useContext(SettingsContext);
+  const { refetch: refetchUnreadMessages } = useMessagesContext();
+  const { currentUserData } = useProfileContext();
+  const currentUserId = useMemo(() => currentUserData?.member?.id, [currentUserData]);
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
   const {
     data: conversationData,
     loading,
     refetch
-  } = useQuery(getQuery(query), { pollInterval: 10000 });
+  } = useQuery(getQuery(query), { pollInterval: 10000 }); // 10 seconds
 
   const listItems = useMemo(
     () => parseListItemsFromQuery(query, conversationData, undefined),
     [query, conversationData]
   );
 
+  const sortedListItems = useMemo(() => {
+    if (!listItems) return [];
+
+    const pinnedItems = listItems.filter((item) => conversationSettings?.pinned?.includes(item.id));
+    const notPinnedItems = listItems.filter(
+      (item) => !conversationSettings?.pinned?.includes(item.id)
+    );
+
+    return [...pinnedItems, ...notPinnedItems];
+  }, [listItems, conversationSettings?.pinned]);
+
   useFocusEffect(
     useCallback(() => {
       refetch();
+      refetchUnreadMessages();
     }, [])
   );
 
-  if (loading) {
+  useEffect(() => {
+    if (conversationData) {
+      refetchUnreadMessages();
+    }
+  }, [conversationData]);
+
+  if (loading && !currentUserId) {
     return <LoadingSpinner loading />;
   }
 
@@ -40,9 +65,10 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
     <SafeAreaViewFlex>
       <ListComponent
         ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}
-        data={listItems}
+        data={sortedListItems}
         navigation={navigation}
         query={query}
+        queryVariables={{ currentUserId }}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -55,3 +81,4 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */

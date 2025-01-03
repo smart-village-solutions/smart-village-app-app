@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors } from '../config';
+import { colors, device } from '../config';
 
 const trackColor = {
   ...Platform.select({
@@ -31,6 +31,13 @@ export const Switch = ({ switchValue, toggleSwitch }) => {
       onValueChange={toggleSwitch}
       value={switchValue}
       accessibilityRole="button"
+      style={[
+        device.platform === 'ios' &&
+          !device.isTablet && {
+            right: -6,
+            transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
+          }
+      ]}
     />
   );
 };

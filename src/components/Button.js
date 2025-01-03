@@ -13,9 +13,9 @@ export const Button = ({
   big,
   disabled,
   icon,
-  iconPosition,
-  invert,
-  notFullWidth,
+  iconPosition = 'right',
+  invert = false,
+  notFullWidth = false,
   onPress,
   small,
   smallest,
@@ -193,10 +193,4 @@ Button.propTypes = {
   small: PropTypes.bool,
   smallest: PropTypes.bool,
   title: PropTypes.string.isRequired
-};
-
-Button.defaultProps = {
-  iconPosition: 'right',
-  invert: false,
-  notFullWidth: false
 };

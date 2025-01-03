@@ -5,7 +5,7 @@ import { MediaTypeOptions } from 'expo-image-picker';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   Actions,
   Bubble,
@@ -18,7 +18,7 @@ import {
   Send
 } from 'react-native-gifted-chat';
 
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { useSelectDocument, useSelectImage } from '../hooks';
 
@@ -58,6 +58,7 @@ export const Chat = ({
 }) => {
   const [messages, setMessages] = useState(data);
   const [medias, setMedias] = useState([]);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
     // this screen is set to portrait mode because half of the screen is visible in landscape
@@ -92,7 +93,6 @@ export const Chat = ({
       throw errorText;
     }
   };
-
   const { selectImage } = useSelectImage({
     allowsEditing: false,
     mediaTypes: MediaTypeOptions.All
@@ -100,19 +100,42 @@ export const Chat = ({
 
   const { selectDocument } = useSelectDocument();
 
+  // thx to: https://github.com/FaridSafi/react-native-gifted-chat/issues/2544#issuecomment-2398233334
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
     <GiftedChat
       alwaysShowSend
-      bottomOffset={device.platform === 'ios' && normalize(96)}
       keyboardShouldPersistTaps="handled"
       locale="de"
+      isStatusBarTranslucentAndroid
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
       scrollToBottom
       scrollToBottomComponent={() => <Icon.ArrowDown />}
+      listViewProps={{
+        contentContainerStyle: {
+          paddingBottom: keyboardHeight
+        }
+      }}
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
+        if (!showActionButton) return null;
+
         const mediaActionSheet = {
           'Foto wählen': async () => {
             const { uri, type } = await selectImage();
@@ -141,8 +164,6 @@ export const Chat = ({
           },
           Abbrechen: () => null
         };
-
-        if (!showActionButton) return null;
 
         return (
           <Actions
@@ -221,8 +242,8 @@ export const Chat = ({
         <MessageText
           {...props}
           textStyle={{
-            left: messageTextStyleLeft || styles.textStyle,
-            right: messageTextStyleRight || styles.textStyle
+            left: [styles.textStyle, messageTextStyleLeft],
+            right: [styles.textStyle, messageTextStyleRight]
           }}
         />
       )}
@@ -362,7 +383,8 @@ const styles = StyleSheet.create({
   textStyle: {
     color: colors.darkText,
     fontFamily: 'regular',
-    fontSize: normalize(14)
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   videoBubble: {
     alignSelf: 'center',

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
+import { colors, consts, device, normalize } from '../config';
 
 import { Switch } from './Switch';
 import { BoldText } from './Text';
@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
-    paddingVertical: normalize(12)
+    paddingVertical: device.isTablet ? normalize(16) : normalize(10)
   },
   marginRight: {
-    marginRight: normalize(7)
+    marginRight: device.isTablet ? normalize(7) : -normalize(2)
   }
 });
 

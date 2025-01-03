@@ -9,8 +9,6 @@ export const GET_CONVERSATIONS = gql`
       conversationableId
       conversationableType
       id
-      participantsCount
-      totalMessagesCount
       unreadMessagesCount
       latestMessage {
         createdAt
@@ -63,6 +61,16 @@ export const MARK_MESSAGES_AS_READ = gql`
       updateAllMessages: $updateAllMessages
       conversationId: $conversationId
     ) {
+      id
+      status
+      statusCode
+    }
+  }
+`;
+
+export const DELETE_CONVERSATION = gql`
+  mutation DeleteConversation($conversationId: ID!) {
+    deleteConversation(conversationId: $conversationId) {
       id
       status
       statusCode

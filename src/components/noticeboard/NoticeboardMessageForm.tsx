@@ -171,9 +171,9 @@ export const NoticeboardMessageForm = ({
               checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={styles.checkboxContainerStyle}
               onPress={() => onChange(!value)}
-              textStyle={styles.checkboxTextStyle}
               title={`${texts.noticeboard.inputCheckbox} *`}
               uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+              textStyle={styles.checkboxTextStyle}
             />
           )}
           control={control}

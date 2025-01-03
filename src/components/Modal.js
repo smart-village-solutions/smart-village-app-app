@@ -11,11 +11,11 @@ import { Touchable } from './Touchable';
 export const Modal = ({
   children,
   closeButton,
-  height,
+  height = 'auto',
   isBackdropPress,
   isListView,
   isVisible,
-  modalHiddenButtonName,
+  modalHiddenButtonName = texts.settingsTitles.arListLayouts.hide,
   onModalVisible,
   overlayStyle
 }) => {

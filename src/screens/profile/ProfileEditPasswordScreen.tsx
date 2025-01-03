@@ -36,18 +36,14 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
 
   const { mutate: mutateResetPassword, isLoading } = useMutation(profileResetPassword);
 
-  const {
-    data: dataProfileEditPasswordScreenTop,
-    loading: loadingProfileEditPasswordScreenTop,
-    refetch: refetchProfileEditPasswordScreenTop
-  } = useStaticContent({
-    name: 'profileEditPasswordScreenTop',
-    type: 'html'
-  });
+  const { data: dataProfileEditPasswordScreenTop, refetch: refetchProfileEditPasswordScreenTop } =
+    useStaticContent({
+      name: 'profileEditPasswordScreenTop',
+      type: 'html'
+    });
 
   const {
     data: dataProfileEditPasswordScreenBottom,
-    loading: loadingProfileEditPasswordScreenBottom,
     refetch: refetchProfileEditPasswordScreenBottom
   } = useStaticContent({
     name: 'profileEditPasswordScreenBottom',
@@ -76,9 +72,7 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
-              refreshing={
-                loadingProfileEditPasswordScreenTop || loadingProfileEditPasswordScreenBottom
-              }
+              refreshing={false}
               onRefresh={() => {
                 refetchProfileEditPasswordScreenTop();
                 refetchProfileEditPasswordScreenBottom();

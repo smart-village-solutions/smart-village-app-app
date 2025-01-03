@@ -1,6 +1,6 @@
 import _camelCase from 'lodash/camelCase';
 import _upperFirst from 'lodash/upperFirst';
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import * as Tabler from 'tabler-icons-react-native';
@@ -29,7 +29,9 @@ import {
   logo,
   lunch,
   lupe,
+  maxTemperature,
   member,
+  minTemperature,
   notVerifiedBadge,
   ok,
   oParlCalendar,
@@ -37,6 +39,7 @@ import {
   oParlPeople,
   ownLocation,
   pen,
+  rain,
   routePlanner,
   send,
   service,
@@ -48,6 +51,8 @@ import {
   sueEyeSmall,
   sueFace,
   sueFaceSmall,
+  sunDown,
+  sunUp,
   unvisible,
   userFilled,
   verifiedBadge,
@@ -60,6 +65,7 @@ import { normalize } from '../normalize';
 export type IconProps = {
   accessibilityLabel?: string;
   color?: string;
+  hasNoHitSlop?: boolean;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
   strokeColor?: string;
@@ -109,12 +115,16 @@ type TablerIconName = keyof typeof Tabler;
 const NamedIcon = ({
   accessibilityLabel,
   color = colors.primary,
+  hasNoHitSlop = false,
   iconStyle,
   name,
-  strokeWidth = 2,
+  strokeWidth = 1,
   size = normalize(24),
   style
-}: IconProps & { name?: string }) => {
+}: IconProps & {
+  name: ComponentProps<typeof IconSet>['name'];
+  strokeWidth?: number;
+}) => {
   let IconComponent: any;
 
   if (IconSet === Tabler) {
@@ -125,7 +135,11 @@ const NamedIcon = ({
   }
 
   return (
-    <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
+    <View
+      accessibilityLabel={accessibilityLabel}
+      style={style}
+      hitSlop={hasNoHitSlop ? undefined : getHitSlops(size)}
+    >
       <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={strokeWidth} />
     </View>
   );
@@ -148,7 +162,7 @@ export const Icon = {
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
   Check: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
   Circle: (props: IconProps) => <NamedIcon name="circle" {...props} />,
-  CircleCheckFilled: (props: IconProps) => <NamedIcon name="circle-check" {...props} />,
+  CircleCheckFilled: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
   Clock: (props: IconProps) => <NamedIcon name="clock" {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
   CloseCircle: (props: IconProps) => <NamedIcon name="circle-x-filled" {...props} />,
@@ -160,6 +174,7 @@ export const Icon = {
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <NamedIcon name="maximize" {...props} />,
+  Flag: (props: IconProps) => <NamedIcon name="flag-2" {...props} />,
   Filter: (props: IconProps) => <SvgIcon xml={filter} {...props} />,
   Flag: (props: IconProps) => <NamedIcon name="flag-2" {...props} />,
   GPS: (props: IconProps) => <SvgIcon xml={gps} {...props} />,
@@ -176,9 +191,11 @@ export const Icon = {
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Lupe: (props: IconProps) => <SvgIcon xml={lupe} {...props} />,
-  Mail: (props: IconProps) => <NamedIcon name="messagae-2" {...props} />,
+  Mail: (props: IconProps) => <NamedIcon name="message-2" {...props} />,
   Map: (props: IconProps) => <NamedIcon name="map" {...props} />,
+  MaxTemperature: (props: IconProps) => <SvgIcon xml={maxTemperature} {...props} />,
   Member: (props: IconProps) => <SvgIcon xml={member} {...props} />,
+  MinTemperature: (props: IconProps) => <SvgIcon xml={minTemperature} {...props} />,
   NamedIcon,
   NotVerifiedBadge: (props: IconProps) => <SvgIcon xml={notVerifiedBadge} {...props} />,
   Ok: (props: IconProps) => <SvgIcon xml={ok} {...props} />,
@@ -191,19 +208,22 @@ export const Icon = {
   Pencil: (props: IconProps) => <NamedIcon name="pencil" {...props} />,
   PencilPlus: (props: IconProps) => <NamedIcon name="pencil-plus" {...props} />,
   Phone: (props: IconProps) => <NamedIcon name="phone" {...props} />,
+  Pin: (props: IconProps) => <NamedIcon name="pin" {...props} />,
+  PinFilled: (props: IconProps) => <NamedIcon name="pin-filled" {...props} />,
   Play: (props: IconProps) => <NamedIcon name="player-play-filled" {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="plus" {...props} />,
   Profile: (props: IconProps) => <NamedIcon name="user" {...props} />,
   ProfileFilled: (props: IconProps) => <SvgIcon xml={userFilled} {...props} />,
   RadioButtonEmpty: (props: IconProps) => <NamedIcon name="circle" {...props} />,
   RadioButtonFilled: (props: IconProps) => <NamedIcon name="circle-filled" {...props} />,
+  Rain: (props: IconProps) => <SvgIcon xml={rain} {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => <NamedIcon name="settings" {...props} />,
   Share: (props: IconProps) => <NamedIcon name="share-3" {...props} />,
   Square: (props: IconProps) => <NamedIcon name="square" {...props} />,
-  SquareCheckFilled: (props: IconProps) => <NamedIcon name="square-check" {...props} />,
+  SquareCheckFilled: (props: IconProps) => <NamedIcon name="square-check-filled" {...props} />,
   SueBroom: (props: IconProps) => <SvgIcon xml={sueBroom} {...props} />,
   SueCheckSmall: (props: IconProps) => <SvgIcon xml={sueCheckSmall} {...props} />,
   SueClock: (props: IconProps) => <SvgIcon xml={sueClock} {...props} />,
@@ -212,6 +232,8 @@ export const Icon = {
   SueEyeSmall: (props: IconProps) => <SvgIcon xml={sueEyeSmall} {...props} />,
   SueFace: (props: IconProps) => <SvgIcon xml={sueFace} {...props} />,
   SueFaceSmall: (props: IconProps) => <SvgIcon xml={sueFaceSmall} {...props} />,
+  SunDown: (props: IconProps) => <SvgIcon xml={sunDown} {...props} />,
+  SunUp: (props: IconProps) => <SvgIcon xml={sunUp} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="chart-candle" {...props} />,
   Trash: (props: IconProps) => <NamedIcon name="trash" {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,

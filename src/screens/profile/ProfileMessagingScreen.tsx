@@ -4,13 +4,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 
-import { Button, Chat, LoadingSpinner, Wrapper } from '../../components';
+import { Button, Chat, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../../components';
 import { colors, normalize, texts } from '../../config';
-import { useProfileUser } from '../../hooks';
+import { shareMessage } from '../../helpers';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 import { ScreenName } from '../../types';
-import { shareMessage } from '../../helpers';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
 type Message = {
   createdAt: string;
@@ -31,7 +32,8 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
   const query = route.params?.query;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [messageData, setMessageData] = useState<Messages>([]);
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
+  const { refetch: refetchUnreadMessages } = useMessagesContext();
   const currentUserId = currentUserData?.member?.id;
   const displayName = route.params?.displayName;
 
@@ -41,7 +43,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     refetch
   } = useQuery(getQuery(query), {
     variables: { conversationId: queryVariables.id },
-    pollInterval: 10000,
+    pollInterval: 10000, // 10 seconds
     skip: !queryVariables.id
   });
 
@@ -96,21 +98,26 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
       markMessagesAsRead({
         variables: { conversationId: parseInt(queryVariables.id), updateAllMessages: true }
       });
+
+      setTimeout(() => {
+        refetchUnreadMessages();
+      }, 1000);
     }
   }, [messages, loading]);
 
   useFocusEffect(
     useCallback(() => {
       refetch();
+      refetchUnreadMessages();
     }, [])
   );
 
-  if (loading || !currentUserId) {
+  if (loading) {
     return <LoadingSpinner loading />;
   }
 
   return (
-    <>
+    <SafeAreaViewFlex>
       <Wrapper style={styles.noPaddingBottom}>
         <Button
           invert
@@ -154,11 +161,9 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
           padding: normalize(12)
         }}
         bubbleWrapperStyleLeft={{ backgroundColor: colors.lightestText, padding: normalize(12) }}
-        messageTextStyleRight={{ color: colors.darkText }}
-        messageTextStyleLeft={{ color: colors.darkText }}
         userId={currentUserId}
       />
-    </>
+    </SafeAreaViewFlex>
   );
 };
 

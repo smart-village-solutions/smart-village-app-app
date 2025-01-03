@@ -53,6 +53,7 @@ export const EventRecord = ({ data, route }) => {
     mediaContents,
     operatingCompany,
     priceInformations,
+    recurring: isRecurring,
     settings: webUrlsSettings,
     title,
     webUrls
@@ -108,10 +109,15 @@ export const EventRecord = ({ data, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
-  const openingHours =
+  const eventDates =
     dates
       ?.filter((date) => isTodayOrLater(date?.dateTo || date?.dateFrom))
       ?.map((date) => ({ ...date, useYear: date?.useYear ?? true })) || [];
+
+  if (isRecurring) {
+    // remove the first entry in dates, as it is the time span we do not need explicitly
+    eventDates.shift();
+  }
 
   return (
     <View>
@@ -142,11 +148,11 @@ export const EventRecord = ({ data, route }) => {
         />
       </Wrapper>
 
-      {!!openingHours?.length && (
+      {!!eventDates?.length && (
         <WrapperVertical>
           <SectionHeader title={texts.eventRecord.appointments} />
           <OpeningTimesCard
-            openingHours={openingHours}
+            openingHours={eventDates}
             MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
             appointmentsShowMoreButton={appointmentsShowMoreButton}
           />

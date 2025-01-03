@@ -19,8 +19,8 @@ export type ItemData = {
   count?: number;
   isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
-  overtitle?: string;
   onPress?: (navigation: any) => void;
+  overtitle?: string;
   params: Record<string, unknown>;
   picture?: { url: string };
   rightIcon?: React.ReactElement;
@@ -60,15 +60,15 @@ export const TextListItem: NamedExoticComponent<Props> & {
     imageContainerStyle,
     imageStyle,
     item,
-    leftImage,
+    leftImage = false,
     listItemStyle,
     listsWithoutArrows,
     navigation,
-    noSubtitle,
     noOvertitle,
-    rightImage,
+    noSubtitle = false,
+    rightImage = false,
     showOpenStatus,
-    withCard
+    withCard = false
   }) => {
     const {
       badge,
@@ -96,6 +96,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
       </BoldText>
     ) : isHeadlineTitle ? (
       <HeadlineText small>{trimNewLines(title)}</HeadlineText>
+    ) : withCard ? (
+      <BoldText style={{ marginTop: normalize(4) }}>{trimNewLines(title)}</BoldText>
     ) : (
       <BoldText small>{trimNewLines(title)}</BoldText>
     );
@@ -256,13 +258,4 @@ TextListItem.propTypes = {
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
   withCard: PropTypes.bool
-};
-
-TextListItem.defaultProps = {
-  leftImage: false,
-  listsWithoutArrows: false,
-  noSubtitle: false,
-  noOvertitle: false,
-  rightImage: false,
-  withCard: false
 };

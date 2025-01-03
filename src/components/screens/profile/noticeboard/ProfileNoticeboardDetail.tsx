@@ -4,13 +4,14 @@ import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
+import { useProfileContext } from '../../../../ProfileProvider';
 import { Icon, normalize, texts } from '../../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
   matomoTrackingString
 } from '../../../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen, useProfileUser } from '../../../../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../../../hooks';
 import { QUERY_TYPES, getQuery } from '../../../../queries';
 import { DELETE_GENERIC_ITEM } from '../../../../queries/genericItem';
 import { ScreenName } from '../../../../types';
@@ -61,7 +62,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
-  const { currentUserData, isLoading } = useProfileUser();
+  const { currentUserData, isLoading } = useProfileContext();
   const currentUserMemberId = currentUserData?.member?.id;
   const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId == memberId;
 
@@ -227,6 +228,8 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
                   navigation.push(ScreenName.ProfileNoticeboardMemberIndex, {
                     data: dataMemberIndex,
                     isCurrentUser,
+                    memberId,
+                    memberEmail: contacts[0].email,
                     memberName: contacts[0].firstName,
                     query: QUERY_TYPES.GENERIC_ITEMS,
                     title: texts.noticeboard.member

@@ -3,8 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
-import { NetworkContext } from '../NetworkProvider';
-import { SettingsContext } from '../SettingsProvider';
 import {
   EmptyMessage,
   EventRecord,
@@ -21,7 +19,9 @@ import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
-import { QUERY_TYPES, getQuery } from '../queries';
+import { NetworkContext } from '../NetworkProvider';
+import { getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
 import { DefectReportFormScreen } from './DefectReport';

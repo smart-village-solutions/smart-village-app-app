@@ -18,6 +18,7 @@ import { getQuery, QUERY_TYPES } from '../queries';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
+/* eslint-disable complexity */
 export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const queryKey = query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query;
@@ -27,7 +28,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks(query, suffix);
   const listType = route.params?.listType ?? LIST_TYPES.TEXT_LIST;
 
-  const variables = { ids: bookmarks, ...queryVariables };
+  const variables = { ...queryVariables, ids: bookmarks };
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -71,7 +72,12 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
       </Wrapper>
     );
   }
-  const listItems = parseListItemsFromQuery(query, data, categoryTitleDetail, { queryKey });
+  const listItems = parseListItemsFromQuery(query, data, categoryTitleDetail, {
+    withDate: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
+    withTime: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
+    skipLastDivider: true,
+    queryKey
+  });
 
   return (
     <SafeAreaViewFlex>
@@ -85,6 +91,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 BookmarkCategoryScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

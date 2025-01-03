@@ -63,23 +63,17 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
     data
   } = useMutation(profileEditMail);
 
-  const {
-    data: dataProfileEditMailScreenTop,
-    loading: loadingProfileEditMailScreenTop,
-    refetch: refetchProfileEditMailScreenTop
-  } = useStaticContent({
-    name: 'profileEditMailScreenTop',
-    type: 'html'
-  });
+  const { data: dataProfileEditMailScreenTop, refetch: refetchProfileEditMailScreenTop } =
+    useStaticContent({
+      name: 'profileEditMailScreenTop',
+      type: 'html'
+    });
 
-  const {
-    data: dataProfileEditMailScreenBottom,
-    loading: loadingProfileEditMailScreenBottom,
-    refetch: refetchProfileEditMailScreenBottom
-  } = useStaticContent({
-    name: 'profileEditMailScreenBottom',
-    type: 'html'
-  });
+  const { data: dataProfileEditMailScreenBottom, refetch: refetchProfileEditMailScreenBottom } =
+    useStaticContent({
+      name: 'profileEditMailScreenBottom',
+      type: 'html'
+    });
 
   const onSubmit = (updateData: ProfileEditMail) => {
     Keyboard.dismiss();
@@ -112,7 +106,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
-              refreshing={loadingProfileEditMailScreenTop || loadingProfileEditMailScreenBottom}
+              refreshing={false}
               onRefresh={() => {
                 refetchProfileEditMailScreenTop();
                 refetchProfileEditMailScreenBottom();

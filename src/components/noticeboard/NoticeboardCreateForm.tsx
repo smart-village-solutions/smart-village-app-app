@@ -11,8 +11,11 @@ import {
   Button,
   Checkbox,
   DateTimeInput,
+  DocumentSelector,
   HtmlView,
   Input,
+  LoadingSpinner,
+  MultiImageSelector,
   RegularText,
   Touchable,
   Wrapper,
@@ -20,15 +23,21 @@ import {
   WrapperRow
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { graphqlFetchPolicy, momentFormat, parseListItemsFromQuery } from '../../helpers';
+import {
+  formatSizeStandard,
+  graphqlFetchPolicy,
+  momentFormat,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
+import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
-import { MultiImageSelector } from '../selectors';
 
-const { EMAIL_REGEX, IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
+const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, MEDIA_TYPES } = consts;
+
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
@@ -36,6 +45,7 @@ type TNoticeboardCreateData = {
   body: string;
   dateEnd: string;
   dateStart: string;
+  documents: string;
   email: string;
   image: string;
   name: string;
@@ -66,6 +76,10 @@ export const NoticeboardCreateForm = ({
     subQuery?.params?.consentForDataProcessingText ??
     route?.params?.consentForDataProcessingText ??
     '';
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showNoticeboardMediaContent = {} } = settings;
+  const { document: showDocument = false, documentMaxSizes = {} } = showNoticeboardMediaContent;
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
   const [isLoading, setIsLoading] = useState(false);
@@ -79,12 +93,19 @@ export const NoticeboardCreateForm = ({
     queryVariables
   }).map((item) => ({ value: item.title, title: item.title }));
 
-  const existingImageUrl = data?.mediaContents?.[0]?.sourceUrl?.url;
+  const formImages = data?.mediaContents?.map((image: any) => {
+    const uri = image.sourceUrl.url;
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+    return { id: image.id, infoText: imageName, uri };
+  });
 
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    setValue
   } = useForm({
     defaultValues: {
       id: data?.id ?? '',
@@ -95,8 +116,9 @@ export const NoticeboardCreateForm = ({
       dateStart: data?.dates?.[0]?.dateStart
         ? moment(data?.dates?.[0]?.dateStart)?.toDate()
         : moment().toDate(),
+      documents: '[]',
       email: data?.contacts?.[0]?.email ?? '',
-      image: existingImageUrl ? JSON.stringify([{ uri: existingImageUrl }]) : '[]',
+      image: formImages?.length ? JSON.stringify(formImages) : '[]',
       name: data?.contacts?.[0]?.firstName ?? '',
       noticeboardType:
         _findKey(
@@ -105,12 +127,14 @@ export const NoticeboardCreateForm = ({
         ) || '',
       price: data?.priceInformations?.[0]?.description?.replace('€', '').trim() ?? '',
       priceType: data?.priceInformations?.[0]?.priceType ?? '€',
+      termsOfService: false,
       title: data?.title ?? ''
     }
   });
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
   let imageUrl: string | undefined;
+  let documentUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -136,7 +160,6 @@ export const NoticeboardCreateForm = ({
       if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
       }
-
       const images = JSON.parse(noticeboardNewData.image);
       const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
         .filter((image) => !!image.id)
@@ -165,6 +188,65 @@ export const NoticeboardCreateForm = ({
         }
       }
 
+      const documents = JSON.parse(noticeboardNewData.documents);
+      const documentsUrl: { sourceUrl: { url: string }; contentType: string }[] = documents
+        ?.filter((document: { id: number }) => !!document.id)
+        ?.map((document: { mimeType: string; cachedAttachment: string }) => ({
+          contentType: document.mimeType,
+          sourceUrl: { url: document.cachedAttachment }
+        }));
+      const documentsSize = documents.reduce(
+        (acc: number, document: any) => acc + document.size,
+        0
+      );
+
+      // check if any document size is bigger than `documentMaxSizes.file`
+      for (const document of documents) {
+        if (!!documentMaxSizes.file && document.size > documentMaxSizes.file) {
+          setIsLoading(false);
+          return Alert.alert(
+            texts.noticeboard.alerts.hint,
+            texts.noticeboard.alerts.documentSizeError(formatSizeStandard(documentMaxSizes.file))
+          );
+        }
+      }
+
+      // check if documents size is bigger than `documentMaxSizes.total`
+      if (documentMaxSizes.total && documentsSize > documentMaxSizes.total) {
+        setIsLoading(false);
+        return Alert.alert(
+          texts.noticeboard.alerts.hint,
+          texts.noticeboard.alerts.documentsSizeError(formatSizeStandard(documentMaxSizes.total))
+        );
+      }
+
+      if (documents?.length) {
+        for (const document of documents) {
+          if (!document.id) {
+            try {
+              documentUrl = await uploadMediaContent(
+                document,
+                document.mimeType,
+                'document',
+                MEDIA_TYPES.DOCUMENT
+              );
+
+              documentUrl &&
+                documentsUrl.push({
+                  sourceUrl: { url: documentUrl },
+                  contentType: document.mimeType
+                });
+            } catch (error) {
+              Alert.alert(
+                texts.noticeboard.alerts.hint,
+                texts.noticeboard.alerts.documentUploadError
+              );
+              return;
+            }
+          }
+        }
+      }
+
       await createGenericItem({
         variables: {
           id: noticeboardNewData.id,
@@ -174,13 +256,13 @@ export const NoticeboardCreateForm = ({
           title: noticeboardNewData.title,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
+          mediaContents: [...documentsUrl, ...imageUrls],
           dates: [
             {
               dateEnd: momentFormat(noticeboardNewData.dateEnd),
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
-          mediaContents: imageUrls,
           priceInformations: [{ description: price }]
         }
       });
@@ -189,7 +271,6 @@ export const NoticeboardCreateForm = ({
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {
       setIsLoading(false);
-
       console.error(error);
     }
   };
@@ -241,6 +322,7 @@ export const NoticeboardCreateForm = ({
                 <Checkbox
                   checked={value === noticeboardItem.value}
                   checkedIcon={<Icon.CircleCheckFilled />}
+                  containerStyle={styles.checkboxContainerStyle}
                   key={noticeboardItem.title}
                   onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
@@ -337,6 +419,25 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
+      {showDocument && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="documents"
+            control={control}
+            render={({ field }) => (
+              <DocumentSelector
+                {...{ control, field, isVolunteer: false }}
+                maxFileSize={documentMaxSizes.file}
+                item={{
+                  buttonTitle: texts.noticeboard.addDocuments,
+                  infoTitle: texts.noticeboard.documentsInfo
+                }}
+              />
+            )}
+          />
+        </Wrapper>
+      )}
+
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="image"
@@ -385,11 +486,14 @@ export const NoticeboardCreateForm = ({
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title={texts.noticeboard.send}
-          disabled={loading || isLoading}
-        />
+        {loading || isLoading ? (
+          <LoadingSpinner loading />
+        ) : (
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
+          />
+        )}
 
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>

@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -35,6 +36,7 @@ type Props = {
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   updatedRegion?: Region;
+  currentPosition?: LocationObject;
 };
 
 const MARKER_ICON_SIZE = normalize(40);
@@ -85,7 +87,7 @@ const renderCluster = (cluster: TCluster) => {
         latitude: geometry.coordinates[1]
       }}
       style={styles.clusterMarker}
-      onPress={onPress}
+      // onPress={onPress} // HINT: https://github.com/venits/react-native-map-clustering/issues/251
     >
       {CIRCLE_SIZES.map((size, index) => (
         <View
@@ -173,6 +175,18 @@ export const Map = ({
     };
   }
 
+  if (
+    showsUserLocation &&
+    otherProps.currentPosition?.coords.latitude &&
+    otherProps.currentPosition?.coords.longitude
+  ) {
+    initialRegion = {
+      ...initialRegion,
+      latitude: otherProps.currentPosition.coords.latitude,
+      longitude: otherProps.currentPosition.coords.longitude
+    };
+  }
+
   return (
     <View style={[styles.container, style]}>
       <MapView
@@ -254,13 +268,14 @@ export const Map = ({
                         ? colors.darkerPrimary
                         : undefined
                     }
+                    iconName={isActiveMarker ? 'locationActive' : undefined}
                     iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
                     iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                   />
                   <View
                     style={[
-                      styles.mapIconOnLocationMarker,
-                      isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined,
+                      styles.mapIconOnLocationMarkerContainer,
+                      isActiveMarker ? styles.mapIconOnLocationMarkerContainerActive : undefined,
                       !!marker.iconBackgroundColor && {
                         backgroundColor: isActiveMarker
                           ? marker.iconColor
@@ -371,19 +386,28 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: normalize(30),
     justifyContent: 'center',
-    left: normalize(13),
+    left: normalize(4),
     position: 'absolute',
-    width: normalize(100)
+    width: normalize(106)
   },
   mapIconOnLocationMarker: {
     alignSelf: 'center',
     backgroundColor: colors.lighterPrimary,
-    position: 'absolute',
-    top: normalize(8)
+    bottom: normalize(5)
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.darkerPrimary,
-    top: normalize(11)
+    bottom: 0
+  },
+  mapIconOnLocationMarkerContainer: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    top: normalize(11),
+    backgroundColor: colors.transparent
+  },
+  mapIconOnLocationMarkerContainerActive: {
+    top: normalize(10)
   },
   maximizeMapButton: {
     alignItems: 'center',

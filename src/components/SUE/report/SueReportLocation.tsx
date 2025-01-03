@@ -35,7 +35,7 @@ export const locationServiceEnabledAlert = ({
   navigation
 }: {
   currentPosition?: Location.LocationObject;
-  locationServiceEnabled?: Boolean;
+  locationServiceEnabled?: boolean;
   navigation: StackNavigationProp<any>;
 }) => {
   if (!locationServiceEnabled || !currentPosition) {
@@ -109,6 +109,9 @@ export const SueReportLocation = ({
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statusBorderColors = {}, statusTextColors = {}, statusViewColors = {} } = sueStatus;
+  const [address, setAddress] = useState(
+    {} as { street: string; houseNumber: string; postalCode: string; city: string }
+  );
 
   const { position } = usePosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
@@ -154,7 +157,7 @@ export const SueReportLocation = ({
   );
 
   const geocode = useCallback(async () => {
-    const { street, houseNumber, postalCode, city } = getValues();
+    const { street, houseNumber, postalCode, city } = address;
 
     if (!street || !postalCode || !city) {
       return;
@@ -162,7 +165,7 @@ export const SueReportLocation = ({
 
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&country=germany&postalcode=${postalCode}`
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&postalcode=${postalCode}&country=germany&countrycodes=de`
       );
 
       const data = await response.json();
@@ -176,7 +179,11 @@ export const SueReportLocation = ({
     } catch (error) {
       console.error('Geocoding Error:', error);
     }
-  }, []);
+  }, [address]);
+
+  useEffect(() => {
+    geocode();
+  }, [address]);
 
   const handleGeocode = async (position: { latitude: number; longitude: number }) =>
     await reverseGeocode({
@@ -327,7 +334,9 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.street}
           textContentType="streetAddressLine1"
           control={control}
-          onChange={geocode}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.STREET]: nativeEvent.text }))
+          }
           ref={streetInputRef}
           onSubmitEditing={() => houseNumberInputRef.current?.focus()}
         />
@@ -345,7 +354,9 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.houseNumber}
           textContentType="off"
           control={control}
-          onChange={geocode}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.HOUSE_NUMBER]: nativeEvent.text }))
+          }
           ref={houseNumberInputRef}
           onSubmitEditing={() => postalCodeInputRef.current?.focus()}
         />
@@ -365,7 +376,9 @@ export const SueReportLocation = ({
           keyboardType="numeric"
           textContentType="postalCode"
           control={control}
-          onChange={geocode}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.POSTAL_CODE]: nativeEvent.text }))
+          }
           ref={postalCodeInputRef}
           onSubmitEditing={() => cityInputRef.current?.focus()}
         />
@@ -383,7 +396,9 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.city}
           control={control}
           textContentType="addressCity"
-          onChange={geocode}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.CITY]: nativeEvent.text }))
+          }
           ref={cityInputRef}
         />
       </Wrapper>

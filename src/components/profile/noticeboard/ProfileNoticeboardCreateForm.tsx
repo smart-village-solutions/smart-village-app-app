@@ -14,6 +14,7 @@ import {
   DateTimeInput,
   HtmlView,
   Input,
+  LoadingSpinner,
   RegularText,
   Touchable,
   Wrapper,
@@ -53,7 +54,7 @@ const NOTICEBOARD_TYPE_OPTIONS = [
 ];
 
 /* eslint-disable complexity */
-export const NoticeboardCreateForm = ({
+export const ProfileNoticeboardCreateForm = ({
   data,
   navigation,
   route
@@ -186,7 +187,6 @@ export const NoticeboardCreateForm = ({
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {
       setIsLoading(false);
-
       console.error(error);
     }
   };
@@ -235,10 +235,11 @@ export const NoticeboardCreateForm = ({
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
           render={({ field: { onChange, value } }) => (
             <>
-              {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
+              {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem: { value: string; title: string }) => (
                 <Checkbox
                   checked={value === noticeboardItem.value}
                   checkedIcon={<Icon.CircleCheckFilled />}
+                  containerStyle={styles.checkboxContainerStyle}
                   key={noticeboardItem.title}
                   onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
@@ -365,11 +366,14 @@ export const NoticeboardCreateForm = ({
       )}
 
       <Wrapper>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title={texts.noticeboard.send}
-          disabled={loading || isLoading}
-        />
+        {loading || isLoading ? (
+          <LoadingSpinner loading />
+        ) : (
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
+          />
+        )}
 
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>
@@ -386,8 +390,11 @@ const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
   },
-  paddingTop: {
-    paddingTop: normalize(16)
+  checkboxContainerStyle: {
+    backgroundColor: colors.surface,
+    borderWidth: 0,
+    marginLeft: 0,
+    marginRight: 0
   },
   textArea: {
     height: normalize(100),

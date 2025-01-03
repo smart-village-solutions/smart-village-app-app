@@ -12,18 +12,21 @@ export const SettingsContext = createContext({
     widgets: []
   },
   listTypesSettings: {},
-  locationSettings: {}
+  locationSettings: {},
+  conversationSettings: {}
 });
 
 export const SettingsProvider = ({
   initialGlobalSettings,
   initialListTypesSettings,
   initialLocationSettings,
+  initialConversationSettings,
   children
 }) => {
   const [globalSettings] = useState(initialGlobalSettings);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
+  const [conversationSettings, setConversationSettings] = useState(initialConversationSettings);
 
   return (
     <SettingsContext.Provider
@@ -32,7 +35,9 @@ export const SettingsProvider = ({
         listTypesSettings,
         setListTypesSettings,
         locationSettings,
-        setLocationSettings
+        setLocationSettings,
+        conversationSettings,
+        setConversationSettings
       }}
     >
       {children}
@@ -44,5 +49,6 @@ SettingsProvider.propTypes = {
   initialGlobalSettings: PropTypes.object.isRequired,
   initialListTypesSettings: PropTypes.object.isRequired,
   initialLocationSettings: PropTypes.object.isRequired,
+  initialConversationSettings: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired
 };

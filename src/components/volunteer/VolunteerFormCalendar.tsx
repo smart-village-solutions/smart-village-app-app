@@ -395,7 +395,6 @@ export const VolunteerFormCalendar = ({
               uncheckedColor={colors.darkText}
               uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
             />
           )}
           control={control}
@@ -428,6 +427,7 @@ export const VolunteerFormCalendar = ({
                 control,
                 field,
                 isVolunteer: true,
+                maxFileSize: '10485760',
                 item: {
                   name: 'documents',
                   label: texts.volunteer.documents,
@@ -470,9 +470,5 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
   }
 });

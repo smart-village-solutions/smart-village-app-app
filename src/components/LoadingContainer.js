@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { normalize } from '../config';
+import { colors, normalize } from '../config';
 
 export const LoadingContainer = ({ children, web }) => (
-  <View style={[styles.loadingContainer, web && styles.webPosition]}>{children}</View>
+  <View style={[styles.loadingContainer, web && styles.webPosition, web && styles.webBackground]}>
+    {children}
+  </View>
 );
 
 const styles = StyleSheet.create({
@@ -21,6 +23,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     width: '100%'
+  },
+  webBackground: {
+    backgroundColor: colors.surface
   }
 });
 

@@ -1,26 +1,31 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMutation } from 'react-apollo';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import {
+  FlagMemberFooter,
   ListComponent,
-  NoticeboardCategoryTabs,
+  ProfileNoticeboardCategoryTabs,
   SafeAreaViewFlex,
   SectionHeader,
   VolunteerAvatar,
   Wrapper
 } from '../../../components';
+import { texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
+import { createQuery, QUERY_TYPES } from '../../../queries';
 
+// eslint-disable-next-line complexity
 export const ProfileNoticeboardMemberIndexScreen = ({
   navigation,
   route
 }: StackScreenProps<any>) => {
-  const { data, isCurrentUser, memberName, query } = route.params;
-
   const [selectedCategory, setSelectedCategory] = useState<number>();
+  const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
 
+  const { data, isCurrentUser, memberId, memberEmail, memberName, query } = route.params;
   const listItems = parseListItemsFromQuery(query, data, '', { queryVariables: { isCurrentUser } });
 
   // create new object of list items filtered by selected category
@@ -65,7 +70,7 @@ export const ProfileNoticeboardMemberIndexScreen = ({
   !!categoryIdsTabs?.length &&
     filteredListItems?.unshift({
       component: (
-        <NoticeboardCategoryTabs
+        <ProfileNoticeboardCategoryTabs
           categoryIdsTabs={categoryIdsTabs}
           categoryNames={categoryNames}
           selectedCategory={selectedCategory}
@@ -73,6 +78,30 @@ export const ProfileNoticeboardMemberIndexScreen = ({
         />
       )
     });
+
+  const onSubmit = async () => {
+    const formData = {
+      dataType: 'json',
+      dataSource: 'form',
+      content: JSON.stringify({
+        name: memberName.trim() || '',
+        email: memberEmail || '',
+        message: texts.profile.flagProfileSubject,
+        action: 'flag_member',
+        memberId
+      })
+    };
+
+    try {
+      await createAppUserContent({ variables: formData });
+      Alert.alert(
+        texts.profile.flagProfileAlertDoneTitle,
+        texts.profile.flagProfileAlertDoneMessage
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <SafeAreaViewFlex>
@@ -92,6 +121,20 @@ export const ProfileNoticeboardMemberIndexScreen = ({
         query={query}
         stickyHeaderIndices={[1]}
       />
+      {!isCurrentUser && (
+        <FlagMemberFooter
+          onPress={() =>
+            Alert.alert(texts.profile.hint, texts.profile.flagProfileAlertMessage, [
+              { text: texts.profile.abort, style: 'cancel' },
+              {
+                text: texts.profile.flag,
+                onPress: onSubmit,
+                style: 'destructive'
+              }
+            ])
+          }
+        />
+      )}
     </SafeAreaViewFlex>
   );
 };

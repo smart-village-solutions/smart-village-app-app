@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.0.2]
+
+This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs
+
+### Added
+
+- integrated tabler icon family
+- added filtering feature for bbBus module that can be set via server
+- added pdf upload and view feature to noticeboard module
+- added the ability to configure via globalSettings for slider
+- added minimum system version value for macOS platform to `app.json`
+
+### Changed
+
+- upgraded Expo to version 51.0.28
+- upgraded `@reactvision/react-viro` to version 2.41.6
+- reducing logs that make development difficult in the app
+- redesign for weather screen
+
+### Fixed
+
+- fixed an issue in the sue module where areaService could not retrieve zip codes
+- fixed the problem of address inputs not being filled automatically with the pin added to the map in the sue module
+- fixed a bug that prevented personalized tiles from being ordered as desired
+- updated event query to improve performance
+
 ## [v4.0.1]
 
 This update includes a new `CustomWidget`, improvements for sue module and and fixes some bugs

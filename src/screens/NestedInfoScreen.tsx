@@ -155,7 +155,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   },
   noPaddingBottom: {
     paddingBottom: 0

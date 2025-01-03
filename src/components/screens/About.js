@@ -89,7 +89,7 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   },
   sectionHeader: {
     paddingLeft: 0,

@@ -1,5 +1,4 @@
 import { noop } from 'lodash';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -12,7 +11,16 @@ import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-export const WebScreen = ({ route }) => {
+export const WebScreen = ({
+  route
+}: {
+  route: {
+    params: {
+      webUrl: string;
+      injectedJavaScript: string;
+    };
+  };
+}) => {
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
@@ -31,6 +39,7 @@ export const WebScreen = ({ route }) => {
       <WebView
         source={{ uri: webUrl }}
         startInLoadingState
+        style={{ backgroundColor: colors.surface }}
         mediaPlaybackRequiresUserAction
         renderLoading={() => (
           <LoadingContainer web>
@@ -48,8 +57,4 @@ export const WebScreen = ({ route }) => {
       />
     </SafeAreaViewFlex>
   );
-};
-
-WebScreen.propTypes = {
-  route: PropTypes.object.isRequired
 };

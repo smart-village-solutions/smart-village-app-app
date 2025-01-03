@@ -1,7 +1,19 @@
 import { addToStore } from '../helpers';
-import { FilterAction, FilterReducerAction } from '../types';
 
 export const DATA_PROVIDER_FILTER_KEY = 'DATA_PROVIDER_FILTER_KEY';
+
+export enum FilterAction {
+  AddDataProvider = 'AddDataProvider',
+  OverwriteDataProviders = 'OverwriteDataProviders',
+  RemoveDataProvider = 'RemoveDataProvider'
+}
+
+export type FilterReducerAction =
+  | {
+      type: FilterAction.AddDataProvider | FilterAction.RemoveDataProvider;
+      payload: string;
+    }
+  | { type: FilterAction.OverwriteDataProviders; payload: string[] };
 
 export const permanentFilterReducer: React.Reducer<string[], FilterReducerAction> = (
   state = [],

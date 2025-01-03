@@ -77,7 +77,7 @@ export const Input = forwardRef(
           multiline={multiline}
           {...furtherProps}
           containerStyle={[styles.container, styles.chatContainer]}
-          inputContainerStyle={styles.inputContainer}
+          inputContainerStyle={[styles.inputContainer, multiline && styles.inputContainerMultiline]}
           inputStyle={[
             styles.input,
             styles.chatInput,
@@ -85,7 +85,7 @@ export const Input = forwardRef(
           ]}
           accessibilityLabel={
             accessibilityLabel ||
-            `${!!a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
+            `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
           }
         />
       );
@@ -149,7 +149,7 @@ export const Input = forwardRef(
         disabledInputStyle={styles.inputDisabled}
         accessibilityLabel={
           accessibilityLabel ||
-          `${!!a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
+          `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
         }
       />
     );
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
   },
   inputError: {
     color: colors.error,
-    fontSize: normalize(12),
-    lineHeight: normalize(16)
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   inputErrorHeight: {
     height: 0

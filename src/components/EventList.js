@@ -24,6 +24,7 @@ const sectionData = (data) => {
         grouped[item.listDate].push(item);
       }
     });
+
     return grouped;
   };
 

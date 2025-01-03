@@ -1,4 +1,4 @@
-import { isARSupportedOnDevice } from '@viro-community/react-viro';
+import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
@@ -53,16 +53,20 @@ export const AugmentedReality = ({
   useEffect(() => {
     const { settings = {} } = globalSettings;
 
-    try {
-      !!settings.ar &&
-        isARSupportedOnDevice(
-          () => null,
-          () => setIsARSupported(true)
-        );
-    } catch (error) {
-      // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
-      console.warn(error);
-    }
+    const supportAr = async () => {
+      try {
+        const isARSupported = (await isARSupportedOnDevice())?.isARSupported;
+
+        if (isARSupported) {
+          setIsARSupported(true);
+        }
+      } catch (error) {
+        // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
+        console.error(error);
+      }
+    };
+
+    !!settings.ar?.tourId && supportAr();
   }, []);
 
   useEffect(() => {

@@ -29,17 +29,19 @@ const getListType = (query, listTypesSettings) => {
 const EventSectionHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
     title={momentFormat(item, 'DD.MM.YYYY dddd')}
-    onPress={() =>
-      navigation.push(ScreenName.Index, {
-        title: texts.homeTitles.events,
-        query,
-        queryVariables: {
-          ...options.queryVariables,
-          dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
-        showFilterByDailyEvents: false
-      })
+    onPress={
+      navigation
+        ? () =>
+            navigation.push(ScreenName.Index, {
+              title: texts.homeTitles.events,
+              query,
+              queryVariables: {
+                ...options.queryVariables,
+                dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
+              },
+              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+            })
+        : undefined
     }
   />
 );
@@ -47,17 +49,20 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
 const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
     title={item.name}
-    onPress={() =>
-      navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
-        title: texts.screenTitles.voucher.index,
-        query,
-        queryVariables: {
-          ...options.queryVariables,
-          categoryId: item.id,
-          category: item.name
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
-      })
+    onPress={
+      navigation
+        ? () =>
+            navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
+              title: texts.screenTitles.voucher.index,
+              query,
+              queryVariables: {
+                ...options.queryVariables,
+                categoryId: item.id,
+                category: item.name
+              },
+              rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
+            })
+        : undefined
     }
   />
 );
@@ -68,15 +73,15 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
  * @param {string} query
  * @param {any} navigation
  * @param {{
- *          horizontal?: boolean;
- *          isIndexStartingAt1?: boolean
- *          noOvertitle?: boolean;
- *          noSubtitle?: boolean;
- *          listType?: boolean
- *          openWebScreen?: () => void;
- *          queryVariables?: object
- *          refetch?: () => void
- *        }} options
+ *     horizontal?: boolean;
+ *     isIndexStartingAt1?: boolean;
+ *     listType?: boolean;
+ *     noOvertitle?: boolean;
+ *     noSubtitle?: boolean;
+ *     openWebScreen?: () => void;
+ *     queryVariables?: object;
+ *     refetch?: () => void;
+ *   }} options
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
@@ -90,7 +95,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
   switch (options.listType || listType) {
     case LIST_TYPES.CARD_LIST: {
-      renderItem = ({ item }) => {
+      renderItem = ({ item, index }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
@@ -101,6 +106,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
             horizontal={options.horizontal}
             noOvertitle={options.noOvertitle}
             item={item}
+            index={index}
           />
         );
       };
@@ -161,6 +167,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
             <CardListItem
               bigTitle
               horizontal={options.horizontal}
+              index={index}
               item={item}
               navigation={navigation}
               noOvertitle={options.noOvertitle}
@@ -179,7 +186,6 @@ export const useRenderItem = (query, navigation, options = {}) => {
               noSubtitle={options.noSubtitle}
               noOvertitle={options.noOvertitle}
               leftImage
-              rightImage
               withCard
             />
           );
@@ -191,11 +197,15 @@ export const useRenderItem = (query, navigation, options = {}) => {
       /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
-          return <ConversationListItem item={item} navigation={navigation} />;
+          return (
+            <ConversationListItem
+              {...{ item, navigation, currentUserId: options.queryVariables?.currentUserId }}
+            />
+          );
         }
 
         if (query === QUERY_TYPES.SUE.REQUESTS) {
-          return <CardListItem navigation={navigation} item={item} sue />;
+          return <CardListItem navigation={navigation} item={item} index={index} sue />;
         }
 
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
@@ -271,13 +281,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
   }
-  /* eslint-enable complexity */
 
   return useCallback(renderItem, [
     query,
     listType,
     navigation,
     options.horizontal,
-    options.noSubtitle
+    options.noSubtitle,
+    options.queryVariables
   ]);
 };

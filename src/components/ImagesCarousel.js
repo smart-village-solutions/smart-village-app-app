@@ -28,7 +28,7 @@ export const ImagesCarousel = ({
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { sliderPauseButton = {} } = settings;
+  const { sliderPauseButton = {}, sliderSettings = {} } = settings;
   const {
     horizontalPosition = 'right',
     show: showSliderPauseButton = false,
@@ -62,7 +62,7 @@ export const ImagesCarousel = ({
   const itemWidth = imageWidth();
 
   const renderItem = useCallback(
-    ({ item }) => {
+    ({ item, refreshInterval }) => {
       const { routeName: name, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
@@ -104,7 +104,7 @@ export const ImagesCarousel = ({
                   containerStyle={styles.imageContainer}
                   message={item.message}
                   navigation={navigation}
-                  refreshInterval={item.refreshInterval}
+                  refreshInterval={item.refreshInterval || refreshInterval}
                   source={item.picture}
                 />
               );
@@ -120,7 +120,7 @@ export const ImagesCarousel = ({
           containerStyle={styles.imageContainer}
           message={item.message}
           navigation={navigation}
-          refreshInterval={item.refreshInterval}
+          refreshInterval={item.refreshInterval || refreshInterval}
           source={item.picture}
         />
       );
@@ -144,20 +144,30 @@ export const ImagesCarousel = ({
 
   return (
     <View>
-      <Carousel
-        data={carouselData}
-        ref={carouselRef}
-        renderItem={renderItem}
-        sliderWidth={dimensions.width}
-        itemWidth={itemWidth}
-        inactiveSlideScale={1}
-        autoplay
-        loop
-        autoplayDelay={0}
-        autoplayInterval={autoplayInterval || 4000}
-        containerCustomStyle={styles.center}
-        onScrollIndexChanged={setCarouselImageIndex}
-      />
+      {isPaused ? (
+        renderItem({ item: carouselData[carouselImageIndex] })
+      ) : (
+        <Carousel
+          data={carouselData}
+          ref={carouselRef}
+          renderItem={({ item }) =>
+            renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
+          }
+          sliderWidth={dimensions.width}
+          itemWidth={itemWidth}
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1}
+          autoplay
+          enableMomentum
+          loop
+          loopClonesPerSide={carouselData.length}
+          autoplayDelay={0}
+          autoplayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
+          containerCustomStyle={styles.center}
+          onScrollIndexChanged={setCarouselImageIndex}
+          removeClippedSubviews={false}
+        />
+      )}
 
       {shouldShowPauseButton &&
         pauseButton(

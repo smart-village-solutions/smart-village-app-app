@@ -17,7 +17,7 @@ import { ServiceTile, TServiceTile } from './ServiceTile';
 
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
 
-const umlautSwitcher = (text: string) => {
+export const umlautSwitcher = (text: string) => {
   if (!text) return;
 
   const umlautReplacements = {
@@ -30,7 +30,9 @@ const umlautSwitcher = (text: string) => {
     ß: 'ss'
   };
 
-  const replacedText = text.replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match]);
+  const replacedText = text
+    .replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match])
+    ?.replace('​', '');
 
   return replacedText;
 };
@@ -74,10 +76,11 @@ export const Service = ({
     (item: TServiceTile, index: number) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
+        draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
         item={item}
-        key={index + (item.title || item.accessibilityLabel)}
+        key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         tileSizeFactor={tileSizeFactor}
       />

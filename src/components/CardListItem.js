@@ -12,8 +12,10 @@ import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
+const keyExtractor = (item, index) => `item${item}-index${index}`;
+
 /* eslint-disable complexity */
-const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
+const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) => {
   const {
     address,
     appDesignSystem = {},
@@ -44,28 +46,43 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
           borderRadius={sue ? 0 : imageBorderRadius}
           childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
           containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
+          key={keyExtractor(picture.url, index)}
           source={{ uri: picture.url }}
         />
       ),
     overtitle: () =>
       !!overtitle && (
         <HeadlineText
+          key={keyExtractor(overtitle, index)}
           smallest
           uppercase
-          style={[styles.overtitleMarginBottom, generalStyle, overtitleStyle]}
+          style={[
+            picture?.url && styles.overtitleMarginTop,
+            styles.overtitleMarginBottom,
+            generalStyle,
+            overtitleStyle
+          ]}
         >
           {trimNewLines(overtitle)}
         </HeadlineText>
       ),
     subtitle: () =>
       !!subtitle && (
-        <RegularText small style={[generalStyle, subtitleStyle]}>
+        <RegularText
+          key={keyExtractor(subtitle, index)}
+          small
+          style={[styles.subtitle, generalStyle, subtitleStyle]}
+        >
           {subtitle}
         </RegularText>
       ),
     title: () =>
       !!title && (
-        <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
+        <HeadlineText
+          key={keyExtractor(title, index)}
+          small={!bigTitle}
+          style={[generalStyle, titleStyle]}
+        >
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </HeadlineText>
       ),
@@ -73,24 +90,31 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
     // SUE
     sue: {
       address: () => (
-        <Wrapper>
+        <Wrapper key={keyExtractor(address, index)}>
           <RegularText small>{address}</RegularText>
         </Wrapper>
       ),
       category: () => (
-        <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
+        <SueCategory
+          key={keyExtractor(serviceName, index)}
+          serviceName={serviceName}
+          requestedDatetime={requestedDatetime}
+        />
       ),
       divider: () => (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper key={keyExtractor('divider', index)} style={styles.noPaddingTop}>
           <Divider />
         </Wrapper>
       ),
       pictureFallback: () => (
         <SueImageFallback
+          key={keyExtractor('fallbackImage', index)}
           style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImageContainer]}
         />
       ),
-      status: () => <SueStatus iconName={iconName} status={status} />
+      status: () => (
+        <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
+      )
     }
   };
 
@@ -108,7 +132,12 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
       !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
       serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.category());
       serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.divider());
-      title && cardContent.push(<WrapperHorizontal>{sequenceMap.title()}</WrapperHorizontal>);
+      title &&
+        cardContent.push(
+          <WrapperHorizontal key={keyExtractor(title, index)}>
+            {sequenceMap.title()}
+          </WrapperHorizontal>
+        );
       address && cardContent.push(sequenceMap.sue.address());
       status && cardContent.push(sequenceMap.sue.status());
     }
@@ -118,59 +147,68 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle, sue) => {
 };
 /* eslint-enable complexity */
 
-export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle, sue }) => {
-  const {
-    appDesignSystem = {},
-    params,
-    routeName: name,
-    serviceName,
-    requestedDatetime,
-    subtitle,
-    title,
-    topTitle
-  } = item;
-  const { containerStyle, contentContainerStyle } = appDesignSystem;
+export const CardListItem = memo(
+  ({
+    bigTitle = false,
+    horizontal = false,
+    index,
+    item,
+    navigation,
+    noOvertitle = false,
+    sue = false
+  }) => {
+    const {
+      appDesignSystem = {},
+      overtitle,
+      params,
+      routeName: name,
+      serviceName,
+      requestedDatetime,
+      subtitle,
+      title
+    } = item;
+    const { containerStyle, contentContainerStyle } = appDesignSystem;
 
-  const accessibilityLabel = [
-    !!requestedDatetime && momentFormat(requestedDatetime),
-    !!serviceName && serviceName,
-    !!topTitle && topTitle,
-    !!title && title,
-    !!subtitle && subtitle
-  ]
-    .filter((text) => !!text)
-    .map((text) => `(${text})`)
-    .join(' ');
+    const accessibilityLabel = [
+      !!requestedDatetime && momentFormat(requestedDatetime),
+      !!serviceName && serviceName,
+      !!overtitle && overtitle,
+      !!title && title,
+      !!subtitle && subtitle
+    ]
+      .filter((text) => !!text)
+      .map((text) => `(${text})`)
+      .join(' ');
 
-  return (
-    <Touchable
-      accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
-      onPress={() => navigation && navigation.push(name, params)}
-      disabled={!navigation}
-    >
-      <View>
-        <Card
-          containerStyle={[
-            styles.container,
-            stylesWithProps({ horizontal }).container,
-            containerStyle
-          ]}
-        >
-          <View
-            style={[
-              stylesWithProps({ horizontal }).contentContainer,
-              contentContainerStyle,
-              sue && styles.sueContentContainer
+    return (
+      <Touchable
+        accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
+        onPress={() => navigation && navigation.push(name, params)}
+        disabled={!navigation}
+      >
+        <View>
+          <Card
+            containerStyle={[
+              styles.container,
+              stylesWithProps({ horizontal }).container,
+              containerStyle
             ]}
           >
-            {renderCardContent(item, horizontal, noOvertitle, bigTitle, sue)}
-          </View>
-        </Card>
-        {!horizontal && <Divider />}
-      </View>
-    </Touchable>
-  );
-});
+            <View
+              style={[
+                stylesWithProps({ horizontal }).contentContainer,
+                contentContainerStyle,
+                sue && styles.sueContentContainer
+              ]}
+            >
+              {renderCardContent(item, index, horizontal, noOvertitle, bigTitle, sue)}
+            </View>
+          </Card>
+        </View>
+      </Touchable>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -190,8 +228,14 @@ const styles = StyleSheet.create({
   overtitleMarginBottom: {
     marginBottom: normalize(4)
   },
+  overtitleMarginTop: {
+    marginTop: normalize(6)
+  },
+  subtitle: {
+    marginTop: normalize(6)
+  },
   imageContainer: {
-    marginBottom: normalize(12)
+    marginBottom: normalize(8)
   },
   noPaddingTop: {
     paddingTop: 0
@@ -231,7 +275,6 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
     },
     image: {
       height: imageHeight(maxWidth, aspectRatio),
-      marginBottom: normalize(7),
       width: maxWidth
     }
   });
@@ -243,15 +286,9 @@ CardListItem.displayName = 'CardListItem';
 CardListItem.propTypes = {
   bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
+  index: PropTypes.number,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,
   sue: PropTypes.bool
-};
-
-CardListItem.defaultProps = {
-  bigTitle: false,
-  horizontal: false,
-  noOvertitle: false,
-  sue: false
 };

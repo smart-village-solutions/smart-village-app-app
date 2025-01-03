@@ -1,0 +1,632 @@
+diff --git a/node_modules/react-native-render-html/src/RenderHTMLConfigProvider.tsx b/node_modules/react-native-render-html/src/RenderHTMLConfigProvider.tsx
+index 0df5375..39306bf 100644
+--- a/node_modules/react-native-render-html/src/RenderHTMLConfigProvider.tsx
++++ b/node_modules/react-native-render-html/src/RenderHTMLConfigProvider.tsx
+@@ -1,5 +1,4 @@
+ import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
+-import PropTypes from 'prop-types';
+ import RenderersPropsProvider from './context/RenderersPropsProvider';
+ import SharedPropsProvider from './context/SharedPropsProvider';
+ import TChildrenRenderersContext from './context/TChildrenRendererContext';
+@@ -20,29 +19,6 @@ const childrenRendererContext = {
+   TNodeChildrenRenderer
+ };
+ 
+-export type RenderHTMLConfigPropTypes = Record<keyof RenderHTMLConfig, any>;
+-
+-export const renderHTMLConfigPropTypes: RenderHTMLConfigPropTypes = {
+-  bypassAnonymousTPhrasingNodes: PropTypes.bool,
+-  defaultTextProps: PropTypes.object,
+-  defaultViewProps: PropTypes.object,
+-  enableExperimentalBRCollapsing: PropTypes.bool,
+-  enableExperimentalGhostLinesPrevention: PropTypes.bool,
+-  enableExperimentalMarginCollapsing: PropTypes.bool,
+-  remoteErrorView: PropTypes.func,
+-  remoteLoadingView: PropTypes.func,
+-  debug: PropTypes.bool,
+-  computeEmbeddedMaxWidth: PropTypes.func,
+-  renderersProps: PropTypes.object,
+-  WebView: PropTypes.any,
+-  GenericPressable: PropTypes.any,
+-  defaultWebViewProps: PropTypes.object,
+-  pressableHightlightColor: PropTypes.string,
+-  customListStyleSpecs: PropTypes.object,
+-  renderers: PropTypes.object,
+-  provideEmbeddedHeaders: PropTypes.func
+-};
+-
+ /**
+  * A component to provide configuration for {@link RenderHTMLSource}
+  * descendants, to be used in conjunction with {@link TRenderEngineProvider}.
+@@ -85,8 +61,3 @@ export default function RenderHTMLConfigProvider(
+     </RenderRegistryProvider>
+   );
+ }
+\ No newline at end of file
+-
+-/**
+- * @ignore
+- */
+-RenderHTMLConfigProvider.propTypes = renderHTMLConfigPropTypes;
+diff --git a/node_modules/react-native-render-html/src/RenderHTMLSource.tsx b/node_modules/react-native-render-html/src/RenderHTMLSource.tsx
+index c91da52..c7196cc 100644
+--- a/node_modules/react-native-render-html/src/RenderHTMLSource.tsx
++++ b/node_modules/react-native-render-html/src/RenderHTMLSource.tsx
+@@ -1,7 +1,7 @@
++
+ import equals from 'ramda/src/equals';
+ import React, { memo, ReactElement, useMemo } from 'react';
+ import { Dimensions } from 'react-native';
+-import PropTypes from 'prop-types';
+ import ttreeEventsContext from './context/ttreeEventsContext';
+ import isUriSource from './helpers/isUriSource';
+ import { SourceLoaderProps, TTreeEvents } from './internal-types';
+@@ -20,34 +20,6 @@ import contentWidthContext from './context/contentWidthContext';
+ import isDomSource from './helpers/isDomSource';
+ import useProfiler from './hooks/useProfiler';
+ 
+-export type RenderHTMLSourcePropTypes = Record<
+-  keyof RenderHTMLSourceProps,
+-  any
+->;
+-
+-export const renderSourcePropTypes: RenderHTMLSourcePropTypes = {
+-  source: PropTypes.oneOfType([
+-    PropTypes.shape({
+-      html: PropTypes.string.isRequired,
+-      baseUrl: PropTypes.string
+-    }),
+-    PropTypes.shape({
+-      dom: PropTypes.object.isRequired,
+-      baseUrl: PropTypes.string
+-    }),
+-    PropTypes.shape({
+-      uri: PropTypes.string.isRequired,
+-      method: PropTypes.string,
+-      body: PropTypes.any,
+-      headers: PropTypes.object
+-    })
+-  ]),
+-  onTTreeChange: PropTypes.func,
+-  onHTMLLoaded: PropTypes.func,
+-  onDocumentMetadataLoaded: PropTypes.func,
+-  contentWidth: PropTypes.number
+-};
+-
+ function isEmptySource(source: undefined | HTMLSource) {
+   return (
+     !source ||
+@@ -58,9 +30,9 @@ function isEmptySource(source: undefined | HTMLSource) {
+ }
+ 
+ function RawSourceLoader({
+-  source,
+-  ...props
+-}: SourceLoaderProps): ReactElement | null {
++                           source,
++                           ...props
++                         }: SourceLoaderProps): ReactElement | null {
+   if (isEmptySource(source)) {
+     /* istanbul ignore next */
+     if (typeof __DEV__ === 'boolean' && __DEV__) {
+@@ -102,11 +74,11 @@ function shallowEqual(prop1: any, prop2: any) {
+  */
+ const RenderHTMLSource = memo(
+   function RenderHtmlSource({
+-    onDocumentMetadataLoaded,
+-    onTTreeChange,
+-    contentWidth,
+-    ...props
+-  }: RenderHTMLSourceProps) {
++                              onDocumentMetadataLoaded,
++                              onTTreeChange,
++                              contentWidth,
++                              ...props
++                            }: RenderHTMLSourceProps) {
+     const profile = useProfiler({
+       prop: 'onDocumentMetadataLoaded or onTTreeChange'
+     });
+@@ -136,9 +108,4 @@ const RenderHTMLSource = memo(
+   }
+ );
+ 
+-/**
+- * @ignore
+- */
+-(RenderHTMLSource as any).propTypes = renderSourcePropTypes;
+-
+ export default RenderHTMLSource;
+diff --git a/node_modules/react-native-render-html/src/TChildrenRenderer.tsx b/node_modules/react-native-render-html/src/TChildrenRenderer.tsx
+index 618a592..8a10df2 100644
+--- a/node_modules/react-native-render-html/src/TChildrenRenderer.tsx
++++ b/node_modules/react-native-render-html/src/TChildrenRenderer.tsx
+@@ -9,16 +9,4 @@ import renderChildren from './renderChildren';
+ const TChildrenRenderer: FunctionComponent<TChildrenRendererProps> =
+   renderChildren.bind(null);
+ 
+-export const tchildrenRendererDefaultProps: Pick<
+-  TChildrenRendererProps,
+-  'propsForChildren'
+-> = {
+-  propsForChildren: {}
+-};
+-
+-/**
+- * @ignore
+- */
+-TChildrenRenderer.defaultProps = tchildrenRendererDefaultProps;
+-
+ export default TChildrenRenderer;
+\ No newline at end of file
+diff --git a/node_modules/react-native-render-html/src/TNodeChildrenRenderer.tsx b/node_modules/react-native-render-html/src/TNodeChildrenRenderer.tsx
+index bf5aef6..1c88a84 100644
+--- a/node_modules/react-native-render-html/src/TNodeChildrenRenderer.tsx
++++ b/node_modules/react-native-render-html/src/TNodeChildrenRenderer.tsx
+@@ -1,7 +1,7 @@
++
+ import { ReactElement } from 'react';
+ import { TNode } from '@native-html/transient-render-engine';
+ import { useSharedProps } from './context/SharedPropsProvider';
+-import { tchildrenRendererDefaultProps } from './TChildrenRenderer';
+ import {
+   TChildrenRendererProps,
+   TNodeChildrenRendererProps
+@@ -39,11 +39,11 @@ function isCollapsible(tnode: TNode) {
+  * ```
+  */
+ export function useTNodeChildrenProps({
+-  tnode,
+-  propsForChildren,
+-  disableMarginCollapsing = false,
+-  renderChild
+-}: TNodeChildrenRendererProps): TChildrenRendererProps {
++                                        tnode,
++                                        propsForChildren,
++                                        disableMarginCollapsing = false,
++                                        renderChild
++                                      }: TNodeChildrenRendererProps): TChildrenRendererProps {
+   const { enableExperimentalMarginCollapsing } = useSharedProps();
+   const shouldCollapseChildren =
+     enableExperimentalMarginCollapsing &&
+@@ -73,9 +73,4 @@ function TNodeChildrenRenderer(
+   return renderChildren(useTNodeChildrenProps(props));
+ }
+ 
+-/**
+- * @ignore
+- */
+-TNodeChildrenRenderer.defaultProps = tchildrenRendererDefaultProps;
+-
+ export default TNodeChildrenRenderer;
+diff --git a/node_modules/react-native-render-html/src/TNodeRenderer.tsx b/node_modules/react-native-render-html/src/TNodeRenderer.tsx
+index d32140f..7a3d4e6 100644
+--- a/node_modules/react-native-render-html/src/TNodeRenderer.tsx
++++ b/node_modules/react-native-render-html/src/TNodeRenderer.tsx
+@@ -49,6 +49,7 @@ const TNodeRenderer = memo(function MemoizedTNodeRenderer(
+   const renderRegistry = useRendererRegistry();
+   const TNodeChildrenRenderer = useTNodeChildrenRenderer();
+   const tnodeProps = {
++    propsFromParent: { collapsedMarginTop: null },
+     ...props,
+     TNodeChildrenRenderer,
+     sharedProps
+@@ -57,10 +58,10 @@ const TNodeRenderer = memo(function MemoizedTNodeRenderer(
+     tnode.type === 'block' || tnode.type === 'document'
+       ? TDefaultBlockRenderer
+       : tnode.type === 'text'
+-      ? TDefaultTextRenderer
+-      : tnode.type === 'phrasing'
+-      ? TDefaultPhrasingRenderer
+-      : renderEmptyContent;
++        ? TDefaultTextRenderer
++        : tnode.type === 'phrasing'
++          ? TDefaultPhrasingRenderer
++          : renderEmptyContent;
+ 
+   const { assembledProps, Renderer } = useAssembledCommonProps(
+     tnodeProps,
+@@ -120,16 +121,6 @@ const TNodeRenderer = memo(function MemoizedTNodeRenderer(
+     : React.createElement(Renderer as any, assembledProps);
+ });
+ 
+-const defaultProps: Required<Pick<TNodeRendererProps<any>, 'propsFromParent'>> =
+-  {
+-    propsFromParent: {
+-      collapsedMarginTop: null
+-    }
+-  };
+-
+-// @ts-expect-error default props must be defined
+-TNodeRenderer.defaultProps = defaultProps;
+-
+ export {
+   TDefaultBlockRenderer,
+   TDefaultPhrasingRenderer,
+diff --git a/node_modules/react-native-render-html/src/TRenderEngineProvider.tsx b/node_modules/react-native-render-html/src/TRenderEngineProvider.tsx
+index 95b60df..f3b5503 100644
+--- a/node_modules/react-native-render-html/src/TRenderEngineProvider.tsx
++++ b/node_modules/react-native-render-html/src/TRenderEngineProvider.tsx
+@@ -1,73 +1,14 @@
++
+ import TRenderEngine from '@native-html/transient-render-engine';
+ import React, { PropsWithChildren, ReactElement } from 'react';
+-import { Platform } from 'react-native';
+-import PropTypes from 'prop-types';
+ import useTRenderEngine from './hooks/useTRenderEngine';
+ import { TRenderEngineConfig } from './shared-types';
+-import defaultSystemFonts from './defaultSystemFonts';
+ 
+ const defaultTRenderEngine = {} as any;
+ 
+ const TRenderEngineContext =
+   React.createContext<TRenderEngine>(defaultTRenderEngine);
+ 
+-export const tRenderEngineProviderPropTypes: Record<
+-  keyof TRenderEngineConfig,
+-  any
+-> = {
+-  customHTMLElementModels: PropTypes.object.isRequired,
+-  enableCSSInlineProcessing: PropTypes.bool,
+-  enableUserAgentStyles: PropTypes.bool,
+-  idsStyles: PropTypes.object,
+-  ignoredDomTags: PropTypes.array,
+-  ignoreDomNode: PropTypes.func,
+-  domVisitors: PropTypes.object,
+-  ignoredStyles: PropTypes.array.isRequired,
+-  allowedStyles: PropTypes.array,
+-  htmlParserOptions: PropTypes.object,
+-  tagsStyles: PropTypes.object,
+-  classesStyles: PropTypes.object,
+-  emSize: PropTypes.number.isRequired,
+-  baseStyle: PropTypes.object,
+-  systemFonts: PropTypes.arrayOf(PropTypes.string),
+-  fallbackFonts: PropTypes.shape({
+-    serif: PropTypes.string,
+-    'sans-serif': PropTypes.string,
+-    monospace: PropTypes.string
+-  }),
+-  setMarkersForTNode: PropTypes.func,
+-  dangerouslyDisableHoisting: PropTypes.bool,
+-  dangerouslyDisableWhitespaceCollapsing: PropTypes.bool,
+-  selectDomRoot: PropTypes.func
+-};
+-
+-/**
+- * Default fallback font for special keys such as 'sans-serif', 'monospace',
+- * 'serif', based on current platform.
+- */
+-export const defaultFallbackFonts = {
+-  'sans-serif': Platform.select({ ios: 'system', default: 'sans-serif' }),
+-  monospace: Platform.select({ ios: 'Menlo', default: 'monospace' }),
+-  serif: Platform.select({ ios: 'Times New Roman', default: 'serif' })
+-};
+-
+-export const defaultTRenderEngineProviderProps: TRenderEngineConfig = {
+-  htmlParserOptions: {
+-    decodeEntities: true
+-  },
+-  emSize: 14,
+-  ignoredDomTags: [],
+-  ignoredStyles: [],
+-  baseStyle: { fontSize: 14 },
+-  tagsStyles: {},
+-  classesStyles: {},
+-  enableUserAgentStyles: true,
+-  enableCSSInlineProcessing: true,
+-  customHTMLElementModels: {},
+-  fallbackFonts: defaultFallbackFonts,
+-  systemFonts: defaultSystemFonts
+-};
+-
+ /**
+  * Use the ambient transient render engine.
+  *
+@@ -96,9 +37,9 @@ export function useAmbientTRenderEngine() {
+  * @param props - Pass engine config here.
+  */
+ export default function TRenderEngineProvider({
+-  children,
+-  ...config
+-}: PropsWithChildren<TRenderEngineConfig>): ReactElement {
++                                                children,
++                                                ...config
++                                              }: PropsWithChildren<TRenderEngineConfig>): ReactElement {
+   const engine = useTRenderEngine(config);
+   return (
+     <TRenderEngineContext.Provider value={engine}>
+@@ -106,13 +47,3 @@ export default function TRenderEngineProvider({
+     </TRenderEngineContext.Provider>
+   );
+ }
+-
+-/**
+- * @ignore
+- */
+-TRenderEngineProvider.defaultProps = defaultTRenderEngineProviderProps;
+-
+-/**
+- * @ignore
+- */
+-TRenderEngineProvider.propTypes = tRenderEngineProviderPropTypes;
+diff --git a/node_modules/react-native-render-html/src/elements/IMGElement.tsx b/node_modules/react-native-render-html/src/elements/IMGElement.tsx
+index 573e7c1..8413ee1 100644
+--- a/node_modules/react-native-render-html/src/elements/IMGElement.tsx
++++ b/node_modules/react-native-render-html/src/elements/IMGElement.tsx
+@@ -1,19 +1,13 @@
+ import React, { ReactElement, ReactNode } from 'react';
+-import PropTypes from 'prop-types';
+ import useIMGElementState from './useIMGElementState';
+ import IMGElementContentSuccess from './IMGElementContentSuccess';
+ import IMGElementContainer from './IMGElementContainer';
+ import IMGElementContentLoading from './IMGElementContentLoading';
+ import IMGElementContentError from './IMGElementContentError';
+ import type { IMGElementProps } from './img-types';
+-import defaultImageInitialDimensions from './defaultInitialImageDimensions';
+ 
+ export type { IMGElementProps } from './img-types';
+ 
+-function identity(arg: any) {
+-  return arg;
+-}
+-
+ /**
+  * A component to render images based on an internal loading state.
+  *
+@@ -44,42 +38,4 @@ function IMGElement(props: IMGElementProps): ReactElement {
+   );
+ }
+ 
+-const imgDimensionsType = PropTypes.shape({
+-  width: PropTypes.number,
+-  height: PropTypes.number
+-});
+-
+-const propTypes: Record<keyof IMGElementProps, any> = {
+-  source: PropTypes.object.isRequired,
+-  alt: PropTypes.string,
+-  altColor: PropTypes.string,
+-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+-  computeMaxWidth: PropTypes.func.isRequired,
+-  contentWidth: PropTypes.number,
+-  enableExperimentalPercentWidth: PropTypes.bool,
+-  initialDimensions: imgDimensionsType,
+-  onPress: PropTypes.func,
+-  testID: PropTypes.string,
+-  objectFit: PropTypes.string,
+-  cachedNaturalDimensions: imgDimensionsType,
+-  containerProps: PropTypes.object
+-};
+-
+-/**
+- * @ignore
+- */
+-IMGElement.propTypes = propTypes;
+-
+-/**
+- * @ignore
+- */
+-IMGElement.defaultProps = {
+-  enableExperimentalPercentWidth: false,
+-  computeMaxWidth: identity,
+-  imagesInitialDimensions: defaultImageInitialDimensions,
+-  style: {}
+-};
+-
+ export default IMGElement;
+\ No newline at end of file
+diff --git a/node_modules/react-native-render-html/src/elements/useIMGElementState.ts b/node_modules/react-native-render-html/src/elements/useIMGElementState.ts
+index 6590d21..ea405e8 100644
+--- a/node_modules/react-native-render-html/src/elements/useIMGElementState.ts
++++ b/node_modules/react-native-render-html/src/elements/useIMGElementState.ts
+@@ -13,9 +13,9 @@ import { getIMGState } from './getIMGState';
+ import useImageSpecifiedDimensions from './useImageSpecifiedDimensions';
+ 
+ function getImageSizeAsync({
+-  uri,
+-  headers
+-}: {
++                             uri,
++                             headers
++                           }: {
+   headers: any;
+   uri: string;
+ }): Promise<ImageDimensions> {
+@@ -42,7 +42,7 @@ function useImageNaturalDimensions<P extends UseIMGElementStateProps>(props: {
+       : ImageDimensions | null
+   >((cachedNaturalDimensions as any) || null);
+   const { width: cachedNaturalWidth, height: cachedNaturalHeight } =
+-    cachedNaturalDimensions || {};
++  cachedNaturalDimensions || {};
+   const [error, setError] = useState<null | Error>(null);
+   useEffect(
+     function resetOnURIChange() {
+@@ -100,6 +100,10 @@ function useFetchedNaturalDimensions(props: {
+   };
+ }
+ 
++function identity(arg: any) {
++  return arg;
++}
++
+ /**
+  * This hook will compute concrete dimensions from image natural dimensions and
+  * constraints. It will fetch the image and get its dimensions.
+@@ -116,7 +120,7 @@ export default function useIMGElementState(
+     altColor,
+     source,
+     contentWidth,
+-    computeMaxWidth,
++    computeMaxWidth = identity,
+     objectFit,
+     initialDimensions = defaultImageInitialDimensions,
+     cachedNaturalDimensions
+diff --git a/node_modules/react-native-render-html/src/elements/useImageSpecifiedDimensions.ts b/node_modules/react-native-render-html/src/elements/useImageSpecifiedDimensions.ts
+index 5d6271b..ed46fcf 100644
+--- a/node_modules/react-native-render-html/src/elements/useImageSpecifiedDimensions.ts
++++ b/node_modules/react-native-render-html/src/elements/useImageSpecifiedDimensions.ts
+@@ -41,12 +41,12 @@ function normalizeSize(
+  * Extract specified dimensions from props.
+  */
+ function deriveSpecifiedDimensionsFromProps({
+-  width,
+-  height,
+-  contentWidth,
+-  flatStyle,
+-  enableExperimentalPercentWidth: enablePercentWidth
+-}: Pick<
++                                              width,
++                                              height,
++                                              contentWidth,
++                                              flatStyle,
++                                              enableExperimentalPercentWidth: enablePercentWidth
++                                            }: Pick<
+   UseIMGElementStateProps,
+   'width' | 'height' | 'contentWidth' | 'enableExperimentalPercentWidth'
+ > & { flatStyle: Record<string, any> }): IncompleteImageDimensions {
+@@ -71,7 +71,7 @@ function deriveSpecifiedDimensionsFromProps({
+ export default function useImageSpecifiedDimensions(
+   props: UseIMGElementStateProps
+ ) {
+-  const { contentWidth, enableExperimentalPercentWidth, style, width, height } =
++  const { contentWidth, enableExperimentalPercentWidth = false, style = {}, width, height } =
+     props;
+   const flatStyle = useMemo(() => StyleSheet.flatten(style) || {}, [style]);
+   const specifiedDimensions = useMemo(
+diff --git a/node_modules/react-native-render-html/src/hooks/useTRenderEngine.ts b/node_modules/react-native-render-html/src/hooks/useTRenderEngine.ts
+index 6f706aa..e571bea 100644
+--- a/node_modules/react-native-render-html/src/hooks/useTRenderEngine.ts
++++ b/node_modules/react-native-render-html/src/hooks/useTRenderEngine.ts
+@@ -1,33 +1,61 @@
++
+ import { useMemo } from 'react';
++import { Platform } from 'react-native';
+ import { TRenderEngineConfig } from '../shared-types';
+ import buildTREFromConfig from '../helpers/buildTREFromConfig';
+ import useProfiler from './useProfiler';
++import defaultSystemFonts from '../defaultSystemFonts';
++
++/**
++ * Default fallback font for special keys such as 'sans-serif', 'monospace',
++ * 'serif', based on current platform.
++ */
++export const defaultFallbackFonts = {
++  'sans-serif': Platform.select({ ios: 'system', default: 'sans-serif' }),
++  monospace: Platform.select({ ios: 'Menlo', default: 'monospace' }),
++  serif: Platform.select({ ios: 'Times New Roman', default: 'serif' })
++};
++
++const defaultConfig = {
++  baseStyle: { fontSize: 14 },
++  classesStyles: {},
++  customHTMLElementModels: {},
++  emSize: 14,
++  enableCSSInlineProcessing: true,
++  enableUserAgentStyles: true,
++  fallbackFonts: defaultFallbackFonts,
++  htmlParserOptions: { decodeEntities: true },
++  ignoredDomTags: [],
++  ignoredStyles: [],
++  systemFonts: defaultSystemFonts,
++  tagsStyles: {}
++}
+ 
+ /**
+  * @internal
+  */
+ export default function useTRenderEngine({
+-  allowedStyles,
+-  baseStyle,
+-  classesStyles,
+-  customHTMLElementModels,
+-  dangerouslyDisableHoisting,
+-  dangerouslyDisableWhitespaceCollapsing,
+-  domVisitors,
+-  emSize,
+-  enableCSSInlineProcessing,
+-  enableUserAgentStyles,
+-  fallbackFonts,
+-  htmlParserOptions,
+-  idsStyles,
+-  ignoreDomNode,
+-  ignoredDomTags,
+-  ignoredStyles,
+-  selectDomRoot,
+-  setMarkersForTNode,
+-  systemFonts,
+-  tagsStyles
+-}: TRenderEngineConfig) {
++                                           allowedStyles,
++                                           baseStyle = defaultConfig.baseStyle,
++                                           classesStyles = defaultConfig.classesStyles,
++                                           customHTMLElementModels = defaultConfig.customHTMLElementModels,
++                                           dangerouslyDisableHoisting,
++                                           dangerouslyDisableWhitespaceCollapsing,
++                                           domVisitors,
++                                           emSize = defaultConfig.emSize,
++                                           enableCSSInlineProcessing = defaultConfig.enableCSSInlineProcessing,
++                                           enableUserAgentStyles = defaultConfig.enableUserAgentStyles,
++                                           fallbackFonts = defaultConfig.fallbackFonts,
++                                           htmlParserOptions = defaultConfig.htmlParserOptions,
++                                           idsStyles,
++                                           ignoreDomNode,
++                                           ignoredDomTags = defaultConfig.ignoredDomTags,
++                                           ignoredStyles = defaultConfig.ignoredStyles,
++                                           selectDomRoot,
++                                           setMarkersForTNode,
++                                           systemFonts = defaultConfig.systemFonts,
++                                           tagsStyles = defaultConfig.tagsStyles
++                                         }: TRenderEngineConfig) {
+   const profile = useProfiler({ name: 'TRenderEngineProvider' });
+   return useMemo(() => {
+     typeof __DEV__ === 'boolean' && __DEV__ && profile();
+diff --git a/node_modules/react-native-render-html/src/index.ts b/node_modules/react-native-render-html/src/index.ts
+index 8569583..ee985cc 100644
+--- a/node_modules/react-native-render-html/src/index.ts
++++ b/node_modules/react-native-render-html/src/index.ts
+@@ -128,7 +128,6 @@ export {
+ export { default as TNodeRenderer } from './TNodeRenderer';
+ export {
+   default as TRenderEngineProvider,
+-  defaultFallbackFonts,
+   useAmbientTRenderEngine
+ } from './TRenderEngineProvider';
+ export { default as RenderHTMLConfigProvider } from './RenderHTMLConfigProvider';
+diff --git a/node_modules/react-native-render-html/src/renderChildren.tsx b/node_modules/react-native-render-html/src/renderChildren.tsx
+index a669402..20a3560 100644
+--- a/node_modules/react-native-render-html/src/renderChildren.tsx
++++ b/node_modules/react-native-render-html/src/renderChildren.tsx
+@@ -28,21 +28,21 @@ const mapCollapsibleChildren = (
+   });
+   return typeof renderChild === 'function'
+     ? renderChild({
+-        key,
+-        childElement,
+-        index: n,
+-        childTnode,
+-        propsFromParent
+-      })
++      key,
++      childElement,
++      index: n,
++      childTnode,
++      propsFromParent
++    })
+     : childElement;
+ };
+ 
+ export default function renderChildren({
+-  tchildren,
+-  propsForChildren = empty,
+-  disableMarginCollapsing,
+-  renderChild
+-}: TChildrenRendererProps): ReactElement {
++                                         tchildren,
++                                         propsForChildren = {},
++                                         disableMarginCollapsing,
++                                         renderChild
++                                       }: TChildrenRendererProps): ReactElement {
+   const elements = tchildren.map(
+     mapCollapsibleChildren.bind(
+       null,

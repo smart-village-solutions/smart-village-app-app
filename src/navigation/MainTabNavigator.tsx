@@ -31,6 +31,7 @@ export const MainTabNavigator = ({
         tabBarActiveTintColor: tabNavigatorConfig.activeTintColor,
         tabBarInactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
         tabBarInactiveTintColor: tabNavigatorConfig.inactiveTintColor,
+        tabBarHideOnKeyboard: true,
         tabBarItemStyle: { marginTop: normalize(0) },
         tabBarStyle: {
           backgroundColor: colors.surface,
@@ -39,7 +40,7 @@ export const MainTabNavigator = ({
           height: tabBarHeight
         },
         tabBarLabelStyle: {
-          fontSize: normalize(11),
+          fontSize: normalize(12),
           lineHeight: normalize(14),
           marginBottom: orientation === 'portrait' ? normalize(10) : undefined,
           marginTop: orientation === 'portrait' ? normalize(4) : undefined

@@ -47,12 +47,14 @@ export const DocumentSelector = ({
   control,
   field,
   isVolunteer,
-  item
+  item,
+  maxFileSize
 }: {
   control: any;
   field: any;
   isVolunteer: boolean;
   item: any;
+  maxFileSize: number;
 }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
@@ -110,19 +112,18 @@ export const DocumentSelector = ({
 
     /* the server does not support files more than 10MB in size. */
     const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
-    const consulErrorText = await documentErrorMessageGenerator(uri);
+    /* the server does not support files more than maxFileSize in size. */
+    const errorText = await documentErrorMessageGenerator(uri, maxFileSize);
 
     setDocumentsAttributes([
       ...documentsAttributes,
-      isVolunteer ? { uri, mimeType } : { title, cachedAttachment: uri }
+      isVolunteer ? { uri, mimeType } : { title, cachedAttachment: uri, size, mimeType }
     ]);
 
     setInfoAndErrorText([
       ...infoAndErrorText,
       {
-        errorText: isVolunteer
-          ? volunteerErrorText
-          : texts.consul.startNew[consulErrorText as keyof typeof texts.consul.startNew],
+        errorText: isVolunteer ? volunteerErrorText : errorText,
         infoText: isVolunteer ? `${title}` : `(${mimeType}, ${formatSize(size)})`
       }
     ]);

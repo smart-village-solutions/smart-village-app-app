@@ -51,6 +51,7 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
       eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city,
       withTime ? eventRecord?.date?.timeFrom || eventRecord?.dates?.[0]?.timeFrom : undefined
     ),
+    addresses: eventRecord.addresses,
     title: eventRecord.title,
     picture: {
       url: mainImageOfMediaContents(eventRecord.mediaContents)
@@ -157,6 +158,7 @@ const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = un
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },
+    addresses: pointOfInterest.addresses,
     routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.pointOfInterest,
@@ -178,11 +180,12 @@ const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = un
 const parseTours = (data, skipLastDivider) => {
   return data?.map((tour, index) => ({
     id: tour.id,
-    title: tour.name,
     overtitle: tour.category?.name,
+    title: tour.name,
     picture: {
       url: mainImageOfMediaContents(tour.mediaContents)
     },
+    addresses: tour.addresses,
     routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.tour,
@@ -228,6 +231,7 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
         category: `${category.name}`,
         location: queryVariables?.location
       },
+      usedAsInitialScreen: false,
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
@@ -265,16 +269,16 @@ const parseConversations = (data) =>
  * @param {any} data
  * @param {string | undefined} titleDetail
  * @param {{
- *    appDesignSystem?: any;
- *    bookmarkable?: boolean;
- *    isSectioned?: boolean;
- *    queryKey?: string;
- *    queryVariables?: any;
- *    skipLastDivider?: boolean;
- *    subQuery?: any;
- *    withDate?: boolean;
- *    withTime?: boolean;
- *  }} options
+ *     appDesignSystem?: any;
+ *     bookmarkable?: boolean;
+ *     isSectioned?: boolean;
+ *     queryKey?: string;
+ *     queryVariables?: any;
+ *     skipLastDivider?: boolean;
+ *     subQuery?: any;
+ *     withDate?: boolean;
+ *     withTime?: boolean;
+ *   }} options
  * @returns
  */
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
@@ -284,6 +288,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     appDesignSystem,
     bookmarkable = true,
     isSectioned = false,
+    queryKey,
     queryVariables,
     skipLastDivider = false,
     subQuery,
@@ -361,7 +366,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     // VOUCHERS
     case QUERY_TYPES.VOUCHERS:
     case QUERY_TYPES.VOUCHERS_REDEEMED:
-      return parseVouchersData(data[options.queryKey], skipLastDivider);
+      return parseVouchersData(data[queryKey], skipLastDivider);
     case QUERY_TYPES.VOUCHERS_CATEGORIES:
       return parseVouchersCategories(data[QUERY_TYPES.GENERIC_ITEMS], skipLastDivider);
     default:

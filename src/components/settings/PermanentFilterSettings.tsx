@@ -8,7 +8,7 @@ import { usePermanentFilter, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { addDataProvidersToTokenOnServer } from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { FilterAction } from '../../types';
+import { FilterAction } from '../../reducers';
 import { SettingsToggle } from '../SettingsToggle';
 
 const keyExtractor = (item: { id: number }, index: number) => `index${index}-id${item.id}`;

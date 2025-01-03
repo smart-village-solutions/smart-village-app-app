@@ -32,6 +32,7 @@ import { NetworkContext, NetworkProvider } from './NetworkProvider';
 import { OnboardingManager } from './OnboardingManager';
 import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
+import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import { SettingsProvider } from './SettingsProvider';
@@ -53,6 +54,7 @@ const MainAppWithApolloProvider = () => {
   });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
+  const [initialConversationSettings, setInitialConversationSettings] = useState({});
   const [authRetried, setAuthRetried] = useState(false);
 
   const setupApolloClient = async () => {
@@ -179,6 +181,7 @@ const MainAppWithApolloProvider = () => {
     setInitialLocationSettings(locationSettings);
     setInitialListTypesSettings(listTypesSettings);
     setInitialGlobalSettings(globalSettings);
+    setInitialConversationSettings((await storageHelper.conversationSettings()) || {});
 
     // this is currently the last point where something was done, so the app startup is done
     setLoading(false);
@@ -219,14 +222,17 @@ const MainAppWithApolloProvider = () => {
         {...{
           initialGlobalSettings,
           initialListTypesSettings,
-          initialLocationSettings
+          initialLocationSettings,
+          initialConversationSettings
         }}
       >
         <ConfigurationsProvider>
           <OnboardingManager>
-            <UnreadMessagesProvider>
-              <Navigator navigationType={initialGlobalSettings.navigation} />
-            </UnreadMessagesProvider>
+            <ProfileProvider>
+              <UnreadMessagesProvider>
+                <Navigator navigationType={initialGlobalSettings.navigation} />
+              </UnreadMessagesProvider>
+            </ProfileProvider>
           </OnboardingManager>
         </ConfigurationsProvider>
       </SettingsProvider>

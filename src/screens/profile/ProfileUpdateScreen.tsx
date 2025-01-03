@@ -22,7 +22,8 @@ import {
 } from '../../components';
 import { colors, texts } from '../../config';
 import { storeProfileUserData } from '../../helpers';
-import { useProfileUser, useStaticContent } from '../../hooks';
+import { useStaticContent } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
 
@@ -45,7 +46,7 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { currentUserData } = useProfileUser();
+  const { currentUserData } = useProfileContext();
   const member = route.params?.member ?? {};
   const from = route.params?.from ?? '';
   const { preferences = {}, first_name, last_name } = member;
@@ -76,23 +77,17 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     data
   } = useMutation(profileUpdate);
 
-  const {
-    data: dataProfileUpdateScreenTop,
-    loading: loadingProfileUpdateScreenTop,
-    refetch: refetchProfileUpdateScreenTop
-  } = useStaticContent({
-    name: 'profileUpdateScreenTop',
-    type: 'html'
-  });
+  const { data: dataProfileUpdateScreenTop, refetch: refetchProfileUpdateScreenTop } =
+    useStaticContent({
+      name: 'profileUpdateScreenTop',
+      type: 'html'
+    });
 
-  const {
-    data: dataProfileUpdateScreenBottom,
-    loading: loadingProfileUpdateScreenBottom,
-    refetch: refetchProfileUpdateScreenBottom
-  } = useStaticContent({
-    name: 'profileUpdateScreenBottom',
-    type: 'html'
-  });
+  const { data: dataProfileUpdateScreenBottom, refetch: refetchProfileUpdateScreenBottom } =
+    useStaticContent({
+      name: 'profileUpdateScreenBottom',
+      type: 'html'
+    });
 
   const onSubmit = (updateData: ProfileUpdate) =>
     mutateUpdate(updateData, {
@@ -137,7 +132,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
-              refreshing={loadingProfileUpdateScreenTop || loadingProfileUpdateScreenBottom}
+              refreshing={false}
               onRefresh={() => {
                 refetchProfileUpdateScreenTop();
                 refetchProfileUpdateScreenBottom();
@@ -217,6 +212,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                     errors,
                     label: texts.profile.birthday,
                     maximumDate: moment().subtract(18, 'years').toDate(),
+                    minimumDate: moment().subtract(100, 'years').toDate(),
                     mode: 'date',
                     name,
                     onChange,

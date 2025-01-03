@@ -3,22 +3,34 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
+import { useHomeRefresh } from './hooks';
+import { useProfileContext } from './ProfileProvider';
 import { QUERY_TYPES, getQuery } from './queries';
 
-const defaultUnreadMessage = { count: 0, loading: false };
+const defaultUnreadMessage = { count: 0, loading: false, refetch: () => {}, reset: () => {} };
 const defaultPollInterval = 15 * 60 * 1000; // 15 minutes
 
 export const UnreadMessagesContext = createContext(defaultUnreadMessage);
 
 export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNode }) => {
+  const { isLoggedIn } = useProfileContext();
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
-  const { data: conversationData, loading } = useQuery(getQuery(query), {
+  const {
+    data: conversationData,
+    loading,
+    refetch
+  } = useQuery(getQuery(query), {
     pollInterval: defaultPollInterval,
+    skip: !isLoggedIn,
     variables: {
       conversationableType: 'GenericItem'
     }
+  });
+
+  useHomeRefresh(() => {
+    isLoggedIn && refetch();
   });
 
   const getUnreadMessagesCount = useCallback(() => {
@@ -33,16 +45,20 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
   }, [conversationData]);
 
   useEffect(() => {
-    const unreadMessagesCount = getUnreadMessagesCount();
+    setUnreadMessagesCount(getUnreadMessagesCount());
+  }, [getUnreadMessagesCount]);
 
-    setUnreadMessagesCount(unreadMessagesCount);
-  }, [conversationData]);
+  useEffect(() => {
+    isLoggedIn && refetch();
+  }, [isLoggedIn]);
 
   return (
     <UnreadMessagesContext.Provider
       value={{
         count: unreadMessagesCount,
-        loading
+        loading,
+        refetch,
+        reset: () => setUnreadMessagesCount(0)
       }}
     >
       {children}

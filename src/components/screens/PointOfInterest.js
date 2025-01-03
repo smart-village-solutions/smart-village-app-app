@@ -54,7 +54,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     payload,
     priceInformations,
     title,
-    travelTimes,
     vouchers,
     webUrls
   } = data;

@@ -8,10 +8,11 @@ import { useOpenWebScreen } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
-import { WrapperHorizontal } from './Wrapper';
+import { WrapperHorizontal, WrapperRow } from './Wrapper';
 
 const { a11yLabel } = consts;
 
+// eslint-disable-next-line complexity
 export const Checkbox = ({
   boldTitle = false,
   center = false,
@@ -32,7 +33,7 @@ export const Checkbox = ({
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
   const headerTitle = title ?? '';
   const rootRouteName = '';
-  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
+  const openWebScreen = link ? useOpenWebScreen(headerTitle, link, rootRouteName) : undefined;
 
   return (
     <CheckBox
@@ -51,20 +52,22 @@ export const Checkbox = ({
       center={center}
       title={
         <WrapperHorizontal>
-          {boldTitle ? (
-            <BoldText small lightest={lightest}>
-              {title}
-            </BoldText>
-          ) : (
-            <RegularText small lightest={lightest}>
-              {title}
-            </RegularText>
-          )}
-          {(!!link || !!navigate) && !!linkDescription && (
-            <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
-              {linkDescription}
-            </RegularText>
-          )}
+          <WrapperRow>
+            {boldTitle ? (
+              <BoldText small lightest={lightest}>
+                {title}
+              </BoldText>
+            ) : (
+              <RegularText small lightest={lightest}>
+                {title}
+              </RegularText>
+            )}
+            {(!!link || !!navigate) && !!linkDescription && (
+              <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
+                {linkDescription}
+              </RegularText>
+            )}
+          </WrapperRow>
         </WrapperHorizontal>
       }
       onPress={onPress}
@@ -97,7 +100,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   titleStyle: {
-    color: colors.darkText
+    color: colors.darkText,
+    fontWeight: 'normal'
   }
 });
 
@@ -115,9 +119,4 @@ Checkbox.propTypes = {
   onPress: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   uncheckedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
-};
-
-CheckBox.defaultProps = {
-  checkedIcon: 'dot-circle-o',
-  uncheckedIcon: 'circle-o'
 };

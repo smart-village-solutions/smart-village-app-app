@@ -1,7 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
-import { TServiceTile } from '../components';
+import { TServiceTile, umlautSwitcher } from '../components';
 import { Positions } from '../components/screens/DraggableItem';
 import { addToStore, readFromStore } from '../helpers';
 
@@ -29,7 +29,8 @@ export const usePersonalizedTiles = (
       // if we are not in edit mode we want to filter out tiles entirely.
       // if there is no entry in `toggles`, it means that the tile is new or never toggled, so we
       // want to show it.
-      const isVisible = (item: TServiceTile) => toggles[item.title || item.accessibilityLabel] ?? 1;
+      const isVisible = (item: TServiceTile) =>
+        toggles[umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)] ?? 1;
 
       if (isEditMode) {
         personalizedTiles = personalizedTiles.map((item: TServiceTile) => ({
@@ -44,8 +45,8 @@ export const usePersonalizedTiles = (
     if (sorter) {
       personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
         const sortTitles = {
-          a: a.title?.replace('​', '') || a.accessibilityLabel,
-          b: b.title?.replace('​', '') || b.accessibilityLabel
+          a: umlautSwitcher(a.title) || umlautSwitcher(a.accessibilityLabel),
+          b: umlautSwitcher(b.title) || umlautSwitcher(b.accessibilityLabel)
         };
         const sortA =
           sorter?.[sortTitles.a] ?? tiles.findIndex((d: TServiceTile) => d.title === a.title);

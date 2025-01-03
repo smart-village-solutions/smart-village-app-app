@@ -7,6 +7,7 @@ type AppIntroSlideData = {
   image: string;
   title: string;
   text: string;
+  onLeaveSlideName?: string;
   onLeaveSlide?: Initializer;
 };
 
@@ -31,6 +32,7 @@ export const parseIntroSlides = (json: unknown): AppIntroSlide[] => {
 
   return json.filter<AppIntroSlideData>(isValidAppIntroSlideData).map((value) => ({
     ...value,
+    onLeaveSlideName: value.onLeaveSlide,
     onLeaveSlide: value.onLeaveSlide ? Initializers[value.onLeaveSlide] : undefined
   }));
 };

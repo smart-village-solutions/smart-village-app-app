@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /**
  * Formatting a subtitle with a separating | if necessary
  *
@@ -10,9 +11,11 @@
 export const subtitle = (first, last, time) => {
   if (!first && !time && !last) return '';
 
+  if (first && time && last) return `${first}, ${time} Uhr | ${last}`;
+
   if (first && last) return `${first} | ${last}`;
 
-  if (time && last) return `${time} Uhr, ${last}`;
+  if (time && last) return `${time} Uhr | ${last}`;
 
   if (first) return first;
 
@@ -20,6 +23,7 @@ export const subtitle = (first, last, time) => {
 
   return last;
 };
+/* eslint-enable complexity */
 
 /**
  * Truncate text to a certain length

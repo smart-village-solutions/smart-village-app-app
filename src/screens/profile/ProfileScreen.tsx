@@ -1,11 +1,10 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
-import { NetworkContext } from '../../NetworkProvider';
 import {
   Button,
   LoadingSpinner,
@@ -19,10 +18,12 @@ import {
 } from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
-import { useProfileUser } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
+import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
 
 import { ProfileUpdateScreen } from './ProfileUpdateScreen';
 
@@ -35,8 +36,8 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
   ]);
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
-  const { currentUserData } = useProfileUser();
-  const [refreshing, setRefreshing] = useState(false);
+  const { refetch: refetchUnreadMessages, reset: resetUnreadMessages } = useMessagesContext();
+  const { currentUserData } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
   const isProfileUpdated =
     !!Object.keys(currentUserData?.member?.preferences || {}).length &&
@@ -61,17 +62,16 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
   });
 
   const refreshHome = useCallback(async () => {
-    setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
-  }, [isConnected, refetch]);
+    if (isConnected) {
+      await refetch();
+      refetchUnreadMessages();
+    }
+  }, [isConnected, refetch, refetchUnreadMessages]);
 
   useFocusEffect(
     useCallback(() => {
-      if (!isProfileUpdated) {
-        refetch();
-      }
-    }, [isConnected, refetch, route.params?.refreshUser])
+      refreshHome();
+    }, [refreshHome, route.params?.refreshUser])
   );
 
   if (isLoading) {
@@ -95,7 +95,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={false}
             onRefresh={refreshHome}
             colors={[colors.refreshControl]}
             tintColor={colors.refreshControl}
@@ -118,11 +118,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
 
         <Divider />
 
-        <SectionHeader
-          big
-          containerStyle={styles.settingsContainer}
-          title={texts.profile.settings}
-        />
+        <SectionHeader containerStyle={styles.settingsContainer} title={texts.profile.settings} />
 
         <WrapperHorizontal>
           <TextListItem
@@ -162,13 +158,27 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             navigation={navigation}
             noSubtitle
           />
+
+          <TextListItem
+            item={{
+              bottomDivider: true,
+              isHeadlineTitle: false,
+              onPress: () => navigation.navigate(ScreenName.ProfileDelete),
+              routeName: ScreenName.ProfileDelete,
+              title: texts.profile.deleteProfile
+            }}
+            navigation={navigation}
+            noSubtitle
+          />
         </WrapperHorizontal>
 
         <Wrapper>
           <Button
             invert
             onPress={() => {
+              resetUnreadMessages();
               storeProfileAuthToken();
+              storeProfileUserData();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
             }}
             title={texts.profile.logout}

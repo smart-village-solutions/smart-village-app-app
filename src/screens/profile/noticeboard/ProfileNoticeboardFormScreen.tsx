@@ -6,8 +6,8 @@ import {
   DefaultKeyboardAvoidingView,
   HtmlView,
   LoadingContainer,
-  NoticeboardCreateForm,
   NoticeboardMessageForm,
+  ProfileNoticeboardCreateForm,
   SafeAreaViewFlex,
   Wrapper
 } from '../../../components';
@@ -55,7 +55,7 @@ export const ProfileNoticeboardFormScreen = ({
     );
   }
 
-  const Component = isNewEntryForm ? NoticeboardCreateForm : NoticeboardMessageForm;
+  const Component = isNewEntryForm ? ProfileNoticeboardCreateForm : NoticeboardMessageForm;
 
   return (
     <SafeAreaViewFlex>

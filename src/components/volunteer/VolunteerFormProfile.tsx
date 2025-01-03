@@ -1,5 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import moment from 'moment';
 import React, { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
@@ -259,6 +260,7 @@ export const VolunteerFormProfile = ({
           render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
+                minimumDate: moment().subtract(100, 'years').toDate(),
                 mode: 'date',
                 errors,
                 value,
@@ -282,7 +284,6 @@ export const VolunteerFormProfile = ({
               checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={styles.checkboxContainerStyle}
               onPress={() => onChange(!value)}
-              textStyle={styles.checkboxTextStyle}
               title="Jahr im Profil verbergen"
               uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
@@ -526,10 +527,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
   },
   divider: {
     backgroundColor: colors.placeholder

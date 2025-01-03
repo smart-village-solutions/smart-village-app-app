@@ -1,7 +1,9 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 
+import { BookmarkContext } from '../../BookmarkProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import { consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -37,14 +39,19 @@ export const BookmarkSection = ({
   setConnectionState
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { toggleBookmark } = useContext(BookmarkContext);
   // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items
   const variables = query === QUERY_TYPES.VOUCHERS ? { ids } : { ids: ids.slice(0, 3) };
+
+  if (query === QUERY_TYPES.EVENT_RECORDS) {
+    variables.onlyUniqEvents = true;
+  }
 
   const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const { loading, data } = useQuery(getQuery(query), {
+  const { loading, data, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
     variables
   });
@@ -54,6 +61,7 @@ export const BookmarkSection = ({
       navigation.navigate(ScreenName.BookmarkCategory, {
         suffix,
         query,
+        queryVariables: variables,
         title: sectionTitle,
         categoryTitleDetail,
         listType
@@ -62,13 +70,28 @@ export const BookmarkSection = ({
   );
 
   useEffect(() => {
-    if (!loading)
+    if (!loading) {
       setConnectionState((state) => {
         const newState = { ...state };
         newState[bookmarkKey] = !!data;
         return newState;
       });
-  }, [data, bookmarkKey, loading, setConnectionState]);
+
+      if (!data?.[query]?.length) {
+        for (const id of ids) {
+          toggleBookmark(query, id, suffix);
+        }
+      }
+    }
+  }, [data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
+
+  if (!data?.[query]?.length) return null;
 
   return (
     <WrapperVertical>
@@ -80,6 +103,7 @@ export const BookmarkSection = ({
         navigate={onPressShowMore}
         navigation={navigation}
         query={query}
+        queryVariables={variables}
         sectionData={data}
         sectionTitle={sectionTitle}
         sectionTitleDetail={categoryTitleDetail}

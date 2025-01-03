@@ -45,9 +45,9 @@ export const BookmarkHeader = ({ route, style }: Props) => {
       accessibilityHint={a11yLabel.bookmarkListHint}
     >
       {isBookmarked ? (
-        <Icon.HeartFilled color={colors.lightestText} style={style} />
+        <Icon.HeartFilled color={colors.lightestText} style={style} hasNoHitSlop />
       ) : (
-        <Icon.HeartEmpty color={colors.lightestText} style={style} />
+        <Icon.HeartEmpty color={colors.lightestText} style={style} hasNoHitSlop />
       )}
     </TouchableOpacity>
   );
