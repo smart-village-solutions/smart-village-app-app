@@ -74,7 +74,7 @@ export const ImageSelector = ({
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
-  const { maxCount, maxFileSize } = configuration?.limitation;
+  const { maxCount, maxFileSize } = configuration?.limitation || {};
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
