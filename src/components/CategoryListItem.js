@@ -1,9 +1,10 @@
+import _upperFirst from 'lodash/upperFirst';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, IconUrl, normalize } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
@@ -23,6 +24,7 @@ export class CategoryListItem extends React.PureComponent {
       topDivider
     } = item;
     const count = pointsOfInterestTreeCount > 0 ? pointsOfInterestTreeCount : toursTreeCount;
+    const SelectedIcon = iconName ? Icon[_upperFirst(iconName)] : undefined;
 
     return (
       <ListItem
@@ -40,7 +42,7 @@ export class CategoryListItem extends React.PureComponent {
         Component={Touchable}
         accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}
       >
-        {!!iconName && <IconUrl iconName={iconName} />}
+        {!!SelectedIcon && <SelectedIcon color={colors.darkText} />}
 
         <ListItem.Content>
           {noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}

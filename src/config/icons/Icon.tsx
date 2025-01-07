@@ -176,7 +176,6 @@ export const Icon = {
   ExpandMap: (props: IconProps) => <NamedIcon name="maximize" {...props} />,
   Flag: (props: IconProps) => <NamedIcon name="flag-2" {...props} />,
   Filter: (props: IconProps) => <SvgIcon xml={filter} {...props} />,
-  Flag: (props: IconProps) => <NamedIcon name="flag-2" {...props} />,
   GPS: (props: IconProps) => <SvgIcon xml={gps} {...props} />,
   HeartEmpty: (props: IconProps) => <NamedIcon name="heart" {...props} />,
   HeartFilled: (props: IconProps) => <NamedIcon name="heart-filled" {...props} />,

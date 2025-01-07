@@ -1,5 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
+import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -8,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { IconUrl, colors, device, normalize } from '../../config';
+import { Icon, colors, device, normalize } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
@@ -161,9 +162,13 @@ export const LocationOverview = ({
     : undefined;
 
   if (item && !item.picture?.url) {
+    const SelectedIcon = item?.iconName
+      ? Icon[_upperFirst(item.iconName) as keyof typeof Icon]
+      : undefined;
+
     item.leftIcon = (
       <View style={[styles.iconContainer, styles.imageSize]}>
-        {!!item.iconName && <IconUrl color={colors.primary} iconName={item.iconName} />}
+        {!!SelectedIcon && <SelectedIcon color={colors.darkerPrimary} />}
       </View>
     );
   }
