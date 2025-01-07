@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3
   },
   listItem: {
-    marginTop: normalize(16)
+    marginVertical: normalize(16)
   },
   map: {
     height: '100%',
