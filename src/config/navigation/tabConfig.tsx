@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import { upperFirst } from 'lodash';
 import React from 'react';
 
 import { OrientationAwareIcon } from '../../components';
@@ -36,6 +37,7 @@ const serviceTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.service} (Tab 2 von 5)`,
     tabBarLabel: texts.tabBarLabel.service,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon color={color} Icon={Icon.Service} />
@@ -49,6 +51,7 @@ const pointOfInterestTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.pointsOfInterest} (Tab 3 von 5)`,
     tabBarLabel: texts.tabBarLabel.pointsOfInterest,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon color={color} Icon={Icon.Location} size={normalize(30)} />
@@ -62,6 +65,7 @@ const eventsTabConfig: TabConfig = {
     isDrawer: false
   }),
   tabOptions: {
+    tabBarAccessibilityLabel: `${texts.tabBarLabel.events} (Tab 4 von 5)`,
     tabBarLabel: texts.tabBarLabel.events,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon color={color} Icon={Icon.Calendar} size={normalize(24)} />
@@ -102,3 +106,31 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
     aboutTabConfig
   ]
 };
+
+export const createDynamicTabConfig = (
+  accessibilityLabel: string,
+  iconName: string,
+  iconSize: number,
+  index: number,
+  label: string,
+  length: number,
+  screen: ScreenName,
+  initialParams?: Record<string, any>
+): TabConfig => ({
+  stackConfig: defaultStackConfig({
+    initialParams,
+    initialRouteName: screen,
+    isDrawer: false
+  }),
+  tabOptions: {
+    tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${length})`,
+    tabBarLabel: label,
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon[upperFirst(iconName)]}
+        size={normalize(iconSize)}
+      />
+    )
+  }
+});
