@@ -390,24 +390,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: normalize(106)
   },
-  mapIconOnLocationMarker: {
-    alignSelf: 'center',
-    backgroundColor: colors.lighterPrimary,
-    bottom: normalize(5)
-  },
-  mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.darkerPrimary,
-    bottom: 0
-  },
   mapIconOnLocationMarkerContainer: {
+    backgroundColor: colors.transparent,
     height: '100%',
-    width: '100%',
+    left: MARKER_ICON_SIZE / 2.5,
     position: 'absolute',
-    top: normalize(11),
-    backgroundColor: colors.transparent
+    top: MARKER_ICON_SIZE / 4.75,
+    width: '100%'
   },
   mapIconOnLocationMarkerContainerActive: {
-    top: normalize(10)
+    left: MARKER_ICON_SIZE / 1.9,
+    top: MARKER_ICON_SIZE / 3.6
   },
   maximizeMapButton: {
     alignItems: 'center',
