@@ -392,11 +392,9 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarkerContainer: {
     backgroundColor: colors.transparent,
-    height: '100%',
     left: MARKER_ICON_SIZE / 2.5,
     position: 'absolute',
-    top: MARKER_ICON_SIZE / 4.75,
-    width: '100%'
+    top: MARKER_ICON_SIZE / 4.75
   },
   mapIconOnLocationMarkerContainerActive: {
     left: MARKER_ICON_SIZE / 1.9,
