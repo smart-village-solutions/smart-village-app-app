@@ -109,13 +109,15 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
 
 export const createDynamicTabConfig = (
   accessibilityLabel: string,
-  iconName: string,
-  iconSize: number,
+  iconName: keyof typeof Icon,
+  iconSize: number = 24,
   index: number,
   label: string,
-  length: number,
+  totalCount: number,
   screen: ScreenName,
-  initialParams?: Record<string, any>
+  initialParams?: Record<string, any>,
+  iconLandscapeStyle?: ViewStyle,
+  iconStyle?: ViewStyle
 ): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialParams,
@@ -123,13 +125,16 @@ export const createDynamicTabConfig = (
     isDrawer: false
   }),
   tabOptions: {
-    tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${length})`,
+    tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${totalCount})`,
     tabBarLabel: label,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon[upperFirst(iconName)]}
+        iconName={iconName}
+        Icon={Icon[iconName as keyof typeof Icon]}
+        landscapeStyle={iconLandscapeStyle}
         size={normalize(iconSize)}
+        style={iconStyle}
       />
     )
   }
