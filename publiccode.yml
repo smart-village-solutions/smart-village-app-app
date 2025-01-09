@@ -110,6 +110,7 @@ localisation:
   availableLanguages:
     - de
   localisationReady: false
+logo: smart-village-app-logo.png
 maintenance:
   contacts:
     - email: p.wilimzig@smart-village.solutions
