@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import { upperFirst } from 'lodash';
 import React from 'react';
+import { ViewStyle } from 'react-native';
 
 import { OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
