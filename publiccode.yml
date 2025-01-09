@@ -135,30 +135,37 @@ softwareType: standalone/mobile
 softwareVersion: 4.0.0
 url: 'https://github.com/ikuseiGmbH/smart-village-app-app'
 usedBy:
-  - Angermünde
-  - Bad Belzig
-  - Bernau bei Berlin
-  - Birkenwerder
-  - Detmold
-  - Eberswalde
-  - Eichenzell
-  - Eisenhüttenstadt
-  - Falkenberg/Elster
-  - Frankfurt (Oder)
-  - Gransee
-  - Guben
-  - Hagenow
-  - Herzberg/Elster
-  - Hohen Neuendorf
-  - Kyritz
   - Landkreis Havelland
   - Landkreis Mayen-Koblenz
   - Landkreis Uckermark
-  - Michendorf
-  - Nuthetal
-  - Panketal
-  - Prenzlau
-  - Rüdersdorf
-  - Schönefeld
-  - Seelow
-  - Spremberg
+  - Stadt Angermünde
+  - Stadt Arneburg-Goldbeck
+  - Stadt Bad Belzig
+  - Stadt Bernau bei Berlin
+  - Stadt Detmold
+  - Stadt Eberswalde
+  - Stadt Eisenhüttenstadt
+  - Stadt Falkenberg (Elster)
+  - Stadt Frankfurt (Oder)
+  - Stadt Guben
+  - Stadt Hagenow
+  - Stadt Herzberg/Elster
+  - Stadt Hohen Neuendorf
+  - Stadt Kiel
+  - Stadt Kyritz
+  - Stadt Linz am Rhein
+  - Stadt Prenzlau
+  - Stadt Seelow
+  - Stadt Spremberg
+  - Stadt Storkow
+  - Amt Gransee und Gemeinden
+  - Amt Schlieben
+  - Gemeine Birkenwerder
+  - Gemeinde Eichenzell
+  - Gemeinde Grünheide
+  - Gemeinde Michendorf
+  - Gemeinde Nuthetal
+  - Gemeinde Panketal
+  - Gemeinde Rüdersdorf
+  - Gemeinde Schönefeld
+  - Bremen (MeinQuartier)
