@@ -18,21 +18,21 @@ description:
       - Surveys
       - many more
     longDescription: >-
-      The Smart Village App is an information and service app. In addition to
-      administrative services, which are made available in bundled form via the
-      app, locals and tourists can obtain information from the respective
-      municipality. For example, hiking routes are made available via the app,
-      and local news and events are published. Citizens are given the
-      opportunity to report current problems or find out about administrative
-      services via the Smart Village App, among other things. Consequently, the
-      Smart Village App contributes to improving the exchange of information in
-      rural areas. The Smart Village App was developed by municipalities for
-      municipalities and is adaptable to the individual needs of the
-      municipalities. One of the goals is to form a network of Smart Village
-      municipalities for the purpose of work sharing. The joint generation and
-      use of synergy effects from ideas and experiences of the participants
-      enables a reduction of costs. The Smart Village App is a nationwide
-      offering that has already been implemented in numerous municipalities.
+      The Smart Village App is an information and service app. In addition to administrative
+      services, which are made available in bundled form via the app, locals and tourists can
+      obtain information on and from the respective municipality. For example, hiking routes are
+      provided via the app, local news and events are published, and basic public services are
+      offered. Citizens can use the Smart Village App to report current issues or learn about
+      administrative services, among other things.
+      The Smart Village App thus contributes to improving the exchange of information
+      between administrations and citizens. It was developed by municipalities for municipalities
+      and is adaptable to the individual needs of each city or town. Counties and municipal
+      associations also use the Smart Village App for their areas.
+      All participating municipalities are in constant exchange with one another. The goal of
+      this network is to facilitate work sharing: the joint creation and utilization of synergies
+      from the ideas and experiences of the participants reduces costs and helps launch new apps
+      more successfully. The Smart Village App is a nationwide offering that has already been
+      implemented in numerous municipalities.
     shortDescription: >-
       The Smart Village App is a modular app builder for municipalities and
       cities.
@@ -52,20 +52,24 @@ description:
       Die Smart Village App ist eine Informations- und Dienstleistungsapp. Neben
       Verwaltungsdienstleistungen, die gebündelt über die App zur Verfügung
       gestellt werden, erhalten Einheimische, Touristinnen und Touristen
-      Informationen aus der jeweiligen Kommune. Beispielsweise werden
-      Wanderrouten über die App zur Verfügung gestellt sowie Lokalnachrichten
-      und Veranstaltungen veröffentlicht. Bürgerinnen und Bürger erhalten über
-      die Smart Village App u. a. die Möglichkeit, aktuelle Probleme zu melden
-      oder sich über Verwaltungsdienstleistungen zu informieren. Die Smart
-      Village App leistet folglich einen Beitrag zur Verbesserung des
-      Informationsaustausches im ländlichen Raum. Die Smart Village App wurde
-      von Gemeinden für Gemeinden entwickelt und ist an die individuellen
-      Bedarfe der Kommunen anpassbar. Ziel ist u. a. die Bildung eines
-      Netzwerkes der Smart-Village-Kommunen zum Zweck der Arbeitsteilung. Die
-      gemeinsame Erzeugung und Nutzung von Synergieeffekten aus Ideen und
-      Erfahrungen der Beteiligten ermöglicht eine Kostenreduzierung. Die Smart
-      Village App ist ein bundesweites Angebot, welches bereits in zahlreichen
-      Kommunen umgesetzt wurde.
+      Informationen aus der jeweiligen Kommune. Beispielsweise werden Wanderrouten
+      über die App zur Verfügung gestellt, Lokalnachrichten und Veranstaltungen
+      veröffentlicht sowie grundlegende Dienste der Daseinsvorsorge angeboten.
+      Bürgerinnen und Bürger erhalten über die Smart Village App u. a. die
+      Möglichkeit, aktuelle Probleme zu melden oder sich über
+      Verwaltungsdienstleistungen zu informieren.
+      Die Smart Village App leistet folglich einen Beitrag zur Verbesserung des
+      Informationsaustausches zwischen Verwaltung und Bürgern und Bürgerinnen.
+      Die Smart Village App wurde von Kommunen für Kommunen entwickelt und ist an
+      die individuellen Bedarfe jeder einzelnen Stadt oder Gemeinde
+      anpassbar. Auch Landkreise und Verbandsgemeinden nutzen die Smart Village
+      App für ihre Gebiete.
+      Alle nutzenden Kommunen stehen in einem ständigen Austausch. Ziel dieses
+      Netzwerks ist eine Arbeitsteilung: Die gemeinsame Erzeugung und Nutzung von
+      Synergieeffekten aus Ideen und Erfahrungen der Beteiligten ermöglicht eine
+      Kostenreduzierung und hilft dabei, neue Apps immer erfolgreicher an den Start
+      zu bringen. Die Smart Village App ist ein bundesweites Angebot, welches
+      bereits in zahlreichen Kommunen umgesetzt wurde.
     shortDescription: >-
       Die Smart Village App ist ein open-source App-Baukasten für Kommunen,
       Städte und Landkreise.
