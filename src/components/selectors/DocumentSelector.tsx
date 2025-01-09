@@ -44,20 +44,21 @@ const deleteDocumentAlert = (onPress: () => void) =>
   );
 
 export const DocumentSelector = ({
+  configuration,
   control,
   field,
   isVolunteer,
-  item,
-  maxFileSize
+  item
 }: {
+  configuration: any;
   control: any;
   field: any;
   isVolunteer: boolean;
   item: any;
-  maxFileSize: number;
 }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+  const { maxCount, maxFileSize } = configuration?.limitation || {};
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [documentsAttributes, setDocumentsAttributes] = useState(JSON.parse(value));
@@ -197,11 +198,20 @@ export const DocumentSelector = ({
         </View>
       ))}
 
-      {/* users can upload a maximum of 3 PDF files
-          if 3 PDFs are selected, the new add button will not be displayed. */}
-      {!value || values.length < 3 ? (
-        <Button title={buttonTitle} invert onPress={documentSelect} />
-      ) : null}
+      <Button
+        icon={<Icon.Document size={normalize(16)} strokeWidth={normalize(2)} />}
+        disabled={!!maxCount && values?.length >= parseInt(maxCount)}
+        iconPosition="left"
+        invert
+        onPress={documentSelect}
+        title={buttonTitle}
+      />
+
+      {!!infoText && (
+        <RegularText small style={styles.infoText}>
+          {infoText}
+        </RegularText>
+      )}
     </>
   );
 };
@@ -209,6 +219,10 @@ export const DocumentSelector = ({
 const styles = StyleSheet.create({
   container: {
     marginVertical: normalize(10)
+  },
+  infoText: {
+    marginTop: normalize(-7),
+    marginBottom: normalize(5)
   },
   volunteerContainer: {
     marginBottom: normalize(8)

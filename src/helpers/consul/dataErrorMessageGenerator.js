@@ -45,6 +45,7 @@ export const imageErrorMessageGenerator = async (uri) => {
 export const errorTextGenerator = async ({
   errorType,
   infoAndErrorText,
+  maxFileSize,
   mimeType,
   setInfoAndErrorText,
   uri
@@ -63,7 +64,6 @@ export const errorTextGenerator = async ({
         }
       ]);
       break;
-    case IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD:
     case IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER:
       /* variable to find the name of the image */
       const uriSplitForImageName = uri.split('/');
@@ -84,6 +84,17 @@ export const errorTextGenerator = async ({
         ...infoAndErrorText,
         {
           errorText: size > 10485760 && texts.sue.report.alerts.imageGreater10MBError
+        }
+      ]);
+      break;
+    case IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD:
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText:
+            maxFileSize &&
+            size > maxFileSize &&
+            texts.noticeboard.alerts.imageSizeError(formatSizeStandard(maxFileSize))
         }
       ]);
       break;

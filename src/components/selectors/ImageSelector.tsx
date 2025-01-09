@@ -1,7 +1,7 @@
 import { ImagePickerAsset } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../config';
 import { ConsulClient } from '../../ConsulClient';
@@ -113,7 +113,7 @@ export const ImageSelector = ({
       {values.length ? (
         <>
           <WrapperRow center spaceBetween>
-            <Image source={{ uri: values[0].uri }} style={styles.image} />
+            <Image source={{ uri: values[0].uri }} containerStyle={styles.image} />
 
             <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(0))}>
               <Icon.Trash color={colors.error} size={normalize(16)} />

@@ -1,16 +1,26 @@
 import { ImagePickerAsset } from 'expo-image-picker';
+import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { jsonParser } from '../../helpers';
 import { onDeleteImage, onImageSelect } from '../../helpers/selectors';
-import { useCaptureImage, useSelectImage } from '../../hooks';
+import {
+  useCaptureImage,
+  useLastKnownPosition,
+  usePosition,
+  useReverseGeocode,
+  useSelectImage,
+  useSystemPermission
+} from '../../hooks';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { RegularText } from '../Text';
+import { Modal } from '../Modal';
+import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 const { IMAGE_FROM, IMAGE_SELECTOR_TYPES } = consts;
@@ -42,36 +52,52 @@ const deleteImageAlert = (onPress: () => void) =>
 
 /* eslint-disable complexity */
 export const MultiImageSelector = ({
+  configuration,
   control,
+  coordinateCheck,
   errorType,
   field,
+  imageId,
   item,
   selectorType
 }: {
+  configuration: any;
   control: any;
+  coordinateCheck: any;
   errorType: string;
   field: any;
+  imageId?: number | string;
   item: any;
   selectorType: string;
 }) => {
+  const reverseGeocode = useReverseGeocode();
+  const systemPermission = useSystemPermission();
+
+  const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
+
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+  const { maxCount, maxFileSize } = configuration?.limitation || {};
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
-    aspect: selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD ? undefined : [1, 1],
-    exif: false
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    exif: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 
   const { captureImage } = useCaptureImage({
     allowsEditing: false,
-    aspect: selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD ? undefined : [1, 1],
-    exif: false,
-    saveImage: false // TODO: `IMAGE_SELECTOR_TYPES.SUE` after merge to master
+    aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
+    exif: selectorType === IMAGE_SELECTOR_TYPES.SUE,
+    saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 
   useEffect(() => {
@@ -84,24 +110,34 @@ export const MultiImageSelector = ({
   ) => {
     setLoading(true);
     await onImageSelect({
+      configuration,
+      coordinateCheck,
       errorType,
       from,
       imageFunction,
       imagesAttributes,
       infoAndErrorText,
+      lastKnownPosition,
+      maxFileSize,
+      position,
+      reverseGeocode,
+      selectorType,
       setImagesAttributes,
       setInfoAndErrorText
     });
 
+    setIsModalVisible(false);
     setLoading(false);
   };
 
   const imageDelete = async (index: number) => {
     await onDeleteImage({
+      coordinateCheck,
       imagesAttributes,
       index,
       infoAndErrorText,
       isMultiImages: true,
+      selectorType,
       setImagesAttributes,
       setInfoAndErrorText
     });
@@ -109,33 +145,22 @@ export const MultiImageSelector = ({
 
   const values = jsonParser(value);
 
-  if (selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD) {
+  if (
+    selectorType === IMAGE_SELECTOR_TYPES.SUE ||
+    selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
+  ) {
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
-        <WrapperVertical>
-          {loading ? (
-            <LoadingSpinner loading />
-          ) : (
-            <>
-              <Button
-                icon={<Icon.Camera size={normalize(16)} />}
-                iconPosition="left"
-                invert
-                onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
-                title={texts.noticeboard.takePhoto}
-              />
-              <Button
-                icon={<Icon.Albums size={normalize(16)} />}
-                iconPosition="left"
-                invert
-                onPress={() => imageSelect(selectImage)}
-                title={texts.noticeboard.chooseFromGallery}
-              />
-            </>
-          )}
-        </WrapperVertical>
+        <Button
+          disabled={!!maxCount && values?.length >= parseInt(maxCount)}
+          icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
+          iconPosition="left"
+          invert
+          onPress={() => setIsModalVisible(!isModalVisible)}
+          title={buttonTitle}
+        />
 
         {!!infoText && (
           <RegularText small style={styles.sueInfoText}>
@@ -144,7 +169,7 @@ export const MultiImageSelector = ({
         )}
 
         {values?.map(
-          (item: TValue, index: number) =>
+          (item, index) =>
             !!infoAndErrorText[index]?.errorText && (
               <RegularText smallest error>
                 {infoAndErrorText[index].errorText}
@@ -154,7 +179,7 @@ export const MultiImageSelector = ({
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <WrapperRow>
-            {values?.map((item: TValue, index: number) => (
+            {values?.map((item, index) => (
               <View key={`image-${index}`} style={{ marginRight: normalize(10) }}>
                 <TouchableOpacity
                   style={styles.sueDeleteImageButton}
@@ -172,6 +197,60 @@ export const MultiImageSelector = ({
             ))}
           </WrapperRow>
         </ScrollView>
+
+        <Modal
+          isBackdropPress
+          isVisible={isModalVisible}
+          onModalVisible={() => setIsModalVisible(false)}
+          closeButton={
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => setIsModalVisible(false)}
+              style={styles.overlayCloseButton}
+            >
+              <>
+                <BoldText small style={styles.overlayCloseButtonText}>
+                  {texts.sue.report.alerts.close}
+                </BoldText>
+                <Icon.Close size={normalize(16)} color={colors.darkText} />
+              </>
+            </TouchableOpacity>
+          }
+          overlayStyle={styles.overlay}
+        >
+          <WrapperVertical style={styles.noPaddingTop}>
+            <BoldText>{texts.sue.report.addImage}</BoldText>
+          </WrapperVertical>
+
+          <WrapperVertical style={styles.noPaddingTop}>
+            <Divider />
+          </WrapperVertical>
+
+          <WrapperVertical>
+            {loading ? (
+              <LoadingSpinner loading={loading} />
+            ) : (
+              <>
+                <Button
+                  icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
+                  disabled={loading}
+                  iconPosition="left"
+                  invert
+                  onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
+                  title={texts.sue.report.alerts.imageSelectAlert.camera}
+                />
+                <Button
+                  icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
+                  disabled={loading}
+                  iconPosition="left"
+                  invert
+                  onPress={() => imageSelect(selectImage)}
+                  title={texts.sue.report.alerts.imageSelectAlert.gallery}
+                />
+              </>
+            )}
+          </WrapperVertical>
+        </Modal>
       </>
     );
   }
@@ -228,6 +307,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center'
+  },
+  overlayCloseButtonText: {
+    paddingRight: normalize(10),
+    paddingTop: normalize(3)
   },
   sueDeleteImageButton: {
     alignItems: 'center',

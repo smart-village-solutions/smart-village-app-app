@@ -79,7 +79,14 @@ export const NoticeboardCreateForm = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showNoticeboardMediaContent = {} } = settings;
-  const { document: showDocument = false, documentMaxSizes = {} } = showNoticeboardMediaContent;
+  const {
+    document: showDocument = false,
+    documentMaxSizes = {},
+    image: showImage = false,
+    imageMaxSizes = {},
+    maxDocumentCount = 0,
+    maxImageCount = 0
+  } = showNoticeboardMediaContent;
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
   const [isLoading, setIsLoading] = useState(false);
@@ -426,11 +433,23 @@ export const NoticeboardCreateForm = ({
             control={control}
             render={({ field }) => (
               <DocumentSelector
-                {...{ control, field, isVolunteer: false }}
+                {...{
+                  configuration: {
+                    limitation: {
+                      maxCount: maxDocumentCount,
+                      maxFileSize: documentMaxSizes?.file
+                    }
+                  },
+                  control,
+                  field,
+                  isVolunteer: false
+                }}
                 maxFileSize={documentMaxSizes.file}
                 item={{
                   buttonTitle: texts.noticeboard.addDocuments,
-                  infoTitle: texts.noticeboard.documentsInfo
+                  infoTitle: texts.noticeboard.documentsInfo,
+                  infoText:
+                    maxDocumentCount && texts.noticeboard.alerts.documentHint(maxDocumentCount)
                 }}
               />
             )}
@@ -438,28 +457,37 @@ export const NoticeboardCreateForm = ({
         </Wrapper>
       )}
 
-      <Wrapper style={styles.noPaddingTop}>
-        <Controller
-          name="image"
-          render={({ field }) => (
-            <MultiImageSelector
-              {...{
-                control,
-                errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
-                field,
-                isDeletable: !isEdit,
-                isMultiImages: true,
-                item: {
-                  buttonTitle: texts.noticeboard.addImages,
-                  name: 'image'
-                },
-                selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
+      {showImage && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="image"
+            render={({ field }) => (
+              <MultiImageSelector
+                {...{
+                  control,
+                  configuration: {
+                    limitation: {
+                      maxCount: maxImageCount,
+                      maxFileSize: imageMaxSizes?.file
+                    }
+                  },
+                  errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
+                  field,
+                  isDeletable: !isEdit,
+                  isMultiImages: true,
+                  item: {
+                    buttonTitle: texts.noticeboard.addImages,
+                    infoText: maxImageCount && texts.noticeboard.alerts.imageHint(maxImageCount),
+                    name: 'image'
+                  },
+                  selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
 
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>

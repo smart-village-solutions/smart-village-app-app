@@ -147,7 +147,8 @@ export const consts = {
   },
 
   IMAGE_SELECTOR_TYPES: {
-    NOTICEBOARD: 'Noticeboard'
+    NOTICEBOARD: 'Noticeboard',
+    SUE: 'Sue'
   },
 
   IMAGE_FROM: {

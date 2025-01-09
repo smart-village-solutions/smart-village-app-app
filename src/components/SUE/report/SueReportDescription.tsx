@@ -7,11 +7,11 @@ import { consts, normalize, texts } from '../../../config';
 import { TValues } from '../../../screens';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
-import { ImageSelector } from '../../selectors';
+import { MultiImageSelector } from '../../selectors';
 
 const { a11yLabel, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
-const MemoizedImageSelector = memo((props) => <ImageSelector {...props} />);
+const MemoizedImageSelector = memo((props) => <MultiImageSelector {...props} />);
 
 export const SueReportDescription = ({
   areaServiceData,
@@ -41,7 +41,13 @@ export const SueReportDescription = ({
 
   const imageSelectorProps = useMemo(
     () => ({
-      configuration,
+      configuration: {
+        ...configuration,
+        limitation: {
+          ...configuration.limitation,
+          maxCount: configuration?.limitation?.maxFileUploads?.value
+        }
+      },
       control,
       coordinateCheck: {
         areaServiceData,
