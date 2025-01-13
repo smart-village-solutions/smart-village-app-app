@@ -29,6 +29,8 @@ const useListData = (organizationData?: { [queryName]: OrganizationPreviewData[]
   return listData;
 };
 
+const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+
 export const OParlOrganizationsScreen = ({ navigation }: Props) => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -75,9 +77,8 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <FlatList
         data={listData}
-        renderItem={({ item }) => (
-          <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
-        )}
+        keyExtractor={keyExtractor}
+        renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
         onEndReachedThreshold={1.5}
         onEndReached={onEndReached}
         // this does currently not work as intended, until we upgrade our apollo client dependency
