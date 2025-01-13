@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import _sortBy from 'lodash/sortBy';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
@@ -8,9 +9,9 @@ import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
 import { useOParlQuery } from '../../hooks';
 import {
-  simpleOrganizationListQuery,
   organizationMembershipQuery,
-  personListQuery
+  personListQuery,
+  simpleOrganizationListQuery
 } from '../../queries/OParl';
 import {
   OrganizationListData,
@@ -29,16 +30,20 @@ const [organizationMembersQuery, organizationMembersQueryName] = organizationMem
 const [orgaListQuery, orgaListQueryName] = simpleOrganizationListQuery;
 const [personQuery, personQueryName] = personListQuery;
 
-const useDropdownData = (orgaData?: { [organizationMembersQueryName]: OrganizationListData[] }) => {
+const useDropdownData = (orgaListData?: {
+  [organizationMembersQueryName]: OrganizationListData[];
+}) => {
   const [dropdownData, setDropdownData] = useState<
     Array<{ value: string; id: string; selected?: boolean }>
   >([{ value: texts.oparl.personList.chooseAnOrg, id: '', selected: true }]);
 
   useEffect(() => {
-    const organizations =
-      orgaData?.[organizationMembersQueryName].filter(
+    const organizations = _sortBy(
+      orgaListData?.[organizationMembersQueryName]?.filter(
         (org) => org.membership?.filter((mem) => !mem.endDate).length
-      ) ?? [];
+      ) ?? [],
+      'name'
+    );
 
     const newData = [{ value: texts.oparl.personList.chooseAnOrg, id: '', selected: true }];
     newData.push(
@@ -49,7 +54,7 @@ const useDropdownData = (orgaData?: { [organizationMembersQueryName]: Organizati
       }))
     );
     setDropdownData(newData);
-  }, [orgaData, setDropdownData]);
+  }, [orgaListData, setDropdownData]);
 
   return [dropdownData, setDropdownData] as const;
 };
@@ -85,7 +90,11 @@ const useListData = (
 export const OParlPersonsScreen = ({ navigation }: Props) => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const [finished, setFinished] = useState(false);
-  const { data: orgaListData, loading: orgaListLoading, error: orgaListError } = useOParlQuery<{
+  const {
+    data: orgaListData,
+    loading: orgaListLoading,
+    error: orgaListError
+  } = useOParlQuery<{
     [orgaListQueryName]: OrganizationListData[];
   }>(orgaListQuery);
 
@@ -110,7 +119,11 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
       )
     : undefined;
 
-  const { data: orgaData, loading: orgaLoading, error: orgaError } = useOParlQuery<{
+  const {
+    data: orgaData,
+    loading: orgaLoading,
+    error: orgaError
+  } = useOParlQuery<{
     [organizationMembersQueryName]: OrganizationPeopleData[];
   }>(organizationMembersQuery, {
     variables: { id: selectedOrganization?.id },
@@ -158,19 +171,20 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <FlatList
         data={!orgaLoading ? listData : undefined}
-        renderItem={({ item }) => (
-          <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
-        )}
+        keyExtractor={(item, index) => `index${index}-id${item.id}`}
+        renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
         ListHeaderComponent={
-          <Wrapper style={styles.noPaddingTop}>
-            <DropdownSelect
-              data={dropdownData}
-              searchPlaceholder="Suche"
-              showSearch
-              searchInputStyle={styles.searchInput}
-              setData={setDropdownData}
-            />
-          </Wrapper>
+          dropdownData?.length <= 2 ? null : (
+            <Wrapper style={styles.noPaddingTop}>
+              <DropdownSelect
+                data={dropdownData}
+                searchPlaceholder="Suche"
+                showSearch
+                searchInputStyle={styles.searchInput}
+                setData={setDropdownData}
+              />
+            </Wrapper>
+          )
         }
         onEndReachedThreshold={1.5}
         onEndReached={onEndReached}
