@@ -45,7 +45,7 @@ const endOfMonth = moment().endOf('month').add(7, 'days').format('YYYY-MM-DD');
 export const Calendar = ({ additionalData, navigation, query, queryVariables }: Props) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { deprecated = {}, settings = {} } = globalSettings;
+  const { settings = {} } = globalSettings;
   const { eventCalendar = {} } = settings;
   const { dotCount = MAX_DOTS_PER_DAY, subList = false } = eventCalendar;
   const [queryVariablesWithDateRange, setQueryVariablesWithDateRange] = useState<any>({
@@ -67,23 +67,11 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
     refetch,
     isRefetching
   } = useQuery(
-    [
-      deprecated?.events?.listingWithoutDateFragment
-        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-        : QUERY_TYPES.EVENT_RECORDS,
-      queryVariablesWithDateRange
-    ],
+    [QUERY_TYPES.EVENT_RECORDS, queryVariablesWithDateRange],
     async () => {
       const client = await ReactQueryClient();
 
-      return await client.request(
-        getQuery(
-          deprecated?.events?.listingWithoutDateFragment
-            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-            : QUERY_TYPES.EVENT_RECORDS
-        ),
-        queryVariablesWithDateRange
-      );
+      return await client.request(getQuery(QUERY_TYPES.EVENT_RECORDS), queryVariablesWithDateRange);
     },
     {
       enabled: query === QUERY_TYPES.EVENT_RECORDS,
@@ -99,26 +87,14 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
     fetchNextPage: fetchNextPageSubList,
     hasNextPage: hasNextPageSubList
   } = useInfiniteQuery(
-    [
-      deprecated?.events?.listingWithoutDateFragment
-        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-        : QUERY_TYPES.EVENT_RECORDS,
-      queryVariablesWithDateRangeSubList
-    ],
+    [QUERY_TYPES.EVENT_RECORDS, queryVariablesWithDateRangeSubList],
     async ({ pageParam = 0 }) => {
       const client = await ReactQueryClient();
 
-      return await client.request(
-        getQuery(
-          deprecated?.events?.listingWithoutDateFragment
-            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-            : QUERY_TYPES.EVENT_RECORDS
-        ),
-        {
-          ...queryVariablesWithDateRangeSubList,
-          offset: pageParam
-        }
-      );
+      return await client.request(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+        ...queryVariablesWithDateRangeSubList,
+        offset: pageParam
+      });
     },
     {
       enabled: query === QUERY_TYPES.EVENT_RECORDS && subList,
@@ -252,15 +228,6 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
   useEffect(() => {
     refetchSubList();
   }, [selectedDay]);
-
-  useEffect(() => {
-    deprecated?.events?.listingWithoutDateFragment &&
-      subList &&
-      setQueryVariablesWithDateRangeSubList({
-        ...queryVariables,
-        dateRange: queryVariablesWithDateRangeSubList.dateRange
-      });
-  }, [queryVariables]);
 
   useFocusEffect(
     useCallback(() => {

@@ -62,7 +62,7 @@ const today = moment().format('YYYY-MM-DD');
 export const EventRecords = ({ navigation, route }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
+  const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { events: showEventsFilter = true, eventLocations: showEventLocationsFilter = false } =
     filter;
   const { events: showVolunteerEvents = false } = hdvt;
@@ -89,26 +89,14 @@ export const EventRecords = ({ navigation, route }) => {
   // https://github.com/ndraaditiya/React-Query-GraphQL/blob/main/src/services/index.jsx
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
-      [
-        deprecated?.events?.listingWithoutDateFragment
-          ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-          : QUERY_TYPES.EVENT_RECORDS,
-        queryVariables
-      ],
+      [QUERY_TYPES.EVENT_RECORDS, queryVariables],
       async ({ pageParam = 0 }) => {
         const client = await ReactQueryClient();
 
-        return await client.request(
-          getQuery(
-            deprecated?.events?.listingWithoutDateFragment
-              ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-              : QUERY_TYPES.EVENT_RECORDS
-          ),
-          {
-            ...queryVariables,
-            offset: pageParam
-          }
-        );
+        return await client.request(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+          ...queryVariables,
+          offset: pageParam
+        });
       },
       {
         enabled: !showCalendar,

@@ -9,7 +9,6 @@ import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useNewsCategories, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
 import { DataListSection } from './DataListSection';
@@ -62,8 +61,6 @@ const CrossDataSection = ({
   sectionTitleDetail
 }: SectionProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { globalSettings } = useContext(SettingsContext);
-  const { deprecated = {} } = globalSettings;
   const refreshTime = useRefreshTime(
     `crossData-${query}-${dataProviderName}-${categoryId}-${genericType}`
   );
@@ -83,18 +80,11 @@ const CrossDataSection = ({
     variables.genericType = genericType;
   }
 
-  const { data, loading } = useQuery(
-    getQuery(
-      deprecated?.events?.listingWithoutDateFragment && query === QUERY_TYPES.EVENT_RECORDS
-        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-        : query
-    ),
-    {
-      fetchPolicy,
-      variables,
-      skip: !refreshTime
-    }
-  );
+  const { data, loading } = useQuery(getQuery(query), {
+    fetchPolicy,
+    variables,
+    skip: !refreshTime
+  });
 
   if (loading) {
     return (
