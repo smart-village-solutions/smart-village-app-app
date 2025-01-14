@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { SvgCss } from 'react-native-svg/css';
 
 import { IconProps, colors, getHitSlops, normalize } from '../../config';
+import { SettingsContext } from '../../SettingsProvider';
 
 export const IconUrl = ({
   color = colors.primary,
@@ -12,11 +13,18 @@ export const IconUrl = ({
   size = normalize(24),
   style
 }: IconProps & { iconName: string }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { icons = {} } = settings;
+  const { svgFolderUrl } = icons;
+
   // if we can use `SvgUri`, we can render the svg directly per passing an uri
   const uri = iconName
     ? iconName.match(/http/)
       ? iconName
-      : `https://fileserver.smart-village.app/hb-meinquartier/tabler-icons/${iconName}.svg`
+      : svgFolderUrl
+      ? `${svgFolderUrl}/${iconName}.svg`
+      : undefined
     : undefined;
 
   // if we need to use `SvgCssUri`, we need to fetch the svg first to apply its content
