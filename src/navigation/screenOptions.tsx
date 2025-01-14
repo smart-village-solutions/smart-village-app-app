@@ -1,9 +1,9 @@
 /* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import { OrientationContext } from '../OrientationProvider';
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
@@ -37,8 +37,8 @@ export const getScreenOptions =
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
-    const { orientation } = useContext(OrientationContext);
-    const safeAreaInsets = useSafeAreaInsets();
+    const orientation = OrientationContext._currentValue.orientation;
+    const safeAreaInsets = SafeAreaInsetsContext._currentValue;
     const isPortrait = orientation === 'portrait';
     const headerHeight = !isPortrait
       ? normalize(35) + safeAreaInsets.top
