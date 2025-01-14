@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { colors, normalize } from '../../config';
+import { SettingsContext } from '../../SettingsProvider';
+import { colors, Icon, normalize } from '../../config';
+import { addToStore, readFromStore } from '../../helpers';
 import { useStaticContent, useVolunteerRefresh } from '../../hooks';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
@@ -14,17 +16,48 @@ import { Wrapper } from '../Wrapper';
 
 import { Service } from './Service';
 
+const LIST_TYPE = 'listType';
+
+export const LIST_TYPES = {
+  grid: 'grid',
+  list: 'list'
+};
+
+/* eslint-disable complexity */
 export const ServiceTiles = ({
   hasDiagonalGradientBackground,
   html,
   image,
   isEditMode,
+  listTypeProp,
   query,
   staticJsonName,
   title
 }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { sections = {} } = globalSettings;
+  const { showListTypeButton = true } = sections;
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
+  const [listType, setListType] = useState(listTypeProp || LIST_TYPES.grid);
+
+  const fetchListType = async () => {
+    const storedListType = await readFromStore(LIST_TYPE + staticJsonName);
+
+    if (storedListType && storedListType !== listType) {
+      setListType(storedListType);
+    }
+  };
+
+  const toggleListType = async () => {
+    const newListType = listType === LIST_TYPES.grid ? LIST_TYPES.list : LIST_TYPES.grid;
+    setListType(newListType);
+    await addToStore(LIST_TYPE + staticJsonName, newListType);
+  };
+
+  useEffect(() => {
+    fetchListType();
+  }, [listType]);
 
   const { data, loading, refetch, error } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticJsonName}`,
@@ -58,14 +91,18 @@ export const ServiceTiles = ({
   const contentForAbove = html || htmlContent?.forAbove;
   const contentForBelow = htmlContent?.forBelow;
 
+  // check if any item in the data array has an tile key
+  const hasTile = data.some((item) => item.tile);
+
   return (
     <SafeAreaViewFlex>
       {isEditMode ? (
         <Service
           data={data}
-          isEditMode
-          staticJsonName={staticJsonName}
           hasDiagonalGradientBackground={hasDiagonalGradientBackground}
+          isEditMode
+          listType={listType}
+          staticJsonName={staticJsonName}
         />
       ) : (
         <>
@@ -91,7 +128,15 @@ export const ServiceTiles = ({
             )}
 
             <View style={styles.padding}>
-              {!error && <Service data={data} staticJsonName={staticJsonName} />}
+              {showListTypeButton && !hasTile && (
+                <TouchableOpacity onPress={toggleListType} style={{ alignSelf: 'flex-end' }}>
+                  {listType === LIST_TYPES.grid ? <Icon.List /> : <Icon.Grid />}
+                </TouchableOpacity>
+              )}
+
+              {!error && (
+                <Service data={data} staticJsonName={staticJsonName} listType={listType} />
+              )}
             </View>
 
             {!!contentForBelow && (
@@ -105,6 +150,7 @@ export const ServiceTiles = ({
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   imageContainerStyle: {
@@ -120,6 +166,7 @@ ServiceTiles.propTypes = {
   html: PropTypes.string,
   image: PropTypes.string,
   isEditMode: PropTypes.bool,
+  listTypeProp: PropTypes.string,
   query: PropTypes.string,
   staticJsonName: PropTypes.string.isRequired,
   title: PropTypes.string
