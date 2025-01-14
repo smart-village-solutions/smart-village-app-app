@@ -39,50 +39,6 @@ const dateFragment = `
   }
 `;
 
-/**
- * @deprecated use GET_EVENT_RECORDS instead
- */
-export const GET_EVENT_RECORDS_WITHOUT_DATE_FRAGMENT = gql`
-  query EventRecords(
-    $ids: [ID]
-    $limit: Int
-    $location: String
-    $offset: Int
-    $order: EventRecordsOrder
-    $categoryId: ID
-    $dateRange: [String]
-    $dataProvider: String
-    $dataProviderId: ID
-  ) {
-    eventRecords(
-      ids: $ids
-      limit: $limit
-      location: $location
-      skip: $offset
-      order: $order
-      categoryId: $categoryId
-      dateRange: $dateRange
-      dataProvider: $dataProvider
-      dataProviderId: $dataProviderId
-    ) {
-      ...defaultFields
-      dates {
-        id
-        weekday
-        dateFrom: dateStart
-        dateTo: dateEnd
-        timeFrom: timeStart
-        timeTo: timeEnd
-        description: timeDescription
-      }
-    }
-  }
-
-  fragment defaultFields on EventRecord {
-    ${defaultFragment}
-  }
-`;
-
 export const GET_EVENT_RECORDS = gql`
   query EventRecords(
     $ids: [ID]

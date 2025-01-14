@@ -34,26 +34,11 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
     data,
     isLoading: loading,
     refetch
-  } = useQuery(
-    [
-      deprecated?.events?.listingWithoutDateFragment
-        ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-        : QUERY_TYPES.EVENT_RECORDS_COUNT,
-      queryVariables
-    ],
-    async () => {
-      const client = await ReactQueryClient();
+  } = useQuery([QUERY_TYPES.EVENT_RECORDS_COUNT, queryVariables], async () => {
+    const client = await ReactQueryClient();
 
-      return await client.request(
-        getQuery(
-          deprecated?.events?.listingWithoutDateFragment
-            ? QUERY_TYPES.EVENT_RECORDS_WITHOUT_DATE_FRAGMENT
-            : QUERY_TYPES.EVENT_RECORDS_COUNT
-        ),
-        queryVariables
-      );
-    }
-  );
+    return await client.request(getQuery(QUERY_TYPES.EVENT_RECORDS_COUNT), queryVariables);
+  });
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
