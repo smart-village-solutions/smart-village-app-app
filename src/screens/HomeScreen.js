@@ -1,14 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { DeviceEventEmitter } from 'expo-modules-core';
-import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
@@ -49,8 +42,6 @@ import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
-
-const today = moment().format('YYYY-MM-DD');
 
 const renderItem = ({ item }) => {
   const {
