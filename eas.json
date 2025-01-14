@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 0.53.0"
+    "version": ">= 0.53.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "production": {
@@ -33,6 +34,14 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "track": "internal"
+      },
+      "ios": {
+        "ascAppId": "",
+        "appleTeamId": ""
+      }
+    }
   }
 }
