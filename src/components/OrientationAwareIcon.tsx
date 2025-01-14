@@ -27,42 +27,32 @@ export const OrientationAwareIcon = (props: Props) => {
   } = props;
 
   const SelectedIcon = Icon || IconComponent.NamedIcon;
+  const isNamedIcon = SelectedIcon === IconComponent.NamedIcon;
 
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
-  // we need adjustments only on iOS, so otherwise just return the item with the usual props
-  // TODO: is this still needed with Expo 48?
-  if (!needLandscapeStyle || !(device.platform === 'ios')) {
-    if (SelectedIcon === IconComponent.NamedIcon) {
-      return <SelectedIcon {...props} name={iconName} />;
+  const getIconProps = () => {
+    const baseProps = {
+      ...props,
+      ...(isNamedIcon ? { name: iconName } : {})
+    };
+
+    if (device.platform === 'android' || !needLandscapeStyle) {
+      return baseProps;
     }
 
-    return <SelectedIcon {...props} />;
-  }
+    const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
 
-  const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
+    return {
+      ...baseProps,
+      iconStyle: [iconStyle, styles.marginIcon, { width: adjustedSize }, landscapeIconStyle],
+      size: adjustedSize,
+      style: [style, landscapeStyle]
+    };
+  };
 
-  if (SelectedIcon === IconComponent.NamedIcon) {
-    return (
-      <SelectedIcon
-        {...props}
-        name={iconName}
-        iconStyle={[iconStyle, styles.marginIcon, { width: adjustedSize }, landscapeIconStyle]}
-        size={adjustedSize}
-        style={[style, landscapeStyle]}
-      />
-    );
-  }
-
-  return (
-    <SelectedIcon
-      {...props}
-      iconStyle={[iconStyle, styles.marginIcon, { width: adjustedSize }, landscapeIconStyle]}
-      size={adjustedSize}
-      style={[style, landscapeStyle]}
-    />
-  );
+  return <SelectedIcon {...getIconProps()} />;
 };
 
 const styles = StyleSheet.create({
