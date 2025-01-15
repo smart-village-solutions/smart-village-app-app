@@ -1,3 +1,4 @@
+import * as Location from 'expo-location';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {

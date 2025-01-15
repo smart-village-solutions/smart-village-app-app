@@ -1,5 +1,5 @@
-import { DeviceEventEmitter } from 'expo-modules-core';
 import { useEffect } from 'react';
+import { DeviceEventEmitter } from 'react-native';
 
 import { QUERY_TYPES } from '../queries';
 

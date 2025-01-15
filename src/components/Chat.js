@@ -1,7 +1,6 @@
-import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
-import { MediaTypeOptions } from 'expo-image-picker';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, ScrollView, StyleSheet, View } from 'react-native';
@@ -20,7 +19,7 @@ import {
 
 import { colors, consts, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
-import { useSelectDocument, useSelectImage } from '../hooks';
+import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
 
 import { Image } from './Image';
 import { RegularText } from './Text';
@@ -224,15 +223,23 @@ export const Chat = ({
         ))
       }
       renderMessageVideo={(props) =>
-        props?.currentMessage?.video?.map(({ uri }, index) => (
-          <Video
-            key={`video-${index}`}
-            resizeMode="cover"
-            source={{ uri }}
-            style={styles.videoBubble}
-            useNativeControls
-          />
-        ))
+        props?.currentMessage?.video?.map(({ uri }, index) => {
+          const player = useVideoPlayer(uri, (player) => {
+            player.loop = true;
+            player.play();
+          });
+
+          return (
+            <VideoView
+              player={player}
+              key={`video-${index}`}
+              resizeMode="cover"
+              source={{ uri }}
+              style={styles.videoBubble}
+              useNativeControls
+            />
+          );
+        })
       }
       renderMessageText={(props) => (
         <MessageText

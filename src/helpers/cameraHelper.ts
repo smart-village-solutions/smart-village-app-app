@@ -1,4 +1,4 @@
-import { Camera } from 'expo-camera/legacy';
+import { CameraView } from 'expo-camera';
 
 import { AcceptedRatio } from '../types';
 
@@ -9,7 +9,9 @@ const SCANNER_ASPECT_RATIO = 'SCANNER_ASPECT_RATIO';
 
 // a retry is needed because sometimes the device needs a short moment before the camera is fully launched.
 // if after there is still no result after the retries there might be another error, and we fall back to 1:1 instead of possibly retrying infinitely
-export const getBestSupportedRatioWithRetry = async (cameraRef: Camera): Promise<AcceptedRatio> => {
+export const getBestSupportedRatioWithRetry = async (
+  cameraRef: CameraView
+): Promise<AcceptedRatio> => {
   const storedAspectRatio = await readFromStore(SCANNER_ASPECT_RATIO);
 
   if (storedAspectRatio) {
@@ -21,7 +23,7 @@ export const getBestSupportedRatioWithRetry = async (cameraRef: Camera): Promise
 
   while (retryCount < 3 && !ratioArray) {
     try {
-      ratioArray = await cameraRef.getSupportedRatiosAsync();
+      ratioArray = await cameraRef.getAvailablePictureSizesAsync();
     } catch (e) {
       console.warn(e);
       sleep(50);

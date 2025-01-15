@@ -1,8 +1,6 @@
-import { DeviceEventEmitter } from 'expo-modules-core';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
@@ -37,8 +35,6 @@ import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
-
-const today = moment().format('YYYY-MM-DD');
 
 const renderItem = ({ item }) => {
   const {
@@ -121,11 +117,11 @@ const renderItem = ({ item }) => {
       ) => (
         // eslint-disable-next-line react/jsx-key
         <HomeSection
+          key={index}
           {...{
             buttonTitle,
             categoryId,
             fetchPolicy,
-            key: index,
             navigation,
             navigate: () =>
               navigation.navigate(

@@ -64,6 +64,14 @@
     },
     "plugins": [
       [
+        "expo-document-picker",
+        {
+          // `appleTeamId` needs to be added
+          // https://developer.apple.com/help/account/manage-your-team/locate-your-team-id/#:~:text=In%20the%20top%20navigation%20of,to%20view%20your%20Team%20ID
+          "appleTeamId": ""
+        }
+      ],
+      [
         "expo-camera",
         {
           "recordAudioAndroid": false
