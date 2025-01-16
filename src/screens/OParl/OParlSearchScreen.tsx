@@ -67,12 +67,18 @@ const useKeywordQuery = (dropdownData: { value: string; selected?: boolean }[]) 
   };
 };
 
+const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+
 export const OParlSearchScreen = ({ navigation }: Props) => {
   const [dropdownData, setDropdownData] = useState<Array<{ value: string; selected?: boolean }>>(
     []
   );
 
-  const { data, error: errorKeywordList, loading: loadingKeywordList } = useOParlQuery<{
+  const {
+    data,
+    error: errorKeywordList,
+    loading: loadingKeywordList
+  } = useOParlQuery<{
     oParlKeywordList: string[];
   }>(keywordListQuery);
 
@@ -89,9 +95,11 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
     setDropdownData(newData);
   }, [keywordList, setDropdownData]);
 
-  const { data: listData, error: errorKeyword, loading: loadingKeyword } = useKeywordQuery(
-    dropdownData
-  );
+  const {
+    data: listData,
+    error: errorKeyword,
+    loading: loadingKeyword
+  } = useKeywordQuery(dropdownData);
 
   if (!!errorKeyword || !!errorKeywordList)
     return (
@@ -119,9 +127,8 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
         }
         ListFooterComponent={<LoadingSpinner loading={loadingKeywordList || loadingKeyword} />}
         renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
-        renderItem={({ item }) => (
-          <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
-        )}
+        keyExtractor={keyExtractor}
+        renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
       />
     </SafeAreaViewFlex>
   );
