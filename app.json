@@ -13,11 +13,6 @@
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.dev.smartvillage.app",
@@ -95,6 +90,13 @@
         "expo-media-library",
         {
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/icon.png"
         }
       ],
       "@config-plugins/react-native-blob-util",
