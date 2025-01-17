@@ -1,4 +1,4 @@
-import { BarCodeScanningResult, Camera } from 'expo-camera/legacy';
+import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -41,9 +41,9 @@ const parseQrCode = (data: string): string | undefined => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
-  const ref = useRef<Camera>(null);
+  const [permission] = useCameraPermissions();
+  const ref = useRef<CameraView>(null);
   const [isScanning, setIsScanning] = useState(true);
-  const [hasPermission, setHasPermission] = useState<boolean>();
   const [cameraAspectRatio, setCameraAspectRatio] = useState<AcceptedRatio>('1:1');
   const [creationSuccess, setCreationSuccess] = useState(false);
 
@@ -60,8 +60,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
     showErrorAlert
   );
 
-  const handleBarCodeScanned = ({ data, type }: BarCodeScanningResult) => {
-    if (type !== (device.platform === 'android' ? 256 : 'org.iso.QRCode')) {
+  const handleBarCodeScanned = ({ data, type }: BarcodeScanningResult) => {
+    if (type !== (device.platform === 'android' ? 'qr' : 'org.iso.QRCode')) {
       return;
     }
 
@@ -79,19 +79,12 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   }, []);
 
   const updateCameraAspectRatio = useCallback(async () => {
-    if (device.platform === 'android' && hasPermission && ref.current) {
+    if (device.platform === 'android' && permission?.granted && ref.current) {
       const ratio = await getBestSupportedRatioWithRetry(ref.current);
 
       setCameraAspectRatio(ratio);
     }
-  }, [hasPermission, ref.current]);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+  }, [permission, ref.current]);
 
   useEffect(() => {
     updateCameraAspectRatio();
@@ -101,7 +94,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   useOrientationLock();
 
   // in case of a successful creation, we do not want to switch back to showing the "scan again" button during the navigation animation
-  if (hasPermission === undefined || loadingCreateEncounter || creationSuccess) {
+  if (!permission || loadingCreateEncounter || creationSuccess) {
     return (
       <SafeAreaViewFlex>
         <ScrollView>
@@ -112,7 +105,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
     );
   }
 
-  if (!hasPermission) {
+  if (!permission?.granted) {
     return (
       <ScrollView>
         <SectionHeader title={texts.encounter.scannerTitle} />
@@ -131,10 +124,9 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
       </Wrapper>
       {isScanning ? (
         <Wrapper style={styles.scannerContainer}>
-          <Camera
+          <CameraView
             ref={ref}
-            ratio={cameraAspectRatio}
-            onBarCodeScanned={handleBarCodeScanned}
+            onBarcodeScanned={handleBarCodeScanned}
             style={[
               styles.scanner,
               { aspectRatio: getNumericalRatioFromAspectRatio(cameraAspectRatio) }

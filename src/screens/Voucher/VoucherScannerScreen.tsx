@@ -1,11 +1,12 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import { BarCodeScanningResult, Camera } from 'expo-camera/legacy';
+import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import appJson from '../../../app.json';
 import {
+  Button,
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
@@ -34,10 +35,10 @@ const parseQrCode = (
 };
 
 export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
+  const [permission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(true);
-  const [hasPermission, setHasPermission] = useState<boolean>();
 
-  const handleBarCodeScanned = ({ data }: BarCodeScanningResult) => {
+  const handleBarCodeScanned = ({ data }: BarcodeScanningResult) => {
     const { query, queryVariables } = parseQrCode(data);
 
     if (!queryVariables?.id) {
@@ -62,14 +63,7 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
     });
   };
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
-
-  if (hasPermission === undefined) {
+  if (!permission) {
     return (
       <ScrollView>
         <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
@@ -78,7 +72,7 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
     );
   }
 
-  if (!hasPermission) {
+  if (!permission.granted) {
     return (
       <ScrollView>
         <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
@@ -92,7 +86,7 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
   return (
     <SafeAreaViewFlex>
       {isScanning ? (
-        <Camera onBarCodeScanned={handleBarCodeScanned} style={styles.scanner} />
+        <CameraView onBarcodeScanned={handleBarCodeScanned} style={styles.scanner} />
       ) : null}
     </SafeAreaViewFlex>
   );

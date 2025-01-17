@@ -1,12 +1,23 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
-import { colors, normalize, texts } from '../config';
+import { normalize, texts } from '../config';
 
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';
+
+type TModal = {
+  children: React.ReactNode;
+  closeButton?: React.ReactNode;
+  height?: string;
+  isBackdropPress: boolean;
+  isListView: boolean;
+  isVisible: boolean;
+  modalHiddenButtonName?: string;
+  onModalVisible: () => void;
+  overlayStyle?: object;
+};
 
 export const Modal = ({
   children,
@@ -18,13 +29,12 @@ export const Modal = ({
   modalHiddenButtonName = texts.settingsTitles.arListLayouts.hide,
   onModalVisible,
   overlayStyle
-}) => {
+}: TModal) => {
   return (
     <Overlay
       animationType="fade"
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
-      windowBackgroundColor={colors.overlayRgba}
       overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
       supportedOrientations={['portrait', 'landscape']}
     >
@@ -52,15 +62,3 @@ const styles = StyleSheet.create({
     width: '80%'
   }
 });
-
-Modal.propTypes = {
-  children: PropTypes.node.isRequired,
-  closeButton: PropTypes.node,
-  height: PropTypes.string,
-  isBackdropPress: PropTypes.bool,
-  isListView: PropTypes.bool,
-  isVisible: PropTypes.bool.isRequired,
-  modalHiddenButtonName: PropTypes.string,
-  onModalVisible: PropTypes.func.isRequired,
-  overlayStyle: PropTypes.object
-};

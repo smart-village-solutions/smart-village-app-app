@@ -1,7 +1,6 @@
 import {
   launchCameraAsync,
   launchImageLibraryAsync,
-  MediaTypeOptions,
   PermissionStatus,
   requestCameraPermissionsAsync,
   requestMediaLibraryPermissionsAsync
@@ -18,6 +17,14 @@ import { Alert } from 'react-native';
 
 import appJson from '../../app.json';
 import { texts } from '../config';
+
+type TMediaTypeOptions = 'images' | 'videos' | Array<'images' | 'videos'>;
+
+const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOptions> = {
+  Images: 'images',
+  Videos: 'videos',
+  All: ['images', 'videos']
+};
 
 const saveImageToGallery = async (uri: string) => {
   const { status } = await requestPermissionsAsync(undefined, ['photo']);
@@ -52,12 +59,12 @@ export const useSelectImage = ({
   allowsEditing?: boolean;
   aspect?: [number, number];
   exif?: boolean;
-  mediaTypes?: MediaTypeOptions;
+  mediaTypes?: TMediaTypeOptions;
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
   ) => React.Dispatch<React.SetStateAction<T>>;
   quality?: number;
-}) => {
+} = {}) => {
   const [imageUri, setImageUri] = useState<string>();
 
   const selectImage = useCallback(async () => {
@@ -101,13 +108,13 @@ export const useCaptureImage = ({
   allowsEditing?: boolean;
   aspect?: [number, number];
   exif?: boolean;
-  mediaTypes?: MediaTypeOptions;
+  mediaTypes?: TMediaTypeOptions;
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
   ) => React.Dispatch<React.SetStateAction<T>>;
   quality?: number;
   saveImage?: boolean;
-}) => {
+} = {}) => {
   const [imageUri, setImageUri] = useState<string>();
 
   const captureImage = useCallback(async () => {
