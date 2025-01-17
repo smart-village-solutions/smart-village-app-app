@@ -640,7 +640,11 @@ export const SueReportScreen = ({
     }
   }, [storedValues, service, selectedPosition]);
 
-  if (areaServiceLoading || isConfigLoading) {
+  if (!sueProgressWithConfig.length) {
+    return null;
+  }
+
+  if (areaServiceLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />

@@ -1,3 +1,4 @@
+import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -33,6 +34,7 @@ type Props = {
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   updatedRegion?: Region;
+  currentPosition?: LocationObject;
 };
 
 const MARKER_ICON_SIZE = normalize(40);
@@ -167,6 +169,18 @@ export const Map = ({
     initialRegion = {
       ...initialRegion,
       ...mapCenterPosition
+    };
+  }
+
+  if (
+    showsUserLocation &&
+    otherProps.currentPosition?.coords.latitude &&
+    otherProps.currentPosition?.coords.longitude
+  ) {
+    initialRegion = {
+      ...initialRegion,
+      latitude: otherProps.currentPosition.coords.latitude,
+      longitude: otherProps.currentPosition.coords.longitude
     };
   }
 

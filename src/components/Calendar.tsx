@@ -123,8 +123,7 @@ export const Calendar = ({ additionalData, navigation, query, queryVariables }: 
             title: texts.homeTitles.events,
             query,
             queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
-            rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
-            showFilterByDailyEvents: false
+            rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
           });
         }
       } else {

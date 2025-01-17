@@ -11,24 +11,13 @@ import { QUERY_TYPES } from '../queries';
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 
-const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, isLocationFilter) => {
-  // check if there is something set in the certain `queryVariables`
-  // if not, - Alle - will be selected in the `dropdownData`
-  const selected = {
-    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
-      ? !queryVariables.location
-      : !queryVariables.categoryId,
-    [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider,
-    [QUERY_TYPES.VOUCHERS]: !queryVariables.categoryId
-  }[query];
-
-  const blankEntry = {
-    id: '0',
-    index: 0,
-    value: '- Alle -',
-    selected
-  };
-
+export const dropdownEntries = (
+  query,
+  queryVariables,
+  data,
+  excludeDataProviderIds,
+  isLocationFilter
+) => {
   let entries = [];
 
   if (query === QUERY_TYPES.EVENT_RECORDS) {
@@ -40,7 +29,9 @@ const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, is
       ).map((location, index) => ({
         index: index + 1,
         value: location.city,
-        selected: location.city === queryVariables.location
+        selected:
+          location.city === queryVariables.location ||
+          queryVariables.locations?.includes(location.city)
       }));
     }
 
@@ -51,7 +42,9 @@ const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, is
           index: index + 1,
           id: category.id,
           value: category.name,
-          selected: category.id === queryVariables.categoryId
+          selected:
+            category.id === queryVariables.categoryId ||
+            queryVariables.categoryIds?.includes(category.id)
         }));
     }
   } else if (query === QUERY_TYPES.NEWS_ITEMS) {
@@ -64,7 +57,9 @@ const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, is
         index: index + 1,
         id: dataProvider.id,
         value: dataProvider.name,
-        selected: dataProvider.name === queryVariables.dataProvider
+        selected:
+          dataProvider.name === queryVariables.dataProvider ||
+          queryVariables.dataProviderIds?.includes(dataProvider.id)
       }));
     }
   } else if (query === QUERY_TYPES.VOUCHERS) {
@@ -80,7 +75,7 @@ const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, is
     }
   }
 
-  return [blankEntry, ...entries];
+  return entries;
 };
 
 export const DropdownHeader = ({

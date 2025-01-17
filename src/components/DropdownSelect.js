@@ -83,7 +83,7 @@ export const DropdownSelect = ({
       accessible
     >
       <WrapperHorizontal style={labelWrapperStyle}>
-        <Label>{label}</Label>
+        <Label bold>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
         accessible={false}
@@ -114,6 +114,12 @@ export const DropdownSelect = ({
 
               return entry;
             });
+
+            const anyOtherSelected = updatedData.some(
+              (entry, index) => index !== 0 && entry.selected
+            );
+
+            updatedData[0].selected = !anyOtherSelected;
           } else {
             // only trigger onPress if a new selection is made
             if (selectedValue === value) return;

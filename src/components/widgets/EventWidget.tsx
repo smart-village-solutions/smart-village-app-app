@@ -53,7 +53,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
       title: text ?? texts.homeTitles.events,
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables: {
-        ...queryVariables,
+        order: 'listDate_ASC',
         limit: additionalProps?.limit || 15
       },
       rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
