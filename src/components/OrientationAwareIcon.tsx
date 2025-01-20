@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
-import { consts, device, IconProps, normalize } from '../config';
+import { consts, device, Icon as IconComponent, IconProps, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
 type Props = IconProps & {
   Icon: (props: IconProps) => JSX.Element;
+  iconName: keyof typeof IconComponent;
   landscapeIconStyle?: StyleProp<ViewStyle>;
   landscapeStyle?: StyleProp<ViewStyle>;
   size?: number;
@@ -17,6 +18,7 @@ export const OrientationAwareIcon = (props: Props) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const {
     Icon,
+    iconName,
     iconStyle,
     landscapeIconStyle,
     landscapeStyle,
@@ -24,25 +26,33 @@ export const OrientationAwareIcon = (props: Props) => {
     style
   } = props;
 
+  const SelectedIcon = Icon || IconComponent.NamedIcon;
+  const isNamedIcon = SelectedIcon === IconComponent.NamedIcon;
+
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
-  // we need adjustments only on iOS, so otherwise just return the item with the usual props
-  // TODO: is this still needed with Expo 48?
-  if (!needLandscapeStyle || !(device.platform === 'ios')) {
-    return <Icon {...props} />;
-  }
+  const getIconProps = () => {
+    const baseProps = {
+      ...props,
+      ...(isNamedIcon ? { name: iconName } : {})
+    };
 
-  const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
+    if (device.platform === 'android' || !needLandscapeStyle) {
+      return baseProps;
+    }
 
-  return (
-    <Icon
-      {...props}
-      iconStyle={[iconStyle, styles.marginIcon, { width: adjustedSize }, landscapeIconStyle]}
-      size={adjustedSize}
-      style={[style, landscapeStyle]}
-    />
-  );
+    const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
+
+    return {
+      ...baseProps,
+      iconStyle: [iconStyle, styles.marginIcon, { width: adjustedSize }, landscapeIconStyle],
+      size: adjustedSize,
+      style: [style, landscapeStyle]
+    };
+  };
+
+  return <SelectedIcon {...getIconProps()} />;
 };
 
 const styles = StyleSheet.create({

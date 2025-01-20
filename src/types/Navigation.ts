@@ -1,6 +1,9 @@
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationOptions } from '@react-navigation/stack';
+import { ViewStyle } from 'react-native';
+
+import { Icon } from '../config';
 
 export enum ScreenName {
   About = 'About',
@@ -115,6 +118,17 @@ export type StackConfig = {
   screenConfigs: ScreenConfig[];
 };
 
+export type CustomTab = {
+  accessibilityLabel: string;
+  iconLandscapeStyle?: ViewStyle;
+  iconName: keyof typeof Icon;
+  iconSize?: number;
+  iconStyle?: ViewStyle;
+  label: string;
+  params?: Record<string, any>;
+  screen: ScreenName;
+};
+
 export type TabConfig = {
   stackConfig: StackConfig;
   tabOptions: TabOptions;
@@ -125,7 +139,7 @@ export type TabNavigatorConfig = {
   inactiveTintColor: string;
   activeBackgroundColor: string;
   inactiveBackgroundColor: string;
-  tabConfigs: TabConfig[];
+  tabConfigs: (CustomTab | string | TabConfig)[];
 };
 
 export type NavigatorConfig = { type: 'drawer' } | { type: 'tab'; config: TabNavigatorConfig };
