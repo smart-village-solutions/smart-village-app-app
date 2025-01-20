@@ -1,50 +1,48 @@
-// Filter reducer is used to store the filter state in the permanent filter provider
-// and to update the filter state in the store
-
 import { addToStore } from '../helpers';
 
 export const RESOURCE_FILTERS_KEY = 'RESOURCE_FILTERS_KEY';
 
-export enum ResourceFiltersAction {
+type ResourceFiltersState = {
+  [key: string]: any;
+};
+
+export enum ResourceFiltersActions {
   AddResourceFilter = 'AddResourceFilter',
   OverwriteResourceFilters = 'OverwriteResourceFilters',
   RemoveResourceFilter = 'RemoveResourceFilter'
 }
 
-export type ResourceFiltersReducerAction =
-  | {
-      type: ResourceFiltersAction.AddResourceFilter;
-      payload: { key: string; value: any };
-    }
-  | {
-      type: ResourceFiltersAction.RemoveResourceFilter;
-      payload: string;
-    }
-  | {
-      type: ResourceFiltersAction.OverwriteResourceFilters;
-      payload: { [key: string]: any };
-    };
+export type ResourceFiltersAction =
+  | { type: ResourceFiltersActions.AddResourceFilter; payload: { key: string; value: any } }
+  | { type: ResourceFiltersActions.RemoveResourceFilter; payload: string }
+  | { type: ResourceFiltersActions.OverwriteResourceFilters; payload: { [key: string]: any } };
 
-export const resourceFiltersReducer: React.Reducer<
-  { [key: string]: any },
-  ResourceFiltersReducerAction
-> = (state = {}, action) => {
+/**
+ * The resource filter reducer is used to store the filter state in the permanent filter provider
+ * and to update the filter state in the store.
+ */
+export const resourceFiltersReducer = (
+  state: ResourceFiltersState = {},
+  action: ResourceFiltersAction
+) => {
   let newState = state;
+
   switch (action.type) {
-    case ResourceFiltersAction.AddResourceFilter:
+    case ResourceFiltersActions.AddResourceFilter:
       newState = {
         ...state,
         [action.payload.key]: action.payload.value
       };
       break;
-    case ResourceFiltersAction.RemoveResourceFilter:
+    case ResourceFiltersActions.RemoveResourceFilter: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [action.payload]: _, ...rest } = state;
       newState = rest;
       break;
-    case ResourceFiltersAction.OverwriteResourceFilters: {
+    }
+    case ResourceFiltersActions.OverwriteResourceFilters:
       newState = { ...action.payload };
       break;
-    }
   }
 
   // update the store for next app launch on every change

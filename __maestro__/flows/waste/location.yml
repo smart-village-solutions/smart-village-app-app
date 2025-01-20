@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+onFlowStart:
+  - runFlow: ../../setup/index.yml
+---
+# go to waste collection screen
+- tapOn: "Menü (Tab 5 von 5)"
+- tapOn:
+    id: "padView"
+    index: 8
+
+# reset selection if present
+- runFlow:
+    when:
+      visible: "Meine Straße:"
+    commands:
+      - tapOn:
+          point: "23%,19%"
+
+# select a location
+- tapOn: "Ortschaft"
+- tapOn:
+    point: "21%,59%"
+- tapOn: "Straße"
+- swipe:
+    start: "45%,74%"
+    end: "39%,39%"
+    duration: 155
+- tapOn:
+    point: "32%,75%"
+- tapOn: "Speichern"
+
+# change the location
+- tapOn:
+    point: "23%,19%"
+- tapOn: "Ortschaft"
+- inputText: "Bad Belzig"
+- tapOn: "Straße"
+- inputText: "Dippmannsdorf"
+- tapOn: "Speichern"

@@ -3,12 +3,12 @@ import React, { createContext, useState } from 'react';
 
 export const initialContext = {
   globalSettings: {
-    deprecated: {},
     filter: {},
     hdvt: {},
     navigation: 'tab',
     sections: {},
     settings: {},
+    waste: {},
     whistleblow: {},
     widgets: []
   },
@@ -26,7 +26,7 @@ export const SettingsProvider = ({
   initialConversationSettings,
   children
 }) => {
-  const [globalSettings] = useState(initialGlobalSettings);
+  const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
   const [conversationSettings, setConversationSettings] = useState(initialConversationSettings);
@@ -35,6 +35,7 @@ export const SettingsProvider = ({
     <SettingsContext.Provider
       value={{
         globalSettings,
+        setGlobalSettings,
         listTypesSettings,
         setListTypesSettings,
         locationSettings,

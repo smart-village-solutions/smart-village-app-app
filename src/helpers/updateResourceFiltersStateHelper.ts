@@ -1,6 +1,6 @@
 import _isEqual from 'lodash/isEqual';
 
-import { ResourceFiltersAction } from '../reducers';
+import { ResourceFiltersActions } from '../reducers';
 
 export const updateResourceFiltersStateHelper = ({
   query,
@@ -25,7 +25,7 @@ export const updateResourceFiltersStateHelper = ({
     !_isEqual(variables, resourceFiltersState?.[query])
   ) {
     resourceFiltersDispatch({
-      type: ResourceFiltersAction.AddResourceFilter,
+      type: ResourceFiltersActions.AddResourceFilter,
       payload: {
         key: query,
         value: { ...resourceFiltersState?.[query], ...variables }
@@ -39,7 +39,7 @@ export const updateResourceFiltersStateHelper = ({
     resourceFiltersState?.[query]
   ) {
     resourceFiltersDispatch({
-      type: ResourceFiltersAction.RemoveResourceFilter,
+      type: ResourceFiltersActions.RemoveResourceFilter,
       payload: query
     });
   }

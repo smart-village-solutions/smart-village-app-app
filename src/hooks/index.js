@@ -26,4 +26,5 @@ export * from './surveyHooks';
 export * from './TimeHooks';
 export * from './versionCheck';
 export * from './voucherHooks';
+export * from './waste';
 export * from './waterTemperature';

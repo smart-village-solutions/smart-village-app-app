@@ -4,7 +4,11 @@ import { FlatList } from 'react-native';
 import { LoadingSpinner, WrapperHorizontal } from '..';
 import { readFromStore } from '../../helpers';
 import { addMowasRegionalKeysToTokenOnServer } from '../../pushNotifications';
-import { MOWAS_REGIONAL_KEYS, MowasFilterAction, mowasRegionalKeysReducer } from '../../reducers';
+import {
+    MOWAS_REGIONAL_KEYS,
+    MowasRegionalKeysActions,
+    mowasRegionalKeysReducer
+} from '../../reducers';
 import { SettingsToggle } from '../SettingsToggle';
 
 type MowasRegionalKeys = {
@@ -26,7 +30,7 @@ export const MowasRegionSettings = ({
     setLoading(true);
 
     dispatch({
-      type: MowasFilterAction.OverwriteMowasRegionalKeys,
+      type: MowasRegionalKeysActions.OverwriteMowasRegionalKeys,
       payload: ((await readFromStore(MOWAS_REGIONAL_KEYS)) ?? []) as string[]
     });
 
@@ -58,10 +62,13 @@ export const MowasRegionSettings = ({
               bottomDivider: true,
               value: !selectedMowasRegionalKeys.includes(item.rs),
               onActivate: () => {
-                dispatch({ type: MowasFilterAction.RemoveMowasRegionalKey, payload: item.rs });
+                dispatch({
+                  type: MowasRegionalKeysActions.RemoveMowasRegionalKey,
+                  payload: item.rs
+                });
               },
               onDeactivate: () => {
-                dispatch({ type: MowasFilterAction.AddMowasRegionalKey, payload: item.rs });
+                dispatch({ type: MowasRegionalKeysActions.AddMowasRegionalKey, payload: item.rs });
               }
             }}
           />

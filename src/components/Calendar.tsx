@@ -297,10 +297,13 @@ export const Calendar = ({
         }
         theme={{
           todayTextColor: colors.primary,
+          todayBackgroundColor: colors.lighterPrimaryRgba,
           indicatorColor: colors.refreshControl,
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
             height: DOT_SIZE,
+            marginBottom: normalize(8),
+            marginTop: normalize(8),
             width: DOT_SIZE
           }
         }}

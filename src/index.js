@@ -126,7 +126,8 @@ const MainAppWithApolloProvider = () => {
       [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST,
-      [QUERY_TYPES.STATIC_CONTENT_LIST]: LIST_TYPES.CARD_LIST
+      [QUERY_TYPES.STATIC_CONTENT_LIST]: LIST_TYPES.CARD_LIST,
+      [QUERY_TYPES.WASTE_STREET]: LIST_TYPES.GROUPED_LIST
     };
 
     let globalSettingsData;
@@ -153,7 +154,10 @@ const MainAppWithApolloProvider = () => {
     const globalSettingsPublicJsonFileContent = globalSettingsData?.publicJsonFile?.content;
 
     if (!_isEmpty(globalSettingsPublicJsonFileContent)) {
-      globalSettings = globalSettingsPublicJsonFileContent;
+      globalSettings = {
+        ...globalSettings,
+        ...globalSettingsPublicJsonFileContent
+      };
       storageHelper.setGlobalSettings(globalSettings);
     }
 

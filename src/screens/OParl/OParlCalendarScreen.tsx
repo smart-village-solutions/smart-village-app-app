@@ -7,7 +7,7 @@ import { Calendar as RNCalendar } from 'react-native-calendars';
 
 import { NoTouchDay, RegularText, renderArrow, SafeAreaViewFlex, Wrapper } from '../../components';
 import { OParlPreviewSection } from '../../components/oParl/sections';
-import { colors, consts, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { setupLocales } from '../../helpers/calendarHelper';
 import { useOParlQuery } from '../../hooks';
@@ -107,9 +107,12 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
           firstDay={1}
           theme={{
             todayTextColor: colors.primary,
+            todayBackgroundColor: colors.lighterPrimaryRgba,
             dotStyle: {
               borderRadius: DOT_SIZE / 2,
               height: DOT_SIZE,
+              marginBottom: normalize(8),
+              marginTop: normalize(8),
               width: DOT_SIZE
             }
           }}

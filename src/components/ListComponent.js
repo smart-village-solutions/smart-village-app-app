@@ -7,6 +7,7 @@ import { SettingsContext } from '../SettingsProvider';
 
 import { CategoryList } from './CategoryList';
 import { EventList } from './EventList';
+import { GroupedList } from './GroupedList';
 import { HorizontalList } from './HorizontalList';
 import { VerticalList } from './VerticalList';
 import { VoucherList } from './vouchers';
@@ -33,6 +34,8 @@ const getComponent = (query, horizontal, sectionByDate) => {
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
     case QUERY_TYPES.TOURS:
       return horizontal ? HorizontalList : VerticalList;
+    case QUERY_TYPES.WASTE_STREET:
+      return GroupedList;
     case QUERY_TYPES.EVENT_RECORDS:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
@@ -50,6 +53,7 @@ const getComponent = (query, horizontal, sectionByDate) => {
 export const ListComponent = ({
   contentContainerStyle,
   data,
+  estimatedItemSize,
   fetchMoreData,
   horizontal,
   isIndexStartingAt1,
@@ -86,6 +90,7 @@ export const ListComponent = ({
       categoryTitles={categoryTitles}
       contentContainerStyle={contentContainerStyle}
       data={data}
+      estimatedItemSize={estimatedItemSize}
       refetch={refetch}
       fetchMoreData={fetchMoreData}
       isLoading={isLoading}
@@ -111,6 +116,7 @@ export const ListComponent = ({
 ListComponent.propTypes = {
   contentContainerStyle: PropTypes.object,
   data: PropTypes.array,
+  estimatedItemSize: PropTypes.number,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
   isIndexStartingAt1: PropTypes.bool,
