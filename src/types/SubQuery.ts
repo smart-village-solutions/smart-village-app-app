@@ -4,5 +4,6 @@ export type SubQuery = {
   isExternal?: boolean;
   params: { rootRouteName: string; routeName: string; title: string; webUrl: string };
   routeName: string;
+  title?: string;
   webUrl?: string;
 };

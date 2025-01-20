@@ -27,6 +27,7 @@ type NestedInfo = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params?: any;
   }>;
+  subQuery?: SubQuery;
 };
 
 export const ListHeaderComponent = ({
@@ -66,7 +67,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   const name = route.params?.name;
   const rootRouteName = route.params?.rootRouteName;
   const subQuery = route.params?.subQuery ?? undefined;
-  const navigationTitle = route.params?.title;
+
   const { data, loading, refetch } = useStaticContent<NestedInfo>({ name, type: 'json' });
   const {
     data: dataHtml,
@@ -77,6 +78,8 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
     type: 'html',
     skip: !data?.content
   });
+
+  const navigationTitle = data?.subQuery?.title || route.params?.title;
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -135,7 +138,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
             loading={loadingHtml}
             navigation={navigation}
             navigationTitle={navigationTitle}
-            subQuery={subQuery}
+            subQuery={subQuery || data?.subQuery}
           />
         }
         sections={sectionData}
