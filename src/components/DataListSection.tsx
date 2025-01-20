@@ -29,6 +29,7 @@ type Props = {
   navigateButton?: () => void;
   navigateLink?: () => void;
   navigation: StackNavigationProp<any>;
+  listType?: string;
   placeholder?: React.ReactElement;
   query: string;
   queryVariables?: Record<string, unknown>;
@@ -53,6 +54,7 @@ export const DataListSection = ({
   navigateButton,
   navigateLink,
   navigation,
+  listType,
   placeholder,
   query,
   queryVariables,
@@ -99,6 +101,7 @@ export const DataListSection = ({
           data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
           horizontal={horizontal}
           navigation={navigation}
+          listType={listType}
           query={query}
           isIndexStartingAt1={isIndexStartingAt1}
         />

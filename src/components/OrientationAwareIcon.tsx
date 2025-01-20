@@ -15,7 +15,7 @@ type Props = IconProps & {
 const LANDSCAPE_ADJUSTMENT_FACTOR = 0.75;
 
 export const OrientationAwareIcon = (props: Props) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
+  const { orientation } = useContext(OrientationContext);
   const {
     Icon,
     iconName,
@@ -30,7 +30,7 @@ export const OrientationAwareIcon = (props: Props) => {
   const isNamedIcon = SelectedIcon === IconComponent.NamedIcon;
 
   const needLandscapeStyle =
-    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+    orientation === 'landscape' || device.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
   const getIconProps = () => {
     const baseProps = {
@@ -38,11 +38,21 @@ export const OrientationAwareIcon = (props: Props) => {
       ...(isNamedIcon ? { name: iconName } : {})
     };
 
-    if (device.platform === 'android' || !needLandscapeStyle) {
+    const isPortrait = orientation !== 'landscape';
+
+    if (device.platform === 'android' || !needLandscapeStyle || (isPortrait && !device.isTablet)) {
       return baseProps;
     }
 
     const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
+
+    if (isPortrait && device.isTablet) {
+      return {
+        ...baseProps,
+        iconStyle: [iconStyle, { width: adjustedSize }],
+        size: adjustedSize
+      };
+    }
 
     return {
       ...baseProps,

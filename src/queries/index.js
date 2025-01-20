@@ -12,7 +12,7 @@ import {
 } from './SUE';
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
 // IMPORT GET QUERIES
-import { GET_CATEGORIES } from './categories';
+import { GET_CATEGORIES, GET_CATEGORIES_FILTER } from './categories';
 import { GET_CONSTRUCTION_SITES } from './constructionSite';
 import {
   GET_DEBATE,
@@ -35,8 +35,13 @@ import { GET_GENERIC_ITEM, GET_GENERIC_ITEMS } from './genericItem';
 import { GET_LUNCHES } from './lunch';
 import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
 import { GET_NEWS_ITEMS_DATA_PROVIDERS } from './newsItemsDataProvider';
-import { GET_POINTS_OF_INTEREST, GET_POINT_OF_INTEREST } from './pointsOfInterest';
+import {
+  GET_POINTS_OF_INTEREST,
+  GET_POINT_OF_INTEREST,
+  GET_POINT_OF_INTEREST_TRAVEL_TIMES
+} from './pointsOfInterest';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
+import { GET_CONVERSATIONS, GET_MESSAGES, member } from './profile';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { GET_RESOURCE_FILTERS } from './resourceFilters';
@@ -71,6 +76,7 @@ export * from './types';
 export const getQuery = (query, filterOptions = {}) => {
   const QUERIES = {
     [QUERY_TYPES.CATEGORIES]: GET_CATEGORIES,
+    [QUERY_TYPES.CATEGORIES_FILTER]: GET_CATEGORIES_FILTER,
     [QUERY_TYPES.CONSTRUCTION_SITES]: GET_CONSTRUCTION_SITES,
     [QUERY_TYPES.EVENT_RECORD]: GET_EVENT_RECORD,
     [QUERY_TYPES.EVENT_RECORDS_ADDRESSES]: GET_EVENT_RECORDS_ADDRESSES,
@@ -89,6 +95,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.TOURS]: GET_TOURS,
     [QUERY_TYPES.TOUR_STOPS]: GET_TOUR_STOPS,
     [QUERY_TYPES.POINT_OF_INTEREST]: GET_POINT_OF_INTEREST,
+    [QUERY_TYPES.POINT_OF_INTEREST_TRAVEL_TIMES]: GET_POINT_OF_INTEREST_TRAVEL_TIMES,
     [QUERY_TYPES.POINTS_OF_INTEREST]: GET_POINTS_OF_INTEREST,
     [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: GET_POINTS_OF_INTEREST_AND_TOURS,
     [QUERY_TYPES.PUBLIC_HTML_FILE]: GET_PUBLIC_HTML_FILE,
@@ -112,6 +119,11 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.CONSUL.PROPOSALS]: GET_PROPOSALS,
     [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: PUBLIC_COMMENT,
     [QUERY_TYPES.CONSUL.USER]: USER,
+
+    // PROFILE QUERIES
+    [QUERY_TYPES.PROFILE.MEMBER]: member,
+    [QUERY_TYPES.PROFILE.GET_MESSAGES]: GET_MESSAGES,
+    [QUERY_TYPES.PROFILE.GET_CONVERSATIONS]: GET_CONVERSATIONS,
 
     // SUE QUERIES
     [QUERY_TYPES.SUE.AREA_SERVICE]: areaService,

@@ -36,6 +36,7 @@ export const Modal = ({
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
+      statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
     >
       <>

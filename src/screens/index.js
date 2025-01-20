@@ -4,13 +4,14 @@ export * from './DefectReport';
 export * from './doc';
 export * from './Noticeboard';
 export * from './OParl';
+export * from './profile';
 export * from './SUE';
 export * from './volunteer';
 export * from './Voucher';
 export * from './whistleblow';
 
-export * from './AppIntroScreen';
 export * from './AboutScreen';
+export * from './AppIntroScreen';
 export * from './BookmarkCategoryScreen';
 export * from './BookmarkScreen';
 export * from './ConstructionSiteDetailScreen';

@@ -4,33 +4,38 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth, momentFormat } from '../helpers';
+import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
 import { SueCategory, SueImageFallback, SueStatus } from './SUE';
-import { BoldText, RegularText } from './Text';
+import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 const keyExtractor = (item, index) => `item${item}-index${index}`;
 
 /* eslint-disable complexity */
-const renderCardContent = (item, index, horizontal, sue) => {
+const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) => {
   const {
     address,
     appDesignSystem = {},
     aspectRatio,
     iconName,
+    overtitle,
     picture,
     requestedDatetime,
     serviceName,
     status,
     subtitle,
-    title,
-    topTitle
+    title
   } = item;
-  const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
-  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
+  const {
+    contentSequence,
+    imageBorderRadius = normalize(8),
+    imageStyle,
+    textsStyle = {}
+  } = appDesignSystem;
+  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
 
@@ -45,31 +50,42 @@ const renderCardContent = (item, index, horizontal, sue) => {
           source={{ uri: picture.url }}
         />
       ),
+    overtitle: () =>
+      !!overtitle && (
+        <HeadlineText
+          key={keyExtractor(overtitle, index)}
+          smallest
+          uppercase
+          style={[
+            picture?.url && styles.overtitleMarginTop,
+            styles.overtitleMarginBottom,
+            generalStyle,
+            overtitleStyle
+          ]}
+        >
+          {trimNewLines(overtitle)}
+        </HeadlineText>
+      ),
     subtitle: () =>
       !!subtitle && (
         <RegularText
           key={keyExtractor(subtitle, index)}
           small
-          style={[generalStyle, subtitleStyle]}
+          style={[styles.subtitle, generalStyle, subtitleStyle]}
         >
           {subtitle}
         </RegularText>
       ),
     title: () =>
       !!title && (
-        <BoldText key={keyExtractor(title, index)} style={[generalStyle, titleStyle]}>
+        <HeadlineText
+          key={keyExtractor(title, index)}
+          small={!bigTitle}
+          style={[generalStyle, titleStyle]}
+        >
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-        </BoldText>
+        </HeadlineText>
       ),
-    topTitle: () => (
-      <RegularText
-        key={keyExtractor(topTitle, index)}
-        small
-        style={[!!topTitleStyle && topTitleStyle]}
-      >
-        {topTitle}
-      </RegularText>
-    ),
 
     // SUE
     sue: {
@@ -108,9 +124,9 @@ const renderCardContent = (item, index, horizontal, sue) => {
     });
   } else {
     picture?.url && cardContent.push(sequenceMap.picture());
-    topTitle && cardContent.push(sequenceMap.topTitle());
-    subtitle && cardContent.push(sequenceMap.subtitle());
+    !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
     !sue && title && cardContent.push(sequenceMap.title());
+    subtitle && cardContent.push(sequenceMap.subtitle());
 
     if (sue) {
       !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
@@ -131,57 +147,75 @@ const renderCardContent = (item, index, horizontal, sue) => {
 };
 /* eslint-enable complexity */
 
-export const CardListItem = memo(({ horizontal = false, index, item, sue = false, navigation }) => {
-  const {
-    appDesignSystem = {},
-    params,
-    routeName: name,
-    serviceName,
-    requestedDatetime,
-    subtitle,
-    title,
-    topTitle
-  } = item;
-  const { containerStyle, contentContainerStyle } = appDesignSystem;
+export const CardListItem = memo(
+  ({
+    bigTitle = false,
+    horizontal = false,
+    index,
+    item,
+    navigation,
+    noOvertitle = false,
+    sue = false
+  }) => {
+    const {
+      appDesignSystem = {},
+      overtitle,
+      params,
+      routeName: name,
+      serviceName,
+      requestedDatetime,
+      subtitle,
+      title
+    } = item;
+    const { containerStyle, contentContainerStyle } = appDesignSystem;
 
-  const accessibilityLabel = [
-    !!requestedDatetime && momentFormat(requestedDatetime),
-    !!serviceName && serviceName,
-    !!topTitle && topTitle,
-    !!title && title,
-    !!subtitle && subtitle
-  ]
-    .filter((text) => !!text)
-    .map((text) => `(${text})`)
-    .join(' ');
+    const accessibilityLabel = [
+      !!requestedDatetime && momentFormat(requestedDatetime),
+      !!serviceName && serviceName,
+      !!overtitle && overtitle,
+      !!title && title,
+      !!subtitle && subtitle
+    ]
+      .filter((text) => !!text)
+      .map((text) => `(${text})`)
+      .join(' ');
 
-  return (
-    <Touchable
-      accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
-      onPress={() => navigation && navigation.push(name, params)}
-      disabled={!navigation}
-    >
-      <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
-        <View
-          style={[
-            stylesWithProps({ horizontal }).contentContainer,
-            !!contentContainerStyle && contentContainerStyle,
-            sue && styles.sueContentContainer
-          ]}
-        >
-          {renderCardContent(item, index, horizontal, sue)}
+    return (
+      <Touchable
+        accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
+        onPress={() => navigation && navigation.push(name, params)}
+        disabled={!navigation}
+      >
+        <View>
+          <Card
+            containerStyle={[
+              styles.container,
+              stylesWithProps({ horizontal }).container,
+              containerStyle
+            ]}
+          >
+            <View
+              style={[
+                stylesWithProps({ horizontal }).contentContainer,
+                contentContainerStyle,
+                sue && styles.sueContentContainer
+              ]}
+            >
+              {renderCardContent(item, index, horizontal, noOvertitle, bigTitle, sue)}
+            </View>
+          </Card>
         </View>
-      </Card>
-    </Touchable>
-  );
-});
+      </Touchable>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     borderWidth: 0,
     margin: 0,
-    padding: normalize(14),
+    paddingVertical: normalize(16),
     ...Platform.select({
       android: {
         elevation: 0
@@ -191,9 +225,17 @@ const styles = StyleSheet.create({
       }
     })
   },
+  overtitleMarginBottom: {
+    marginBottom: normalize(4)
+  },
+  overtitleMarginTop: {
+    marginTop: normalize(6)
+  },
+  subtitle: {
+    marginTop: normalize(6)
+  },
   imageContainer: {
-    alignSelf: 'center',
-    marginBottom: normalize(7)
+    marginBottom: normalize(8)
   },
   noPaddingTop: {
     paddingTop: 0
@@ -222,9 +264,12 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
     width = width * 0.7;
   }
 
-  const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
+  const maxWidth = width - 2 * normalize(16); // width of an image minus paddings
 
   return StyleSheet.create({
+    container: {
+      paddingHorizontal: horizontal ? normalize(14) : 0
+    },
     contentContainer: {
       width: maxWidth
     },
@@ -239,9 +284,11 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
 CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
+  bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
   index: PropTypes.number,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  noOvertitle: PropTypes.bool,
   sue: PropTypes.bool
 };

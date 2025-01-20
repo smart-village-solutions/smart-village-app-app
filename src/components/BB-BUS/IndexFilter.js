@@ -59,7 +59,7 @@ export const IndexFilter = ({
     switch (selectedFilterId) {
       case 2:
         return (
-          <Wrapper>
+          <WrapperVertical>
             <DropdownSelect
               data={categoryFilterData}
               setData={setCategoryFilterData}
@@ -74,11 +74,11 @@ export const IndexFilter = ({
               searchInputStyle={styles.searchInput}
               searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
             />
-          </Wrapper>
+          </WrapperVertical>
         );
       case 3:
         return (
-          <Wrapper>
+          <WrapperVertical>
             <TextSearch
               data={serviceSearchData}
               setData={setServiceSearchData}
@@ -94,13 +94,13 @@ export const IndexFilter = ({
               searchInputStyle={styles.searchInput}
               searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
             />
-          </Wrapper>
+          </WrapperVertical>
         );
       case 4:
         return (
           <WrapperVertical>
             <AZFilter data={AZFilterData} setData={setAZFilterData} />
-            <WrapperHorizontal>
+            <WrapperVertical>
               <DropdownSelect
                 data={locationFilterData}
                 setData={setLocationFilterData}
@@ -109,7 +109,7 @@ export const IndexFilter = ({
                 searchInputStyle={styles.searchInput}
                 searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
               />
-            </WrapperHorizontal>
+            </WrapperVertical>
           </WrapperVertical>
         );
       default:
@@ -187,7 +187,6 @@ export const IndexFilter = ({
   return (
     <View>
       {renderFilterComponents(selectedFilter.id)}
-      <Divider style={styles.divider} />
       <IndexFilterWrapper>
         <WrapperHorizontal>
           <RegularText style={styles.results}>

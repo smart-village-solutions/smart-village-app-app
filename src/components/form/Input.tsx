@@ -1,5 +1,5 @@
 import React, { forwardRef, useContext, useEffect, useRef } from 'react';
-import { useController, UseControllerOptions } from 'react-hook-form';
+import { useController, UseControllerProps } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { InputProps, Input as RNEInput } from 'react-native-elements';
 
@@ -10,7 +10,7 @@ import { Label } from '../Label';
 const { a11yLabel } = consts;
 
 type Props = InputProps &
-  UseControllerOptions & {
+  UseControllerProps & {
     validate?: boolean;
     hidden?: boolean;
     row?: boolean;
@@ -19,7 +19,6 @@ type Props = InputProps &
   };
 
 /* eslint-disable complexity */
-/* there are a lot of conditions */
 export const Input = forwardRef(
   (
     {
@@ -27,7 +26,7 @@ export const Input = forwardRef(
       name,
       rules,
       label,
-      boldLabel = false,
+      boldLabel = true,
       validate = false,
       disabled = false,
       hidden = false,
@@ -52,6 +51,7 @@ export const Input = forwardRef(
       rules
     });
     const inputRef = ref || useRef(null);
+    const [isActive, setIsActive] = React.useState(false);
 
     useEffect(() => {
       // NOTE: need to set the font family for android explicitly on android, because password
@@ -61,7 +61,8 @@ export const Input = forwardRef(
         inputRef?.current?.setNativeProps({
           style: {
             fontFamily: 'regular',
-            fontSize: normalize(16)
+            fontSize: normalize(14),
+            lineHeight: normalize(20)
           }
         });
       }
@@ -76,7 +77,7 @@ export const Input = forwardRef(
           multiline={multiline}
           {...furtherProps}
           containerStyle={[styles.container, styles.chatContainer]}
-          inputContainerStyle={styles.inputContainer}
+          inputContainerStyle={[styles.inputContainer, multiline && styles.inputContainerMultiline]}
           inputStyle={[
             styles.input,
             styles.chatInput,
@@ -84,7 +85,7 @@ export const Input = forwardRef(
           ]}
           accessibilityLabel={
             accessibilityLabel ||
-            `${!!a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
+            `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
           }
         />
       );
@@ -98,7 +99,13 @@ export const Input = forwardRef(
         label={label && <Label bold={boldLabel}>{label}</Label>}
         value={field.value}
         onChangeText={field.onChange}
-        onBlur={field.onBlur}
+        onBlur={() => {
+          field.onBlur();
+          setIsActive(false);
+        }}
+        onFocus={() => {
+          setIsActive(true);
+        }}
         disabled={disabled}
         disableFullscreenUI
         multiline={multiline}
@@ -109,9 +116,9 @@ export const Input = forwardRef(
           rightIcon ||
           (isValid ? (
             <Icon.Ok color={colors.primary} />
-          ) : (
-            !isValid && !!errorMessage && <Icon.Close color={colors.error} />
-          ))
+          ) : !isValid && !!errorMessage ? (
+            <Icon.AlertHexagonFilled color={colors.error} size={normalize(16)} />
+          ) : undefined)
         }
         containerStyle={[
           styles.container,
@@ -123,6 +130,8 @@ export const Input = forwardRef(
           styles.inputContainer,
           disabled && styles.inputContainerDisabled,
           hidden && styles.inputContainerHidden,
+          multiline && styles.inputContainerMultiline,
+          isActive && styles.inputContainerSuccess,
           isValid && styles.inputContainerSuccess,
           !isValid && !!errorMessage && styles.inputContainerError,
           isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
@@ -140,7 +149,7 @@ export const Input = forwardRef(
         disabledInputStyle={styles.inputDisabled}
         accessibilityLabel={
           accessibilityLabel ||
-          `${!!a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
+          `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
         }
       />
     );
@@ -165,8 +174,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalize(1),
     borderColor: colors.gray40,
     borderLeftWidth: normalize(1),
+    borderRadius: normalize(8),
     borderRightWidth: normalize(1),
-    borderTopWidth: normalize(1)
+    borderTopWidth: normalize(1),
+    height: normalize(42)
   },
   inputContainerDisabled: {
     backgroundColor: colors.gray20,
@@ -178,6 +189,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderTopWidth: 0,
     display: 'none'
+  },
+  inputContainerMultiline: {
+    height: 'auto'
   },
   inputContainerSuccess: {
     borderColor: colors.primary
@@ -195,13 +209,17 @@ const styles = StyleSheet.create({
     paddingLeft: normalize(12),
     paddingRight: normalize(6),
     paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
-    fontFamily: 'regular'
+    fontFamily: 'regular',
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   multiline: {
     paddingTop: normalize(12)
   },
   inputError: {
-    color: colors.error
+    color: colors.error,
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   inputErrorHeight: {
     height: 0

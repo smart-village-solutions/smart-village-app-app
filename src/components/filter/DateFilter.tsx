@@ -45,7 +45,7 @@ const CalendarView = ({
     dates[date] = {
       ...(dates[date] ?? {}),
       selected: true,
-      selectedColor: colors.lighterPrimary
+      selectedColor: colors.lighterSecondary
     };
 
     return dates;
@@ -93,8 +93,8 @@ const CalendarView = ({
         markedDates={markedDates}
         markingType="dot"
         theme={{
-          todayTextColor: colors.primary,
-          indicatorColor: colors.primary,
+          todayTextColor: colors.secondary,
+          indicatorColor: colors.secondary,
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
             height: DOT_SIZE,
@@ -143,32 +143,30 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
 
           return (
             <View key={item.name} style={(styles.container, containerStyle)}>
-              <>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    setIsCollapsed((prev) =>
-                      Object.keys(prev).reduce((acc: { [key: string]: boolean }, key) => {
-                        acc[key] = key === item.name ? !prev[key] : true;
-                        return acc;
-                      }, {})
-                    );
-                  }}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  setIsCollapsed((prev) =>
+                    Object.keys(prev).reduce((acc: { [key: string]: boolean }, key) => {
+                      acc[key] = key === item.name ? !prev[key] : true;
+                      return acc;
+                    }, {})
+                  );
+                }}
+              >
+                <RegularText
+                  style={styles.buttonText}
+                  placeholder={
+                    !filters[item.name] || filters.start_date === filters.initial_start_date
+                  }
                 >
-                  <RegularText
-                    style={styles.buttonText}
-                    placeholder={
-                      !filters[item.name] || filters.start_date === filters.initial_start_date
-                    }
-                  >
-                    {filters[item.name] && filters.start_date !== filters.initial_start_date
-                      ? momentFormat(filters[item.name], 'DD.MM.YYYY')
-                      : item.placeholder}
-                  </RegularText>
+                  {filters[item.name] && filters.start_date !== filters.initial_start_date
+                    ? momentFormat(filters[item.name], 'DD.MM.YYYY')
+                    : item.placeholder}
+                </RegularText>
 
-                  <Icon.Calendar style={styles.icon} />
-                </TouchableOpacity>
-              </>
+                <Icon.Calendar style={styles.icon} />
+              </TouchableOpacity>
             </View>
           );
         })}
@@ -196,11 +194,9 @@ const styles = StyleSheet.create({
   container: {},
   button: {
     alignItems: 'center',
-    borderBottomWidth: normalize(1),
     borderColor: colors.gray40,
-    borderLeftWidth: normalize(1),
-    borderRightWidth: normalize(1),
-    borderTopWidth: normalize(1),
+    borderRadius: normalize(8),
+    borderWidth: normalize(1),
     flexDirection: 'row',
     justifyContent: 'space-between'
   },

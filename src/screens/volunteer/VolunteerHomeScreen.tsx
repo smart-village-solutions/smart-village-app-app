@@ -1,8 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { DeviceEventEmitter } from 'expo-modules-core';
 import React, { useCallback, useEffect } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  DeviceEventEmitter,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 
 import {
   Button,

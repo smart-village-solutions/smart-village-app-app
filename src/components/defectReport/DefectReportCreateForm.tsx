@@ -10,16 +10,16 @@ import {
   Checkbox,
   DropdownInput,
   HtmlView,
-  ImageSelector,
   Input,
   RegularText,
   Touchable,
   Wrapper
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { Icon, colors, consts, texts } from '../../config';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { GenericType } from '../../types';
+import { ImageSelector } from '../selectors';
 
 const { EMAIL_REGEX } = consts;
 
@@ -260,13 +260,11 @@ export const DefectReportCreateForm = ({
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              containerStyle={styles.checkboxContainerStyle}
               onPress={() => onChange(!value)}
               title={`${texts.defectReport.inputCheckbox} *`}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
           control={control}

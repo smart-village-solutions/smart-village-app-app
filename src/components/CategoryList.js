@@ -1,9 +1,9 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, SectionList, View } from 'react-native';
+import { ActivityIndicator, SectionList, StyleSheet } from 'react-native';
 
-import { colors, texts } from '../config';
+import { colors, normalize, texts } from '../config';
 
 import { CategoryListItem } from './CategoryListItem';
 import { LoadingContainer } from './LoadingContainer';
@@ -17,11 +17,7 @@ export class CategoryList extends React.PureComponent {
 
     if (!title || !data?.length || !hasSectionHeader) return null;
 
-    return (
-      <View>
-        <SectionHeader title={title} />
-      </View>
-    );
+    return <SectionHeader title={title} containerStyle={styles.sectionHeaderContainer} />;
   };
 
   render() {
@@ -73,7 +69,6 @@ export class CategoryList extends React.PureComponent {
       <SectionList
         keyExtractor={this.keyExtractor}
         sections={sectionedData}
-        initialNumToRender={data.length > 1 ? data.length : 2}
         renderItem={({ item, index, section }) => (
           <CategoryListItem
             navigation={navigation}
@@ -88,10 +83,21 @@ export class CategoryList extends React.PureComponent {
         ListHeaderComponent={ListHeaderComponent}
         stickySectionHeadersEnabled
         refreshControl={refreshControl}
+        contentContainerStyle={styles.contentContainer}
       />
     );
   }
 }
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingHorizontal: normalize(16)
+  },
+  sectionHeaderContainer: {
+    paddingLeft: 0,
+    paddingRight: 0
+  }
+});
 
 CategoryList.propTypes = {
   categoryTitles: PropTypes.object,

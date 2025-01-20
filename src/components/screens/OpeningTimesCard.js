@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 
 import { colors, normalize, texts } from '../../config';
@@ -8,7 +8,7 @@ import { momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
 const TimeBox = styled.View`
   flex-direction: row;
@@ -36,7 +36,7 @@ export const OpeningTimesCard = ({
   };
 
   return (
-    <Wrapper>
+    <WrapperHorizontal>
       {openingHours
         .slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER)
         .map((item, index, slicedArray) => {
@@ -53,7 +53,15 @@ export const OpeningTimesCard = ({
           const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
 
           return (
-            <View key={index} style={index !== slicedArray.length - 1 ? styles.divider : null}>
+            <WrapperVertical
+              key={index}
+              style={[
+                index === 0 && styles.noMarginTop,
+                index === 0 && styles.noPaddingTop,
+                index !== slicedArray.length - 1 && styles.divider,
+                index === slicedArray.length - 1 && styles.noPaddingBottom
+              ]}
+            >
               {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
 
               {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
@@ -95,35 +103,44 @@ export const OpeningTimesCard = ({
               )}
 
               {!!description && (
-                <WrapperRow>
+                <WrapperRow style={styles.marginBottom}>
                   <HtmlView html={description} />
                 </WrapperRow>
               )}
-            </View>
+            </WrapperVertical>
           );
         })}
 
       {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
-        <Touchable onPress={loadMoreItems}>
-          <BoldText primary underline center>
-            {appointmentsShowMoreButton}
-          </BoldText>
-        </Touchable>
+        <WrapperVertical style={styles.noPaddingBottom}>
+          <Touchable onPress={loadMoreItems}>
+            <BoldText primary underline center>
+              {appointmentsShowMoreButton}
+            </BoldText>
+          </Touchable>
+        </WrapperVertical>
       )}
-    </Wrapper>
+    </WrapperHorizontal>
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   divider: {
-    borderBottomColor: colors.primary,
-    borderBottomWidth: 1,
-    flex: 1,
-    marginBottom: normalize(5)
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth
   },
   marginBottom: {
     marginBottom: normalize(3)
+  },
+  noMarginTop: {
+    marginTop: 0
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
 

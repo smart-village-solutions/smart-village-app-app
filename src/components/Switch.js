@@ -3,17 +3,20 @@ import React, { useContext } from 'react';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors } from '../config';
+import { colors, device } from '../config';
 
 const trackColor = {
   ...Platform.select({
-    android: { false: colors.shadow, true: colors.lighterPrimary },
+    android: { false: colors.shadow, true: colors.primary },
     ios: { false: colors.shadow, true: colors.primary }
   })
 };
-const thumbColor = colors.lightestText;
+const thumbColor = Platform.select({
+  android: colors.gray20,
+  ios: colors.lightestText
+});
 const thumbColorEnabled = Platform.select({
-  android: colors.primary,
+  android: colors.gray20,
   ios: colors.lightestText
 });
 
@@ -28,6 +31,13 @@ export const Switch = ({ switchValue, toggleSwitch }) => {
       onValueChange={toggleSwitch}
       value={switchValue}
       accessibilityRole="button"
+      style={[
+        device.platform === 'ios' &&
+          !device.isTablet && {
+            right: -6,
+            transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
+          }
+      ]}
     />
   );
 };

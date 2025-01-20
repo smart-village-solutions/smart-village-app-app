@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import {
   EmptyMessage,
@@ -10,6 +10,7 @@ import {
   NewsItem,
   Offer,
   PointOfInterest,
+  ProfileNoticeboardDetail,
   SafeAreaViewFlex,
   Tour
 } from '../components';
@@ -17,6 +18,7 @@ import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
@@ -32,10 +34,8 @@ const getGenericComponent = (genericType) => {
     case GenericType.Deadline:
     case GenericType.Job:
       return Offer;
-    case GenericType.DefectReport:
-      return DefectReportFormScreen;
     case GenericType.Noticeboard:
-      return NoticeboardFormScreen;
+      return ProfileNoticeboardDetail;
   }
 };
 
@@ -82,13 +82,16 @@ const useRootRouteByCategory = (details, navigation) => {
   }, [id, categoriesNews]);
 };
 
+/* eslint-disable complexity */
 export const DetailScreen = ({ navigation, route }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { conversations = false } = settings;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
   const id = route.params?.id;
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const details = route.params?.details ?? {};
-  const [today] = useState(new Date().toISOString());
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -113,6 +116,11 @@ export const DetailScreen = ({ navigation, route }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
+
+    // this will trigger the onRefresh functions provided to the `useDetailRefresh` hook in other
+    // components.
+    DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+
     isConnected && (await refetch());
     setRefreshing(false);
   };
@@ -126,7 +134,7 @@ export const DetailScreen = ({ navigation, route }) => {
   return (
     <Query
       query={getQuery(query)}
-      variables={{ id: queryVariables.id, date: today }}
+      variables={{ id: queryVariables.id }}
       fetchPolicy={query === QUERY_TYPES.EVENT_RECORD ? 'cache-and-network' : fetchPolicy}
     >
       {({ data, loading, refetch, networkStatus }) => {
@@ -145,7 +153,33 @@ export const DetailScreen = ({ navigation, route }) => {
           return <EmptyMessage title={texts.empty.content} />;
         }
 
-        const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
+        let Component;
+
+        const genericType = data?.[query]?.genericType || details?.genericType;
+
+        // check for form screens a detail screen first
+        if (genericType === GenericType.DefectReport) {
+          Component = DefectReportFormScreen;
+        }
+
+        if (genericType === GenericType.Noticeboard && !conversations) {
+          Component = NoticeboardFormScreen;
+        }
+
+        if (Component) {
+          return (
+            <Component
+              data={(data && data[query]) || details}
+              navigation={navigation}
+              fetchPolicy={fetchPolicy}
+              refetch={refetch}
+              route={route}
+            />
+          );
+        }
+
+        // otherwise determine detail screen based on query and generic type
+        Component = getComponent(query, genericType);
 
         if (!Component) return null;
 
@@ -165,6 +199,7 @@ export const DetailScreen = ({ navigation, route }) => {
                 data={(data && data[query]) || details}
                 navigation={navigation}
                 fetchPolicy={fetchPolicy}
+                refetch={refetch}
                 route={route}
               />
               <FeedbackFooter />
@@ -175,6 +210,7 @@ export const DetailScreen = ({ navigation, route }) => {
     </Query>
   );
 };
+/* eslint-enable complexity */
 
 DetailScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

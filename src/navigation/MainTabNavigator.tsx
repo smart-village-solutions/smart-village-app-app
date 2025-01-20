@@ -1,10 +1,13 @@
+/* eslint-disable complexity */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoadingSpinner } from '../components';
 import { colors, normalize } from '../config';
 import { createDynamicTabConfig, tabNavigatorConfig } from '../config/navigation/tabConfig';
 import { useStaticContent } from '../hooks';
+import { OrientationContext } from '../OrientationProvider';
 import { TabConfig, TabNavigatorConfig } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
@@ -75,6 +78,12 @@ const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
   const { loading, tabRoutes } = useTabRoutes();
+  const { orientation } = useContext(OrientationContext);
+  const safeAreaInsets = useSafeAreaInsets();
+  const isPortrait = orientation === 'portrait';
+  const tabBarHeight = !isPortrait
+    ? normalize(35) + safeAreaInsets.bottom
+    : normalize(64) + safeAreaInsets.bottom;
 
   const [tabConfigs, setTabConfigs] = useState<TabConfig[]>(tabNavigatorConfig.tabConfigs);
 
@@ -99,7 +108,19 @@ export const MainTabNavigator = () => {
         tabBarInactiveTintColor:
           tabRoutes?.inactiveTintColor || tabNavigatorConfig.inactiveTintColor,
         tabBarItemStyle: { marginTop: normalize(0) },
-        tabBarStyle: { backgroundColor: colors.surface }
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.gray20,
+          borderTopWidth: 1,
+          height: tabBarHeight
+        },
+        tabBarLabelStyle: {
+          fontSize: normalize(12),
+          lineHeight: normalize(14),
+          marginBottom: orientation === 'portrait' ? normalize(10) : undefined,
+          marginTop: orientation === 'portrait' ? normalize(4) : undefined
+        },
+        tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'
       }}
     >
       {tabConfigs?.map((tabConfig, index) => {

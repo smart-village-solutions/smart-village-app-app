@@ -95,7 +95,7 @@ export const texts = {
     },
     textSearch: {
       label: 'Dienstleistung',
-      placeholder: 'Was suchen Sie?'
+      placeholder: 'Was suchst du?'
     }
   },
   bookmarks: {
@@ -103,7 +103,7 @@ export const texts = {
     noBookmarksinCategory:
       'In dieser Kategorie wurden noch keine Einträge für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     noBookmarksYet:
-      'Es wurden noch keine Beiträge, Orte oder Touren für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
+      'Es wurde noch nichts für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
   calendarToggle: {
@@ -224,7 +224,7 @@ export const texts = {
       emptyError: 'darf nicht leer sein',
       generalDataUploadError:
         'Beim Hochladen des Fotos oder Dokuments ist ein Problem aufgetreten. Bitte überprüfen.',
-      imageDeleteAlertBody: 'Möchten Sie das Bild löschen?',
+      imageDeleteAlertBody: 'Möchtest du das Bild löschen?',
       imageSizeError: 'Das ausgewählte Bild darf maximal 1 MB groß sein.',
       imageTypeAndSizeError:
         'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',
@@ -337,6 +337,7 @@ export const texts = {
       proposal: 'Vorschlag'
     },
     eventRecord: 'Veranstaltung',
+    conversation: 'Unterhaltungen',
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
     volunteer: {
@@ -424,6 +425,7 @@ export const texts = {
     appointments: 'Termine',
     appointmentsShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
+    details: 'Details',
     filterByDailyEvents: 'Nur tagesaktuelle anzeigen',
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
@@ -494,7 +496,6 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
-    company: 'Städtische Unternehmen',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
     service: 'Service'
@@ -525,15 +526,19 @@ export const texts = {
   },
   noticeboard: {
     abort: 'Abbrechen',
+    addImages: 'Bilder hinzufügen',
     addDocuments: 'Dokumente hinzufügen',
     addImage: 'Bild hinzufügen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
+      delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
+      deleteConversation: 'Wollen Sie diese Unterhaltung wirklich löschen?',
+      deleteButton: 'Löschen',
       documentHint: (count) => `ⓘ Es können bis zu ${count} Dokumente hochgeladen werden.`,
       documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
       documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
       documentUploadError: 'Beim Hochladen des Dokuments ist ein Fehler aufgetreten.',
-      error: 'Bitte versuchen Sie es erneut.',
+      error: 'Bitte versuche es erneut.',
       hint: 'Hinweis',
       imageHint: (count) => `ⓘ Es können bis zu ${count} Bilder hochgeladen werden.`,
       imageSizeError: (size) => `Das ausgewählte Bild darf maximal ${size} groß sein.`,
@@ -542,28 +547,56 @@ export const texts = {
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
+    all: 'Alles',
+    backToConversation: 'Zurück zur Unterhaltung',
+    categoryNames: {
+      neighbourlyHelp: 'Nachbarschaftshilfe',
+      offer: 'Angebote',
+      search: 'Gesuche'
+    },
+    chooseFromGallery: 'Galerie öffnen',
+    close: 'Schließen',
+    delete: 'Löschen',
+    description: 'Beschreibung',
+    details: 'Details',
     documents: 'Dokumente',
+    documentsInfo:
+      'Du kannst maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
+    duration: 'Laufzeit',
+    edit: 'Bearbeiten',
+    editButton: 'Anzeige ändern',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
+    images: 'Aussagekäftiges Bild',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
     inputDescription: 'Beschreibung',
     inputErrorText: 'muss ausgefüllt werden',
-    inputMail: 'Ihre E-Mail',
-    inputMessage: 'Ihre Nachricht',
-    inputName: 'Ihr Name',
-    inputPhoneNumber: 'Ihre Telefonnummer',
+    inputMail: 'E-Mail',
+    inputMessage: 'Nachricht',
+    inputName: 'Angezeigter Name',
+    inputPhoneNumber: 'Telefonnummer',
+    inputPrice: 'Preis',
+    inputPriceType: ' ',
+    inputPriceTypePlaceholder: 'Währung oder Zusatz',
     inputTitle: 'Titel',
     invalidMail: '-Adresse ist nicht gültig.',
-    noticeboard: 'Schwarzes Brett',
+    member: 'Anbieter',
+    myNoticeboard: 'Meine Anzeige',
+    noticeboard: 'Angebote & Gesuche',
     publicationDate: 'Erscheinungsdatum',
     send: 'Senden',
+    sendButton: 'Anzeige erstellen',
     successScreen: {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
-        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Sie erhalten eine E-Mail, wenn der Eintrag freigeschaltet wurde.',
+        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
-    }
+    },
+    takePhoto: 'Bild aufnehmen',
+    toConversation: 'Zur Unterhaltung',
+    toRelated: 'Zu der zugehörigen Anzeige',
+    writeMessage: 'Unterhaltung starten'
   },
   oparl: {
     agendaItem: {
@@ -802,18 +835,20 @@ export const texts = {
   placeholder: {
     homeSectionButton: 'Filter ändern',
     homeSectionTitle: (title) => `Keine ${title} vorhanden.`,
-    homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
+    homeSectionSubtitle: 'Haben Sie alle Quellen abgewählt?'
   },
   pointOfInterest: {
     availableVehicles: 'Verfügbare Fahrzeuge',
     departureTimes: 'Abfahrtszeiten',
+    departureTimesShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     loadMoreVouchers: 'Mehr anzeigen',
-    location: 'Anfahrt',
+    location: 'Karte',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
+    overview: 'Übersicht',
     priceFree: 'kostenlos',
     prices: 'Preise',
     routePlanner: 'Zum Routenplaner bbnavi',
@@ -835,6 +870,112 @@ export const texts = {
     vouchersMore: 'Weitere Angebote',
     yourPosition: 'Ihre Position'
   },
+  profile: {
+    abort: 'Abbrechen',
+    alreadyRegistered: 'Sie sind schon registriert? ',
+    back: 'Zurück',
+    birthday: 'Geburtsdatum',
+    birthdayInvalid: 'Mindestalter nicht erreicht',
+    birthdayPlaceholder: 'Mindestalter: 18 Jahre',
+    city: 'Ort',
+    deleteProfile: 'Meine Daten löschen',
+    deleteProfileAlertTitle: 'Anfrage',
+    deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
+    deleteProfileConsent: 'Ich bin mit dem Löschen meiner Daten einverstanden.',
+    deleteProfileConsentOptIn:
+      'Bitte bestätige, dass du mit dem Löschen deiner Daten einverstanden bist.',
+    deleteProfileSubject: 'Anfrage zur Löschung des Nutzerprofils',
+    editMail: 'E-Mail-Adresse ändern',
+    editPassword: 'Passwort ändern',
+    editPasswordAlertMessage:
+      'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
+    editPasswordAlertTitle: 'Passwort ändern',
+    editPasswordLabel:
+      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Ändern Ihres Passworts zu starten.',
+    editProfile: 'Profil aktualisieren',
+    email: 'E-Mail-Adresse',
+    emailConfirmation: 'Neue E-Mail-Adresse bestätigen',
+    emailCurrent: 'Aktuelle E-Mail-Adresse',
+    emailDoNotMatch: 'E-Mail-Adressen stimmen nicht überein',
+    emailError: 'E-Mail-Adresse muss korrekt ausgefüllt werden',
+    emailInvalid: 'E-Mail-Adresse ungültig',
+    emailNew: 'Neue E-Mail-Adresse',
+    enterCode: 'Code eingeben',
+    firstName: 'Vorname',
+    firstnameError: 'Vorname muss ausgefüllt werden',
+    flag: 'Melden',
+    flagProfile: 'Anbieter melden',
+    flagProfileAlertDoneTitle: 'Vielen Dank',
+    flagProfileAlertDoneMessage: 'Anbieter wurde erfolgreich gemeldet.',
+    flagProfileAlertMessage: 'Bist du sicher, dass du diesen Anbieter jetzt melden möchtest?',
+    flagProfileSubject: 'Nutzerprofil melden',
+    gender: 'Anrede',
+    hint: 'Hinweis',
+    invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
+    invalidUrl: '-URL ist keine gültige URL',
+    lastName: 'Nachname',
+    lastnameError: 'Nachname muss ausgefüllt werden',
+    login: 'Anmelden',
+    loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    loginFailedTitle: 'Fehler bei der Anmeldung',
+    loginTitle: 'Login',
+    logout: 'Abmelden',
+    next: 'Weiter',
+    notYetRegistered: 'Sie sind noch nicht registriert? ',
+    ok: 'OK',
+    password: 'Passwort',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordDoNotMatch: 'Passwörter stimmen nicht überein',
+    passwordError: 'Passwort muss ausgefüllt werden',
+    passwordForgotten: 'Passwort vergessen?',
+    passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
+    postcode: 'Postleitzahl',
+    postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
+    privacyChecked: 'Mit der Registrierung akzeptieren Sie die ',
+    privacyCheckLink: 'Datenschutzbestimmungen',
+    privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',
+    privacyCheckRequireTitle: 'Hinweis',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    registrationFailedTitle: 'Fehler bei der Registrierung',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren',
+    resetPasswordAlertMessage:
+      'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
+    resetPasswordAlertTitle: 'Passwort zurücksetzen',
+    resetPasswordLabel:
+      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Zurücksetzen Ihres Passworts zu starten.',
+    resetPasswordTitle: 'Passwort zurücksetzen',
+    send: 'Absenden',
+    settings: 'Einstellungen',
+    signInAgainBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    signInAgainTitle: 'Fehler bei der Anmeldung. Bitte noch einmal versuchen.',
+    streetAndHouseNumber: 'Straße und Hausnummer',
+    token: 'Code',
+    tokenError: 'Code muss ausgefüllt werden',
+    update: 'Profil aktualisieren',
+    updateMail: 'E-Mail-Adresse ändern',
+    updatePassword: 'Passwort ändern',
+    updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
+    showUpdateEmailSuccessAlertBody:
+      'Ihr Profil wurde erfolgreich aktualisiert. Bitte bestätigen Sie Ihre E-Mail-Adresse und melden Sie sich mit der neuen E-Mail-Adresse erneut an.',
+    showUpdateSuccessAlertBody: 'Ihr Profil wurde erfolgreich aktualisiert.',
+    showUpdateSuccessAlertTitle: 'Erfolg',
+    termsOfUseChecked: 'Mit der Registrierung akzeptieren Sie die ',
+    termsOfUseLink: 'Nutzungsbedingungen',
+    termsOfUseCheckRequireBody: 'Bitte bestätigen Sie die Nutzungsbedingungen.',
+    termsOfUseCheckRequireTitle: 'Hinweis',
+    termsAndConditionsAlertTitle: 'Hinweis',
+    termsAndConditionsAlertMessage:
+      'Ohne die Bestätigung unserer Datenschutzhinweise können Sie die App leider nicht nutzen. Wir behandeln Ihre Daten dabei stets vertraulich und mit höchster Sorgfalt. Falls Sie die App nutzen möchten, folgen Sie bitte dem Button.',
+    termsAndConditionsAlertOk: 'Zur Bestätigung'
+  },
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
@@ -844,9 +985,8 @@ export const texts = {
       'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
   },
   screenTitles: {
-    about: appJson.expo.name,
+    about: 'Menü',
     appSettings: 'App-Einstellungen',
-    company: appJson.expo.name,
     constructionSite: 'Baustelle',
     consul: {
       login: 'Anmelden',
@@ -856,12 +996,16 @@ export const texts = {
     encounterHome: 'Mitfahrbank',
     events: 'Veranstaltungen',
     eventSuggestion: 'Veranstaltungsvorschlag',
+    favorites: 'Favoriten',
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
+    profile: {
+      home: 'Profil'
+    },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
-    service: appJson.expo.name,
+    service: 'Service',
     settings: 'Einstellungen',
     sue: {
       mapView: 'Meldungskarte',
@@ -921,7 +1065,7 @@ export const texts = {
       onLocationServiceMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       onSystemPermissionMissing:
-        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes müssen Sie die App neu starten.',
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden. Nach der Aktivierung des Standortdienstes musst du die App neu starten.',
       save: 'Speichern',
       setting: 'Standort',
       settings: 'Einstellungen'
@@ -936,6 +1080,13 @@ export const texts = {
     },
     permanentFilter: {
       setting: 'Datenquellen'
+    },
+    termsAndConditions: {
+      abort: 'Abbrechen',
+      onActivate: '',
+      onDeactivate:
+        'Beim nächsten Start wird die Einwilligung zu den Datenschutzhinweisen erneut abgefragt. Ohne die Bestätigung unserer Datenschutzhinweise kannst du die App leider nicht nutzen. Wir behandeln deine Daten dabei stets vertraulich und mit höchster Sorgfalt.',
+      ok: 'Einverstanden'
     }
   },
   settingsScreen: {
@@ -973,7 +1124,8 @@ export const texts = {
     },
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
-    pushNotifications: 'Push-Benachrichtigungen'
+    pushNotifications: 'Push-Benachrichtigungen',
+    termsAndConditions: 'Einwilligung zu Datenschutzhinweisen'
   },
   sue: {
     answer: 'Antworten',
@@ -1122,10 +1274,12 @@ export const texts = {
     }
   },
   tabBarLabel: {
-    about: 'Mehr',
+    about: 'Menü',
+    favorites: 'Favoriten',
+    home: 'Start',
+    profile: 'Profil',
     company: 'Unternehmen',
     events: 'Events',
-    home: 'Übersicht',
     pointsOfInterest: 'POI',
     service: 'Service',
     volunteer: 'Ehrenamt'
@@ -1140,7 +1294,7 @@ export const texts = {
   updateAlert: {
     updateNow: 'Jetzt aktualisieren',
     updateRequiredMessage:
-      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisieren Sie jetzt, um von den neuesten Verbesserungen zu profitieren.',
+      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisiere jetzt, um von den neuesten Verbesserungen zu profitieren.',
     updateRequiredTitle: 'Aktualisierung erforderlich'
   },
   volunteer: {
@@ -1381,16 +1535,6 @@ export const texts = {
     now: 'Jetzt',
     today: 'Heute',
     tomorrow: 'Morgen'
-  },
-  whistleblow: {
-    abort: 'Abbrechen',
-    inputDescription: 'Inhalt',
-    inputErrorText: 'muss ausgefüllt werden',
-    inputFile: 'Anhang',
-    inputMail: 'E-Mail',
-    inputTitle: 'Betreff',
-    invalidMail: '-Adresse ist nicht gültig.',
-    send: 'Hinweis senden'
   },
   whistleblow: {
     abort: 'Abbrechen',

@@ -1,17 +1,19 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
+import { useProfileContext } from '../ProfileProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { BookmarkSection, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { consts, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
 import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
 
-const { MATOMO_TRACKING } = consts;
+const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
@@ -28,26 +30,31 @@ const getInitialConnectionState = (categoriesNews) => {
   return initialState;
 };
 
-const getBookmarkCount = (bookmarks) => {
+const getBookmarkCount = (bookmarks, isLoggedIn) => {
   if (!bookmarks) return 0;
 
   let count = 0;
 
   for (let key in bookmarks) {
+    // skip for noticeboard entries and user is not logged in
+    if (!isLoggedIn && key === `${QUERY_TYPES.GENERIC_ITEMS}-${GenericType.Noticeboard}`) continue;
+
     count += bookmarks[key]?.length ?? 0;
   }
+
   return count;
 };
 
 export const BookmarkScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks();
+  const { isLoggedIn, refresh } = useProfileContext();
   const categoriesNews = useNewsCategories();
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
   const { categoryTitles = {} } = sections;
   const {
-    categoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
-    categoryTitlesTours = texts.categoryTitles.tours
+    bookmarkCategoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
+    bookmarkCategoryTitlesTours = texts.categoryTitles.tours
   } = categoryTitles;
   const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
   const query = route.params?.query || '';
@@ -65,6 +72,7 @@ export const BookmarkScreen = ({ navigation, route }) => {
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
           key={bookmarkKey}
+          listType={LIST_TYPES.TEXT_LIST}
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}
@@ -73,12 +81,18 @@ export const BookmarkScreen = ({ navigation, route }) => {
       );
       // if there are more than three of that category, show "show all" button
     },
-    [navigation, bookmarks, setConnectionState]
+    [navigation, bookmarks, setConnectionState, isLoggedIn]
   );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARKS);
 
-  if (!bookmarks || getBookmarkCount(bookmarks) === 0) {
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [])
+  );
+
+  if (!bookmarks || getBookmarkCount(bookmarks, isLoggedIn) === 0) {
     return (
       <Wrapper>
         <RegularText>{texts.bookmarks.noBookmarksYet}</RegularText>
@@ -94,7 +108,16 @@ export const BookmarkScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={refresh}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
+          />
+        }
+      >
         {!connection && (
           <Wrapper>
             <RegularText>{texts.errors.noData}</RegularText>
@@ -103,8 +126,8 @@ export const BookmarkScreen = ({ navigation, route }) => {
         {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) =>
           getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId, categoryTitleDetail)
         )}
-        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, categoryTitlesPointsOfInterest)}
-        {getSection(QUERY_TYPES.TOURS, categoryTitlesTours)}
+        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
+        {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
         {getSection(QUERY_TYPES.VOUCHERS, '')}
         {getSection(
@@ -122,11 +145,15 @@ export const BookmarkScreen = ({ navigation, route }) => {
           getGenericItemSectionTitle(GenericType.Job),
           GenericType.Job
         )}
-        {getSection(
-          QUERY_TYPES.GENERIC_ITEMS,
-          getGenericItemSectionTitle(GenericType.Noticeboard),
-          GenericType.Noticeboard
-        )}
+        {/* TODO: what about bookmarks for noticeboards without profiles? that would never be
+                  listed here. maybe we need some global setting to flag noticeboards usage with
+                  or without profiles? */}
+        {!!isLoggedIn &&
+          getSection(
+            QUERY_TYPES.GENERIC_ITEMS,
+            getGenericItemSectionTitle(GenericType.Noticeboard),
+            GenericType.Noticeboard
+          )}
       </ScrollView>
     </SafeAreaViewFlex>
   );

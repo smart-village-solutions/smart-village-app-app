@@ -1,8 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { DeviceEventEmitter } from 'expo-modules-core';
 import React, { useCallback, useEffect } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
+import { DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import { LoadingSpinner, SafeAreaViewFlex, ServiceTiles } from '../../components';
 import { colors } from '../../config';

@@ -68,6 +68,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isCityInputFocused, setIsCityInputFocused] = useState(false);
   const [isStreetInputFocused, setIsStreetInputFocused] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState();
 
@@ -124,7 +125,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
         return address.street || '';
       }
 
-      return `${address.street} (${address.zip} ${address.city})`;
+      return `${address.street} (${[address.zip, address.city].filter(Boolean).join(' ')})`;
     },
     [wasteAddressesTwoStep]
   );
@@ -133,7 +134,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   // return empty list on an exact match (except for capitalization)
   const filterCities = useCallback(
     (currentInputValue, addressesData) => {
-      if (currentInputValue === '') return [];
+      if (isInputAutoFocus && currentInputValue === '' && !isCityInputFocused) return [];
 
       const cities = addressesData?.filter(
         (address) =>
@@ -143,7 +144,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
       return _sortBy(_uniqBy(cities, 'city'), 'city');
     },
-    [getStreetString]
+    [getStreetString, isCityInputFocused]
   );
 
   // show streets that contain the string in it
@@ -367,7 +368,10 @@ export const WasteCollectionScreen = ({ navigation }) => {
               setSelectedStreetId(undefined);
               setInputValueCity(text);
             }}
-            onFocus={() => setIsStreetInputFocused(false)}
+            onFocus={() => {
+              setIsCityInputFocused(true);
+              setIsStreetInputFocused(false);
+            }}
             placeholder="Ortschaft"
             style={styles.autoCompleteInput}
             value={inputValueCity}

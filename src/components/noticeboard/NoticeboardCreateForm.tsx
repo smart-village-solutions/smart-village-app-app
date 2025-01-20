@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
 import React, { useContext, useState } from 'react';
@@ -12,14 +13,16 @@ import {
   DateTimeInput,
   DocumentSelector,
   HtmlView,
-  ImageSelector,
   Input,
   LoadingSpinner,
+  MultiImageSelector,
   RegularText,
   Touchable,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal,
+  WrapperRow
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import {
   formatSizeStandard,
   graphqlFetchPolicy,
@@ -33,34 +36,46 @@ import { uploadMediaContent } from '../../queries/mediaContent';
 import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
 
-const { EMAIL_REGEX, MEDIA_TYPES, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
+const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, MEDIA_TYPES } = consts;
+
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
+  id: string;
   body: string;
   dateEnd: string;
   dateStart: string;
   documents: string;
   email: string;
-  images: string;
+  image: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
   termsOfService: boolean;
+  price: string;
+  priceType?: string;
   title: string;
 };
 
 /* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
+  data,
   navigation,
   queryVariables,
   route
 }: {
+  data: any;
   navigation: StackNavigationProp<any>;
   queryVariables: { [key: string]: any };
   route: any;
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const isEdit = !!Object.keys(data).length;
+  const subQuery = route.params?.subQuery ?? {};
+  const consentForDataProcessingText =
+    subQuery?.params?.consentForDataProcessingText ??
+    route?.params?.consentForDataProcessingText ??
+    '';
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showNoticeboardMediaContent = {} } = settings;
@@ -72,7 +87,6 @@ export const NoticeboardCreateForm = ({
     maxDocumentCount = 0,
     maxImageCount = 0
   } = showNoticeboardMediaContent;
-  const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
   const [isLoading, setIsLoading] = useState(false);
@@ -86,28 +100,47 @@ export const NoticeboardCreateForm = ({
     queryVariables
   }).map((item) => ({ value: item.title, title: item.title }));
 
+  const formImages = data?.mediaContents?.map((image: any) => {
+    const uri = image.sourceUrl.url;
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+    return { id: image.id, infoText: imageName, uri };
+  });
+
   const {
     control,
     formState: { errors },
     handleSubmit
   } = useForm({
     defaultValues: {
-      body: '',
-      dateEnd: new Date(),
-      dateStart: new Date(),
+      id: data?.id ?? '',
+      body: data?.contentBlocks?.[0]?.body ?? '',
+      dateEnd: data?.dates?.[0]?.dateEnd
+        ? moment(data?.dates?.[0]?.dateEnd)?.toDate()
+        : moment().add(requestedDateDifference, 'months').toDate(),
+      dateStart: data?.dates?.[0]?.dateStart
+        ? moment(data?.dates?.[0]?.dateStart)?.toDate()
+        : moment().toDate(),
       documents: '[]',
-      email: '',
-      images: '[]',
-      name: '',
-      noticeboardType: '',
+      email: data?.contacts?.[0]?.email ?? '',
+      image: formImages?.length ? JSON.stringify(formImages) : '[]',
+      name: data?.contacts?.[0]?.firstName ?? '',
+      noticeboardType:
+        _findKey(
+          texts.noticeboard.categoryNames,
+          (value) => value === data?.categories?.[0]?.name
+        ) || '',
+      price: data?.priceInformations?.[0]?.description?.replace('€', '').trim() ?? '',
+      priceType: data?.priceInformations?.[0]?.priceType ?? '€',
       termsOfService: false,
-      title: ''
+      title: data?.title ?? ''
     }
   });
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
-  let documentUrl: string | undefined;
   let imageUrl: string | undefined;
+  let documentUrl: string | undefined;
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -116,8 +149,8 @@ export const NoticeboardCreateForm = ({
       return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.termsOfService);
     }
 
-    const dateStart = new Date(noticeboardNewData.dateStart);
-    const dateEnd = new Date(noticeboardNewData.dateEnd);
+    const dateStart = moment(noticeboardNewData.dateStart).toDate();
+    const dateEnd = moment(noticeboardNewData.dateEnd).toDate();
     const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
 
     if (dateDifference > requestedDateDifference || dateDifference < 0) {
@@ -127,8 +160,14 @@ export const NoticeboardCreateForm = ({
     setIsLoading(true);
 
     try {
-      const images = JSON.parse(noticeboardNewData.images);
-      const imagesUrl: { sourceUrl: { url: string }; contentType: string }[] = images
+      let price = noticeboardNewData.price;
+
+      // regex to check if price is a number with 2 decimal places allowing . or , as decimal separator
+      if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
+        price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
+      }
+      const images = JSON.parse(noticeboardNewData.image);
+      const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
         .filter((image) => !!image.id)
         .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
       const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
@@ -155,13 +194,16 @@ export const NoticeboardCreateForm = ({
 
       if (images?.length) {
         for (const image of images) {
-          try {
-            imageUrl = await uploadMediaContent(image, 'image');
+          if (!image.id) {
+            try {
+              imageUrl = await uploadMediaContent(image, 'image');
 
-            imageUrl && imagesUrl.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
-          } catch (error) {
-            Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
-            return;
+              imageUrl && imageUrls.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
+            } catch (error) {
+              setIsLoading(false);
+              Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.imageUploadError);
+              return;
+            }
           }
         }
       }
@@ -225,10 +267,11 @@ export const NoticeboardCreateForm = ({
         }
       }
 
-      const mediaContents = documentsUrl.concat(imagesUrl);
+      const mediaContents = documentsUrl.concat(imageUrls);
 
       await createGenericItem({
         variables: {
+          id: noticeboardNewData.id,
           categoryName: noticeboardNewData.noticeboardType,
           genericType,
           publishedAt: momentFormat(noticeboardNewData.dateStart),
@@ -241,7 +284,8 @@ export const NoticeboardCreateForm = ({
               dateEnd: momentFormat(noticeboardNewData.dateEnd),
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
-          ]
+          ],
+          priceInformations: [{ description: price }]
         }
       });
 
@@ -298,18 +342,13 @@ export const NoticeboardCreateForm = ({
             <>
               {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem: { value: string; title: string }) => (
                 <Checkbox
-                  key={noticeboardItem.title}
                   checked={value === noticeboardItem.value}
+                  checkedIcon={<Icon.CircleCheckFilled />}
+                  containerStyle={styles.checkboxContainerStyle}
+                  key={noticeboardItem.title}
                   onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
-                  checkedColor={colors.accent}
-                  uncheckedColor={colors.darkText}
-                  containerStyle={styles.checkboxContainerStyle}
-                  link={undefined}
-                  center={undefined}
-                  linkDescription={undefined}
-                  checkedIcon={undefined}
-                  uncheckedIcon={undefined}
+                  uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
                 />
               ))}
               <Input
@@ -341,17 +380,40 @@ export const NoticeboardCreateForm = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="body"
+          control={control}
+          errorMessage={errors.body && errors.body.message}
+          inputStyle={styles.textArea}
           label={`${texts.noticeboard.inputDescription} *`}
-          placeholder={texts.noticeboard.inputDescription}
-          validate
           multiline
+          name="body"
+          placeholder={texts.noticeboard.inputDescription}
           rules={{
             required: `${texts.noticeboard.inputDescription} ${texts.noticeboard.inputErrorText}`
           }}
-          errorMessage={errors.body && errors.body.message}
-          control={control}
+          textAlignVertical="top"
+          validate
         />
+      </Wrapper>
+
+      <Wrapper style={styles.noPaddingTop}>
+        <WrapperRow spaceBetween>
+          <Input
+            name="price"
+            label={texts.noticeboard.inputPrice}
+            placeholder={texts.noticeboard.inputPrice}
+            validate
+            errorMessage={errors.price && errors.price.message}
+            control={control}
+            row
+          />
+          <Input
+            name="priceType"
+            label={texts.noticeboard.inputPriceType}
+            placeholder={texts.noticeboard.inputPriceTypePlaceholder}
+            control={control}
+            row
+          />
+        </WrapperRow>
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
@@ -360,15 +422,18 @@ export const NoticeboardCreateForm = ({
           render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
-                mode: 'date',
+                boldLabel: true,
+                control,
                 errors,
-                required: true,
-                value,
-                onChange,
-                name,
                 label: texts.noticeboard.inputDate(requestedDateDifference),
+                maximumDate: moment().add(requestedDateDifference, 'months').toDate(),
+                minimumDate: moment().toDate(),
+                mode: 'date',
+                name,
+                onChange,
                 placeholder: texts.noticeboard.inputDate(requestedDateDifference),
-                control
+                required: true,
+                value
               }}
             />
           )}
@@ -407,10 +472,9 @@ export const NoticeboardCreateForm = ({
       {showImage && (
         <Wrapper style={styles.noPaddingTop}>
           <Controller
-            name="images"
-            control={control}
+            name="image"
             render={({ field }) => (
-              <ImageSelector
+              <MultiImageSelector
                 {...{
                   control,
                   configuration: {
@@ -421,47 +485,54 @@ export const NoticeboardCreateForm = ({
                   },
                   errorType: IMAGE_SELECTOR_ERROR_TYPES.NOTICEBOARD,
                   field,
+                  isDeletable: !isEdit,
                   isMultiImages: true,
                   item: {
-                    buttonTitle: texts.noticeboard.addImage,
+                    buttonTitle: texts.noticeboard.addImages,
                     infoText: maxImageCount && texts.noticeboard.alerts.imageHint(maxImageCount),
-                    name: 'images'
+                    name: 'image'
                   },
                   selectorType: IMAGE_SELECTOR_TYPES.NOTICEBOARD
                 }}
               />
             )}
+            control={control}
           />
         </Wrapper>
       )}
 
-      <Wrapper style={styles.noPaddingTop}>
-        {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-        <HtmlView html={consentForDataProcessingText} />
+      {!!consentForDataProcessingText && (
+        <WrapperHorizontal>
+          <HtmlView html={consentForDataProcessingText} />
+        </WrapperHorizontal>
+      )}
 
+      <Wrapper>
         <Controller
           name="termsOfService"
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
-              onPress={() => onChange(!value)}
-              title={`${texts.noticeboard.inputCheckbox} *`}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
+              checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={styles.checkboxContainerStyle}
+              onPress={() => onChange(!value)}
+              textStyle={styles.checkboxTextStyle}
+              title={`${texts.noticeboard.inputCheckbox} *`}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
           control={control}
         />
       </Wrapper>
 
-      <Wrapper>
-        {isLoading || loading ? (
-          <LoadingSpinner loading={isLoading} />
+      <Wrapper style={styles.noPaddingTop}>
+        {loading || isLoading ? (
+          <LoadingSpinner loading />
         ) : (
-          <Button onPress={handleSubmit(onSubmit)} title={texts.noticeboard.send} />
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
+          />
         )}
 
         <Touchable onPress={() => navigation.goBack()}>
@@ -484,5 +555,13 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
+  },
+  checkboxTextStyle: {
+    color: colors.darkText,
+    fontWeight: 'normal'
+  },
+  textArea: {
+    height: normalize(100),
+    padding: normalize(10)
   }
 });

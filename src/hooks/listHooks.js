@@ -1,16 +1,15 @@
-/* eslint-disable complexity */
-/* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
+import { View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { SectionHeader, VoucherListItem } from '../components';
+import { ConversationListItem, SectionHeader, VoucherListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -30,16 +29,19 @@ const getListType = (query, listTypesSettings) => {
 const EventSectionHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
     title={momentFormat(item, 'DD.MM.YYYY dddd')}
-    onPress={() =>
-      navigation.push(ScreenName.Index, {
-        title: texts.homeTitles.events,
-        query,
-        queryVariables: {
-          ...options.queryVariables,
-          dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
-      })
+    onPress={
+      navigation
+        ? () =>
+            navigation.push(ScreenName.Index, {
+              title: texts.homeTitles.events,
+              query,
+              queryVariables: {
+                ...options.queryVariables,
+                dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
+              },
+              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+            })
+        : undefined
     }
   />
 );
@@ -47,17 +49,20 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
 const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
     title={item.name}
-    onPress={() =>
-      navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
-        title: texts.screenTitles.voucher.index,
-        query,
-        queryVariables: {
-          ...options.queryVariables,
-          categoryId: item.id,
-          category: item.name
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
-      })
+    onPress={
+      navigation
+        ? () =>
+            navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
+              title: texts.screenTitles.voucher.index,
+              query,
+              queryVariables: {
+                ...options.queryVariables,
+                categoryId: item.id,
+                category: item.name
+              },
+              rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
+            })
+        : undefined
     }
   />
 );
@@ -68,23 +73,27 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
  * @param {string} query
  * @param {any} navigation
  * @param {{
- *          horizontal?: boolean;
- *          isIndexStartingAt1?: boolean
- *          noSubtitle?: boolean;
- *          openWebScreen?: () => void;
- *          queryVariables?: object
- *          refetch?: () => void
- *        }} options
+ *     horizontal?: boolean;
+ *     isIndexStartingAt1?: boolean;
+ *     listType?: boolean;
+ *     noOvertitle?: boolean;
+ *     noSubtitle?: boolean;
+ *     openWebScreen?: () => void;
+ *     queryVariables?: object;
+ *     refetch?: () => void;
+ *   }} options
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
-  const { listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
 
   const listType = getListType(query, listTypesSettings);
 
   let renderItem;
 
-  switch (listType) {
+  switch (options.listType || listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item, index }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
@@ -95,6 +104,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           <CardListItem
             navigation={navigation}
             horizontal={options.horizontal}
+            noOvertitle={options.noOvertitle}
             item={item}
             index={index}
           />
@@ -116,7 +126,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 item.bottomDivider ??
                 (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              leftImage: true
+            }}
           />
         );
       };
@@ -140,17 +155,22 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 item={{ ...item, bottomDivider: true }}
                 navigation={navigation}
                 noSubtitle={options.noSubtitle}
+                noOvertitle={options.noOvertitle}
                 withCard
               />
             );
           }
+        }
 
+        if (index === 0) {
           return (
             <CardListItem
-              navigation={navigation}
+              bigTitle
               horizontal={options.horizontal}
-              item={item}
               index={index}
+              item={item}
+              navigation={navigation}
+              noOvertitle={options.noOvertitle}
             />
           );
         } else {
@@ -164,6 +184,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
               }}
               navigation={navigation}
               noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
               leftImage
               withCard
             />
@@ -173,7 +194,16 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => {
+      /* eslint-disable complexity */
+      renderItem = ({ item, index, section, target }) => {
+        if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
+          return (
+            <ConversationListItem
+              {...{ item, navigation, currentUserId: options.queryVariables?.currentUserId }}
+            />
+          );
+        }
+
         if (query === QUERY_TYPES.SUE.REQUESTS) {
           return <CardListItem navigation={navigation} item={item} index={index} sue />;
         }
@@ -217,30 +247,47 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+          return (
+            <View
+              style={{
+                marginLeft: target == 'StickyHeader' ? 0 : -normalize(16),
+                marginRight: target == 'StickyHeader' ? 0 : -normalize(16)
+              }}
+            >
+              <EventSectionHeader {...{ item, navigation, options, query }} />
+            </View>
+          );
+        }
+
+        // `SectionHeader` list item for `Noticeboard`
+        if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
+          return item.component;
         }
 
         return (
           <TextListItem
-            item={{
-              ...item,
-              bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            item={item}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              listsWithoutArrows
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle }}
           />
         );
       };
+      /* eslint-enable complexity */
 
       break;
     }
   }
-  /* eslint-enable complexity */
 
   return useCallback(renderItem, [
     query,
     listType,
     navigation,
     options.horizontal,
-    options.noSubtitle
+    options.noSubtitle,
+    options.queryVariables
   ]);
 };

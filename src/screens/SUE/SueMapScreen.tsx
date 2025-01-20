@@ -159,12 +159,20 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaViewFlex>
       <Map
-        isMultipleMarkersMap
         clusterDistance={geoMap?.clusterDistance}
-        clusteringEnabled={true}
+        clusteringEnabled
+        isMultipleMarkersMap
+        isMyLocationButtonVisible={!!locationService}
         locations={mapMarkers}
         mapStyle={styles.map}
-        isMyLocationButtonVisible={!!locationService}
+        onMarkerPress={(id) => {
+          // reset selected request id to undefined to avoid rendering bug with images in overlay
+          setSelectedRequestId(undefined);
+
+          setTimeout(() => {
+            setSelectedRequestId(id);
+          }, 100);
+        }}
         onMyLocationButtonPress={() => {
           const location = position || lastKnownPosition;
 
@@ -179,14 +187,6 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
 
           setTimeout(() => {
             setUpdatedRegion(false);
-          }, 100);
-        }}
-        onMarkerPress={(id) => {
-          // reset selected request id to undefined to avoid rendering bug with images in overlay
-          setSelectedRequestId(undefined);
-
-          setTimeout(() => {
-            setSelectedRequestId(id);
           }, 100);
         }}
         selectedMarker={selectedRequestId}
@@ -220,7 +220,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
               </>
             ) : (
               <>
-                <SueImageFallback style={styles.image} />
+                <SueImageFallback style={[styles.imageContainer, styles.image]} />
                 <CloseButton onPress={() => setSelectedRequestId(undefined)} />
               </>
             )}

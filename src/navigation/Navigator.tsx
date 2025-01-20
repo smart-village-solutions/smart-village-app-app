@@ -1,6 +1,6 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StatusBar } from 'react-native';
 
 import { colors } from '../config';
 import { navigationConfig } from '../config/navigation';
@@ -19,7 +19,7 @@ export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab'
       }}
       linking={linkingConfig}
     >
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <StatusBar style="light" translucent backgroundColor="transparent" />
       {navigatorConfig.type === 'drawer' ? (
         <DrawerNavigator />
       ) : (

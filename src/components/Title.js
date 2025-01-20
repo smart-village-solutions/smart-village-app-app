@@ -6,23 +6,28 @@ import { Text } from './Text';
 
 export const Title = styled(Text)`
   color: ${colors.primary};
-  font-family: bold;
+  font-family: condbold;
   font-size: ${normalize(20)};
   line-height: ${normalize(26)};
-  text-transform: uppercase;
+
+  ${(props) =>
+    props.uppercase &&
+    css`
+      text-transform: uppercase;
+    `};
 
   ${(props) =>
     props.small &&
     css`
-      font-size: ${normalize(16)};
-      line-height: ${normalize(19)};
+      font-size: ${normalize(18)};
+      line-height: ${normalize(23)};
     `};
 
   ${(props) =>
     props.big &&
     css`
       font-size: ${normalize(24)};
-      line-height: ${normalize(28)};
+      line-height: ${normalize(29)};
     `};
 
   ${(props) =>
@@ -36,7 +41,7 @@ export const Title = styled(Text)`
 // thx to https://github.com/styled-components/styled-components/issues/709#issuecomment-377968412
 export const TitleContainer = styled.View`
   background-color: ${colors.surface};
-  padding: ${normalize(7)}px ${normalize(14)}px;
+  padding: ${normalize(8)}px ${normalize(16)}px;
 
   ${(props) =>
     !props.flat &&

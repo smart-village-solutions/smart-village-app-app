@@ -6,15 +6,16 @@ import { ShareContent, StyleSheet } from 'react-native';
 
 import { normalize } from '../config';
 
-import { BookmarkHeader } from './bookmarks';
 import { CalendarHeader } from './CalendarHeader';
 import { ChatHeader } from './ChatHeader';
-import { DrawerHeader } from './DrawerHeader';
 import { DeleteHeader } from './DeleteHeader';
+import { DrawerHeader } from './DrawerHeader';
 import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
+import { InfoHeader } from './InfoHeader';
 import { ShareHeader } from './ShareHeader';
 import { WrapperRow } from './Wrapper';
+import { BookmarkHeader } from './bookmarks';
 
 type Props = {
   navigation: StackNavigationProp<any> & DrawerNavigationProp<any>;
@@ -29,6 +30,7 @@ type Props = {
   withDrawer?: boolean;
   withEdit?: boolean;
   withShare?: boolean;
+  withInfo?: boolean;
 };
 
 export const HeaderRight = ({
@@ -43,7 +45,8 @@ export const HeaderRight = ({
   withGroup = false,
   withDrawer = false,
   withEdit = false,
-  withShare = false
+  withShare = false,
+  withInfo = false
 }: Props) => (
   <WrapperRow style={styles.headerRight}>
     {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
@@ -54,15 +57,16 @@ export const HeaderRight = ({
     {withEdit && <EditHeader onPress={onPress} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
     {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
+    {withInfo && <InfoHeader route={route} style={styles.icon} />}
   </WrapperRow>
 );
 
 const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'center',
-    paddingRight: normalize(7)
+    paddingRight: normalize(8)
   },
   icon: {
-    paddingHorizontal: normalize(10)
+    paddingHorizontal: normalize(6)
   }
 });

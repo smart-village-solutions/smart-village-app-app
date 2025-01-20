@@ -7,6 +7,7 @@ import { DropdownSelect } from '../DropdownSelect';
 import { Input } from './Input';
 
 export type DropdownInputProps = {
+  boldLabel?: boolean;
   errors: any;
   required?: boolean;
   data: [
@@ -17,11 +18,12 @@ export type DropdownInputProps = {
       contentcontainer_id?: number;
       guid?: string;
       display_name?: string;
+      gender?: string;
     }
   ];
   multipleSelect?: boolean;
   value: number | number[];
-  valueKey: 'contentcontainer_id' | 'guid';
+  valueKey: 'contentcontainer_id' | 'guid' | 'id' | 'gender';
   onChange: (...event: any[]) => void;
   name: string;
   label: string;
@@ -31,12 +33,13 @@ export type DropdownInputProps = {
 };
 
 export const DropdownInput = ({
+  boldLabel = false,
   errors,
   required = false,
   data,
   multipleSelect = false,
   value,
-  valueKey,
+  valueKey = 'id',
   onChange,
   name,
   label,
@@ -46,8 +49,8 @@ export const DropdownInput = ({
   const [dropdownData, setDropdownData] = useState(
     data.map((item) =>
       multipleSelect
-        ? { ...item, selected: (value as number[]).includes(item.id) }
-        : { ...item, selected: item.id == value }
+        ? { ...item, selected: (value as any[]).includes(item[valueKey]) }
+        : { ...item, selected: item[valueKey] == value }
     )
   );
 
@@ -71,11 +74,13 @@ export const DropdownInput = ({
         data={dropdownData}
         multipleSelect={multipleSelect}
         setData={setDropdownData}
+        boldLabel={boldLabel}
         label={label}
         labelWrapperStyle={styles.labelWrapper}
         showSearch={showSearch}
         searchInputStyle={styles.searchInput}
         searchPlaceholder={texts.volunteer.search}
+        errorMessage={errors[name] && `${label} muss ausgewählt werden`}
       />
       <Input
         name={name}

@@ -11,9 +11,10 @@ import {
   Input,
   RegularText,
   Touchable,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { CREATE_GENERIC_ITEM_MESSAGE } from '../../queries/genericItem';
 
 const { EMAIL_REGEX } = consts;
@@ -39,14 +40,18 @@ export const NoticeboardMessageForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
-  const consentForDataProcessingTex = route?.params?.consentForDataProcessingText ?? '';
+  const subQuery = route.params?.subQuery ?? {};
+  const consentForDataProcessingText =
+    subQuery?.params?.consentForDataProcessingText ??
+    route?.params?.consentForDataProcessingText ??
+    '';
   const genericItemId = data?.id ?? '';
 
   const {
     control,
     formState: { errors },
     handleSubmit,
-    reset: resetForm
+    setValue
   } = useForm({
     defaultValues: {
       email: '',
@@ -78,12 +83,11 @@ export const NoticeboardMessageForm = ({
         }
       });
 
-      resetForm();
-
       Alert.alert(
         texts.noticeboard.successScreen.header,
         texts.noticeboard.successScreen.application
       );
+      navigation.goBack();
     } catch (error) {
       console.error(error);
     }
@@ -93,25 +97,26 @@ export const NoticeboardMessageForm = ({
     <>
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="name"
+          control={control}
+          errorMessage={errors.name && errors.name.message}
           label={`${texts.noticeboard.inputName} *`}
+          name="name"
           placeholder={texts.noticeboard.inputName}
-          validate
           rules={{
             required: `${texts.noticeboard.inputName} ${texts.noticeboard.inputErrorText}`
           }}
-          errorMessage={errors.name && errors.name.message}
-          control={control}
+          validate
         />
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="email"
-          label={`${texts.noticeboard.inputMail} *`}
-          placeholder={texts.noticeboard.inputMail}
+          control={control}
+          errorMessage={errors.email && errors.email.message}
           keyboardType="email-address"
-          validate
+          label={`${texts.noticeboard.inputMail} *`}
+          name="email"
+          placeholder={texts.noticeboard.inputMail}
           rules={{
             required: `${texts.noticeboard.inputMail} ${texts.noticeboard.inputErrorText}`,
             pattern: {
@@ -119,53 +124,56 @@ export const NoticeboardMessageForm = ({
               message: `${texts.noticeboard.inputMail}${texts.noticeboard.invalidMail}`
             }
           }}
-          errorMessage={errors.email && errors.email.message}
-          control={control}
+          validate
         />
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="phoneNumber"
-          label={texts.noticeboard.inputPhoneNumber}
-          placeholder={texts.noticeboard.inputPhoneNumber}
-          validate
           control={control}
           keyboardType="phone-pad"
+          label={texts.noticeboard.inputPhoneNumber}
+          name="phoneNumber"
+          placeholder={texts.noticeboard.inputPhoneNumber}
+          validate
         />
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="message"
+          control={control}
+          errorMessage={errors.message && errors.message.message}
+          inputStyle={styles.textArea}
           label={`${texts.noticeboard.inputMessage} *`}
-          placeholder={texts.noticeboard.inputMessage}
-          validate
           multiline
+          name="message"
+          placeholder={texts.noticeboard.inputMessage}
           rules={{
             required: `${texts.noticeboard.inputMessage} ${texts.noticeboard.inputErrorText}`
           }}
-          errorMessage={errors.message && errors.message.message}
-          control={control}
+          textAlignVertical="top"
+          validate
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
-        {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-        <HtmlView html={consentForDataProcessingTex} />
+      {!!consentForDataProcessingText && (
+        <WrapperHorizontal>
+          <HtmlView html={consentForDataProcessingText} />
+        </WrapperHorizontal>
+      )}
 
+      <Wrapper>
         <Controller
           name="termsOfService"
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              containerStyle={styles.checkboxContainerStyle}
               onPress={() => onChange(!value)}
               title={`${texts.noticeboard.inputCheckbox} *`}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+              textStyle={styles.checkboxTextStyle}
             />
           )}
           control={control}
@@ -198,5 +206,13 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
+  },
+  checkboxTextStyle: {
+    color: colors.darkText,
+    fontWeight: 'normal'
+  },
+  textArea: {
+    height: normalize(100),
+    padding: normalize(10)
   }
 });

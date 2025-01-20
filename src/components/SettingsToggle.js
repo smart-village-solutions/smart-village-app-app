@@ -46,7 +46,7 @@ export const SettingsToggle = ({ item }) => {
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     >
-      <ListItem.Content>{title && <BoldText>{title}</BoldText>}</ListItem.Content>
+      <ListItem.Content>{title && <BoldText small>{title}</BoldText>}</ListItem.Content>
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
@@ -59,10 +59,11 @@ export const SettingsToggle = ({ item }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
-    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+    paddingHorizontal: 0,
+    paddingVertical: device.isTablet ? normalize(16) : normalize(10)
   },
   marginRight: {
-    marginRight: normalize(7)
+    marginRight: device.isTablet ? normalize(7) : -normalize(2)
   }
 });
 

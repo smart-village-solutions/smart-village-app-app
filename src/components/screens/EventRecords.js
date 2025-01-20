@@ -16,11 +16,11 @@ import {
   Filter,
   ListComponent,
   LoadingContainer,
-  OptionToggle,
   REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper
+  Wrapper,
+  WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
@@ -54,17 +54,6 @@ export const EVENT_SUGGESTION_BUTTON = {
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';
 
-const getAdditionalQueryVariables = (selectedValue, isLocationFilter) => {
-  const keyForSelectedValue = keyForSelectedValueByQuery(isLocationFilter);
-  const additionalQueryVariables = {};
-
-  if (selectedValue) {
-    additionalQueryVariables[keyForSelectedValue] = selectedValue;
-  }
-
-  return additionalQueryVariables;
-};
-
 const hasFilterSelection = (isLocationFilter, queryVariables) => {
   return !!Object.prototype.hasOwnProperty.call(queryVariables, [
     keyForSelectedValueByQuery(isLocationFilter)
@@ -80,22 +69,19 @@ export const EventRecords = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
   const { resourceFiltersState, resourceFiltersDispatch } = useContext(PermanentFilterContext);
-  const { deprecated = {}, filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
+  const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { eventLocations: showEventLocationsFilter = false } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
-  const initialQueryVariables = {
-    ...(route.params?.queryVariables || {})
-  };
+  const initialQueryVariables = route.params?.queryVariables || {};
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
     ...resourceFiltersState[query]
   });
   const [refreshing, setRefreshing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-
   const title = route.params?.title ?? '';
   const hasDailyFilterSelection =
     !!queryVariables.dateRange && queryVariables.dateRange[0] === queryVariables.dateRange[1];
@@ -280,7 +266,7 @@ export const EventRecords = ({ navigation, route }) => {
   ) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -304,9 +290,9 @@ export const EventRecords = ({ navigation, route }) => {
             {!!eventListIntro && (
               <>
                 {!!eventListIntro.introText && (
-                  <Wrapper>
+                  <WrapperVertical>
                     <RegularText small>{eventListIntro.introText}</RegularText>
-                  </Wrapper>
+                  </WrapperVertical>
                 )}
 
                 {!!eventListIntro.url &&
@@ -327,14 +313,15 @@ export const EventRecords = ({ navigation, route }) => {
         ListEmptyComponent={
           isLoading ? (
             <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
+              <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           ) : showCalendar ? (
             <Calendar
+              additionalData={additionalData}
+              eventListIntro={eventListIntro}
+              navigation={navigation}
               query={query}
               queryVariables={queryVariables}
-              navigation={navigation}
-              additionalData={additionalData}
             />
           ) : (
             <EmptyMessage title={texts.empty.list} showIcon />

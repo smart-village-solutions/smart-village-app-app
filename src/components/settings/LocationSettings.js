@@ -12,7 +12,7 @@ import { Map } from '../map';
 import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 export const baseLocationMarker = {
   iconName: 'ownLocation'
@@ -104,7 +104,9 @@ export const LocationSettings = () => {
 
   return (
     <ScrollView>
-      <SettingsToggle item={locationServiceSwitchData} />
+      <WrapperHorizontal>
+        <SettingsToggle item={locationServiceSwitchData} />
+      </WrapperHorizontal>
       <Wrapper>
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
       </Wrapper>

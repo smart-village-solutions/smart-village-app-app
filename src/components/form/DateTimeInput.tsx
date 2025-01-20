@@ -5,10 +5,10 @@ import CommunityDateTimePicker, {
 import React, { useCallback, useState } from 'react';
 import { Keyboard, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { BoldText } from '../Text';
 import { colors, device, texts } from '../../config';
 import { formatDate, formatTime } from '../../helpers';
 import { Label } from '../Label';
+import { BoldText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
 import { Input } from './Input';
@@ -16,6 +16,8 @@ import { PickerInput } from './PickerInput';
 
 type DateTimePickerProps = {
   value?: Date;
+  maximumDate?: Date;
+  minimumDate?: Date;
   mode: (IOSNativeProps | AndroidNativeProps)['mode'];
   onChange: (date?: Date) => void;
   dateTimePickerVisible: boolean;
@@ -24,6 +26,8 @@ type DateTimePickerProps = {
 
 const DateTimePicker = ({
   value = new Date(),
+  maximumDate,
+  minimumDate,
   mode,
   onChange,
   dateTimePickerVisible,
@@ -51,9 +55,11 @@ const DateTimePicker = ({
   if (device.platform === 'android') {
     return (
       <CommunityDateTimePicker
-        textColor={colors.darkText}
+        maximumDate={maximumDate}
+        minimumDate={minimumDate}
         mode={mode}
         onChange={onDatePickerChange}
+        textColor={colors.darkText}
         value={value}
       />
     );
@@ -83,9 +89,11 @@ const DateTimePicker = ({
               <Wrapper>
                 <CommunityDateTimePicker
                   display="spinner"
-                  textColor={colors.darkText}
+                  maximumDate={maximumDate}
+                  minimumDate={minimumDate}
                   mode={mode}
                   onChange={onDatePickerChange}
+                  textColor={colors.darkText}
                   value={value}
                 />
               </Wrapper>
@@ -100,27 +108,35 @@ const DateTimePicker = ({
 };
 
 type DateTimeInputProps = {
-  mode?: (IOSNativeProps | AndroidNativeProps)['mode'];
-  errors: any;
-  required?: boolean;
-  value?: string;
-  onChange: () => void;
-  name: string;
-  label: string;
-  placeholder: string;
+  boldLabel?: boolean;
   control: any;
+  errors: any;
+  label: string;
+  maximumDate?: Date;
+  minimumDate?: Date;
+  mode?: (IOSNativeProps | AndroidNativeProps)['mode'];
+  name: string;
+  onChange: () => void;
+  placeholder: string;
+  required?: boolean;
+  rules?: any;
+  value?: string;
 };
 
 export const DateTimeInput = ({
-  mode = 'time',
+  boldLabel = false,
+  control,
   errors,
-  required = false,
-  value,
-  onChange,
-  name,
   label,
+  maximumDate,
+  minimumDate,
+  mode = 'time',
+  name,
+  onChange,
   placeholder,
-  control
+  required = false,
+  rules = {},
+  value
 }: DateTimeInputProps) => {
   const [dateTimePickerVisible, setDateTimePickerVisible] = useState(false);
   const format = mode === 'date' ? formatDate : formatTime;
@@ -129,7 +145,7 @@ export const DateTimeInput = ({
 
   return (
     <>
-      <Label>{label}</Label>
+      <Label bold={boldLabel}>{label}</Label>
       <PickerInput
         value={pickerInput}
         onPress={() => {
@@ -137,17 +153,26 @@ export const DateTimeInput = ({
           Keyboard.dismiss();
         }}
         isPlaceholder={!value}
+        errorMessage={errors[name] && `${label} muss ausgewählt werden`}
       />
       <Input
         name={name}
         hidden
         validate
-        rules={{ required }}
-        errorMessage={errors[name] && `${label} muss ausgewählt werden`}
+        rules={{ required, ...rules }}
+        errorMessage={errors[name] && (errors[name]?.message || `${label} muss ausgewählt werden`)}
         control={control}
       />
       <DateTimePicker
-        {...{ value, mode, onChange, dateTimePickerVisible, setDateTimePickerVisible }}
+        {...{
+          value,
+          maximumDate,
+          minimumDate,
+          mode,
+          onChange,
+          dateTimePickerVisible,
+          setDateTimePickerVisible
+        }}
       />
     </>
   );

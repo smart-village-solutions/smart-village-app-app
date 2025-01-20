@@ -4,8 +4,6 @@ import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
   BoldText,
-  ConsulDocumentList,
-  ConsulListItem,
   DefaultKeyboardAvoidingView,
   DocumentList,
   HtmlView,
@@ -68,6 +66,8 @@ export const NoticeboardFormScreen = ({
     );
   }
 
+  const images = details?.mediaContents?.filter((item) => item.contentType === 'image');
+
   const Component = isNewEntryForm ? NoticeboardCreateForm : NoticeboardMessageForm;
 
   return (
@@ -84,8 +84,9 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
-          <ImageSection mediaContents={details?.mediaContents} />
-          <SectionHeader title={details?.contentBlocks?.[0]?.title} />
+          {!!images?.length && <ImageSection mediaContents={images} />}
+
+          <SectionHeader big title={details?.contentBlocks?.[0]?.title || details?.title} />
 
           {!!html && (
             <Wrapper>

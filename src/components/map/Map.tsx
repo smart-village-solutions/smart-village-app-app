@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
@@ -23,6 +24,7 @@ type Props = {
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations?: MapMarker[];
+  logoContainerStyle?: StyleProp<ViewStyle>;
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
   minZoom?: number;
@@ -40,18 +42,18 @@ type Props = {
 const MARKER_ICON_SIZE = normalize(40);
 const CIRCLE_SIZES = [60, 50, 40, 30];
 
-const MapIcon = ({
-  iconColor,
+export const MapIcon = ({
+  iconColor = colors.lighterPrimary,
   iconName = 'location',
   iconSize = MARKER_ICON_SIZE,
-  strokeColor,
-  strokeWidth = normalize(0.5)
+  iconStrokeColor = colors.darkerPrimary,
+  iconStrokeWidth = normalize(1.25)
 }: {
   iconColor?: string;
   iconName?: string;
   iconSize?: number;
-  strokeColor?: string;
-  strokeWidth?: number;
+  iconStrokeColor?: string;
+  iconStrokeWidth?: number;
 }) => {
   const MarkerIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
 
@@ -59,8 +61,8 @@ const MapIcon = ({
     <MarkerIcon
       color={iconColor}
       size={iconSize}
-      strokeColor={strokeColor}
-      strokeWidth={strokeWidth}
+      strokeColor={iconStrokeColor}
+      strokeWidth={iconStrokeWidth}
     />
   );
 };
@@ -85,7 +87,7 @@ const renderCluster = (cluster: TCluster) => {
         latitude: geometry.coordinates[1]
       }}
       style={styles.clusterMarker}
-      onPress={onPress}
+      // onPress={onPress} // HINT: https://github.com/venits/react-native-map-clustering/issues/251
     >
       {CIRCLE_SIZES.map((size, index) => (
         <View
@@ -101,7 +103,7 @@ const renderCluster = (cluster: TCluster) => {
             }
           ]}
         >
-          <RegularText lightest center smallest>
+          <RegularText darker center smallest>
             {points}
           </RegularText>
         </View>
@@ -120,6 +122,7 @@ export const Map = ({
   isMultipleMarkersMap = false,
   isMyLocationButtonVisible = false,
   locations,
+  logoContainerStyle,
   mapCenterPosition,
   mapStyle,
   minZoom,
@@ -187,7 +190,7 @@ export const Map = ({
   return (
     <View style={[styles.container, style]}>
       <MapView
-        clusterColor={colors.primary}
+        clusterColor={colors.lighterPrimary}
         clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
         radius={clusterDistance}
@@ -226,11 +229,12 @@ export const Map = ({
         {!!geometryTourData?.length && (
           <Polyline
             coordinates={geometryTourData}
-            strokeWidth={2}
             strokeColor={colors.primary}
+            strokeWidth={2}
             zIndex={1}
           />
         )}
+        {/* eslint-disable complexity */}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
           const serviceName = truncateText(marker.serviceName);
@@ -238,7 +242,12 @@ export const Map = ({
 
           return (
             <Marker
-              centerOffset={marker.iconAnchor || { x: 0, y: -(MARKER_ICON_SIZE / 2) }}
+              centerOffset={
+                marker.iconAnchor || {
+                  x: 0,
+                  y: -(MARKER_ICON_SIZE / (isActiveMarker ? 2.5 : 3))
+                }
+              }
               coordinate={marker.position}
               identifier={marker.id}
               key={`${index}-${marker.id}`}
@@ -256,15 +265,17 @@ export const Map = ({
                           ? marker.iconColor
                           : marker.iconBackgroundColor
                         : isActiveMarker
-                        ? colors.accent
+                        ? colors.darkerPrimary
                         : undefined
                     }
-                    strokeColor={marker.iconBorderColor}
+                    iconName={isActiveMarker ? 'locationActive' : undefined}
+                    iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
+                    iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                   />
                   <View
                     style={[
-                      styles.mapIconOnLocationMarker,
-                      isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined,
+                      styles.mapIconOnLocationMarkerContainer,
+                      isActiveMarker ? styles.mapIconOnLocationMarkerContainerActive : undefined,
                       !!marker.iconBackgroundColor && {
                         backgroundColor: isActiveMarker
                           ? marker.iconColor
@@ -274,23 +285,30 @@ export const Map = ({
                   >
                     <MapIcon
                       iconColor={
-                        marker.iconColor
-                          ? isActiveMarker
-                            ? colors.surface
-                            : marker.iconColor
-                          : colors.surface
+                        isActiveMarker
+                          ? colors.surface
+                          : marker.iconColor
+                          ? marker.iconColor
+                          : colors.primary
                       }
                       iconName={marker.iconName}
-                      iconSize={MARKER_ICON_SIZE / 3.25}
-                      strokeColor={marker.iconBorderColor}
+                      iconSize={MARKER_ICON_SIZE / (isActiveMarker ? 2.75 : 3.25)}
+                      iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                     />
                   </View>
                 </>
               ) : (
                 <MapIcon
-                  iconColor={isActiveMarker ? colors.accent : undefined}
-                  iconName={marker.iconName ? marker.iconName : undefined}
-                  strokeColor={marker.iconBorderColor}
+                  iconColor={
+                    marker.iconName == 'ownLocation'
+                      ? colors.lighterPrimary
+                      : isActiveMarker
+                      ? colors.primary
+                      : colors.lighterPrimary
+                  }
+                  iconName={isActiveMarker ? 'locationActive' : marker.iconName}
+                  iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
+                  iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
                 />
               )}
 
@@ -312,6 +330,7 @@ export const Map = ({
           );
         })}
       </MapView>
+      {/* eslint-enable complexity */}
       {isMaximizeButtonVisible && (
         <TouchableOpacity
           accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
@@ -331,7 +350,7 @@ export const Map = ({
         </TouchableOpacity>
       )}
       {device.platform === 'android' && (
-        <View style={styles.logoContainer}>
+        <View style={[styles.logoContainer, logoContainerStyle]}>
           <RegularText smallest>© OpenStreetMap</RegularText>
         </View>
       )}
@@ -367,18 +386,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: normalize(30),
     justifyContent: 'center',
-    left: normalize(13),
+    left: normalize(4),
     position: 'absolute',
-    width: normalize(100)
+    width: normalize(106)
   },
-  mapIconOnLocationMarker: {
-    backgroundColor: colors.primary,
-    left: MARKER_ICON_SIZE / 2.9,
+  mapIconOnLocationMarkerContainer: {
+    backgroundColor: colors.transparent,
+    left: MARKER_ICON_SIZE / 2.5,
     position: 'absolute',
-    top: MARKER_ICON_SIZE / 4.2
+    top: MARKER_ICON_SIZE / 4.75
   },
-  mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.accent
+  mapIconOnLocationMarkerContainerActive: {
+    left: MARKER_ICON_SIZE / 1.9,
+    top: MARKER_ICON_SIZE / 3.6
   },
   maximizeMapButton: {
     alignItems: 'center',
@@ -416,8 +436,8 @@ const stylesForMap = () => {
   return StyleSheet.create({
     map: {
       alignSelf: 'center',
-      height: imageHeight(imageWidth()),
-      width: device.width
+      height: imageHeight(imageWidth(), { HEIGHT: 272, WIDTH: 362 }),
+      width: device.width - 2 * normalize(16)
     }
   });
 };

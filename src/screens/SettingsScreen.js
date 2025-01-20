@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList } from 'react-native';
+import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
 
 import {
   AugmentedReality,
@@ -18,7 +18,7 @@ import {
   MowasRegionSettings,
   PermanentFilterSettings
 } from '../components/settings';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   addToStore,
   createMatomoUserId,
@@ -27,7 +27,7 @@ import {
   removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
+import { ONBOARDING_STORE_KEY, TERMS_AND_CONDITIONS_STORE_KEY } from '../OnboardingManager';
 import {
   handleSystemPermissions,
   PushNotificationStorageKeys,
@@ -49,16 +49,18 @@ export const SETTINGS_SCREENS = {
   PERMANENT_FILTER: 'permanentFilterSettings'
 };
 
-const renderItem = ({ item, navigation }) => {
+const renderItem = ({ item, navigation, listsWithoutArrows }) => {
   if (item === SETTINGS_SCREENS.LOCATION) {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.locationService.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.locationService.setting,
           topDivider: true
         }}
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
@@ -68,10 +70,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.permanentFilter.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.permanentFilter.setting
         }}
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
@@ -81,10 +85,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.mowasRegion.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.mowasRegion.setting
         }}
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
@@ -94,10 +100,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.list.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.list.setting
         }}
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
@@ -107,10 +115,12 @@ const renderItem = ({ item, navigation }) => {
     return (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: texts.settingsContents.ar.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.ar.setting
         }}
+        listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
       />
     );
@@ -162,6 +172,7 @@ const onDeactivatePushNotifications = (revert) => {
 export const SettingsScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
 
@@ -273,6 +284,39 @@ export const SettingsScreen = ({ navigation, route }) => {
         });
       }
 
+      const termsAndConditionsAccepted = await readFromStore(TERMS_AND_CONDITIONS_STORE_KEY);
+
+      if (termsAndConditionsAccepted != null && termsAndConditionsAccepted != 'unknown') {
+        settingsList.push({
+          data: [
+            {
+              title: texts.settingsTitles.termsAndConditions,
+              topDivider: true,
+              value: termsAndConditionsAccepted === 'accepted',
+              onActivate: () => null,
+              onDeactivate: (revert) =>
+                Alert.alert(
+                  texts.profile.termsAndConditionsAlertTitle,
+                  texts.settingsContents.termsAndConditions.onDeactivate,
+                  [
+                    {
+                      text: texts.settingsContents.termsAndConditions.abort,
+                      onPress: revert,
+                      style: 'cancel'
+                    },
+                    {
+                      text: texts.settingsContents.termsAndConditions.ok,
+                      onPress: () => addToStore(TERMS_AND_CONDITIONS_STORE_KEY, 'declined'),
+                      style: 'destructive'
+                    }
+                  ],
+                  { cancelable: false }
+                )
+            }
+          ]
+        });
+      }
+
       if (settings.locationService) {
         settingsList.push({
           data: [SETTINGS_SCREENS.LOCATION]
@@ -289,11 +333,11 @@ export const SettingsScreen = ({ navigation, route }) => {
         });
       }
 
-      settingsList.push({
-        data: [SETTINGS_SCREENS.LIST]
-      });
+      // settingsList.push({
+      //   data: [SETTINGS_SCREENS.LIST]
+      // });
 
-      if (!!settings.ar?.tourId) {
+      if (settings.ar?.tourId) {
         try {
           const isARSupported = (await isARSupportedOnDevice())?.isARSupported;
 
@@ -344,9 +388,10 @@ export const SettingsScreen = ({ navigation, route }) => {
     default:
       Component = (
         <SectionList
+          initialNumToRender={100}
           keyExtractor={keyExtractor}
           sections={data}
-          renderItem={({ item }) => renderItem({ item, navigation })}
+          renderItem={({ item }) => renderItem({ item, navigation, listsWithoutArrows })}
           ListHeaderComponent={
             !!texts.settingsScreen.intro && (
               <Wrapper>
@@ -354,6 +399,7 @@ export const SettingsScreen = ({ navigation, route }) => {
               </Wrapper>
             )
           }
+          style={styles.container}
         />
       );
       break;
@@ -361,6 +407,12 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(16)
+  }
+});
 
 SettingsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

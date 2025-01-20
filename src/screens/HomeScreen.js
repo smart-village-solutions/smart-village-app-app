@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
@@ -7,7 +8,6 @@ import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
   About,
-  Button,
   ConnectedImagesCarousel,
   Disturber,
   HomeSection,
@@ -22,7 +22,12 @@ import {
   WrapperVertical
 } from '../components';
 import { colors, consts, texts } from '../config';
-import { graphqlFetchPolicy, rootRouteName } from '../helpers';
+import {
+  graphqlFetchPolicy,
+  queryVariablesFromQuery,
+  rootRouteName,
+  routeNameFromQuery
+} from '../helpers';
 import {
   useMatomoTrackScreenView,
   usePermanentFilter,
@@ -107,7 +112,7 @@ const renderItem = ({ item }) => {
     return categoriesNews.map(
       (
         {
-          categoryButton: buttonTitle,
+          categoryButton,
           categoryId,
           categoryTitle: title,
           categoryTitleDetail: titleDetail,
@@ -116,11 +121,10 @@ const renderItem = ({ item }) => {
         },
         index
       ) => (
-        // eslint-disable-next-line react/jsx-key
         <HomeSection
-          key={index}
+          key={`${categoryId}-${index}`}
           {...{
-            buttonTitle,
+            buttonTitle: categoryButton,
             categoryId,
             fetchPolicy,
             navigation,
@@ -202,20 +206,23 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const interactionHandler = useCallback(
     (response) => {
-      const data = response?.notification?.request?.content?.data;
-      const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
+      const data = response?.notification?.request?.content?.data || {};
+      const { id, query_type: queryType, title } = data;
+      const query = queryType ? getQueryType(queryType) : undefined;
+      const name = routeNameFromQuery(query);
+      const queryVariables = queryVariablesFromQuery(query, data);
 
-      if (data?.id && queryType) {
+      if (id && name && query) {
         // navigate to the referenced item
         navigation.navigate({
-          name: 'Detail',
+          name,
           params: {
-            title: texts.detailTitles[queryType],
-            query: queryType,
-            queryVariables: { id: data.id },
-            rootRouteName: rootRouteName(queryType),
+            details: null,
+            query,
+            queryVariables,
+            rootRouteName: rootRouteName(query),
             shareContent: null,
-            details: null
+            title: title || texts.detailTitles[query]
           }
         });
       }
@@ -276,6 +283,24 @@ export const HomeScreen = ({ navigation, route }) => {
       setRefreshing(false);
     }, 500);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
+      // components.
+      DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+    }, 500);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setTimeout(() => {
+        // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
+        // components.
+        DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+      }, 500);
+    }, [])
+  );
 
   const data = [
     {
@@ -357,7 +382,7 @@ export const HomeScreen = ({ navigation, route }) => {
             {route.params?.isDrawer && (
               <>
                 <HomeService publicJsonFile="homeService" />
-                <About navigation={navigation} withHomeRefresh />
+                <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
               </>
             )}
           </>

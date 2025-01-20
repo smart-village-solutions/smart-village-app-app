@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
+import { ActivityIndicator, RefreshControl, SectionList, StyleSheet } from 'react-native';
 
-import { colors, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { useHomeRefresh, useRenderItem, useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -11,11 +11,11 @@ import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { VersionNumber } from '../VersionNumber';
 
-export const About = ({ navigation, withHomeRefresh, withSettings }) => {
+export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, withSettings }) => {
   const { data, loading, refetch } = useStaticContent({
-    name: 'homeAbout',
+    name: publicJsonFile,
     type: 'json',
-    refreshTimeKey: 'publicJsonFile-homeAbout'
+    refreshTimeKey: `publicJsonFile-${publicJsonFile}`
   });
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -44,8 +44,18 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
 
   if (!data?.length) return <VersionNumber />;
 
+  data.forEach((item) => (item.isHeadlineTitle = false));
+
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
+
+  if (withSettings && !data.find((item) => item.routeName === 'Settings')) {
+    data.push({
+      isHeadlineTitle: false,
+      routeName: 'Settings',
+      title: texts.screenTitles.appSettings
+    });
+  }
 
   const sectionData = [
     {
@@ -54,20 +64,9 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
     }
   ];
 
-  if (withSettings) {
-    sectionData.push({
-      title: texts.screenTitles.settings,
-      data: [
-        {
-          title: texts.screenTitles.appSettings,
-          routeName: 'Settings'
-        }
-      ]
-    });
-  }
-
   return (
     <SectionList
+      initialNumToRender={100}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -77,17 +76,31 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
         />
       }
       sections={sectionData}
-      renderSectionHeader={({ section: { title } }) => !!title && <SectionHeader title={title} />}
+      renderSectionHeader={({ section: { title } }) =>
+        !!title && <SectionHeader title={title} containerStyle={styles.sectionHeader} />
+      }
       renderItem={renderItem}
       keyExtractor={(item) => item.title}
       ListFooterComponent={<VersionNumber />}
+      style={styles.container}
     />
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(16)
+  },
+  sectionHeader: {
+    paddingLeft: 0,
+    paddingRight: 0
+  }
+});
+
 About.propTypes = {
   navigation: PropTypes.object.isRequired,
   sectionData: PropTypes.array,
+  publicJsonFile: PropTypes.string,
   withHomeRefresh: PropTypes.bool,
   withSettings: PropTypes.bool
 };

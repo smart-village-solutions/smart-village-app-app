@@ -45,6 +45,7 @@ const sectionData = (data) => {
 };
 
 export const EventList = ({
+  contentContainerStyle,
   data,
   fetchMoreData,
   ListEmptyComponent,
@@ -111,45 +112,60 @@ export const EventList = ({
     .filter((item) => item !== null);
 
   return (
-    <FlashList
-      data={sectionedData}
-      refreshing={refreshing}
-      estimatedItemSize={queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER}
-      keyExtractor={keyExtractor}
-      ListFooterComponent={() => {
-        if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
-          if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
-            return (
-              <>
-                <LoadingSpinner loading={!listEndReached} />
-                <View style={styles.spacer} />
-              </>
-            );
+    <>
+      <FlashList
+        data={sectionedData}
+        refreshing={refreshing}
+        estimatedItemSize={queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER}
+        getItemType={(item) => {
+          // To achieve better performance, specify the type based on the item
+          return typeof item === 'string' ? 'sectionHeader' : 'row';
+        }}
+        keyExtractor={keyExtractor}
+        ListFooterComponent={() => {
+          if (data?.length >= (queryVariables?.limit || MAX_INITIAL_NUM_TO_RENDER)) {
+            if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
+              return (
+                <>
+                  <LoadingSpinner loading={!listEndReached} />
+                  <View style={styles.spacer} />
+                </>
+              );
+            }
+
+            return <LoadingSpinner loading={!listEndReached} />;
           }
 
-          return <LoadingSpinner loading={!listEndReached} />;
-        }
+          if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
+            return <View style={styles.spacer} />;
+          }
 
-        return null;
-      }}
-      ListEmptyComponent={ListEmptyComponent}
-      ListHeaderComponent={ListHeaderComponent}
-      onEndReached={onEndReached}
-      onEndReachedThreshold={0.5}
-      refreshControl={refreshControl}
-      renderItem={renderItem}
-      stickyHeaderIndices={stickyHeaderIndices}
-    />
+          return null;
+        }}
+        ListEmptyComponent={ListEmptyComponent}
+        ListHeaderComponent={ListHeaderComponent}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        refreshControl={refreshControl}
+        renderItem={renderItem}
+        stickyHeaderIndices={stickyHeaderIndices}
+        contentContainerStyle={{ ...styles.contentContainer, ...contentContainerStyle }}
+      />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    paddingHorizontal: normalize(16)
+  },
   spacer: {
     height: normalize(70)
   }
 });
 
 EventList.propTypes = {
+  contentContainerStyle: PropTypes.object,
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   ListEmptyComponent: PropTypes.object,

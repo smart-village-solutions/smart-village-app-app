@@ -27,6 +27,11 @@ export const GET_POINTS_OF_INTEREST = gql`
     ) {
       id
       name
+      categories {
+        id
+        name
+        iconName
+      }
       category {
         id
         name
@@ -95,6 +100,7 @@ export const GET_POINT_OF_INTEREST = gql`
     pointOfInterest(id: $id) {
       id
       title: name
+      externalId
       payload
       categories {
         id
@@ -254,6 +260,25 @@ export const GET_POINT_OF_INTEREST = gql`
           }
         }
         payload
+      }
+      hasTravelTimes
+    }
+  }
+`;
+
+export const GET_POINT_OF_INTEREST_TRAVEL_TIMES = gql`
+  query PointOfInterestTravelTimes($id: ID!, $date: String!) {
+    pointOfInterest(id: $id) {
+      id
+      travelTimes(date: $date) {
+        departureTime
+        route {
+          routeShortName
+          routeType
+        }
+        trip {
+          tripHeadsign
+        }
       }
     }
   }

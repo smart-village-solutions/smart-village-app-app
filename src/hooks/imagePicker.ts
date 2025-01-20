@@ -20,7 +20,7 @@ import { texts } from '../config';
 
 type TMediaTypeOptions = 'images' | 'videos' | Array<'images' | 'videos'>;
 
-const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOptions> = {
+export const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOptions> = {
   Images: 'images',
   Videos: 'videos',
   All: ['images', 'videos']

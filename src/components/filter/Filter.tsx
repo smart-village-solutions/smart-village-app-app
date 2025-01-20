@@ -6,7 +6,7 @@ import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-nat
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 
-import { Icon, colors, consts, device, normalize, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { FilterProps, FilterTypesProps } from '../../types';
 
@@ -111,10 +111,9 @@ export const Filter = ({
                 text: texts.filter.header,
                 style: {
                   color: colors.darkText,
-                  fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
-                  fontSize: normalize(20),
-                  fontWeight: '400',
-                  lineHeight: normalize(29)
+                  fontFamily: 'condbold',
+                  fontSize: normalize(18),
+                  lineHeight: normalize(23)
                 }
               }}
               rightComponent={{

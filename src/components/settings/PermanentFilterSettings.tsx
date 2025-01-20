@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import { FlatList } from 'react-native';
 
-import { LoadingSpinner } from '..';
+import { LoadingSpinner, WrapperHorizontal } from '..';
 import { graphqlFetchPolicy } from '../../helpers';
 import { usePermanentFilter, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
@@ -44,19 +44,21 @@ export const PermanentFilterSettings = () => {
       data={data?.newsItemsDataProviders}
       keyExtractor={keyExtractor}
       renderItem={({ item }) => (
-        <SettingsToggle
-          item={{
-            title: item.name,
-            bottomDivider: true,
-            value: !excludedDataProviderIds.includes(item.id),
-            onActivate: () => {
-              dispatch({ type: FilterAction.RemoveDataProvider, payload: item.id });
-            },
-            onDeactivate: () => {
-              dispatch({ type: FilterAction.AddDataProvider, payload: item.id });
-            }
-          }}
-        />
+        <WrapperHorizontal>
+          <SettingsToggle
+            item={{
+              title: item.name,
+              bottomDivider: true,
+              value: !excludedDataProviderIds.includes(item.id),
+              onActivate: () => {
+                dispatch({ type: FilterAction.RemoveDataProvider, payload: item.id });
+              },
+              onDeactivate: () => {
+                dispatch({ type: FilterAction.AddDataProvider, payload: item.id });
+              }
+            }}
+          />
+        </WrapperHorizontal>
       )}
     />
   );

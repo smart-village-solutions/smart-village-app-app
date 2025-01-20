@@ -6,12 +6,12 @@ import { StyleSheet, View } from 'react-native';
 import { consts, normalize, texts } from '../../../config';
 import { TValues } from '../../../screens';
 import { Wrapper } from '../../Wrapper';
-import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
+import { MultiImageSelector } from '../../selectors';
 
 const { a11yLabel, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, INPUT_KEYS } = consts;
 
-const MemoizedImageSelector = memo((props) => <ImageSelector {...props} />);
+const MemoizedImageSelector = memo((props) => <MultiImageSelector {...props} />);
 
 export const SueReportDescription = ({
   areaServiceData,

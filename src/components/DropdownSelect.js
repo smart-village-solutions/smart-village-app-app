@@ -15,7 +15,9 @@ import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 const { a11yLabel } = consts;
 
 export const DropdownSelect = ({
+  boldLabel = false,
   data,
+  errorMessage,
   multipleSelect,
   setData,
   label,
@@ -35,9 +37,10 @@ export const DropdownSelect = ({
   const adjustFrame = useCallback(
     (styles) => ({
       ...styles,
-      height: styles.height + normalize(36), // space for four entries
+      height: 'auto',
       left: marginHorizontal,
-      marginTop: device.platform === 'android' ? -normalize(24) : 0
+      marginTop: device.platform === 'android' ? -normalize(24) : 0,
+      maxHeight: normalize(320)
     }),
     [marginHorizontal]
   );
@@ -61,7 +64,7 @@ export const DropdownSelect = ({
           accessible
           style={styles.dropdownRowWrapper}
         >
-          <RegularText primary={highlighted} placeholder={rowData == placeholder}>
+          <RegularText secondary={highlighted} placeholder={rowData == placeholder}>
             {rowData}
           </RegularText>
         </Wrapper>
@@ -83,13 +86,14 @@ export const DropdownSelect = ({
       accessible
     >
       <WrapperHorizontal style={labelWrapperStyle}>
-        <Label bold>{label}</Label>
+        <Label bold={boldLabel}>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
         accessible={false}
         ref={dropdownRef}
         options={data.map((entry) => entry.value)}
         multipleSelect={multipleSelect}
+        adjustFrame={adjustFrame}
         dropdownStyle={[
           styles.dropdownDropdown,
           {
@@ -98,7 +102,6 @@ export const DropdownSelect = ({
           }
         ]}
         dropdownTextStyle={styles.dropdownDropdownText}
-        adjustFrame={adjustFrame}
         renderRow={renderRow}
         renderSeparator={() => <View style={styles.dropdownSeparator} />}
         onDropdownWillShow={() => setArrow('up')}
@@ -138,8 +141,14 @@ export const DropdownSelect = ({
         searchPlaceholder={searchPlaceholder}
         keyboardShouldPersistTaps="handled"
       >
-        <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText style={styles.selectedValueText} placeholder={selectedValue == placeholder}>
+        <WrapperRow
+          style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
+        >
+          <RegularText
+            style={styles.selectedValueText}
+            placeholder={selectedValue == placeholder}
+            numberOfLines={1}
+          >
             {multipleSelect ? selectedMultipleValues : selectedValue}
           </RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
@@ -151,16 +160,25 @@ export const DropdownSelect = ({
 
 const styles = StyleSheet.create({
   dropdownTextWrapper: {
-    borderColor: colors.borderRgba,
-    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    borderBottomWidth: normalize(1),
+    borderColor: colors.gray40,
+    borderRadius: normalize(8),
+    borderLeftWidth: normalize(1),
+    borderRightWidth: normalize(1),
+    borderTopWidth: normalize(1),
+    flexDirection: 'row',
+    minHeight: normalize(42),
     justifyContent: 'space-between',
-    padding: normalize(14)
+    paddingHorizontal: normalize(12)
   },
   dropdownDropdown: {
+    backgroundColor: colors.lightestText,
     borderColor: colors.borderRgba,
     borderRadius: 0,
     borderWidth: StyleSheet.hairlineWidth,
     elevation: 2,
+    maxHeight: normalize(320),
     shadowColor: colors.shadow,
     shadowOffset: { height: 5, width: 0 },
     shadowOpacity: 0.5,
@@ -168,10 +186,10 @@ const styles = StyleSheet.create({
   },
   dropdownDropdownText: baseFontStyle,
   dropdownRowWrapper: {
-    backgroundColor: colors.surface
+    backgroundColor: colors.lightestText
   },
   dropdownSeparator: {
-    backgroundColor: colors.borderRgba,
+    backgroundColor: colors.gray40,
     height: StyleSheet.hairlineWidth
   },
   selectedValueText: { width: '90%' }
@@ -179,7 +197,9 @@ const styles = StyleSheet.create({
 
 DropdownSelect.displayName = 'DropdownSelect';
 DropdownSelect.propTypes = {
+  boldLabel: PropTypes.bool,
   data: PropTypes.array,
+  errorMessage: PropTypes.string,
   multipleSelect: PropTypes.bool,
   setData: PropTypes.func,
   label: PropTypes.string,

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, device, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 
 import { Switch } from './Switch';
 import { BoldText, RegularText } from './Text';
@@ -20,9 +20,9 @@ type Props = {
 // TODO: reuse this component for WasteReminderSettings and SettingsToggle
 export const OptionToggle = ({ label, onToggle, value, options }: Props) => {
   const TextComponent = options?.bold ? BoldText : RegularText;
+
   return (
     <ListItem
-      bottomDivider
       containerStyle={styles.switchContainer}
       onPress={onToggle}
       delayPressIn={0}
@@ -30,7 +30,7 @@ export const OptionToggle = ({ label, onToggle, value, options }: Props) => {
       accessibilityLabel={`(${label}) ${consts.a11yLabel.button}`}
     >
       <ListItem.Content>
-        <TextComponent>{label}</TextComponent>
+        <TextComponent small>{label}</TextComponent>
       </ListItem.Content>
 
       <Switch switchValue={!!value} toggleSwitch={onToggle} />
@@ -41,6 +41,7 @@ export const OptionToggle = ({ label, onToggle, value, options }: Props) => {
 const styles = StyleSheet.create({
   switchContainer: {
     backgroundColor: colors.transparent,
-    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+    padding: 0,
+    paddingVertical: normalize(12)
   }
 });

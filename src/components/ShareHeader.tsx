@@ -8,7 +8,7 @@ const { a11yLabel } = consts;
 
 type Props = {
   shareContent?: ShareContent;
-  style?: StyleProp<ViewStyle>;
+  style: StyleProp<ViewStyle>;
 };
 
 export const ShareHeader = ({ shareContent, style }: Props) => {
@@ -23,7 +23,7 @@ export const ShareHeader = ({ shareContent, style }: Props) => {
         accessibilityLabel={a11yLabel.shareIcon}
         accessibilityHint={a11yLabel.shareHint}
       >
-        <Icon.Share color={colors.lightestText} style={style} />
+        <Icon.Share color={colors.lightestText} style={style} hasNoHitSlop />
       </TouchableOpacity>
     )
   );

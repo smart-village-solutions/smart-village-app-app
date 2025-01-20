@@ -3,13 +3,14 @@ import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
 import { texts } from '../config';
 import { usePermanentFilter } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
 import { DropdownSelect } from './DropdownSelect';
-import { Wrapper } from './Wrapper';
+import { WrapperVertical } from './Wrapper';
 
 export const dropdownEntries = (
   query,
@@ -138,11 +139,24 @@ export const DropdownHeader = ({
   if (dropdownData?.length <= 2) return null;
 
   return (
-    <Wrapper>
-      <DropdownSelect data={dropdownData} setData={setDropdownData} label={dropdownLabel} />
-    </Wrapper>
+    <WrapperVertical>
+      <DropdownSelect
+        data={dropdownData}
+        setData={setDropdownData}
+        label={dropdownLabel}
+        boldLabel
+        labelWrapperStyle={styles.labelWrapperStyle}
+      />
+    </WrapperVertical>
   );
 };
+
+const styles = StyleSheet.create({
+  labelWrapperStyle: {
+    paddingLeft: 0,
+    paddingRight: 0
+  }
+});
 
 DropdownHeader.propTypes = {
   data: PropTypes.object.isRequired,

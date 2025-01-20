@@ -1,32 +1,29 @@
-import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
+import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, normalize } from '../../config';
+import { Icon, colors, device, normalize } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
   isOpen,
   parseListItemsFromQuery
 } from '../../helpers';
-import {
-  useLastKnownPosition,
-  useLocationSettings,
-  usePosition,
-  useSystemPermission
-} from '../../hooks';
+import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { TextListItem } from '../TextListItem';
-import { Wrapper } from '../Wrapper';
+import { getLocationMarker } from '../settings';
 
+import { ChipFilter } from './ChipFilter';
 import { Map } from './Map';
 
 type Props = {
@@ -37,41 +34,49 @@ type Props = {
   queryVariables: {
     category?: string;
     categoryId?: string | number;
+    categoryIds?: string[] | number[];
     dataProvider?: string;
+    initialFilter?: 'map' | 'list';
     radiusSearch?: {
       currentPosition?: boolean;
       distance: number;
       index: number;
     };
   };
-  route: RouteProp<any, never>;
 };
 
 // FIXME: with our current setup the data that we receive from a query is not typed
 // if we change that then we can fix this place
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
-  return (
-    pointsOfInterest
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ?.map((item: any) => {
-        const latitude = item.addresses?.[0]?.geoLocation?.latitude;
-        const longitude = item.addresses?.[0]?.geoLocation?.longitude;
+const mapToMapMarkers = (
+  pointsOfInterest: any,
+  alternativePosition: any
+): MapMarker[] | undefined => {
+  const markers = pointsOfInterest
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ?.map((item: any) => {
+      const latitude = item.addresses?.[0]?.geoLocation?.latitude;
+      const longitude = item.addresses?.[0]?.geoLocation?.longitude;
 
-        if (!latitude || !longitude) return undefined;
+      if (!latitude || !longitude) return undefined;
 
-        return {
-          iconName: item.category?.iconName,
-          id: item.id,
-          position: {
-            latitude,
-            longitude
-          }
-        };
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .filter((item: any) => item !== undefined)
-  );
+      return {
+        iconName: item.category?.iconName?.length ? item.category.iconName : undefined,
+        id: item.id,
+        position: {
+          latitude,
+          longitude
+        }
+      };
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((item: any) => item !== undefined);
+
+  if (alternativePosition) {
+    markers.push(getLocationMarker(alternativePosition));
+  }
+
+  return markers;
 };
 
 /* eslint-disable complexity */
@@ -82,14 +87,21 @@ export const LocationOverview = ({
   queryVariables
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation } = useContext(OrientationContext);
+  const safeAreaInsets = useSafeAreaInsets();
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+  const { locationSettings } = useLocationSettings();
+  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { locationSettings } = useLocationSettings();
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
-  const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
+  const {
+    data: overviewData,
+    loading,
+    refetch
+  } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
     variables: {
       ...queryVariables,
@@ -133,7 +145,7 @@ export const LocationOverview = ({
     );
   }
 
-  const mapMarkers = mapToMapMarkers(pointsOfInterest);
+  const mapMarkers = mapToMapMarkers(pointsOfInterest, alternativePosition);
 
   const item = detailsData
     ? parseListItemsFromQuery(
@@ -149,9 +161,26 @@ export const LocationOverview = ({
       )?.[0]
     : undefined;
 
+  if (item && !item.picture?.url) {
+    const SelectedIcon = item?.iconName
+      ? Icon[_upperFirst(item.iconName) as keyof typeof Icon]
+      : undefined;
+
+    item.leftIcon = (
+      <View style={[styles.iconContainer, styles.imageSize]}>
+        {!!SelectedIcon && <SelectedIcon color={colors.darkerPrimary} />}
+      </View>
+    );
+  }
+
   return (
     <>
+      {(queryVariables?.categoryIds?.length || 0) > 1 && (
+        <ChipFilter queryVariables={queryVariables} refetch={refetch} />
+      )}
+
       <Map
+        clusteringEnabled
         currentPosition={currentPosition}
         isMultipleMarkersMap
         locations={mapMarkers}
@@ -160,20 +189,32 @@ export const LocationOverview = ({
         selectedMarker={selectedPointOfInterest}
       />
       {selectedPointOfInterest && !detailsLoading && (
-        <Wrapper
-          small
-          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
+        <View
+          style={[
+            styles.listItemContainer,
+            stylesWithProps({
+              navigationType,
+              orientation,
+              safeAreaInsets,
+              deviceHeight: device.height
+            }).position
+          ]}
         >
           <TextListItem
+            containerStyle={styles.textListItemContainer}
+            imageContainerStyle={styles.imageRadius}
+            imageStyle={styles.imageSize}
             item={{
               ...item,
               bottomDivider: false,
-              subtitle: undefined
+              picture: item?.picture?.url ? item.picture : undefined
             }}
-            leftImage
+            leftImage={!!item?.picture?.url}
+            listItemStyle={styles.listItem}
+            listsWithoutArrows
             navigation={navigation}
           />
-        </Wrapper>
+        </View>
       )}
     </>
   );
@@ -181,9 +222,24 @@ export const LocationOverview = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.lighterPrimary,
+    borderBottomLeftRadius: normalize(8),
+    borderTopLeftRadius: normalize(8),
+    justifyContent: 'center'
+  },
+  imageSize: {
+    height: normalize(96),
+    width: normalize(96)
+  },
+  imageRadius: {
+    borderBottomLeftRadius: normalize(12),
+    borderTopLeftRadius: normalize(12)
+  },
   listItemContainer: {
     backgroundColor: colors.surface,
-    borderRadius: normalize(12),
+    borderRadius: normalize(8),
     left: '4%',
     position: 'absolute',
     right: '4%',
@@ -198,18 +254,38 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+  listItem: {
+    marginVertical: normalize(16)
+  },
   map: {
     height: '100%',
     width: '100%'
+  },
+  textListItemContainer: {
+    alignItems: 'flex-start',
+    paddingVertical: 0,
+    padding: 0
   }
 });
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
+const stylesWithProps = ({
+  navigationType,
+  orientation,
+  safeAreaInsets,
+  deviceHeight
+}: {
+  navigationType: string;
+  orientation: string;
+  safeAreaInsets: { left: number; right: number };
+  deviceHeight: number;
+}) => {
   return StyleSheet.create({
     position: {
-      bottom: navigationType === 'drawer' ? '8%' : '4%'
+      bottom: navigationType === 'drawer' ? '8%' : '4%',
+      left: orientation === 'landscape' ? safeAreaInsets.left + deviceHeight * 0.04 : '4%',
+      right: orientation === 'landscape' ? safeAreaInsets.right + deviceHeight * 0.04 : '4%'
     }
   });
 };

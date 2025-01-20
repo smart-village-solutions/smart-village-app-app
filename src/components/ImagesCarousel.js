@@ -144,22 +144,30 @@ export const ImagesCarousel = ({
 
   return (
     <View>
-      <Carousel
-        data={carouselData}
-        ref={carouselRef}
-        renderItem={({ item }) =>
-          renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
-        }
-        sliderWidth={dimensions.width}
-        itemWidth={itemWidth}
-        inactiveSlideScale={1}
-        autoplay
-        loop
-        autoplayDelay={0}
-        autoplayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
-        containerCustomStyle={styles.center}
-        onScrollIndexChanged={setCarouselImageIndex}
-      />
+      {isPaused ? (
+        renderItem({ item: carouselData[carouselImageIndex] })
+      ) : (
+        <Carousel
+          data={carouselData}
+          ref={carouselRef}
+          renderItem={({ item }) =>
+            renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
+          }
+          sliderWidth={dimensions.width}
+          itemWidth={itemWidth}
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1}
+          autoplay
+          enableMomentum
+          loop
+          loopClonesPerSide={carouselData.length}
+          autoplayDelay={0}
+          autoplayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
+          containerCustomStyle={styles.center}
+          onScrollIndexChanged={setCarouselImageIndex}
+          removeClippedSubviews={false}
+        />
+      )}
 
       {shouldShowPauseButton &&
         pauseButton(

@@ -1,10 +1,13 @@
+/* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { OrientationContext } from '../OrientationProvider';
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
-import { colors, device, normalize } from '../config';
+import { colors, normalize } from '../config';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -17,6 +20,7 @@ type OptionConfig = {
   withDrawer?: boolean;
   withFavorites?: boolean;
   withShare?: boolean;
+  withInfo?: boolean;
   noHeaderLeft?: boolean;
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
 };
@@ -28,17 +32,25 @@ export const getScreenOptions =
     withDrawer,
     withFavorites,
     withShare,
+    withInfo,
     noHeaderLeft = false,
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
+    const insets = useSafeAreaInsets();
+    const { orientation } = useContext(OrientationContext);
+    const isPortrait = orientation === 'portrait';
+    const headerHeight = !isPortrait ? normalize(35) + insets.top : normalize(56) + insets.top;
+
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
       headerBackground: () => <DiagonalGradient />,
       headerTitleStyle: styles.headerTitleStyle,
-      headerTitleAlign: 'left',
-      headerTitleContainerStyle: styles.headerTitleContainerStyle,
+      headerTitleAlign: 'center',
+      headerStyle: {
+        height: headerHeight
+      },
       headerRight: () => (
         <HeaderRight
           {...{
@@ -48,7 +60,8 @@ export const getScreenOptions =
             withBookmark,
             withDelete,
             withDrawer,
-            withShare
+            withShare,
+            withInfo
           }}
         />
       ),
@@ -62,18 +75,14 @@ export const getScreenOptions =
     };
   };
 
+/* eslint-enable complexity */
+
 const styles = StyleSheet.create({
   headerTitleStyle: {
     color: colors.lightestText,
-    fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
-    fontSize: normalize(20),
-    fontWeight: '400',
-    lineHeight: normalize(29)
-  },
-  headerTitleContainerStyle: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+    fontFamily: 'condbold',
+    fontSize: normalize(18),
+    lineHeight: normalize(23)
   },
   icon: {
     paddingHorizontal: normalize(10)

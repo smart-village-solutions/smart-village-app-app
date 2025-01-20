@@ -1,10 +1,10 @@
+import 'dayjs/locale/de';
 import * as FileSystem from 'expo-file-system';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Keyboard, ScrollView, StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Keyboard, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   Actions,
   Bubble,
@@ -38,6 +38,7 @@ const { IMAGE_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
  * @param {object} messageTextStyleRight   style of chat text on the right
  * @param {func}   onSendButton            function returning message text
  * @param {string} placeholder             placeholder text of `textInput`
+ * @param {bool}   showActionButton           prop to render the action buttons
  * @param {object} textInputProps          props to customise text input
  * @param {number} userId      prop to recognise whether the message is the owner
  *                                         or another user
@@ -50,6 +51,7 @@ export const Chat = ({
   messageTextStyleRight,
   onSendButton,
   placeholder = '',
+  showActionButton = false,
   textInputProps,
   userId
 }) => {
@@ -90,7 +92,6 @@ export const Chat = ({
       throw errorText;
     }
   };
-
   const { selectImage } = useSelectImage({
     allowsEditing: false,
     mediaTypes: MediaTypeOptions.All
@@ -132,6 +133,8 @@ export const Chat = ({
       }}
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
+        if (!showActionButton) return null;
+
         const mediaActionSheet = {
           'Foto wählen': async () => {
             const { uri, type } = await selectImage();
@@ -188,6 +191,7 @@ export const Chat = ({
       renderComposer={(props) => (
         <Composer
           {...props}
+          multiline
           textInputStyle={styles.textInputStyle}
           textInputProps={textInputProps}
         />
@@ -245,8 +249,8 @@ export const Chat = ({
         <MessageText
           {...props}
           textStyle={{
-            left: messageTextStyleLeft || styles.textStyle,
-            right: messageTextStyleRight || styles.textStyle
+            left: [styles.textStyle, messageTextStyleLeft],
+            right: [styles.textStyle, messageTextStyleRight]
           }}
         />
       )}
@@ -261,9 +265,7 @@ export const Chat = ({
       )}
       renderTime={(props) => (
         <View style={styles.spacingTime}>
-          <RegularText smallest placeholder>
-            {momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}
-          </RegularText>
+          <RegularText small>{momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}</RegularText>
         </View>
       )}
     />
@@ -321,6 +323,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray20
   },
   inputToolbarContainer: {
+    backgroundColor: colors.surface,
     paddingVertical: normalize(24)
   },
   inputToolbarPrimary: {
@@ -357,12 +360,12 @@ const styles = StyleSheet.create({
   },
   sendButtonContainer: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: normalize(4),
     height: normalize(48),
     justifyContent: 'center',
     marginLeft: normalize(8),
-    marginRight: normalize(20),
+    marginRight: normalize(10),
     width: normalize(48)
   },
   spacingTime: {
@@ -387,7 +390,8 @@ const styles = StyleSheet.create({
   textStyle: {
     color: colors.darkText,
     fontFamily: 'regular',
-    fontSize: normalize(14)
+    fontSize: normalize(14),
+    lineHeight: normalize(20)
   },
   videoBubble: {
     alignSelf: 'center',
@@ -407,6 +411,7 @@ Chat.propTypes = {
   messageTextStyleRight: PropTypes.object,
   onSendButton: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  showActionButton: PropTypes.bool,
   textInputProps: PropTypes.object,
-  userId: PropTypes.string || PropTypes.number
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

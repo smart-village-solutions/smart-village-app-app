@@ -1,12 +1,28 @@
 export const location = (color, strokeColor, strokeWidth) => `
   <?xml version="1.0" encoding="UTF-8"?>
-  <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <path d="M12,2 C15.8891061,2 18.9804469,5.1 18.9804469,9 C18.9804469,14.2 12,22 12,22
-        C12,22 5.01955307,14.2 5.01955307,9 C5.01955307,5.1 8.11089385,2 12,2 Z M12,11.5
-        C13.3960894,11.5 14.4930168,10.4 14.4930168,9 C14.4930168,7.6 13.3960894,6.5 12,6.5
-        C10.6039106,6.5 9.50698324,7.6 9.50698324,9 C9.50698324,10.4 10.6039106,11.5 12,11.5 Z"
-        fill-rule="nonzero" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}"></path>
+  <svg width="54" height="76" viewBox="0 0 54 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g filter="url(#filter0_d_742_510)">
+      <path d="M50.9968 24.6113C50.8958 18.3813 48.3758 12.4349 43.9697 8.0293C39.469 3.52851
+               33.3646 1 26.9995 1C20.6345 1 14.5301 3.52851 10.0293 8.0293C5.52851 12.5301 3
+               18.6345 3 24.9995C3 31.3646 5.52851 37.469 10.0293 41.9697L21.3463 53.2841L21.7303
+               53.6441C23.2573 54.9812 25.2354 55.6879 27.2639 55.6211C29.2925 55.5542 31.2197
+               54.7188 32.6554 53.2841L43.9697 41.9724L44.5111 41.4124C48.772 36.8663 51.0979
+               30.8413 50.9968 24.6113Z"
+               fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}"
+      />
+      <circle cx="27" cy="24" r="6" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>
     </g>
+    <defs>
+      <filter id="filter0_d_742_510" x="0" y="0" width="54" height="76" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="2"/>
+        <feGaussianBlur stdDeviation="1.5"/>
+        <feComposite in2="hardAlpha" operator="out"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.32 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_742_510"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_742_510" result="shape"/>
+      </filter>
+    </defs>
   </svg>
 `;

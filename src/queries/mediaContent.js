@@ -30,12 +30,27 @@ export const uploadMediaContent = async (
   });
 
   const json = await response.json();
-  const status = response.status;
-  const ok = response.ok;
 
-  if (ok && status === 201 && typeof json?.service_url === 'string') {
+  if (response.ok && response.status === 201 && typeof json?.service_url === 'string') {
     return json.service_url;
   }
 
   return;
+};
+
+export const deleteMediaContent = async (mediaContentId) => {
+  // get the authentication token from local SecureStore if it exists
+  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+
+  const response = await fetch(
+    secrets[namespace].serverUrl + `/media_contents/${mediaContentId}.json`,
+    {
+      method: 'DELETE',
+      headers: {
+        authorization: accessToken ? `Bearer ${accessToken}` : ''
+      }
+    }
+  );
+
+  return response.ok && response.status === 204;
 };
