@@ -53,14 +53,14 @@ export class CategoryList extends React.PureComponent {
         data: _filter(
           data,
           (category) =>
-            category.pointsOfInterestTreeCount > 0 && (!category.parent || queryVariables.ids)
+            !!category.pointsOfInterestTreeCount && (!category.parent || queryVariables.ids)
         )
       },
       {
         title: categoryTitlesTours,
         data: _filter(
           data,
-          (category) => category.toursTreeCount > 0 && (!category.parent || queryVariables.ids)
+          (category) => !!category.toursTreeCount && (!category.parent || queryVariables.ids)
         )
       }
     ];
@@ -76,6 +76,7 @@ export class CategoryList extends React.PureComponent {
             item={item}
             index={index}
             section={section}
+            categoryTitles={{ categoryTitlesPointsOfInterest, categoryTitlesTours }}
           />
         )}
         renderSectionHeader={this.renderSectionHeader}

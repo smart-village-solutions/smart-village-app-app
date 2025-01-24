@@ -6,9 +6,7 @@ export const GET_CATEGORIES = gql`
       id
       iconName
       name
-      pointsOfInterestCount(location: $location)
       pointsOfInterestTreeCount(location: $location)
-      toursCount(location: $location)
       toursTreeCount(location: $location)
       parent {
         id
@@ -17,49 +15,37 @@ export const GET_CATEGORIES = gql`
         id
         iconName
         name
-        pointsOfInterestCount(location: $location)
         pointsOfInterestTreeCount(location: $location)
-        toursCount(location: $location)
         toursTreeCount(location: $location)
         children {
           id
           iconName
           name
-          pointsOfInterestCount(location: $location)
           pointsOfInterestTreeCount(location: $location)
-          toursCount(location: $location)
           toursTreeCount(location: $location)
           children {
             id
             iconName
             name
-            pointsOfInterestCount(location: $location)
             pointsOfInterestTreeCount(location: $location)
-            toursCount(location: $location)
             toursTreeCount(location: $location)
             children {
               id
               iconName
               name
-              pointsOfInterestCount(location: $location)
               pointsOfInterestTreeCount(location: $location)
-              toursCount(location: $location)
               toursTreeCount(location: $location)
               children {
                 id
                 iconName
                 name
-                pointsOfInterestCount(location: $location)
                 pointsOfInterestTreeCount(location: $location)
-                toursCount(location: $location)
                 toursTreeCount(location: $location)
                 children {
                   id
                   iconName
                   name
-                  pointsOfInterestCount(location: $location)
                   pointsOfInterestTreeCount(location: $location)
-                  toursCount(location: $location)
                   toursTreeCount(location: $location)
                 }
               }

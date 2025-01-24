@@ -204,38 +204,69 @@ const parseTours = (data, skipLastDivider) => {
   }));
 };
 
-const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
-  return data?.map((category, index) => ({
-    id: category.id,
-    iconName: category.iconName?.length ? category.iconName : undefined,
-    title: category.name,
-    pointsOfInterestCount: category.pointsOfInterestCount,
-    pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,
-    toursCount: category.toursCount,
-    toursTreeCount: category.toursTreeCount,
-    routeName,
-    parent: category.parent,
-    params: {
+const parseCategories = (data, skipLastDivider, routeName, queryVariables, query = '') => {
+  const categories = [];
+
+  data?.forEach((category, index) => {
+    const item = {
+      id: category.id,
+      iconName: category.iconName?.length ? category.iconName : undefined,
       title: category.name,
-      categories: parseCategories(
-        category.children,
-        skipLastDivider,
-        ScreenName.Index,
-        queryVariables
-      ),
-      query:
-        category.pointsOfInterestTreeCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
-      queryVariables: {
-        limit: 15,
-        order: 'name_ASC',
-        category: `${category.name}`,
-        location: queryVariables?.location
+      routeName,
+      parent: category.parent,
+      params: {
+        title: category.name,
+        query,
+        queryVariables: {
+          limit: 15,
+          order: 'name_ASC',
+          category: `${category.name}`,
+          location: queryVariables?.location
+        },
+        usedAsInitialScreen: false,
+        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
       },
-      usedAsInitialScreen: false,
-      rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+      bottomDivider: !skipLastDivider || index !== data.length - 1
+    };
+
+    if (query !== QUERY_TYPES.TOURS && category.pointsOfInterestTreeCount) {
+      categories.push({
+        ...item,
+        pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,
+        params: {
+          ...item.params,
+          categories: parseCategories(
+            category.children,
+            skipLastDivider,
+            ScreenName.Index,
+            queryVariables,
+            QUERY_TYPES.POINTS_OF_INTEREST
+          ),
+          query: QUERY_TYPES.POINTS_OF_INTEREST
+        }
+      });
+    }
+
+    if (query !== QUERY_TYPES.POINTS_OF_INTEREST && category.toursTreeCount) {
+      categories.push({
+        ...item,
+        toursTreeCount: category.toursTreeCount,
+        params: {
+          ...item.params,
+          categories: parseCategories(
+            category.children,
+            skipLastDivider,
+            ScreenName.Index,
+            queryVariables,
+            QUERY_TYPES.TOURS
+          ),
+          query: QUERY_TYPES.TOURS
+        }
+      });
+    }
+  });
+
+  return categories;
 };
 
 const parsePointsOfInterestAndTours = (data) => {

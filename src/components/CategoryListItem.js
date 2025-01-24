@@ -11,7 +11,7 @@ import { Touchable } from './Touchable';
 
 export class CategoryListItem extends React.PureComponent {
   render() {
-    const { navigation, noSubtitle = false, item, index, section } = this.props;
+    const { navigation, noSubtitle = false, item, index, section, categoryTitles } = this.props;
     const {
       iconName,
       routeName: name,
@@ -23,7 +23,9 @@ export class CategoryListItem extends React.PureComponent {
       bottomDivider,
       topDivider
     } = item;
-    const count = pointsOfInterestTreeCount > 0 ? pointsOfInterestTreeCount : toursTreeCount;
+    const { categoryTitlesPointsOfInterest } = categoryTitles;
+    const count =
+      section.title === categoryTitlesPointsOfInterest ? pointsOfInterestTreeCount : toursTreeCount;
     const SelectedIcon = iconName ? Icon[_upperFirst(iconName)] : undefined;
 
     return (
@@ -77,9 +79,10 @@ const styles = StyleSheet.create({
 });
 
 CategoryListItem.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired,
+  categoryTitles: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
-  section: PropTypes.object.isRequired,
-  noSubtitle: PropTypes.bool
+  item: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  noSubtitle: PropTypes.bool,
+  section: PropTypes.object.isRequired
 };
