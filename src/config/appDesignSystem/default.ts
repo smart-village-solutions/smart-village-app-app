@@ -24,6 +24,28 @@ export const defaultAppDesignSystemConfig = {
   },
   sueStatus: {
     containerStyle: {},
+    mapPinColors: {
+      activeBackgroundColors: {
+        'Wird geprüft': '',
+        'In Bearbeitung': '',
+        Abgeschlossen: ''
+      },
+      activeIconColors: {
+        'Wird geprüft': '',
+        'In Bearbeitung': '',
+        Abgeschlossen: ''
+      },
+      backgroundColors: {
+        'Wird geprüft': '',
+        'In Bearbeitung': '',
+        Abgeschlossen: ''
+      },
+      iconColors: {
+        'Wird geprüft': '',
+        'In Bearbeitung': '',
+        Abgeschlossen: ''
+      }
+    },
     statusTextColors: {
       Abgeschlossen: '',
       'In Bearbeitung': '',

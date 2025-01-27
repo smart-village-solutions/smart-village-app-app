@@ -79,7 +79,6 @@ export const SueReportLocation = ({
   areaServiceData,
   control,
   errorMessage,
-  getValues,
   requiredInputs,
   selectedPosition,
   setSelectedPosition,
@@ -108,7 +107,13 @@ export const SueReportLocation = ({
   const systemPermission = useSystemPermission();
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
-  const { statusBorderColors = {}, statusTextColors = {}, statusViewColors = {} } = sueStatus;
+  const { mapPinColors = {} } = sueStatus;
+  const {
+    activeBackgroundColors = {},
+    activeIconColors = {},
+    backgroundColors = {},
+    iconColors = {}
+  } = mapPinColors;
   const [address, setAddress] = useState(
     {} as { street: string; houseNumber: string; postalCode: string; city: string }
   );
@@ -149,9 +154,10 @@ export const SueReportLocation = ({
         parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
           appDesignSystem
         }),
-        statusBorderColors,
-        statusTextColors,
-        statusViewColors
+        activeBackgroundColors,
+        activeIconColors,
+        backgroundColors,
+        iconColors
       ) || [],
     [data]
   );
