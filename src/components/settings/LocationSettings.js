@@ -41,7 +41,8 @@ export const LocationSettings = () => {
   const {
     locationService = systemPermission.status !== Location.PermissionStatus.DENIED,
     alternativePosition,
-    defaultAlternativePosition
+    defaultAlternativePosition,
+    showAlternativeLocationButton = true
   } = locationSettings || {};
 
   const locationServiceSwitchData = {
@@ -107,52 +108,59 @@ export const LocationSettings = () => {
       <WrapperHorizontal>
         <SettingsToggle item={locationServiceSwitchData} />
       </WrapperHorizontal>
-      <Wrapper>
-        <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
-      </Wrapper>
-      <Collapsible collapsed={!showMap}>
-        <Map
-          locations={locations}
-          onMapPress={({ nativeEvent }) => {
-            setSelectedPosition({
-              ...nativeEvent.coordinate
-            });
-          }}
-        />
-        <Wrapper>
-          <Button
-            title={texts.settingsContents.locationService.save}
-            onPress={() => {
-              selectedPosition &&
-                setAndSyncLocationSettings({
-                  alternativePosition: geoLocationToLocationObject(selectedPosition)
-                });
-              setSelectedPosition(undefined);
-              setShowMap(false);
-            }}
-          />
-
-          <Touchable
-            onPress={() => {
-              setSelectedPosition(undefined);
-              setShowMap(false);
-            }}
-            style={styles.containerStyle}
-          >
-            <RegularText primary center>
-              {texts.settingsContents.locationService.abort}
+      {!!showAlternativeLocationButton && (
+        <>
+          <Wrapper>
+            <RegularText>
+              {texts.settingsContents.locationService.alternativePositionHint}
             </RegularText>
-          </Touchable>
-        </Wrapper>
-      </Collapsible>
-      <Collapsible collapsed={showMap}>
-        <Wrapper>
-          <Button
-            title={texts.settingsContents.locationService.chooseAlternateLocationButton}
-            onPress={() => setShowMap(true)}
-          />
-        </Wrapper>
-      </Collapsible>
+          </Wrapper>
+
+          <Collapsible collapsed={!showMap}>
+            <Map
+              locations={locations}
+              onMapPress={({ nativeEvent }) => {
+                setSelectedPosition({
+                  ...nativeEvent.coordinate
+                });
+              }}
+            />
+            <Wrapper>
+              <Button
+                title={texts.settingsContents.locationService.save}
+                onPress={() => {
+                  selectedPosition &&
+                    setAndSyncLocationSettings({
+                      alternativePosition: geoLocationToLocationObject(selectedPosition)
+                    });
+                  setSelectedPosition(undefined);
+                  setShowMap(false);
+                }}
+              />
+
+              <Touchable
+                onPress={() => {
+                  setSelectedPosition(undefined);
+                  setShowMap(false);
+                }}
+                style={styles.containerStyle}
+              >
+                <RegularText primary center>
+                  {texts.settingsContents.locationService.abort}
+                </RegularText>
+              </Touchable>
+            </Wrapper>
+          </Collapsible>
+          <Collapsible collapsed={showMap}>
+            <Wrapper>
+              <Button
+                title={texts.settingsContents.locationService.chooseAlternateLocationButton}
+                onPress={() => setShowMap(true)}
+              />
+            </Wrapper>
+          </Collapsible>
+        </>
+      )}
     </ScrollView>
   );
 };
