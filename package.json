@@ -167,17 +167,5 @@
     "react-test-renderer": "^18.2.0",
     "set-value": "^4.1.0",
     "typescript": "~5.3.3"
-  },
-  "resolutions": {
-    "@expo/config-plugins": "^9.0.0",
-    "@babel/traverse": "~7.25.0",
-    "crypto-js": "~4.2.0",
-    "markdown-it": "~13.0.2",
-    "metro": "^0.81.0",
-    "metro-resolver": "^0.81.0",
-    "metro-config": "^0.81.0",
-    "micromatch": "~4.0.4",
-    "node-fetch": "~2.6.7",
-    "ws": "~8.17.1"
   }
 }
