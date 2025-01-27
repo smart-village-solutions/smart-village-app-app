@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
@@ -33,9 +33,14 @@ export const SueReportSend = ({
 }) => {
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = sueConfig;
-  const { reportSendDone = {}, reportSendLoading = {}, showFeedbackSection } = sueReportScreen;
+  const {
+    reportSendDone = {},
+    reportSendLoading = {},
+    showFeedbackSection: feedbackSection
+  } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
+  const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
 
   const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
@@ -66,9 +71,14 @@ export const SueReportSend = ({
     try {
       await createAppUserContent({ variables: formData });
 
-      reset();
-
-      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
+      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message, [
+        {
+          onPress: () => {
+            reset();
+            setShowFeedbackSection(false);
+          }
+        }
+      ]);
     } catch (error) {
       console.error(error);
     }
