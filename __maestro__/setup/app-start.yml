@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- waitForAnimationToEnd
+- tapOn: "http://localhost:8081"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Continue"
+- swipe:
+   from: "Smart Village App"
+   direction: DOWN

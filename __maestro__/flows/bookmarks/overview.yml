@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+onFlowStart:
+  - runFlow: ../../setup/index.yml
+---
+# go to bookmarks overview
+- tapOn: "Lesezeichen (Taste)"
+- assertVisible: "Lesezeichen"
+
+# go back to home screen (Android-only at the moment)
+- back

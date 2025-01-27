@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "Nein"
