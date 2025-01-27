@@ -11,21 +11,22 @@ import { Touchable } from './Touchable';
 
 export class CategoryListItem extends React.PureComponent {
   render() {
-    const { navigation, noSubtitle = false, item, index, section, categoryTitles } = this.props;
+    const { categoryTitles, index, item, navigation, noSubtitle = false, section } = this.props;
     const {
+      bottomDivider,
       iconName,
-      routeName: name,
       params,
+      pointsOfInterestTreeCount,
+      routeName: name,
       subtitle,
       title,
-      pointsOfInterestTreeCount,
-      toursTreeCount,
-      bottomDivider,
-      topDivider
+      topDivider,
+      toursTreeCount
     } = item;
     const { categoryTitlesPointsOfInterest } = categoryTitles;
     const count =
       section.title === categoryTitlesPointsOfInterest ? pointsOfInterestTreeCount : toursTreeCount;
+
     const SelectedIcon = iconName ? Icon[_upperFirst(iconName)] : undefined;
 
     return (

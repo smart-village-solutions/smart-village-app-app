@@ -67,24 +67,24 @@ export class CategoryList extends React.PureComponent {
 
     return (
       <SectionList
+        contentContainerStyle={styles.contentContainer}
         keyExtractor={this.keyExtractor}
-        sections={sectionedData}
+        ListFooterComponent={ListFooterComponent}
+        ListHeaderComponent={ListHeaderComponent}
+        refreshControl={refreshControl}
         renderItem={({ item, index, section }) => (
           <CategoryListItem
+            categoryTitles={{ categoryTitlesPointsOfInterest, categoryTitlesTours }}
+            index={index}
+            item={item}
             navigation={navigation}
             noSubtitle={noSubtitle}
-            item={item}
-            index={index}
             section={section}
-            categoryTitles={{ categoryTitlesPointsOfInterest, categoryTitlesTours }}
           />
         )}
         renderSectionHeader={this.renderSectionHeader}
-        ListFooterComponent={ListFooterComponent}
-        ListHeaderComponent={ListHeaderComponent}
+        sections={sectionedData}
         stickySectionHeadersEnabled
-        refreshControl={refreshControl}
-        contentContainerStyle={styles.contentContainer}
       />
     );
   }
