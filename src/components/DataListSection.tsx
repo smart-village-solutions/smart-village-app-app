@@ -64,10 +64,16 @@ export const DataListSection = ({
   showButton,
   showLink
 }: Props) => {
+  const renderSectionHeader = () => {
+    if (!sectionTitle) return null;
+
+    return <SectionHeader onPress={navigate} title={sectionTitle} />;
+  };
+
   if (loading) {
     return (
       <View>
-        {!!sectionTitle && <SectionHeader onPress={navigate} title={sectionTitle} />}
+        {renderSectionHeader()}
 
         <LoadingContainer>
           <ActivityIndicator color={colors.refreshControl} />
@@ -95,7 +101,7 @@ export const DataListSection = ({
   if (listData?.length) {
     return (
       <View>
-        {!!sectionTitle && <SectionHeader onPress={navigate} title={sectionTitle} />}
+        {renderSectionHeader()}
 
         <ListComponent
           data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
@@ -131,7 +137,7 @@ export const DataListSection = ({
 
   return (
     <View>
-      {!!sectionTitle && <SectionHeader onPress={navigate} title={sectionTitle} />}
+      {renderSectionHeader()}
 
       {placeholder}
     </View>
