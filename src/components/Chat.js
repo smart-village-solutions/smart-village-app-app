@@ -286,7 +286,7 @@ const renderFooter = (medias, setMedias) => (
             />
           )}
           {type === 'video' && (
-            <Video
+            <VideoView
               resizeMode="cover"
               source={{ uri }}
               style={[styles.mediaBorder, styles.mediaPreview]}
