@@ -32,16 +32,22 @@ export const postRequests = async (data: any) => {
   const formData = new FormData();
 
   if (data) {
-    data.addressString && formData.append('address_string', data.addressString);
-    data.description && formData.append('description', data.description);
-    data.email && formData.append('email', data.email);
-    data.firstName && formData.append('first_name', data.firstName);
-    data.lastName && formData.append('last_name', data.lastName);
-    data.lat && formData.append('lat', data.lat);
-    data.long && formData.append('long', data.long);
-    data.phone && formData.append('phone', data.phone);
-    data.serviceCode && formData.append('service_code', data.serviceCode);
-    data.title && formData.append('title', data.title);
+    const fieldMappings = {
+      addressString: 'address_string',
+      description: 'description',
+      email: 'email',
+      firstName: 'first_name',
+      lastName: 'last_name',
+      lat: 'lat',
+      long: 'long',
+      phone: 'phone',
+      serviceCode: 'service_code',
+      title: 'title'
+    };
+
+    Object.entries(fieldMappings).forEach(([key, formKey]) => {
+      data[key] && formData.append(formKey, data[key]);
+    });
   }
 
   const images = JSON.parse(data?.images) || [];
