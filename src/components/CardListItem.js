@@ -123,23 +123,40 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
       sequenceMap[item] && cardContent.push(sequenceMap[item]());
     });
   } else {
-    picture?.url && cardContent.push(sequenceMap.picture());
-    !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
-    !sue && title && cardContent.push(sequenceMap.title());
-    subtitle && cardContent.push(sequenceMap.subtitle());
+    if (picture?.url) {
+      cardContent.push(sequenceMap.picture());
+    }
+    if (!noOvertitle && overtitle) {
+      cardContent.push(sequenceMap.overtitle());
+    }
+    if (!sue && title) {
+      cardContent.push(sequenceMap.title());
+    }
+    if (subtitle) {
+      cardContent.push(sequenceMap.subtitle());
+    }
 
     if (sue) {
-      !picture?.url && cardContent.push(sequenceMap.sue.pictureFallback());
-      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.category());
-      serviceName && requestedDatetime && cardContent.push(sequenceMap.sue.divider());
-      title &&
+      if (!picture?.url) {
+        cardContent.push(sequenceMap.sue.pictureFallback());
+      }
+      if (serviceName && requestedDatetime) {
+        cardContent.push(sequenceMap.sue.category());
+        cardContent.push(sequenceMap.sue.divider());
+      }
+      if (title) {
         cardContent.push(
           <WrapperHorizontal key={keyExtractor(title, index)}>
             {sequenceMap.title()}
           </WrapperHorizontal>
         );
-      address && cardContent.push(sequenceMap.sue.address());
-      status && cardContent.push(sequenceMap.sue.status());
+      }
+      if (address) {
+        cardContent.push(sequenceMap.sue.address());
+      }
+      if (status) {
+        cardContent.push(sequenceMap.sue.status());
+      }
     }
   }
 
