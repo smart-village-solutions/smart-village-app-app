@@ -50,8 +50,10 @@ export const SETTINGS_SCREENS = {
 };
 
 const renderItem = ({ item, navigation, listsWithoutArrows }) => {
+  let component;
+
   if (item === SETTINGS_SCREENS.LOCATION) {
-    return (
+    component = (
       <TextListItem
         item={{
           isHeadlineTitle: false,
@@ -64,10 +66,8 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
         navigation={navigation}
       />
     );
-  }
-
-  if (item === SETTINGS_SCREENS.PERMANENT_FILTER) {
-    return (
+  } else if (item === SETTINGS_SCREENS.PERMANENT_FILTER) {
+    component = (
       <TextListItem
         item={{
           isHeadlineTitle: false,
@@ -79,10 +79,8 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
         navigation={navigation}
       />
     );
-  }
-
-  if (item === SETTINGS_SCREENS.MOWAS_REGION) {
-    return (
+  } else if (item === SETTINGS_SCREENS.MOWAS_REGION) {
+    component = (
       <TextListItem
         item={{
           isHeadlineTitle: false,
@@ -94,10 +92,8 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
         navigation={navigation}
       />
     );
-  }
-
-  if (item === SETTINGS_SCREENS.LIST) {
-    return (
+  } else if (item === SETTINGS_SCREENS.LIST) {
+    component = (
       <TextListItem
         item={{
           isHeadlineTitle: false,
@@ -109,10 +105,8 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
         navigation={navigation}
       />
     );
-  }
-
-  if (item === SETTINGS_SCREENS.AR) {
-    return (
+  } else if (item === SETTINGS_SCREENS.AR) {
+    component = (
       <TextListItem
         item={{
           isHeadlineTitle: false,
@@ -124,9 +118,11 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
         navigation={navigation}
       />
     );
+  } else {
+    component = <SettingsToggle item={item} />;
   }
 
-  return <SettingsToggle item={item} />;
+  return component;
 };
 
 renderItem.propTypes = {
