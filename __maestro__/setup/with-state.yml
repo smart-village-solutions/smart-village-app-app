@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: false
+
+- runFlow:
+    file: "app-start.yml"
+
+# pass onboarding if it's visible
+- runFlow:
+    when:
+      visible:
+        text: "WEITER"
+        below:
+          text: "WILLKOMMEN"
+    file: "onboarding.yml"

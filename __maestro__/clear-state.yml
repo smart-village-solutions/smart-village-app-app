@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: true
+
+- runFlow:
+    file: "setup/app-start.yml"

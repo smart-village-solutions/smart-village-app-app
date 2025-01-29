@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      true: ${CLEAR_STATE == 'true'}
+    file: "without-state.yml"
+
+- runFlow:
+    when:
+      true: ${CLEAR_STATE !== 'true'}
+    file: "with-state.yml"

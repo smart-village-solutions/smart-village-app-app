@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: true
+
+- runFlow:
+    file: "app-start.yml"
+
+- runFlow:
+    file: "onboarding.yml"
