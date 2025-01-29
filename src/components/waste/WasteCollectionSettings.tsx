@@ -1,5 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import _cloneDeep from 'lodash/cloneDeep';
+import _isEmpty from 'lodash/isEmpty';
 import React, {
   useCallback,
   useContext,
@@ -33,35 +35,32 @@ import {
   useWasteTypes,
   useWasteUsedTypes
 } from '../../hooks';
-import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
-import {
-  deleteReminderSetting,
-  getReminderSettings,
-  updateReminderSettings
-} from '../../pushNotifications';
+import { areValidReminderSettings } from '../../jsonValidation';
+import { getReminderSettings, updateWasteReminderSettings } from '../../pushNotifications';
+import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '../../reducers';
 import { getLocationData } from '../../screens';
 import { SettingsContext } from '../../SettingsProvider';
-import { ReminderSettingJson, ReminderSettings } from '../../types';
+import { WasteReminderSettingJson } from '../../types';
 import { HeaderLeft } from '../HeaderLeft';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Switch } from '../Switch';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
-import { ReminderSettingsActionType, reminderSettingsReducer } from './ReminderSettingsReducer';
 import { Dot } from './WasteCalendarLegendEntry';
 
-const initialReminderTime = new Date();
-initialReminderTime.setHours(9);
-initialReminderTime.setMinutes(0);
-
-const initialSettings: ReminderSettings = {
-  activeTypes: {},
-  onDayBefore: false,
-  reminderTime: initialReminderTime
-};
-
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
+
+const initialWasteSettingsState: WasteSettingsState = {
+  activeTypes: {},
+  activeTypesForOldStreet: undefined,
+  typeSettings: {},
+  selectedTypeKeys: [],
+  notificationSettings: {},
+  showNotificationSettings: false,
+  onDayBefore: true,
+  reminderTime: new Date('2000-01-01T09:00:00.000+01:00')
+};
 
 /* eslint-disable complexity */
 export const WasteCollectionSettings = ({
@@ -72,19 +71,30 @@ export const WasteCollectionSettings = ({
   const navigation = useNavigation();
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
   const { waste = {} } = globalSettings;
-  const [state, dispatch] = useReducer(reminderSettingsReducer, initialSettings);
-  const { onDayBefore, reminderTime } = state;
+  const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
   const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
   const [errorWithStoredSettings, setErrorWithStoredSettings] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState(currentSelectedStreetId);
   const [isStreetSelected, setIsStreetSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [localSelectedTime, setLocalSelectedTime] = useState<Date>(new Date());
+  const [state, dispatch] = useReducer(wasteSettingsReducer, initialWasteSettingsState);
+  const {
+    activeTypes,
+    activeTypesForOldStreet,
+    typeSettings,
+    selectedTypeKeys,
+    notificationSettings,
+    showNotificationSettings,
+    onDayBefore,
+    reminderTime
+  } = state;
+  const isInitial = waste.streetId === undefined;
   const { data, loading } = useWasteAddresses();
   const addressesData = data?.wasteAddresses;
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
   const usedTypes = useWasteUsedTypes({ streetData, typesData });
+  const usedTypeKeys = usedTypes ? Object.keys(usedTypes) : [];
   const locationData = getLocationData(streetData);
   const { getStreetString } = useStreetString();
   const streetName = locationData ? getStreetString(locationData) : undefined;
@@ -92,64 +102,112 @@ export const WasteCollectionSettings = ({
     setIsStreetSelected(true)
   );
   const { filterStreets } = useFilterStreets('', false);
-  const [typeKeys, setTypeKeys] = useState<string[]>([]);
-  const [selectedTypeKeys, setSelectedTypeKeys] = useState<string[]>();
-
-  const [typeSettings, setTypeSettings] = useState();
-  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
-  const [notificationSettings, setNotificationSettings] = useState();
-  const [updateOnDayBefore, setUpdateOnDayBefore] = useState(onDayBefore);
   const tooltipRef = useRef(null);
 
-  const loadStoredSettings = useCallback(
-    async (street: string) => {
-      setLoadingStoredSettings(true);
+  const loadStoredSettingsFromServer = useCallback(async () => {
+    if (isInitial) return;
 
-      // replace null values with empty strings for city and zip in storedSettings to prevent
-      // validation issues
-      const storedSettings = (await getReminderSettings())?.map((setting: ReminderSettingJson) => ({
+    setLoadingStoredSettings(true);
+
+    const storedSettingsOnServer = (await getReminderSettings())?.map(
+      (setting: WasteReminderSettingJson) => ({
         ...setting,
         street: getStreetString(setting),
+        // Replace null values with empty strings for city and zip in storedSettings to prevent
+        // validation issues
         city: setting.city ?? '',
         zip: setting.zip ?? ''
-      }));
+      })
+    );
 
-      if (!areValidReminderSettings(storedSettings)) {
-        setErrorWithStoredSettings(true);
+    if (!areValidReminderSettings(storedSettingsOnServer)) {
+      setErrorWithStoredSettings(true);
+    } else {
+      if (waste.streetId !== selectedStreetId) {
+        dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
       } else {
-        const newSettings: ReminderSettings = parseReminderSettings(storedSettings, street);
-        // If there is no street stored, it is the initial call, set all types to active. Otherwise
-        // set to false if there is no value from stored settings.
-        const isInitial = waste.streetId === undefined;
-
-        // apply old street settings to new street if present
-        if (!isInitial && !!state.activeTypesForOldStreet) {
-          newSettings.activeTypesForOldStreet = state.activeTypesForOldStreet;
-        }
-
-        typeKeys.forEach((typeKey) => {
-          newSettings.activeTypes[typeKey] ??= { active: isInitial };
+        dispatch({
+          type: WasteSettingsActions.updateWasteSettings,
+          payload: {
+            serverSettings: storedSettingsOnServer.filter(
+              (item) => item.street === waste.streetName
+            ),
+            selectedTypeKeys: waste.selectedTypeKeys
+          }
         });
-
-        const determinedNotificationSettings = typeKeys?.reduce(
-          (acc, typeKey) => ({
-            ...acc,
-            [typeKey]: newSettings.activeTypes?.[typeKey]?.active ?? isInitial
-          }),
-          {}
-        );
-
-        setNotificationSettings(determinedNotificationSettings);
-        dispatch({ type: ReminderSettingsActionType.OVERWRITE, payload: newSettings });
-        setLocalSelectedTime(newSettings.reminderTime);
-        setUpdateOnDayBefore(newSettings.onDayBefore);
-        setErrorWithStoredSettings(false);
       }
 
-      setLoadingStoredSettings(false);
-    },
-    [typeKeys, getStreetString, waste, state.activeTypesForOldStreet]
-  );
+      setErrorWithStoredSettings(false);
+    }
+
+    setLoadingStoredSettings(false);
+  }, [getStreetString, state, streetName, waste, selectedStreetId, selectedTypeKeys]);
+
+  const updateSettings = useCallback(async () => {
+    let errorOccurred = false;
+
+    // Delete all entries of the old street, if present
+    if (activeTypesForOldStreet) {
+      await Promise.all(
+        Object.values(activeTypesForOldStreet || {})
+          .filter((entry) => !!entry?.storeId)
+          .map(({ storeId }) =>
+            updateWasteReminderSettings(false, new Date(), undefined, undefined, undefined, storeId)
+          )
+      );
+    }
+
+    // Process all active waste types
+    const resettedActiveTypes: { [key: string]: { active: boolean; storeId?: string | number } } =
+      {};
+    await Promise.all(
+      usedTypeKeys?.map(async (typeKey) => {
+        const isActive = !!notificationSettings[typeKey];
+        const storeId = activeTypes[typeKey]?.storeId;
+        const newIdToStore = (await updateWasteReminderSettings(
+          isActive,
+          reminderTime,
+          typeKey,
+          onDayBefore,
+          locationData,
+          storeId
+        )) as string | number | undefined;
+
+        resettedActiveTypes[typeKey] = { active: isActive };
+
+        // Store new id in the state if the type is active
+        if (isActive && newIdToStore) {
+          resettedActiveTypes[typeKey].storeId = newIdToStore;
+        }
+
+        // Track errors
+        if (isActive && !newIdToStore) {
+          errorOccurred = true;
+        }
+      })
+    );
+
+    // Remove the old location settings from state and update stored state with active types for
+    // the new location if everything was successful
+    if (!errorOccurred) {
+      dispatch({
+        type: WasteSettingsActions.resetActiveTypesWithOldStreetCleanup,
+        payload: resettedActiveTypes
+      });
+    } else {
+      // Reload stored settings in case of an error to avoid incorrect local state
+      loadStoredSettingsFromServer();
+    }
+  }, [
+    usedTypeKeys,
+    activeTypes,
+    activeTypesForOldStreet,
+    notificationSettings,
+    locationData,
+    onDayBefore,
+    reminderTime,
+    loadStoredSettingsFromServer
+  ]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -162,6 +220,7 @@ export const WasteCollectionSettings = ({
                 ...globalSettings,
                 waste: {
                   ...waste,
+                  streetName,
                   streetId: selectedStreetId,
                   selectedTypeKeys
                 }
@@ -170,18 +229,18 @@ export const WasteCollectionSettings = ({
                 ...globalSettings,
                 waste: {
                   ...waste,
+                  streetName,
                   streetId: selectedStreetId,
                   selectedTypeKeys
                 }
               });
 
-              !!notificationSettings &&
-                Object.entries(notificationSettings)?.forEach(([typeKey, typeValue]) =>
-                  dispatch({
-                    type: ReminderSettingsActionType.UPDATE_ACTIVE_TYPE,
-                    payload: { key: typeKey, value: typeValue }
-                  })
-                );
+              Object.entries(notificationSettings).forEach(([typeKey, typeValue]) =>
+                dispatch({
+                  type: WasteSettingsActions.setActiveType,
+                  payload: { key: typeKey, value: typeValue }
+                })
+              );
 
               await updateSettings();
 
@@ -207,35 +266,55 @@ export const WasteCollectionSettings = ({
     notificationSettings,
     state,
     updateSettings,
-    updateOnDayBefore
+    onDayBefore
   ]);
 
   // Set initial waste types used in the selected street
-  useEffect(() => usedTypes && setTypeKeys(Object.keys(usedTypes)), [usedTypes]);
-
-  // Set type settings and notification settings initially and when editing waste type settings
   useEffect(() => {
-    if (loadingStoredSettings || !typeKeys?.length) {
-      return;
+    if (usedTypes) {
+      dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
     }
+  }, [usedTypes]);
 
-    // If there is no street stored, it is the initial call, set all types to active. Otherwise
-    // read from state to set all types.
-    const isInitial = waste.streetId === undefined || !!state.activeTypesForOldStreet;
+  // Store value for old street to be able to delete it later.
+  const storeOldStreetSettings = (oldStreetId, newStreetId) => {
+    if (newStreetId !== oldStreetId) {
+      dispatch({
+        type: WasteSettingsActions.setActiveTypesForOldStreet,
+        payload: _cloneDeep(activeTypes)
+      });
+      setSelectedStreetId(newStreetId);
+    }
+  };
 
-    const determinedTypeSettings = typeKeys.reduce(
-      (acc, typeKey) => ({
-        ...acc,
-        [typeKey]:
-          waste.selectedTypeKeys?.includes(typeKey) ??
-          state.activeTypes?.[typeKey]?.active ??
-          isInitial
-      }),
-      {}
-    );
+  // Use this ref to prevent the useEffect from running multiple times
+  const hasStartedLoadingStoredSettingsFromServer = useRef(false);
 
-    !typeSettings && setTypeSettings(determinedTypeSettings);
-  }, [loadingStoredSettings, typeKeys, state.activeTypes, state.activeTypesForOldStreet, waste]);
+  useEffect(() => {
+    const asyncLoadStoredSettingsFromServer = async () => {
+      if (
+        !hasStartedLoadingStoredSettingsFromServer.current &&
+        !loadedStoredSettingsInitially &&
+        !_isEmpty(typeSettings)
+      ) {
+        hasStartedLoadingStoredSettingsFromServer.current = true;
+        await loadStoredSettingsFromServer();
+        setLoadedStoredSettingsInitially(true);
+      }
+    };
+
+    asyncLoadStoredSettingsFromServer();
+  }, [typeSettings]);
+
+  // Use this ref to prevent the useEffect from running multiple times
+  const hasStoredOldStreetSettings = useRef(false);
+
+  useEffect(() => {
+    if (!hasStoredOldStreetSettings.current && loadedStoredSettingsInitially && waste.streetId) {
+      storeOldStreetSettings(waste.streetId, selectedStreetId);
+      hasStoredOldStreetSettings.current = true;
+    }
+  }, [loadedStoredSettingsInitially, waste.streetId, selectedStreetId]);
 
   useEffect(() => {
     if (!addressesData || !inputValue) {
@@ -247,135 +326,29 @@ export const WasteCollectionSettings = ({
     );
 
     if (item?.id) {
-      if (item.id !== currentSelectedStreetId) {
-        // if street changed, store value for old street to be able to delete it later.
-        // if switching street between saving and updating with the server, this can lead to
-        // overwriting the old street settings with temporary ones. we can prevent this by
-        // checking for `storeIds` in the old street settings and only dispatching the action
-        // if there are any.
-        !!state.activeTypes &&
-          Object.values(state.activeTypes).some((entry) => !!entry?.storeId) &&
-          dispatch({ type: ReminderSettingsActionType.SET_ACTIVE_TYPES_FOR_OLD_STREET });
-      }
-
-      setSelectedStreetId(item.id);
+      storeOldStreetSettings(selectedStreetId, item.id);
     }
-  }, [addressesData, getStreetString, inputValue]);
+  }, [addressesData, getStreetString, inputValue, selectedStreetId]);
 
-  useEffect(() => {
-    !!streetName && loadStoredSettings(streetName);
-  }, [loadStoredSettings, streetName]);
-
-  // Filter notification settings switches based on type settings switches
-  useEffect(() => {
-    if (!typeSettings || !typeKeys?.length) {
-      return;
-    }
-
-    setSelectedTypeKeys(typeKeys.filter((typeKey) => typeSettings[typeKey]));
-    setNotificationSettings((prevSettings) => ({
-      ...prevSettings,
-      ...typeKeys.reduce((acc, typeKey) => {
-        // if something is set to false in typeSettings, set it to false in notificationSettings,
-        // that will be hidden in the interface
-        if (typeSettings[typeKey] === false) {
-          acc[typeKey] = false;
-        }
-        return acc;
-      }, {})
-    }));
-  }, [typeSettings]);
-
-  // Turn off "all" settings toggle if all notifications are off
-  useEffect(() => {
-    !!notificationSettings &&
-      setShowNotificationSettings(Object.values(notificationSettings).some((active) => !!active));
-  }, [notificationSettings]);
-
-  const onAbortIOS = useCallback(() => {
-    setShowDatePicker(false);
-    setLocalSelectedTime(reminderTime);
-  }, [reminderTime]);
-
-  const onAcceptIOS = useCallback(() => {
-    setShowDatePicker(false);
-    dispatch({ type: ReminderSettingsActionType.UPDATE_TIME, payload: localSelectedTime });
-  }, [localSelectedTime]);
+  const onPressUpdateOnDayBefore = useCallback((value: boolean) => {
+    tooltipRef?.current?.toggleTooltip();
+    dispatch({ type: WasteSettingsActions.setOnDayBefore, payload: value });
+  }, []);
 
   const onDatePickerChange = useCallback((_, newTime?: Date) => {
+    if (!newTime) return;
+
+    newTime.setMilliseconds(0);
+    newTime.setSeconds(0);
+
     if (device.platform === 'android') {
       setShowDatePicker(false);
-
-      if (newTime) {
-        newTime.setMilliseconds(0);
-        newTime.setSeconds(0);
-        dispatch({ type: ReminderSettingsActionType.UPDATE_TIME, payload: newTime });
-      }
     }
 
-    setLocalSelectedTime((time) => newTime || time);
+    dispatch({ type: WasteSettingsActions.setReminderTime, payload: newTime });
   }, []);
 
-  const onPressUpdateOnDayBefore = useCallback((value) => {
-    tooltipRef?.current?.toggleTooltip();
-    dispatch({ type: ReminderSettingsActionType.UPDATE_ON_DAY_BEFORE, payload: value });
-    setTimeout(() => {
-      setUpdateOnDayBefore(value);
-    }, 150);
-  }, []);
-
-  const updateSettings = useCallback(async () => {
-    const newState = { ...state };
-    let errorOccurred = false;
-
-    // delete all entries of the old street
-    if (state.activeTypesForOldStreet) {
-      await Promise.all(
-        Object.values(state.activeTypesForOldStreet || {})
-          .filter((entry) => !!entry?.storeId)
-          .map(({ storeId }) => deleteReminderSetting(storeId))
-      );
-
-      dispatch({ type: ReminderSettingsActionType.REMOVE_ACTIVE_TYPES_FOR_OLD_STREET });
-    }
-
-    await Promise.all(
-      Object.keys(state.activeTypes)?.map(async (typeKey) => {
-        const { storeId } = state.activeTypes[typeKey];
-        const active = !!notificationSettings?.[typeKey];
-
-        // delete inactive entries
-        if (!active && !!storeId) {
-          const success = await deleteReminderSetting(storeId);
-
-          errorOccurred ||= !success;
-        }
-
-        if (active) {
-          const id = await updateReminderSettings({
-            ...locationData,
-            onDayBefore,
-            reminderTime,
-            wasteType: typeKey
-          });
-
-          // save new id
-          newState.activeTypes[typeKey].storeId = id;
-          errorOccurred ||= id === undefined;
-        }
-      })
-    );
-
-    if (!errorOccurred) {
-      // update stored state entries
-      dispatch({ type: ReminderSettingsActionType.OVERWRITE, payload: newState });
-    } else {
-      // refetch data to avoid incorrect local state
-      !!streetName && loadStoredSettings(streetName);
-    }
-  }, [state, locationData, onDayBefore, reminderTime, streetName, loadStoredSettings]);
-
-  if (loading || typesLoading || streetLoading) {
+  if (loading || typesLoading || streetLoading || !loadedStoredSettingsInitially) {
     return <LoadingSpinner loading />;
   }
 
@@ -404,7 +377,7 @@ export const WasteCollectionSettings = ({
         refreshControl={
           <RefreshControl
             refreshing={loadingStoredSettings}
-            onRefresh={() => !!streetName && loadStoredSettings(streetName)}
+            onRefresh={() => loadStoredSettingsFromServer()}
             colors={[colors.refreshControl]}
             tintColor={colors.refreshControl}
           />
@@ -416,17 +389,17 @@ export const WasteCollectionSettings = ({
             <BoldText>{streetName}</BoldText>
           </Wrapper>
         )}
-        {!!typeKeys?.length && usedTypes && !!typeSettings && (
+        {!!usedTypeKeys?.length && !_isEmpty(typeSettings) && (
           <WrapperVertical style={[styles.paddingHorizontal]}>
             <WrapperVertical style={styles.mediumPaddingVertical}>
               <RegularText big>Kategorien auswählen</RegularText>
             </WrapperVertical>
             <FlatList
-              data={typeKeys}
+              data={usedTypeKeys.sort()}
               renderItem={({ item, index }) => {
                 return (
                   <ListItem
-                    bottomDivider={index < typeKeys.length - 1}
+                    bottomDivider={index < usedTypeKeys.length - 1}
                     containerStyle={styles.listItemContainer}
                     accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
                   >
@@ -443,9 +416,9 @@ export const WasteCollectionSettings = ({
                     <Switch
                       switchValue={typeSettings[item]}
                       toggleSwitch={() => {
-                        setTypeSettings({
-                          ...typeSettings,
-                          [item]: !typeSettings[item]
+                        dispatch({
+                          type: WasteSettingsActions.setTypeSetting,
+                          payload: { key: item, value: !typeSettings[item] }
                         });
                       }}
                     />
@@ -470,17 +443,7 @@ export const WasteCollectionSettings = ({
             </ListItem.Content>
             <Switch
               switchValue={showNotificationSettings}
-              toggleSwitch={() => {
-                setShowNotificationSettings(!showNotificationSettings);
-                setNotificationSettings((prevSettings) => ({
-                  ...prevSettings,
-                  ...selectedTypeKeys.reduce((acc, typeKey) => {
-                    // et all types off or on, based on the current state
-                    acc[typeKey] = !showNotificationSettings;
-                    return acc;
-                  }, {})
-                }));
-              }}
+              toggleSwitch={() => dispatch({ type: WasteSettingsActions.toggleNotifications })}
             />
           </ListItem>
         </Wrapper>
@@ -503,13 +466,13 @@ export const WasteCollectionSettings = ({
                 popover={
                   <View>
                     <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
-                      <RegularText primary={!updateOnDayBefore} style={styles.tooltipSelection}>
+                      <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
                         selber Tag
                       </RegularText>
                     </TouchableOpacity>
                     <Divider style={styles.dividerSmall} />
                     <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
-                      <RegularText primary={updateOnDayBefore} style={styles.tooltipSelection}>
+                      <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
                         1 Tag vorher
                       </RegularText>
                     </TouchableOpacity>
@@ -522,7 +485,7 @@ export const WasteCollectionSettings = ({
               >
                 <WrapperRow itemsCenter>
                   <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
-                    {updateOnDayBefore ? '1 Tag vorher' : 'selber Tag'}{' '}
+                    {onDayBefore ? '1 Tag vorher' : 'selber Tag'}{' '}
                   </RegularText>
                   <Icon.KeyboardArrowUpDown size={normalize(14)} />
                 </WrapperRow>
@@ -556,10 +519,10 @@ export const WasteCollectionSettings = ({
                       <SafeAreaView>
                         <WrapperHorizontal style={styles.paddingTop}>
                           <WrapperRow spaceBetween>
-                            <TouchableOpacity onPress={onAbortIOS}>
+                            <TouchableOpacity onPress={() => setShowDatePicker(false)}>
                               <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={onAcceptIOS}>
+                            <TouchableOpacity onPress={() => setShowDatePicker(false)}>
                               <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
                             </TouchableOpacity>
                           </WrapperRow>
@@ -569,7 +532,7 @@ export const WasteCollectionSettings = ({
                           display="spinner"
                           mode="time"
                           onChange={onDatePickerChange}
-                          value={localSelectedTime || new Date()}
+                          value={reminderTime}
                           textColor={colors.darkText}
                         />
                       </SafeAreaView>
@@ -578,19 +541,16 @@ export const WasteCollectionSettings = ({
                 </Modal>
               )}
               {device.platform === 'android' && showDatePicker && (
-                <DateTimePicker
-                  mode="time"
-                  onChange={onDatePickerChange}
-                  value={localSelectedTime || new Date()}
-                />
+                <DateTimePicker mode="time" onChange={onDatePickerChange} value={reminderTime} />
               )}
             </ListItem>
             <Divider style={styles.divider} />
           </WrapperHorizontal>
-          {!!selectedTypeKeys?.length && usedTypes && !!notificationSettings && (
+          {!!selectedTypeKeys?.length && usedTypes && !_isEmpty(notificationSettings) && (
             <WrapperHorizontal>
               <FlatList
-                data={selectedTypeKeys}
+                // filter out the keys in selectedTypeKeys that are not in usedTypes
+                data={selectedTypeKeys.filter((key) => usedTypes[key]).sort()}
                 renderItem={({ item, index }) => {
                   return (
                     <ListItem
@@ -611,9 +571,9 @@ export const WasteCollectionSettings = ({
                       <Switch
                         switchValue={notificationSettings[item]}
                         toggleSwitch={() => {
-                          setNotificationSettings({
-                            ...notificationSettings,
-                            [item]: !notificationSettings[item]
+                          dispatch({
+                            type: WasteSettingsActions.setNotificationSetting,
+                            payload: { key: item, value: !notificationSettings[item] }
                           });
                         }}
                       />
