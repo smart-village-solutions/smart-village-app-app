@@ -7,7 +7,7 @@
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "4.0.3",
-    "runtimeVersion": { "policy": "nativeVersion" },
+    "runtimeVersion": { "policy": "appVersion" },
     "extra": { "eas": { "projectId": "20540f3a-6e82-4038-8987-adb6d97f0e75" } },
     "updates": { "url": "https://u.expo.dev/20540f3a-6e82-4038-8987-adb6d97f0e75" },
     "icon": "./assets/icon.png",
