@@ -1,0 +1,47 @@
+{
+  "cli": {
+    "version": ">= 0.53.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "production": {
+      "node": "18.19.1",
+      "yarn": "1.22.19",
+      "channel": "production",
+      "ios": {
+        "image": "latest"
+      }
+    },
+    "preview": {
+      "extends": "production",
+      "channel": "preview",
+      "distribution": "internal"
+    },
+    "development": {
+      "extends": "production",
+      "channel": "development",
+      "distribution": "internal",
+      "developmentClient": true
+    },
+    "development-simulator": {
+      "extends": "production",
+      "channel": "development",
+      "distribution": "internal",
+      "developmentClient": true,
+      "ios": {
+        "simulator": true
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "track": "internal"
+      },
+      "ios": {
+        "ascAppId": "",
+        "appleTeamId": ""
+      }
+    }
+  }
+}
