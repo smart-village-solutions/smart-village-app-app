@@ -132,7 +132,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
           )}
 
           {!!title && (
-            <Wrapper style={styles.noPaddingTop}>
+            <Wrapper noPaddingTop>
               <WrapperHorizontal>
                 <HeadlineText center big>
                   {title}
@@ -142,7 +142,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
           )}
 
           {!!description && (
-            <Wrapper style={styles.noPaddingTop}>
+            <Wrapper noPaddingTop>
               <WrapperHorizontal>
                 <RegularText center big>
                   {description}
@@ -235,8 +235,5 @@ const styles = StyleSheet.create({
   },
   smallPaddingBottom: {
     paddingBottom: normalize(8)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

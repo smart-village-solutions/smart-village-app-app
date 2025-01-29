@@ -136,7 +136,7 @@ export const DefectReportCreateForm = ({
 
   return (
     <>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="categoryName"
           render={({ field: { name, onChange, value } }) => (
@@ -159,7 +159,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="title"
           label={`${texts.defectReport.inputTitle} *`}
@@ -173,7 +173,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="body"
           label={`${texts.defectReport.inputDescription} *`}
@@ -188,7 +188,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="images"
           render={({ field }) => (
@@ -212,7 +212,7 @@ export const DefectReportCreateForm = ({
         <RegularText>{texts.defectReport.optional}</RegularText>
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="name"
           label={texts.defectReport.inputName}
@@ -222,7 +222,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="email"
           label={texts.defectReport.inputMail}
@@ -240,7 +240,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="phone"
           label={texts.defectReport.inputPhone}
@@ -251,7 +251,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
         <HtmlView html={consentForDataProcessingText} />
 
@@ -271,7 +271,7 @@ export const DefectReportCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={
@@ -291,9 +291,6 @@ export const DefectReportCreateForm = ({
 };
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

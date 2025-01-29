@@ -92,7 +92,7 @@ export const InfoHeader = ({ route, style }: Props) => {
             )}
 
             {!!description && (
-              <Wrapper style={styles.noPaddingTop}>
+              <Wrapper noPaddingTop>
                 <WrapperHorizontal>
                   <RegularText big>{description}</RegularText>
                 </WrapperHorizontal>
@@ -137,8 +137,5 @@ const styles = StyleSheet.create({
   },
   smallPaddingBottom: {
     paddingBottom: normalize(8)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

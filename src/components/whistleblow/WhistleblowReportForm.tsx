@@ -89,7 +89,7 @@ export const WhistleblowReportForm = ({
 
   return (
     <>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="email"
           label={`${texts.whistleblow.inputMail}`}
@@ -109,7 +109,7 @@ export const WhistleblowReportForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="title"
           label={`${texts.whistleblow.inputTitle} *`}
@@ -124,7 +124,7 @@ export const WhistleblowReportForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="body"
           label={`${texts.whistleblow.inputDescription} *`}
@@ -140,7 +140,7 @@ export const WhistleblowReportForm = ({
         />
       </Wrapper>
 
-      {/* <Wrapper style={styles.noPaddingTop}>
+      {/* <Wrapper noPaddingTop>
         <Input
           name="file"
           label={texts.whistleblow.inputFile}
@@ -151,7 +151,7 @@ export const WhistleblowReportForm = ({
         />
       </Wrapper> */}
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.whistleblow.send}
@@ -169,19 +169,3 @@ export const WhistleblowReportForm = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
-  checkboxContainerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    marginLeft: 0,
-    marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
-  }
-});

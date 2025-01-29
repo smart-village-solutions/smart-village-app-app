@@ -74,7 +74,7 @@ export const CommentSection = ({
       )}
       {!archived && (
         <>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <TextInput
               maxLength={MAX_COMMENT_LENGTH}
               multiline
@@ -88,7 +88,7 @@ export const CommentSection = ({
               <RegularText smallest>{newComment.length + '/' + MAX_COMMENT_LENGTH}</RegularText>
             </View>
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Button title={buttonTitle} onPress={submitComment} />
           </Wrapper>
         </>
@@ -110,9 +110,6 @@ export const CommentSection = ({
 const styles = StyleSheet.create({
   limitContainer: {
     alignItems: 'flex-end'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   textArea: {
     borderColor: colors.shadow,

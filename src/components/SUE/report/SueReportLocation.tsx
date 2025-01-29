@@ -324,7 +324,7 @@ export const SueReportLocation = ({
         <RegularText small>{texts.sue.report.mapHint}</RegularText>
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.STREET} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? a11yLabel.required : ''
@@ -344,7 +344,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.houseNumber} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? a11yLabel.required : ''
@@ -364,7 +364,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.postalCode} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? a11yLabel.required : ''
@@ -386,7 +386,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.city} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? a11yLabel.required : ''
@@ -416,8 +416,5 @@ const styles = StyleSheet.create({
   },
   map: {
     width: device.width - 2 * normalize(14)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

@@ -175,7 +175,7 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
         renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
         ListHeaderComponent={
           dropdownData?.length <= 2 ? null : (
-            <Wrapper style={styles.noPaddingTop}>
+            <Wrapper noPaddingTop>
               <DropdownSelect
                 data={dropdownData}
                 searchPlaceholder="Suche"
@@ -199,7 +199,6 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  noPaddingTop: { paddingTop: 0 },
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,

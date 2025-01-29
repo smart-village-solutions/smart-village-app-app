@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, RefreshControl, ScrollView, TouchableOpacity } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -93,12 +93,12 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
           <SectionHeader title={texts.voucher.loginTitle} big />
 
           {!!dataLoginText && (
-            <Wrapper style={styles.noPaddingBottom}>
+            <Wrapper noPaddingBottom>
               <HtmlView html={dataLoginText} />
             </Wrapper>
           )}
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="key"
               label={texts.voucher.key}
@@ -110,7 +110,7 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="secret"
               label={texts.voucher.secret}
@@ -142,12 +142,3 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});

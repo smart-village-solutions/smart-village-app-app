@@ -93,7 +93,7 @@ export const FeedbackScreen = () => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.feedbackScreen.inputsLabel.email}
@@ -112,7 +112,7 @@ export const FeedbackScreen = () => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="phone"
               label={texts.feedbackScreen.inputsLabel.phone}
@@ -123,7 +123,7 @@ export const FeedbackScreen = () => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               control={control}
               errorMessage={errors.message && errors.message.message}
@@ -138,7 +138,7 @@ export const FeedbackScreen = () => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Controller
               name="consent"
               render={({ field: { onChange, value } }) => (
@@ -154,7 +154,7 @@ export const FeedbackScreen = () => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Button
               onPress={handleSubmit(onSubmit)}
               title={
@@ -176,9 +176,6 @@ export const FeedbackScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   textArea: {
     height: normalize(100),
     padding: normalize(10)

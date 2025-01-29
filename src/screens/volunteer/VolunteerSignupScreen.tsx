@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
 import {
@@ -87,7 +87,7 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <SectionHeader title={texts.volunteer.registrationTitle} big center />
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.volunteer.email}
@@ -106,7 +106,7 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="token"
               label={texts.volunteer.token}
@@ -143,9 +143,3 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});

@@ -116,7 +116,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
           <Wrapper>
             <BoldText>{texts.encounter.registrationHint}</BoldText>
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Label>{texts.encounter.firstName}</Label>
             <TextInput
               accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
@@ -126,7 +126,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               value={firstName}
             />
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Label>{texts.encounter.lastName}</Label>
             <TextInput
               accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
@@ -136,7 +136,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               value={lastName}
             />
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
               accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
@@ -157,7 +157,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               />
             </Pressable>
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Label>{texts.encounter.phone}</Label>
             <TextInput
               accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
@@ -168,7 +168,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               value={phone}
             />
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Label>{texts.encounter.profilePhoto}</Label>
             <TouchableOpacity
               accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
@@ -198,7 +198,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               </WrapperRow>
             </TouchableOpacity>
           </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <WrapperRow style={styles.privacyContainer}>
               <CheckBox
                 accessibilityRole="button"
@@ -271,9 +271,6 @@ const styles = StyleSheet.create({
     color: colors.darkText,
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(8)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   privacyContainer: {
     alignItems: 'flex-start'

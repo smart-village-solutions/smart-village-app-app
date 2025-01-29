@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { FlatList, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl, ScrollView } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import {
@@ -145,7 +145,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
       </Wrapper>
 
       {!!discountType && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Discount
             discount={discountType}
             id={id}
@@ -156,13 +156,13 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
       )}
 
       {!!title && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <BoldText>{title}</BoldText>
         </Wrapper>
       )}
 
       {!!subtitle && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <RegularText>{subtitle}</RegularText>
         </Wrapper>
       )}
@@ -176,7 +176,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
         ))}
 
       {!!quota && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <VoucherRedeem quota={quota} voucherId={id} />
         </Wrapper>
       )}
@@ -233,9 +233,3 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});

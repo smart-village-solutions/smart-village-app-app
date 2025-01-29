@@ -152,7 +152,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             </WrapperHorizontal>
           )}
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Controller
               name="gender"
               render={({ field: { name, onChange, value } }) => (
@@ -175,7 +175,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               autoCapitalize="none"
               control={control}
@@ -188,7 +188,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               autoCapitalize="none"
               control={control}
@@ -201,7 +201,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Controller
               name="birthday"
               render={({ field: { name, onChange, value } }) => (
@@ -242,7 +242,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               autoCapitalize="none"
               control={control}
@@ -257,7 +257,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               autoCapitalize="none"
               control={control}
@@ -275,7 +275,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               autoCapitalize="none"
               control={control}
@@ -313,8 +313,5 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

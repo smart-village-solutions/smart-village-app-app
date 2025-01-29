@@ -102,7 +102,7 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
         />
       ),
       divider: () => (
-        <Wrapper key={keyExtractor('divider', index)} style={styles.noPaddingTop}>
+        <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
           <Divider />
         </Wrapper>
       ),
@@ -253,9 +253,6 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginBottom: normalize(8)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   sueContentContainer: {
     borderColor: colors.gray20,

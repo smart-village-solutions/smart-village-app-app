@@ -136,7 +136,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
          * connected to a network with no information of internet connectivity.
          */}
         {((!!latitude && !!longitude) || !!address) && (
-          <Wrapper style={styles.noPaddingBottom}>
+          <Wrapper noPaddingBottom>
             <BoldText>{texts.sue.location}</BoldText>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
               <Map
@@ -153,7 +153,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
           </Wrapper>
         )}
         {!!address && (
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <RegularText>{address.replace('\r\n ', '\r\n')}</RegularText>
           </Wrapper>
         )}
@@ -189,12 +189,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 const styles = StyleSheet.create({
   map: {
     width: device.width - 2 * normalize(14)
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   sueImageContainer: {
     width: '100%'

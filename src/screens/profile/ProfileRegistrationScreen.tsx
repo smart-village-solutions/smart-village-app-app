@@ -87,7 +87,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
             <SectionHeader big center title={texts.profile.registrationTitle} />
           </WrapperVertical>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.profile.email}
@@ -107,7 +107,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="password"
               label={texts.profile.password}
@@ -133,7 +133,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="passwordConfirmation"
               label={texts.profile.passwordConfirmation}
@@ -160,7 +160,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Checkbox
               boldTitle={false}
               center={false}
@@ -213,9 +213,6 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   passwordInput: {
     lineHeight: normalize(17)

@@ -150,7 +150,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   </RegularText>
                 </Wrapper>
 
-                <Wrapper style={styles.noPaddingBottom}>
+                <Wrapper noPaddingBottom>
                   <Touchable
                     onPress={() => {
                       setIsVisible(false);
@@ -171,7 +171,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   <BoldText lightest>{texts.voucher.detailScreen.redeemTitle}</BoldText>
                 </Wrapper>
 
-                <Wrapper style={styles.noPaddingTop}>
+                <Wrapper noPaddingTop>
                   <RegularText lightest>{texts.voucher.detailScreen.redeemDescription}</RegularText>
                 </Wrapper>
 
@@ -200,7 +200,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   />
                 </Wrapper>
 
-                <Wrapper style={styles.noPaddingBottom}>
+                <Wrapper noPaddingBottom>
                   <Touchable
                     onPress={() => {
                       setIsVisible(false);
@@ -220,11 +220,11 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   <BoldText lightest>{texts.voucher.detailScreen.sheetTitle}</BoldText>
                 </Wrapper>
 
-                <Wrapper style={styles.noPaddingTop}>
+                <Wrapper noPaddingTop>
                   <RegularText lightest>{texts.voucher.detailScreen.sheetDescription}</RegularText>
                 </Wrapper>
 
-                <Wrapper style={styles.noPaddingTop}>
+                <Wrapper noPaddingTop>
                   <Checkbox
                     checked={isChecked}
                     checkedColor={colors.surface}
@@ -239,7 +239,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                 </Wrapper>
 
                 {!!availableQuantityForMember && availableQuantityForMember > 1 && (
-                  <Wrapper style={styles.noPaddingTop}>
+                  <Wrapper noPaddingTop>
                     <WrapperRow style={styles.quantityContainer}>
                       <RegularText lightest small>
                         {texts.voucher.detailScreen.desiredQuantity}:
@@ -272,7 +272,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   </Wrapper>
                 )}
 
-                <Wrapper style={styles.noPaddingBottom}>
+                <Wrapper noPaddingBottom>
                   <TouchableOpacity
                     disabled={!isChecked}
                     style={[styles.button, !isChecked && styles.buttonDisabled]}
@@ -327,12 +327,6 @@ const styles = StyleSheet.create({
   expiredViewContainer: {
     alignItems: 'center',
     marginVertical: normalize(45),
-    paddingTop: 0
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
     paddingTop: 0
   },
   progressContainer: {

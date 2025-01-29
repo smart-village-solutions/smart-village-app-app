@@ -61,7 +61,7 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
             <SectionHeader big center title={texts.profile.resetPasswordTitle} />
           </WrapperVertical>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.profile.resetPasswordLabel}
@@ -106,8 +106,5 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

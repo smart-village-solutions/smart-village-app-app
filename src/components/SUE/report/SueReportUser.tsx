@@ -56,7 +56,7 @@ export const SueReportUser = ({
 
   return (
     <View style={styles.container}>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.firstName} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.FIRST_NAME) ? a11yLabel.required : ''
@@ -73,7 +73,7 @@ export const SueReportUser = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.lastName} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.LAST_NAME) ? a11yLabel.required : ''
@@ -90,7 +90,7 @@ export const SueReportUser = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.email} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.EMAIL) ? a11yLabel.required : ''
@@ -119,7 +119,7 @@ export const SueReportUser = ({
         <RegularText small>{texts.sue.report.emailHint}</RegularText>
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.phone} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.PHONE) ? a11yLabel.required : ''
@@ -144,7 +144,7 @@ export const SueReportUser = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name={INPUT_KEYS.SUE.TERMS_OF_SERVICE}
           render={({ field: { onChange, value } }) => (
@@ -193,8 +193,5 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: normalize(14),
     width: '100%'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

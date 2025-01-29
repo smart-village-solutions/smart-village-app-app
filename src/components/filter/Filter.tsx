@@ -126,7 +126,7 @@ export const Filter = ({
             />
             <Divider />
             <ScrollView>
-              <Wrapper style={[styles.noPaddingBottom, styles.noPaddingTop]}>
+              <Wrapper noPaddingTop noPaddingBottom>
                 <FilterComponent
                   filters={filters}
                   filterTypes={filterTypes}
@@ -135,7 +135,7 @@ export const Filter = ({
               </Wrapper>
             </ScrollView>
 
-            <Wrapper style={[styles.noPaddingTop, styles.alignLeft]}>
+            <Wrapper style={styles.alignLeft} noPaddingTop>
               <WrapperRow style={{ gap: normalize(16) }}>
                 <Button
                   disabled={!!isNoFilterSet}

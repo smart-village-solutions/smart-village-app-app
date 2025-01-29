@@ -108,7 +108,7 @@ export const VolunteerFormGroup = ({
 
   return (
     <>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="name"
           label={texts.volunteer.name}
@@ -121,7 +121,7 @@ export const VolunteerFormGroup = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="description"
           label={texts.volunteer.description}
@@ -131,7 +131,7 @@ export const VolunteerFormGroup = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Label>{texts.volunteer.visibility}</Label>
         <Controller
           name="visibility"
@@ -155,7 +155,7 @@ export const VolunteerFormGroup = ({
         />
       </Wrapper>
       {watch('visibility') !== VISIBILITY_TYPES.PRIVATE && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Label>{texts.volunteer.accessionDirective}</Label>
           <Controller
             name="joinPolicy"
@@ -179,7 +179,7 @@ export const VolunteerFormGroup = ({
           />
         </Wrapper>
       )}
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="tags"
           label={texts.volunteer.tags}
@@ -205,9 +205,6 @@ export const VolunteerFormGroup = ({
 };
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

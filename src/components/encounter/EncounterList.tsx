@@ -22,7 +22,7 @@ const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
           <RegularText>{momentFormat(encounter.createdAt, 'HH:mm')}</RegularText>
         </Wrapper>
       </WrapperRow>
-      <Wrapper shrink style={styles.noPaddingTop}>
+      <Wrapper shrink noPaddingTop>
         <RegularText>{`${texts.encounter.encounterId}:`}</RegularText>
         <RegularText small selectable>{`${encounter.encounterId}`}</RegularText>
       </Wrapper>
@@ -53,8 +53,5 @@ export const EncounterList = () => {
 const styles = StyleSheet.create({
   divider: {
     backgroundColor: colors.placeholder
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

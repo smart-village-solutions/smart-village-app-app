@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useMutation } from 'react-query';
 
 import * as appJson from '../../../app.json';
@@ -92,7 +92,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <SectionHeader title={texts.volunteer.registrationTitle} big center />
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="username"
               label={texts.volunteer.username}
@@ -109,7 +109,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.volunteer.email}
@@ -128,7 +128,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="password"
               label={texts.volunteer.password}
@@ -152,7 +152,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="passwordConfirmation"
               label={texts.volunteer.passwordConfirmation}
@@ -216,9 +216,3 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
