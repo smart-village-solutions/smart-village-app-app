@@ -1,11 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Keyboard, StyleSheet } from 'react-native';
+import { Keyboard } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
 import { Button, Input, LoadingModal, RegularText, Touchable, Wrapper } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { Globaleaks } from '../../helpers';
 import { Report } from '../../screens';
 
@@ -53,7 +53,7 @@ export const WhistleblowReportCode = ({
 
   return (
     <>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="reportCode"
           label={`${texts.whistleblow.inputCode}`}
@@ -69,7 +69,7 @@ export const WhistleblowReportCode = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.whistleblow.sendCode}
@@ -87,19 +87,3 @@ export const WhistleblowReportCode = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
-  checkboxContainerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    marginLeft: 0,
-    marginRight: 0
-  },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
-  }
-});

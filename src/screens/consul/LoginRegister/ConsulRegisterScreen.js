@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 
 import {
   BoldText,
@@ -81,7 +81,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <SectionHeader title={texts.consul.registrationTitle} big center />
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="name"
               label={texts.consul.name}
@@ -94,7 +94,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.consul.email}
@@ -113,7 +113,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="password"
               label={texts.consul.password}
@@ -137,7 +137,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="passwordConfirmation"
               label={texts.consul.passwordConfirmation}
@@ -194,12 +194,6 @@ export const ConsulRegisterScreen = ({ navigation }) => {
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
 
 ConsulRegisterScreen.propTypes = {
   navigation: PropTypes.object.isRequired

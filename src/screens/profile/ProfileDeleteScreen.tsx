@@ -119,7 +119,7 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
             </WrapperHorizontal>
           )}
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Controller
               name="consent"
               render={({ field: { onChange, value } }) => (
@@ -159,8 +159,5 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

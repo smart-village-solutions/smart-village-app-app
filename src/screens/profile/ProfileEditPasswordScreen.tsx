@@ -92,7 +92,7 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
             </WrapperHorizontal>
           )}
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={!dataProfileEditPasswordScreenTop && texts.profile.editPasswordLabel}
@@ -135,8 +135,5 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

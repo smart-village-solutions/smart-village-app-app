@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 
 import * as appJson from '../../../../app.json';
 import {
@@ -70,7 +70,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <SectionHeader title={texts.consul.loginTitle} big center />
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.consul.usernameOrEmail}
@@ -86,7 +86,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="password"
               label={texts.consul.password}
@@ -145,12 +145,6 @@ export const ConsulLoginScreen = ({ navigation }) => {
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
 
 ConsulLoginScreen.propTypes = {
   navigation: PropTypes.object.isRequired

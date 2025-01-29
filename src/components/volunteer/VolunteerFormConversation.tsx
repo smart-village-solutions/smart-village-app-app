@@ -3,7 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
 import { texts } from '../../config';
@@ -137,7 +137,7 @@ export const VolunteerFormConversation = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="title"
           label={texts.volunteer.subject}
@@ -148,7 +148,7 @@ export const VolunteerFormConversation = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="message"
           label={texts.volunteer.message}
@@ -176,9 +176,3 @@ export const VolunteerFormConversation = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});

@@ -301,7 +301,7 @@ export const NoticeboardCreateForm = ({
     <>
       <Input name="dateStart" hidden control={control} />
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="name"
           label={`${texts.noticeboard.inputName} *`}
@@ -315,7 +315,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="email"
           label={`${texts.noticeboard.inputMail} *`}
@@ -334,7 +334,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
@@ -364,7 +364,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="title"
           label={`${texts.noticeboard.inputTitle} *`}
@@ -378,7 +378,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           errorMessage={errors.body && errors.body.message}
@@ -395,7 +395,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <WrapperRow spaceBetween>
           <Input
             name="price"
@@ -416,7 +416,7 @@ export const NoticeboardCreateForm = ({
         </WrapperRow>
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="dateEnd"
           render={({ field: { name, onChange, value } }) => (
@@ -442,7 +442,7 @@ export const NoticeboardCreateForm = ({
       </Wrapper>
 
       {showDocument && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Controller
             name="documents"
             control={control}
@@ -470,7 +470,7 @@ export const NoticeboardCreateForm = ({
       )}
 
       {showImage && (
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Controller
             name="image"
             render={({ field }) => (
@@ -525,7 +525,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         {loading || isLoading ? (
           <LoadingSpinner loading />
         ) : (
@@ -547,9 +547,6 @@ export const NoticeboardCreateForm = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

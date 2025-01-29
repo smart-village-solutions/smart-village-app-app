@@ -95,7 +95,7 @@ export const NoticeboardMessageForm = ({
 
   return (
     <>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           errorMessage={errors.name && errors.name.message}
@@ -109,7 +109,7 @@ export const NoticeboardMessageForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           errorMessage={errors.email && errors.email.message}
@@ -128,7 +128,7 @@ export const NoticeboardMessageForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           keyboardType="phone-pad"
@@ -139,7 +139,7 @@ export const NoticeboardMessageForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           errorMessage={errors.message && errors.message.message}
@@ -180,7 +180,7 @@ export const NoticeboardMessageForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.noticeboard.send}
@@ -198,9 +198,6 @@ export const NoticeboardMessageForm = ({
 };
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

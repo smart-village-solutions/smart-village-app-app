@@ -195,7 +195,7 @@ export const ProfileNoticeboardCreateForm = ({
     <>
       <Input name="dateStart" hidden control={control} />
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="name"
           label={`${texts.noticeboard.inputName} *`}
@@ -210,7 +210,7 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="email"
           label={`${texts.noticeboard.inputMail} *`}
@@ -229,7 +229,7 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
@@ -259,7 +259,7 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="title"
           label={`${texts.noticeboard.inputTitle} *`}
@@ -273,7 +273,7 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           errorMessage={errors.body && errors.body.message}
@@ -290,7 +290,7 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <WrapperRow spaceBetween>
           <Input
             name="price"
@@ -311,7 +311,7 @@ export const ProfileNoticeboardCreateForm = ({
         </WrapperRow>
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="dateEnd"
           render={({ field: { name, onChange, value } }) => (
@@ -336,7 +336,7 @@ export const ProfileNoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="image"
           render={({ field }) => (
@@ -387,9 +387,6 @@ export const ProfileNoticeboardCreateForm = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

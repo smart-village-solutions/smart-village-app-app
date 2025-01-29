@@ -349,7 +349,7 @@ export const NewProposal = ({ navigation, data, query }) => {
   return (
     <>
       {INPUTS.map((item, index) => (
-        <Wrapper key={index} style={styles.noPaddingTop}>
+        <Wrapper key={index} noPaddingTop>
           {item.type === ITEM_TYPES.TITLE && <Label>{item.title}</Label>}
 
           {item.type === ITEM_TYPES.INPUT && (
@@ -433,7 +433,7 @@ export const NewProposal = ({ navigation, data, query }) => {
         </Wrapper>
       ))}
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <WrapperHorizontal>
           <Checkbox
             checked={hasAcceptedTermsOfService}
@@ -466,9 +466,6 @@ export const NewProposal = ({ navigation, data, query }) => {
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   tagContainer: {
     backgroundColor: colors.borderRgba,
     margin: 5,

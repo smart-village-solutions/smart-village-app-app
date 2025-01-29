@@ -252,7 +252,7 @@ export const VolunteerFormCalendar = ({
           )
         )}
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="title"
           label={texts.volunteer.title}
@@ -263,7 +263,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="startDate"
           render={({ field: { name, onChange, value } }) => (
@@ -284,7 +284,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="startTime"
           render={({ field: { name, onChange, value } }) => (
@@ -303,7 +303,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="endDate"
           render={({ field: { name, onChange, value } }) => (
@@ -324,7 +324,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="endTime"
           render={({ field: { name, onChange, value } }) => (
@@ -343,7 +343,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="location"
           label={texts.volunteer.location}
@@ -352,7 +352,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="description"
           label={texts.volunteer.description}
@@ -362,7 +362,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="participantInfo"
           label={texts.volunteer.participantInfo}
@@ -372,7 +372,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="topics"
           label={texts.volunteer.topics}
@@ -381,7 +381,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="isPublic"
           render={({ field: { onChange, value } }) => (
@@ -400,7 +400,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="images"
           render={({ field }) => (
@@ -439,7 +439,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.volunteer.save}
@@ -462,9 +462,6 @@ export const VolunteerFormCalendar = ({
 };
 
 const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  },
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

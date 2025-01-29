@@ -49,7 +49,7 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
 
   return (
     <>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Checkbox
           boldTitle={false}
           center={false}
@@ -108,7 +108,7 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({ item, setShowButtonTermsAn
         containerStyle={styles.imageContainer}
         resizeMode="contain"
       />
-      <Wrapper style={styles.noPaddingBottom}>
+      <Wrapper noPaddingBottom>
         <BoldText big center>
           {item.title.toUpperCase()}
         </BoldText>
@@ -251,12 +251,6 @@ const styles = StyleSheet.create({
     borderRadius: normalize(INACTIVE_DOT_SIZE) / 2,
     height: INACTIVE_DOT_SIZE,
     width: INACTIVE_DOT_SIZE
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   sliderButtonContainer: {
     justifyContent: 'center',

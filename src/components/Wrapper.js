@@ -22,6 +22,18 @@ export const Wrapper = styled.View`
     css`
       flex-shrink: 1;
     `};
+
+  ${(props) =>
+    props.noPaddingBottom &&
+    css`
+      padding-bottom: 0px;
+    `};
+
+  ${(props) =>
+    props.noPaddingTop &&
+    css`
+      padding-top: 0px;
+    `};
 `;
 
 export const WrapperHorizontal = styled.View`

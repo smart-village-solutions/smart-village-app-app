@@ -110,7 +110,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
             <SectionHeader big center title={texts.profile.loginTitle} />
           </WrapperVertical>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               placeholder={texts.profile.email}
@@ -129,7 +129,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="password"
               placeholder={texts.profile.password}
@@ -151,7 +151,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Touchable
               accessibilityLabel={`${texts.profile.passwordForgotten} ${a11yLabel.button}`}
               onPress={() => navigation.navigate(ScreenName.ProfileResetPassword)}
@@ -195,9 +195,6 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   lineHeightAdjustment: {
     lineHeight: normalize(15)

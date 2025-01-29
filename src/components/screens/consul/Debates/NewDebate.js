@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 
 import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
@@ -154,7 +154,7 @@ export const NewDebate = ({ navigation, data, query }) => {
   return (
     <>
       {INPUTS.map((item, index) => (
-        <Wrapper key={index} style={styles.noPaddingTop}>
+        <Wrapper key={index} noPaddingTop>
           <Input
             control={control}
             {...item}
@@ -164,7 +164,7 @@ export const NewDebate = ({ navigation, data, query }) => {
         </Wrapper>
       ))}
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <WrapperHorizontal>
           <Checkbox
             checked={hasAcceptedTermsOfService}
@@ -191,12 +191,6 @@ export const NewDebate = ({ navigation, data, query }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
 
 NewDebate.propTypes = {
   data: PropTypes.object,

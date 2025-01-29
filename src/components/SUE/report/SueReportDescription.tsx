@@ -82,7 +82,7 @@ export const SueReportDescription = ({
 
   return (
     <View style={styles.container}>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.title} ${a11yLabel.required}`}
           name={INPUT_KEYS.SUE.TITLE}
@@ -94,7 +94,7 @@ export const SueReportDescription = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           accessibilityLabel={`${texts.sue.report.description} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? a11yLabel.required : ''
@@ -110,7 +110,7 @@ export const SueReportDescription = ({
         />
       </Wrapper>
 
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name={INPUT_KEYS.SUE.IMAGES}
           render={({ field }) => <MemoizedImageSelector {...imageSelectorProps} field={field} />}
@@ -125,8 +125,5 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: normalize(14),
     width: '100%'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

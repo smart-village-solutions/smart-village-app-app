@@ -14,7 +14,6 @@ import {
   OParlPreviewSection,
   WebRepresentation
 } from './sections';
-import { StyleSheet } from 'react-native';
 
 type Props = {
   data: FileData;
@@ -114,7 +113,7 @@ export const File = ({ data, navigation }: Props) => {
           </WrapperHorizontal>
         )}
       </WrapperVertical>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <SimpleRow left={fileTexts.sha1Checksum} right={sha1Checksum} fullText />
         <SimpleRow left={fileTexts.sha512Checksum} right={sha512Checksum} fullText />
         <KeywordSection keyword={keyword} />
@@ -125,9 +124,3 @@ export const File = ({ data, navigation }: Props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});

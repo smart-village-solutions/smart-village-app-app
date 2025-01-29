@@ -135,7 +135,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               </WrapperHorizontal>
             </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
+            <Wrapper noPaddingTop>
               <WrapperHorizontal>
                 {!!title && (
                   <HeadlineText center big>
@@ -145,7 +145,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               </WrapperHorizontal>
             </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
+            <Wrapper noPaddingTop>
               <WrapperHorizontal>
                 {!!description && (
                   <RegularText center big>
@@ -207,9 +207,6 @@ const styles = StyleSheet.create({
   },
   smallPaddingBottom: {
     paddingBottom: normalize(8)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   wrapperPadding: {
     padding: normalize(24)

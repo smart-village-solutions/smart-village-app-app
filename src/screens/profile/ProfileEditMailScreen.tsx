@@ -126,7 +126,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
             </WrapperHorizontal>
           )}
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="emailCurrent"
               label={texts.profile.emailCurrent}
@@ -147,7 +147,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.profile.emailNew}
@@ -167,7 +167,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
             />
           </Wrapper>
 
-          <Wrapper style={styles.noPaddingTop}>
+          <Wrapper noPaddingTop>
             <Input
               name="emailConfirmation"
               label={texts.profile.emailConfirmation}
@@ -212,9 +212,6 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   inputContainer: {
     height: normalize(45)

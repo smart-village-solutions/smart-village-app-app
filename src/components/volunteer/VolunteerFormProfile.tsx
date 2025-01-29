@@ -119,7 +119,7 @@ export const VolunteerFormProfile = ({
   return (
     <>
       <Input hidden control={control} name="id" />
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           name="username"
           label={texts.volunteer.username}
@@ -135,7 +135,7 @@ export const VolunteerFormProfile = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           errorMessage={errors.email && `${texts.volunteer.email}${texts.volunteer.invalidMail}`}
@@ -147,7 +147,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.firstname}
@@ -156,7 +156,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.lastname}
@@ -165,7 +165,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.title}
@@ -174,7 +174,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="gender"
           render={({ field: { name, onChange, value } }) => (
@@ -196,7 +196,7 @@ export const VolunteerFormProfile = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.street}
@@ -205,7 +205,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           keyboardType="numeric"
@@ -215,7 +215,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.city}
@@ -224,7 +224,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="country"
           render={({ field: { name, onChange, value } }) => (
@@ -245,7 +245,7 @@ export const VolunteerFormProfile = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.state}
@@ -254,7 +254,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="birthday"
           render={({ field: { name, onChange, value } }) => (
@@ -275,7 +275,7 @@ export const VolunteerFormProfile = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Controller
           name="birthdayHideYear"
           render={({ field: { onChange, value } }) => (
@@ -291,7 +291,7 @@ export const VolunteerFormProfile = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      <Wrapper noPaddingTop>
         <Input
           control={control}
           label={texts.volunteer.aboutMe}
@@ -310,7 +310,7 @@ export const VolunteerFormProfile = ({
         </Wrapper>
       </Touchable>
       <Collapsible collapsed={isCollapsedContact}>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             keyboardType="phone-pad"
@@ -320,7 +320,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             keyboardType="phone-pad"
@@ -330,7 +330,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             keyboardType="phone-pad"
@@ -340,7 +340,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             keyboardType="phone-pad"
@@ -350,7 +350,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             label={texts.volunteer.skype}
@@ -359,7 +359,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={errors.xmpp && `${texts.volunteer.xmpp}${texts.volunteer.invalidMail}`}
@@ -382,7 +382,7 @@ export const VolunteerFormProfile = ({
         </Wrapper>
       </Touchable>
       <Collapsible collapsed={isCollapsedLinks}>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={
@@ -396,7 +396,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={
@@ -410,7 +410,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={
@@ -424,7 +424,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={errors.xing && `${texts.volunteer.xing}${texts.volunteer.invalidUrl}`}
@@ -436,7 +436,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={
@@ -450,7 +450,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={errors.vimeo && `${texts.volunteer.vimeo}${texts.volunteer.invalidUrl}`}
@@ -462,7 +462,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={errors.flickr && `${texts.volunteer.flickr}${texts.volunteer.invalidUrl}`}
@@ -474,7 +474,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={
@@ -488,7 +488,7 @@ export const VolunteerFormProfile = ({
             validate
           />
         </Wrapper>
-        <Wrapper style={styles.noPaddingTop}>
+        <Wrapper noPaddingTop>
           <Input
             control={control}
             errorMessage={
@@ -530,9 +530,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     backgroundColor: colors.placeholder
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   wrapper: {
     paddingBottom: device.platform === 'ios' ? normalize(16) : normalize(14),
