@@ -329,26 +329,22 @@ export const SueReportScreen = ({
 
   const { mutateAsync } = useMutation(postRequests);
 
-  /* eslint-disable complexity */
   const alertTextGeneratorForMissingData = () => {
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
-
-    const isAnyInputMissing = requiredInputs?.some((inputKey: string) => {
-      return !getValues(inputKey);
-    });
+    const isAnyInputMissing = requiredInputs?.some((inputKey: string) => !getValues(inputKey));
+    let alertText = '';
 
     switch (currentProgress) {
       case 0:
         if (!service?.serviceCode) {
-          return texts.sue.report.alerts.serviceCode;
+          alertText = texts.sue.report.alerts.serviceCode;
         }
         break;
       case 1:
         if (!getValues(INPUT_KEYS.SUE.TITLE).trim()) {
-          return texts.sue.report.alerts.title;
+          alertText = texts.sue.report.alerts.title;
         } else if (getValues(INPUT_KEYS.SUE.IMAGES)) {
           let images;
-
           try {
             images = JSON.parse(getValues(INPUT_KEYS.SUE.IMAGES));
           } catch (error) {
@@ -362,7 +358,6 @@ export const SueReportScreen = ({
 
           let totalSize = 0;
           const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
-
           const isImageGreater10MB = images.some(({ size }: { size: number }) => {
             totalSize += size;
             return size >= 10485760;
@@ -370,89 +365,68 @@ export const SueReportScreen = ({
 
           /* the server does not support files more than 10MB in size. */
           if (isImageGreater10MB) {
-            return texts.sue.report.alerts.imageGreater10MBError;
-          }
-
-          /* the server does not support files larger than `totalSizeLimit` in total of all files. */
-          if (totalSize >= totalSizeLimit) {
-            return texts.sue.report.alerts.imagesTotalSizeError(
+            /* the server does not support files larger than `totalSizeLimit` in total of all files. */
+            alertText = texts.sue.report.alerts.imageGreater10MBError;
+          } else if (totalSize >= totalSizeLimit) {
+            alertText = texts.sue.report.alerts.imagesTotalSizeError(
               formatSizeStandard(totalSizeLimit, 0)
             );
-          }
-
-          if (selectedPosition && !showCoordinatesFromImageAlert) {
+          } else if (selectedPosition && !showCoordinatesFromImageAlert) {
             setShowCoordinatesFromImageAlert(true);
-
-            Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
-          }
-
-          if (selectedPosition && !showCoordinatesFromImageAlert) {
-            setShowCoordinatesFromImageAlert(true);
-
             Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
           }
         }
 
         if (isAnyInputMissing) {
-          return texts.sue.report.alerts.missingAnyInput;
+          alertText = texts.sue.report.alerts.missingAnyInput;
         }
         break;
       case 2:
         if (getValues(INPUT_KEYS.SUE.HOUSE_NUMBER) && !getValues(INPUT_KEYS.SUE.STREET)) {
-          return texts.sue.report.alerts.street;
-        }
-
-        if (getValues(INPUT_KEYS.SUE.CITY)) {
+          alertText = texts.sue.report.alerts.street;
+        } else if (getValues(INPUT_KEYS.SUE.CITY)) {
           if (!getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
-            return texts.sue.report.alerts.postalCode;
+            alertText = texts.sue.report.alerts.postalCode;
+          } else if (
+            !areaServiceData?.postalCodes?.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))
+          ) {
+            alertText = errorMessage;
           }
-
-          if (!areaServiceData?.postalCodes?.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))) {
-            return errorMessage;
-          }
-        }
-
-        if (getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
+        } else if (getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
           if (getValues(INPUT_KEYS.SUE.POSTAL_CODE).length !== 5) {
-            return texts.sue.report.alerts.postalCodeLength;
-          }
-
-          if (!getValues(INPUT_KEYS.SUE.CITY)) {
-            return texts.sue.report.alerts.city;
-          }
-
-          if (
+            alertText = texts.sue.report.alerts.postalCodeLength;
+          } else if (!getValues(INPUT_KEYS.SUE.CITY)) {
+            alertText = texts.sue.report.alerts.city;
+          } else if (
             !!limitOfPostalCodes.length &&
             !limitOfPostalCodes.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))
           ) {
-            return errorMessage;
+            alertText = errorMessage;
           }
         }
 
         if (isAnyInputMissing) {
-          return texts.sue.report.alerts.missingAnyInput;
+          alertText = texts.sue.report.alerts.missingAnyInput;
         }
         break;
       case 3:
         if (isAnyInputMissing) {
-          return texts.sue.report.alerts.missingAnyInput;
-        }
-
-        if (!getValues(INPUT_KEYS.SUE.TERMS_OF_SERVICE)) {
+          alertText = texts.sue.report.alerts.missingAnyInput;
+        } else if (!getValues(INPUT_KEYS.SUE.TERMS_OF_SERVICE)) {
           scrollViewContentRef.current[currentProgress]?.scrollTo({
             x: 0,
             y: contentHeights[currentProgress],
             animated: true
           });
-
-          return texts.sue.report.alerts.terms;
+          alertText = texts.sue.report.alerts.terms;
         }
         break;
       default:
         break;
     }
+
+    return alertText;
   };
-  /* eslint-enable complexity */
 
   useEffect(() => {
     readReportValuesFromStore();
