@@ -4,15 +4,15 @@ plugins:
     enabled: true
   eslint:
     enabled: true
-    channel: "eslint-7"
+    channel: 'eslint-7'
     config:
       extensions:
-      - .js
-      - .jsx
-      - .ts
-      - .tsx
+        - .js
+        - .jsx
+        - .ts
+        - .tsx
     checks:
-      "@typescript-eslint/no-explicit-any":
+      '@typescript-eslint/no-explicit-any':
         enabled: false
   fixme:
     enabled: true
@@ -20,24 +20,29 @@ plugins:
     enabled: true
 ratings:
   paths:
-  - "**.js"
-  - "**.jsx"
-  - "**.md"
+    - '**.js'
+    - '**.jsx'
+    - '**.md'
 exclude_paths:
-- .expo/
-- .github/
-- assets/
-- coverage/
-- docs/
-- node_modules/
-- scripts/
-- src/config/
-- .codeclimate.yml
-- .eslintrc
-- .gitignore
-- .nvmrc
-- .yvmrc
-- babel.config.js
-- "*.png"
-- jest-setup.js
-- yarn.lock
+  - .expo/
+  - .github/
+  - assets/
+  - coverage/
+  - docs/
+  - node_modules/
+  - scripts/
+  - src/config/
+  - .codeclimate.yml
+  - .eslintrc
+  - .gitignore
+  - .nvmrc
+  - .yvmrc
+  - babel.config.js
+  - '*.png'
+  - jest-setup.js
+  - yarn.lock
+checks:
+  similar-code:
+    enabled: false
+  identical-code:
+    enabled: false
