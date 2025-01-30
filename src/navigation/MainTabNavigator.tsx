@@ -53,9 +53,10 @@ const useTabRoutes = () => {
             tab.label,
             tabConfigs.length,
             tab.screen,
-            tab.params,
             tab.iconLandscapeStyle,
-            tab.iconStyle
+            tab.iconStyle,
+            tab.params,
+            tab.tilesScreenParams
           );
         }
       });
