@@ -262,7 +262,9 @@ export const Map = ({
                     iconColor={
                       marker.iconBackgroundColor
                         ? isActiveMarker
-                          ? marker.iconColor
+                          ? marker.activeBackgroundColor
+                            ? marker.activeBackgroundColor
+                            : marker.iconColor
                           : marker.iconBackgroundColor
                         : isActiveMarker
                         ? colors.darkerPrimary
@@ -270,7 +272,13 @@ export const Map = ({
                     }
                     iconName={isActiveMarker ? 'locationActive' : undefined}
                     iconSize={MARKER_ICON_SIZE * (isActiveMarker ? 1.4 : 1.1)}
-                    iconStrokeColor={isActiveMarker ? colors.surface : marker.iconBorderColor}
+                    iconStrokeColor={
+                      isActiveMarker
+                        ? marker.activeIconColor
+                          ? marker.activeIconColor
+                          : colors.surface
+                        : marker.iconBorderColor
+                    }
                   />
                   <View
                     style={[
@@ -278,7 +286,9 @@ export const Map = ({
                       isActiveMarker ? styles.mapIconOnLocationMarkerContainerActive : undefined,
                       !!marker.iconBackgroundColor && {
                         backgroundColor: isActiveMarker
-                          ? marker.iconColor
+                          ? marker.activeBackgroundColor
+                            ? marker.activeBackgroundColor
+                            : marker.iconColor
                           : marker.iconBackgroundColor
                       }
                     ]}
@@ -286,7 +296,9 @@ export const Map = ({
                     <MapIcon
                       iconColor={
                         isActiveMarker
-                          ? colors.surface
+                          ? marker.activeIconColor
+                            ? marker.activeIconColor
+                            : colors.surface
                           : marker.iconColor
                           ? marker.iconColor
                           : colors.primary

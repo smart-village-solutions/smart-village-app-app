@@ -54,17 +54,20 @@ type ItemProps = {
 
 export const mapToMapMarkers = (
   items: ItemProps[],
-  statusBorderColors: Record<string, string | undefined>,
-  statusTextColors: Record<string, string | undefined>,
-  statusViewColors: Record<string, string | undefined>
+  activeBackgroundColors: Record<string, string | undefined>,
+  activeIconColors: Record<string, string | undefined>,
+  backgroundColors: Record<string, string | undefined>,
+  iconColors: Record<string, string | undefined>
 ): MapMarker[] | undefined =>
   items
     ?.filter((item) => item.lat && item.long)
     ?.map((item: ItemProps) => ({
       ...item,
-      iconBackgroundColor: statusViewColors?.[item.status],
-      iconBorderColor: statusBorderColors?.[item.status],
-      iconColor: statusTextColors?.[item.status],
+      activeBackgroundColor: activeBackgroundColors?.[item.status],
+      iconBackgroundColor: backgroundColors?.[item.status],
+      activeIconColor: activeIconColors?.[item.status],
+      iconColor: iconColors?.[item.status],
+      iconBorderColor: colors.transparent,
       iconName: `Sue${_upperFirst(item.iconName)}`,
       id: item.serviceRequestId,
       position: {
@@ -88,6 +91,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   const { navigation: navigationType, settings = {} } = globalSettings;
   const { locationService } = settings;
   const { sueStatus = {} } = appDesignSystem;
+  const { mapPinColors = {} } = sueStatus;
   const { geoMap = {} } = sueConfig;
   const systemPermission = useSystemPermission();
   const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
@@ -95,7 +99,13 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
 
-  const { statusBorderColors = {}, statusTextColors = {}, statusViewColors = {} } = sueStatus;
+  const {
+    activeBackgroundColors = {},
+    activeIconColors = {},
+    backgroundColors = {},
+    iconColors = {}
+  } = mapPinColors;
+
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
   };
@@ -116,9 +126,10 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
           appDesignSystem
         }),
-        statusBorderColors,
-        statusTextColors,
-        statusViewColors
+        activeBackgroundColors,
+        activeIconColors,
+        backgroundColors,
+        iconColors
       ),
     [data]
   );
