@@ -104,6 +104,7 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
       loadAndSetOnboardingStatus();
     } else {
       setOnboardingStatus('complete');
+      setTermsAndConditionsStatus('accepted');
       SplashScreen.hideAsync();
     }
   }, []);
