@@ -1,12 +1,15 @@
 /* eslint-disable complexity */
-import React, { useContext, useRef } from 'react';
+import moment from 'moment';
+import React, { useContext, useRef, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
 
+import appJson from '../../../../app.json';
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors, normalize, texts } from '../../../config';
+import { colors, device, normalize, texts } from '../../../config';
+import { useKeyboardHeight } from '../../../hooks';
 import { QUERY_TYPES, createQuery } from '../../../queries';
 import { ScreenName } from '../../../types';
 import { Button } from '../../Button';
@@ -18,7 +21,7 @@ import { Input } from '../../form';
 
 type TNewContent = {
   message: string;
-  ratingCount: number;
+  rating: number;
 };
 
 export const SueReportSend = ({
@@ -32,16 +35,23 @@ export const SueReportSend = ({
 }) => {
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = sueConfig;
-  const { reportSendDone = {}, reportSendLoading = {}, showFeedbackSection } = sueReportScreen;
+  const {
+    defaultRating = 4,
+    reportSendDone = {},
+    reportSendLoading = {},
+    showFeedbackSection: feedbackSection
+  } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
+  const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
 
+  const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
 
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       message: '',
-      ratingCount: 4
+      rating: defaultRating
     }
   });
 
@@ -58,15 +68,25 @@ export const SueReportSend = ({
     const formData = {
       dataType: 'json',
       dataSource: 'form',
-      content: JSON.stringify(createAppUserContentNewData)
+      content: JSON.stringify({
+        action: 'notify_and_destroy',
+        appVersion: appJson.expo.version,
+        created_At: moment().format('YYYY-MM-DD HH:mm:ss'),
+        ...createAppUserContentNewData
+      })
     };
 
     try {
       await createAppUserContent({ variables: formData });
 
-      reset();
-
-      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
+      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message, [
+        {
+          onPress: () => {
+            reset();
+            setShowFeedbackSection(false);
+          }
+        }
+      ]);
     } catch (error) {
       console.error(error);
     }
@@ -116,7 +136,7 @@ export const SueReportSend = ({
                     </RegularText>
 
                     <Controller
-                      name="ratingCount"
+                      name="rating"
                       render={({ field: { onChange, value } }) => (
                         <Rating
                           imageSize={normalize(24)}
@@ -158,6 +178,10 @@ export const SueReportSend = ({
                     }
                   />
                 </View>
+
+                {device.platform === 'android' && (
+                  <View style={{ height: normalize(keyboardHeight) * 0.8 }} />
+                )}
               </>
             )}
           </Wrapper>
