@@ -1,10 +1,4 @@
-export type ReminderSettings = {
-  activeTypes: { [key: string]: { active: boolean; storeId?: number } };
-  onDayBefore: boolean;
-  reminderTime: Date;
-};
-
-export type ReminderSettingJson = {
+export type WasteReminderSettingJson = {
   city: string;
   id: number;
   notify_at: string;

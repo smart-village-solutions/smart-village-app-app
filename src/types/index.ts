@@ -22,7 +22,7 @@ export * from './OpeningHour';
 export * from './ResourceFilters';
 export * from './SubQuery';
 export * from './Survey';
-export * from './WasteCalendar';
+export * from './Waste';
 export * from './WeatherData';
 export * from './WebUrl';
 export * from './WidgetProps';

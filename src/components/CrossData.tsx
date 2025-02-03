@@ -9,7 +9,6 @@ import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useNewsCategories, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
 import { DataListSection } from './DataListSection';
@@ -62,8 +61,6 @@ const CrossDataSection = ({
   sectionTitleDetail
 }: SectionProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { globalSettings } = useContext(SettingsContext);
-  const { deprecated = {} } = globalSettings;
   const refreshTime = useRefreshTime(
     `crossData-${query}-${dataProviderName}-${categoryId}-${genericType}`
   );
