@@ -124,14 +124,16 @@ export const createDynamicTabConfig = (
   label: string,
   totalCount: number,
   screen: ScreenName,
-  initialParams?: Record<string, any>,
   iconLandscapeStyle?: ViewStyle,
-  iconStyle?: ViewStyle
+  iconStyle?: ViewStyle,
+  initialParams?: Record<string, any>,
+  tilesScreenParams?: Record<string, any>
 ): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialParams,
     initialRouteName: screen,
-    isDrawer: false
+    isDrawer: false,
+    tilesScreenParams
   }),
   tabOptions: {
     tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${totalCount})`,

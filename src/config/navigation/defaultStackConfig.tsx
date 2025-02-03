@@ -104,13 +104,15 @@ import { texts } from '../texts';
 const { MATOMO_TRACKING } = consts;
 
 export const defaultStackConfig = ({
-  initialRouteName,
   initialParams,
-  isDrawer
+  initialRouteName,
+  isDrawer,
+  tilesScreenParams
 }: {
-  initialRouteName: ScreenName;
   initialParams?: Record<string, any>;
+  initialRouteName: ScreenName;
   isDrawer: boolean;
+  tilesScreenParams?: Record<string, any>;
 }): StackConfig => ({
   initialRouteName,
   screenOptions: getScreenOptions({ withDrawer: isDrawer }),
@@ -494,13 +496,15 @@ export const defaultStackConfig = ({
     {
       initialParams,
       routeName: ScreenName.Service,
-      screenComponent: getTilesScreen({
-        matomoString: MATOMO_TRACKING.SCREEN_VIEW.SERVICE,
-        staticJsonName: 'homeService',
-        titleFallback: texts.homeTitles.service,
-        titleKey: 'headlineService',
-        imageKey: 'headlineServiceImage'
-      }),
+      screenComponent: getTilesScreen(
+        tilesScreenParams || {
+          matomoString: MATOMO_TRACKING.SCREEN_VIEW.SERVICE,
+          staticJsonName: 'homeService',
+          titleFallback: texts.homeTitles.service,
+          titleKey: 'headlineService',
+          imageKey: 'headlineServiceImage'
+        }
+      ),
       screenOptions: { title: texts.screenTitles.service }
     },
     {

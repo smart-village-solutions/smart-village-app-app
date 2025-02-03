@@ -143,6 +143,7 @@ export type CustomTab = {
   label: string;
   params?: Record<string, any>;
   screen: ScreenName;
+  tilesScreenParams?: Record<string, any>;
 };
 
 export type TabConfig = {
