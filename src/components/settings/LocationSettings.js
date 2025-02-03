@@ -1,11 +1,12 @@
 import * as Location from 'expo-location';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 import { normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
 import { useLocationSettings, useSystemPermission } from '../../hooks';
+import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Map } from '../map';
