@@ -34,19 +34,17 @@ const FILTER_QUERY_TYPES = {
   Tour: QUERY_TYPES.TOURS
 };
 
-const mergeDefaultConfiguration = (target: any, source: any) => {
-  for (const key in source) {
-    if (source[key] instanceof Object && !Array.isArray(source[key])) {
-      if (!target[key]) {
-        target[key] = {};
-      }
-      mergeDefaultConfiguration(target[key], source[key]);
-    } else {
-      target[key] = source[key];
-    }
-  }
-  return target;
-};
+const mergeDefaultConfiguration = (target, source) =>
+  Object.entries(source).reduce(
+    (acc, [key, value]) => {
+      acc[key] =
+        value instanceof Object && !Array.isArray(value)
+          ? mergeDefaultConfiguration(acc[key] || {}, value)
+          : value;
+      return acc;
+    },
+    { ...target }
+  );
 
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
