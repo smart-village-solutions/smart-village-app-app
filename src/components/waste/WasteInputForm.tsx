@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
-import { colors, device, normalize } from '../../config';
+import { colors, device, normalize, texts } from '../../config';
 import { useFilterCities, useFilterStreets } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
@@ -52,7 +52,8 @@ export const WasteInputForm = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
-  const { isInputAutoFocus } = wasteAddresses;
+  const { isInputAutoFocus, texts: wasteAddressesTexts = {} } = wasteAddresses;
+  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const { filterCities } = useFilterCities(isCityInputFocused);
   const { filterStreets } = useFilterStreets(inputValueCity, isStreetInputFocused);
   const filteredCities = filterCities(inputValueCity, addressesData);
@@ -83,7 +84,7 @@ export const WasteInputForm = ({
       {/* Render city input field if two-step address selection is enabled */}
       {hasWasteAddressesTwoStep && (
         <Wrapper>
-          <Label bold>Ortschaft</Label>
+          <Label bold>{wasteTexts.location}</Label>
           <Autocomplete
             containerStyle={styles.autoCompleteContainer}
             data={filteredCities}
@@ -112,7 +113,7 @@ export const WasteInputForm = ({
               setIsCityInputFocused(true);
               setIsStreetInputFocused(false);
             }}
-            placeholder="Ortschaft"
+            placeholder={wasteTexts.location}
             style={styles.autoCompleteInput}
             value={inputValueCity}
           />
@@ -122,7 +123,7 @@ export const WasteInputForm = ({
       {/* Render street input field if city is selected or two-step is disabled */}
       {(!hasWasteAddressesTwoStep || (hasWasteAddressesTwoStep && inputValueCitySelected)) && (
         <Wrapper style={styles.noPaddingTop}>
-          <Label bold>Straße</Label>
+          <Label bold>{wasteTexts.street}</Label>
           <Autocomplete
             containerStyle={[
               styles.autoCompleteContainer,
@@ -146,7 +147,7 @@ export const WasteInputForm = ({
               setIsCityInputFocused(false);
               setIsStreetInputFocused(true);
             }}
-            placeholder="Straße"
+            placeholder={wasteTexts.street}
             style={styles.autoCompleteInput}
             value={inputValue}
           />
