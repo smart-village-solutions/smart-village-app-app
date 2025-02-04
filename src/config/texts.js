@@ -1513,6 +1513,7 @@ export const texts = {
     exportAlertBody:
       'Ein Download wird in einem externen Browser gestartet.\nNachdem der Download abgeschlossen ist, können Sie die Termine durch Öffnen der Datei in Ihren Kalender importieren.',
     exportAlertTitle: 'Abfallkalender',
+    exportButton: 'Kalender exportieren',
     exportCalendar: 'Kalender exportieren',
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',

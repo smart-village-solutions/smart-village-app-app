@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
@@ -35,15 +35,11 @@ import { FeedbackFooter } from '../components/FeedbackFooter';
 import {
   colors,
   consts,
-  device,
   Icon,
-  namespace,
   normalize,
-  secrets,
-  staticRestSuffix,
   texts
 } from '../config';
-import { momentFormat, openLink, parseListItemsFromQuery } from '../helpers';
+import { momentFormat, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import {
   useRenderSuggestions,
@@ -144,45 +140,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
       return item.listDate >= today && hasMatchesForItem;
     });
   }, [markedDates, selectedTypes]);
-
-  const triggerExport = useCallback(() => {
-    const { street, zip, city } = getLocationData(streetData);
-
-    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
-
-    let params = `street=${encodeURIComponent(street)}`;
-
-    if (zip) {
-      params += `&zip=${encodeURIComponent(zip)}`;
-    }
-
-    if (city) {
-      params += `&city=${encodeURIComponent(city)}`;
-    }
-
-    const combinedUrl = baseUrl + params;
-
-    if (device.platform === 'android') {
-      Alert.alert(
-        wasteTexts.exportAlertTitle,
-        wasteTexts.exportAlertBody,
-        [
-          {
-            onPress: () => {
-              openLink(combinedUrl);
-            }
-          }
-        ],
-        {
-          onDismiss: () => {
-            openLink(combinedUrl);
-          }
-        }
-      );
-    } else {
-      openLink(combinedUrl);
-    }
-  }, [streetData]);
 
   // Monitors changes to `addressesData` and `inputValueCity` when the two-step
   // address selection (`hasWasteAddressesTwoStep`) is enabled. If only one city matches the input,
