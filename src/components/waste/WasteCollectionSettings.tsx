@@ -70,7 +70,10 @@ export const WasteCollectionSettings = ({
 }) => {
   const navigation = useNavigation();
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
-  const { waste = {} } = globalSettings;
+  const { settings = {}, waste = {} } = globalSettings;
+  const { wasteAddresses = {} } = settings;
+  const { texts: wasteAddressesTexts = {} } = wasteAddresses;
+  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
   const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
   const [errorWithStoredSettings, setErrorWithStoredSettings] = useState(false);
@@ -246,7 +249,7 @@ export const WasteCollectionSettings = ({
 
               navigation.goBack();
             }}
-            text="Speichern"
+            text={wasteTexts.save}
           />
         ) : null,
       headerSearchBarOptions: {
@@ -385,14 +388,14 @@ export const WasteCollectionSettings = ({
       >
         {!!locationData && (
           <Wrapper>
-            <RegularText>Meine Straße:</RegularText>
+            <RegularText>{wasteTexts.myLocation}</RegularText>
             <BoldText>{streetName}</BoldText>
           </Wrapper>
         )}
         {!!usedTypeKeys?.length && !_isEmpty(typeSettings) && (
           <WrapperVertical style={[styles.paddingHorizontal]}>
             <WrapperVertical style={styles.mediumPaddingVertical}>
-              <RegularText big>Kategorien auswählen</RegularText>
+              <RegularText big>{wasteTexts.chooseCategory}</RegularText>
             </WrapperVertical>
             <FlatList
               data={usedTypeKeys.sort()}
@@ -432,14 +435,14 @@ export const WasteCollectionSettings = ({
         )}
         <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
           <WrapperVertical style={styles.mediumPaddingVertical}>
-            <RegularText big>Benachrichtigungen</RegularText>
+            <RegularText big>{wasteTexts.notifications}</RegularText>
           </WrapperVertical>
           <ListItem
             containerStyle={[styles.borderRadius, styles.listItemContainer]}
-            accessibilityLabel={`(Benachrichtigungen an) ${consts.a11yLabel.button}`}
+            accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
           >
             <ListItem.Content>
-              <BoldText small>Benachrichtigungen an</BoldText>
+              <BoldText small>{wasteTexts.notificationsOn}</BoldText>
             </ListItem.Content>
             <Switch
               switchValue={showNotificationSettings}
@@ -453,10 +456,10 @@ export const WasteCollectionSettings = ({
             <ListItem
               bottomDivider
               containerStyle={[styles.borderRadiusTop, styles.listItemContainer]}
-              accessibilityLabel={`(Tage vor Abholung) ${consts.a11yLabel.button}`}
+              accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
             >
               <ListItem.Content>
-                <BoldText small>Tag(e) vor Abholung</BoldText>
+                <BoldText small>{wasteTexts.daysBefore}</BoldText>
               </ListItem.Content>
               <Tooltip
                 ref={tooltipRef}
@@ -467,13 +470,13 @@ export const WasteCollectionSettings = ({
                   <View>
                     <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
                       <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
-                        selber Tag
+                        {wasteTexts.sameDay}
                       </RegularText>
                     </TouchableOpacity>
                     <Divider style={styles.dividerSmall} />
                     <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
                       <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
-                        1 Tag vorher
+                        {wasteTexts.oneDayBefore}
                       </RegularText>
                     </TouchableOpacity>
                   </View>
@@ -485,7 +488,7 @@ export const WasteCollectionSettings = ({
               >
                 <WrapperRow itemsCenter>
                   <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
-                    {onDayBefore ? '1 Tag vorher' : 'selber Tag'}{' '}
+                    {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
                   </RegularText>
                   <Icon.KeyboardArrowUpDown size={normalize(14)} />
                 </WrapperRow>
@@ -497,10 +500,10 @@ export const WasteCollectionSettings = ({
                 styles.listItemContainer,
                 { paddingVertical: normalize(11.5) }
               ]}
-              accessibilityLabel={`(Uhrzeit) ${consts.a11yLabel.button}`}
+              accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
             >
               <ListItem.Content>
-                <BoldText small>Uhrzeit</BoldText>
+                <BoldText small>{wasteTexts.timeOfDay}</BoldText>
               </ListItem.Content>
               <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                 <View style={[styles.smallBorderRadius, styles.timeContainer]}>
