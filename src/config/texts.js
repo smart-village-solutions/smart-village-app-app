@@ -1213,7 +1213,10 @@ export const texts = {
       postalCode: 'Postleitzahl'
     },
     result: 'Ergebnis',
-    results: 'Ergebnisse'
+    results: 'Ergebnisse',
+    showListView: 'Liste',
+    showMapView: 'Karte',
+    viewReports: 'Meldungen ansehen'
   },
   survey: {
     archive: 'Umfrage-Archiv',

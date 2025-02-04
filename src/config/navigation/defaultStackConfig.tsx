@@ -62,6 +62,7 @@ import {
   ProfileSignupScreen,
   ProfileUpdateScreen,
   SettingsScreen,
+  SueHomeScreen,
   SueListScreen,
   SueMapScreen,
   SueMapViewScreen,
@@ -158,13 +159,12 @@ export const defaultStackConfig = ({
       screenComponent: BookmarkCategoryScreen
     },
     {
-      initialParams,
-      routeName: ScreenName.Bookmarks,
-      screenComponent: BookmarkScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer }),
       initialParams: {
         title: texts.screenTitles.favorites
-      }
+      },
+      routeName: ScreenName.Bookmarks,
+      screenComponent: BookmarkScreen,
+      screenOptions: getScreenOptions({ withDrawer: isDrawer })
     },
     {
       initialParams,
@@ -512,6 +512,13 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Settings,
       screenComponent: SettingsScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer })
+    },
+    {
+      initialParams: {
+        title: texts.screenTitles.home
+      },
+      routeName: ScreenName.SueHome,
+      screenComponent: SueHomeScreen
     },
     {
       initialParams: {
