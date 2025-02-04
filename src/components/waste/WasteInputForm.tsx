@@ -120,7 +120,7 @@ export const WasteInputForm = ({
       )}
 
       {/* Render street input field if city is selected or two-step is disabled */}
-      {(!hasWasteAddressesTwoStep || (hasWasteAddressesTwoStep && inputValueCity)) && (
+      {(!hasWasteAddressesTwoStep || (hasWasteAddressesTwoStep && inputValueCitySelected)) && (
         <Wrapper style={styles.noPaddingTop}>
           <Label bold>Straße</Label>
           <Autocomplete
