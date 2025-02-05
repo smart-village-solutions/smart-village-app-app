@@ -3,29 +3,41 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react';
+import { RefreshControl, TouchableOpacity } from 'react-native';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
+import { StyleSheet } from 'react-native';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
+  BoldText,
   EmptyMessage,
   Filter,
+  HeaderLeft,
   ListComponent,
   RegularText,
   SafeAreaViewFlex,
   Search,
-  StatusProps,
   SueLoadingIndicator,
+  Wrapper,
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
-import { QUERY_TYPES, getQuery } from '../../queries';
+import { getQuery, QUERY_TYPES } from '../../queries';
+import { StatusProps } from '../../types';
+import { SueMapScreen } from './SueMapScreen';
 
-const { FILTER_TYPES } = consts;
+const { a11yLabel, FILTER_TYPES } = consts;
 
 const SORT_BY = {
   REQUESTED_DATE_TIME: 'requested_datetime DESC',
@@ -65,16 +77,32 @@ const SORT_OPTIONS = [
   }
 ];
 
+type TFilterSection = {
+  initialQueryVariables: any;
+  services: any;
+  setQueryVariables: any;
+  setViewType: any;
+  showViewSwitcherButton: boolean;
+  statuses: StatusProps[];
+  viewType: string;
+};
+
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
 };
 
+const VIEW_TYPE = {
+  LIST: 'list',
+  MAP: 'map'
+};
+
 export const SueListScreen = ({ navigation, route }: Props) => {
   const { isConnected } = useContext(NetworkContext);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
-  const { sueStatus = {} } = appDesignSystem;
+  const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
+  const { showViewSwitcherButton = false } = sueListItem;
   const query = route.params?.query ?? '';
 
   const limit = 20;
@@ -90,6 +118,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
+  const [viewType, setViewType] = useState(VIEW_TYPE.LIST);
 
   const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     [
@@ -183,91 +212,151 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     return {};
   }, [data, fetchNextPage, hasNextPage, query]);
 
+  useLayoutEffect(() => {
+    if (viewType === VIEW_TYPE.MAP) {
+      navigation.setOptions({
+        headerTitle: texts.screenTitles.sue.mapView,
+        headerLeft: () => (
+          <HeaderLeft
+            onPress={() => setViewType(VIEW_TYPE.LIST)}
+            backImage={({ tintColor }) => (
+              <Icon.Close
+                color={tintColor}
+                size={normalize(22)}
+                style={{ paddingHorizontal: normalize(14) }}
+              />
+            )}
+          />
+        )
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
+      });
+    }
+  }, [query, viewType]);
+
   if (isOpening) return null;
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent
-        navigation={navigation}
-        query={query}
-        data={listItems}
-        fetchMoreData={fetchMoreData}
-        ListEmptyComponent={
-          isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.sue.empty.list} />
-        }
-        ListHeaderComponent={
-          <>
-            <WrapperVertical>
-              <Search setQueryVariables={setQueryVariables} placeholder={texts.filter.search} />
-            </WrapperVertical>
+      {viewType === VIEW_TYPE.MAP ? (
+        <>
+          <SueMapScreen navigation={navigation} route={route} />
+        </>
+      ) : (
+        <ListComponent
+          navigation={navigation}
+          query={query}
+          data={listItems}
+          fetchMoreData={fetchMoreData}
+          ListEmptyComponent={
+            isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.sue.empty.list} />
+          }
+          ListHeaderComponent={
+            <>
+              <WrapperVertical>
+                <Search setQueryVariables={setQueryVariables} placeholder={texts.filter.search} />
+              </WrapperVertical>
 
-            <WrapperVertical>
-              <Filter
-                filterTypes={[
-                  {
-                    type: FILTER_TYPES.DATE,
-                    name: 'date',
-                    data: [
-                      {
-                        hasFutureDates: false,
-                        hasPastDates: true,
-                        name: 'start_date',
-                        placeholder: 'Erstellt von'
-                      },
-                      {
-                        hasFutureDates: false,
-                        hasPastDates: true,
-                        name: 'end_date',
-                        placeholder: 'Erstellt bis'
-                      }
-                    ]
-                  },
-                  {
-                    type: FILTER_TYPES.DROPDOWN,
-                    label: 'Kategorie auswählen',
-                    name: 'service_code',
-                    data: services,
-                    placeholder: 'Alle Kategorien'
-                  },
-                  {
-                    type: FILTER_TYPES.SUE.STATUS,
-                    label: 'Status',
-                    name: 'status',
-                    data: statuses
-                  },
-                  {
-                    type: FILTER_TYPES.DROPDOWN,
-                    label: 'Sortieren nach',
-                    name: 'sortBy',
-                    data: SORT_OPTIONS,
-                    placeholder: 'Alle Sortierarten'
-                  }
-                ]}
-                queryVariables={initialQueryVariables}
-                setQueryVariables={setQueryVariables}
-                withSearch
-              />
-            </WrapperVertical>
+              <WrapperVertical>
+                {!!showViewSwitcherButton && (
+                  <TouchableOpacity
+                    onPress={() => setViewType(VIEW_TYPE.MAP)}
+                    accessibilityLabel={`${
+                      viewType === VIEW_TYPE.LIST ? texts.sue.showMapView : texts.sue.showListView
+                    } ${a11yLabel.button}`}
+                    style={styles.button}
+                  >
+                    <BoldText small>
+                      {viewType === VIEW_TYPE.LIST ? texts.sue.showMapView : texts.sue.showListView}
+                    </BoldText>
 
-            {!!dataCount?.length && (
-              <WrapperHorizontal>
+                    {viewType === VIEW_TYPE.LIST ? (
+                      <Icon.Map size={normalize(16)} style={styles.icon} color={colors.darkText} />
+                    ) : (
+                      <Icon.List size={normalize(14)} style={styles.icon} color={colors.darkText} />
+                    )}
+                  </TouchableOpacity>
+                )}
+                <Filter
+                  filterTypes={[
+                    {
+                      type: FILTER_TYPES.DATE,
+                      name: 'date',
+                      data: [
+                        {
+                          hasFutureDates: false,
+                          hasPastDates: true,
+                          name: 'start_date',
+                          placeholder: texts.sue.filter.createdBy
+                        },
+                        {
+                          hasFutureDates: false,
+                          hasPastDates: true,
+                          name: 'end_date',
+                          placeholder: texts.sue.filter.createdUntil
+                        }
+                      ]
+                    },
+                    {
+                      type: FILTER_TYPES.DROPDOWN,
+                      label: texts.sue.filter.selectCategory,
+                      name: 'service_code',
+                      data: services,
+                      placeholder: texts.sue.filter.allCategories
+                    },
+                    {
+                      type: FILTER_TYPES.SUE.STATUS,
+                      label: texts.sue.filter.status,
+                      name: 'status',
+                      data: statuses
+                    },
+                    {
+                      type: FILTER_TYPES.DROPDOWN,
+                      label: texts.sue.filter.sortBy,
+                      name: 'sortBy',
+                      data: SORT_OPTIONS,
+                      placeholder: texts.sue.filter.alleSortingTypes
+                    }
+                  ]}
+                  queryVariables={initialQueryVariables}
+                  setQueryVariables={setQueryVariables}
+                  withSearch
+                />
+              </WrapperVertical>
+
+              {!!dataCount?.length && (
                 <RegularText small>
                   {dataCount.length} {dataCount.length === 1 ? texts.sue.result : texts.sue.results}
                 </RegularText>
-              </WrapperHorizontal>
-            )}
-          </>
-        }
-        ListFooterLoadingIndicator={SueLoadingIndicator}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
-            colors={[colors.refreshControl]}
-            tintColor={colors.refreshControl}
-          />
-        }
-      />
+              )}
+            </>
+          }
+          ListFooterLoadingIndicator={SueLoadingIndicator}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refresh}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        />
+      )}
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    paddingTop: normalize(16),
+    position: 'absolute'
+  },
+  icon: {
+    paddingLeft: normalize(8)
+  }
+});

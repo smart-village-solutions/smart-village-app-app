@@ -71,6 +71,7 @@ export enum ScreenName {
   ProfileUpdate = 'ProfileUpdate',
   Service = 'Service',
   Settings = 'Settings',
+  SueHome = 'SueHome',
   SueList = 'SueList',
   SueMap = 'SueMap',
   SueReport = 'SueReport',
