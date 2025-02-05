@@ -1135,6 +1135,15 @@ export const texts = {
     empty: {
       list: 'Schade, es wurden keine passenden Einträge gefunden.'
     },
+    filter: {
+      allCategories: 'Alle Kategorien',
+      alleSortingTypes: 'Alle Sortierarten',
+      createdBy: 'Erstellt von',
+      createdUntil: 'Erstellt bis',
+      selectCategory: 'Kategorie auswählen',
+      sortBy: 'Sortieren nach',
+      status: 'Status'
+    },
     location: 'Ort',
     report: {
       addImage: 'Bilder hinzufügen',
