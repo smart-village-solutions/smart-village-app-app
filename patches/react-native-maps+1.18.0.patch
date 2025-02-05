@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-maps/android/src/main/java/com/rnmaps/maps/MapMarker.java b/node_modules/react-native-maps/android/src/main/java/com/rnmaps/maps/MapMarker.java
+index b755f9b..dd560f2 100644
+--- a/node_modules/react-native-maps/android/src/main/java/com/rnmaps/maps/MapMarker.java
++++ b/node_modules/react-native-maps/android/src/main/java/com/rnmaps/maps/MapMarker.java
+@@ -622,4 +622,11 @@ public class MapMarker extends MapFeature {
+     return BitmapDescriptorFactory.fromResource(getDrawableResourceByName(name));
+   }
+ 
++  @Override
++  protected void onLayout(boolean changed, int l, int t, int r, int b) {
++    super.onLayout(changed, l, t, r, b);
++    this.height = b-t;
++    this.width = r-l;
++  }
++
+ }
