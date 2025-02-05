@@ -131,7 +131,7 @@ export const SueReportSend = ({
                   </View>
 
                   <View style={styles.ratingContainer}>
-                    <RegularText small style={styles.ratingContainer}>
+                    <RegularText small style={styles.labelText}>
                       {texts.sue.report.sendReportDone.ratingTitle}
                     </RegularText>
 
@@ -153,11 +153,14 @@ export const SueReportSend = ({
                   </View>
 
                   <View style={styles.headerContainer}>
+                    <RegularText small style={styles.labelText}>
+                      {texts.sue.report.sendReportDone.messageTitle}
+                    </RegularText>
+
                     <Input
                       control={control}
                       inputContainerStyle={styles.inputContainer}
                       inputStyle={styles.textArea}
-                      label={texts.sue.report.sendReportDone.messageTitle}
                       multiline
                       name="message"
                       onFocus={() =>
@@ -209,6 +212,9 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderColor: colors.transparent
+  },
+  labelText: {
+    marginBottom: normalize(8)
   },
   rating: {
     alignSelf: 'flex-start'
