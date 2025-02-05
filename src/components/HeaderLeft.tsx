@@ -4,8 +4,14 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, device, Icon, normalize } from '../config';
 
+import { HeadlineText } from './Text';
+
 // TODO: can this be exchanged with https://reactnavigation.org/docs/elements/#headerbackbutton?
-export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) => {
+export const HeaderLeft = ({
+  onPress,
+  backImage,
+  text
+}: HeaderBackButtonProps & { text?: string }) => {
   if (!onPress && !backImage) {
     return device.platform == 'android' ? <Icon.ArrowLeft color={colors.surface} /> : null;
   }
@@ -15,24 +21,29 @@ export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) => {
   }
 
   return (
-    <View>
-      <TouchableOpacity
-        onPress={onPress}
-        accessibilityLabel={consts.a11yLabel.backIcon}
-        accessibilityHint={consts.a11yLabel.backIconHint}
-      >
-        {backImage ? (
-          backImage({ tintColor: colors.lightestText })
-        ) : (
-          <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
-        )}
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      accessibilityLabel={text ? text : consts.a11yLabel.backIcon}
+      accessibilityHint={consts.a11yLabel.backIconHint}
+    >
+      {backImage ? (
+        backImage({ tintColor: colors.lightestText })
+      ) : text ? (
+        <HeadlineText lightest smaller style={styles.text}>
+          {text}
+        </HeadlineText>
+      ) : (
+        <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
+      )}
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   icon: {
+    paddingHorizontal: normalize(14)
+  },
+  text: {
     paddingHorizontal: normalize(14)
   }
 });

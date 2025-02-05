@@ -276,6 +276,14 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseWasteData = (data) => {
+  return Object.entries(data).map(([listDate, value]) => ({
+    listDate,
+    dots: value.dots || [],
+    title: listDate
+  }));
+};
+
 const parseConversations = (data) =>
   data?.map((conversation, index) => ({
     ...conversation,
@@ -312,7 +320,7 @@ const parseConversations = (data) =>
  *   }} options
  * @returns
  */
-export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
+export const parseListItemsFromQuery = (query, data, titleDetail = '', options = {}) => {
   if (!data) return [];
 
   const {
@@ -343,6 +351,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseCategories(data[query], skipLastDivider, ScreenName.Category, queryVariables);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.WASTE_STREET:
+      return parseWasteData(data);
     case QUERY_TYPES.PROFILE.GET_CONVERSATIONS:
       return parseConversations(data[query]);
 

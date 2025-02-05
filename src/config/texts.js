@@ -117,6 +117,7 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  close: 'Schließen',
   commercial: {
     commercial: 'Angebot',
     commercials: 'Angebote'

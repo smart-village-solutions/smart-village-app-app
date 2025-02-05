@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useContext } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useContext } from 'react';
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { texts } from '../config';
@@ -9,16 +9,17 @@ import { ScreenName } from '../types';
 
 import { BoldText } from './Text';
 
-export const FeedbackFooter: FC = () => {
+export const FeedbackFooter = ({ containerStyle }: { containerStyle?: StyleProp<ViewStyle> }) => {
   const navigation = useNavigation();
-  // @ts-expect-error settings are not properly typed
-  const feedbackFooter = useContext(SettingsContext).globalSettings?.settings?.feedbackFooter;
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { feedbackFooter } = settings;
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
   if (!feedbackFooter) return null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <Pressable onPress={() => navigation.navigate(ScreenName.Feedback)} style={styles.button}>
         <BoldText underline placeholder={!isReduceTransparencyEnabled}>
           {texts.feedbackLink.toUpperCase()}

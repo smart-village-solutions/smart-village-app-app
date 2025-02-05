@@ -215,6 +215,13 @@ export const HeadlineText = styled(RegularText)`
     `};
 
   ${(props) =>
+    props.biggest &&
+    css`
+      font-size: ${normalize(24)};
+      line-height: ${normalize(30)};
+    `};
+
+  ${(props) =>
     props.italic &&
     css`
       font-family: condbold-italic;

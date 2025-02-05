@@ -4,25 +4,25 @@ import React, { createContext, useCallback, useEffect, useReducer } from 'react'
 import { readFromStore } from './helpers';
 import {
   DATA_PROVIDER_FILTER_KEY,
-  FilterAction,
-  FilterReducerAction,
   MOWAS_REGIONAL_KEYS,
-  MowasFilterAction,
-  MowasFilterReducerAction,
+  MowasRegionalKeysAction,
+  MowasRegionalKeysActions,
   mowasRegionalKeysReducer,
+  PermanentFilterAction,
+  PermanentFilterActions,
   permanentFilterReducer,
   RESOURCE_FILTERS_KEY,
   ResourceFiltersAction,
-  resourceFiltersReducer,
-  ResourceFiltersReducerAction
+  ResourceFiltersActions,
+  resourceFiltersReducer
 } from './reducers';
 
 type PermanentFilterProviderValues = {
-  dataProviderDispatch: React.Dispatch<FilterReducerAction>;
+  dataProviderDispatch: React.Dispatch<PermanentFilterAction>;
   dataProviderState: string[];
-  mowasRegionalKeysDispatch: React.Dispatch<MowasFilterReducerAction>;
+  mowasRegionalKeysDispatch: React.Dispatch<MowasRegionalKeysAction>;
   mowasRegionalKeysState: string[];
-  resourceFiltersDispatch: React.Dispatch<ResourceFiltersReducerAction>;
+  resourceFiltersDispatch: React.Dispatch<ResourceFiltersAction>;
   resourceFiltersState: { [key: string]: any };
 };
 
@@ -48,13 +48,16 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
     const mowasRegionalKeys = ((await readFromStore(MOWAS_REGIONAL_KEYS)) ?? []) as string[];
     const resourceFilters = ((await readFromStore(RESOURCE_FILTERS_KEY)) ?? []) as string[];
 
-    dataProviderDispatch({ type: FilterAction.OverwriteDataProviders, payload: dataProviderIds });
+    dataProviderDispatch({
+      type: PermanentFilterActions.OverwriteDataProviders,
+      payload: dataProviderIds
+    });
     mowasRegionalKeysDispatch({
-      type: MowasFilterAction.OverwriteMowasRegionalKeys,
+      type: MowasRegionalKeysActions.OverwriteMowasRegionalKeys,
       payload: mowasRegionalKeys
     });
     resourceFiltersDispatch({
-      type: ResourceFiltersAction.OverwriteResourceFilters,
+      type: ResourceFiltersActions.OverwriteResourceFilters,
       payload: resourceFilters
     });
   }, []);

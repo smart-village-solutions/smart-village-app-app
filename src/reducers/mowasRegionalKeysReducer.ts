@@ -1,36 +1,40 @@
 import { addToStore } from '../helpers';
 
-export enum MowasFilterAction {
+export const MOWAS_REGIONAL_KEYS = 'MOWAS_REGIONAL_KEYS';
+
+type MowasRegionalKeysState = string[];
+
+export enum MowasRegionalKeysActions {
   AddMowasRegionalKey = 'AddMowasRegionalKey',
   OverwriteMowasRegionalKeys = 'OverwriteMowasRegionalKeys',
   RemoveMowasRegionalKey = 'RemoveMowasRegionalKey'
 }
 
-export type MowasFilterReducerAction =
+export type MowasRegionalKeysAction =
   | {
-      type: MowasFilterAction.AddMowasRegionalKey | MowasFilterAction.RemoveMowasRegionalKey;
+      type:
+        | MowasRegionalKeysActions.AddMowasRegionalKey
+        | MowasRegionalKeysActions.RemoveMowasRegionalKey;
       payload: string;
     }
-  | { type: MowasFilterAction.OverwriteMowasRegionalKeys; payload: string[] };
+  | { type: MowasRegionalKeysActions.OverwriteMowasRegionalKeys; payload: string[] };
 
-export const MOWAS_REGIONAL_KEYS = 'MOWAS_REGIONAL_KEYS';
-
-export const mowasRegionalKeysReducer: React.Reducer<string[], MowasFilterReducerAction> = (
-  state = [],
-  action
+export const mowasRegionalKeysReducer = (
+  state: MowasRegionalKeysState = [],
+  action: MowasRegionalKeysAction
 ) => {
   let newState = state;
+
   switch (action.type) {
-    case MowasFilterAction.AddMowasRegionalKey:
+    case MowasRegionalKeysActions.AddMowasRegionalKey:
       newState = [...state, action.payload];
       break;
-    case MowasFilterAction.RemoveMowasRegionalKey:
+    case MowasRegionalKeysActions.RemoveMowasRegionalKey:
       newState = state.filter((id) => id != action.payload);
       break;
-    case MowasFilterAction.OverwriteMowasRegionalKeys: {
+    case MowasRegionalKeysActions.OverwriteMowasRegionalKeys:
       newState = [...action.payload];
       break;
-    }
   }
 
   // update the store for next app launch on every change

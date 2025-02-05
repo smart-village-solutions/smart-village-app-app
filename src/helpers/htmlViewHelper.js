@@ -65,3 +65,9 @@ export function containsHtml(text) {
   const regexp = new RegExp(pattern, 'gm');
   return regexp.test(text);
 }
+
+export function removeHtml(text) {
+  if (!text) return;
+  const pattern = /<[^>]*>/g;
+  return trimNewLines(text.replace(pattern, ''));
+}

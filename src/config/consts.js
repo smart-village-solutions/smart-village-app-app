@@ -221,9 +221,10 @@ export const consts = {
 
   LIST_TYPES: {
     CARD_LIST: 'cardList',
+    CARD_TEXT_LIST: 'cardTextList',
+    GROUPED_LIST: 'groupedList',
     IMAGE_TEXT_LIST: 'imageTextList',
-    TEXT_LIST: 'textList',
-    CARD_TEXT_LIST: 'cardTextList'
+    TEXT_LIST: 'textList'
   },
 
   ROOT_ROUTE_NAMES: {
