@@ -93,7 +93,9 @@ export const WasteInputForm = ({
               height: inputValueCitySelected
                 ? undefined
                 : filteredCities?.length < 6
-                ? 'auto'
+                ? device.platform === 'ios'
+                  ? 'auto'
+                  : dimensions.height / 5
                 : dimensions.height / 2.5,
               keyboardShouldPersistTaps: 'handled',
               keyExtractor: (item, index) => `${item.id}-${index}`,
@@ -140,7 +142,12 @@ export const WasteInputForm = ({
             data={filteredStreets}
             disableFullscreenUI
             flatListProps={{
-              height: filteredStreets?.length < 6 ? 'auto' : dimensions.height / 2.5,
+              height:
+                filteredStreets?.length < 6
+                  ? device.platform === 'ios'
+                    ? 'auto'
+                    : dimensions.height / 5
+                  : dimensions.height / 2.5,
               keyboardShouldPersistTaps: 'handled',
               keyExtractor: (item, index) => `${item.id}-${index}`,
               renderItem: renderSuggestion,
