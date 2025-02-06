@@ -204,13 +204,18 @@ export const wasteSettingsReducer = (
       // turn off "all" settings toggle if all notifications are off.
       const hasActiveNotifications = Object.values(notificationSettings).some((active) => !!active);
 
+      let showNotificationSettings = hasActiveNotifications;
+      handleSystemPermissions().then((permission) => {
+        showNotificationSettings = permission;
+      });
+
       return {
         ...state,
         activeTypes: updatedActiveTypes,
         typeSettings,
         selectedTypeKeys,
         notificationSettings,
-        showNotificationSettings: hasActiveNotifications,
+        showNotificationSettings,
         onDayBefore: serverSettings[0].notify_days_before > 0,
         reminderTime: new Date(serverSettings[0].notify_at)
       };
