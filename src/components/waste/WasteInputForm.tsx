@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { colors, device, normalize, texts } from '../../config';
@@ -195,8 +195,17 @@ const styles = StyleSheet.create({
     lineHeight: normalize(20)
   },
   autoCompleteList: {
-    borderWidth: 0,
-    paddingHorizontal: normalize(6)
+    paddingHorizontal: normalize(6),
+    ...Platform.select({
+      ios: {
+        borderWidth: 0
+      },
+      android: {
+        borderColor: colors.gray20,
+        borderRadius: 0,
+        borderWidth: normalize(1)
+      }
+    })
   },
   autoCompleteListContainer: {
     elevation: 2,
