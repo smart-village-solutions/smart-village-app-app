@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import { colors, device, texts } from '../config';
 import { parseColorToHex } from '../helpers/colorHelper';
@@ -104,9 +104,18 @@ export const updatePushToken = async () => {
 };
 
 export const showSystemPermissionMissingDialog = () => {
-  const { permissionMissingBody, permissionMissingTitle } = texts.pushNotifications;
+  const { cancel, permissionMissingBody, permissionMissingTitle, settings } =
+    texts.pushNotifications;
 
-  Alert.alert(permissionMissingTitle, permissionMissingBody, undefined);
+  Alert.alert(permissionMissingTitle, permissionMissingBody, [
+    {
+      text: cancel
+    },
+    {
+      text: settings,
+      onPress: () => Linking.openSettings()
+    }
+  ]);
 };
 
 export const showPermissionRequiredAlert = (approveCallback: () => void) => {

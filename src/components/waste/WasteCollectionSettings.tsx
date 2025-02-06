@@ -47,7 +47,12 @@ import {
   useWasteUsedTypes
 } from '../../hooks';
 import { areValidReminderSettings } from '../../jsonValidation';
-import { getReminderSettings, updateWasteReminderSettings } from '../../pushNotifications';
+import {
+  getInAppPermission,
+  getReminderSettings,
+  showPermissionRequiredAlert,
+  updateWasteReminderSettings
+} from '../../pushNotifications';
 import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '../../reducers';
 import { getLocationData } from '../../screens';
 import { SettingsContext } from '../../SettingsProvider';
@@ -92,6 +97,7 @@ export const WasteCollectionSettings = ({
   const [selectedStreetId, setSelectedStreetId] = useState(currentSelectedStreetId);
   const [isStreetSelected, setIsStreetSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isPushPermissionGranted, setIsPushPermissionGranted] = useState(false);
   const [state, dispatch] = useReducer(wasteSettingsReducer, initialWasteSettingsState);
   const {
     activeTypes,
@@ -402,6 +408,16 @@ export const WasteCollectionSettings = ({
     dispatch({ type: WasteSettingsActions.setReminderTime, payload: newTime });
   }, []);
 
+  useEffect(() => {
+    const getPermission = async () => {
+      const inAppPermission = await getInAppPermission();
+
+      setIsPushPermissionGranted(inAppPermission);
+    };
+
+    getPermission();
+  }, [isPushPermissionGranted, showNotificationSettings]);
+
   if (loading || typesLoading || streetLoading || !loadedStoredSettingsInitially) {
     return <LoadingSpinner loading />;
   }
@@ -420,10 +436,6 @@ export const WasteCollectionSettings = ({
   }
 
   if (selectedStreetId) {
-    if (errorWithStoredSettings) {
-      return <LoadingSpinner loading />;
-    }
-
     return (
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -497,7 +509,16 @@ export const WasteCollectionSettings = ({
             </ListItem.Content>
             <Switch
               switchValue={showNotificationSettings}
-              toggleSwitch={() => dispatch({ type: WasteSettingsActions.toggleNotifications })}
+              toggleSwitch={async () => {
+                if (!isPushPermissionGranted) {
+                  showPermissionRequiredAlert(() =>
+                    dispatch({ type: WasteSettingsActions.toggleNotifications })
+                  );
+                  return;
+                }
+
+                dispatch({ type: WasteSettingsActions.toggleNotifications });
+              }}
             />
           </ListItem>
         </Wrapper>

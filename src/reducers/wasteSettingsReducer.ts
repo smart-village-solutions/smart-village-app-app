@@ -1,3 +1,4 @@
+import { handleSystemPermissions } from '../pushNotifications';
 import { WasteReminderSettingJson } from '../types';
 
 export type WasteSettingsState = {
@@ -121,18 +122,11 @@ export const wasteSettingsReducer = (
         }
       });
 
-      // Automatically update showNotificationSettings based on active notifications and
-      // turn off "all" settings toggle if all notifications are off.
-      const hasActiveNotifications = Object.values(updatedNotificationSettings).some(
-        (active) => !!active
-      );
-
       return {
         ...state,
         typeSettings: updatedTypeSettings,
         selectedTypeKeys,
-        notificationSettings: updatedNotificationSettings,
-        showNotificationSettings: hasActiveNotifications
+        notificationSettings: updatedNotificationSettings
       };
     }
     case WasteSettingsActions.setInitialWasteSettings: {
@@ -151,13 +145,18 @@ export const wasteSettingsReducer = (
         {}
       );
 
+      let showNotificationSettings = false;
+      handleSystemPermissions().then((permission) => {
+        showNotificationSettings = permission;
+      });
+
       return {
         ...state,
         activeTypes,
         typeSettings,
         selectedTypeKeys: usedTypeKeys,
         notificationSettings,
-        showNotificationSettings: true
+        showNotificationSettings
       };
     }
     case WasteSettingsActions.updateWasteSettings: {
