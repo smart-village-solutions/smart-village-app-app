@@ -32,13 +32,7 @@ import {
 } from '../components';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import {
-  colors,
-  consts,
-  Icon,
-  normalize,
-  texts
-} from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { momentFormat, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import {
