@@ -120,6 +120,14 @@ export const WasteInputForm = ({
         </Wrapper>
       )}
 
+      {/* Render empty container for spacing as the inputs are overlaying on Androids */}
+      {device.platform === 'android' && (
+        <>
+          <Wrapper />
+          <Wrapper style={styles.noPaddingTop} />
+        </>
+      )}
+
       {/* Render street input field if city is selected or two-step is disabled */}
       {(!hasWasteAddressesTwoStep || (hasWasteAddressesTwoStep && inputValueCitySelected)) && (
         <Wrapper style={styles.noPaddingTop}>
