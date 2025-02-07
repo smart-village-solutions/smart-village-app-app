@@ -16,6 +16,7 @@ export * from './filter';
 export * from './gps';
 export * from './homeFilled';
 export * from './info';
+export * from './keyboardArrowUpDown';
 export * from './like';
 export * from './link';
 export * from './list';

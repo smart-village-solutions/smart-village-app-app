@@ -2,32 +2,35 @@ import { addToStore } from '../helpers';
 
 export const DATA_PROVIDER_FILTER_KEY = 'DATA_PROVIDER_FILTER_KEY';
 
-export enum FilterAction {
+type PermanentFilterState = string[];
+
+export enum PermanentFilterActions {
   AddDataProvider = 'AddDataProvider',
   OverwriteDataProviders = 'OverwriteDataProviders',
   RemoveDataProvider = 'RemoveDataProvider'
 }
 
-export type FilterReducerAction =
+export type PermanentFilterAction =
   | {
-      type: FilterAction.AddDataProvider | FilterAction.RemoveDataProvider;
+      type: PermanentFilterActions.AddDataProvider | PermanentFilterActions.RemoveDataProvider;
       payload: string;
     }
-  | { type: FilterAction.OverwriteDataProviders; payload: string[] };
+  | { type: PermanentFilterActions.OverwriteDataProviders; payload: string[] };
 
-export const permanentFilterReducer: React.Reducer<string[], FilterReducerAction> = (
-  state = [],
-  action
+export const permanentFilterReducer = (
+  state: PermanentFilterState = [],
+  action: PermanentFilterAction
 ) => {
   let newState = state;
+
   switch (action.type) {
-    case FilterAction.AddDataProvider:
+    case PermanentFilterActions.AddDataProvider:
       newState = [...state, action.payload];
       break;
-    case FilterAction.RemoveDataProvider:
+    case PermanentFilterActions.RemoveDataProvider:
       newState = state.filter((id) => id != action.payload);
       break;
-    case FilterAction.OverwriteDataProviders: {
+    case PermanentFilterActions.OverwriteDataProviders: {
       newState = [...action.payload];
       break;
     }

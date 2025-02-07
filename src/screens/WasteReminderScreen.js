@@ -1,15 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { WasteReminderSettings, SafeAreaViewFlex } from '../components';
+import { SafeAreaViewFlex, WasteCollectionSettings } from '../components';
 
 export const WasteReminderScreen = ({ route }) => {
-  const wasteTypes = route.params?.wasteTypes ?? {};
-  const locationData = route.params?.locationData ?? {};
-
   return (
     <SafeAreaViewFlex>
-      <WasteReminderSettings types={wasteTypes} locationData={locationData} />
+      <WasteCollectionSettings currentSelectedStreetId={route.params?.currentSelectedStreetId} />
     </SafeAreaViewFlex>
   );
 };

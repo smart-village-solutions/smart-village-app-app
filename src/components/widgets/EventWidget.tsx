@@ -19,7 +19,7 @@ const today = moment().format('YYYY-MM-DD');
 export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
   const { globalSettings } = useContext(SettingsContext);
-  const { deprecated = {}, hdvt = {} } = globalSettings;
+  const { hdvt = {} } = globalSettings;
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
   const [queryVariables] = useState<{ dateRange?: string[]; order?: string }>(
     additionalProps?.noFilterByDailyEvents

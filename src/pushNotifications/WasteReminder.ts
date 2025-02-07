@@ -1,30 +1,64 @@
 import * as SecureStore from 'expo-secure-store';
 
-import { device, secrets, staticRestSuffix } from '../config';
 import * as appJson from '../../app.json';
+import { device, secrets, staticRestSuffix } from '../config';
 
 import { getPushTokenFromStorage, PushNotificationStorageKeys } from './TokenHandling';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
+type LocationData =
+  | {
+      city: string;
+      street: string;
+      zip: string;
+    }
+  | undefined;
+
 type SettingInfo = {
-  city: string;
+  onDayBefore?: boolean;
   reminderTime: Date;
-  onDayBefore: boolean;
-  street: string;
-  wasteType: string;
-  zip: string;
+  wasteType?: string;
+} & Partial<LocationData>;
+
+export const getReminderSettings = async () => {
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const pushToken = await getPushTokenFromStorage();
+  const requestPath =
+    secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister + `?token=${pushToken}`;
+
+  const fetchObj: RequestInit = {
+    headers: {
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    cache: 'no-cache'
+  };
+
+  if (accessToken && pushToken) {
+    return fetch(requestPath, fetchObj)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .catch(() => {
+        return undefined;
+      });
+  }
+
+  return undefined;
 };
 
-export const updateReminderSettings = async ({
-  city,
-  reminderTime,
+const updateReminderSettings = async ({
   onDayBefore,
-  street,
+  reminderTime,
   wasteType,
+  city,
+  street,
   zip
 }: SettingInfo) => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getPushTokenFromStorage();
   const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister;
   const os =
@@ -66,37 +100,8 @@ export const updateReminderSettings = async ({
   }
 };
 
-export const getReminderSettings = async () => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-  const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
-  const requestPath =
-    secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister + `?token=${pushToken}`;
-
-  const fetchObj: RequestInit = {
-    headers: {
-      Authorization: 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    },
-    cache: 'no-cache'
-  };
-
-  if (accessToken && pushToken) {
-    return fetch(requestPath, fetchObj)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .catch(() => {
-        return undefined;
-      });
-  }
-
-  return undefined;
-};
-
-export const deleteReminderSetting = async (id: number) => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+const deleteReminderSetting = async (id: number | string) => {
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getPushTokenFromStorage();
   const requestPath =
     secrets[namespace].serverUrl +
@@ -124,4 +129,26 @@ export const deleteReminderSetting = async (id: number) => {
   }
 
   return false;
+};
+
+export const updateWasteReminderSettings = async (
+  isActive: boolean,
+  reminderTime: Date,
+  typeKey?: string,
+  onDayBefore?: boolean,
+  locationData?: LocationData,
+  storeId?: number | string
+) => {
+  if (!isActive && storeId) {
+    return await deleteReminderSetting(storeId);
+  }
+
+  if (isActive) {
+    return await updateReminderSettings({
+      onDayBefore,
+      reminderTime,
+      wasteType: typeKey,
+      ...locationData
+    });
+  }
 };

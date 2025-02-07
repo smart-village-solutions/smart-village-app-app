@@ -1,9 +1,17 @@
-import { isArray } from 'lodash';
+import _isArray from 'lodash/isArray';
+import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { ConversationListItem, SectionHeader, VoucherListItem } from '../components';
+import {
+  ConversationListItem,
+  GroupedListItem,
+  GroupedSectionHeader,
+  SectionHeader,
+  VoucherListItem,
+  WasteCollectionListItem
+} from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -73,27 +81,25 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
  * @param {string} query
  * @param {any} navigation
  * @param {{
- *     horizontal?: boolean;
- *     isIndexStartingAt1?: boolean;
- *     listType?: boolean;
- *     noOvertitle?: boolean;
- *     noSubtitle?: boolean;
- *     openWebScreen?: () => void;
- *     queryVariables?: object;
- *     refetch?: () => void;
- *   }} options
+ *          horizontal?: boolean;
+ *          isIndexStartingAt1?: boolean;
+ *          listType?: boolean;
+ *          noOvertitle?: boolean;
+ *          noSubtitle?: boolean;
+ *          openWebScreen?: () => void;
+ *          queryVariables?: object;
+ *          refetch?: () => void;
+ *        }} options
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { listsWithoutArrows = false } = settings;
-
-  const listType = getListType(query, listTypesSettings);
-
+  const listType = options.listType || getListType(query, listTypesSettings);
   let renderItem;
 
-  switch (options.listType || listType) {
+  switch (listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item, index }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
@@ -107,31 +113,6 @@ export const useRenderItem = (query, navigation, options = {}) => {
             noOvertitle={options.noOvertitle}
             item={item}
             index={index}
-          />
-        );
-      };
-      break;
-    }
-    case LIST_TYPES.IMAGE_TEXT_LIST: {
-      renderItem = ({ item, index, section }) => {
-        if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
-        }
-
-        return (
-          <TextListItem
-            item={{
-              ...item,
-              bottomDivider:
-                item.bottomDivider ??
-                (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
-            }}
-            {...{
-              navigation,
-              noSubtitle: options.noSubtitle,
-              noOvertitle: options.noOvertitle,
-              leftImage: true
-            }}
           />
         );
       };
@@ -180,7 +161,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
                 ...item,
                 bottomDivider:
                   item.bottomDivider ??
-                  (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+                  (_isArray(section?.data) ? section.data.length - 1 !== index : undefined)
               }}
               navigation={navigation}
               noSubtitle={options.noSubtitle}
@@ -190,6 +171,47 @@ export const useRenderItem = (query, navigation, options = {}) => {
             />
           );
         }
+      };
+      break;
+    }
+    case LIST_TYPES.GROUPED_LIST: {
+      renderItem = ({ item }) => {
+        if (typeof item === 'string') {
+          return <GroupedSectionHeader item={item} />;
+        }
+
+        if (query === QUERY_TYPES.WASTE_STREET) {
+          return <WasteCollectionListItem item={item} options={options.queryVariables} />;
+        }
+
+        return (
+          <GroupedListItem item={item} navigation={navigation} options={options.queryVariables} />
+        );
+      };
+      break;
+    }
+    case LIST_TYPES.IMAGE_TEXT_LIST: {
+      renderItem = ({ item, index, section }) => {
+        if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
+          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+        }
+
+        return (
+          <TextListItem
+            item={{
+              ...item,
+              bottomDivider:
+                item.bottomDivider ??
+                (_isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+            }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              leftImage: true
+            }}
+          />
+        );
       };
       break;
     }
@@ -212,7 +234,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return (
             <VolunteerPostListItem
               post={item}
-              bottomDivider={isArray(section?.data) ? section.data.length - 1 !== index : undefined}
+              bottomDivider={
+                _isArray(section?.data) ? section.data.length - 1 !== index : undefined
+              }
               openWebScreen={options.openWebScreen}
             />
           );
@@ -227,7 +251,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
             <VolunteerApplicantListItem
               item={{
                 ...item,
-                bottomDivider: isArray(section?.data)
+                bottomDivider: _isArray(section?.data)
                   ? section.data.length - 1 !== index
                   : undefined
               }}
@@ -266,7 +290,10 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         return (
           <TextListItem
-            item={item}
+            item={{
+              ...item,
+              bottomDivider: _isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            }}
             {...{
               navigation,
               noSubtitle: options.noSubtitle,
@@ -290,4 +317,67 @@ export const useRenderItem = (query, navigation, options = {}) => {
     options.noSubtitle,
     options.queryVariables
   ]);
+};
+
+/**
+ * useGroupedData is a custom React hook that groups an array of objects based on their given key.
+ *
+ * @param {string} query - String used to specify the method of grouping.
+ * @param {Array} data - An array of objects to be grouped. Objects should contain a property with the date format "YYYY-MM-DD".
+ * @param {Array} groupKey - The key used to group the data.
+ * @returns {Array} The returned array contains grouped objects and their corresponding month. Each month is followed by objects published in it.
+ *
+ * @inner
+ * @function groupDataByDate - Groups data based on given `groupKey`.
+ * @function transformGroupedDataToArray - Converts grouped data into an easily consumable format.
+ * @note: Currently, this hook only supports grouping by date. For other types of grouping, the hook needs to be updated.
+ */
+export const useGroupedData = (query, data, groupKey) => {
+  switch (query) {
+    default: {
+      const groupDataByDate = () => {
+        const grouped = {};
+
+        data.forEach((item) => {
+          if (item[groupKey]) {
+            const dateKey = momentFormat(item[groupKey]);
+
+            if (!grouped[dateKey]) {
+              grouped[dateKey] = [];
+            }
+
+            grouped[dateKey].push(item);
+          }
+        });
+
+        return grouped;
+      };
+
+      const transformGroupedDataToArray = (groupedData) => {
+        const resultArray = [];
+        let section;
+        const currentYear = moment().format('YYYY');
+
+        for (const date in groupedData) {
+          let month = momentFormat(date, 'MMMM', 'DD.MM.YYYY');
+          const dateYear = date.split('.')[2];
+
+          if (dateYear !== currentYear) {
+            month = momentFormat(date, 'MMMM YYYY', 'DD.MM.YYYY');
+          }
+
+          if (section !== month) {
+            resultArray.push(month);
+            section = month;
+          }
+
+          resultArray.push(groupedData[date]);
+        }
+
+        return resultArray;
+      };
+
+      return transformGroupedDataToArray(groupDataByDate());
+    }
+  }
 };
