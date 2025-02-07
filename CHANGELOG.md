@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.1.0] :whale:
+
+The new version integrates a brand new filter module, adds a new waste component, updates layouts and upgrades Expo to latest SDK version 52
+
+### Added
+
+- overview screens have new filters in an overlay and there are individual options possible, according to which you can filter
+- the tab bar can be configured via main-server like any other static content to be able to make changes on the fly without app releases
+- the sue module gets a new entry to be an even more integral part of the app
+- there is a new option to place a feedback form including rating to the end of a report process
+- added option to hide the alternate location selection button on the settings screen
+- moved forward to use EAS (Update, Build, Submit) with enhanced configurations
+- setup Maestro for e2e testing with first flows to ensure consistent quality more automatically from now on
+
+### Changed
+
+- upgraded Expo to version 52: https://expo.dev/changelog/2024/11-12-sdk-52
+- brand new waste calendar interface with list and optional calendar, where interface texts can be edited from global settings
+- pin color options for the map in the sue module are extended
+- set `flat: true` as default for layouts to use the new design experience automatically
+- as part of event request optimizations on the main server, the deprecated listingWithoutDateFragment option is removed entirely
+
+### Fixed
+
+- fixed the problem of dropdown in oparl module appearing even though there is no data to select
+- fixed a bug in config context that caused the app to crash
+
 ## [v4.0.3]
 
 This update includes a new image upload feature for the noticeboard module, improvements for sue module, performance optimizations

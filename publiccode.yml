@@ -130,9 +130,9 @@ name: Smart Village App
 platforms:
   - ios
   - android
-releaseDate: '2024-06-28'
+releaseDate: '2025-01-30'
 softwareType: standalone/mobile
-softwareVersion: 4.0.0
+softwareVersion: 4.1.0
 url: 'https://github.com/ikuseiGmbH/smart-village-app-app'
 usedBy:
   - Landkreis Havelland
