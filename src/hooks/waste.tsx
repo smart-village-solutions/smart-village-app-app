@@ -234,7 +234,7 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
         }}
       >
         <Wrapper>
-          <RegularText>{item.city}</RegularText>
+          <RegularText small>{item.city}</RegularText>
         </Wrapper>
         <Divider />
       </TouchableOpacity>
@@ -255,7 +255,7 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
           }}
         >
           <Wrapper>
-            <RegularText>{streetString}</RegularText>
+            <RegularText small>{streetString}</RegularText>
           </Wrapper>
           <Divider />
         </TouchableOpacity>

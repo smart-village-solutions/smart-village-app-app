@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useMemo } from 'react';
+import { Platform, StyleSheet } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { colors, device, normalize, texts } from '../../config';
@@ -79,6 +79,17 @@ export const WasteInputForm = ({
     ((!isInputAutoFocus && inputValue) || isInputAutoFocus)
   );
 
+  const listContainerHeight = useMemo(
+    () =>
+      (inputValueCitySelected ? filteredStreets : filteredCities)?.length < 6
+        ? device.platform === 'ios'
+          ? 'auto'
+          : (inputValueCitySelected ? filteredStreets : filteredCities)?.length *
+            (normalize(22) + 2 * normalize(16))
+        : dimensions.height / 2.5,
+    [inputValueCitySelected, filteredStreets, filteredCities, dimensions.height]
+  );
+
   return (
     <>
       {/* Render city input field if two-step address selection is enabled */}
@@ -90,11 +101,6 @@ export const WasteInputForm = ({
             data={filteredCities}
             disableFullscreenUI
             flatListProps={{
-              height: inputValueCitySelected
-                ? undefined
-                : filteredCities?.length < 6
-                ? 'auto'
-                : dimensions.height / 2.5,
               keyboardShouldPersistTaps: 'handled',
               keyExtractor: (item, index) => `${item.id}-${index}`,
               renderItem: renderSuggestionCities,
@@ -102,7 +108,10 @@ export const WasteInputForm = ({
             }}
             hideResults={isCityResultsHidden}
             inputContainerStyle={styles.autoCompleteInputContainer}
-            listContainerStyle={styles.autoCompleteListContainer}
+            listContainerStyle={[
+              styles.autoCompleteListContainer,
+              { height: inputValueCitySelected ? undefined : listContainerHeight }
+            ]}
             onChangeText={(text) => {
               setInputValueCitySelected(false);
               setSelectedStreetId(undefined);
@@ -120,6 +129,14 @@ export const WasteInputForm = ({
         </Wrapper>
       )}
 
+      {/* Render empty container for spacing as the inputs are overlaying on Androids */}
+      {device.platform === 'android' && (
+        <>
+          <Wrapper />
+          <Wrapper style={styles.noPaddingTop} />
+        </>
+      )}
+
       {/* Render street input field if city is selected or two-step is disabled */}
       {(!hasWasteAddressesTwoStep || (hasWasteAddressesTwoStep && inputValueCitySelected)) && (
         <Wrapper style={styles.noPaddingTop}>
@@ -132,7 +149,6 @@ export const WasteInputForm = ({
             data={filteredStreets}
             disableFullscreenUI
             flatListProps={{
-              height: filteredStreets?.length < 6 ? 'auto' : dimensions.height / 2.5,
               keyboardShouldPersistTaps: 'handled',
               keyExtractor: (item, index) => `${item.id}-${index}`,
               renderItem: renderSuggestion,
@@ -140,7 +156,7 @@ export const WasteInputForm = ({
             }}
             hideResults={isStreetResultsHidden}
             inputContainerStyle={styles.autoCompleteInputContainer}
-            listContainerStyle={styles.autoCompleteListContainer}
+            listContainerStyle={[styles.autoCompleteListContainer, { height: listContainerHeight }]}
             onChangeText={(text) => setInputValue(text)}
             onBlur={() => setIsStreetInputFocused(false)}
             onFocus={() => {
@@ -180,8 +196,18 @@ const styles = StyleSheet.create({
     lineHeight: normalize(20)
   },
   autoCompleteList: {
-    borderWidth: 0,
-    paddingHorizontal: normalize(6)
+    paddingHorizontal: normalize(6),
+    position: 'relative',
+    ...Platform.select({
+      ios: {
+        borderWidth: 0
+      },
+      android: {
+        borderColor: colors.gray20,
+        borderRadius: 0,
+        borderWidth: normalize(1)
+      }
+    })
   },
   autoCompleteListContainer: {
     elevation: 2,

@@ -983,7 +983,8 @@ export const texts = {
     permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis',
     permissionRequiredBody:
-      'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
+      'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.',
+    settings: 'Einstellungen'
   },
   screenTitles: {
     about: 'Menü',

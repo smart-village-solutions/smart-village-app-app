@@ -27,6 +27,15 @@ onFlowStart:
     duration: 155
 - tapOn:
     point: "32%,75%"
+
+# save settings
+- tapOn: "Speichern"
+- tapOn:
+    point: "83%,10%"
+- tapOn:
+    point: "91%,59%"
+- tapOn: "Jetzt einschalten"
+- tapOn: "Abbrechen"
 - tapOn: "Speichern"
 
 # change the location

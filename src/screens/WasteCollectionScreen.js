@@ -32,16 +32,11 @@ import {
 } from '../components';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import {
-  colors,
-  consts,
-  Icon,
-  normalize,
-  texts
-} from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { momentFormat, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import {
+  useKeyboardHeight,
   useRenderSuggestions,
   useStreetString,
   useWasteAddresses,
@@ -120,6 +115,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     streetData,
     selectedTypes: selectedTypes || typesData
   });
+  const keyboardHeight = useKeyboardHeight();
   const [isReset, setIsReset] = useState(false);
   const query = QUERY_TYPES.WASTE_STREET;
 
@@ -408,7 +404,10 @@ export const WasteCollectionScreen = ({ navigation }) => {
       ) : selectedTypes && !showCalendar ? (
         wasteList()
       ) : null}
-      {!selectedStreetId && <FeedbackFooter containerStyle={styles.feedbackContainer} />}
+      {!selectedStreetId &&
+        (device.platform === 'ios' || (device.platform === 'android' && !keyboardHeight)) && (
+          <FeedbackFooter containerStyle={styles.feedbackContainer} />
+        )}
     </SafeAreaViewFlex>
   );
 };
