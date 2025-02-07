@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet } from 'react-native';
 
 import { Icon } from '../config';
 
@@ -36,7 +35,7 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   }
 
   return (
-    <Wrapper style={styles.noPadding}>
+    <Wrapper noPaddingTop noPaddingBottom>
       <Button
         icon={!!iconName && <SelectedIcon color={iconColor} />}
         title={title}
@@ -46,10 +45,3 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
     </Wrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  noPadding: {
-    paddingBottom: 0,
-    paddingTop: 0
-  }
-});

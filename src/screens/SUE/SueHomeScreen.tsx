@@ -140,6 +140,6 @@ const styles = StyleSheet.create({
     paddingTop: 0
   },
   paddingTop: {
-    paddingTop: normalize(22)
+    paddingTop: normalize(16)
   }
 });
