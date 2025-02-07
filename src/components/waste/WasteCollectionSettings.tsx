@@ -12,6 +12,7 @@ import React, {
   useState
 } from 'react';
 import {
+  Alert,
   FlatList,
   Modal,
   RefreshControl,
@@ -24,8 +25,18 @@ import {
 import Collapsible from 'react-native-collapsible';
 import { Divider, ListItem, Tooltip } from 'react-native-elements';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
-import { formatTime, storageHelper } from '../../helpers';
+import {
+  colors,
+  consts,
+  device,
+  Icon,
+  namespace,
+  normalize,
+  secrets,
+  staticRestSuffix,
+  texts
+} from '../../config';
+import { formatTime, openLink, storageHelper } from '../../helpers';
 import {
   useFilterStreets,
   useRenderSuggestions,
@@ -41,6 +52,7 @@ import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '
 import { getLocationData } from '../../screens';
 import { SettingsContext } from '../../SettingsProvider';
 import { WasteReminderSettingJson } from '../../types';
+import { Button } from '../Button';
 import { HeaderLeft } from '../HeaderLeft';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Switch } from '../Switch';
@@ -72,7 +84,7 @@ export const WasteCollectionSettings = ({
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
   const { settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
-  const { texts: wasteAddressesTexts = {} } = wasteAddresses;
+  const { texts: wasteAddressesTexts = {}, hasExport = true } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
   const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
@@ -211,6 +223,45 @@ export const WasteCollectionSettings = ({
     reminderTime,
     loadStoredSettingsFromServer
   ]);
+
+  const triggerExport = useCallback(() => {
+    const { street, zip, city } = getLocationData(streetData);
+
+    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
+
+    let params = `street=${encodeURIComponent(street)}`;
+
+    if (zip) {
+      params += `&zip=${encodeURIComponent(zip)}`;
+    }
+
+    if (city) {
+      params += `&city=${encodeURIComponent(city)}`;
+    }
+
+    const combinedUrl = baseUrl + params;
+
+    if (device.platform === 'android') {
+      Alert.alert(
+        wasteTexts.exportAlertTitle,
+        wasteTexts.exportAlertBody,
+        [
+          {
+            onPress: () => {
+              openLink(combinedUrl);
+            }
+          }
+        ],
+        {
+          onDismiss: () => {
+            openLink(combinedUrl);
+          }
+        }
+      );
+    } else {
+      openLink(combinedUrl);
+    }
+  }, [streetData]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -589,6 +640,14 @@ export const WasteCollectionSettings = ({
             </WrapperHorizontal>
           )}
         </Collapsible>
+
+        {!!hasExport && (
+          <View style={styles.paddingTop}>
+            <Wrapper style={styles.noPaddingBottom}>
+              <Button title={wasteTexts.exportButton} onPress={triggerExport} />
+            </Wrapper>
+          </View>
+        )}
       </ScrollView>
     );
   }
