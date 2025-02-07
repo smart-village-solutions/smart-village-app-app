@@ -1503,19 +1503,33 @@ export const texts = {
     secret: 'Vertragskonto-Nr.'
   },
   wasteCalendar: {
+    calendarIntro:
+      'Klicken Sie auf die Farbpunkte um die genauen Informationen zu den Abfallterminen ablesen zu können.',
+    chooseCategory: 'Kategorien auswählen',
     configureReminder: 'Erinnerungen einstellen',
+    daysBefore: 'Tag(e) vor Abholung',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
     errorOnUpdateTitle: 'Fehler',
     exportAlertBody:
       'Ein Download wird in einem externen Browser gestartet.\nNachdem der Download abgeschlossen ist, können Sie die Termine durch Öffnen der Datei in Ihren Kalender importieren.',
     exportAlertTitle: 'Abfallkalender',
+    exportButton: 'Kalender exportieren',
     exportCalendar: 'Kalender exportieren',
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',
+    location: 'Ortschaft',
+    myLocation: 'Meine Straße:',
+    notifications: 'Benachrichtigungen',
+    notificationsOn: 'Benachrichtigungen an',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
+    oneDayBefore: '1 Tag vorher',
     reminder: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
+    sameDay: 'selber Tag',
+    save: 'Speichern',
+    street: 'Straße',
+    timeOfDay: 'Uhrzeit',
     unableToLoad:
       'Beim Laden Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
     updateReminderSettings: 'Änderungen speichern',
