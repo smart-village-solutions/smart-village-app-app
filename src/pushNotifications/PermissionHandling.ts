@@ -104,12 +104,13 @@ export const updatePushToken = async () => {
 };
 
 export const showSystemPermissionMissingDialog = () => {
-  const { cancel, permissionMissingBody, permissionMissingTitle, settings } =
+  const { abort, permissionMissingBody, permissionMissingTitle, settings } =
     texts.pushNotifications;
 
   Alert.alert(permissionMissingTitle, permissionMissingBody, [
     {
-      text: cancel
+      text: abort,
+      style: 'cancel'
     },
     {
       text: settings,

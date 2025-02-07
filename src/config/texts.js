@@ -980,7 +980,6 @@ export const texts = {
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
-    cancel: 'Abrrechen',
     permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis',
     permissionRequiredBody:
