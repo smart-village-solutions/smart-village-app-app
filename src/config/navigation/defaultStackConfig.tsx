@@ -159,7 +159,7 @@ export const defaultStackConfig = ({
       screenComponent: BookmarkCategoryScreen
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.favorites
       },
       routeName: ScreenName.Bookmarks,
@@ -287,7 +287,7 @@ export const defaultStackConfig = ({
       })
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.events,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' }
@@ -314,7 +314,7 @@ export const defaultStackConfig = ({
       screenOptions: { title: texts.screenTitles.feedback }
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         isDrawer,
         title: texts.screenTitles.home
       },
@@ -332,7 +332,7 @@ export const defaultStackConfig = ({
       screenComponent: IndexScreen,
       screenOptions: getScreenOptions({ withInfo: true }),
       // NOTE: is used as initial screen for the points of interest tab
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.pointsOfInterest,
         query: QUERY_TYPES.CATEGORIES,
         usedAsInitialScreen: true
@@ -410,7 +410,7 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Profile,
       screenComponent: ProfileHomeScreen,
       screenOptions: getScreenOptions({ withInfo: true }),
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.profile.home,
         query: QUERY_TYPES.PUBLIC_JSON_FILE,
         queryVariables: {
@@ -508,20 +508,20 @@ export const defaultStackConfig = ({
       screenOptions: { title: texts.screenTitles.service }
     },
     {
-      initialParams: { title: texts.screenTitles.settings },
+      initialParams: initialParams || { title: texts.screenTitles.settings },
       routeName: ScreenName.Settings,
       screenComponent: SettingsScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer })
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.home
       },
       routeName: ScreenName.SueHome,
       screenComponent: SueHomeScreen
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.sue.listView,
         query: QUERY_TYPES.SUE.REQUESTS,
         usedAsInitialScreen: true
@@ -530,7 +530,7 @@ export const defaultStackConfig = ({
       screenComponent: SueListScreen
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.sue.mapView,
         query: QUERY_TYPES.SUE.REQUESTS,
         usedAsInitialScreen: true
@@ -539,7 +539,7 @@ export const defaultStackConfig = ({
       screenComponent: SueMapScreen
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.sue.reportView,
         query: QUERY_TYPES.SUE.REQUESTS,
         usedAsInitialScreen: true
@@ -583,7 +583,7 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerFormScreen
     },
     {
-      initialParams: {
+      initialParams: initialParams || {
         title: texts.screenTitles.volunteer.home
       },
       routeName: ScreenName.VolunteerHome,
@@ -691,10 +691,12 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
     },
     {
+      initialParams,
       routeName: ScreenName.WhistleblowCode,
       screenComponent: WhistleblowCodeScreen
     },
     {
+      initialParams,
       routeName: ScreenName.WhistleblowForm,
       screenComponent: WhistleblowFormScreen
     }
