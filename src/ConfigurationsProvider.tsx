@@ -99,7 +99,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [appDesignSystem, sue, sueConfigData, sueProgress, resourceFiltersData]);
+  }, [sueConfigData, sueProgress, resourceFiltersData]);
 
   const reloadCallback = useCallback(async () => {
     setIsLoading(true);
