@@ -7,6 +7,7 @@
     "production": {
       "node": "18.19.1",
       "yarn": "1.22.19",
+      "autoIncrement": true,
       "channel": "production",
       "ios": {
         "image": "latest"
