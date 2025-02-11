@@ -77,16 +77,6 @@ const SORT_OPTIONS = [
   }
 ];
 
-type TFilterSection = {
-  initialQueryVariables: any;
-  services: any;
-  setQueryVariables: any;
-  setViewType: any;
-  showViewSwitcherButton: boolean;
-  statuses: StatusProps[];
-  viewType: string;
-};
-
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
@@ -106,12 +96,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const query = route.params?.query ?? '';
 
   const limit = 20;
-  const initial_start_date = '1900-01-01T00:00:00+01:00';
-  const dataCountQueryVariables = {
-    start_date: initial_start_date
-  };
+  const initial_start_date = { start_date: '1900-01-01T00:00:00+01:00' };
+  const [dataCountQueryVariables, setDataCountQueryVariables] = useState(initial_start_date);
   const initialQueryVariables = route.params?.queryVariables ?? {
-    initial_start_date,
     limit,
     offset: 0
   };
@@ -124,12 +111,14 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     [
       query,
       {
+        ...dataCountQueryVariables,
         ...queryVariables,
         sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME
       }
     ],
     ({ pageParam = 0 }) =>
       getQuery(query)({
+        ...dataCountQueryVariables,
         ...queryVariables,
         sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME,
         offset: pageParam
@@ -173,6 +162,15 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       setIsOpening(false);
     }, 50);
   }, []);
+
+  useEffect(() => {
+    const { limit, offset, ...rest } = queryVariables;
+
+    setDataCountQueryVariables({
+      ...initial_start_date,
+      ...rest
+    });
+  }, [queryVariables]);
 
   const listItems = useMemo(() => {
     if (!data?.pages?.length) return [];
