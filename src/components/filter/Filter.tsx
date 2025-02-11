@@ -27,6 +27,16 @@ type Props = {
   withSearch?: boolean;
 };
 
+const cleanObject = (obj: FilterProps, initialStartDate?: string): FilterProps => {
+  const newObj = { ...obj };
+
+  if (initialStartDate && newObj.start_date === initialStartDate) {
+    delete newObj.start_date;
+  }
+
+  return newObj;
+};
+
 export const Filter = ({
   filterTypes,
   initialFilters,
@@ -36,15 +46,8 @@ export const Filter = ({
   setQueryVariables,
   withSearch = false
 }: Props) => {
-  const [filters, setFilters] = useState<FilterProps>(
-    initialStartDate
-      ? Object.fromEntries(
-          Object.entries(queryVariables).filter(
-            ([key, value]) => !(key === 'start_date' && value === initialStartDate)
-          )
-        )
-      : queryVariables
-  );
+  const initialQueryVariables = cleanObject(queryVariables, initialStartDate);
+  const [filters, setFilters] = useState<FilterProps>(initialQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [filterCount, setFilterCount] = useState(0);
 
@@ -55,10 +58,10 @@ export const Filter = ({
 
         if (newFilters.start_date === initialStartDate) {
           delete newFilters.start_date;
+
           return {
             ...prev,
             search: prev.search || '',
-            start_date: initialStartDate,
             ...newFilters
           };
         }
@@ -82,15 +85,7 @@ export const Filter = ({
       setIsCollapsed(!isCollapsed);
 
       setTimeout(() => {
-        setFilters(
-          initialStartDate
-            ? Object.fromEntries(
-                Object.entries(queryVariables).filter(
-                  ([key, value]) => !(key === 'start_date' && value === initialStartDate)
-                )
-              )
-            : queryVariables
-        );
+        setFilters(initialQueryVariables);
 
         setQueryVariables({
           ...queryVariables,

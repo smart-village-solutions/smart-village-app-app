@@ -40,7 +40,7 @@ import { SueMapScreen } from './SueMapScreen';
 const { a11yLabel, FILTER_TYPES } = consts;
 
 const limit = 20;
-const initial_start_date = { start_date: '1900-01-01T00:00:00+01:00' };
+const initialStartDate = { start_date: '1900-01-01T00:00:00+01:00' };
 
 const SORT_BY = {
   REQUESTED_DATE_TIME: 'requested_datetime DESC',
@@ -101,13 +101,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const initialQueryVariables = route.params?.queryVariables ?? {
     limit,
     offset: 0,
-    ...initial_start_date
+    ...initialStartDate
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
-  const [dataCountQueryVariables, setDataCountQueryVariables] = useState(() => {
-    const { limit, offset, ...rest } = queryVariables;
-
-    return { ...rest, ...initial_start_date };
+  const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
+    ...queryVariables,
+    limit: undefined,
+    offset: undefined
   });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
@@ -319,7 +319,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                       placeholder: texts.sue.filter.alleSortingTypes
                     }
                   ]}
-                  initialStartDate={initial_start_date.start_date}
+                  initialStartDate={initialStartDate.start_date}
                   queryVariables={initialQueryVariables}
                   setQueryVariables={setQueryVariables}
                   withSearch
