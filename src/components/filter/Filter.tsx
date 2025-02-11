@@ -20,6 +20,7 @@ const { a11yLabel } = consts;
 type Props = {
   filterTypes?: FilterTypesProps[];
   initialFilters?: FilterProps;
+  initialStartDate?: string;
   isOverlay?: boolean;
   queryVariables: FilterProps;
   setQueryVariables: React.Dispatch<FilterProps>;
@@ -29,20 +30,79 @@ type Props = {
 export const Filter = ({
   filterTypes,
   initialFilters,
+  initialStartDate,
   isOverlay = false,
   queryVariables,
   setQueryVariables,
   withSearch = false
 }: Props) => {
-  const [filters, setFilters] = useState<FilterProps>(queryVariables);
+  const [filters, setFilters] = useState<FilterProps>(
+    initialStartDate
+      ? Object.fromEntries(
+          Object.entries(queryVariables).filter(
+            ([key, value]) => !(key === 'start_date' && value === initialStartDate)
+          )
+        )
+      : queryVariables
+  );
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [filterCount, setFilterCount] = useState(0);
 
   useEffect(() => {
     if (!isOverlay) {
-      setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
+      setQueryVariables((prev) => {
+        const newFilters = { ...filters };
+
+        if (newFilters.start_date === initialStartDate) {
+          delete newFilters.start_date;
+          return {
+            ...prev,
+            search: prev.search || '',
+            start_date: initialStartDate,
+            ...newFilters
+          };
+        }
+
+        if (!newFilters.start_date) {
+          return {
+            ...prev,
+            search: prev.search || '',
+            start_date: initialStartDate,
+            ...newFilters
+          };
+        }
+
+        return { ...prev, search: prev.search || '', ...newFilters };
+      });
     }
   }, [filters]);
+
+  const resetFilters = () => {
+    if (!isOverlay) {
+      setIsCollapsed(!isCollapsed);
+
+      setTimeout(() => {
+        setFilters(
+          initialStartDate
+            ? Object.fromEntries(
+                Object.entries(queryVariables).filter(
+                  ([key, value]) => !(key === 'start_date' && value === initialStartDate)
+                )
+              )
+            : queryVariables
+        );
+
+        setQueryVariables({
+          ...queryVariables,
+          start_date: initialStartDate
+        });
+      }, 500);
+    } else {
+      setFilters(initialFilters || {});
+      setIsCollapsed(!isCollapsed);
+      setQueryVariables({ saveable: false, ...(initialFilters || {}) });
+    }
+  };
 
   useEffect(() => {
     if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
@@ -141,11 +201,7 @@ export const Filter = ({
                   disabled={!!isNoFilterSet}
                   invert
                   notFullWidth
-                  onPress={() => {
-                    setFilters(initialFilters || {});
-                    setIsCollapsed(!isCollapsed);
-                    setQueryVariables({ saveable: false, ...(initialFilters || {}) });
-                  }}
+                  onPress={resetFilters}
                   title={texts.filter.resetFilter}
                 />
                 <Button
@@ -200,13 +256,7 @@ export const Filter = ({
               <Button
                 disabled={!!isNoFilterSet}
                 invert
-                onPress={() => {
-                  setIsCollapsed(!isCollapsed);
-
-                  setTimeout(() => {
-                    setFilters(queryVariables);
-                  }, 500);
-                }}
+                onPress={resetFilters}
                 title={texts.filter.resetFilter}
               />
             </WrapperVertical>

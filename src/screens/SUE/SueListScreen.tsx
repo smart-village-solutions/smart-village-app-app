@@ -39,6 +39,9 @@ import { SueMapScreen } from './SueMapScreen';
 
 const { a11yLabel, FILTER_TYPES } = consts;
 
+const limit = 20;
+const initial_start_date = { start_date: '1900-01-01T00:00:00+01:00' };
+
 const SORT_BY = {
   REQUESTED_DATE_TIME: 'requested_datetime DESC',
   STATUS: 'status ASC',
@@ -95,14 +98,17 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const { showViewSwitcherButton = false } = sueListItem;
   const query = route.params?.query ?? '';
 
-  const limit = 20;
-  const initial_start_date = { start_date: '1900-01-01T00:00:00+01:00' };
-  const [dataCountQueryVariables, setDataCountQueryVariables] = useState(initial_start_date);
   const initialQueryVariables = route.params?.queryVariables ?? {
     limit,
-    offset: 0
+    offset: 0,
+    ...initial_start_date
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
+  const [dataCountQueryVariables, setDataCountQueryVariables] = useState(() => {
+    const { limit, offset, ...rest } = queryVariables;
+
+    return { ...rest, ...initial_start_date };
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
   const [viewType, setViewType] = useState(VIEW_TYPE.LIST);
@@ -111,14 +117,12 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     [
       query,
       {
-        ...dataCountQueryVariables,
         ...queryVariables,
         sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME
       }
     ],
     ({ pageParam = 0 }) =>
       getQuery(query)({
-        ...dataCountQueryVariables,
         ...queryVariables,
         sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME,
         offset: pageParam
@@ -164,12 +168,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   }, []);
 
   useEffect(() => {
-    const { limit, offset, ...rest } = queryVariables;
+    const { limit, offset, search, ...rest } = queryVariables;
 
-    setDataCountQueryVariables({
-      ...initial_start_date,
-      ...rest
-    });
+    setDataCountQueryVariables(rest);
   }, [queryVariables]);
 
   const listItems = useMemo(() => {
@@ -318,6 +319,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                       placeholder: texts.sue.filter.alleSortingTypes
                     }
                   ]}
+                  initialStartDate={initial_start_date.start_date}
                   queryVariables={initialQueryVariables}
                   setQueryVariables={setQueryVariables}
                   withSearch
