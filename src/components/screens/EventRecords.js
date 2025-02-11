@@ -276,8 +276,8 @@ export const EventRecords = ({ navigation, route }) => {
       <Filter
         filterTypes={filterTypes}
         initialFilters={initialQueryVariables}
+        initialQueryVariables={queryVariables}
         isOverlay
-        queryVariables={queryVariables}
         setQueryVariables={setQueryVariables}
       />
 

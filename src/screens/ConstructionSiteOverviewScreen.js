@@ -87,8 +87,8 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
       <Filter
         filterTypes={filterTypes}
         initialFilters={initialQueryVariables}
+        initialQueryVariables={queryVariables}
         isOverlay
-        queryVariables={queryVariables}
         setQueryVariables={setQueryVariables}
       />
 

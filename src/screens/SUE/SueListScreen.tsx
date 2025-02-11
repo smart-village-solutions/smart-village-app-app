@@ -27,14 +27,13 @@ import {
   SafeAreaViewFlex,
   Search,
   SueLoadingIndicator,
-  Wrapper,
-  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps } from '../../types';
+
 import { SueMapScreen } from './SueMapScreen';
 
 const { a11yLabel, FILTER_TYPES } = consts;
@@ -105,7 +104,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
-    ...queryVariables,
+    ...initialQueryVariables,
     limit: undefined,
     offset: undefined
   });
@@ -319,8 +318,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                       placeholder: texts.sue.filter.alleSortingTypes
                     }
                   ]}
-                  initialStartDate={initialStartDate.start_date}
-                  queryVariables={initialQueryVariables}
+                  initialQueryVariables={initialQueryVariables}
+                  initialStartDate={initialStartDate}
                   setQueryVariables={setQueryVariables}
                   withSearch
                 />

@@ -354,7 +354,8 @@ export const Overviews = ({ navigation, route }) => {
     );
   }
 
-  const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
+  const showMapFilter =
+    query !== QUERY_TYPES.NEWS_ITEMS && (queryVariables?.categoryIds?.length || 0) > 1;
 
   return (
     <SafeAreaViewFlex>
@@ -362,8 +363,8 @@ export const Overviews = ({ navigation, route }) => {
         <Filter
           filterTypes={filterTypes}
           initialFilters={initialQueryVariables}
+          initialQueryVariables={queryVariables}
           isOverlay
-          queryVariables={queryVariables}
           setQueryVariables={setQueryVariables}
         />
       )}

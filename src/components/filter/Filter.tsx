@@ -20,21 +20,25 @@ const { a11yLabel } = consts;
 type Props = {
   filterTypes?: FilterTypesProps[];
   initialFilters?: FilterProps;
-  initialStartDate?: string;
+  initialStartDate?: { start_date: string };
   isOverlay?: boolean;
-  queryVariables: FilterProps;
+  initialQueryVariables: FilterProps;
   setQueryVariables: React.Dispatch<FilterProps>;
   withSearch?: boolean;
 };
 
-const cleanObject = (obj: FilterProps, initialStartDate?: string): FilterProps => {
-  const newObj = { ...obj };
+const deleteInitialStartDateFromQueryVariables = (
+  initialQueryVariables: FilterProps,
+  initialStartDate?: string
+): FilterProps => {
+  if (initialQueryVariables?.start_date === initialStartDate) {
+    const newQueryVariables = { ...initialQueryVariables };
+    delete newQueryVariables.start_date;
 
-  if (initialStartDate && newObj.start_date === initialStartDate) {
-    delete newObj.start_date;
+    return newQueryVariables;
   }
 
-  return newObj;
+  return initialQueryVariables;
 };
 
 export const Filter = ({
@@ -42,12 +46,15 @@ export const Filter = ({
   initialFilters,
   initialStartDate,
   isOverlay = false,
-  queryVariables,
+  initialQueryVariables,
   setQueryVariables,
   withSearch = false
 }: Props) => {
-  const initialQueryVariables = cleanObject(queryVariables, initialStartDate);
-  const [filters, setFilters] = useState<FilterProps>(initialQueryVariables);
+  const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(
+    initialQueryVariables,
+    initialStartDate?.start_date
+  );
+  const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [filterCount, setFilterCount] = useState(0);
 
@@ -85,10 +92,10 @@ export const Filter = ({
       setIsCollapsed(!isCollapsed);
 
       setTimeout(() => {
-        setFilters(initialQueryVariables);
+        setFilters(updatedQueryVariables);
 
         setQueryVariables({
-          ...queryVariables,
+          ...initialQueryVariables,
           start_date: initialStartDate
         });
       }, 500);
@@ -100,8 +107,8 @@ export const Filter = ({
   };
 
   useEffect(() => {
-    if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
-      setFilters(queryVariables);
+    if (!!isOverlay && !_isEqual(filters, initialQueryVariables) && isCollapsed) {
+      setFilters(initialQueryVariables);
     }
   }, [isCollapsed]);
 
@@ -124,7 +131,8 @@ export const Filter = ({
   }
 
   const isNoFilterSet =
-    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
+    filters.initial_start_date &&
+    !Object.keys(_omit(filters, Object.keys(initialQueryVariables))).length;
 
   return (
     <>

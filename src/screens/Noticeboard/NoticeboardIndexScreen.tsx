@@ -241,8 +241,8 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       <Filter
         filterTypes={filterTypes}
         initialFilters={initialQueryVariables}
+        initialQueryVariables={queryVariables}
         isOverlay
-        queryVariables={queryVariables}
         setQueryVariables={setQueryVariables}
       />
       <ListComponent
