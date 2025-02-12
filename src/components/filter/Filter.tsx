@@ -8,6 +8,7 @@ import { Divider, Header } from 'react-native-elements';
 
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
+import { initialStartDate } from '../../screens';
 import { FilterProps, FilterTypesProps } from '../../types';
 
 import { Button } from './../Button';
@@ -20,7 +21,6 @@ const { a11yLabel } = consts;
 type Props = {
   filterTypes?: FilterTypesProps[];
   initialQueryVariables?: FilterProps;
-  initialStartDate?: { start_date: string };
   isOverlay?: boolean;
   queryVariables: FilterProps;
   setQueryVariables: React.Dispatch<FilterProps>;
@@ -44,7 +44,6 @@ const deleteInitialStartDateFromQueryVariables = (
 export const Filter = ({
   filterTypes,
   initialQueryVariables,
-  initialStartDate,
   isOverlay = false,
   queryVariables,
   setQueryVariables,
@@ -52,7 +51,7 @@ export const Filter = ({
 }: Props) => {
   const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(
     queryVariables,
-    initialStartDate?.start_date
+    initialStartDate.start_date
   );
   const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -63,7 +62,7 @@ export const Filter = ({
       setQueryVariables((prev) => {
         const newFilters = { ...filters };
 
-        if (newFilters.start_date === initialStartDate) {
+        if (newFilters.start_date === initialStartDate.start_date) {
           delete newFilters.start_date;
 
           return {
@@ -77,7 +76,7 @@ export const Filter = ({
           return {
             ...prev,
             search: prev.search || '',
-            start_date: initialStartDate,
+            ...initialStartDate,
             ...newFilters
           };
         }
@@ -96,7 +95,7 @@ export const Filter = ({
 
         setQueryVariables({
           ...queryVariables,
-          start_date: initialStartDate
+          ...initialStartDate
         });
       }, 500);
     } else {

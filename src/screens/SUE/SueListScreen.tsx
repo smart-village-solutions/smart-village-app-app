@@ -39,7 +39,7 @@ import { SueMapScreen } from './SueMapScreen';
 const { a11yLabel, FILTER_TYPES } = consts;
 
 const limit = 20;
-const initialStartDate = { start_date: '1900-01-01T00:00:00+01:00' };
+export const initialStartDate = { start_date: '1900-01-01T00:00:00+01:00' };
 
 const SORT_BY = {
   REQUESTED_DATE_TIME: 'requested_datetime DESC',
