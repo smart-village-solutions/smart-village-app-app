@@ -36,6 +36,13 @@ jobs:
           echo "" >> LICENSES.md
           echo "This file contains the licenses of the dependencies used in this project." >> LICENSES.md
           echo "" >> LICENSES.md
+
+      - name: Add licenses summary to LICENSES.md
+        run: node .github/scripts/license-summary.js
+
+      - name: Add licenses list to LICENSES.md
+        run: |
+          echo "" >> LICENSES.md
           echo '```json' >> LICENSES.md
           cat licenses.json >> LICENSES.md
           echo '```' >> LICENSES.md
