@@ -1,12 +1,10 @@
 name: openCode mirror
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  workflow_run:
+    workflows: ["Licenses report"]
+    types:
+      - completed
 
 jobs:
   opencode_mirror:
