@@ -1,5 +1,6 @@
-# License Report
-This file contains the licenses of the dependencies used in this project.
+# License Report\n
+This file contains the licenses of the dependencies used in this project.\n
+```json
 {
   "@0no-co/graphql.web@1.0.13": {
     "licenses": "MIT",
@@ -11899,3 +11900,4 @@ This file contains the licenses of the dependencies used in this project.
   }
 }
 
+```
