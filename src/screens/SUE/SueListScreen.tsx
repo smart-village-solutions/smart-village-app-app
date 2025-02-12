@@ -318,8 +318,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                       placeholder: texts.sue.filter.alleSortingTypes
                     }
                   ]}
-                  initialQueryVariables={initialQueryVariables}
                   initialStartDate={initialStartDate}
+                  queryVariables={initialQueryVariables}
                   setQueryVariables={setQueryVariables}
                   withSearch
                 />

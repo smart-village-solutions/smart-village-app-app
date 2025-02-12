@@ -19,39 +19,39 @@ const { a11yLabel } = consts;
 
 type Props = {
   filterTypes?: FilterTypesProps[];
-  initialFilters?: FilterProps;
+  initialQueryVariables?: FilterProps;
   initialStartDate?: { start_date: string };
   isOverlay?: boolean;
-  initialQueryVariables: FilterProps;
+  queryVariables: FilterProps;
   setQueryVariables: React.Dispatch<FilterProps>;
   withSearch?: boolean;
 };
 
 const deleteInitialStartDateFromQueryVariables = (
-  initialQueryVariables: FilterProps,
+  queryVariables: FilterProps,
   initialStartDate?: string
 ): FilterProps => {
-  if (initialQueryVariables?.start_date === initialStartDate) {
-    const newQueryVariables = { ...initialQueryVariables };
+  if (queryVariables?.start_date === initialStartDate) {
+    const newQueryVariables = { ...queryVariables };
     delete newQueryVariables.start_date;
 
     return newQueryVariables;
   }
 
-  return initialQueryVariables;
+  return queryVariables;
 };
 
 export const Filter = ({
   filterTypes,
-  initialFilters,
+  initialQueryVariables,
   initialStartDate,
   isOverlay = false,
-  initialQueryVariables,
+  queryVariables,
   setQueryVariables,
   withSearch = false
 }: Props) => {
   const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(
-    initialQueryVariables,
+    queryVariables,
     initialStartDate?.start_date
   );
   const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
@@ -95,26 +95,26 @@ export const Filter = ({
         setFilters(updatedQueryVariables);
 
         setQueryVariables({
-          ...initialQueryVariables,
+          ...queryVariables,
           start_date: initialStartDate
         });
       }, 500);
     } else {
-      setFilters(initialFilters || {});
+      setFilters(initialQueryVariables || {});
       setIsCollapsed(!isCollapsed);
-      setQueryVariables({ saveable: false, ...(initialFilters || {}) });
+      setQueryVariables({ saveable: false, ...(initialQueryVariables || {}) });
     }
   };
 
   useEffect(() => {
-    if (!!isOverlay && !_isEqual(filters, initialQueryVariables) && isCollapsed) {
-      setFilters(initialQueryVariables);
+    if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
+      setFilters(queryVariables);
     }
   }, [isCollapsed]);
 
   useEffect(() => {
     if (isOverlay) {
-      const activeFilters = _omit(filters, Object.keys(initialFilters || {}));
+      const activeFilters = _omit(filters, Object.keys(initialQueryVariables || {}));
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
         if (key !== 'saveable' || activeFilters[key] !== false) {
           acc[key] = activeFilters[key];
@@ -124,15 +124,14 @@ export const Filter = ({
       }, {} as FilterProps);
       setFilterCount(Object.keys(filteredActiveFilters).length);
     }
-  }, [filters, initialFilters, isCollapsed]);
+  }, [filters, initialQueryVariables, isCollapsed]);
 
   if (!filterTypes?.length) {
     return null;
   }
 
   const isNoFilterSet =
-    filters.initial_start_date &&
-    !Object.keys(_omit(filters, Object.keys(initialQueryVariables))).length;
+    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
 
   return (
     <>
