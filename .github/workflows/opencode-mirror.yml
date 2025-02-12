@@ -1,0 +1,27 @@
+name: openCode mirror
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  opencode_mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch the entire Git history instead of just the last commit
+          fetch-depth: 0
+
+      - name: Pushes to openCode repository
+        uses: wangchucheng/git-repo-sync@v0.1.0
+        with:
+          target-url: ${{ secrets.MIRROR_TARGET_URL }}
+          target-username: ${{ secrets.MIRROR_TARGET_USERNAME }}
+          target-token: ${{ secrets.MIRROR_TARGET_TOKEN }}
