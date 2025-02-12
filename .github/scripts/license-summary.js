@@ -30,14 +30,18 @@ const sortedLicenses = Object.entries(licenseCounts).sort((a, b) => {
 });
 
 const getLicenseUrl = (license) => {
-  if (license.toLowerCase() === "public domain") {
+  if (license.toLowerCase() === "public-domain") {
     return 'https://en.wikipedia.org/wiki/Public_domain';
+  }
+
+  if (license.toLowerCase() === "bsd") {
+    return 'https://en.wikipedia.org/wiki/BSD_licenses';
   }
 
   return `https://spdx.org/licenses/${license}.html`;
 };
 
-let licenseSummary = '## License Overview\n\n';
+let licenseSummary = '## Licenses overview\n\n';
 licenseSummary += '| License | Packages count |\n';
 licenseSummary += '|---------|---------------:|\n';
 
