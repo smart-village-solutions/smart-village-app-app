@@ -50,6 +50,7 @@ jobs:
           echo "" >> LICENSES.md
           echo '```json' >> LICENSES.md
           cat licenses.json >> LICENSES.md
+          echo "" >> LICENSES.md
           echo '```' >> LICENSES.md
 
       - uses: stefanzweifel/git-auto-commit-action@v5
