@@ -30,6 +30,9 @@ jobs:
       - name: Generate license report as json
         run: node_modules/.bin/license-checker --json > licenses.json
 
+      - name: Cleanup licenses.json
+        run: node .github/scripts/cleanup-licenses.js
+
       - name: Create LICENSES.md
         run: |
           echo "# Licenses report" > LICENSES.md
