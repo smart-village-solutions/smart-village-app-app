@@ -2,6 +2,31 @@
 
 This file contains the licenses of the dependencies used in this project.
 
+
+
+## License Overview
+
+| License | Packages count |
+|---------|---------------:|
+| [MIT](https://spdx.org/licenses/MIT.html) | 1317 |
+| [ISC](https://spdx.org/licenses/ISC.html) | 108 |
+| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 39 |
+| [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 38 |
+| [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 33 |
+| [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 8 |
+| [0BSD](https://spdx.org/licenses/0BSD.html) | 5 |
+| [Unlicense](https://spdx.org/licenses/Unlicense.html) | 4 |
+| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 3 |
+| [MPL-2.0](https://spdx.org/licenses/MPL-2.0.html) | 3 |
+| [BSD](https://spdx.org/licenses/BSD.html) | 2 |
+| [CC-BY-3.0](https://spdx.org/licenses/CC-BY-3.0.html) | 2 |
+| [GPL-2.0](https://spdx.org/licenses/GPL-2.0.html) | 2 |
+| [Beerware](https://spdx.org/licenses/Beerware.html) | 1 |
+| [CC-BY-4.0](https://spdx.org/licenses/CC-BY-4.0.html) | 1 |
+| [GPL-3.0](https://spdx.org/licenses/GPL-3.0.html) | 1 |
+| [Public-Domain](https://spdx.org/licenses/Public-Domain.html) | 1 |
+| [Python-2.0](https://spdx.org/licenses/Python-2.0.html) | 1 |
+
 ```json
 {
   "@0no-co/graphql.web@1.0.13": {
