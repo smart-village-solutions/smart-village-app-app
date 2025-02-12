@@ -52,7 +52,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "<%= @android_background_color %>"
       },
-      "package": "de.bb.brandenburg.smartvillage.app",
+      "package": "<%= @mobile_app_bundle_identifier %>",
       "versionCode": <%= @mobile_app_android_version_number %>,
       "googleServicesFile": "./google-services.json",
       "permissions": [
@@ -79,7 +79,7 @@
         {
           // `appleTeamId` needs to be added
           // https://developer.apple.com/help/account/manage-your-team/locate-your-team-id/#:~:text=In%20the%20top%20navigation%20of,to%20view%20your%20Team%20ID
-          "appleTeamId": ""
+          "appleTeamId": "<%= @apple_team_id %>"
         }
       ],
       [
