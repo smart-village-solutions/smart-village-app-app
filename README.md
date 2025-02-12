@@ -10,7 +10,7 @@ Please visit the german website to get in touch with us and present your ideas a
 
 &nbsp;
 
-This mobile app is one main part of the whole Smart Village App project. For more information visit https://github.com/ikuseiGmbH/smart-village-app.
+This mobile app is one main part of the whole Smart Village App project. For more information visit https://github.com/smart-village-solutions/smart-village-app-app.
 
 ## Overview
 

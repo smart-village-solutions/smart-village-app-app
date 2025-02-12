@@ -8,7 +8,7 @@ We love pull requests from everyone. We expect contributers to follow our
 1. Clone the repo locally and run `yarn` to install dependencies from npm.
 
 ```bash
-git clone git@github.com:ikuseiGmbH/smart-village-app-app.git
+git clone git@github.com:smart-village-solutions/smart-village-app-app.git
 cd smart-village-app-app
 yarn
 ```
