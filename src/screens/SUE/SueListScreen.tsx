@@ -11,10 +11,9 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { RefreshControl, TouchableOpacity } from 'react-native';
+import { RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
-import { StyleSheet } from 'react-native';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
@@ -22,6 +21,7 @@ import {
   EmptyMessage,
   Filter,
   HeaderLeft,
+  INITIAL_START_DATE,
   ListComponent,
   RegularText,
   SafeAreaViewFlex,
@@ -39,7 +39,6 @@ import { SueMapScreen } from './SueMapScreen';
 const { a11yLabel, FILTER_TYPES } = consts;
 
 const limit = 20;
-export const initialStartDate = { start_date: '1900-01-01T00:00:00+01:00' };
 
 const SORT_BY = {
   REQUESTED_DATE_TIME: 'requested_datetime DESC',
@@ -100,7 +99,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const initialQueryVariables = route.params?.queryVariables ?? {
     limit,
     offset: 0,
-    ...initialStartDate
+    start_date: INITIAL_START_DATE
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
@@ -318,7 +317,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                       placeholder: texts.sue.filter.alleSortingTypes
                     }
                   ]}
-                  initialStartDate={initialStartDate}
                   queryVariables={initialQueryVariables}
                   setQueryVariables={setQueryVariables}
                   withSearch

@@ -8,7 +8,6 @@ import { Divider, Header } from 'react-native-elements';
 
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
-import { initialStartDate } from '../../screens';
 import { FilterProps, FilterTypesProps } from '../../types';
 
 import { Button } from './../Button';
@@ -27,11 +26,10 @@ type Props = {
   withSearch?: boolean;
 };
 
-const deleteInitialStartDateFromQueryVariables = (
-  queryVariables: FilterProps,
-  initialStartDate?: string
-): FilterProps => {
-  if (queryVariables?.start_date === initialStartDate) {
+export const INITIAL_START_DATE = '1900-01-01T00:00:00+01:00';
+
+const deleteInitialStartDateFromQueryVariables = (queryVariables: FilterProps): FilterProps => {
+  if (queryVariables?.start_date === INITIAL_START_DATE) {
     const newQueryVariables = { ...queryVariables };
     delete newQueryVariables.start_date;
 
@@ -49,10 +47,7 @@ export const Filter = ({
   setQueryVariables,
   withSearch = false
 }: Props) => {
-  const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(
-    queryVariables,
-    initialStartDate.start_date
-  );
+  const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(queryVariables);
   const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [filterCount, setFilterCount] = useState(0);
@@ -62,7 +57,7 @@ export const Filter = ({
       setQueryVariables((prev) => {
         const newFilters = { ...filters };
 
-        if (newFilters.start_date === initialStartDate.start_date) {
+        if (newFilters.start_date === INITIAL_START_DATE) {
           delete newFilters.start_date;
 
           return {
@@ -76,7 +71,7 @@ export const Filter = ({
           return {
             ...prev,
             search: prev.search || '',
-            ...initialStartDate,
+            start_date: INITIAL_START_DATE,
             ...newFilters
           };
         }
@@ -95,7 +90,7 @@ export const Filter = ({
 
         setQueryVariables({
           ...queryVariables,
-          ...initialStartDate
+          start_date: INITIAL_START_DATE
         });
       }, 500);
     } else {
@@ -130,7 +125,8 @@ export const Filter = ({
   }
 
   const isNoFilterSet =
-    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
+    filters.start_date === INITIAL_START_DATE &&
+    !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
 
   return (
     <>
