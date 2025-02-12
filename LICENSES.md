@@ -35,11898 +35,8794 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/0no-co/graphql.web",
     "publisher": "0no.co",
-    "email": "hi@0no.co",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@0no-co/graphql.web",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@0no-co/graphql.web/LICENSE.md"
+    "email": "hi@0no.co"
   },
   "@ampproject/remapping@2.3.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/ampproject/remapping",
     "publisher": "Justin Ridgewell",
-    "email": "jridgewell@google.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@ampproject/remapping",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@ampproject/remapping/LICENSE"
+    "email": "jridgewell@google.com"
   },
   "@apollo/react-common@3.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
-    "publisher": "opensource@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-common",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-common/LICENSE"
+    "publisher": "opensource@apollographql.com"
   },
   "@apollo/react-components@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
-    "publisher": "opensource@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-components",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-components/LICENSE"
+    "publisher": "opensource@apollographql.com"
   },
   "@apollo/react-hoc@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
-    "publisher": "opensource@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-hoc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-hoc/LICENSE"
+    "publisher": "opensource@apollographql.com"
   },
   "@apollo/react-hooks@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
-    "publisher": "opensource@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-hooks",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-hooks/LICENSE"
+    "publisher": "opensource@apollographql.com"
   },
   "@apollo/react-ssr@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
-    "publisher": "opensource@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-ssr",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@apollo/react-ssr/LICENSE"
+    "publisher": "opensource@apollographql.com"
   },
   "@babel/code-frame@7.10.4": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "Sebastian McKenzie",
-    "email": "sebmck@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@babel/code-frame",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@babel/code-frame/LICENSE"
+    "email": "sebmck@gmail.com"
   },
   "@babel/code-frame@7.12.11": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "Sebastian McKenzie",
-    "email": "sebmck@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/node_modules/@babel/code-frame",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/node_modules/@babel/code-frame/LICENSE"
+    "email": "sebmck@gmail.com"
   },
   "@babel/code-frame@7.26.2": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/code-frame",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/code-frame/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/compat-data@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/compat-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/compat-data/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/core@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/core/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/eslint-parser@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/eslint-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/eslint-parser/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/generator@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/generator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/generator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-annotate-as-pure@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-annotate-as-pure",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-annotate-as-pure/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-compilation-targets@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-create-class-features-plugin@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-create-class-features-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-create-class-features-plugin/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-create-regexp-features-plugin@7.26.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-create-regexp-features-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-create-regexp-features-plugin/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-define-polyfill-provider@0.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel-polyfills",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-define-polyfill-provider",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-define-polyfill-provider/LICENSE"
+    "repository": "https://github.com/babel/babel-polyfills"
   },
   "@babel/helper-member-expression-to-functions@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-member-expression-to-functions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-member-expression-to-functions/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-module-imports@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-module-imports",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-module-imports/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-module-transforms@7.26.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-module-transforms",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-module-transforms/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-optimise-call-expression@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-optimise-call-expression",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-optimise-call-expression/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-plugin-utils@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-plugin-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-plugin-utils/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-remap-async-to-generator@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-remap-async-to-generator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-remap-async-to-generator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-replace-supers@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-replace-supers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-replace-supers/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-skip-transparent-expression-wrappers@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-skip-transparent-expression-wrappers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-skip-transparent-expression-wrappers/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-string-parser@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-string-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-string-parser/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-validator-identifier@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-validator-identifier",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-validator-identifier/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-validator-option@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-validator-option",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-validator-option/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helper-wrap-function@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-wrap-function",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-wrap-function/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/helpers@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helpers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helpers/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/highlight@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/parser@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/parser/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-proposal-class-properties@7.18.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-class-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-class-properties/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-proposal-decorators@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-decorators",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-decorators/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-proposal-export-default-from@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-export-default-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-export-default-from/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-proposal-logical-assignment-operators@7.20.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-logical-assignment-operators",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-logical-assignment-operators/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-proposal-nullish-coalescing-operator@7.18.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-nullish-coalescing-operator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-nullish-coalescing-operator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-proposal-optional-chaining@7.21.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-optional-chaining",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-proposal-optional-chaining/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-async-generators@7.8.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-async-generators",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-async-generators",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-async-generators/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-async-generators"
   },
   "@babel/plugin-syntax-bigint@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-bigint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-bigint",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-bigint/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-bigint"
   },
   "@babel/plugin-syntax-class-properties@7.12.13": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-class-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-class-properties/LICENSE"
+    "repository": "https://github.com/babel/babel"
   },
   "@babel/plugin-syntax-class-static-block@7.14.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-class-static-block",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-class-static-block/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-decorators@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-decorators",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-decorators/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-dynamic-import@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-dynamic-import",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-dynamic-import/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import"
   },
   "@babel/plugin-syntax-export-default-from@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-export-default-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-export-default-from/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-flow@7.26.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-flow",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-flow/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-import-attributes@7.26.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-import-attributes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-import-attributes/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-import-meta@7.10.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-import-meta",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-import-meta/LICENSE"
+    "repository": "https://github.com/babel/babel"
   },
   "@babel/plugin-syntax-json-strings@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-json-strings",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-json-strings",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-json-strings/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-json-strings"
   },
   "@babel/plugin-syntax-jsx@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-jsx",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-jsx/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-logical-assignment-operators@7.10.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-logical-assignment-operators",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-logical-assignment-operators/LICENSE"
+    "repository": "https://github.com/babel/babel"
   },
   "@babel/plugin-syntax-nullish-coalescing-operator@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-nullish-coalescing-operator",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-nullish-coalescing-operator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-nullish-coalescing-operator/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-nullish-coalescing-operator"
   },
   "@babel/plugin-syntax-numeric-separator@7.10.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-numeric-separator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-numeric-separator/LICENSE"
+    "repository": "https://github.com/babel/babel"
   },
   "@babel/plugin-syntax-object-rest-spread@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-object-rest-spread",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-object-rest-spread/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread"
   },
   "@babel/plugin-syntax-optional-catch-binding@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-optional-catch-binding",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-optional-catch-binding/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding"
   },
   "@babel/plugin-syntax-optional-chaining@7.8.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-chaining",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-optional-chaining",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-optional-chaining/LICENSE"
+    "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-chaining"
   },
   "@babel/plugin-syntax-private-property-in-object@7.14.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-private-property-in-object",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-private-property-in-object/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-top-level-await@7.14.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-top-level-await",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-top-level-await/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-syntax-typescript@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-typescript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-syntax-typescript/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-arrow-functions@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-arrow-functions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-arrow-functions/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-async-generator-functions@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-async-generator-functions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-async-generator-functions/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-async-to-generator@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-async-to-generator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-async-to-generator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-block-scoping@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-block-scoping",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-block-scoping/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-class-properties@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-class-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-class-properties/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-classes@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-classes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-classes/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-computed-properties@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-computed-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-computed-properties/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-destructuring@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-destructuring",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-destructuring/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-export-namespace-from@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-export-namespace-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-export-namespace-from/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-flow-strip-types@7.26.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-flow-strip-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-flow-strip-types/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-for-of@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-for-of",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-for-of/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-function-name@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-function-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-function-name/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-literals@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-literals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-literals/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-logical-assignment-operators@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-logical-assignment-operators",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-logical-assignment-operators/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-modules-commonjs@7.26.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-modules-commonjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-modules-commonjs/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-named-capturing-groups-regex@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-named-capturing-groups-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-named-capturing-groups-regex/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-nullish-coalescing-operator@7.26.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-nullish-coalescing-operator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-nullish-coalescing-operator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-numeric-separator@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-numeric-separator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-numeric-separator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-object-rest-spread@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-object-rest-spread",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-object-rest-spread/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-optional-catch-binding@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-optional-catch-binding",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-optional-catch-binding/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-optional-chaining@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-optional-chaining",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-optional-chaining/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-parameters@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-parameters",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-parameters/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-private-methods@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-private-methods",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-private-methods/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-private-property-in-object@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-private-property-in-object",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-private-property-in-object/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-react-display-name@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-display-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-display-name/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-react-jsx-development@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx-development",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx-development/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-react-jsx-self@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx-self",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx-self/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-react-jsx-source@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx-source",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx-source/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-react-jsx@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-jsx/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-react-pure-annotations@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-pure-annotations",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-react-pure-annotations/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-regenerator@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-regenerator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-regenerator/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-runtime@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-runtime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-runtime/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-shorthand-properties@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-shorthand-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-shorthand-properties/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-spread@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-spread",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-spread/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-sticky-regex@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-sticky-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-sticky-regex/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-template-literals@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-template-literals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-template-literals/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-typescript@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-typescript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-typescript/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/plugin-transform-unicode-regex@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-unicode-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/plugin-transform-unicode-regex/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/preset-flow@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/preset-flow",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/preset-flow/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/preset-react@7.26.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/preset-react",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/preset-react/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/preset-typescript@7.26.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/preset-typescript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/preset-typescript/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/register@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/register",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/register/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/runtime@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/runtime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/runtime/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/template@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/template",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/template/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/traverse@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/traverse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/traverse/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@babel/types@7.26.7": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
-    "url": "https://babel.dev/team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/types/LICENSE"
+    "url": "https://babel.dev/team"
   },
   "@bcoe/v8-coverage@0.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/demurgos/v8-coverage",
     "publisher": "Charles Samborski",
     "email": "demurgos@demurgos.net",
-    "url": "https://demurgos.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@bcoe/v8-coverage",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@bcoe/v8-coverage/LICENSE.md"
+    "url": "https://demurgos.net"
   },
   "@cnakazawa/watch@1.0.4": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/mikeal/watch",
     "publisher": "Mikeal Rogers",
-    "email": "mikeal.rogers@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@cnakazawa/watch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@cnakazawa/watch/LICENSE"
+    "email": "mikeal.rogers@gmail.com"
   },
   "@config-plugins/react-native-blob-util@8.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/config-plugins",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@config-plugins/react-native-blob-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@config-plugins/react-native-blob-util/README.md"
+    "repository": "https://github.com/expo/config-plugins"
   },
   "@config-plugins/react-native-pdf@8.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/config-plugins",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@config-plugins/react-native-pdf",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@config-plugins/react-native-pdf/README.md"
+    "repository": "https://github.com/expo/config-plugins"
   },
   "@egjs/hammerjs@2.0.17": {
     "licenses": "MIT",
-    "repository": "https://github.com/naver/hammer.js",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@egjs/hammerjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@egjs/hammerjs/LICENSE.md"
+    "repository": "https://github.com/naver/hammer.js"
   },
   "@emotion/is-prop-valid@0.8.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/emotion-js/emotion/tree/master/packages/is-prop-valid",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@emotion/is-prop-valid",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@emotion/is-prop-valid/LICENSE"
+    "repository": "https://github.com/emotion-js/emotion/tree/master/packages/is-prop-valid"
   },
   "@emotion/memoize@0.7.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/emotion-js/emotion/tree/master/packages/memoize",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@emotion/memoize",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@emotion/memoize/LICENSE"
+    "repository": "https://github.com/emotion-js/emotion/tree/master/packages/memoize"
   },
   "@emotion/unitless@0.7.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/emotion-js/emotion/tree/master/packages/unitless",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@emotion/unitless",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@emotion/unitless/LICENSE"
+    "repository": "https://github.com/emotion-js/emotion/tree/master/packages/unitless"
   },
   "@eslint-community/eslint-utils@4.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/eslint-community/eslint-utils",
-    "publisher": "Toru Nagashima",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint-community/eslint-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint-community/eslint-utils/LICENSE"
+    "publisher": "Toru Nagashima"
   },
   "@eslint-community/regexpp@4.12.1": {
     "licenses": "MIT",
     "repository": "https://github.com/eslint-community/regexpp",
-    "publisher": "Toru Nagashima",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint-community/regexpp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint-community/regexpp/LICENSE"
+    "publisher": "Toru Nagashima"
   },
   "@eslint/eslintrc@0.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/eslint/eslintrc",
-    "publisher": "Nicholas C. Zakas",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/LICENSE"
+    "publisher": "Nicholas C. Zakas"
   },
   "@expo/bunyan@4.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/trentm/node-bunyan",
     "publisher": "Trent Mick",
     "email": "trentm@gmail.com",
-    "url": "http://trentm.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/bunyan",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/bunyan/LICENSE.txt"
+    "url": "http://trentm.com"
   },
   "@expo/cli@0.22.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "Expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/README.md"
+    "publisher": "Expo"
   },
   "@expo/code-signing-certificates@0.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/code-signing-certificates",
     "publisher": "Expo",
-    "email": "support@expo.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/code-signing-certificates",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/code-signing-certificates/LICENSE"
+    "email": "support@expo.dev"
   },
   "@expo/config-plugins@7.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config-plugins",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config-plugins/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config-plugins@7.9.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/config-plugins",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/config-plugins/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config-plugins@9.0.14": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config-types@49.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config-types/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config-types@50.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/config-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/config-types/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config-types@52.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-types/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config@10.0.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/config@8.2.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/devcert@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/devcert",
-    "publisher": "Dave Wasmer",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/README.md"
+    "publisher": "Dave Wasmer"
   },
   "@expo/env@0.4.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/env",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/env/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/fingerprint@0.11.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/fingerprint",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/fingerprint/LICENSE"
+    "publisher": "650 Industries, Inc."
   },
   "@expo/fingerprint@0.6.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/fingerprint",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/fingerprint/LICENSE"
+    "publisher": "650 Industries, Inc."
   },
   "@expo/image-utils@0.6.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/image-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/image-utils/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/json-file@8.2.37": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo-cli",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config-plugins/node_modules/@expo/json-file",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/config-plugins/node_modules/@expo/json-file/LICENSE"
+    "repository": "https://github.com/expo/expo-cli"
   },
   "@expo/json-file@8.3.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/json-file",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/json-file/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/json-file@9.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/json-file",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/json-file/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/metro-config@0.19.9": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/metro-config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/metro-config/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/osascript@2.1.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/osascript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/osascript/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/package-manager@1.7.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/package-manager",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/package-manager/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/plist@0.0.20": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo-cli",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/plist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/@expo/plist/README.md"
+    "repository": "https://github.com/expo/expo-cli"
   },
   "@expo/plist@0.1.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/plist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/@expo/plist/README.md"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/plist@0.2.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/plist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/plist/README.md"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/prebuild-config@8.0.25": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/prebuild-config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/prebuild-config/LICENSE"
+    "repository": "https://github.com/expo/expo"
   },
   "@expo/react-native-action-sheet@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/react-native-action-sheet",
     "publisher": "Jesse Ruder",
-    "email": "jesse@sixfivezero.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/react-native-action-sheet",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/react-native-action-sheet/LICENSE"
+    "email": "jesse@sixfivezero.net"
   },
   "@expo/rudder-sdk-node@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/rudder-sdk-node",
-    "publisher": "Expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/rudder-sdk-node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/rudder-sdk-node/LICENSE.md"
+    "publisher": "Expo"
   },
   "@expo/sdk-runtime-versions@1.0.0": {
     "licenses": "MIT",
     "publisher": "Expo",
-    "email": "support@expo.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/sdk-runtime-versions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/sdk-runtime-versions/README.md"
+    "email": "support@expo.io"
   },
   "@expo/spawn-async@1.7.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/spawn-async",
-    "publisher": "Expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/spawn-async",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/spawn-async/LICENSE"
+    "publisher": "Expo"
   },
   "@expo/vector-icons@14.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/vector-icons",
-    "publisher": "Brent Vatne",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/vector-icons",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/vector-icons/LICENSE"
+    "publisher": "Brent Vatne"
   },
   "@expo/xcpretty@4.3.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/expo/expo-cli",
     "publisher": "Evan Bacon",
     "email": "bacon@expo.io",
-    "url": "https://github.com/evanbacon",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/xcpretty",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/xcpretty/README.md"
+    "url": "https://github.com/evanbacon"
   },
   "@formidable-webview/webshell@2.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/formidable-webview/webshell",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@formidable-webview/webshell",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@formidable-webview/webshell/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@humanwhocodes/config-array@0.5.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/humanwhocodes/config-array",
-    "publisher": "Nicholas C. Zakas",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@humanwhocodes/config-array",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@humanwhocodes/config-array/LICENSE"
+    "publisher": "Nicholas C. Zakas"
   },
   "@humanwhocodes/object-schema@1.2.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/humanwhocodes/object-schema",
-    "publisher": "Nicholas C. Zakas",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@humanwhocodes/object-schema",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@humanwhocodes/object-schema/LICENSE"
+    "publisher": "Nicholas C. Zakas"
   },
   "@ide/backoff@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ide/backoff",
-    "publisher": "James Ide",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@ide/backoff",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@ide/backoff/LICENSE"
+    "publisher": "James Ide"
   },
   "@isaacs/cliui@8.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/cliui",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "@isaacs/ttlcache@1.4.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/ttlcache",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/ttlcache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/ttlcache/LICENSE"
+    "url": "https://izs.me"
   },
   "@istanbuljs/load-nyc-config@1.1.0": {
     "licenses": "ISC",
-    "repository": "https://github.com/istanbuljs/load-nyc-config",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/LICENSE"
+    "repository": "https://github.com/istanbuljs/load-nyc-config"
   },
   "@istanbuljs/schema@0.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/istanbuljs/schema",
-    "publisher": "Corey Farrell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/schema",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/schema/LICENSE"
+    "publisher": "Corey Farrell"
   },
   "@jest/console@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/console",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/console/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/core@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/core/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/create-cache-key-function@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/create-cache-key-function",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/create-cache-key-function/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/environment@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/environment",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/environment/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/expect-utils@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/expect-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/expect-utils/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/expect@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/expect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/expect/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/fake-timers@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/fake-timers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/fake-timers/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/globals@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/globals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/globals/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/reporters@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/reporters",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/reporters/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/schemas@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/schemas",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/schemas/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/source-map@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/source-map/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/test-result@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/test-result",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/test-result/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/test-sequencer@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/test-sequencer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/test-sequencer/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/transform@25.5.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@jest/transform",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@jest/transform/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "@jest/transform@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/transform",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/transform/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jest/types@25.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@jest/types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@jest/types/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "@jest/types@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/types/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "@jridgewell/gen-mapping@0.3.8": {
     "licenses": "MIT",
     "repository": "https://github.com/jridgewell/gen-mapping",
     "publisher": "Justin Ridgewell",
-    "email": "justin@ridgewell.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/gen-mapping",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/gen-mapping/LICENSE"
+    "email": "justin@ridgewell.name"
   },
   "@jridgewell/resolve-uri@3.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jridgewell/resolve-uri",
     "publisher": "Justin Ridgewell",
-    "email": "justin@ridgewell.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/resolve-uri",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/resolve-uri/LICENSE"
+    "email": "justin@ridgewell.name"
   },
   "@jridgewell/set-array@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jridgewell/set-array",
     "publisher": "Justin Ridgewell",
-    "email": "justin@ridgewell.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/set-array",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/set-array/LICENSE"
+    "email": "justin@ridgewell.name"
   },
   "@jridgewell/source-map@0.3.6": {
     "licenses": "MIT",
     "repository": "https://github.com/jridgewell/source-map",
     "publisher": "Justin Ridgewell",
-    "email": "justin@ridgewell.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/source-map/LICENSE"
+    "email": "justin@ridgewell.name"
   },
   "@jridgewell/sourcemap-codec@1.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jridgewell/sourcemap-codec",
-    "publisher": "Rich Harris",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/sourcemap-codec",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/sourcemap-codec/LICENSE"
+    "publisher": "Rich Harris"
   },
   "@jridgewell/trace-mapping@0.3.25": {
     "licenses": "MIT",
     "repository": "https://github.com/jridgewell/trace-mapping",
     "publisher": "Justin Ridgewell",
-    "email": "justin@ridgewell.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/trace-mapping",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jridgewell/trace-mapping/LICENSE"
+    "email": "justin@ridgewell.name"
   },
   "@jsamr/counter-style@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jsamr/react-native-li",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jsamr/counter-style",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jsamr/counter-style/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@jsamr/react-native-li@2.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jsamr/react-native-li",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jsamr/react-native-li",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jsamr/react-native-li/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@mapbox/geo-viewport@0.4.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/mapbox/geo-viewport",
-    "publisher": "Tom MacWright",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@mapbox/geo-viewport",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@mapbox/geo-viewport/LICENSE"
+    "publisher": "Tom MacWright"
   },
   "@mapbox/sphericalmercator@1.1.0": {
     "licenses": "BSD",
     "repository": "https://github.com/mapbox/node-sphericalmercator",
     "publisher": "MapBox",
     "email": "info@mapbox.com",
-    "url": "http://mapbox.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@mapbox/sphericalmercator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@mapbox/sphericalmercator/LICENSE.md"
+    "url": "http://mapbox.com/"
   },
   "@native-html/css-processor@1.11.0": {
     "licenses": "MIT",
     "repository": "https://github.com/native-html/core",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/css-processor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/css-processor/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@native-html/iframe-plugin@2.6.1": {
     "licenses": "MIT",
     "repository": "https://github.com/native-html/plugins",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/iframe-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/iframe-plugin/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@native-html/plugins-core@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/native-html/plugins",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/plugins-core"
+    "url": "https://github.com/jsamr"
   },
   "@native-html/table-plugin@5.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/native-html/plugins",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/table-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/table-plugin/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@native-html/transient-render-engine@11.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/native-html/core",
     "publisher": "Jules Sam. Randolph",
     "email": "jules.sam.randolph@gmail.com",
-    "url": "https://github.com/jsamr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/transient-render-engine",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/transient-render-engine/README.md"
+    "url": "https://github.com/jsamr"
   },
   "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1": {
-    "licenses": "MIT",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nicolo-ribaudo/eslint-scope-5-internals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nicolo-ribaudo/eslint-scope-5-internals/LICENSE"
+    "licenses": "MIT"
   },
   "@nodelib/fs.scandir@2.1.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nodelib/fs.scandir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nodelib/fs.scandir/LICENSE"
+    "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir"
   },
   "@nodelib/fs.stat@2.0.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nodelib/fs.stat",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nodelib/fs.stat/LICENSE"
+    "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat"
   },
   "@nodelib/fs.walk@1.2.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nodelib/fs.walk",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@nodelib/fs.walk/LICENSE"
+    "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk"
   },
   "@npmcli/fs@3.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/fs",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@npmcli/fs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@npmcli/fs/LICENSE.md"
+    "publisher": "GitHub Inc."
   },
   "@pkgjs/parseargs@0.11.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/pkgjs/parseargs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@pkgjs/parseargs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@pkgjs/parseargs/LICENSE"
+    "repository": "https://github.com/pkgjs/parseargs"
   },
   "@react-native-async-storage/async-storage@1.23.1": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-async-storage/async-storage",
     "publisher": "Krzysztof Borowy",
-    "email": "hello@krizzu.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-async-storage/async-storage",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-async-storage/async-storage/LICENSE"
+    "email": "hello@krizzu.dev"
   },
   "@react-native-community/datetimepicker@8.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-community/datetimepicker",
     "publisher": "Martijn Swaagman",
     "email": "mswaagman@godaddy.com",
-    "url": "https://github.com/swaagie",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-community/datetimepicker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-community/datetimepicker/LICENSE.md"
+    "url": "https://github.com/swaagie"
   },
   "@react-native-community/netinfo@11.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-netinfo/react-native-netinfo",
     "publisher": "Matt Oakes",
-    "email": "hello@mattoakes.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-community/netinfo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-community/netinfo/LICENSE"
+    "email": "hello@mattoakes.net"
   },
   "@react-native-masked-view/masked-view@0.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-masked-view/masked-view",
     "publisher": "Mike Nedosekin",
-    "email": "crespo8800@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-masked-view/masked-view",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-masked-view/masked-view/LICENSE"
+    "email": "crespo8800@gmail.com"
   },
   "@react-native/assets-registry@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/assets-registry",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/assets-registry/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/assets-registry@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/assets-registry",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/assets-registry/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/babel-plugin-codegen@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/babel-plugin-codegen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/babel-plugin-codegen/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/babel-plugin-codegen@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/babel-plugin-codegen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/babel-plugin-codegen/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/babel-preset@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/babel-preset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/babel-preset/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/babel-preset@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/babel-preset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/babel-preset/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/codegen@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/codegen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/codegen/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/codegen@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/codegen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/codegen/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/community-cli-plugin@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/community-cli-plugin@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/community-cli-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/community-cli-plugin/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/debugger-frontend@0.76.6": {
     "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/debugger-frontend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/debugger-frontend/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/debugger-frontend@0.77.0": {
     "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/debugger-frontend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/debugger-frontend/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/dev-middleware@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/dev-middleware",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/dev-middleware/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/dev-middleware@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/dev-middleware",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/dev-middleware/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/gradle-plugin@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/gradle-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/gradle-plugin/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/gradle-plugin@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/gradle-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/gradle-plugin/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/js-polyfills@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/js-polyfills",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/js-polyfills/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/js-polyfills@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/js-polyfills",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/js-polyfills/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/metro-babel-transformer@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/metro-babel-transformer"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/metro-babel-transformer@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/metro-babel-transformer"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/normalize-color@2.1.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/normalize-color"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/normalize-colors@0.74.89": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web/node_modules/@react-native/normalize-colors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web/node_modules/@react-native/normalize-colors/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/normalize-colors@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/normalize-colors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/normalize-colors/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/normalize-colors@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/normalize-colors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/@react-native/normalize-colors/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/virtualized-lists@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/virtualized-lists",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/virtualized-lists/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-native/virtualized-lists@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/react-native/node_modules/@react-native/virtualized-lists",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/react-native/node_modules/@react-native/virtualized-lists/README.md"
+    "repository": "https://github.com/facebook/react-native"
   },
   "@react-navigation/bottom-tabs@6.6.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/bottom-tabs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/bottom-tabs/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@react-navigation/core@6.4.17": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/core/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@react-navigation/drawer@6.7.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/drawer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/drawer/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@react-navigation/elements@1.3.31": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/elements",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/elements/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@react-navigation/native@6.1.18": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/native/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@react-navigation/routers@6.1.9": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/routers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/routers/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@react-navigation/stack@6.4.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/stack",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/stack/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "@reactvision/react-viro@2.41.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/ReactVision/viro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/LICENSE"
+    "repository": "https://github.com/ReactVision/viro"
   },
   "@rtsao/scc@1.1.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/rtsao/scc",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@rtsao/scc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@rtsao/scc/LICENSE"
+    "repository": "https://github.com/rtsao/scc"
   },
   "@segment/loosely-validate-event@2.0.0": {
-    "licenses": "MIT*",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@segment/loosely-validate-event",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@segment/loosely-validate-event/LICENSE"
+    "licenses": "MIT*"
   },
   "@sentry-internal/browser-utils@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/browser-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/browser-utils/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry-internal/feedback@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/feedback",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/feedback/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry-internal/replay-canvas@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/replay-canvas",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/replay-canvas/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry-internal/replay@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/replay",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry-internal/replay/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/babel-plugin-component-annotate@2.20.1": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript-bundler-plugins",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/babel-plugin-component-annotate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/babel-plugin-component-annotate/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/browser@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/browser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/browser/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/cli-linux-x64@2.38.2": {
     "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/getsentry/sentry-cli",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/cli-linux-x64",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/cli-linux-x64/README.md"
+    "repository": "https://github.com/getsentry/sentry-cli"
   },
   "@sentry/cli@2.38.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/getsentry/sentry-cli",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/cli",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/cli/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/core@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/core/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/react-native@6.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-react-native",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/react-native/LICENSE.md"
+    "publisher": "Sentry"
   },
   "@sentry/react@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/react",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/react/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/types@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/types/LICENSE"
+    "publisher": "Sentry"
   },
   "@sentry/utils@8.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript",
-    "publisher": "Sentry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/utils/LICENSE"
+    "publisher": "Sentry"
   },
   "@shopify/flash-list@1.7.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Shopify/flash-list",
-    "publisher": "shopify",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@shopify/flash-list",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@shopify/flash-list/LICENSE.md"
+    "publisher": "shopify"
   },
   "@sinclair/typebox@0.27.8": {
     "licenses": "MIT",
     "repository": "https://github.com/sinclairzx81/typebox",
-    "publisher": "sinclairzx81",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sinclair/typebox",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sinclair/typebox/license"
+    "publisher": "sinclairzx81"
   },
   "@sinonjs/commons@3.0.1": {
     "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/sinonjs/commons",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sinonjs/commons",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sinonjs/commons/LICENSE"
+    "repository": "https://github.com/sinonjs/commons"
   },
   "@sinonjs/fake-timers@10.3.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/sinonjs/fake-timers",
-    "publisher": "Christian Johansen",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sinonjs/fake-timers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sinonjs/fake-timers/LICENSE"
+    "publisher": "Christian Johansen"
   },
   "@svgr/babel-plugin-add-jsx-attribute@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-add-jsx-attribute",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-add-jsx-attribute",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-add-jsx-attribute/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-remove-jsx-attribute@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-remove-jsx-attribute",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-remove-jsx-attribute",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-remove-jsx-attribute/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-remove-jsx-empty-expression@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-remove-jsx-empty-expression",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-remove-jsx-empty-expression",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-remove-jsx-empty-expression/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-replace-jsx-attribute-value@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-replace-jsx-attribute-value",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-replace-jsx-attribute-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-replace-jsx-attribute-value/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-svg-dynamic-title@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-svg-dynamic-title",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-svg-dynamic-title",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-svg-dynamic-title/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-svg-em-dimensions@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-svg-em-dimensions",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-svg-em-dimensions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-svg-em-dimensions/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-transform-react-native-svg@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-transform-react-native-svg",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-transform-react-native-svg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-transform-react-native-svg/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-plugin-transform-svg-component@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-plugin-transform-svg-component",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-transform-svg-component",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-plugin-transform-svg-component/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/babel-preset@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/babel-preset",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-preset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/babel-preset/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/core@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/core",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/core/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/hast-util-to-babel-ast@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/hast-util-to-babel-ast",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/hast-util-to-babel-ast",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/hast-util-to-babel-ast/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/plugin-jsx@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/plugin-jsx",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/plugin-jsx",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/plugin-jsx/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@svgr/plugin-svgo@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gregberge/svgr/tree/main/packages/plugin-svgo",
     "publisher": "Greg Bergé",
-    "email": "berge.greg@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/plugin-svgo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@svgr/plugin-svgo/LICENSE"
+    "email": "berge.greg@gmail.com"
   },
   "@tootallnate/once@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/TooTallNate/once",
     "publisher": "Nathan Rajlich",
     "email": "nathan@tootallnate.net",
-    "url": "http://n8.io/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@tootallnate/once",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@tootallnate/once/LICENSE"
+    "url": "http://n8.io/"
   },
   "@trysound/sax@0.2.0": {
     "licenses": "ISC",
     "repository": "https://github.com/svg/sax",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@trysound/sax",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@trysound/sax/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "@types/babel__core@7.20.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__core/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/babel__generator@7.6.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__generator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__generator/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/babel__template@7.4.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__template",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__template/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/babel__traverse@7.20.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__traverse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/babel__traverse/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/geojson@7946.0.16": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/geojson",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/geojson/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/graceful-fs@4.1.9": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/graceful-fs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/graceful-fs/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/hammerjs@2.0.46": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/hammerjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/hammerjs/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/hoist-non-react-statics@3.3.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/hoist-non-react-statics",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/hoist-non-react-statics/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/istanbul-lib-coverage@2.0.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/istanbul-lib-coverage",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/istanbul-lib-coverage/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/istanbul-lib-report@3.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/istanbul-lib-report",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/istanbul-lib-report/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/istanbul-reports@1.1.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@types/istanbul-reports",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@types/istanbul-reports/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/istanbul-reports@3.0.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/istanbul-reports",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/istanbul-reports/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/jest@29.5.14": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/jest/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/jsdom@20.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/jsdom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/jsdom/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/json-schema@7.0.15": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/json-schema",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/json-schema/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/json5@0.0.29": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
     "publisher": "Jason Swearingen",
-    "email": "https://jasonswearingen.github.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/json5",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/json5/README.md"
+    "email": "https://jasonswearingen.github.io"
   },
   "@types/lodash.isequal@4.5.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/lodash.isequal",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/lodash.isequal/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/lodash@4.17.14": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/lodash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/lodash/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/node-forge@1.3.11": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/node-forge",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/node-forge/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/node@22.10.10": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/node/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/prop-types@15.7.14": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/prop-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/prop-types/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/ramda@0.27.66": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/ramda",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/ramda/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react-addons-shallow-compare@0.14.25": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-addons-shallow-compare",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-addons-shallow-compare/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react-dom@18.3.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-dom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-dom/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react-native-calendars@1.1264.7": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react-native-vector-icons@6.4.18": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-vector-icons",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-vector-icons/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react-native@0.70.19": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react@18.3.18": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/react@19.0.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-vector-icons/node_modules/@types/react",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-vector-icons/node_modules/@types/react/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/semver@7.5.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/semver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/semver/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/stack-utils@2.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/stack-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/stack-utils/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/tough-cookie@4.0.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/tough-cookie",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/tough-cookie/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/urijs@1.19.25": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/urijs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/urijs/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/xdate@0.8.35": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/xdate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/xdate/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/yargs-parser@21.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/yargs-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/yargs-parser/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/yargs@15.0.19": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@types/yargs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/@types/yargs/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/yargs@17.0.33": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/yargs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/yargs/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@types/zen-observable@0.8.7": {
     "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/zen-observable",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/zen-observable/LICENSE"
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
   "@typescript-eslint/eslint-plugin@6.21.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/eslint-plugin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/eslint-plugin/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/parser@6.21.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/parser/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/scope-manager@6.21.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/scope-manager",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/scope-manager/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/type-utils@6.21.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/type-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/type-utils/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/types@6.21.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/types/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/typescript-estree@6.21.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/typescript-estree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/typescript-estree/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/utils@6.21.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/utils/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@typescript-eslint/visitor-keys@6.21.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/typescript-eslint/typescript-eslint",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/visitor-keys",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/visitor-keys/LICENSE"
+    "repository": "https://github.com/typescript-eslint/typescript-eslint"
   },
   "@urql/core@5.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/urql-graphql/urql",
-    "publisher": "urql GraphQL Contributors",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@urql/core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@urql/core/LICENSE"
+    "publisher": "urql GraphQL Contributors"
   },
   "@urql/exchange-retry@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/urql-graphql/urql",
-    "publisher": "urql GraphQL Contributors",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@urql/exchange-retry",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@urql/exchange-retry/LICENSE"
+    "publisher": "urql GraphQL Contributors"
   },
   "@wry/context@0.4.4": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/wryware",
     "publisher": "Ben Newman",
-    "email": "ben@eloper.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@wry/context",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@wry/context/LICENSE"
+    "email": "ben@eloper.dev"
   },
   "@wry/equality@0.1.11": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/wryware",
     "publisher": "Ben Newman",
-    "email": "ben@eloper.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@wry/equality",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@wry/equality/LICENSE"
+    "email": "ben@eloper.dev"
   },
   "@xmldom/xmldom@0.7.13": {
     "licenses": "MIT",
-    "repository": "https://github.com/xmldom/xmldom",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@xmldom/xmldom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@xmldom/xmldom/LICENSE"
+    "repository": "https://github.com/xmldom/xmldom"
   },
   "@xmldom/xmldom@0.8.10": {
     "licenses": "MIT",
-    "repository": "https://github.com/xmldom/xmldom",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/plist/node_modules/@xmldom/xmldom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/plist/node_modules/@xmldom/xmldom/LICENSE"
+    "repository": "https://github.com/xmldom/xmldom"
   },
   "@yarnpkg/lockfile@1.1.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/yarnpkg/yarn/blob/master/packages/lockfile",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@yarnpkg/lockfile",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@yarnpkg/lockfile/README.md"
+    "repository": "https://github.com/yarnpkg/yarn/blob/master/packages/lockfile"
   },
   "abab@2.0.6": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/jsdom/abab",
     "publisher": "Jeff Carpenter",
-    "email": "gcarpenterv@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abab",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abab/LICENSE.md"
+    "email": "gcarpenterv@gmail.com"
   },
   "abbrev@1.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/abbrev-js",
     "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abbrev",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abbrev/LICENSE"
+    "email": "i@izs.me"
   },
   "abort-controller@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mysticatea/abort-controller",
     "publisher": "Toru Nagashima",
-    "url": "https://github.com/mysticatea",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abort-controller",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abort-controller/LICENSE"
+    "url": "https://github.com/mysticatea"
   },
   "abs-svg-path@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jkroso/abs-svg-path",
-    "publisher": "Jake Rosoman",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abs-svg-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/abs-svg-path/Readme.md"
+    "publisher": "Jake Rosoman"
   },
   "accepts@1.3.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/accepts",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/accepts",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/accepts/LICENSE"
+    "repository": "https://github.com/jshttp/accepts"
   },
   "acorn-globals@7.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ForbesLindesay/acorn-globals",
-    "publisher": "ForbesLindesay",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn-globals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn-globals/LICENSE"
+    "publisher": "ForbesLindesay"
   },
   "acorn-jsx@5.3.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/acornjs/acorn-jsx",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/espree/node_modules/acorn-jsx",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/espree/node_modules/acorn-jsx/LICENSE"
+    "repository": "https://github.com/acornjs/acorn-jsx"
   },
   "acorn-loose@8.4.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/acornjs/acorn",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn-loose",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn-loose/LICENSE"
+    "repository": "https://github.com/acornjs/acorn"
   },
   "acorn-walk@8.3.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/acornjs/acorn",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn-walk",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn-walk/LICENSE"
+    "repository": "https://github.com/acornjs/acorn"
   },
   "acorn@7.4.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/acornjs/acorn",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/espree/node_modules/acorn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/espree/node_modules/acorn/LICENSE"
+    "repository": "https://github.com/acornjs/acorn"
   },
   "acorn@8.14.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/acornjs/acorn",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/acorn/LICENSE"
+    "repository": "https://github.com/acornjs/acorn"
   },
   "agent-base@6.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/TooTallNate/node-agent-base",
     "publisher": "Nathan Rajlich",
     "email": "nathan@tootallnate.net",
-    "url": "http://n8.io/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/agent-base",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/agent-base/README.md"
+    "url": "http://n8.io/"
   },
   "aggregate-error@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/aggregate-error",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/aggregate-error",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/aggregate-error/license"
+    "url": "sindresorhus.com"
   },
   "ajv@6.12.6": {
     "licenses": "MIT",
     "repository": "https://github.com/ajv-validator/ajv",
-    "publisher": "Evgeny Poberezkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ajv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ajv/LICENSE"
+    "publisher": "Evgeny Poberezkin"
   },
   "ajv@8.11.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ajv-validator/ajv",
-    "publisher": "Evgeny Poberezkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-launcher/node_modules/ajv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-launcher/node_modules/ajv/LICENSE"
+    "publisher": "Evgeny Poberezkin"
   },
   "ajv@8.17.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ajv-validator/ajv",
-    "publisher": "Evgeny Poberezkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-build-properties/node_modules/ajv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-build-properties/node_modules/ajv/LICENSE"
+    "publisher": "Evgeny Poberezkin"
   },
   "anser@1.4.10": {
     "licenses": "MIT",
     "repository": "https://github.com/IonicaBizau/anser",
     "publisher": "Ionică Bizău",
     "email": "bizauionica@gmail.com",
-    "url": "https://ionicabizau.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/anser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/anser/LICENSE"
+    "url": "https://ionicabizau.net"
   },
   "ansi-colors@4.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/doowb/ansi-colors",
     "publisher": "Brian Woodward",
-    "url": "https://github.com/doowb",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-colors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-colors/LICENSE"
+    "url": "https://github.com/doowb"
   },
   "ansi-escapes@4.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/ansi-escapes",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-escapes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-escapes/license"
+    "url": "https://sindresorhus.com"
   },
   "ansi-escapes@6.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/ansi-escapes",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/ansi-escapes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/ansi-escapes/license"
+    "url": "https://sindresorhus.com"
   },
   "ansi-regex@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-regex",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ora/node_modules/ansi-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ora/node_modules/ansi-regex/license"
+    "url": "sindresorhus.com"
   },
   "ansi-regex@5.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-regex",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-regex/license"
+    "url": "sindresorhus.com"
   },
   "ansi-regex@6.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-regex",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/ansi-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/ansi-regex/license"
+    "url": "https://sindresorhus.com"
   },
   "ansi-styles@3.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-styles",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/ansi-styles",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/ansi-styles/license"
+    "url": "sindresorhus.com"
   },
   "ansi-styles@4.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-styles",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-styles",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ansi-styles/license"
+    "url": "sindresorhus.com"
   },
   "ansi-styles@5.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-styles",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-format/node_modules/ansi-styles",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-format/node_modules/ansi-styles/license"
+    "url": "https://sindresorhus.com"
   },
   "ansi-styles@6.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/ansi-styles",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/ansi-styles",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/ansi-styles/license"
+    "url": "https://sindresorhus.com"
   },
   "any-promise@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevinbeaty/any-promise",
-    "publisher": "Kevin Beaty",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/any-promise",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/any-promise/LICENSE"
+    "publisher": "Kevin Beaty"
   },
   "anymatch@2.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/micromatch/anymatch",
     "publisher": "Elan Shanker",
-    "url": "http://github.com/es128",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/anymatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/anymatch/LICENSE"
+    "url": "http://github.com/es128"
   },
   "anymatch@3.1.3": {
     "licenses": "ISC",
     "repository": "https://github.com/micromatch/anymatch",
     "publisher": "Elan Shanker",
-    "url": "https://github.com/es128",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/anymatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/anymatch/LICENSE"
+    "url": "https://github.com/es128"
   },
   "apollo-cache-inmemory@1.6.6": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-client",
     "publisher": "James Baxley",
-    "email": "james@meteor.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-cache-inmemory",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-cache-inmemory/LICENSE"
+    "email": "james@meteor.com"
   },
   "apollo-cache-persist@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-cache-persist",
     "publisher": "James Reggio",
-    "email": "james.reggio@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-cache-persist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-cache-persist/LICENSE"
+    "email": "james.reggio@gmail.com"
   },
   "apollo-cache@1.3.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-client",
     "publisher": "James Baxley",
-    "email": "james@meteor.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-cache/LICENSE"
+    "email": "james@meteor.com"
   },
   "apollo-client@2.6.10": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-client",
     "publisher": "Sashko Stubailo",
-    "email": "sashko@stubailo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-client",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-client/LICENSE"
+    "email": "sashko@stubailo.com"
   },
   "apollo-link-context@1.0.20": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-link",
     "publisher": "James Baxley",
-    "email": "james@meteor.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-context",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-context/LICENSE"
+    "email": "james@meteor.com"
   },
   "apollo-link-http-common@0.2.16": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-link",
-    "publisher": "Evans Hauser",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-http-common",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-http-common/LICENSE"
+    "publisher": "Evans Hauser"
   },
   "apollo-link-http@1.5.17": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-link",
     "publisher": "Evans Hauser",
-    "email": "evanshauser@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-http",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-http/LICENSE"
+    "email": "evanshauser@gmail.com"
   },
   "apollo-link-rest@0.7.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/apollographql/apollo-link-rest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-rest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link-rest/LICENSE"
+    "repository": "https://github.com/apollographql/apollo-link-rest"
   },
   "apollo-link@1.2.14": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-link",
     "publisher": "Evans Hauser",
-    "email": "evanshauser@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link/LICENSE"
+    "email": "evanshauser@gmail.com"
   },
   "apollo-utilities@1.3.4": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-client",
     "publisher": "James Baxley",
-    "email": "james@meteor.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-utilities",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-utilities/LICENSE"
+    "email": "james@meteor.com"
   },
   "application-config-path@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/LinusU/node-application-config-path",
     "publisher": "Linus Unnebäck",
-    "email": "linus@folkdatorn.se",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/application-config-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/application-config-path/LICENSE"
+    "email": "linus@folkdatorn.se"
   },
   "arg@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/zeit/arg",
     "publisher": "Josh Junon",
-    "email": "junon@zeit.co",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates/node_modules/arg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates/node_modules/arg/LICENSE.md"
+    "email": "junon@zeit.co"
   },
   "arg@5.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/vercel/arg",
     "publisher": "Josh Junon",
-    "email": "junon@wavetilt.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arg/LICENSE.md"
+    "email": "junon@wavetilt.com"
   },
   "argparse@1.0.10": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodeca/argparse",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/argparse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/argparse/LICENSE"
+    "repository": "https://github.com/nodeca/argparse"
   },
   "argparse@2.0.1": {
     "licenses": "Python-2.0",
-    "repository": "https://github.com/nodeca/argparse",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/xcpretty/node_modules/argparse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/xcpretty/node_modules/argparse/LICENSE"
+    "repository": "https://github.com/nodeca/argparse"
   },
   "arr-diff@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/arr-diff",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arr-diff",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arr-diff/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "arr-flatten@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/arr-flatten",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arr-flatten",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arr-flatten/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "arr-union@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/arr-union",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arr-union",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arr-union/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "array-buffer-byte-length@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/array-buffer-byte-length",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-buffer-byte-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-buffer-byte-length/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "array-find-index@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/array-find-index",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-find-index",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-find-index/license"
+    "url": "sindresorhus.com"
   },
   "array-includes@3.1.8": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/array-includes",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-includes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-includes/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "array-union@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/array-union",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-union",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-union/license"
+    "url": "sindresorhus.com"
   },
   "array-unique@0.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/array-unique",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-unique",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array-unique/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "array.prototype.findlastindex@1.2.5": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Array.prototype.findLastIndex",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array.prototype.findlastindex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array.prototype.findlastindex/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "array.prototype.flat@1.3.3": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Array.prototype.flat",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array.prototype.flat",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array.prototype.flat/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "array.prototype.flatmap@1.3.3": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Array.prototype.flatMap",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array.prototype.flatmap",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/array.prototype.flatmap/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "arraybuffer.prototype.slice@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/ArrayBuffer.prototype.slice",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arraybuffer.prototype.slice",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/arraybuffer.prototype.slice/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "asap@2.0.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/kriskowal/asap",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/asap",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/asap/LICENSE.md"
+    "repository": "https://github.com/kriskowal/asap"
   },
   "assert@2.1.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/browserify/commonjs-assert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/assert",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/assert/LICENSE"
+    "repository": "https://github.com/browserify/commonjs-assert"
   },
   "assign-symbols@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/assign-symbols",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/assign-symbols",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/assign-symbols/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "ast-types@0.15.2": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/ast-types",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ast-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ast-types/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "ast-types@0.16.1": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/ast-types",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/ast-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/ast-types/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "astral-regex@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/astral-regex",
     "publisher": "Kevin Mårtensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "github.com/kevva",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/astral-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/astral-regex/license"
+    "url": "github.com/kevva"
   },
   "async-function@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/async-function",
     "publisher": "Jordan Harbamd",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/async-function",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/async-function/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "async-limiter@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/strml/async-limiter",
-    "publisher": "Samuel Reed",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/async-limiter",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/async-limiter/LICENSE"
+    "publisher": "Samuel Reed"
   },
   "asynckit@0.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/alexindigo/asynckit",
     "publisher": "Alex Indigo",
-    "email": "iam@alexindigo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/asynckit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/asynckit/LICENSE"
+    "email": "iam@alexindigo.com"
   },
   "at-least-node@1.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/RyanZim/at-least-node",
     "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/at-least-node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/at-least-node/LICENSE"
+    "email": "opensrc@ryanzim.com"
   },
   "atob@2.1.2": {
     "licenses": "(MIT OR Apache-2.0)",
     "repository": "git://git.coolaj86.com/coolaj86/atob.js",
     "publisher": "AJ ONeal",
     "email": "coolaj86@gmail.com",
-    "url": "https://coolaj86.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/atob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/atob/LICENSE"
+    "url": "https://coolaj86.com"
   },
   "available-typed-arrays@1.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/available-typed-arrays",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/available-typed-arrays",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/available-typed-arrays/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "babel-core@7.0.0-bridge.0": {
     "licenses": "MIT",
     "publisher": "Logan Smyth",
-    "email": "loganfsmyth@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-core/README.md"
+    "email": "loganfsmyth@gmail.com"
   },
   "babel-jest@25.5.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "babel-jest@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-jest/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "babel-plugin-istanbul@6.1.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/babel-plugin-istanbul",
-    "publisher": "Thai Pangsakulyanont @dtinth",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-istanbul",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-istanbul/LICENSE"
+    "publisher": "Thai Pangsakulyanont @dtinth"
   },
   "babel-plugin-jest-hoist@25.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-jest-hoist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-jest-hoist/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "babel-plugin-jest-hoist@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-plugin-jest-hoist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-plugin-jest-hoist/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "babel-plugin-polyfill-corejs2@0.4.12": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel-polyfills",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-polyfill-corejs2",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-polyfill-corejs2/LICENSE"
+    "repository": "https://github.com/babel/babel-polyfills"
   },
   "babel-plugin-polyfill-corejs3@0.10.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel-polyfills",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-polyfill-corejs3",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-polyfill-corejs3/LICENSE"
+    "repository": "https://github.com/babel/babel-polyfills"
   },
   "babel-plugin-polyfill-regenerator@0.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel-polyfills",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-polyfill-regenerator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-polyfill-regenerator/LICENSE"
+    "repository": "https://github.com/babel/babel-polyfills"
   },
   "babel-plugin-react-native-web@0.19.13": {
     "licenses": "MIT",
     "repository": "https://github.com/necolas/react-native-web",
-    "publisher": "Nicolas Gallagher",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-react-native-web",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-react-native-web/LICENSE"
+    "publisher": "Nicolas Gallagher"
   },
   "babel-plugin-styled-components@2.1.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/styled-components/babel-plugin-styled-components",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-styled-components",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-styled-components/LICENSE.md"
+    "repository": "https://github.com/styled-components/babel-plugin-styled-components"
   },
   "babel-plugin-syntax-hermes-parser@0.23.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-plugin-syntax-hermes-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-plugin-syntax-hermes-parser/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "babel-plugin-syntax-hermes-parser@0.25.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-syntax-hermes-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-syntax-hermes-parser/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "babel-plugin-transform-flow-enums@0.0.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/flow",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-transform-flow-enums",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-transform-flow-enums/LICENSE"
+    "repository": "https://github.com/facebook/flow"
   },
   "babel-preset-current-node-syntax@0.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/nicolo-ribaudo/babel-preset-current-node-syntax",
     "publisher": "Nicolò Ribaudo",
-    "url": "https://github.com/nicolo-ribaudo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-jest/node_modules/babel-preset-current-node-syntax",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-jest/node_modules/babel-preset-current-node-syntax/LICENSE"
+    "url": "https://github.com/nicolo-ribaudo"
   },
   "babel-preset-current-node-syntax@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/nicolo-ribaudo/babel-preset-current-node-syntax",
     "publisher": "Nicolò Ribaudo",
-    "url": "https://github.com/nicolo-ribaudo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-current-node-syntax",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-current-node-syntax/LICENSE"
+    "url": "https://github.com/nicolo-ribaudo"
   },
   "babel-preset-expo@12.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
-    "email": "support@expo.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-expo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-expo/README.md"
+    "email": "support@expo.dev"
   },
   "babel-preset-jest@25.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-preset-jest/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "babel-preset-jest@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-preset-jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/babel-preset-jest/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "badgin@1.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/jaulz/badgin",
-    "publisher": "Julian Hundeloh",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/badgin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/badgin/README.md"
+    "publisher": "Julian Hundeloh"
   },
   "balanced-match@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/juliangruber/balanced-match",
     "publisher": "Julian Gruber",
     "email": "mail@juliangruber.com",
-    "url": "http://juliangruber.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/balanced-match",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/balanced-match/LICENSE.md"
+    "url": "http://juliangruber.com"
   },
   "base-64@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/base64",
     "publisher": "Mathias Bynens",
-    "url": "http://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base-64",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base-64/LICENSE-MIT.txt"
+    "url": "http://mathiasbynens.be/"
   },
   "base64-js@1.5.1": {
     "licenses": "MIT",
     "repository": "https://github.com/beatgammit/base64-js",
     "publisher": "T. Jameson Little",
-    "email": "t.jameson.little@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base64-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base64-js/LICENSE"
+    "email": "t.jameson.little@gmail.com"
   },
   "base@0.11.2": {
     "licenses": "MIT",
     "repository": "https://github.com/node-base/base",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "better-opn@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ExiaSR/better-opn",
     "publisher": "Michael Lin",
-    "email": "linzichunzf@hotmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/better-opn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/better-opn/LICENSE"
+    "email": "linzichunzf@hotmail.com"
   },
   "big-integer@1.6.52": {
     "licenses": "Unlicense",
     "repository": "https://github.com/peterolson/BigInteger.js",
     "publisher": "Peter Olson",
-    "email": "peter.e.c.olson+npm@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/big-integer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/big-integer/LICENSE"
+    "email": "peter.e.c.olson+npm@gmail.com"
   },
   "boolbase@1.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/fb55/boolbase",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/boolbase",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/boolbase/README.md"
+    "email": "me@feedic.com"
   },
   "bplist-creator@0.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/nearinfinity/node-bplist-creator",
-    "publisher": "https://github.com/nearinfinity/node-bplist-parser.git",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bplist-creator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bplist-creator/README.md"
+    "publisher": "https://github.com/nearinfinity/node-bplist-parser.git"
   },
   "bplist-creator@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/nearinfinity/node-bplist-creator",
-    "publisher": "Joe Ferner",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-plist/node_modules/bplist-creator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-plist/node_modules/bplist-creator/LICENSE"
+    "publisher": "Joe Ferner"
   },
   "bplist-parser@0.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/nearinfinity/node-bplist-parser",
     "publisher": "Joe Ferner",
-    "email": "joe.ferner@nearinfinity.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-plist/node_modules/bplist-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-plist/node_modules/bplist-parser/README.md"
+    "email": "joe.ferner@nearinfinity.com"
   },
   "bplist-parser@0.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/nearinfinity/node-bplist-parser",
     "publisher": "Joe Ferner",
-    "email": "joe.ferner@nearinfinity.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bplist-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bplist-parser/README.md"
+    "email": "joe.ferner@nearinfinity.com"
   },
   "brace-expansion@1.1.11": {
     "licenses": "MIT",
     "repository": "https://github.com/juliangruber/brace-expansion",
     "publisher": "Julian Gruber",
     "email": "mail@juliangruber.com",
-    "url": "http://juliangruber.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minimatch/node_modules/brace-expansion",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minimatch/node_modules/brace-expansion/LICENSE"
+    "url": "http://juliangruber.com"
   },
   "brace-expansion@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/juliangruber/brace-expansion",
     "publisher": "Julian Gruber",
     "email": "mail@juliangruber.com",
-    "url": "http://juliangruber.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/brace-expansion",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/brace-expansion/LICENSE"
+    "url": "http://juliangruber.com"
   },
   "braces@2.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/braces",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/braces",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/braces/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "braces@3.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/braces",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/braces",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/braces/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "broadcast-channel@3.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/pubkey/broadcast-channel",
-    "publisher": "pubkey",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/broadcast-channel",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/broadcast-channel/LICENSE"
+    "publisher": "pubkey"
   },
   "browserslist@4.24.4": {
     "licenses": "MIT",
     "repository": "https://github.com/browserslist/browserslist",
     "publisher": "Andrey Sitnik",
-    "email": "andrey@sitnik.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/browserslist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/browserslist/LICENSE"
+    "email": "andrey@sitnik.ru"
   },
   "bser@2.1.1": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/facebook/watchman",
     "publisher": "Wez Furlong",
     "email": "wez@fb.com",
-    "url": "http://wezfurlong.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bser/README.md"
+    "url": "http://wezfurlong.org"
   },
   "buffer-alloc-unsafe@1.1.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-alloc-unsafe",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-alloc-unsafe",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-alloc-unsafe/readme.md"
+    "repository": "https://github.com/LinusU/buffer-alloc-unsafe"
   },
   "buffer-alloc@1.2.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-alloc",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-alloc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-alloc/readme.md"
+    "repository": "https://github.com/LinusU/buffer-alloc"
   },
   "buffer-fill@1.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-fill",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-fill",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-fill/readme.md"
+    "repository": "https://github.com/LinusU/buffer-fill"
   },
   "buffer-from@1.1.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-from",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer-from/LICENSE"
+    "repository": "https://github.com/LinusU/buffer-from"
   },
   "buffer@5.7.1": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/buffer",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "https://feross.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/buffer/LICENSE"
+    "url": "https://feross.org"
   },
   "bytes@3.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/visionmedia/bytes.js",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "url": "http://tjholowaychuk.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bytes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/bytes/LICENSE"
+    "url": "http://tjholowaychuk.com"
   },
   "cacache@18.0.4": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/cacache",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cacache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cacache/LICENSE.md"
+    "publisher": "GitHub Inc."
   },
   "cache-base@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/cache-base",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cache-base",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cache-base/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "call-bind-apply-helpers@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/call-bind-apply-helpers",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/call-bind-apply-helpers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/call-bind-apply-helpers/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "call-bind@1.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/call-bind",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/call-bind",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/call-bind/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "call-bound@1.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/call-bound",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/call-bound",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/call-bound/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "caller-callsite@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/caller-callsite",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caller-callsite",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caller-callsite/license"
+    "url": "sindresorhus.com"
   },
   "caller-path@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/caller-path",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caller-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caller-path/license"
+    "url": "sindresorhus.com"
   },
   "callsites@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/callsites",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caller-callsite/node_modules/callsites",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caller-callsite/node_modules/callsites/license"
+    "url": "sindresorhus.com"
   },
   "callsites@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/callsites",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/callsites",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/callsites/license"
+    "url": "sindresorhus.com"
   },
   "camelcase@5.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/camelcase",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/camelcase",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/camelcase/license"
+    "url": "sindresorhus.com"
   },
   "camelcase@6.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/camelcase",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-validate/node_modules/camelcase",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-validate/node_modules/camelcase/license"
+    "url": "https://sindresorhus.com"
   },
   "camelize@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/camelize",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/camelize",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/camelize/LICENSE"
+    "url": "http://substack.net"
   },
   "caniuse-lite@1.0.30001695": {
     "licenses": "CC-BY-4.0",
     "repository": "https://github.com/browserslist/caniuse-lite",
     "publisher": "Ben Briggs",
     "email": "beneb.info@gmail.com",
-    "url": "http://beneb.info",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caniuse-lite",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/caniuse-lite/LICENSE"
+    "url": "http://beneb.info"
   },
   "capture-exit@2.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/stefanpenner/capture-exit",
     "publisher": "Stefan Penner",
-    "email": "stefan.penner@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/capture-exit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/capture-exit/README.md"
+    "email": "stefan.penner@gmail.com"
   },
   "chalk@2.4.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/chalk/chalk",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/chalk",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/chalk/license"
+    "repository": "https://github.com/chalk/chalk"
   },
   "chalk@3.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/chalk/chalk",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-select-projects/node_modules/chalk",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-select-projects/node_modules/chalk/license"
+    "repository": "https://github.com/chalk/chalk"
   },
   "chalk@4.1.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/chalk/chalk",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chalk",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chalk/license"
+    "repository": "https://github.com/chalk/chalk"
   },
   "char-regex@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/Richienb/char-regex",
     "publisher": "Richie Bendall",
-    "email": "richiebendall@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/char-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/char-regex/LICENSE"
+    "email": "richiebendall@gmail.com"
   },
   "char-regex@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/Richienb/char-regex",
     "publisher": "Richie Bendall",
-    "email": "richiebendall@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/char-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/char-regex/license"
+    "email": "richiebendall@gmail.com"
   },
   "character-entities-html4@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/wooorm/character-entities-html4",
     "publisher": "Titus Wormer",
     "email": "tituswormer@gmail.com",
-    "url": "https://wooorm.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/character-entities-html4",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/character-entities-html4/license"
+    "url": "https://wooorm.com"
   },
   "character-entities-legacy@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/wooorm/character-entities-legacy",
     "publisher": "Titus Wormer",
     "email": "tituswormer@gmail.com",
-    "url": "https://wooorm.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/character-entities-legacy",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/character-entities-legacy/license"
+    "url": "https://wooorm.com"
   },
   "charenc@0.0.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/pvorb/node-charenc",
     "publisher": "Paul Vorbach",
     "email": "paul@vorb.de",
-    "url": "http://vorb.de",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/charenc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/charenc/LICENSE.mkd"
+    "url": "http://vorb.de"
   },
   "chownr@2.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/chownr",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chownr",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chownr/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "chrome-launcher@0.15.2": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/GoogleChrome/chrome-launcher",
-    "publisher": "The Chromium Authors",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chrome-launcher",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chrome-launcher/LICENSE"
+    "publisher": "The Chromium Authors"
   },
   "chromium-edge-launcher@0.2.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/cezaraugusto/chromium-edge-launcher",
-    "publisher": "Cezar Augusto",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chromium-edge-launcher",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chromium-edge-launcher/LICENSE"
+    "publisher": "Cezar Augusto"
   },
   "ci-info@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/watson/ci-info",
     "publisher": "Thomas Watson Steen",
     "email": "w@tson.dk",
-    "url": "https://twitter.com/wa7son",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/ci-info",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/ci-info/LICENSE"
+    "url": "https://twitter.com/wa7son"
   },
   "ci-info@3.9.0": {
     "licenses": "MIT",
     "repository": "https://github.com/watson/ci-info",
     "publisher": "Thomas Watson Steen",
     "email": "w@tson.dk",
-    "url": "https://twitter.com/wa7son",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ci-info",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ci-info/LICENSE"
+    "url": "https://twitter.com/wa7son"
   },
   "cjs-module-lexer@1.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/nodejs/cjs-module-lexer",
-    "publisher": "Guy Bedford",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cjs-module-lexer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cjs-module-lexer/LICENSE"
+    "publisher": "Guy Bedford"
   },
   "class-utils@0.3.6": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/class-utils",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/class-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/class-utils/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "clean-stack@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/clean-stack",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clean-stack",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clean-stack/license"
+    "url": "sindresorhus.com"
   },
   "cli-cursor@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/cli-cursor",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cli-cursor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cli-cursor/license"
+    "url": "sindresorhus.com"
   },
   "cli-spinners@2.9.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/cli-spinners",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cli-spinners",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cli-spinners/license"
+    "url": "https://sindresorhus.com"
   },
   "cliui@6.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/cliui",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/cliui",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/cliui/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "cliui@8.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/cliui",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cliui",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cliui/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "clone-deep@4.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/clone-deep",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clone-deep",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clone-deep/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "clone@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/pvorb/node-clone",
     "publisher": "Paul Vorbach",
     "email": "paul@vorba.ch",
-    "url": "http://paul.vorba.ch/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clone",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clone/LICENSE"
+    "url": "http://paul.vorba.ch/"
   },
   "co@4.6.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/tj/co",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/co",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/co/LICENSE"
+    "repository": "https://github.com/tj/co"
   },
   "collect-v8-coverage@1.0.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/SimenB/collect-v8-coverage",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/collect-v8-coverage",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/collect-v8-coverage/LICENSE"
+    "repository": "https://github.com/SimenB/collect-v8-coverage"
   },
   "collection-visit@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/collection-visit",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/collection-visit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/collection-visit/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "color-convert@1.9.3": {
     "licenses": "MIT",
     "repository": "https://github.com/Qix-/color-convert",
     "publisher": "Heather Arthur",
-    "email": "fayearthur@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-convert",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-convert/LICENSE"
+    "email": "fayearthur@gmail.com"
   },
   "color-convert@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Qix-/color-convert",
     "publisher": "Heather Arthur",
-    "email": "fayearthur@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color/node_modules/color-convert",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color/node_modules/color-convert/LICENSE"
+    "email": "fayearthur@gmail.com"
   },
   "color-name@1.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/dfcreative/color-name",
     "publisher": "DY",
-    "email": "dfcreative@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-convert/node_modules/color-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-convert/node_modules/color-name/LICENSE"
+    "email": "dfcreative@gmail.com"
   },
   "color-name@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/colorjs/color-name",
     "publisher": "DY",
-    "email": "dfcreative@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-name/LICENSE"
+    "email": "dfcreative@gmail.com"
   },
   "color-string@1.9.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Qix-/color-string",
     "publisher": "Heather Arthur",
-    "email": "fayearthur@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color-string/LICENSE"
+    "email": "fayearthur@gmail.com"
   },
   "color@3.2.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/Qix-/color",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-elements/node_modules/color",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-elements/node_modules/color/LICENSE"
+    "repository": "https://github.com/Qix-/color"
   },
   "color@4.2.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/Qix-/color",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/color/LICENSE"
+    "repository": "https://github.com/Qix-/color"
   },
   "combined-stream@1.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/felixge/node-combined-stream",
     "publisher": "Felix Geisendörfer",
     "email": "felix@debuggable.com",
-    "url": "http://debuggable.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/combined-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/combined-stream/License"
+    "url": "http://debuggable.com/"
   },
   "command-exists@1.2.9": {
     "licenses": "MIT",
     "repository": "https://github.com/mathisonian/command-exists",
-    "publisher": "Matthew Conlen",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/command-exists",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/command-exists/LICENSE"
+    "publisher": "Matthew Conlen"
   },
   "commander@12.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/tj/commander.js",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/commander",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/commander/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "commander@2.20.3": {
     "licenses": "MIT",
     "repository": "https://github.com/tj/commander.js",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/terser/node_modules/commander",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/terser/node_modules/commander/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "commander@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/tj/commander.js",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sucrase/node_modules/commander",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sucrase/node_modules/commander/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "commander@7.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/tj/commander.js",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-modules-autolinking/node_modules/commander",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-modules-autolinking/node_modules/commander/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "commondir@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/substack/node-commondir",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/commondir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/commondir/LICENSE"
+    "url": "http://substack.net"
   },
   "component-emitter@1.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/component-emitter",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/component-emitter",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/component-emitter/LICENSE"
+    "repository": "https://github.com/sindresorhus/component-emitter"
   },
   "component-type@1.2.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/component-type",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/component-type",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/component-type/Readme.md"
+    "repository": "https://github.com/sindresorhus/component-type"
   },
   "compressible@2.0.18": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/compressible",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compressible",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compressible/LICENSE"
+    "repository": "https://github.com/jshttp/compressible"
   },
   "compression@1.7.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/expressjs/compression",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compression",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compression/LICENSE"
+    "repository": "https://github.com/expressjs/compression"
   },
   "concat-map@0.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/substack/node-concat-map",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/concat-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/concat-map/LICENSE"
+    "url": "http://substack.net"
   },
   "connect@3.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/senchalabs/connect",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "url": "http://tjholowaychuk.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/connect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/connect/LICENSE"
+    "url": "http://tjholowaychuk.com"
   },
   "convert-source-map@1.9.0": {
     "licenses": "MIT",
     "repository": "https://github.com/thlorenz/convert-source-map",
     "publisher": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
-    "url": "http://thlorenz.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/convert-source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/convert-source-map/LICENSE"
+    "url": "http://thlorenz.com"
   },
   "convert-source-map@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/thlorenz/convert-source-map",
     "publisher": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
-    "url": "http://thlorenz.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/convert-source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/convert-source-map/LICENSE"
+    "url": "http://thlorenz.com"
   },
   "copy-descriptor@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/copy-descriptor",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/copy-descriptor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/copy-descriptor/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "core-js-compat@3.40.0": {
     "licenses": "MIT",
     "repository": "https://github.com/zloirock/core-js",
     "publisher": "Denis Pushkarev",
     "email": "zloirock@zloirock.ru",
-    "url": "http://zloirock.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/core-js-compat",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/core-js-compat/LICENSE"
+    "url": "http://zloirock.ru"
   },
   "core-js@1.2.7": {
     "licenses": "MIT",
-    "repository": "https://github.com/zloirock/core-js",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/core-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/core-js/LICENSE"
+    "repository": "https://github.com/zloirock/core-js"
   },
   "core-util-is@1.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/isaacs/core-util-is",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/core-util-is",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/core-util-is/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "cosmiconfig@5.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/davidtheclark/cosmiconfig",
     "publisher": "David Clark",
-    "email": "david.dave.clark@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/cosmiconfig",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/cosmiconfig/LICENSE"
+    "email": "david.dave.clark@gmail.com"
   },
   "cosmiconfig@8.3.6": {
     "licenses": "MIT",
     "repository": "https://github.com/cosmiconfig/cosmiconfig",
     "publisher": "Daniel Fischer",
-    "email": "daniel@d-fischer.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cosmiconfig",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cosmiconfig/LICENSE"
+    "email": "daniel@d-fischer.dev"
   },
   "create-jest@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/create-jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/create-jest/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "cross-fetch@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lquixada/cross-fetch",
     "publisher": "Leonardo Quixada",
-    "email": "lquixada@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cross-fetch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cross-fetch/LICENSE"
+    "email": "lquixada@gmail.com"
   },
   "cross-spawn@6.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/moxystudio/node-cross-spawn",
     "publisher": "André Cruz",
-    "email": "andre@moxy.studio",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/cross-spawn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/cross-spawn/LICENSE"
+    "email": "andre@moxy.studio"
   },
   "cross-spawn@7.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/moxystudio/node-cross-spawn",
     "publisher": "André Cruz",
-    "email": "andre@moxy.studio",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cross-spawn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cross-spawn/LICENSE"
+    "email": "andre@moxy.studio"
   },
   "crypt@0.0.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/pvorb/node-crypt",
     "publisher": "Paul Vorbach",
     "email": "paul@vorb.de",
-    "url": "http://vorb.de",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/crypt",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/crypt/LICENSE.mkd"
+    "url": "http://vorb.de"
   },
   "crypto-js@3.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/brix/crypto-js",
     "publisher": "Evan Vosberg",
-    "url": "http://github.com/evanvosberg",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-expo-image-cache/node_modules/crypto-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-expo-image-cache/node_modules/crypto-js/LICENSE"
+    "url": "http://github.com/evanvosberg"
   },
   "crypto-js@4.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/brix/crypto-js",
     "publisher": "Evan Vosberg",
-    "url": "http://github.com/evanvosberg",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/crypto-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/crypto-js/LICENSE"
+    "url": "http://github.com/evanvosberg"
   },
   "crypto-random-string@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/crypto-random-string",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/crypto-random-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/crypto-random-string/license"
+    "url": "sindresorhus.com"
   },
   "css-color-keywords@1.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/sonicdoe/css-color-keywords",
     "publisher": "Jakob Krigovsky",
-    "email": "jakob@krigovsky.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-color-keywords",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-color-keywords/LICENSE"
+    "email": "jakob@krigovsky.com"
   },
   "css-in-js-utils@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/robinweser/css-in-js-utils",
     "publisher": "robinweser",
-    "email": "contact@weser.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-in-js-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-in-js-utils/LICENSE"
+    "email": "contact@weser.io"
   },
   "css-select@5.1.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/css-select",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/LICENSE"
+    "email": "me@feedic.com"
   },
   "css-to-react-native@2.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/styled-components/css-to-react-native",
-    "publisher": "Jacob Parker",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styled-components/node_modules/css-to-react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styled-components/node_modules/css-to-react-native/LICENSE.md"
+    "publisher": "Jacob Parker"
   },
   "css-to-react-native@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/styled-components/css-to-react-native",
-    "publisher": "Jacob Parker",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-to-react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-to-react-native/LICENSE.md"
+    "publisher": "Jacob Parker"
   },
   "css-tree@1.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/csstree/csstree",
     "publisher": "Roman Dvornov",
     "email": "rdvornov@gmail.com",
-    "url": "https://github.com/lahmatiy",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-tree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-tree/LICENSE"
+    "url": "https://github.com/lahmatiy"
   },
   "css-tree@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/csstree/csstree",
     "publisher": "Roman Dvornov",
     "email": "rdvornov@gmail.com",
-    "url": "https://github.com/lahmatiy",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csso/node_modules/css-tree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csso/node_modules/css-tree/LICENSE"
+    "url": "https://github.com/lahmatiy"
   },
   "css-tree@2.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/csstree/csstree",
     "publisher": "Roman Dvornov",
     "email": "rdvornov@gmail.com",
-    "url": "https://github.com/lahmatiy",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svgo/node_modules/css-tree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svgo/node_modules/css-tree/LICENSE"
+    "url": "https://github.com/lahmatiy"
   },
   "css-what@6.1.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/css-what",
     "publisher": "Felix Böhm",
     "email": "me@feedic.com",
-    "url": "http://feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-what",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-what/LICENSE"
+    "url": "http://feedic.com"
   },
   "css@2.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/reworkcss/css",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "csso@5.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/css/csso",
     "publisher": "Sergey Kryzhanovsky",
     "email": "skryzhanovsky@ya.ru",
-    "url": "https://github.com/afelix",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csso",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csso/LICENSE"
+    "url": "https://github.com/afelix"
   },
   "cssom@0.3.8": {
     "licenses": "MIT",
     "repository": "https://github.com/NV/CSSOM",
     "publisher": "Nikita Vasilyev",
-    "email": "me@elv1s.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cssstyle/node_modules/cssom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cssstyle/node_modules/cssom/LICENSE.txt"
+    "email": "me@elv1s.ru"
   },
   "cssom@0.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/NV/CSSOM",
     "publisher": "Nikita Vasilyev",
-    "email": "me@elv1s.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cssom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cssom/LICENSE.txt"
+    "email": "me@elv1s.ru"
   },
   "cssstyle@2.3.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jsdom/cssstyle",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cssstyle",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cssstyle/LICENSE"
+    "repository": "https://github.com/jsdom/cssstyle"
   },
   "csstype@3.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/frenic/csstype",
     "publisher": "Fredrik Nicol",
-    "email": "fredrik.nicol@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csstype",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csstype/LICENSE"
+    "email": "fredrik.nicol@gmail.com"
   },
   "d@1.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/d",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/d",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/d/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "data-urls@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/data-urls",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-urls",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-urls/LICENSE.txt"
+    "url": "https://domenic.me/"
   },
   "data-view-buffer@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/data-view-buffer",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-view-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-view-buffer/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "data-view-byte-length@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/data-view-byte-length",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-view-byte-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-view-byte-length/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "data-view-byte-offset@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/data-view-byte-offset",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-view-byte-offset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/data-view-byte-offset/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "dayjs@1.11.13": {
     "licenses": "MIT",
     "repository": "https://github.com/iamkun/dayjs",
-    "publisher": "iamkun",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dayjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dayjs/LICENSE"
+    "publisher": "iamkun"
   },
   "debug@2.6.9": {
     "licenses": "MIT",
     "repository": "https://github.com/visionmedia/debug",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lighthouse-logger/node_modules/debug",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lighthouse-logger/node_modules/debug/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "debug@3.2.7": {
     "licenses": "MIT",
     "repository": "https://github.com/visionmedia/debug",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/node_modules/debug",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/node_modules/debug/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "debug@4.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/debug-js/debug",
     "publisher": "Josh Junon",
-    "url": "https://github.com/qix-",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/debug",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/debug/LICENSE"
+    "url": "https://github.com/qix-"
   },
   "debuglog@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sam-github/node-debuglog",
     "publisher": "Sam Roberts",
-    "email": "sam@strongloop.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/debuglog",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/debuglog/LICENSE"
+    "email": "sam@strongloop.com"
   },
   "decamelize@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/decamelize",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/decamelize",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/decamelize/license"
+    "url": "sindresorhus.com"
   },
   "decimal.js@10.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/MikeMcl/decimal.js",
     "publisher": "Michael Mclaughlin",
-    "email": "M8ch88l@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/decimal.js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/decimal.js/LICENCE.md"
+    "email": "M8ch88l@gmail.com"
   },
   "decode-uri-component@0.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/SamVerschueren/decode-uri-component",
     "publisher": "Sam Verschueren",
     "email": "sam.verschueren@gmail.com",
-    "url": "github.com/SamVerschueren",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/decode-uri-component",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/decode-uri-component/license"
+    "url": "github.com/SamVerschueren"
   },
   "dedent@1.5.3": {
     "licenses": "MIT",
     "repository": "https://github.com/dmnd/dedent",
     "publisher": "Desmond Brand",
     "email": "dmnd@desmondbrand.com",
-    "url": "http://desmondbrand.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dedent",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dedent/LICENSE.md"
+    "url": "http://desmondbrand.com"
   },
   "deep-extend@0.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/unclechu/node-deep-extend",
     "publisher": "Viacheslav Lotsmanov",
-    "email": "lotsmanov89@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deep-extend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deep-extend/LICENSE"
+    "email": "lotsmanov89@gmail.com"
   },
   "deep-is@0.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/thlorenz/deep-is",
     "publisher": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
-    "url": "http://thlorenz.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deep-is",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deep-is/LICENSE"
+    "url": "http://thlorenz.com"
   },
   "deepmerge@4.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/TehShrike/deepmerge",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deepmerge",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deepmerge/license.txt"
+    "repository": "https://github.com/TehShrike/deepmerge"
   },
   "default-gateway@4.2.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/silverwind/default-gateway",
     "publisher": "silverwind",
-    "email": "me@silverwind.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/default-gateway",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/default-gateway/LICENSE"
+    "email": "me@silverwind.io"
   },
   "defaults@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/node-defaults",
     "publisher": "Elijah Insua",
-    "email": "tmpvar@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/defaults",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/defaults/LICENSE"
+    "email": "tmpvar@gmail.com"
   },
   "define-data-property@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/define-data-property",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-data-property",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-data-property/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "define-lazy-prop@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/define-lazy-prop",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-lazy-prop",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-lazy-prop/license"
+    "url": "sindresorhus.com"
   },
   "define-properties@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/define-properties",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-properties/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "define-property@0.2.5": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/define-property",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-property",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-property/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "define-property@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/define-property",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base/node_modules/define-property",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/base/node_modules/define-property/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "define-property@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/define-property",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex/node_modules/define-property",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex/node_modules/define-property/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "del@6.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/del",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/del",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/del/license"
+    "url": "https://sindresorhus.com"
   },
   "delayed-stream@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/felixge/node-delayed-stream",
     "publisher": "Felix Geisendörfer",
     "email": "felix@debuggable.com",
-    "url": "http://debuggable.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/delayed-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/delayed-stream/License"
+    "url": "http://debuggable.com/"
   },
   "denodeify@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/matthew-andrews/denodeify",
-    "publisher": "Matt Andrews",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/denodeify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/denodeify/README.md"
+    "publisher": "Matt Andrews"
   },
   "depd@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/dougwilson/nodejs-depd",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/depd",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/depd/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "deprecated-react-native-prop-types@2.3.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebookarchive/react-native-deprecated-modules",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deprecated-react-native-prop-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/deprecated-react-native-prop-types/README.md"
+    "repository": "https://github.com/facebookarchive/react-native-deprecated-modules"
   },
   "destroy@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/stream-utils/destroy",
     "publisher": "Jonathan Ong",
     "email": "me@jongleberry.com",
-    "url": "http://jongleberry.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/destroy",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/destroy/LICENSE"
+    "url": "http://jongleberry.com"
   },
   "detect-libc@1.0.3": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/lovell/detect-libc",
     "publisher": "Lovell Fuller",
-    "email": "npm@lovell.info",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/detect-libc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/detect-libc/LICENSE"
+    "email": "npm@lovell.info"
   },
   "detect-newline@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/detect-newline",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/detect-newline",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/detect-newline/license"
+    "url": "sindresorhus.com"
   },
   "detect-node@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/iliakan/detect-node",
-    "publisher": "Ilya Kantor",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/detect-node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/detect-node/LICENSE"
+    "publisher": "Ilya Kantor"
   },
   "dezalgo@1.0.4": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/dezalgo",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dezalgo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dezalgo/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "diff-sequences@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/diff-sequences",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/diff-sequences/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "dijkstrajs@1.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/tcort/dijkstrajs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dijkstrajs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dijkstrajs/LICENSE.md"
+    "repository": "https://github.com/tcort/dijkstrajs"
   },
   "dir-glob@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/dir-glob",
     "publisher": "Kevin Mårtensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "github.com/kevva",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dir-glob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dir-glob/license"
+    "url": "github.com/kevva"
   },
   "doctrine@2.1.0": {
     "licenses": "Apache-2.0",
-    "repository": "https://github.com/eslint/doctrine",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/doctrine",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/doctrine/LICENSE"
+    "repository": "https://github.com/eslint/doctrine"
   },
   "doctrine@3.0.0": {
     "licenses": "Apache-2.0",
-    "repository": "https://github.com/eslint/doctrine",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/node_modules/doctrine",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/node_modules/doctrine/LICENSE"
+    "repository": "https://github.com/eslint/doctrine"
   },
   "dom-serializer@1.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/cheeriojs/dom-renderer",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dom-serializer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dom-serializer/LICENSE"
+    "email": "me@feedic.com"
   },
   "dom-serializer@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/cheeriojs/dom-serializer",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/node_modules/dom-serializer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/node_modules/dom-serializer/LICENSE"
+    "email": "me@feedic.com"
   },
   "domelementtype@2.3.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/domelementtype",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domelementtype",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domelementtype/LICENSE"
+    "email": "me@feedic.com"
   },
   "domexception@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/domexception",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domexception",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domexception/LICENSE.txt"
+    "url": "https://domenic.me/"
   },
   "domhandler@4.3.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/domhandler",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domhandler",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domhandler/LICENSE"
+    "email": "me@feedic.com"
   },
   "domhandler@5.0.3": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/domhandler",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/node_modules/domhandler",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/node_modules/domhandler/LICENSE"
+    "email": "me@feedic.com"
   },
   "domutils@2.8.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/domutils",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domutils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/domutils/LICENSE"
+    "email": "me@feedic.com"
   },
   "domutils@3.2.2": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/domutils",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/node_modules/domutils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/css-select/node_modules/domutils/LICENSE"
+    "email": "me@feedic.com"
   },
   "dot-case@3.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/blakeembrey/change-case",
     "publisher": "Blake Embrey",
     "email": "hello@blakeembrey.com",
-    "url": "http://blakeembrey.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dot-case",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dot-case/LICENSE"
+    "url": "http://blakeembrey.me"
   },
   "dotenv-expand@11.0.7": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/motdotla/dotenv-expand",
-    "publisher": "motdotla",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dotenv-expand",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dotenv-expand/LICENSE"
+    "publisher": "motdotla"
   },
   "dotenv@16.4.7": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/motdotla/dotenv",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dotenv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dotenv/LICENSE"
+    "repository": "https://github.com/motdotla/dotenv"
   },
   "dunder-proto@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/dunder-proto",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dunder-proto",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dunder-proto/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "eastasianwidth@0.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/komagata/eastasianwidth",
-    "publisher": "Masaki Komagata",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eastasianwidth",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eastasianwidth/README.md"
+    "publisher": "Masaki Komagata"
   },
   "ee-first@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonathanong/ee-first",
     "publisher": "Jonathan Ong",
     "email": "me@jongleberry.com",
-    "url": "http://jongleberry.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ee-first",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ee-first/LICENSE"
+    "url": "http://jongleberry.com"
   },
   "electron-to-chromium@1.5.88": {
     "licenses": "ISC",
     "repository": "https://github.com/kilian/electron-to-chromium",
-    "publisher": "Kilian Valkhof",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/electron-to-chromium",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/electron-to-chromium/LICENSE"
+    "publisher": "Kilian Valkhof"
   },
   "emittery@0.13.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/emittery",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/emittery",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/emittery/license"
+    "url": "https://sindresorhus.com"
   },
   "emoji-regex@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/emoji-regex",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/emoji-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/emoji-regex/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "emoji-regex@9.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/emoji-regex",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/emoji-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/emoji-regex/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "encodeurl@1.0.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/pillarjs/encodeurl",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/encodeurl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/encodeurl/LICENSE"
+    "repository": "https://github.com/pillarjs/encodeurl"
   },
   "encodeurl@2.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/pillarjs/encodeurl",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/serve-static/node_modules/encodeurl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/serve-static/node_modules/encodeurl/LICENSE"
+    "repository": "https://github.com/pillarjs/encodeurl"
   },
   "encoding@0.1.13": {
     "licenses": "MIT",
     "repository": "https://github.com/andris9/encoding",
-    "publisher": "Andris Reinman",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/encoding",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/encoding/LICENSE"
+    "publisher": "Andris Reinman"
   },
   "end-of-stream@1.4.4": {
     "licenses": "MIT",
     "repository": "https://github.com/mafintosh/end-of-stream",
     "publisher": "Mathias Buus",
-    "email": "mathiasbuus@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/end-of-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/end-of-stream/LICENSE"
+    "email": "mathiasbuus@gmail.com"
   },
   "enquirer@2.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/enquirer/enquirer",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/enquirer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/enquirer/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "entities@2.0.3": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/entities",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/node_modules/entities",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/node_modules/entities/LICENSE"
+    "email": "me@feedic.com"
   },
   "entities@2.2.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/entities",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dom-serializer/node_modules/entities",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/dom-serializer/node_modules/entities/LICENSE"
+    "email": "me@feedic.com"
   },
   "entities@3.0.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/entities",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/markdown-it/node_modules/entities",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/markdown-it/node_modules/entities/LICENSE"
+    "email": "me@feedic.com"
   },
   "entities@4.5.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/entities",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/entities",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/entities/LICENSE"
+    "email": "me@feedic.com"
   },
   "env-editor@0.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/env-editor",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/env-editor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/env-editor/license"
+    "url": "sindresorhus.com"
   },
   "eol@0.9.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ryanve/eol",
-    "publisher": "Ryan Van Etten",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eol",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eol/LICENSE"
+    "publisher": "Ryan Van Etten"
   },
   "error-ex@1.3.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/qix-/node-error-ex",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/error-ex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/error-ex/LICENSE"
+    "repository": "https://github.com/qix-/node-error-ex"
   },
   "error-stack-parser@2.1.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/stacktracejs/error-stack-parser",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/error-stack-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/error-stack-parser/LICENSE"
+    "repository": "https://github.com/stacktracejs/error-stack-parser"
   },
   "es-abstract@1.23.9": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-abstract",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-abstract",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-abstract/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "es-define-property@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-define-property",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-define-property",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-define-property/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "es-errors@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-errors",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-errors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-errors/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "es-object-atoms@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-object-atoms",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-object-atoms",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-object-atoms/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "es-set-tostringtag@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/es-set-tostringtag",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-set-tostringtag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-set-tostringtag/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "es-shim-unscopables@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-shim-unscopables",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-shim-unscopables",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-shim-unscopables/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "es-to-primitive@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-to-primitive",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-to-primitive",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es-to-primitive/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "es5-ext@0.10.64": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/es5-ext",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es5-ext",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es5-ext/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "es6-iterator@2.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/medikoo/es6-iterator",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es6-iterator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es6-iterator/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "es6-symbol@3.1.4": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/es6-symbol",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es6-symbol",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/es6-symbol/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "escalade@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lukeed/escalade",
     "publisher": "Luke Edwards",
     "email": "luke.edwards05@gmail.com",
-    "url": "https://lukeed.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escalade",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escalade/license"
+    "url": "https://lukeed.com"
   },
   "escape-html@1.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/component/escape-html",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escape-html",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escape-html/LICENSE"
+    "repository": "https://github.com/component/escape-html"
   },
   "escape-string-regexp@1.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/escape-string-regexp",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/escape-string-regexp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/escape-string-regexp/license"
+    "url": "sindresorhus.com"
   },
   "escape-string-regexp@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/escape-string-regexp",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stack-utils/node_modules/escape-string-regexp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stack-utils/node_modules/escape-string-regexp/license"
+    "url": "sindresorhus.com"
   },
   "escape-string-regexp@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/escape-string-regexp",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escape-string-regexp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escape-string-regexp/license"
+    "url": "https://sindresorhus.com"
   },
   "escodegen@2.1.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/estools/escodegen",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escodegen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/escodegen/LICENSE.BSD"
+    "repository": "https://github.com/estools/escodegen"
   },
   "eslint-config-prettier@7.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/prettier/eslint-config-prettier",
-    "publisher": "Simon Lydell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-config-prettier",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-config-prettier/LICENSE"
+    "publisher": "Simon Lydell"
   },
   "eslint-import-resolver-node@0.3.9": {
     "licenses": "MIT",
     "repository": "https://github.com/import-js/eslint-plugin-import",
     "publisher": "Ben Mosher",
-    "url": "me@benmosher.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-import-resolver-node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-import-resolver-node/LICENSE"
+    "url": "me@benmosher.com"
   },
   "eslint-module-utils@2.12.0": {
     "licenses": "MIT",
     "repository": "https://github.com/import-js/eslint-plugin-import",
     "publisher": "Ben Mosher",
-    "email": "me@benmosher.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-module-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-module-utils/LICENSE"
+    "email": "me@benmosher.com"
   },
   "eslint-plugin-import@2.31.0": {
     "licenses": "MIT",
     "repository": "https://github.com/import-js/eslint-plugin-import",
     "publisher": "Ben Mosher",
-    "email": "me@benmosher.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-import",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-import/LICENSE"
+    "email": "me@benmosher.com"
   },
   "eslint-plugin-prettier@3.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/prettier/eslint-plugin-prettier",
-    "publisher": "Teddy Katz",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-prettier",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-prettier/LICENSE.md"
+    "publisher": "Teddy Katz"
   },
   "eslint-plugin-react-native-globals@0.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/satya164/eslint-plugin-react-native-globals",
     "publisher": "Satyajit Sahoo",
     "email": "satyajit.happy@gmail.com",
-    "url": "https://github.com/satya164/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-react-native-globals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-react-native-globals/README.md"
+    "url": "https://github.com/satya164/"
   },
   "eslint-plugin-react-native@3.9.1": {
     "licenses": "MIT",
     "repository": "https://github.com/intellicode/eslint-plugin-react-native",
     "publisher": "Tom Hastjarjanto",
-    "email": "tom@intellicode.nl",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-react-native/LICENSE"
+    "email": "tom@intellicode.nl"
   },
   "eslint-plugin-react@7.20.6": {
     "licenses": "MIT",
     "repository": "https://github.com/yannickcr/eslint-plugin-react",
     "publisher": "Yannick Croissant",
-    "email": "yannick.croissant+npm@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-react",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-plugin-react/LICENSE"
+    "email": "yannick.croissant+npm@gmail.com"
   },
   "eslint-scope@5.1.1": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/eslint/eslint-scope",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-scope",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-scope/LICENSE"
+    "repository": "https://github.com/eslint/eslint-scope"
   },
   "eslint-utils@1.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/mysticatea/eslint-utils",
-    "publisher": "Toru Nagashima",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-utils/LICENSE"
+    "publisher": "Toru Nagashima"
   },
   "eslint-utils@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mysticatea/eslint-utils",
-    "publisher": "Toru Nagashima",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/node_modules/eslint-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/node_modules/eslint-utils/LICENSE"
+    "publisher": "Toru Nagashima"
   },
   "eslint-visitor-keys@1.3.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/eslint/eslint-visitor-keys",
     "publisher": "Toru Nagashima",
-    "url": "https://github.com/mysticatea",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-visitor-keys",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-visitor-keys/LICENSE"
+    "url": "https://github.com/mysticatea"
   },
   "eslint-visitor-keys@2.1.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/eslint/eslint-visitor-keys",
     "publisher": "Toru Nagashima",
-    "url": "https://github.com/mysticatea",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/eslint-parser/node_modules/eslint-visitor-keys",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/eslint-parser/node_modules/eslint-visitor-keys/LICENSE"
+    "url": "https://github.com/mysticatea"
   },
   "eslint-visitor-keys@3.4.3": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/eslint/eslint-visitor-keys",
     "publisher": "Toru Nagashima",
-    "url": "https://github.com/mysticatea",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys/LICENSE"
+    "url": "https://github.com/mysticatea"
   },
   "eslint@7.32.0": {
     "licenses": "MIT",
     "repository": "https://github.com/eslint/eslint",
     "publisher": "Nicholas C. Zakas",
-    "email": "nicholas+npm@nczconsulting.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint/LICENSE"
+    "email": "nicholas+npm@nczconsulting.com"
   },
   "esniff@2.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/esniff",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esniff",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esniff/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "espree@7.3.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/eslint/espree",
     "publisher": "Nicholas C. Zakas",
-    "email": "nicholas+npm@nczconsulting.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/espree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/espree/LICENSE"
+    "email": "nicholas+npm@nczconsulting.com"
   },
   "esprima@4.0.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/jquery/esprima",
     "publisher": "Ariya Hidayat",
-    "email": "ariya.hidayat@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esprima",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esprima/LICENSE.BSD"
+    "email": "ariya.hidayat@gmail.com"
   },
   "esquery@1.6.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/estools/esquery",
     "publisher": "Joel Feenstra",
-    "email": "jrfeenst+esquery@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esquery",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esquery/license.txt"
+    "email": "jrfeenst+esquery@gmail.com"
   },
   "esrecurse@4.3.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/estools/esrecurse",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esrecurse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esrecurse/README.md"
+    "repository": "https://github.com/estools/esrecurse"
   },
   "estraverse@4.3.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/estools/estraverse",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-scope/node_modules/estraverse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/eslint-scope/node_modules/estraverse/LICENSE.BSD"
+    "repository": "https://github.com/estools/estraverse"
   },
   "estraverse@5.3.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/estools/estraverse",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/estraverse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/estraverse/LICENSE.BSD"
+    "repository": "https://github.com/estools/estraverse"
   },
   "esutils@2.0.3": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/estools/esutils",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esutils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/esutils/LICENSE.BSD"
+    "repository": "https://github.com/estools/esutils"
   },
   "etag@1.8.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/etag",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/etag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/etag/LICENSE"
+    "repository": "https://github.com/jshttp/etag"
   },
   "event-emitter@0.3.5": {
     "licenses": "MIT",
     "repository": "https://github.com/medikoo/event-emitter",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/event-emitter",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/event-emitter/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "event-target-shim@5.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mysticatea/event-target-shim",
-    "publisher": "Toru Nagashima",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/event-target-shim",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/event-target-shim/LICENSE"
+    "publisher": "Toru Nagashima"
   },
   "exec-async@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ccheever/exec-async",
     "publisher": "Charlie Cheever",
-    "email": "ccheever@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exec-async",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exec-async/LICENSE"
+    "email": "ccheever@gmail.com"
   },
   "exec-sh@0.3.6": {
     "licenses": "MIT",
     "repository": "https://github.com/tsertkov/exec-sh",
     "publisher": "Aleksandr Tsertkov",
-    "email": "tsertkov@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exec-sh",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exec-sh/LICENSE"
+    "email": "tsertkov@gmail.com"
   },
   "execa@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/execa",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/license"
+    "url": "sindresorhus.com"
   },
   "execa@5.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/execa",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/node_modules/execa",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/node_modules/execa/license"
+    "url": "https://sindresorhus.com"
   },
   "exit@0.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/cowboy/node-exit",
     "publisher": "\"Cowboy\" Ben Alman",
-    "url": "http://benalman.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exit/LICENSE-MIT"
+    "url": "http://benalman.com/"
   },
   "expand-brackets@2.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/expand-brackets",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expand-brackets",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expand-brackets/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "expect@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expect/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "expo-application@6.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-application",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-application/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-asset@11.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-asset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-asset/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-blur@14.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-blur",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-blur/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-build-properties@0.13.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-build-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-build-properties/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-camera@16.0.14": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-camera",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-camera/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-clipboard@7.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-clipboard",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-clipboard/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-constants@14.5.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/expo-constants",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/expo-constants/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-constants@17.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-constants",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-constants/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-crypto@14.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-crypto",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-crypto/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-dev-client@5.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-client",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-client/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-dev-launcher@5.0.25": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-launcher",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-launcher/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-dev-menu-interface@1.9.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-menu-interface",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-menu-interface/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-dev-menu@6.0.18": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-menu",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-menu/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-device@7.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-device",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-device/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-document-picker@13.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-document-picker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-document-picker/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-eas-client@0.13.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-eas-client",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-eas-client/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-file-system@18.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-file-system",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-file-system/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-font@13.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-font",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-font/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-image-loader@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-loader",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-loader/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-image-picker@16.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-picker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-picker/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-json-utils@0.14.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-json-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-json-utils/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-keep-awake@14.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-keep-awake",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-keep-awake/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-linear-gradient@14.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linear-gradient",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linear-gradient/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-linking@7.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linking",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linking/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-localization@14.8.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/expo-localization",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/expo-localization/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-localization@16.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-localization",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-localization/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-location@18.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-location",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-location/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-manifests@0.15.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-manifests",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-manifests/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-media-library@17.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-media-library",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-media-library/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-modules-autolinking@2.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-modules-autolinking",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-modules-autolinking/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-modules-core@2.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-modules-core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-modules-core/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-notifications@0.29.12": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-notifications",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-notifications/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-screen-orientation@8.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-screen-orientation",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-screen-orientation/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-secure-store@14.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-secure-store",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-secure-store/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-splash-screen@0.29.21": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-splash-screen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-splash-screen/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-status-bar@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-status-bar",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-status-bar/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-structured-headers@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-structured-headers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-structured-headers/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-updates-interface@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates-interface",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates-interface/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-updates@0.26.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo-video@2.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-video",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-video/README.md"
+    "publisher": "650 Industries, Inc."
   },
   "expo@52.0.27": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
-    "publisher": "Expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo/README.md"
+    "publisher": "Expo"
   },
   "exponential-backoff@3.1.1": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/coveo/exponential-backoff",
-    "publisher": "Sami Sayegh",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exponential-backoff",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/exponential-backoff/LICENSE"
+    "publisher": "Sami Sayegh"
   },
   "ext@1.7.0": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/es5-ext.git#ext",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ext",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ext/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "extend-shallow@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/extend-shallow",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/extend-shallow",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/extend-shallow/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "extend-shallow@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/extend-shallow",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-string/node_modules/extend-shallow",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-string/node_modules/extend-shallow/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "extglob@2.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/extglob",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/extglob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/extglob/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "extract-files@9.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jaydenseric/extract-files",
     "publisher": "Jayden Seric",
     "email": "me@jaydenseric.com",
-    "url": "https://jaydenseric.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/extract-files",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/extract-files/readme.md"
+    "url": "https://jaydenseric.com"
   },
   "fast-base64-decode@1.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/LinusU/fast-base64-decode",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-base64-decode",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-base64-decode/readme.md"
+    "repository": "https://github.com/LinusU/fast-base64-decode"
   },
   "fast-deep-equal@3.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/epoberezkin/fast-deep-equal",
-    "publisher": "Evgeny Poberezkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-deep-equal",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-deep-equal/LICENSE"
+    "publisher": "Evgeny Poberezkin"
   },
   "fast-diff@1.3.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/jhchen/fast-diff",
     "publisher": "Jason Chen",
-    "email": "jhchen7@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-diff",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-diff/LICENSE"
+    "email": "jhchen7@gmail.com"
   },
   "fast-glob@3.3.3": {
     "licenses": "MIT",
     "repository": "https://github.com/mrmlnc/fast-glob",
     "publisher": "Denis Malinochkin",
-    "url": "https://mrmlnc.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-glob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-glob/LICENSE"
+    "url": "https://mrmlnc.com"
   },
   "fast-json-stable-stringify@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/epoberezkin/fast-json-stable-stringify",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-json-stable-stringify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-json-stable-stringify/LICENSE"
+    "url": "http://substack.net"
   },
   "fast-levenshtein@2.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/hiddentao/fast-levenshtein",
     "publisher": "Ramesh Nair",
     "email": "ram@hiddentao.com",
-    "url": "http://www.hiddentao.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-levenshtein",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-levenshtein/LICENSE.md"
+    "url": "http://www.hiddentao.com/"
   },
   "fast-loops@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/robinweser/fast-loops",
     "publisher": "robinweser",
-    "email": "contact@weser.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-loops",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-loops/LICENSE"
+    "email": "contact@weser.io"
   },
   "fast-uri@3.0.6": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/fastify/fast-uri",
     "publisher": "Vincent Le Goff",
     "email": "vince.legoff@gmail.com",
-    "url": "https://github.com/zekth",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-uri",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fast-uri/LICENSE"
+    "url": "https://github.com/zekth"
   },
   "fastq@1.18.0": {
     "licenses": "ISC",
     "repository": "https://github.com/mcollina/fastq",
     "publisher": "Matteo Collina",
-    "email": "hello@matteocollina.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fastq",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fastq/LICENSE"
+    "email": "hello@matteocollina.com"
   },
   "fb-watchman@2.0.2": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/facebook/watchman",
     "publisher": "Wez Furlong",
     "email": "wez@fb.com",
-    "url": "http://wezfurlong.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fb-watchman",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fb-watchman/README.md"
+    "url": "http://wezfurlong.org"
   },
   "fbemitter@3.0.0": {
     "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/facebook/emitter",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbemitter",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbemitter/LICENSE"
+    "repository": "https://github.com/facebook/emitter"
   },
   "fbjs-css-vars@1.0.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/fbjs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbjs-css-vars",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbjs-css-vars/LICENSE"
+    "repository": "https://github.com/facebook/fbjs"
   },
   "fbjs@0.8.18": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/fbjs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-addons-shallow-compare/node_modules/fbjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-addons-shallow-compare/node_modules/fbjs/LICENSE"
+    "repository": "https://github.com/facebook/fbjs"
   },
   "fbjs@3.0.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/fbjs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbjs/LICENSE"
+    "repository": "https://github.com/facebook/fbjs"
   },
   "fetch-retry@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonbern/fetch-retry",
-    "publisher": "Jon K. Bernhardsen",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fetch-retry",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fetch-retry/LICENSE"
+    "publisher": "Jon K. Bernhardsen"
   },
   "file-entry-cache@6.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/royriojas/file-entry-cache",
     "publisher": "Roy Riojas",
-    "url": "http://royriojas.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/file-entry-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/file-entry-cache/LICENSE"
+    "url": "http://royriojas.com"
   },
   "fill-range@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/fill-range",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/fill-range",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/fill-range/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "fill-range@7.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/fill-range",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fill-range",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fill-range/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "filter-obj@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/filter-obj",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/filter-obj",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/filter-obj/license"
+    "url": "sindresorhus.com"
   },
   "finalhandler@1.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/pillarjs/finalhandler",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/finalhandler",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/finalhandler/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "find-cache-dir@2.1.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/avajs/find-cache-dir",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/license"
+    "repository": "https://github.com/avajs/find-cache-dir"
   },
   "find-up@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/find-up",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/find-up",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/find-up/license"
+    "url": "sindresorhus.com"
   },
   "find-up@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/find-up",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/node_modules/find-up",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/node_modules/find-up/license"
+    "url": "sindresorhus.com"
   },
   "find-up@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/find-up",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-up",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-up/license"
+    "url": "https://sindresorhus.com"
   },
   "find-yarn-workspace-root@2.0.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/square/find-yarn-workspace-root",
-    "publisher": "Square, Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-yarn-workspace-root",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-yarn-workspace-root/LICENSE"
+    "publisher": "Square, Inc."
   },
   "flat-cache@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jaredwray/flat-cache",
     "publisher": "Jared Wray",
-    "url": "https://jaredwray.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flat-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flat-cache/LICENSE"
+    "url": "https://jaredwray.com"
   },
   "flatted@3.3.2": {
     "licenses": "ISC",
     "repository": "https://github.com/WebReflection/flatted",
-    "publisher": "Andrea Giammarchi",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flatted",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flatted/LICENSE"
+    "publisher": "Andrea Giammarchi"
   },
   "flow-enums-runtime@0.0.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/flow",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flow-enums-runtime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flow-enums-runtime/LICENSE"
+    "repository": "https://github.com/facebook/flow"
   },
   "flow-parser@0.259.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/flow",
     "publisher": "Flow Team",
-    "email": "flow@fb.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flow-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/flow-parser/README.md"
+    "email": "flow@fb.com"
   },
   "fontfaceobserver@2.3.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/bramstein/fontfaceobserver",
     "publisher": "Bram Stein",
     "email": "b.l.stein@gmail.com",
-    "url": "http://www.bramstein.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fontfaceobserver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fontfaceobserver/LICENSE"
+    "url": "http://www.bramstein.com/"
   },
   "for-each@0.3.4": {
     "licenses": "MIT",
     "repository": "https://github.com/Raynos/for-each",
     "publisher": "Raynos",
-    "email": "raynos2@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/for-each",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/for-each/LICENSE"
+    "email": "raynos2@gmail.com"
   },
   "for-in@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/for-in",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/for-in",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/for-in/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "foreground-child@3.3.0": {
     "licenses": "ISC",
     "repository": "https://github.com/tapjs/foreground-child",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/foreground-child",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/foreground-child/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "form-data@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/form-data/form-data",
     "publisher": "Felix Geisendörfer",
     "email": "felix@debuggable.com",
-    "url": "http://debuggable.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/form-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/form-data/License"
+    "url": "http://debuggable.com/"
   },
   "form-data@4.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/form-data/form-data",
     "publisher": "Felix Geisendörfer",
     "email": "felix@debuggable.com",
-    "url": "http://debuggable.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsdom/node_modules/form-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsdom/node_modules/form-data/License"
+    "url": "http://debuggable.com/"
   },
   "fragment-cache@0.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/fragment-cache",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fragment-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fragment-cache/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "freeport-async@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/freeport-async",
-    "publisher": "Expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/freeport-async",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/freeport-async/LICENSE"
+    "publisher": "Expo"
   },
   "fresh@0.5.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/fresh",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "url": "http://tjholowaychuk.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fresh",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fresh/LICENSE"
+    "url": "http://tjholowaychuk.com"
   },
   "fs-extra@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-fs-extra",
     "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/fs-extra",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/fs-extra/LICENSE"
+    "email": "jprichardson@gmail.com"
   },
   "fs-extra@9.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-fs-extra",
     "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/image-utils/node_modules/fs-extra",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/image-utils/node_modules/fs-extra/LICENSE"
+    "email": "jprichardson@gmail.com"
   },
   "fs-extra@9.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-fs-extra",
     "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fs-extra",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fs-extra/LICENSE"
+    "email": "jprichardson@gmail.com"
   },
   "fs-minipass@2.1.0": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/fs-minipass",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fs-minipass",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fs-minipass/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "fs-minipass@3.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/fs-minipass",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cacache/node_modules/fs-minipass",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cacache/node_modules/fs-minipass/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "fs.realpath@1.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/fs.realpath",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fs.realpath",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fs.realpath/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "function-bind@1.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/Raynos/function-bind",
     "publisher": "Raynos",
-    "email": "raynos2@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/function-bind",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/function-bind/LICENSE"
+    "email": "raynos2@gmail.com"
   },
   "function.prototype.name@1.1.8": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Function.prototype.name",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/function.prototype.name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/function.prototype.name/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "functional-red-black-tree@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mikolalysenko/functional-red-black-tree",
-    "publisher": "Mikola Lysenko",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/functional-red-black-tree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/functional-red-black-tree/LICENSE"
+    "publisher": "Mikola Lysenko"
   },
   "functions-have-names@1.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/functions-have-names",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/functions-have-names",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/functions-have-names/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "gensync@1.0.0-beta.2": {
     "licenses": "MIT",
     "repository": "https://github.com/loganfsmyth/gensync",
     "publisher": "Logan Smyth",
-    "email": "loganfsmyth@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/gensync",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/gensync/LICENSE"
+    "email": "loganfsmyth@gmail.com"
   },
   "get-caller-file@2.0.5": {
     "licenses": "ISC",
     "repository": "https://github.com/stefanpenner/get-caller-file",
-    "publisher": "Stefan Penner",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-caller-file",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-caller-file/LICENSE.md"
+    "publisher": "Stefan Penner"
   },
   "get-intrinsic@1.2.7": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/get-intrinsic",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-intrinsic",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-intrinsic/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "get-package-type@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/cfware/get-package-type",
-    "publisher": "Corey Farrell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-package-type",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-package-type/LICENSE"
+    "publisher": "Corey Farrell"
   },
   "get-port@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/get-port",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-port",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-port/license"
+    "url": "sindresorhus.com"
   },
   "get-proto@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/get-proto",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-proto",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-proto/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "get-stream@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/get-stream",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-stream/license"
+    "url": "sindresorhus.com"
   },
   "get-stream@6.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/get-stream",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/node_modules/get-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/node_modules/get-stream/license"
+    "url": "https://sindresorhus.com"
   },
   "get-symbol-description@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/get-symbol-description",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-symbol-description",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-symbol-description/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "get-value@2.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/get-value",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/get-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "getenv@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ctavan/node-getenv",
     "publisher": "Christoph Tavan",
-    "email": "dev@tavan.de",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/getenv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/getenv/LICENSE.md"
+    "email": "dev@tavan.de"
   },
   "glob-parent@5.1.2": {
     "licenses": "ISC",
     "repository": "https://github.com/gulpjs/glob-parent",
     "publisher": "Gulp Team",
     "email": "team@gulpjs.com",
-    "url": "https://gulpjs.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/glob-parent",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/glob-parent/LICENSE"
+    "url": "https://gulpjs.com/"
   },
   "glob@10.4.5": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-glob",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins/node_modules/glob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins/node_modules/glob/LICENSE"
+    "url": "https://blog.izs.me/"
   },
   "glob@7.1.6": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-glob",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/glob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/node_modules/glob/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "glob@7.2.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-glob",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/glob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/glob/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "globals@11.12.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/globals",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/globals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/globals/license"
+    "url": "sindresorhus.com"
   },
   "globals@13.24.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/globals",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/node_modules/globals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/node_modules/globals/license"
+    "url": "https://sindresorhus.com"
   },
   "globalthis@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/System.global",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/globalthis",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/globalthis/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "globby@11.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/globby",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/globby",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/globby/license"
+    "url": "https://sindresorhus.com"
   },
   "gopd@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/gopd",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/gopd",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/gopd/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "graceful-fs@4.2.11": {
     "licenses": "ISC",
-    "repository": "https://github.com/isaacs/node-graceful-fs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graceful-fs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graceful-fs/LICENSE"
+    "repository": "https://github.com/isaacs/node-graceful-fs"
   },
   "graphemer@1.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/flmnt/graphemer",
     "publisher": "Matt Davies",
     "email": "matt@filament.so",
-    "url": "https://github.com/mattpauldavies",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphemer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphemer/LICENSE"
+    "url": "https://github.com/mattpauldavies"
   },
   "graphql-anywhere@4.2.8": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-client",
     "publisher": "Sashko Stubailo",
-    "email": "sashko@stubailo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-anywhere",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-anywhere/LICENSE"
+    "email": "sashko@stubailo.com"
   },
   "graphql-request@3.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/prisma/graphql-request",
-    "publisher": "Prisma Labs Team",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-request",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-request/LICENSE"
+    "publisher": "Prisma Labs Team"
   },
   "graphql-tag@2.12.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/apollographql/graphql-tag",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-tag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-tag/LICENSE"
+    "repository": "https://github.com/apollographql/graphql-tag"
   },
   "graphql@14.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/graphql/graphql-js",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql/LICENSE"
+    "repository": "https://github.com/graphql/graphql-js"
   },
   "has-bigints@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/has-bigints",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-bigints",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-bigints/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "has-flag@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/has-flag",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/has-flag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/has-flag/license"
+    "url": "sindresorhus.com"
   },
   "has-flag@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/has-flag",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-flag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-flag/license"
+    "url": "sindresorhus.com"
   },
   "has-property-descriptors@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/has-property-descriptors",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-property-descriptors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-property-descriptors/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "has-proto@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/has-proto",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-proto",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-proto/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "has-symbols@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/has-symbols",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-symbols",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-symbols/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "has-tostringtag@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/has-tostringtag",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-tostringtag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-tostringtag/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "has-value@0.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/has-value",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/node_modules/has-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/node_modules/has-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "has-value@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/has-value",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "has-values@0.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/has-values",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/node_modules/has-values",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/node_modules/has-values/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "has-values@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/has-values",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-values",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-values/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "has@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/tarruda/has",
     "publisher": "Thiago de Arruda",
-    "email": "tpadilha84@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has/LICENSE-MIT"
+    "email": "tpadilha84@gmail.com"
   },
   "hasown@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/hasOwn",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hasown",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hasown/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "hermes-estree@0.23.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hermes-estree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hermes-estree/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "hermes-estree@0.24.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/hermes-estree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/hermes-estree/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "hermes-estree@0.25.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-syntax-hermes-parser/node_modules/hermes-estree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-syntax-hermes-parser/node_modules/hermes-estree/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "hermes-parser@0.23.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hermes-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hermes-parser/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "hermes-parser@0.24.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/hermes-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/hermes-parser/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "hermes-parser@0.25.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-syntax-hermes-parser/node_modules/hermes-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-plugin-syntax-hermes-parser/node_modules/hermes-parser/LICENSE"
+    "repository": "https://github.com/facebook/hermes"
   },
   "hoist-non-react-statics@3.3.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/mridgway/hoist-non-react-statics",
     "publisher": "Michael Ridgway",
-    "email": "mcridgway@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hoist-non-react-statics",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hoist-non-react-statics/LICENSE.md"
+    "email": "mcridgway@gmail.com"
   },
   "hosted-git-info@2.8.9": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/hosted-git-info",
     "publisher": "Rebecca Turner",
     "email": "me@re-becca.org",
-    "url": "http://re-becca.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-package-data/node_modules/hosted-git-info",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-package-data/node_modules/hosted-git-info/LICENSE"
+    "url": "http://re-becca.org"
   },
   "hosted-git-info@7.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/hosted-git-info",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hosted-git-info",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hosted-git-info/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "html-encoding-sniffer@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/html-encoding-sniffer",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/html-encoding-sniffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/html-encoding-sniffer/LICENSE.txt"
+    "url": "https://domenic.me/"
   },
   "html-escaper@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/WebReflection/html-escaper",
-    "publisher": "Andrea Giammarchi",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/html-escaper",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/html-escaper/LICENSE.txt"
+    "publisher": "Andrea Giammarchi"
   },
   "htmlparser2@7.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/fb55/htmlparser2",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/htmlparser2",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/htmlparser2/LICENSE"
+    "email": "me@feedic.com"
   },
   "http-errors@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/http-errors",
     "publisher": "Jonathan Ong",
     "email": "me@jongleberry.com",
-    "url": "http://jongleberry.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/http-errors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/http-errors/LICENSE"
+    "url": "http://jongleberry.com"
   },
   "http-proxy-agent@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/TooTallNate/node-http-proxy-agent",
     "publisher": "Nathan Rajlich",
     "email": "nathan@tootallnate.net",
-    "url": "http://n8.io/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/http-proxy-agent",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/http-proxy-agent/README.md"
+    "url": "http://n8.io/"
   },
   "https-proxy-agent@5.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/TooTallNate/node-https-proxy-agent",
     "publisher": "Nathan Rajlich",
     "email": "nathan@tootallnate.net",
-    "url": "http://n8.io/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/https-proxy-agent",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/https-proxy-agent/README.md"
+    "url": "http://n8.io/"
   },
   "human-signals@2.1.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/ehmicky/human-signals",
     "publisher": "ehmicky",
     "email": "ehmicky@gmail.com",
-    "url": "https://github.com/ehmicky",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/human-signals",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/human-signals/LICENSE"
+    "url": "https://github.com/ehmicky"
   },
   "hyphenate-style-name@1.1.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/rexxars/hyphenate-style-name",
     "publisher": "Espen Hovlandsdal",
-    "email": "espen@hovlandsdal.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hyphenate-style-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/hyphenate-style-name/LICENSE"
+    "email": "espen@hovlandsdal.com"
   },
   "iconv-lite@0.6.3": {
     "licenses": "MIT",
     "repository": "https://github.com/ashtuchkin/iconv-lite",
     "publisher": "Alexander Shtuchkin",
-    "email": "ashtuchkin@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/iconv-lite",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/iconv-lite/LICENSE"
+    "email": "ashtuchkin@gmail.com"
   },
   "ieee754@1.2.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/feross/ieee754",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "https://feross.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ieee754",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ieee754/LICENSE"
+    "url": "https://feross.org"
   },
   "ignore@4.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/kaelzhang/node-ignore",
-    "publisher": "kael",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/node_modules/ignore",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/node_modules/ignore/LICENSE-MIT"
+    "publisher": "kael"
   },
   "ignore@5.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/kaelzhang/node-ignore",
-    "publisher": "kael",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ignore",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ignore/LICENSE-MIT"
+    "publisher": "kael"
   },
   "image-size@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/image-size/image-size",
     "publisher": "netroy",
     "email": "aditya@netroy.in",
-    "url": "http://netroy.in/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/image-size",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/image-size/LICENSE"
+    "url": "http://netroy.in/"
   },
   "import-fresh@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/import-fresh",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/import-fresh",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/import-fresh/license"
+    "url": "sindresorhus.com"
   },
   "import-fresh@3.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/import-fresh",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/import-fresh",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/import-fresh/license"
+    "url": "https://sindresorhus.com"
   },
   "import-local@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/import-local",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/import-local",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/import-local/license"
+    "url": "https://sindresorhus.com"
   },
   "imurmurhash@0.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jensyt/imurmurhash-js",
     "publisher": "Jens Taylor",
     "email": "jensyt@gmail.com",
-    "url": "https://github.com/homebrewing",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/imurmurhash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/imurmurhash/README.md"
+    "url": "https://github.com/homebrewing"
   },
   "indent-string@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/indent-string",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/indent-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/indent-string/license"
+    "url": "sindresorhus.com"
   },
   "inflight@1.0.6": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/inflight",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/inflight",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/inflight/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "inherits@2.0.4": {
     "licenses": "ISC",
-    "repository": "https://github.com/isaacs/inherits",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/inherits",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/inherits/LICENSE"
+    "repository": "https://github.com/isaacs/inherits"
   },
   "ini@1.3.8": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/ini",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ini",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ini/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "inline-style-prefixer@6.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/robinweser/inline-style-prefixer",
-    "publisher": "Robin Weser",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/inline-style-prefixer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/inline-style-prefixer/LICENSE"
+    "publisher": "Robin Weser"
   },
   "internal-ip@4.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/internal-ip",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/internal-ip",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/internal-ip/license"
+    "url": "sindresorhus.com"
   },
   "internal-slot@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/internal-slot",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/internal-slot",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/internal-slot/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "invariant@2.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/zertosh/invariant",
     "publisher": "Andres Suarez",
-    "email": "zertosh@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/invariant",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/invariant/LICENSE"
+    "email": "zertosh@gmail.com"
   },
   "ip-regex@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/ip-regex",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ip-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ip-regex/license"
+    "url": "sindresorhus.com"
   },
   "ipaddr.js@1.9.1": {
     "licenses": "MIT",
     "repository": "https://github.com/whitequark/ipaddr.js",
     "publisher": "whitequark",
-    "email": "whitequark@whitequark.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ipaddr.js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ipaddr.js/LICENSE"
+    "email": "whitequark@whitequark.org"
   },
   "is-accessor-descriptor@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-accessor-descriptor",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-accessor-descriptor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-accessor-descriptor/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-arguments@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-arguments",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-arguments",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-arguments/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "is-array-buffer@3.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-array-buffer",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-array-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-array-buffer/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-arrayish@0.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/qix-/node-is-arrayish",
     "publisher": "Qix",
-    "url": "http://github.com/qix-",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-arrayish",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-arrayish/LICENSE"
+    "url": "http://github.com/qix-"
   },
   "is-arrayish@0.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/qix-/node-is-arrayish",
     "publisher": "Qix",
-    "url": "http://github.com/qix-",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-swizzle/node_modules/is-arrayish",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-swizzle/node_modules/is-arrayish/LICENSE"
+    "url": "http://github.com/qix-"
   },
   "is-async-function@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-async-function",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-async-function",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-async-function/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-bigint@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-bigint",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-bigint",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-bigint/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-boolean-object@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-boolean-object",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-boolean-object",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-boolean-object/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-buffer@1.1.6": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/is-buffer",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "http://feross.org/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-buffer/LICENSE"
+    "url": "http://feross.org/"
   },
   "is-callable@1.2.7": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-callable",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-callable",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-callable/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "is-ci@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/watson/is-ci",
     "publisher": "Thomas Watson Steen",
     "email": "w@tson.dk",
-    "url": "https://twitter.com/wa7son",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-ci",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-ci/LICENSE"
+    "url": "https://twitter.com/wa7son"
   },
   "is-core-module@2.16.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-core-module",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-core-module",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-core-module/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-data-descriptor@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-data-descriptor",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-data-descriptor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-data-descriptor/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-data-view@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-data-view",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-data-view",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-data-view/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-date-object@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-date-object",
-    "publisher": "Jordan Harband",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-date-object",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-date-object/LICENSE"
+    "publisher": "Jordan Harband"
   },
   "is-descriptor@0.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-descriptor",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-property/node_modules/is-descriptor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/define-property/node_modules/is-descriptor/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-descriptor@1.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-descriptor",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-descriptor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-descriptor/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-directory@0.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-directory",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-directory",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-directory/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-docker@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-docker",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-docker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-docker/license"
+    "url": "https://sindresorhus.com"
   },
   "is-extendable@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-extendable",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-extendable",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-extendable/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-extendable@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-extendable",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-string/node_modules/is-extendable",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-string/node_modules/is-extendable/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-extglob@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-extglob",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-extglob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-extglob/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-finalizationregistry@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-finalizationregistry",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-finalizationregistry",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-finalizationregistry/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-fullwidth-code-point@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-fullwidth-code-point",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-fullwidth-code-point",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-fullwidth-code-point/license"
+    "url": "sindresorhus.com"
   },
   "is-generator-fn@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-generator-fn",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-generator-fn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-generator-fn/license"
+    "url": "sindresorhus.com"
   },
   "is-generator-function@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-generator-function",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-generator-function",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-generator-function/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-glob@4.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/is-glob",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-glob",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-glob/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-map@2.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-map",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-map/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-nan@1.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/is-nan",
-    "publisher": "Jordan Harband",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-nan",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-nan/LICENSE"
+    "publisher": "Jordan Harband"
   },
   "is-number-object@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-number-object",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-number-object",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-number-object/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-number@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-number",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-number",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-number/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-number@7.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-number",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex-range/node_modules/is-number",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex-range/node_modules/is-number/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-path-cwd@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-path-cwd",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-path-cwd",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-path-cwd/license"
+    "url": "sindresorhus.com"
   },
   "is-path-inside@3.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-path-inside",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-path-inside",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-path-inside/license"
+    "url": "sindresorhus.com"
   },
   "is-plain-obj@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-plain-obj",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-plain-obj",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-plain-obj/license"
+    "url": "sindresorhus.com"
   },
   "is-plain-object@2.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-plain-object",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-plain-object",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-plain-object/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-potential-custom-element-name@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/is-potential-custom-element-name",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-potential-custom-element-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-potential-custom-element-name/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "is-primitive@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-primitive",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-primitive",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-primitive/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-regex@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-regex",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-regex/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-set@2.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-set",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-set",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-set/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-shared-array-buffer@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-shared-array-buffer",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-shared-array-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-shared-array-buffer/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "is-stream@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-stream",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-stream/license"
+    "url": "sindresorhus.com"
   },
   "is-stream@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-stream",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tempy/node_modules/is-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tempy/node_modules/is-stream/license"
+    "url": "https://sindresorhus.com"
   },
   "is-string@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-string",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-string/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-symbol@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-symbol",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-symbol",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-symbol/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-typed-array@1.1.15": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-typed-array",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-typed-array",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-typed-array/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "is-typedarray@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/hughsk/is-typedarray",
     "publisher": "Hugh Kennedy",
     "email": "hughskennedy@gmail.com",
-    "url": "http://hughsk.io/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-typedarray",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-typedarray/LICENSE.md"
+    "url": "http://hughsk.io/"
   },
   "is-weakmap@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-weakmap",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-weakmap",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-weakmap/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-weakref@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-weakref",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-weakref",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-weakref/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-weakset@2.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-weakset",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-weakset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-weakset/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "is-what@3.14.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mesqueeb/is-what",
-    "publisher": "Luca Ban - Mesqueeb",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-what",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-what/LICENSE"
+    "publisher": "Luca Ban - Mesqueeb"
   },
   "is-windows@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/is-windows",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-windows",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-windows/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "is-wsl@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-wsl",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-wsl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/is-wsl/license"
+    "url": "sindresorhus.com"
   },
   "isarray@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/juliangruber/isarray",
     "publisher": "Julian Gruber",
     "email": "mail@juliangruber.com",
-    "url": "http://juliangruber.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readable-stream/node_modules/isarray",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readable-stream/node_modules/isarray/README.md"
+    "url": "http://juliangruber.com"
   },
   "isarray@2.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/juliangruber/isarray",
     "publisher": "Julian Gruber",
     "email": "mail@juliangruber.com",
-    "url": "http://juliangruber.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isarray",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isarray/LICENSE"
+    "url": "http://juliangruber.com"
   },
   "isexe@2.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/isexe",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isexe",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isexe/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "isobject@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/isobject",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/node_modules/has-value/node_modules/isobject",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/node_modules/has-value/node_modules/isobject/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "isobject@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/isobject",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isobject",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isobject/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "isomorphic-fetch@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/matthew-andrews/isomorphic-fetch",
     "publisher": "Matt Andrews",
-    "email": "matt@mattandre.ws",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isomorphic-fetch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isomorphic-fetch/LICENSE"
+    "email": "matt@mattandre.ws"
   },
   "istanbul-lib-coverage@3.2.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/istanbuljs",
     "publisher": "Krishnan Anantheswaran",
-    "email": "kananthmail-github@yahoo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-coverage",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-coverage/LICENSE"
+    "email": "kananthmail-github@yahoo.com"
   },
   "istanbul-lib-instrument@5.2.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/istanbuljs",
     "publisher": "Krishnan Anantheswaran",
-    "email": "kananthmail-github@yahoo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-instrument",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-instrument/LICENSE"
+    "email": "kananthmail-github@yahoo.com"
   },
   "istanbul-lib-instrument@6.0.3": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/istanbuljs",
     "publisher": "Krishnan Anantheswaran",
-    "email": "kananthmail-github@yahoo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/reporters/node_modules/istanbul-lib-instrument",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/reporters/node_modules/istanbul-lib-instrument/LICENSE"
+    "email": "kananthmail-github@yahoo.com"
   },
   "istanbul-lib-report@3.0.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/istanbuljs",
     "publisher": "Krishnan Anantheswaran",
-    "email": "kananthmail-github@yahoo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-report",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-report/LICENSE"
+    "email": "kananthmail-github@yahoo.com"
   },
   "istanbul-lib-source-maps@4.0.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/istanbuljs",
     "publisher": "Krishnan Anantheswaran",
-    "email": "kananthmail-github@yahoo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-source-maps",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-source-maps/LICENSE"
+    "email": "kananthmail-github@yahoo.com"
   },
   "istanbul-reports@3.1.7": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/istanbuljs/istanbuljs",
     "publisher": "Krishnan Anantheswaran",
-    "email": "kananthmail-github@yahoo.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-reports",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-reports/LICENSE"
+    "email": "kananthmail-github@yahoo.com"
   },
   "iterall@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/leebyron/iterall",
     "publisher": "Lee Byron",
     "email": "lee@leebyron.com",
-    "url": "http://leebyron.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/iterall",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/iterall/LICENSE"
+    "url": "http://leebyron.com/"
   },
   "jackspeak@3.4.3": {
     "licenses": "BlueOak-1.0.0",
     "repository": "https://github.com/isaacs/jackspeak",
     "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jackspeak",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jackspeak/LICENSE.md"
+    "email": "i@izs.me"
   },
   "jest-changed-files@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-changed-files",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-changed-files/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-circus@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-circus",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-circus/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-cli@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-cli",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-cli/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-config@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-config/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-diff@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-diff",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-diff/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-docblock@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-docblock",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-docblock/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-each@29.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jestjs/jest",
     "publisher": "Matt Phillips",
-    "url": "mattphillips",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-each",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-each/LICENSE"
+    "url": "mattphillips"
   },
   "jest-environment-jsdom@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-environment-jsdom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-environment-jsdom/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-environment-node@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-environment-node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-environment-node/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-expo@52.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-expo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-expo/README.md"
+    "repository": "https://github.com/expo/expo"
   },
   "jest-get-type@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-get-type",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-get-type/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-haste-map@25.5.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-haste-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-haste-map/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "jest-haste-map@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-haste-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-haste-map/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-leak-detector@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-leak-detector",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-leak-detector/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-matcher-utils@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-matcher-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-matcher-utils/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-message-util@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-message-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-message-util/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-mock@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-mock",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-mock/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-pnp-resolver@1.2.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/arcanis/jest-pnp-resolver",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-pnp-resolver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-pnp-resolver/README.md"
+    "repository": "https://github.com/arcanis/jest-pnp-resolver"
   },
   "jest-regex-util@25.2.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-regex-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-regex-util/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "jest-regex-util@29.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-regex-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-regex-util/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-resolve-dependencies@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-resolve-dependencies",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-resolve-dependencies/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-resolve@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-resolve",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-resolve/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-runner@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runner",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runner/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-runtime@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runtime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runtime/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-serializer@25.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-serializer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-serializer/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "jest-snapshot@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-snapshot",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-snapshot/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-styled-components@6.3.4": {
     "licenses": "MIT",
     "repository": "https://github.com/styled-components/jest-styled-components",
-    "publisher": "Michele Bertoli",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-styled-components",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-styled-components/LICENSE"
+    "publisher": "Michele Bertoli"
   },
   "jest-util@25.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-util/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "jest-util@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-util/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-validate@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-validate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-validate/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-watch-select-projects@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/rogeliog/jest-watch-select-projects",
     "publisher": "Rogelio Guzman",
-    "email": "rogelioguzmanh@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-select-projects",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-select-projects/LICENSE"
+    "email": "rogelioguzmanh@gmail.com"
   },
   "jest-watch-typeahead@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jest-community/jest-watch-typeahead",
     "publisher": "Rogelio Guzman",
-    "email": "rogelioguzmanh@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/LICENSE"
+    "email": "rogelioguzmanh@gmail.com"
   },
   "jest-watcher@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watcher",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watcher/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest-worker@25.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-worker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/jest-worker/LICENSE"
+    "repository": "https://github.com/facebook/jest"
   },
   "jest-worker@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-worker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-worker/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jest@29.7.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jestjs/jest",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest/LICENSE"
+    "repository": "https://github.com/jestjs/jest"
   },
   "jimp-compact@0.16.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/nuxt-community/jimp-compact",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jimp-compact",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jimp-compact/README.md"
+    "repository": "https://github.com/nuxt-community/jimp-compact"
   },
   "join-component@1.1.0": {
-    "licenses": "MIT",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/join-component",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/join-component/Readme.md"
+    "licenses": "MIT"
   },
   "js-sha3@0.8.0": {
     "licenses": "MIT",
     "repository": "https://github.com/emn178/js-sha3",
     "publisher": "Chen, Yi-Cyuan",
-    "email": "emn178@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/js-sha3",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/js-sha3/LICENSE.txt"
+    "email": "emn178@gmail.com"
   },
   "js-tokens@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lydell/js-tokens",
-    "publisher": "Simon Lydell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/js-tokens",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/js-tokens/LICENSE"
+    "publisher": "Simon Lydell"
   },
   "js-yaml@3.14.1": {
     "licenses": "MIT",
     "repository": "https://github.com/nodeca/js-yaml",
     "publisher": "Vladimir Zapparov",
-    "email": "dervus.grim@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/js-yaml",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/js-yaml/LICENSE"
+    "email": "dervus.grim@gmail.com"
   },
   "js-yaml@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/nodeca/js-yaml",
     "publisher": "Vladimir Zapparov",
-    "email": "dervus.grim@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/xcpretty/node_modules/js-yaml",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/xcpretty/node_modules/js-yaml/LICENSE"
+    "email": "dervus.grim@gmail.com"
   },
   "jsc-android@250231.0.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/react-native-community/jsc-android-buildscripts",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsc-android",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsc-android/LICENSE"
+    "repository": "https://github.com/react-native-community/jsc-android-buildscripts"
   },
   "jsc-safe-url@0.2.4": {
     "licenses": "0BSD",
     "repository": "https://github.com/robhogan/jsc-safe-url",
     "publisher": "Rob Hogan",
-    "email": "npm@rhogan.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsc-safe-url",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsc-safe-url/LICENSE"
+    "email": "npm@rhogan.net"
   },
   "jscodeshift@0.14.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/jscodeshift",
-    "publisher": "Felix Kling",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jscodeshift",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jscodeshift/LICENSE"
+    "publisher": "Felix Kling"
   },
   "jscodeshift@17.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/jscodeshift",
-    "publisher": "Felix Kling",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/jscodeshift",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/jscodeshift/LICENSE"
+    "publisher": "Felix Kling"
   },
   "jsdom@20.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jsdom/jsdom",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsdom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsdom/LICENSE.txt"
+    "repository": "https://github.com/jsdom/jsdom"
   },
   "jsesc@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/jsesc",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regjsparser/node_modules/jsesc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regjsparser/node_modules/jsesc/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "jsesc@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/jsesc",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsesc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsesc/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "json-buffer@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/dominictarr/json-buffer",
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",
-    "url": "http://dominictarr.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-buffer/LICENSE"
+    "url": "http://dominictarr.com"
   },
   "json-parse-better-errors@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/zkat/json-parse-better-errors",
     "publisher": "Kat Marchán",
-    "email": "kzm@zkat.tech",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-parse-better-errors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-parse-better-errors/LICENSE.md"
+    "email": "kzm@zkat.tech"
   },
   "json-parse-even-better-errors@2.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/npm/json-parse-even-better-errors",
     "publisher": "Kat Marchán",
-    "email": "kzm@zkat.tech",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-parse-even-better-errors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-parse-even-better-errors/LICENSE.md"
+    "email": "kzm@zkat.tech"
   },
   "json-schema-traverse@0.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/epoberezkin/json-schema-traverse",
-    "publisher": "Evgeny Poberezkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ajv/node_modules/json-schema-traverse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ajv/node_modules/json-schema-traverse/LICENSE"
+    "publisher": "Evgeny Poberezkin"
   },
   "json-schema-traverse@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/epoberezkin/json-schema-traverse",
-    "publisher": "Evgeny Poberezkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-schema-traverse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-schema-traverse/LICENSE"
+    "publisher": "Evgeny Poberezkin"
   },
   "json-stable-stringify-without-jsonify@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/samn/json-stable-stringify",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-stable-stringify-without-jsonify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-stable-stringify-without-jsonify/LICENSE"
+    "url": "http://substack.net"
   },
   "json-stable-stringify@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/json-stable-stringify",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-stable-stringify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json-stable-stringify/LICENSE"
+    "url": "http://substack.net"
   },
   "json5@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/json5/json5",
     "publisher": "Aseem Kishore",
-    "email": "aseem.kishore@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tsconfig-paths/node_modules/json5",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tsconfig-paths/node_modules/json5/LICENSE.md"
+    "email": "aseem.kishore@gmail.com"
   },
   "json5@2.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/json5/json5",
     "publisher": "Aseem Kishore",
-    "email": "aseem.kishore@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json5",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/json5/LICENSE.md"
+    "email": "aseem.kishore@gmail.com"
   },
   "jsonfile@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-jsonfile",
     "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/jsonfile",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/jsonfile/LICENSE"
+    "email": "jprichardson@gmail.com"
   },
   "jsonfile@6.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-jsonfile",
     "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsonfile",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsonfile/LICENSE"
+    "email": "jprichardson@gmail.com"
   },
   "jsonify@0.0.1": {
     "licenses": "Public Domain",
     "repository": "https://github.com/ljharb/jsonify",
     "publisher": "Douglas Crockford",
-    "url": "https://crockford.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsonify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsonify/README.md"
+    "url": "https://crockford.com/"
   },
   "jsx-ast-utils@2.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/evcohen/jsx-ast-utils",
-    "publisher": "Ethan Cohen",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsx-ast-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jsx-ast-utils/LICENSE.md"
+    "publisher": "Ethan Cohen"
   },
   "kdbush@3.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/mourner/kdbush",
-    "publisher": "Vladimir Agafonkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/kdbush",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/kdbush/LICENSE"
+    "publisher": "Vladimir Agafonkin"
   },
   "keyv@4.5.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jaredwray/keyv",
     "publisher": "Jared Wray",
     "email": "me@jaredwray.com",
-    "url": "http://jaredwray.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/keyv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/keyv/README.md"
+    "url": "http://jaredwray.com"
   },
   "kind-of@3.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/kind-of",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/kind-of",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/kind-of/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "kind-of@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/kind-of",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-values/node_modules/kind-of",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/has-values/node_modules/kind-of/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "kind-of@6.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/kind-of",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clone-deep/node_modules/kind-of",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/clone-deep/node_modules/kind-of/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "klaw-sync@6.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/manidlou/node-klaw-sync",
-    "publisher": "Mani Maghsoudlou",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/klaw-sync",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/klaw-sync/LICENSE"
+    "publisher": "Mani Maghsoudlou"
   },
   "kleur@3.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/lukeed/kleur",
     "publisher": "Luke Edwards",
     "email": "luke.edwards05@gmail.com",
-    "url": "lukeed.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/kleur",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/kleur/license"
+    "url": "lukeed.com"
   },
   "leven@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/leven",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/leven",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/leven/license"
+    "url": "sindresorhus.com"
   },
   "levn@0.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/gkz/levn",
     "publisher": "George Zahariev",
-    "email": "z@georgezahariev.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/levn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/levn/LICENSE"
+    "email": "z@georgezahariev.com"
   },
   "libphonenumber-js@1.11.18": {
     "licenses": "MIT",
     "repository": "git+https://gitlab.com/catamphetamine/libphonenumber-js",
     "publisher": "catamphetamine",
-    "email": "purecatamphetamine@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/libphonenumber-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/libphonenumber-js/LICENSE"
+    "email": "purecatamphetamine@gmail.com"
   },
   "license-checker@25.0.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/davglass/license-checker",
     "publisher": "Dav Glass",
-    "email": "davglass@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/license-checker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/license-checker/LICENSE"
+    "email": "davglass@gmail.com"
   },
   "lighthouse-logger@1.4.2": {
-    "licenses": "Apache-2.0",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lighthouse-logger",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lighthouse-logger/LICENSE"
+    "licenses": "Apache-2.0"
   },
   "lightningcss-linux-x64-gnu@1.27.0": {
     "licenses": "MPL-2.0",
-    "repository": "https://github.com/parcel-bundler/lightningcss",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lightningcss-linux-x64-gnu",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lightningcss-linux-x64-gnu/LICENSE"
+    "repository": "https://github.com/parcel-bundler/lightningcss"
   },
   "lightningcss-linux-x64-musl@1.27.0": {
     "licenses": "MPL-2.0",
-    "repository": "https://github.com/parcel-bundler/lightningcss",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lightningcss-linux-x64-musl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lightningcss-linux-x64-musl/LICENSE"
+    "repository": "https://github.com/parcel-bundler/lightningcss"
   },
   "lightningcss@1.27.0": {
     "licenses": "MPL-2.0",
-    "repository": "https://github.com/parcel-bundler/lightningcss",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lightningcss",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lightningcss/LICENSE"
+    "repository": "https://github.com/parcel-bundler/lightningcss"
   },
   "lines-and-columns@1.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/eventualbuddha/lines-and-columns",
     "publisher": "Brian Donovan",
-    "email": "brian@donovans.cc",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lines-and-columns",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lines-and-columns/LICENSE"
+    "email": "brian@donovans.cc"
   },
   "linkify-it@2.2.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/markdown-it/linkify-it",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/node_modules/linkify-it",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/node_modules/linkify-it/LICENSE"
+    "repository": "https://github.com/markdown-it/linkify-it"
   },
   "linkify-it@4.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/markdown-it/linkify-it",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/linkify-it",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/linkify-it/LICENSE"
+    "repository": "https://github.com/markdown-it/linkify-it"
   },
   "locate-path@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/locate-path",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/locate-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/locate-path/license"
+    "url": "sindresorhus.com"
   },
   "locate-path@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/locate-path",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/node_modules/locate-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/node_modules/locate-path/license"
+    "url": "sindresorhus.com"
   },
   "locate-path@6.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/locate-path",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/locate-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/locate-path/license"
+    "url": "https://sindresorhus.com"
   },
   "lodash.debounce@4.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.debounce",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.debounce/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash.isequal@4.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.isequal",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.isequal/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash.isfunction@3.0.9": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.isfunction",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.isfunction/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash.isnil@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.isnil",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.isnil/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash.merge@4.6.2": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
-    "email": "john.david.dalton@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.merge",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.merge/LICENSE"
+    "email": "john.david.dalton@gmail.com"
   },
   "lodash.pick@4.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.pick",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.pick/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash.throttle@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.throttle",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.throttle/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash.truncate@4.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
     "email": "john.david.dalton@gmail.com",
-    "url": "http://allyoucanleet.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.truncate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash.truncate/LICENSE"
+    "url": "http://allyoucanleet.com/"
   },
   "lodash@4.17.21": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
     "publisher": "John-David Dalton",
-    "email": "john.david.dalton@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lodash/LICENSE"
+    "email": "john.david.dalton@gmail.com"
   },
   "log-symbols@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/log-symbols",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/log-symbols",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/log-symbols/license"
+    "url": "sindresorhus.com"
   },
   "loose-envify@1.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/zertosh/loose-envify",
     "publisher": "Andres Suarez",
-    "email": "zertosh@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/loose-envify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/loose-envify/LICENSE"
+    "email": "zertosh@gmail.com"
   },
   "lower-case@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/blakeembrey/change-case",
     "publisher": "Blake Embrey",
     "email": "hello@blakeembrey.com",
-    "url": "http://blakeembrey.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lower-case",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lower-case/LICENSE"
+    "url": "http://blakeembrey.me"
   },
   "lru-cache@10.4.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-lru-cache",
     "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lru-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lru-cache/LICENSE"
+    "email": "i@izs.me"
   },
   "lru-cache@5.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-lru-cache",
     "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/node_modules/lru-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/node_modules/lru-cache/LICENSE"
+    "email": "i@izs.me"
   },
   "lru-cache@6.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-lru-cache",
     "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/lru-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/lru-cache/LICENSE"
+    "email": "i@izs.me"
   },
   "make-dir@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/make-dir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/make-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/make-dir/license"
+    "url": "sindresorhus.com"
   },
   "make-dir@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/make-dir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/make-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/make-dir/license"
+    "url": "sindresorhus.com"
   },
   "make-dir@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/make-dir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-report/node_modules/make-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/istanbul-lib-report/node_modules/make-dir/license"
+    "url": "https://sindresorhus.com"
   },
   "makeerror@1.0.12": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/daaku/nodejs-makeerror",
     "publisher": "Naitik Shah",
-    "email": "n@daaku.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/makeerror",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/makeerror/license"
+    "email": "n@daaku.org"
   },
   "map-cache@0.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/map-cache",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/map-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/map-cache/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "map-visit@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/map-visit",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/map-visit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/map-visit/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "markdown-it@10.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/markdown-it/markdown-it",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/node_modules/markdown-it",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/node_modules/markdown-it/LICENSE"
+    "repository": "https://github.com/markdown-it/markdown-it"
   },
   "markdown-it@13.0.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/markdown-it/markdown-it",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/markdown-it",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/markdown-it/LICENSE"
+    "repository": "https://github.com/markdown-it/markdown-it"
   },
   "marky@1.2.5": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/nolanlawson/marky",
     "publisher": "Nolan Lawson",
-    "email": "nolan@nolanlawson.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/marky",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/marky/LICENSE"
+    "email": "nolan@nolanlawson.com"
   },
   "match-sorter@6.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kentcdodds/match-sorter",
     "publisher": "Kent C. Dodds",
     "email": "me@kentcdodds.com",
-    "url": "https://kentcdodds.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/match-sorter",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/match-sorter/LICENSE"
+    "url": "https://kentcdodds.com"
   },
   "math-intrinsics@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/math-intrinsics",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/math-intrinsics",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/math-intrinsics/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "matomo-tracker-react-native@0.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/donni106/matomo-tracker-react-native",
     "publisher": "Daniel",
-    "email": "dm@tpwd.de",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/matomo-tracker-react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/matomo-tracker-react-native/LICENSE"
+    "email": "dm@tpwd.de"
   },
   "md5-file@3.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/roryrjb/md5-file",
     "publisher": "Rory Bradford",
-    "email": "rory@dysfunctionalprogramming.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/md5-file",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/md5-file/LICENSE.md"
+    "email": "rory@dysfunctionalprogramming.com"
   },
   "md5@2.3.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/pvorb/node-md5",
     "publisher": "Paul Vorbach",
     "email": "paul@vorba.ch",
-    "url": "http://paul.vorba.ch",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/md5",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/md5/LICENSE"
+    "url": "http://paul.vorba.ch"
   },
   "mdn-data@2.0.14": {
     "licenses": "CC0-1.0",
     "repository": "https://github.com/mdn/data",
-    "publisher": "Mozilla Developer Network",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mdn-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mdn-data/LICENSE"
+    "publisher": "Mozilla Developer Network"
   },
   "mdn-data@2.0.28": {
     "licenses": "CC0-1.0",
     "repository": "https://github.com/mdn/data",
-    "publisher": "Mozilla Developer Network",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csso/node_modules/mdn-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/csso/node_modules/mdn-data/LICENSE"
+    "publisher": "Mozilla Developer Network"
   },
   "mdn-data@2.0.30": {
     "licenses": "CC0-1.0",
     "repository": "https://github.com/mdn/data",
-    "publisher": "Mozilla Developer Network",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svgo/node_modules/mdn-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svgo/node_modules/mdn-data/LICENSE"
+    "publisher": "Mozilla Developer Network"
   },
   "mdurl@1.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/markdown-it/mdurl",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mdurl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mdurl/LICENSE"
+    "repository": "https://github.com/markdown-it/mdurl"
   },
   "memoize-one@5.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/alexreardon/memoize-one",
     "publisher": "Alex Reardon",
-    "email": "alexreardon@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/memoize-one",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/memoize-one/LICENSE"
+    "email": "alexreardon@gmail.com"
   },
   "memoize-one@6.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/alexreardon/memoize-one",
     "publisher": "Alex Reardon",
-    "email": "alexreardon@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web/node_modules/memoize-one",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web/node_modules/memoize-one/LICENSE"
+    "email": "alexreardon@gmail.com"
   },
   "merge-anything@2.4.4": {
     "licenses": "MIT",
     "repository": "https://github.com/mesqueeb/merge-anything",
-    "publisher": "Luca Ban - Mesqueeb",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge-anything",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge-anything/LICENSE"
+    "publisher": "Luca Ban - Mesqueeb"
   },
   "merge-options@3.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/schnittstabil/merge-options",
     "publisher": "Michael Mayer",
-    "email": "michael@schnittstabil.de",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge-options",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge-options/license"
+    "email": "michael@schnittstabil.de"
   },
   "merge-stream@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/grncdr/merge-stream",
     "publisher": "Stephen Sugden",
-    "email": "me@stephensugden.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge-stream/LICENSE"
+    "email": "me@stephensugden.com"
   },
   "merge2@1.4.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/teambition/merge2",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge2",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/merge2/LICENSE"
+    "repository": "https://github.com/teambition/merge2"
   },
   "metro-babel-transformer@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-babel-transformer"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-cache-key@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-cache-key"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-cache@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-cache"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-config@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-core@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-core/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-file-map@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-file-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-file-map/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-minify-terser@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-minify-terser"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-resolver@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-resolver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-resolver/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-runtime@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-runtime"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-source-map@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-source-map/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-symbolicate@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-symbolicate"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-transform-plugins@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-transform-plugins"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro-transform-worker@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-transform-worker"
+    "repository": "https://github.com/facebook/metro"
   },
   "metro@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "micromatch@3.1.10": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/micromatch",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/micromatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/micromatch/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "micromatch@4.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/micromatch",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/micromatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/micromatch/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "microseconds@0.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kamicane/microseconds",
     "publisher": "Valerio Proietti",
-    "email": "kamicane@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/microseconds",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/microseconds/README.md"
+    "email": "kamicane@gmail.com"
   },
   "mime-db@1.52.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/mime-db",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mime-db",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mime-db/LICENSE"
+    "repository": "https://github.com/jshttp/mime-db"
   },
   "mime-db@1.53.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/mime-db",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compressible/node_modules/mime-db",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compressible/node_modules/mime-db/LICENSE"
+    "repository": "https://github.com/jshttp/mime-db"
   },
   "mime-types@2.1.35": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/mime-types",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mime-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mime-types/LICENSE"
+    "repository": "https://github.com/jshttp/mime-types"
   },
   "mime@1.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/broofa/node-mime",
     "publisher": "Robert Kieffer",
     "email": "robert@broofa.com",
-    "url": "http://github.com/broofa",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mime/LICENSE"
+    "url": "http://github.com/broofa"
   },
   "mimic-fn@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/mimic-fn",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/restore-cursor/node_modules/mimic-fn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/restore-cursor/node_modules/mimic-fn/license"
+    "url": "sindresorhus.com"
   },
   "mimic-fn@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/mimic-fn",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mimic-fn",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mimic-fn/license"
+    "url": "sindresorhus.com"
   },
   "minimatch@3.1.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minimatch",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minimatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minimatch/LICENSE"
+    "url": "http://blog.izs.me"
   },
   "minimatch@9.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minimatch",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch/LICENSE"
+    "url": "http://blog.izs.me"
   },
   "minimatch@9.0.5": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minimatch",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins/node_modules/minimatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins/node_modules/minimatch/LICENSE"
+    "url": "http://blog.izs.me"
   },
   "minimist@1.2.8": {
     "licenses": "MIT",
     "repository": "https://github.com/minimistjs/minimist",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minimist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minimist/LICENSE"
+    "url": "http://substack.net"
   },
   "minipass-collect@2.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minipass-collect",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-collect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-collect/LICENSE"
+    "url": "https://izs.me"
   },
   "minipass-flush@1.0.5": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minipass-flush",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-flush",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-flush/LICENSE"
+    "url": "https://izs.me"
   },
   "minipass-pipeline@1.2.4": {
     "licenses": "ISC",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-pipeline",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-pipeline/LICENSE"
+    "url": "https://izs.me"
   },
   "minipass@3.3.6": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minipass",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-flush/node_modules/minipass",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass-flush/node_modules/minipass/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "minipass@5.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minipass",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tar/node_modules/minipass",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tar/node_modules/minipass/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "minipass@7.1.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minipass",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minipass/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "minizlib@2.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/isaacs/minizlib",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minizlib",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/minizlib/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "mixin-deep@1.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/mixin-deep",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mixin-deep",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mixin-deep/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "mkdirp@0.5.6": {
     "licenses": "MIT",
     "repository": "https://github.com/substack/node-mkdirp",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mkdirp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mkdirp/LICENSE"
+    "url": "http://substack.net"
   },
   "mkdirp@1.0.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/isaacs/node-mkdirp",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chromium-edge-launcher/node_modules/mkdirp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/chromium-edge-launcher/node_modules/mkdirp/LICENSE"
+    "repository": "https://github.com/isaacs/node-mkdirp"
   },
   "moment-range@4.0.2": {
     "licenses": "Unlicense",
     "repository": "git+https://git@github.com/rotaready/moment-range",
     "publisher": "Gianni Chiappetta",
     "email": "gianni@runlevel6.org",
-    "url": "https://butt.zone",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/moment-range",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/moment-range/README.md"
+    "url": "https://butt.zone"
   },
   "moment@2.29.4": {
     "licenses": "MIT",
     "repository": "https://github.com/moment/moment",
     "publisher": "Iskren Ivov Chernev",
     "email": "iskren.chernev@gmail.com",
-    "url": "https://github.com/ichernev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/moment",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/moment/LICENSE"
+    "url": "https://github.com/ichernev"
   },
   "moment@2.30.1": {
     "licenses": "MIT",
     "repository": "https://github.com/moment/moment",
     "publisher": "Iskren Ivov Chernev",
     "email": "iskren.chernev@gmail.com",
-    "url": "https://github.com/ichernev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-calendars/node_modules/moment",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-calendars/node_modules/moment/LICENSE"
+    "url": "https://github.com/ichernev"
   },
   "ms@2.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/zeit/ms",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lighthouse-logger/node_modules/ms",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/lighthouse-logger/node_modules/ms/license.md"
+    "repository": "https://github.com/zeit/ms"
   },
   "ms@2.1.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/vercel/ms",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ms",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ms/license.md"
+    "repository": "https://github.com/vercel/ms"
   },
   "mz@2.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/normalize/mz",
     "publisher": "Jonathan Ong",
     "email": "me@jongleberry.com",
-    "url": "http://jongleberry.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mz",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/mz/LICENSE"
+    "url": "http://jongleberry.com"
   },
   "nano-time@1.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/sazze/node-nanotime",
     "publisher": "Kevin Smithson",
-    "email": "ksmithson@sazze.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nano-time",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nano-time/README.md"
+    "email": "ksmithson@sazze.com"
   },
   "nanoid@3.3.8": {
     "licenses": "MIT",
     "repository": "https://github.com/ai/nanoid",
     "publisher": "Andrey Sitnik",
-    "email": "andrey@sitnik.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nanoid",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nanoid/LICENSE"
+    "email": "andrey@sitnik.ru"
   },
   "nanomatch@1.2.13": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/nanomatch",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nanomatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nanomatch/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "natural-compare@1.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/litejs/natural-compare-lite",
     "publisher": "Lauri Rooden",
-    "url": "https://github.com/litejs/natural-compare-lite",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/natural-compare",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/natural-compare/README.md"
+    "url": "https://github.com/litejs/natural-compare-lite"
   },
   "negotiator@0.6.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/negotiator",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/negotiator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/negotiator/LICENSE"
+    "repository": "https://github.com/jshttp/negotiator"
   },
   "negotiator@0.6.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/negotiator",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compression/node_modules/negotiator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compression/node_modules/negotiator/LICENSE"
+    "repository": "https://github.com/jshttp/negotiator"
   },
   "neo-async@2.6.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/suguru03/neo-async",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/neo-async",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/neo-async/LICENSE"
+    "repository": "https://github.com/suguru03/neo-async"
   },
   "nested-error-stacks@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mdlavin/nested-error-stacks",
     "publisher": "Matt Lavin",
-    "email": "matt.lavin@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nested-error-stacks",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nested-error-stacks/LICENSE"
+    "email": "matt.lavin@gmail.com"
   },
   "next-tick@1.1.0": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/next-tick",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "http://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/next-tick",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/next-tick/LICENSE"
+    "url": "http://www.medikoo.com/"
   },
   "nice-try@1.0.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/electerious/nice-try",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nice-try",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nice-try/LICENSE"
+    "repository": "https://github.com/electerious/nice-try"
   },
   "no-case@3.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/blakeembrey/change-case",
     "publisher": "Blake Embrey",
     "email": "hello@blakeembrey.com",
-    "url": "http://blakeembrey.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/no-case",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/no-case/LICENSE"
+    "url": "http://blakeembrey.me"
   },
   "node-abort-controller@3.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/southpolesteve/node-abort-controller",
     "publisher": "Steve Faulkner",
-    "email": "southpolesteve@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-abort-controller",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-abort-controller/LICENSE"
+    "email": "southpolesteve@gmail.com"
   },
   "node-dir@0.1.17": {
     "licenses": "MIT",
     "repository": "https://github.com/fshost/node-dir",
     "publisher": "Nathan Cartwright",
     "email": "fshost@yahoo.com",
-    "url": "https://github.com/fshost",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-dir/LICENSE.txt"
+    "url": "https://github.com/fshost"
   },
   "node-fetch@1.7.3": {
     "licenses": "MIT",
     "repository": "https://github.com/bitinn/node-fetch",
-    "publisher": "David Frank",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isomorphic-fetch/node_modules/node-fetch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/isomorphic-fetch/node_modules/node-fetch/LICENSE.md"
+    "publisher": "David Frank"
   },
   "node-fetch@2.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/bitinn/node-fetch",
-    "publisher": "David Frank",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch/LICENSE.md"
+    "publisher": "David Frank"
   },
   "node-forge@1.3.1": {
     "licenses": "(BSD-3-Clause OR GPL-2.0)",
     "repository": "https://github.com/digitalbazaar/forge",
     "publisher": "Digital Bazaar, Inc.",
     "email": "support@digitalbazaar.com",
-    "url": "http://digitalbazaar.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-forge",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-forge/LICENSE"
+    "url": "http://digitalbazaar.com/"
   },
   "node-int64@0.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/broofa/node-int64",
     "publisher": "Robert Kieffer",
-    "email": "robert@broofa.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-int64",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-int64/LICENSE"
+    "email": "robert@broofa.com"
   },
   "node-releases@2.0.19": {
     "licenses": "MIT",
     "repository": "https://github.com/chicoxyzzy/node-releases",
     "publisher": "Sergey Rubanov",
-    "email": "chi187@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-releases",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-releases/LICENSE"
+    "email": "chi187@gmail.com"
   },
   "nopt@4.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/nopt",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nopt",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nopt/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "normalize-package-data@2.5.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/npm/normalize-package-data",
     "publisher": "Meryn Stol",
-    "email": "merynstol@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-package-data",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-package-data/LICENSE"
+    "email": "merynstol@gmail.com"
   },
   "normalize-path@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/normalize-path",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/normalize-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/normalize-path/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "normalize-path@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/normalize-path",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-path/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "normalize-svg-path@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jkroso/normalize-svg-path",
-    "publisher": "Jake Rosoman",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-svg-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/normalize-svg-path/license.md"
+    "publisher": "Jake Rosoman"
   },
   "npm-normalize-package-bin@1.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/npm-normalize-package-bin",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/npm-normalize-package-bin",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/npm-normalize-package-bin/LICENSE"
+    "url": "https://izs.me"
   },
   "npm-package-arg@11.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/npm-package-arg",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/npm-package-arg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/npm-package-arg/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "npm-run-path@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/npm-run-path",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/npm-run-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/npm-run-path/license"
+    "url": "sindresorhus.com"
   },
   "npm-run-path@4.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/npm-run-path",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/node_modules/npm-run-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native/community-cli-plugin/node_modules/npm-run-path/license"
+    "url": "sindresorhus.com"
   },
   "nth-check@2.1.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/nth-check",
     "publisher": "Felix Boehm",
-    "email": "me@feedic.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nth-check",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nth-check/LICENSE"
+    "email": "me@feedic.com"
   },
   "nullthrows@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/zertosh/nullthrows",
     "publisher": "Andres Suarez",
-    "email": "zertosh@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nullthrows",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nullthrows/LICENSE"
+    "email": "zertosh@gmail.com"
   },
   "nwsapi@2.2.16": {
     "licenses": "MIT",
     "repository": "https://github.com/dperini/nwsapi",
     "publisher": "Diego Perini",
     "email": "diego.perini@gmail.com",
-    "url": "http://www.iport.it/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nwsapi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/nwsapi/LICENSE"
+    "url": "http://www.iport.it/"
   },
   "ob1@0.81.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/metro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ob1",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ob1/README.md"
+    "repository": "https://github.com/facebook/metro"
   },
   "object-assign@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/object-assign",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-assign",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-assign/license"
+    "url": "sindresorhus.com"
   },
   "object-copy@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/object-copy",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-copy",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-copy/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "object-inspect@1.13.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/object-inspect",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-inspect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-inspect/LICENSE"
+    "url": "http://substack.net"
   },
   "object-is@1.1.6": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/object-is",
-    "publisher": "Jordan Harband",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-is",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-is/LICENSE"
+    "publisher": "Jordan Harband"
   },
   "object-keys@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/object-keys",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-keys",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-keys/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "object-visit@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/object-visit",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-visit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object-visit/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "object.assign@4.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/object.assign",
-    "publisher": "Jordan Harband",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.assign",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.assign/LICENSE"
+    "publisher": "Jordan Harband"
   },
   "object.entries@1.1.8": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Object.entries",
-    "publisher": "Jordan Harband",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.entries",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.entries/LICENSE"
+    "publisher": "Jordan Harband"
   },
   "object.fromentries@2.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Object.fromEntries",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.fromentries",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.fromentries/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "object.groupby@1.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Object.groupBy",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.groupby",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.groupby/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "object.pick@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/object.pick",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.pick",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.pick/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "object.values@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Object.values",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.values",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/object.values/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "oblivious-set@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/pubkey/oblivious-set",
-    "publisher": "pubkey",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/oblivious-set",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/oblivious-set/LICENSE"
+    "publisher": "pubkey"
   },
   "on-finished@2.3.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/on-finished",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/finalhandler/node_modules/on-finished",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/finalhandler/node_modules/on-finished/LICENSE"
+    "repository": "https://github.com/jshttp/on-finished"
   },
   "on-finished@2.4.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/on-finished",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/on-finished",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/on-finished/LICENSE"
+    "repository": "https://github.com/jshttp/on-finished"
   },
   "on-headers@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/on-headers",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/on-headers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/on-headers/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "once@1.4.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/once",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/once",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/once/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "onetime@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/onetime",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/restore-cursor/node_modules/onetime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/restore-cursor/node_modules/onetime/license"
+    "url": "sindresorhus.com"
   },
   "onetime@5.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/onetime",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/onetime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/onetime/license"
+    "url": "https://sindresorhus.com"
   },
   "open@7.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/open",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/open",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/open/license"
+    "url": "https://sindresorhus.com"
   },
   "open@8.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/open",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/better-opn/node_modules/open",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/better-opn/node_modules/open/license"
+    "url": "https://sindresorhus.com"
   },
   "opencollective-postinstall@2.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/opencollective/opencollective-postinstall",
     "publisher": "Xavier Damman",
-    "url": "@xdamman",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/opencollective-postinstall",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/opencollective-postinstall/LICENSE"
+    "url": "@xdamman"
   },
   "optimism@0.10.3": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/optimism",
     "publisher": "Ben Newman",
-    "email": "ben@benjamn.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/optimism",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/optimism/LICENSE"
+    "email": "ben@benjamn.com"
   },
   "optionator@0.9.4": {
     "licenses": "MIT",
     "repository": "https://github.com/gkz/optionator",
     "publisher": "George Zahariev",
-    "email": "z@georgezahariev.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/optionator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/optionator/LICENSE"
+    "email": "z@georgezahariev.com"
   },
   "ora@3.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/ora",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ora",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ora/license"
+    "url": "sindresorhus.com"
   },
   "os-homedir@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/os-homedir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/os-homedir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/os-homedir/license"
+    "url": "sindresorhus.com"
   },
   "os-tmpdir@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/os-tmpdir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/os-tmpdir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/os-tmpdir/license"
+    "url": "sindresorhus.com"
   },
   "osenv@0.1.5": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/osenv",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/osenv",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/osenv/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "own-keys@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/own-keys",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/own-keys",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/own-keys/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "p-finally@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-finally",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-finally",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-finally/license"
+    "url": "sindresorhus.com"
   },
   "p-limit@2.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-limit",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/p-limit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/p-limit/license"
+    "url": "sindresorhus.com"
   },
   "p-limit@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-limit",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-limit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-limit/license"
+    "url": "https://sindresorhus.com"
   },
   "p-locate@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-locate",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/p-locate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/p-locate/license"
+    "url": "sindresorhus.com"
   },
   "p-locate@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-locate",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/node_modules/p-locate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@istanbuljs/load-nyc-config/node_modules/p-locate/license"
+    "url": "sindresorhus.com"
   },
   "p-locate@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-locate",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-locate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-locate/license"
+    "url": "https://sindresorhus.com"
   },
   "p-map@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-map",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-map/license"
+    "url": "https://sindresorhus.com"
   },
   "p-try@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-try",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-try",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/p-try/license"
+    "url": "sindresorhus.com"
   },
   "package-json-from-dist@1.0.1": {
     "licenses": "BlueOak-1.0.0",
     "repository": "https://github.com/isaacs/package-json-from-dist",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/package-json-from-dist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/package-json-from-dist/LICENSE.md"
+    "url": "https://izs.me"
   },
   "parent-module@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/parent-module",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parent-module",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parent-module/license"
+    "url": "sindresorhus.com"
   },
   "parse-json@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/parse-json",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/parse-json",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/parse-json/license"
+    "url": "sindresorhus.com"
   },
   "parse-json@5.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/parse-json",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-json",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-json/license"
+    "url": "https://sindresorhus.com"
   },
   "parse-png@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/parse-png",
     "publisher": "Kevin Martensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "github.com/kevva",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-png",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-png/license"
+    "url": "github.com/kevva"
   },
   "parse-svg-path@0.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jkroso/parse-svg-path",
-    "publisher": "Jake Rosoman",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-svg-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-svg-path/License"
+    "publisher": "Jake Rosoman"
   },
   "parse5@7.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inikulin/parse5",
     "publisher": "Ivan Nikulin",
     "email": "ifaaan@gmail.com",
-    "url": "https://github.com/inikulin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse5",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse5/LICENSE"
+    "url": "https://github.com/inikulin"
   },
   "parseurl@1.3.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/pillarjs/parseurl",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parseurl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parseurl/LICENSE"
+    "repository": "https://github.com/pillarjs/parseurl"
   },
   "pascalcase@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/pascalcase",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pascalcase",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pascalcase/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "password-prompt@1.1.3": {
     "licenses": "0BSD",
     "repository": "https://github.com/jdxcode/password-prompt",
-    "publisher": "Jeff Dickey @jdxcode",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/password-prompt",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/password-prompt/README.hbs"
+    "publisher": "Jeff Dickey @jdxcode"
   },
   "patch-package@8.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ds300/patch-package",
-    "publisher": "David Sheldrick",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/patch-package",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/patch-package/LICENSE"
+    "publisher": "David Sheldrick"
   },
   "path-dirname@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/es128/path-dirname",
-    "publisher": "Elan Shanker",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-dirname",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-dirname/license"
+    "publisher": "Elan Shanker"
   },
   "path-exists@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-exists",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/path-exists",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/path-exists/license"
+    "url": "sindresorhus.com"
   },
   "path-exists@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-exists",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-exists",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-exists/license"
+    "url": "sindresorhus.com"
   },
   "path-is-absolute@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-is-absolute",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-is-absolute",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-is-absolute/license"
+    "url": "sindresorhus.com"
   },
   "path-key@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-key",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-key",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-key/license"
+    "url": "sindresorhus.com"
   },
   "path-key@3.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-key",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cross-spawn/node_modules/path-key",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cross-spawn/node_modules/path-key/license"
+    "url": "sindresorhus.com"
   },
   "path-parse@1.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/jbgutierrez/path-parse",
     "publisher": "Javier Blanco",
-    "email": "http://jbgutierrez.info",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-parse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-parse/LICENSE"
+    "email": "http://jbgutierrez.info"
   },
   "path-scurry@1.11.1": {
     "licenses": "BlueOak-1.0.0",
     "repository": "https://github.com/isaacs/path-scurry",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "https://blog.izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-scurry",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-scurry/LICENSE.md"
+    "url": "https://blog.izs.me"
   },
   "path-type@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-type",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-type",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/path-type/license"
+    "url": "sindresorhus.com"
   },
   "picocolors@1.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/alexeyraspopov/picocolors",
-    "publisher": "Alexey Raspopov",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/picocolors",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/picocolors/LICENSE"
+    "publisher": "Alexey Raspopov"
   },
   "picomatch@2.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/picomatch",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/picomatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/picomatch/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "picomatch@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/picomatch",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/picomatch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/picomatch/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "pify@4.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/pify",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pify/license"
+    "url": "sindresorhus.com"
   },
   "pirates@4.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/danez/pirates",
     "publisher": "Ari Porad",
     "email": "ari@ariporad.com",
-    "url": "http://ariporad.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pirates",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pirates/LICENSE"
+    "url": "http://ariporad.com"
   },
   "pkg-dir@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/pkg-dir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/pkg-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/find-cache-dir/node_modules/pkg-dir/license"
+    "url": "sindresorhus.com"
   },
   "pkg-dir@4.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/pkg-dir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pkg-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pkg-dir/license"
+    "url": "sindresorhus.com"
   },
   "plist@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/TooTallNate/node-plist",
     "publisher": "Nathan Rajlich",
-    "email": "nathan@tootallnate.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/plist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/plist/LICENSE"
+    "email": "nathan@tootallnate.net"
   },
   "pngjs@3.4.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/lukeapage/pngjs2",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-png/node_modules/pngjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/parse-png/node_modules/pngjs/LICENSE"
+    "repository": "https://github.com/lukeapage/pngjs2"
   },
   "pngjs@5.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/lukeapage/pngjs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pngjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pngjs/LICENSE"
+    "repository": "https://github.com/lukeapage/pngjs"
   },
   "posix-character-classes@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/posix-character-classes",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/posix-character-classes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/posix-character-classes/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "possible-typed-array-names@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/possible-typed-array-names",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/possible-typed-array-names",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/possible-typed-array-names/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "postcss-value-parser@3.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/TrySound/postcss-value-parser",
     "publisher": "Bogdan Chadkin",
-    "email": "trysound@yandex.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styled-components/node_modules/postcss-value-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styled-components/node_modules/postcss-value-parser/LICENSE"
+    "email": "trysound@yandex.ru"
   },
   "postcss-value-parser@4.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/TrySound/postcss-value-parser",
     "publisher": "Bogdan Chadkin",
-    "email": "trysound@yandex.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/postcss-value-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/postcss-value-parser/LICENSE"
+    "email": "trysound@yandex.ru"
   },
   "postcss@8.4.49": {
     "licenses": "MIT",
     "repository": "https://github.com/postcss/postcss",
     "publisher": "Andrey Sitnik",
-    "email": "andrey@sitnik.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/postcss",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/postcss/LICENSE"
+    "email": "andrey@sitnik.ru"
   },
   "postinstall-postinstall@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ds300/postinstall-postinstall",
-    "publisher": "David Sheldrick",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/postinstall-postinstall",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/postinstall-postinstall/LICENSE"
+    "publisher": "David Sheldrick"
   },
   "prelude-ls@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/gkz/prelude-ls",
     "publisher": "George Zahariev",
-    "email": "z@georgezahariev.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prelude-ls",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prelude-ls/LICENSE"
+    "email": "z@georgezahariev.com"
   },
   "prettier-linter-helpers@1.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/prettier/prettier-linter-helpers",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prettier-linter-helpers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prettier-linter-helpers/LICENSE.md"
+    "repository": "https://github.com/prettier/prettier-linter-helpers"
   },
   "prettier@2.8.8": {
     "licenses": "MIT",
     "repository": "https://github.com/prettier/prettier",
-    "publisher": "James Long",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prettier",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prettier/LICENSE"
+    "publisher": "James Long"
   },
   "pretty-bytes@5.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/pretty-bytes",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-bytes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-bytes/license"
+    "url": "https://sindresorhus.com"
   },
   "pretty-format@29.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jestjs/jest",
     "publisher": "James Kyle",
-    "email": "me@thejameskyle.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-format",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-format/LICENSE"
+    "email": "me@thejameskyle.com"
   },
   "proc-log@4.2.0": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/proc-log",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/proc-log",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/proc-log/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "process-nextick-args@2.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/calvinmetcalf/process-nextick-args",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/process-nextick-args",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/process-nextick-args/license.md"
+    "repository": "https://github.com/calvinmetcalf/process-nextick-args"
   },
   "progress@2.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/visionmedia/node-progress",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/progress",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/progress/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "promise@7.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/then/promise",
-    "publisher": "ForbesLindesay",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/promise",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/promise/LICENSE"
+    "publisher": "ForbesLindesay"
   },
   "promise@8.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/then/promise",
-    "publisher": "ForbesLindesay",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/promise",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/promise/LICENSE"
+    "publisher": "ForbesLindesay"
   },
   "prompts@2.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/terkelg/prompts",
     "publisher": "Terkel Gjervig",
     "email": "terkel@terkel.com",
-    "url": "https://terkel.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prompts",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prompts/license"
+    "url": "https://terkel.com"
   },
   "prop-types@15.8.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/prop-types",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prop-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/prop-types/LICENSE"
+    "repository": "https://github.com/facebook/prop-types"
   },
   "proxy-from-env@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/Rob--W/proxy-from-env",
     "publisher": "Rob Wu",
     "email": "rob@robwu.nl",
-    "url": "https://robwu.nl/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/proxy-from-env",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/proxy-from-env/LICENSE"
+    "url": "https://robwu.nl/"
   },
   "psl@1.15.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lupomontero/psl",
     "publisher": "Lupo Montero",
     "email": "lupomontero@gmail.com",
-    "url": "https://lupomontero.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/psl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/psl/LICENSE"
+    "url": "https://lupomontero.com/"
   },
   "pump@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/mafintosh/pump",
     "publisher": "Mathias Buus Madsen",
-    "email": "mathiasbuus@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pump",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pump/LICENSE"
+    "email": "mathiasbuus@gmail.com"
   },
   "punycode@2.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/punycode.js",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/punycode",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/punycode/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "pure-rand@6.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/dubzzz/pure-rand",
     "publisher": "Nicolas DUBIEN",
-    "email": "github@dubien.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pure-rand",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pure-rand/LICENSE"
+    "email": "github@dubien.org"
   },
   "qrcode-terminal@0.11.0": {
     "licenses": "Apache 2.0",
-    "repository": "https://github.com/gtanner/qrcode-terminal",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode-terminal",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode-terminal/LICENSE"
+    "repository": "https://github.com/gtanner/qrcode-terminal"
   },
   "qrcode@1.5.4": {
     "licenses": "MIT",
     "repository": "https://github.com/soldair/node-qrcode",
     "publisher": "Ryan Day",
-    "email": "soldair@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/license"
+    "email": "soldair@gmail.com"
   },
   "qs@6.14.0": {
     "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/ljharb/qs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qs/LICENSE.md"
+    "repository": "https://github.com/ljharb/qs"
   },
   "query-string@7.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/query-string",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/query-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/query-string/license"
+    "url": "https://sindresorhus.com"
   },
   "querystringify@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/unshiftio/querystringify",
-    "publisher": "Arnout Kazemier",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/querystringify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/querystringify/LICENSE"
+    "publisher": "Arnout Kazemier"
   },
   "queue-microtask@1.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/queue-microtask",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "https://feross.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/queue-microtask",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/queue-microtask/LICENSE"
+    "url": "https://feross.org"
   },
   "queue@6.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jessetane/queue",
     "publisher": "Jesse Tane",
-    "email": "jesse.tane@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/queue",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/queue/LICENSE"
+    "email": "jesse.tane@gmail.com"
   },
   "ramda@0.27.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ramda/ramda",
     "publisher": "Scott Sauyet",
     "email": "scott@sauyet.com",
-    "url": "scott.sauyet.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ramda",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ramda/LICENSE.txt"
+    "url": "scott.sauyet.com"
   },
   "range-parser@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/range-parser",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "url": "http://tjholowaychuk.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/range-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/range-parser/LICENSE"
+    "url": "http://tjholowaychuk.com"
   },
   "rc@1.2.8": {
     "licenses": "(BSD-2-Clause OR MIT OR Apache-2.0)",
     "repository": "https://github.com/dominictarr/rc",
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",
-    "url": "dominictarr.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rc",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rc/LICENSE.APACHE2"
+    "url": "dominictarr.com"
   },
   "react-addons-shallow-compare@15.6.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-addons-shallow-compare",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-addons-shallow-compare/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react-apollo@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
-    "publisher": "opensource@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-apollo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-apollo/LICENSE"
+    "publisher": "opensource@apollographql.com"
   },
   "react-devtools-core@5.3.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-devtools-core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-devtools-core/README.md"
+    "repository": "https://github.com/facebook/react"
   },
   "react-devtools-core@6.1.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/react-devtools-core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/react-devtools-core/README.md"
+    "repository": "https://github.com/facebook/react"
   },
   "react-dom@18.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-dom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-dom/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react-freeze@1.0.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/software-mansion/react-freeze",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-freeze",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-freeze/LICENSE"
+    "repository": "https://github.com/software-mansion/react-freeze"
   },
   "react-hook-form@7.54.2": {
     "licenses": "MIT",
     "repository": "https://github.com/react-hook-form/react-hook-form",
-    "email": "bluebill1049@hotmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-hook-form",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-hook-form/LICENSE"
+    "email": "bluebill1049@hotmail.com"
   },
   "react-is@16.13.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-is",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-is/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react-is@18.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-format/node_modules/react-is",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/pretty-format/node_modules/react-is/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react-native-app-intro-slider@4.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jacse/react-native-app-intro-slider",
     "publisher": "Jacob Lauritzen",
-    "email": "jacsebl@hotmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-app-intro-slider",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-app-intro-slider/LICENSE"
+    "email": "jacsebl@hotmail.com"
   },
   "react-native-autocomplete-input@5.5.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/byteburgers/react-native-autocomplete-input",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-autocomplete-input",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-autocomplete-input/LICENSE"
+    "repository": "https://github.com/byteburgers/react-native-autocomplete-input"
   },
   "react-native-blob-util@0.19.11": {
     "licenses": "MIT",
     "repository": "https://github.com/RonRadtke/react-native-blob-util",
-    "publisher": "RonRadtke",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-blob-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-blob-util/LICENSE"
+    "publisher": "RonRadtke"
   },
   "react-native-calendars@1.1308.1": {
     "licenses": "MIT",
     "repository": "https://github.com/wix/react-native-calendars",
-    "publisher": "Wix.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-calendars",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-calendars/LICENSE"
+    "publisher": "Wix.com"
   },
   "react-native-circular-progress-indicator@4.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/nithinpp69/react-native-circular-progress-indicator",
     "publisher": "Nithin P P",
-    "email": "nithinpp69@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-circular-progress-indicator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-circular-progress-indicator/LICENSE"
+    "email": "nithinpp69@gmail.com"
   },
   "react-native-collapsible@1.6.1": {
     "licenses": "MIT",
     "repository": "git+https://oblador@github.com/oblador/react-native-collapsible",
     "publisher": "Joel Arvidsson",
-    "email": "joel@oblador.se",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-collapsible",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-collapsible/LICENSE"
+    "email": "joel@oblador.se"
   },
   "react-native-communications@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/anarchicknight/react-native-communications",
     "publisher": "Anarchic Knight",
     "email": "anarchicknight@gmail.com",
-    "url": "http://www.anarchicknight.co.uk",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-communications",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-communications/LICENSE"
+    "url": "http://www.anarchicknight.co.uk"
   },
   "react-native-elements@3.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-elements/react-native-elements",
-    "publisher": "Nader Dabit & Monte Thakkar",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-elements",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-elements/LICENSE"
+    "publisher": "Nader Dabit & Monte Thakkar"
   },
   "react-native-expo-image-cache@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/wcandillon/react-native-expo-image-cache",
     "publisher": "William Candillon",
-    "email": "wcandillon@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-expo-image-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-expo-image-cache/LICENSE"
+    "email": "wcandillon@gmail.com"
   },
   "react-native-fit-image@1.5.5": {
     "licenses": "Beerware",
     "repository": "https://github.com/huiseoul/react-native-fit-image",
     "publisher": "Jitae Kim",
     "email": "originerd@gmail.com",
-    "url": "http://originerd.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-fit-image",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-fit-image/LICENSE"
+    "url": "http://originerd.com"
   },
   "react-native-gesture-handler@2.20.2": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-gesture-handler",
     "publisher": "Krzysztof Magiera",
-    "email": "krzys.magiera@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gesture-handler",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gesture-handler/LICENSE"
+    "email": "krzys.magiera@gmail.com"
   },
   "react-native-get-random-values@1.11.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/LinusU/react-native-get-random-values",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-get-random-values",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-get-random-values/LICENSE"
+    "repository": "https://github.com/LinusU/react-native-get-random-values"
   },
   "react-native-gifted-chat@2.6.5": {
     "licenses": "MIT",
     "repository": "https://github.com/FaridSafi/react-native-gifted-chat",
-    "publisher": "Farid Safi",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gifted-chat",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gifted-chat/LICENSE"
+    "publisher": "Farid Safi"
   },
   "react-native-iphone-x-helper@1.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ptelad/react-native-iphone-x-helper",
-    "publisher": "Elad Gil",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-iphone-x-helper",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-iphone-x-helper/LICENSE"
+    "publisher": "Elad Gil"
   },
   "react-native-lightbox-v2@0.9.2": {
     "licenses": "MIT",
     "repository": "https://github.com/cbbfcd/react-native-lightbox",
     "publisher": "Joel Arvidsson",
-    "email": "joel@oblador.se",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-lightbox-v2",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-lightbox-v2/LICENSE"
+    "email": "joel@oblador.se"
   },
   "react-native-map-clustering@3.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/venits/react-native-map-clustering",
-    "publisher": "Venits",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-map-clustering",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-map-clustering/README.md"
+    "publisher": "Venits"
   },
   "react-native-maps@1.18.0": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-maps/react-native-maps",
     "publisher": "Leland Richardson",
-    "email": "leland.m.richardson@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-maps",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-maps/LICENSE"
+    "email": "leland.m.richardson@gmail.com"
   },
   "react-native-markdown-display@7.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/iamacup/react-native-markdown-display",
-    "publisher": "Mient-jan Stelling and Tom Pickard + others from the community",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-markdown-display/LICENSE"
+    "publisher": "Mient-jan Stelling and Tom Pickard + others from the community"
   },
   "react-native-modal-dropdown@0.7.5": {
     "licenses": "MIT",
     "repository": "https://github.com/sohobloo/react-native-modal-dropdown",
     "publisher": "sohobloo",
     "email": "sohobloo@live.cn",
-    "url": "https://github.com/sohobloo",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-modal-dropdown",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-modal-dropdown/LICENSE"
+    "url": "https://github.com/sohobloo"
   },
   "react-native-parsed-text@0.0.22": {
     "licenses": "MIT",
     "repository": "https://github.com/taskrabbit/react-native-parsed-text",
-    "publisher": "jrichardlai",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-parsed-text",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-parsed-text/LICENSE.txt"
+    "publisher": "jrichardlai"
   },
   "react-native-pdf@6.7.6": {
     "licenses": "MIT",
     "repository": "https://github.com/wonday/react-native-pdf",
     "publisher": "Wonday",
-    "url": "https://github.com/wonday",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-pdf",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-pdf/LICENSE"
+    "url": "https://github.com/wonday"
   },
   "react-native-progress@5.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/oblador/react-native-progress",
     "publisher": "Joel Arvidsson",
-    "email": "joel@oblador.se",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-progress",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-progress/LICENSE"
+    "email": "joel@oblador.se"
   },
   "react-native-qrcode-svg@6.3.14": {
     "licenses": "MIT",
     "repository": "https://github.com/awesomejerry/react-native-qrcode-svg",
-    "publisher": "awesomejerry",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-qrcode-svg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-qrcode-svg/LICENSE"
+    "publisher": "awesomejerry"
   },
   "react-native-ratings@8.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/Monte9/react-native-ratings",
-    "publisher": "Monte Thakkar",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-ratings",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-ratings/LICENSE"
+    "publisher": "Monte Thakkar"
   },
   "react-native-reanimated@3.16.7": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-reanimated",
     "publisher": "Krzysztof Magiera",
-    "email": "krzys.magiera@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-reanimated",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-reanimated/LICENSE"
+    "email": "krzys.magiera@gmail.com"
   },
   "react-native-redash@18.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/wcandillon/redash",
-    "publisher": "William Candillon",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-redash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-redash/LICENSE"
+    "publisher": "William Candillon"
   },
   "react-native-render-html@6.3.4": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/meliorence/react-native-render-html",
     "publisher": "Meliorence",
     "email": "contact@meliorence.com",
-    "url": "github.com/meliorence",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-render-html",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-render-html/README.md"
+    "url": "github.com/meliorence"
   },
   "react-native-safe-area-context@4.12.0": {
     "licenses": "MIT",
     "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
     "publisher": "Janic Duplessis",
-    "email": "janicduplessis@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-safe-area-context",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-safe-area-context/LICENSE"
+    "email": "janicduplessis@gmail.com"
   },
   "react-native-screens@4.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-screens",
     "publisher": "Krzysztof Magiera",
-    "email": "krzys.magiera@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-screens",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-screens/LICENSE"
+    "email": "krzys.magiera@gmail.com"
   },
   "react-native-size-matters@0.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/nirsky/react-native-size-matters",
-    "publisher": "nirsky",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-size-matters",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-size-matters/LICENSE"
+    "publisher": "nirsky"
   },
   "react-native-snap-carousel@4.0.0-beta.6": {
     "licenses": "BSD-3-Clause",
     "repository": "github.com/archriss/react-native-snap-carousel",
     "publisher": "Benoit Delmaire",
     "email": "bdelmaire@archriss.com",
-    "url": "github.com/bd-arc",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-snap-carousel",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-snap-carousel/LICENSE"
+    "url": "github.com/bd-arc"
   },
   "react-native-status-bar-height@2.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ovr/react-native-status-bar-height",
     "publisher": "Dmitry Patsura",
-    "email": "talk@dmtry.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-status-bar-height",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-status-bar-height/LICENSE"
+    "email": "talk@dmtry.me"
   },
   "react-native-svg-transformer@1.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kristerkari/react-native-svg-transformer",
-    "publisher": "Krister Kari",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-svg-transformer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-svg-transformer/LICENSE"
+    "publisher": "Krister Kari"
   },
   "react-native-svg@15.8.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-native-community/react-native-svg",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-svg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-svg/LICENSE"
+    "repository": "https://github.com/react-native-community/react-native-svg"
   },
   "react-native-swipe-gestures@1.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/glepur/react-native-swipe-gestures",
     "publisher": "Goran Lepur",
-    "email": "goran.lepur1@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-swipe-gestures",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-swipe-gestures/LICENSE"
+    "email": "goran.lepur1@gmail.com"
   },
   "react-native-tab-view@3.5.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/react-navigation/react-navigation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-tab-view",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-tab-view/LICENSE"
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "react-native-version-check-expo@3.4.7": {
     "licenses": "MIT",
     "publisher": "Taehyun Kim",
     "email": "kgyoo8232@gmail.com",
-    "url": "https://github.com/kimxogus",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/LICENSE"
+    "url": "https://github.com/kimxogus"
   },
   "react-native-version-check@3.4.7": {
     "licenses": "MIT",
     "repository": "https://github.com/kimxogus/react-native-version-check",
     "publisher": "Taehyun Kim",
     "email": "kgyoo8232@gmail.com",
-    "url": "https://github.com/kimxogus",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check/LICENSE"
+    "url": "https://github.com/kimxogus"
   },
   "react-native-web@0.19.13": {
     "licenses": "MIT",
     "repository": "https://github.com/necolas/react-native-web",
-    "publisher": "Nicolas Gallagher",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web/LICENSE"
+    "publisher": "Nicolas Gallagher"
   },
   "react-native-webview@13.12.5": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-webview/react-native-webview",
     "publisher": "Jamon Holmgren",
-    "email": "jamon@infinite.red",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-webview",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-webview/LICENSE"
+    "email": "jamon@infinite.red"
   },
   "react-native@0.76.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/LICENSE"
+    "repository": "https://github.com/facebook/react-native"
   },
   "react-native@0.77.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/react-native/LICENSE"
+    "repository": "https://github.com/facebook/react-native"
   },
   "react-query@3.39.3": {
     "licenses": "MIT",
     "repository": "https://github.com/tannerlinsley/react-query",
-    "publisher": "tannerlinsley",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-query",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-query/LICENSE"
+    "publisher": "tannerlinsley"
   },
   "react-refresh@0.14.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-refresh",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-refresh/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react-server-dom-webpack@19.0.0-rc-6230622a1a-20240610": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-server-dom-webpack",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-server-dom-webpack/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react-shallow-renderer@16.15.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/NMinhNguyen/react-shallow-renderer",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-shallow-renderer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-shallow-renderer/LICENSE"
+    "repository": "https://github.com/NMinhNguyen/react-shallow-renderer"
   },
   "react-test-renderer@18.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-test-renderer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-test-renderer/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "react@18.3.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "read-installed@4.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/read-installed",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/read-installed",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/read-installed/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "read-package-json@2.1.2": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/read-package-json",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/read-package-json",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/read-package-json/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "readable-stream@2.3.8": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodejs/readable-stream",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readable-stream",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readable-stream/LICENSE"
+    "repository": "https://github.com/nodejs/readable-stream"
   },
   "readdir-scoped-modules@1.1.0": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/readdir-scoped-modules",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readdir-scoped-modules",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readdir-scoped-modules/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "readline@1.3.0": {
     "licenses": "BSD*",
     "repository": "https://github.com/maleck13/readline",
-    "publisher": "craig brookes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readline",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/readline/README.md"
+    "publisher": "craig brookes"
   },
   "realpath-native@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/SimenB/realpath-native",
     "publisher": "Simen Bekkhus",
-    "email": "sbekkhus91@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/realpath-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/realpath-native/LICENSE"
+    "email": "sbekkhus91@gmail.com"
   },
   "recast@0.21.5": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/recast",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/recast",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/recast/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "recast@0.23.9": {
     "licenses": "MIT",
     "repository": "https://github.com/benjamn/recast",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/recast",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/recast/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "recyclerlistview@4.2.1": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/Flipkart/recyclerlistview",
     "publisher": "naqvitalha",
-    "email": "naqvitalha@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/recyclerlistview",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/recyclerlistview/LICENSE.md"
+    "email": "naqvitalha@gmail.com"
   },
   "reflect.getprototypeof@1.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/Reflect.getPrototypeOf",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/reflect.getprototypeof",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/reflect.getprototypeof/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "regenerate-unicode-properties@10.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/regenerate-unicode-properties",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerate-unicode-properties",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerate-unicode-properties/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "regenerate@1.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/regenerate",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerate/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "regenerator-runtime@0.13.11": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/regenerator/tree/main/packages/runtime",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerator-runtime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerator-runtime/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "regenerator-runtime@0.14.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/regenerator/tree/main/packages/runtime",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/runtime/node_modules/regenerator-runtime",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/runtime/node_modules/regenerator-runtime/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "regenerator-transform@0.15.2": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/regenerator/tree/main/packages/transform",
     "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerator-transform",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regenerator-transform/LICENSE"
+    "email": "bn@cs.stanford.edu"
   },
   "regex-not@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/regex-not",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regex-not",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regex-not/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "regexp.prototype.flags@1.5.4": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/RegExp.prototype.flags",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regexp.prototype.flags",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regexp.prototype.flags/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "regexpp@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mysticatea/regexpp",
     "publisher": "Toru Nagashima",
-    "url": "https://github.com/mysticatea",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regexpp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regexpp/LICENSE"
+    "url": "https://github.com/mysticatea"
   },
   "regexpu-core@6.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/regexpu-core",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regexpu-core",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regexpu-core/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "regjsgen@0.8.0": {
     "licenses": "MIT",
     "repository": "https://github.com/bnjmnt4n/regjsgen",
     "publisher": "Benjamin Tan",
-    "url": "https://ofcr.se/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regjsgen",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regjsgen/LICENSE-MIT.txt"
+    "url": "https://ofcr.se/"
   },
   "regjsparser@0.12.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/jviereck/regjsparser",
     "publisher": "'Julian Viereck'",
-    "email": "julian.viereck@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regjsparser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/regjsparser/LICENSE.BSD"
+    "email": "julian.viereck@gmail.com"
   },
   "remove-accents@0.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/tyxla/remove-accents",
     "publisher": "Marin Atanasov",
     "email": "contact@marinatanasov.com",
-    "url": "http://marinatanasov.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/remove-accents",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/remove-accents/LICENSE"
+    "url": "http://marinatanasov.com"
   },
   "remove-trailing-separator@1.1.0": {
     "licenses": "ISC",
     "repository": "https://github.com/darsain/remove-trailing-separator",
-    "publisher": "darsain",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/remove-trailing-separator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/remove-trailing-separator/license"
+    "publisher": "darsain"
   },
   "remove-trailing-slash@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/stephenmathieson/remove-trailing-slash",
     "publisher": "Stephen Mathieson",
-    "email": "me@stephenmathieson.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/remove-trailing-slash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/remove-trailing-slash/readme.md"
+    "email": "me@stephenmathieson.com"
   },
   "repeat-element@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/repeat-element",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/repeat-element",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/repeat-element/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "repeat-string@1.6.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/repeat-string",
     "publisher": "Jon Schlinkert",
-    "url": "http://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/repeat-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/repeat-string/LICENSE"
+    "url": "http://github.com/jonschlinkert"
   },
   "require-directory@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/troygoode/node-require-directory",
     "publisher": "Troy Goode",
     "email": "troygoode@gmail.com",
-    "url": "http://github.com/troygoode/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/require-directory",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/require-directory/LICENSE"
+    "url": "http://github.com/troygoode/"
   },
   "require-from-string@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/floatdrop/require-from-string",
     "publisher": "Vsevolod Strukchinsky",
     "email": "floatdrop@gmail.com",
-    "url": "github.com/floatdrop",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/require-from-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/require-from-string/license"
+    "url": "github.com/floatdrop"
   },
   "require-main-filename@2.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/require-main-filename",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/require-main-filename",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/require-main-filename/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "requireg@0.2.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/h2non/requireg",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/requireg",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/requireg/LICENSE"
+    "repository": "https://github.com/h2non/requireg"
   },
   "requires-port@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/unshiftio/requires-port",
-    "publisher": "Arnout Kazemier",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/requires-port",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/requires-port/LICENSE"
+    "publisher": "Arnout Kazemier"
   },
   "resolve-cwd@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/resolve-cwd",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-cwd",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-cwd/license"
+    "url": "sindresorhus.com"
   },
   "resolve-from@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/resolve-from",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/resolve-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-config/node_modules/resolve-from/license"
+    "url": "sindresorhus.com"
   },
   "resolve-from@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/resolve-from",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/import-fresh/node_modules/resolve-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/import-fresh/node_modules/resolve-from/license"
+    "url": "sindresorhus.com"
   },
   "resolve-from@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/resolve-from",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-from",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-from/license"
+    "url": "sindresorhus.com"
   },
   "resolve-url@0.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/lydell/resolve-url",
-    "publisher": "Simon Lydell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-url",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-url/LICENSE"
+    "publisher": "Simon Lydell"
   },
   "resolve-workspace-root@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/byCedric/resolve-workspace-root",
     "publisher": "Cedric van Putten",
-    "email": "me@cedric.dev",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-workspace-root",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve-workspace-root/LICENSE.md"
+    "email": "me@cedric.dev"
   },
   "resolve.exports@2.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/lukeed/resolve.exports",
     "publisher": "Luke Edwards",
     "email": "luke.edwards05@gmail.com",
-    "url": "https://lukeed.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve.exports",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve.exports/license"
+    "url": "https://lukeed.com"
   },
   "resolve@1.22.10": {
     "licenses": "MIT",
     "repository": "https://github.com/browserify/resolve",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/resolve/LICENSE"
+    "url": "http://substack.net"
   },
   "resolve@1.7.1": {
     "licenses": "MIT",
     "repository": "https://github.com/browserify/resolve",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/requireg/node_modules/resolve",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/requireg/node_modules/resolve/LICENSE"
+    "url": "http://substack.net"
   },
   "restore-cursor@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/restore-cursor",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/restore-cursor",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/restore-cursor/license"
+    "url": "sindresorhus.com"
   },
   "ret@0.1.15": {
     "licenses": "MIT",
     "repository": "https://github.com/fent/ret.js",
     "publisher": "Roly Fentanes",
-    "url": "https://github.com/fent",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ret",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ret/LICENSE"
+    "url": "https://github.com/fent"
   },
   "reusify@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/mcollina/reusify",
     "publisher": "Matteo Collina",
-    "email": "hello@matteocollina.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/reusify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/reusify/LICENSE"
+    "email": "hello@matteocollina.com"
   },
   "rimraf@2.6.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/rimraf",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/temp/node_modules/rimraf",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/temp/node_modules/rimraf/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "rimraf@2.7.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/rimraf",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/patch-package/node_modules/rimraf",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/patch-package/node_modules/rimraf/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "rimraf@3.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/rimraf",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rimraf",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rimraf/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "rsvp@4.8.5": {
     "licenses": "MIT",
     "repository": "https://github.com/tildeio/rsvp.js",
-    "publisher": "Tilde, Inc. & Stefan Penner",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rsvp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rsvp/LICENSE"
+    "publisher": "Tilde, Inc. & Stefan Penner"
   },
   "rtl-detect@1.1.2": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/shadiabuhilal/rtl-detect",
     "publisher": "Shadi Abu Hilal",
     "email": "shadiabuhilal@gmail.com",
-    "url": "http://github.com/shadiabuhilal",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rtl-detect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rtl-detect/LICENSE.md"
+    "url": "http://github.com/shadiabuhilal"
   },
   "run-parallel@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/run-parallel",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "https://feross.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/run-parallel",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/run-parallel/LICENSE"
+    "url": "https://feross.org"
   },
   "safe-array-concat@1.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/safe-array-concat",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-array-concat",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-array-concat/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "safe-buffer@5.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/safe-buffer",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "http://feross.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-buffer/LICENSE"
+    "url": "http://feross.org"
   },
   "safe-buffer@5.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/safe-buffer",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "https://feross.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compression/node_modules/safe-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/compression/node_modules/safe-buffer/LICENSE"
+    "url": "https://feross.org"
   },
   "safe-push-apply@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/safe-push-apply",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-push-apply",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-push-apply/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "safe-regex-test@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/safe-regex-test",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-regex-test",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-regex-test/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "safe-regex@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/substack/safe-regex",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safe-regex/LICENSE"
+    "url": "http://substack.net"
   },
   "safer-buffer@2.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ChALkeR/safer-buffer",
     "publisher": "Nikita Skovoroda",
     "email": "chalkerx@gmail.com",
-    "url": "https://github.com/ChALkeR",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safer-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/safer-buffer/LICENSE"
+    "url": "https://github.com/ChALkeR"
   },
   "sane@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/amasad/sane",
-    "publisher": "amasad",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/README.md"
+    "publisher": "amasad"
   },
   "sax@1.4.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/sax-js",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sax",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sax/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "saxes@6.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/lddubeau/saxes",
     "publisher": "Louis-Dominique Dubeau",
-    "email": "ldd@lddubeau.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/saxes",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/saxes/README.md"
+    "email": "ldd@lddubeau.com"
   },
   "scheduler@0.23.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/scheduler",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/scheduler/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "scheduler@0.24.0-canary-efb381bbf-20230505": {
     "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/scheduler",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native/node_modules/scheduler/LICENSE"
+    "repository": "https://github.com/facebook/react"
   },
   "selfsigned@2.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jfromaniello/selfsigned",
     "publisher": "José F. Romaniello",
     "email": "jfromaniello@gmail.com",
-    "url": "http://joseoncode.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/selfsigned",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/selfsigned/LICENSE"
+    "url": "http://joseoncode.com"
   },
   "semver@5.7.2": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/semver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/semver/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "semver@6.3.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/node_modules/semver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/node_modules/semver/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "semver@7.5.3": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/semver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/semver/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "semver@7.6.3": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/semver",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/semver/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "send@0.19.0": {
     "licenses": "MIT",
     "repository": "https://github.com/pillarjs/send",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/send",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/send/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "send@0.19.1": {
     "licenses": "MIT",
     "repository": "https://github.com/pillarjs/send",
     "publisher": "TJ Holowaychuk",
-    "email": "tj@vision-media.ca",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/send",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/send/LICENSE"
+    "email": "tj@vision-media.ca"
   },
   "serialize-error@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/serialize-error",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/serialize-error",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/serialize-error/license"
+    "url": "sindresorhus.com"
   },
   "serve-static@1.16.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expressjs/serve-static",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/serve-static",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/serve-static/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "server-only@0.0.1": {
-    "licenses": "MIT",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/server-only"
+    "licenses": "MIT"
   },
   "set-blocking@2.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/set-blocking",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-blocking",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-blocking/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "set-function-length@1.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/set-function-length",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-function-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-function-length/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "set-function-name@2.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/set-function-name",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-function-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-function-name/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "set-proto@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/set-proto",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-proto",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-proto/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "set-value@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/set-value",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cache-base/node_modules/set-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/cache-base/node_modules/set-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "set-value@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/set-value",
     "publisher": "Jon Schlinkert",
     "email": "jon.schlinkert@sellside.com",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/set-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "setimmediate@1.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/YuzuJS/setImmediate",
-    "publisher": "YuzuJS",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/setimmediate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/setimmediate/LICENSE.txt"
+    "publisher": "YuzuJS"
   },
   "setprototypeof@1.2.0": {
     "licenses": "ISC",
     "repository": "https://github.com/wesleytodd/setprototypeof",
-    "publisher": "Wes Todd",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/setprototypeof",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/setprototypeof/LICENSE"
+    "publisher": "Wes Todd"
   },
   "shallow-clone@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/shallow-clone",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shallow-clone",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shallow-clone/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "shebang-command@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/shebang-command",
     "publisher": "Kevin Martensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "github.com/kevva",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/shebang-command",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/shebang-command/license"
+    "url": "github.com/kevva"
   },
   "shebang-command@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/shebang-command",
     "publisher": "Kevin Mårtensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "github.com/kevva",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shebang-command",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shebang-command/license"
+    "url": "github.com/kevva"
   },
   "shebang-regex@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/shebang-regex",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/shebang-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/shebang-regex/license"
+    "url": "sindresorhus.com"
   },
   "shebang-regex@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/shebang-regex",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shebang-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shebang-regex/license"
+    "url": "sindresorhus.com"
   },
   "shell-quote@1.8.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/shell-quote",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shell-quote",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/shell-quote/LICENSE"
+    "url": "http://substack.net"
   },
   "side-channel-list@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/side-channel-list",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel-list",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel-list/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "side-channel-map@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/side-channel-map",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel-map/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "side-channel-weakmap@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/side-channel-weakmap",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel-weakmap",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel-weakmap/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "side-channel@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/side-channel",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/side-channel/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "signal-exit@3.0.7": {
     "licenses": "ISC",
     "repository": "https://github.com/tapjs/signal-exit",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/signal-exit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/signal-exit/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "signal-exit@4.1.0": {
     "licenses": "ISC",
     "repository": "https://github.com/tapjs/signal-exit",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/foreground-child/node_modules/signal-exit",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/foreground-child/node_modules/signal-exit/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "simple-plist@1.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/wollardj/simple-plist",
-    "publisher": "Joe Wollard",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-plist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-plist/LICENSE"
+    "publisher": "Joe Wollard"
   },
   "simple-swizzle@0.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/qix-/node-simple-swizzle",
     "publisher": "Qix",
-    "url": "http://github.com/qix-",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-swizzle",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/simple-swizzle/LICENSE"
+    "url": "http://github.com/qix-"
   },
   "sisteransi@1.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/terkelg/sisteransi",
     "publisher": "Terkel Gjervig",
     "email": "terkel@terkel.com",
-    "url": "https://terkel.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sisteransi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sisteransi/license"
+    "url": "https://terkel.com"
   },
   "slash@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/slash",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/patch-package/node_modules/slash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/patch-package/node_modules/slash/license"
+    "url": "sindresorhus.com"
   },
   "slash@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/slash",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slash/license"
+    "url": "sindresorhus.com"
   },
   "slash@5.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/slash",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/slash",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/slash/license"
+    "url": "https://sindresorhus.com"
   },
   "slice-ansi@4.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/chalk/slice-ansi",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slice-ansi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slice-ansi/license"
+    "repository": "https://github.com/chalk/slice-ansi"
   },
   "slide@1.1.6": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/slide-flow-control",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slide",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slide/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "slugify@1.6.6": {
     "licenses": "MIT",
     "repository": "https://github.com/simov/slugify",
     "publisher": "Simeon Velichkov",
     "email": "simeonvelichkov@gmail.com",
-    "url": "https://simov.github.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slugify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/slugify/LICENSE"
+    "url": "https://simov.github.io"
   },
   "smart-village-app@4.1.0": {
-    "licenses": "GPL-3.0*",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/LICENSE.md"
+    "licenses": "GPL-3.0*"
   },
   "snake-case@3.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/blakeembrey/change-case",
     "publisher": "Blake Embrey",
     "email": "hello@blakeembrey.com",
-    "url": "http://blakeembrey.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snake-case",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snake-case/LICENSE"
+    "url": "http://blakeembrey.me"
   },
   "snapdragon-node@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/snapdragon-node",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snapdragon-node",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snapdragon-node/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "snapdragon-util@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/snapdragon-util",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snapdragon-util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snapdragon-util/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "snapdragon@0.8.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/snapdragon",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snapdragon",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/snapdragon/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "source-map-js@1.2.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/7rulnik/source-map-js",
     "publisher": "Valentin 7rulnik Semirulnik",
-    "email": "v7rulnik@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-js/LICENSE"
+    "email": "v7rulnik@gmail.com"
   },
   "source-map-resolve@0.5.3": {
     "licenses": "MIT",
     "repository": "https://github.com/lydell/source-map-resolve",
-    "publisher": "Simon Lydell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-resolve",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-resolve/LICENSE"
+    "publisher": "Simon Lydell"
   },
   "source-map-support@0.5.13": {
     "licenses": "MIT",
-    "repository": "https://github.com/evanw/node-source-map-support",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runner/node_modules/source-map-support",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runner/node_modules/source-map-support/LICENSE.md"
+    "repository": "https://github.com/evanw/node-source-map-support"
   },
   "source-map-support@0.5.21": {
     "licenses": "MIT",
-    "repository": "https://github.com/evanw/node-source-map-support",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-support",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-support/LICENSE.md"
+    "repository": "https://github.com/evanw/node-source-map-support"
   },
   "source-map-url@0.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/lydell/source-map-url",
-    "publisher": "Simon Lydell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-url",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map-url/LICENSE"
+    "publisher": "Simon Lydell"
   },
   "source-map@0.5.6": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/mozilla/source-map",
     "publisher": "Nick Fitzgerald",
-    "email": "nfitzgerald@mozilla.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-gps/node_modules/source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-gps/node_modules/source-map/LICENSE"
+    "email": "nfitzgerald@mozilla.com"
   },
   "source-map@0.5.7": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/mozilla/source-map",
     "publisher": "Nick Fitzgerald",
-    "email": "nfitzgerald@mozilla.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-symbolicate/node_modules/source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro-symbolicate/node_modules/source-map/LICENSE"
+    "email": "nfitzgerald@mozilla.com"
   },
   "source-map@0.6.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/mozilla/source-map",
     "publisher": "Nick Fitzgerald",
-    "email": "nfitzgerald@mozilla.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/source-map/LICENSE"
+    "email": "nfitzgerald@mozilla.com"
   },
   "spdx-compare@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kemitchell/spdx-compare.js",
     "publisher": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
-    "url": "https://kemitchell.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-compare",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-compare/LICENSE.md"
+    "url": "https://kemitchell.com"
   },
   "spdx-correct@3.2.0": {
     "licenses": "Apache-2.0",
-    "repository": "https://github.com/jslicense/spdx-correct.js",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-correct",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-correct/LICENSE"
+    "repository": "https://github.com/jslicense/spdx-correct.js"
   },
   "spdx-exceptions@2.5.0": {
     "licenses": "CC-BY-3.0",
     "repository": "https://github.com/kemitchell/spdx-exceptions.json",
-    "publisher": "The Linux Foundation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-exceptions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-exceptions/README.md"
+    "publisher": "The Linux Foundation"
   },
   "spdx-expression-parse@3.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jslicense/spdx-expression-parse.js",
     "publisher": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
-    "url": "https://kemitchell.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-expression-parse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-expression-parse/LICENSE"
+    "url": "https://kemitchell.com"
   },
   "spdx-license-ids@3.0.21": {
     "licenses": "CC0-1.0",
     "repository": "https://github.com/jslicense/spdx-license-ids",
     "publisher": "Shinnosuke Watanabe",
-    "url": "https://github.com/shinnn",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-license-ids",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-license-ids/README.md"
+    "url": "https://github.com/shinnn"
   },
   "spdx-ranges@2.1.1": {
     "licenses": "(MIT AND CC-BY-3.0)",
     "repository": "https://github.com/kemitchell/spdx-ranges.js",
-    "publisher": "The Linux Foundation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-ranges",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-ranges/LICENSE.md"
+    "publisher": "The Linux Foundation"
   },
   "spdx-satisfies@4.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/kemitchell/spdx-satisfies.js",
     "publisher": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
-    "url": "https://kemitchell.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-satisfies",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/spdx-satisfies/LICENSE"
+    "url": "https://kemitchell.com"
   },
   "split-on-first@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/split-on-first",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-on-first",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-on-first/license"
+    "url": "sindresorhus.com"
   },
   "split-string@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/split-string",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split-string/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "split@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/dominictarr/split",
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",
-    "url": "http://bit.ly/dominictarr",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/split/LICENCE"
+    "url": "http://bit.ly/dominictarr"
   },
   "sprintf-js@1.0.3": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/alexei/sprintf.js",
     "publisher": "Alexandru Marasteanu",
     "email": "hello@alexei.ro",
-    "url": "http://alexei.ro/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sprintf-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sprintf-js/LICENSE"
+    "url": "http://alexei.ro/"
   },
   "ssri@10.0.6": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/ssri",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ssri",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ssri/LICENSE.md"
+    "publisher": "GitHub Inc."
   },
   "stack-generator@2.0.10": {
     "licenses": "MIT",
-    "repository": "https://github.com/stacktracejs/stack-generator",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stack-generator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stack-generator/LICENSE"
+    "repository": "https://github.com/stacktracejs/stack-generator"
   },
   "stack-utils@2.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/tapjs/stack-utils",
     "publisher": "James Talmage",
     "email": "james@talmage.io",
-    "url": "github.com/jamestalmage",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stack-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stack-utils/LICENSE.md"
+    "url": "github.com/jamestalmage"
   },
   "stackframe@1.3.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/stacktracejs/stackframe",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stackframe",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stackframe/LICENSE"
+    "repository": "https://github.com/stacktracejs/stackframe"
   },
   "stacktrace-gps@3.1.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/stacktracejs/stacktrace-gps",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-gps",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-gps/LICENSE"
+    "repository": "https://github.com/stacktracejs/stacktrace-gps"
   },
   "stacktrace-js@2.0.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/stacktracejs/stacktrace.js",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-js/LICENSE"
+    "repository": "https://github.com/stacktracejs/stacktrace.js"
   },
   "stacktrace-parser@0.1.10": {
     "licenses": "MIT",
     "repository": "https://github.com/errwischt/stacktrace-parser",
     "publisher": "Georg Tavonius",
     "email": "g.tavonius@gmail.com",
-    "url": "http://jaz-lounge.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-parser/LICENSE"
+    "url": "http://jaz-lounge.com"
   },
   "static-extend@0.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/static-extend",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/static-extend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/static-extend/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "statuses@1.5.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/statuses",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/finalhandler/node_modules/statuses",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/finalhandler/node_modules/statuses/LICENSE"
+    "repository": "https://github.com/jshttp/statuses"
   },
   "statuses@2.0.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/jshttp/statuses",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/statuses",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/statuses/LICENSE"
+    "repository": "https://github.com/jshttp/statuses"
   },
   "stream-buffers@2.2.0": {
     "licenses": "Unlicense",
     "repository": "https://github.com/samcday/node-stream-buffer",
     "publisher": "Sam Day",
-    "email": "me@samcday.com.au",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stream-buffers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stream-buffers/README.md"
+    "email": "me@samcday.com.au"
   },
   "strict-uri-encode@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/strict-uri-encode",
     "publisher": "Kevin Mårtensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "github.com/kevva",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strict-uri-encode",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strict-uri-encode/license"
+    "url": "github.com/kevva"
   },
   "string-length@4.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/string-length",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string-length/license"
+    "url": "https://sindresorhus.com"
   },
   "string-length@5.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/string-length",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/string-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-watch-typeahead/node_modules/string-length/license"
+    "url": "https://sindresorhus.com"
   },
   "string-width@4.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/string-width",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string-width-cjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string-width-cjs/license"
+    "url": "sindresorhus.com"
   },
   "string-width@5.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/string-width",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/string-width",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/string-width/license"
+    "url": "https://sindresorhus.com"
   },
   "string.prototype.matchall@4.0.12": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/String.prototype.matchAll",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.matchall",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.matchall/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "string.prototype.trim@1.2.10": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/String.prototype.trim",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.trim",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.trim/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "string.prototype.trimend@1.0.9": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/String.prototype.trimEnd",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.trimend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.trimend/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "string.prototype.trimstart@1.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/String.prototype.trimStart",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.trimstart",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string.prototype.trimstart/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "string_decoder@1.1.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodejs/string_decoder",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string_decoder",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/string_decoder/LICENSE"
+    "repository": "https://github.com/nodejs/string_decoder"
   },
   "stringify-entities@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/wooorm/stringify-entities",
     "publisher": "Titus Wormer",
     "email": "tituswormer@gmail.com",
-    "url": "https://wooorm.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stringify-entities",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stringify-entities/license"
+    "url": "https://wooorm.com"
   },
   "strip-ansi@5.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/strip-ansi",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ora/node_modules/strip-ansi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ora/node_modules/strip-ansi/license"
+    "url": "sindresorhus.com"
   },
   "strip-ansi@6.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/strip-ansi",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-ansi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-ansi/license"
+    "url": "sindresorhus.com"
   },
   "strip-ansi@7.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/strip-ansi",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/strip-ansi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/strip-ansi/license"
+    "url": "https://sindresorhus.com"
   },
   "strip-bom@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-bom",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-bom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-bom/license"
+    "url": "sindresorhus.com"
   },
   "strip-bom@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-bom",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runtime/node_modules/strip-bom",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-runtime/node_modules/strip-bom/license"
+    "url": "sindresorhus.com"
   },
   "strip-eof@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-eof",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-eof",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-eof/license"
+    "url": "sindresorhus.com"
   },
   "strip-final-newline@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-final-newline",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-final-newline",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-final-newline/license"
+    "url": "sindresorhus.com"
   },
   "strip-json-comments@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-json-comments",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rc/node_modules/strip-json-comments",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/rc/node_modules/strip-json-comments/license"
+    "url": "sindresorhus.com"
   },
   "strip-json-comments@3.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-json-comments",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-json-comments",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/strip-json-comments/license"
+    "url": "https://sindresorhus.com"
   },
   "structured-headers@0.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/evert/structured-header",
     "publisher": "Evert Pot",
-    "email": "me@evertpot.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/structured-headers",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/structured-headers/readme.md"
+    "email": "me@evertpot.com"
   },
   "styled-components@4.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/styled-components/styled-components",
-    "publisher": "Glen Maddern",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styled-components",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styled-components/README.md"
+    "publisher": "Glen Maddern"
   },
   "styleq@0.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/necolas/styleq",
-    "publisher": "Nicolas Gallagher",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styleq",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/styleq/LICENSE"
+    "publisher": "Nicolas Gallagher"
   },
   "stylis-rule-sheet@0.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/thysultan/stylis.js",
     "publisher": "Sultan Tarimo",
-    "email": "sultantarimo@me.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stylis-rule-sheet",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stylis-rule-sheet/README.md"
+    "email": "sultantarimo@me.com"
   },
   "stylis@3.5.4": {
     "licenses": "MIT",
     "repository": "https://github.com/thysultan/stylis.js",
     "publisher": "Sultan Tarimo",
-    "email": "sultantarimo@me.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stylis",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stylis/LICENSE.md"
+    "email": "sultantarimo@me.com"
   },
   "sucrase@3.35.0": {
     "licenses": "MIT",
     "repository": "https://github.com/alangpierce/sucrase",
     "publisher": "Alan Pierce",
-    "email": "alangpierce@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sucrase",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sucrase/LICENSE"
+    "email": "alangpierce@gmail.com"
   },
   "sudo-prompt@8.2.5": {
     "licenses": "MIT",
     "repository": "https://github.com/jorangreef/sudo-prompt",
-    "publisher": "Joran Dirk Greef",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/node_modules/sudo-prompt",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/node_modules/sudo-prompt/LICENSE"
+    "publisher": "Joran Dirk Greef"
   },
   "sudo-prompt@9.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jorangreef/sudo-prompt",
-    "publisher": "Joran Dirk Greef",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sudo-prompt",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sudo-prompt/LICENSE"
+    "publisher": "Joran Dirk Greef"
   },
   "supercluster@7.1.5": {
     "licenses": "ISC",
     "repository": "https://github.com/mapbox/supercluster",
-    "publisher": "Vladimir Agafonkin",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supercluster",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supercluster/LICENSE"
+    "publisher": "Vladimir Agafonkin"
   },
   "supports-color@5.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/supports-color",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/supports-color",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/highlight/node_modules/supports-color/license"
+    "url": "sindresorhus.com"
   },
   "supports-color@7.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/supports-color",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supports-color",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supports-color/license"
+    "url": "sindresorhus.com"
   },
   "supports-color@8.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/supports-color",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-worker/node_modules/supports-color",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/jest-worker/node_modules/supports-color/license"
+    "url": "https://sindresorhus.com"
   },
   "supports-hyperlinks@2.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jamestalmage/supports-hyperlinks",
     "publisher": "James Talmage",
     "email": "james@talmage.io",
-    "url": "github.com/jamestalmage",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supports-hyperlinks",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supports-hyperlinks/license"
+    "url": "github.com/jamestalmage"
   },
   "supports-preserve-symlinks-flag@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/node-supports-preserve-symlinks-flag",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supports-preserve-symlinks-flag",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/supports-preserve-symlinks-flag/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "svg-arc-to-cubic-bezier@3.2.0": {
     "licenses": "ISC",
     "repository": "https://github.com/colinmeinke/svg-arc-to-cubic-bezier",
     "publisher": "Colin Meinke",
     "email": "hello@colinmeinke.com",
-    "url": "https://colinmeinke.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svg-arc-to-cubic-bezier",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svg-arc-to-cubic-bezier/LICENSE.md"
+    "url": "https://colinmeinke.com"
   },
   "svg-parser@2.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/Rich-Harris/svg-parser",
-    "publisher": "Rich Harris",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svg-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svg-parser/README.md"
+    "publisher": "Rich Harris"
   },
   "svgo@3.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/svg/svgo",
     "publisher": "Kir Belevich",
     "email": "kir@belevi.ch",
-    "url": "https://github.com/deepsweet",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svgo",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/svgo/LICENSE"
+    "url": "https://github.com/deepsweet"
   },
   "symbol-observable@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/blesh/symbol-observable",
     "publisher": "Ben Lesh",
-    "email": "ben@benlesh.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/symbol-observable",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/symbol-observable/license"
+    "email": "ben@benlesh.com"
   },
   "symbol-tree@3.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/js-symbol-tree",
     "publisher": "Joris van der Wel",
-    "email": "joris@jorisvanderwel.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/symbol-tree",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/symbol-tree/LICENSE"
+    "email": "joris@jorisvanderwel.com"
   },
   "table@6.9.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/gajus/table",
     "publisher": "Gajus Kuizinas",
     "email": "gajus@gajus.com",
-    "url": "http://gajus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/table",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/table/LICENSE"
+    "url": "http://gajus.com"
   },
   "tabler-icons-react-native@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/50UM3N/tabler-icons-react-native",
-    "publisher": "Soumen Khara",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tabler-icons-react-native",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tabler-icons-react-native/LICENSE"
+    "publisher": "Soumen Khara"
   },
   "tar@6.2.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-tar",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tar",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tar/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "temp-dir@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/temp-dir",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/temp-dir",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/temp-dir/license"
+    "url": "sindresorhus.com"
   },
   "temp@0.8.4": {
     "licenses": "MIT",
     "repository": "https://github.com/bruce/node-temp",
     "publisher": "Bruce Williams",
-    "email": "brwcodes@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/temp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/temp/LICENSE"
+    "email": "brwcodes@gmail.com"
   },
   "tempy@0.7.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/tempy",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tempy",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tempy/license"
+    "url": "https://sindresorhus.com"
   },
   "terminal-link@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/terminal-link",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/terminal-link",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/terminal-link/license"
+    "url": "sindresorhus.com"
   },
   "terser@5.37.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/terser/terser",
     "publisher": "Mihai Bazon",
     "email": "mihai.bazon@gmail.com",
-    "url": "http://lisperator.net/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/terser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/terser/LICENSE"
+    "url": "http://lisperator.net/"
   },
   "test-exclude@6.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/istanbuljs/test-exclude",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/test-exclude",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/test-exclude/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "text-encoding@0.7.0": {
     "licenses": "(Unlicense OR Apache-2.0)",
     "repository": "https://github.com/inexorabletash/text-encoding",
     "publisher": "Joshua Bell",
-    "email": "inexorabletash@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/text-encoding",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/text-encoding/LICENSE.md"
+    "email": "inexorabletash@gmail.com"
   },
   "text-table@0.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/substack/text-table",
     "publisher": "James Halliday",
     "email": "mail@substack.net",
-    "url": "http://substack.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/text-table",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/text-table/LICENSE"
+    "url": "http://substack.net"
   },
   "thenify-all@1.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/thenables/thenify-all",
     "publisher": "Jonathan Ong",
     "email": "me@jongleberry.com",
-    "url": "http://jongleberry.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/thenify-all",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/thenify-all/LICENSE"
+    "url": "http://jongleberry.com"
   },
   "thenify@3.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/thenables/thenify",
     "publisher": "Jonathan Ong",
     "email": "me@jongleberry.com",
-    "url": "http://jongleberry.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/thenify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/thenify/LICENSE"
+    "url": "http://jongleberry.com"
   },
   "throat@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ForbesLindesay/throat",
-    "publisher": "ForbesLindesay",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/throat",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/throat/LICENSE"
+    "publisher": "ForbesLindesay"
   },
   "through2@2.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/rvagg/through2",
     "publisher": "Rod Vagg",
     "email": "r@va.gg",
-    "url": "https://github.com/rvagg",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/through2",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/through2/LICENSE.md"
+    "url": "https://github.com/rvagg"
   },
   "through@2.3.8": {
     "licenses": "MIT",
     "repository": "https://github.com/dominictarr/through",
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",
-    "url": "dominictarr.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/through",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/through/LICENSE.APACHE2"
+    "url": "dominictarr.com"
   },
   "tiny-invariant@1.3.3": {
     "licenses": "MIT",
     "repository": "https://github.com/alexreardon/tiny-invariant",
     "publisher": "Alex Reardon",
-    "email": "alexreardon@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tiny-invariant",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tiny-invariant/LICENSE"
+    "email": "alexreardon@gmail.com"
   },
   "tmp@0.0.33": {
     "licenses": "MIT",
     "repository": "https://github.com/raszi/node-tmp",
     "publisher": "KARASZI István",
     "email": "github@spam.raszi.hu",
-    "url": "http://raszi.hu/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tmp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tmp/LICENSE"
+    "url": "http://raszi.hu/"
   },
   "tmp@0.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/raszi/node-tmp",
     "publisher": "KARASZI István",
     "email": "github@spam.raszi.hu",
-    "url": "http://raszi.hu/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/tmp",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/tmp/LICENSE"
+    "url": "http://raszi.hu/"
   },
   "tmpl@1.0.5": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/daaku/nodejs-tmpl",
     "publisher": "Naitik Shah",
-    "email": "n@daaku.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tmpl",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tmpl/license"
+    "email": "n@daaku.org"
   },
   "to-object-path@0.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/to-object-path",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-object-path",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-object-path/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "to-regex-range@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/to-regex-range",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/to-regex-range",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/sane/node_modules/to-regex-range/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "to-regex-range@5.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/to-regex-range",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex-range",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex-range/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "to-regex@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/to-regex",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/to-regex/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "toidentifier@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/component/toidentifier",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/toidentifier",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/toidentifier/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "tough-cookie@4.1.4": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/salesforce/tough-cookie",
     "publisher": "Jeremy Stashewsky",
-    "email": "jstash@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tough-cookie",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tough-cookie/LICENSE"
+    "email": "jstash@gmail.com"
   },
   "tr46@0.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/Sebmaster/tr46.js",
     "publisher": "Sebastian Mayr",
-    "email": "npm@smayr.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch/node_modules/tr46"
+    "email": "npm@smayr.name"
   },
   "tr46@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/tr46",
     "publisher": "Sebastian Mayr",
-    "email": "npm@smayr.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tr46",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tr46/LICENSE.md"
+    "email": "npm@smayr.name"
   },
   "treeify@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/notatestuser/treeify",
     "publisher": "Luke Plaster",
-    "email": "notatestuser@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/treeify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/treeify/LICENSE"
+    "email": "notatestuser@gmail.com"
   },
   "ts-api-utils@1.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/JoshuaKGoldberg/ts-api-utils",
     "publisher": "JoshuaKGoldberg",
-    "email": "npm@joshuakgoldberg.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-api-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-api-utils/LICENSE.md"
+    "email": "npm@joshuakgoldberg.com"
   },
   "ts-interface-checker@0.1.13": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/gristlabs/ts-interface-checker",
-    "publisher": "Dmitry S, Grist Labs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-interface-checker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-interface-checker/LICENSE"
+    "publisher": "Dmitry S, Grist Labs"
   },
   "ts-invariant@0.3.3": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/invariant-packages",
     "publisher": "Ben Newman",
-    "email": "ben@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-anywhere/node_modules/ts-invariant",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/graphql-anywhere/node_modules/ts-invariant/LICENSE"
+    "email": "ben@apollographql.com"
   },
   "ts-invariant@0.4.4": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/invariant-packages",
     "publisher": "Ben Newman",
-    "email": "ben@apollographql.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-invariant",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-invariant/LICENSE"
+    "email": "ben@apollographql.com"
   },
   "ts-object-utils@0.0.5": {
     "licenses": "ISC",
     "repository": "https://github.com/naqvitalha/ts-object-utils",
     "publisher": "naqvitalha",
-    "email": "naqvitalha@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-object-utils",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-object-utils/README.md"
+    "email": "naqvitalha@gmail.com"
   },
   "ts-toolbelt@6.15.5": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/millsp/ts-toolbelt",
     "publisher": "Pierre-Antoine Mills",
-    "url": "https://github.com/millsp",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-toolbelt",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ts-toolbelt/LICENSE"
+    "url": "https://github.com/millsp"
   },
   "tsconfig-paths@3.15.0": {
     "licenses": "MIT",
     "repository": "https://github.com/dividab/tsconfig-paths",
-    "publisher": "Jonas Kello",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tsconfig-paths",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tsconfig-paths/LICENSE"
+    "publisher": "Jonas Kello"
   },
   "tslib@1.14.1": {
     "licenses": "0BSD",
     "repository": "https://github.com/Microsoft/tslib",
-    "publisher": "Microsoft Corp.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tslib",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tslib/LICENSE.txt"
+    "publisher": "Microsoft Corp."
   },
   "tslib@2.6.3": {
     "licenses": "0BSD",
     "repository": "https://github.com/Microsoft/tslib",
-    "publisher": "Microsoft Corp.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@shopify/flash-list/node_modules/tslib",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@shopify/flash-list/node_modules/tslib/LICENSE.txt"
+    "publisher": "Microsoft Corp."
   },
   "tslib@2.8.1": {
     "licenses": "0BSD",
     "repository": "https://github.com/Microsoft/tslib",
-    "publisher": "Microsoft Corp.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/node_modules/tslib",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/devcert/node_modules/tslib/LICENSE.txt"
+    "publisher": "Microsoft Corp."
   },
   "type-check@0.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/gkz/type-check",
     "publisher": "George Zahariev",
-    "email": "z@georgezahariev.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type-check",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type-check/LICENSE"
+    "email": "z@georgezahariev.com"
   },
   "type-detect@4.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/chaijs/type-detect",
     "publisher": "Jake Luer",
     "email": "jake@alogicalparadox.com",
-    "url": "http://alogicalparadox.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type-detect",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type-detect/LICENSE"
+    "url": "http://alogicalparadox.com"
   },
   "type-fest@0.16.0": {
     "licenses": "(MIT OR CC0-1.0)",
     "repository": "https://github.com/sindresorhus/type-fest",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tempy/node_modules/type-fest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tempy/node_modules/type-fest/license"
+    "url": "https://sindresorhus.com"
   },
   "type-fest@0.20.2": {
     "licenses": "(MIT OR CC0-1.0)",
     "repository": "https://github.com/sindresorhus/type-fest",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/node_modules/type-fest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@eslint/eslintrc/node_modules/type-fest/license"
+    "url": "https://sindresorhus.com"
   },
   "type-fest@0.21.3": {
     "licenses": "(MIT OR CC0-1.0)",
     "repository": "https://github.com/sindresorhus/type-fest",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type-fest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type-fest/license"
+    "url": "https://sindresorhus.com"
   },
   "type-fest@0.7.1": {
     "licenses": "(MIT OR CC0-1.0)",
     "repository": "https://github.com/sindresorhus/type-fest",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-parser/node_modules/type-fest",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/stacktrace-parser/node_modules/type-fest/license"
+    "url": "sindresorhus.com"
   },
   "type@2.7.3": {
     "licenses": "ISC",
     "repository": "https://github.com/medikoo/type",
     "publisher": "Mariusz Nowak",
     "email": "medyk@medikoo.com",
-    "url": "https://www.medikoo.com/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/type/LICENSE"
+    "url": "https://www.medikoo.com/"
   },
   "typed-array-buffer@1.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/typed-array-buffer",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-buffer/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "typed-array-byte-length@1.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/typed-array-byte-length",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-byte-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-byte-length/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "typed-array-byte-offset@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/typed-array-byte-offset",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-byte-offset",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-byte-offset/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "typed-array-length@1.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/typed-array-length",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-length",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typed-array-length/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "typedarray-to-buffer@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/typedarray-to-buffer",
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
-    "url": "http://feross.org/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typedarray-to-buffer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typedarray-to-buffer/LICENSE"
+    "url": "http://feross.org/"
   },
   "typescript@5.3.3": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/Microsoft/TypeScript",
-    "publisher": "Microsoft Corp.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typescript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/typescript/LICENSE.txt"
+    "publisher": "Microsoft Corp."
   },
   "ua-parser-js@0.7.40": {
     "licenses": "MIT",
     "repository": "https://github.com/faisalman/ua-parser-js",
     "publisher": "Faisal Salman",
     "email": "f@faisalman.com",
-    "url": "http://faisalman.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ua-parser-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ua-parser-js/license.md"
+    "url": "http://faisalman.com"
   },
   "ua-parser-js@1.0.40": {
     "licenses": "MIT",
     "repository": "https://github.com/faisalman/ua-parser-js",
     "publisher": "Faisal Salman",
     "email": "f@faisalman.com",
-    "url": "http://faisalman.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbjs/node_modules/ua-parser-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/fbjs/node_modules/ua-parser-js/license.md"
+    "url": "http://faisalman.com"
   },
   "uc.micro@1.0.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/markdown-it/uc.micro",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/uc.micro",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/uc.micro/LICENSE.txt"
+    "repository": "https://github.com/markdown-it/uc.micro"
   },
   "unbox-primitive@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/unbox-primitive",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unbox-primitive",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unbox-primitive/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "undici-types@6.20.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodejs/undici",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/undici-types",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/undici-types/LICENSE"
+    "repository": "https://github.com/nodejs/undici"
   },
   "undici@6.21.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/nodejs/undici",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/undici",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/undici/LICENSE"
+    "repository": "https://github.com/nodejs/undici"
   },
   "unicode-canonical-property-names-ecmascript@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/unicode-canonical-property-names-ecmascript",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-canonical-property-names-ecmascript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-canonical-property-names-ecmascript/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "unicode-match-property-ecmascript@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/unicode-match-property-ecmascript",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-match-property-ecmascript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-match-property-ecmascript/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "unicode-match-property-value-ecmascript@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/unicode-match-property-value-ecmascript",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-match-property-value-ecmascript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-match-property-value-ecmascript/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "unicode-property-aliases-ecmascript@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/unicode-property-aliases-ecmascript",
     "publisher": "Mathias Bynens",
-    "url": "https://mathiasbynens.be/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-property-aliases-ecmascript",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unicode-property-aliases-ecmascript/LICENSE-MIT.txt"
+    "url": "https://mathiasbynens.be/"
   },
   "union-value@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/union-value",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/union-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/union-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "unique-filename@3.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/unique-filename",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unique-filename",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unique-filename/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "unique-slug@4.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/unique-slug",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unique-slug",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unique-slug/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "unique-string@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/unique-string",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unique-string",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unique-string/license"
+    "url": "sindresorhus.com"
   },
   "universalify@0.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/RyanZim/universalify",
     "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/universalify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/universalify/LICENSE"
+    "email": "opensrc@ryanzim.com"
   },
   "universalify@0.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/RyanZim/universalify",
     "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tough-cookie/node_modules/universalify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/tough-cookie/node_modules/universalify/LICENSE"
+    "email": "opensrc@ryanzim.com"
   },
   "universalify@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/RyanZim/universalify",
     "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/image-utils/node_modules/universalify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/image-utils/node_modules/universalify/LICENSE"
+    "email": "opensrc@ryanzim.com"
   },
   "universalify@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/RyanZim/universalify",
     "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/universalify",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/universalify/LICENSE"
+    "email": "opensrc@ryanzim.com"
   },
   "unload@2.2.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/pubkey/unload",
-    "publisher": "pubkey",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unload",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unload/LICENSE"
+    "publisher": "pubkey"
   },
   "unpipe@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/stream-utils/unpipe",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unpipe",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unpipe/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "unset-value@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/unset-value",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/unset-value/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "update-browserslist-db@1.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/browserslist/update-db",
     "publisher": "Andrey Sitnik",
-    "email": "andrey@sitnik.ru",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/update-browserslist-db",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/update-browserslist-db/LICENSE"
+    "email": "andrey@sitnik.ru"
   },
   "uri-js@4.4.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/garycourt/uri-js",
     "publisher": "Gary Court",
-    "email": "gary.court@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/uri-js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/uri-js/LICENSE"
+    "email": "gary.court@gmail.com"
   },
   "urijs@1.19.11": {
     "licenses": "MIT",
     "repository": "https://github.com/medialize/URI.js",
     "publisher": "Rodney Rehm",
-    "url": "http://rodneyrehm.de",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/urijs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/urijs/LICENSE.txt"
+    "url": "http://rodneyrehm.de"
   },
   "urix@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lydell/urix",
-    "publisher": "Simon Lydell",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/urix",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/urix/LICENSE"
+    "publisher": "Simon Lydell"
   },
   "url-parse@1.5.10": {
     "licenses": "MIT",
     "repository": "https://github.com/unshiftio/url-parse",
-    "publisher": "Arnout Kazemier",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/url-parse",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/url-parse/LICENSE"
+    "publisher": "Arnout Kazemier"
   },
   "use-latest-callback@0.1.11": {
     "licenses": "MIT",
     "repository": "https://github.com/satya164/use-latest-callback",
     "publisher": "Satyajit Sahoo",
-    "email": "satyajit.happy@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/use-latest-callback",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/use-latest-callback/README.md"
+    "email": "satyajit.happy@gmail.com"
   },
   "use-latest-callback@0.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/satya164/use-latest-callback",
     "publisher": "Satyajit Sahoo",
-    "email": "satyajit.happy@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/core/node_modules/use-latest-callback",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-navigation/core/node_modules/use-latest-callback/README.md"
+    "email": "satyajit.happy@gmail.com"
   },
   "use@3.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/use",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/use",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/use/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "util-deprecate@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/TooTallNate/util-deprecate",
     "publisher": "Nathan Rajlich",
     "email": "nathan@tootallnate.net",
-    "url": "http://n8.io/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/util-deprecate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/util-deprecate/LICENSE"
+    "url": "http://n8.io/"
   },
   "util-extend@1.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/isaacs/util-extend",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/util-extend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/util-extend/LICENSE"
+    "repository": "https://github.com/isaacs/util-extend"
   },
   "util@0.12.5": {
     "licenses": "MIT",
     "repository": "https://github.com/browserify/node-util",
     "publisher": "Joyent",
-    "url": "http://www.joyent.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/util",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/util/LICENSE"
+    "url": "http://www.joyent.com"
   },
   "utils-merge@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jaredhanson/utils-merge",
     "publisher": "Jared Hanson",
     "email": "jaredhanson@gmail.com",
-    "url": "http://www.jaredhanson.net/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/utils-merge",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/utils-merge/LICENSE"
+    "url": "http://www.jaredhanson.net/"
   },
   "uuid@11.0.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/uuidjs/uuid",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gifted-chat/node_modules/uuid",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gifted-chat/node_modules/uuid/LICENSE.md"
+    "repository": "https://github.com/uuidjs/uuid"
   },
   "uuid@3.4.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/uuidjs/uuid",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/uuid",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/node_modules/uuid/LICENSE.md"
+    "repository": "https://github.com/uuidjs/uuid"
   },
   "uuid@7.0.3": {
     "licenses": "MIT",
-    "repository": "https://github.com/uuidjs/uuid",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xcode/node_modules/uuid",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xcode/node_modules/uuid/LICENSE.md"
+    "repository": "https://github.com/uuidjs/uuid"
   },
   "uuid@8.3.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/uuidjs/uuid",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/uuid",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/uuid/LICENSE.md"
+    "repository": "https://github.com/uuidjs/uuid"
   },
   "v8-compile-cache@2.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/zertosh/v8-compile-cache",
     "publisher": "Andres Suarez",
-    "email": "zertosh@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/v8-compile-cache",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/v8-compile-cache/LICENSE"
+    "email": "zertosh@gmail.com"
   },
   "v8-to-istanbul@9.3.0": {
     "licenses": "ISC",
     "repository": "https://github.com/istanbuljs/v8-to-istanbul",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/v8-to-istanbul",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/v8-to-istanbul/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "validate-npm-package-license@3.0.4": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/kemitchell/validate-npm-package-license.js",
     "publisher": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
-    "url": "https://kemitchell.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/validate-npm-package-license",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/validate-npm-package-license/LICENSE"
+    "url": "https://kemitchell.com"
   },
   "validate-npm-package-name@5.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/validate-npm-package-name",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/validate-npm-package-name",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/validate-npm-package-name/LICENSE"
+    "publisher": "GitHub Inc."
   },
   "vary@1.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/vary",
     "publisher": "Douglas Christopher Wilson",
-    "email": "doug@somethingdoug.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/vary",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/vary/LICENSE"
+    "email": "doug@somethingdoug.com"
   },
   "vlq@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Rich-Harris/vlq",
-    "publisher": "Rich Harris",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/vlq",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/vlq/LICENSE"
+    "publisher": "Rich Harris"
   },
   "w3c-xmlserializer@4.0.0": {
     "licenses": "MIT",
-    "repository": "https://github.com/jsdom/w3c-xmlserializer",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/w3c-xmlserializer",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/w3c-xmlserializer/LICENSE.md"
+    "repository": "https://github.com/jsdom/w3c-xmlserializer"
   },
   "walker@1.0.8": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/daaku/nodejs-walker",
     "publisher": "Naitik Shah",
-    "email": "n@daaku.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/walker",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/walker/LICENSE"
+    "email": "n@daaku.org"
   },
   "warn-once@0.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/satya164/warn-once",
     "publisher": "Satyajit Sahoo",
-    "email": "satyajit.happy@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/warn-once",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/warn-once/LICENSE"
+    "email": "satyajit.happy@gmail.com"
   },
   "wcwidth@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/timoxley/wcwidth",
-    "publisher": "Tim Oxley",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wcwidth",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wcwidth/LICENSE"
+    "publisher": "Tim Oxley"
   },
   "web-streams-polyfill@3.3.3": {
     "licenses": "MIT",
     "repository": "https://github.com/MattiasBuelens/web-streams-polyfill",
     "publisher": "Mattias Buelens",
-    "email": "mattias@buelens.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/web-streams-polyfill",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/web-streams-polyfill/LICENSE"
+    "email": "mattias@buelens.com"
   },
   "webidl-conversions@3.0.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/jsdom/webidl-conversions",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch/node_modules/webidl-conversions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch/node_modules/webidl-conversions/LICENSE.md"
+    "url": "https://domenic.me/"
   },
   "webidl-conversions@5.0.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/jsdom/webidl-conversions",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-url-without-unicode/node_modules/webidl-conversions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-url-without-unicode/node_modules/webidl-conversions/LICENSE.md"
+    "url": "https://domenic.me/"
   },
   "webidl-conversions@7.0.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/jsdom/webidl-conversions",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/webidl-conversions",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/webidl-conversions/LICENSE.md"
+    "url": "https://domenic.me/"
   },
   "whatwg-encoding@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/whatwg-encoding",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-encoding",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-encoding/LICENSE.txt"
+    "url": "https://domenic.me/"
   },
   "whatwg-fetch@3.6.20": {
     "licenses": "MIT",
-    "repository": "https://github.com/github/fetch",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-fetch",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-fetch/LICENSE"
+    "repository": "https://github.com/github/fetch"
   },
   "whatwg-mimetype@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/whatwg-mimetype",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-mimetype",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-mimetype/LICENSE.txt"
+    "url": "https://domenic.me/"
   },
   "whatwg-url-without-unicode@8.0.0-3": {
     "licenses": "MIT",
     "repository": "https://github.com/charpeni/whatwg-url",
     "publisher": "Sebastian Mayr",
-    "email": "github@smayr.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-url-without-unicode",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-url-without-unicode/LICENSE.txt"
+    "email": "github@smayr.name"
   },
   "whatwg-url@11.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/whatwg-url",
     "publisher": "Sebastian Mayr",
-    "email": "github@smayr.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-url",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/whatwg-url/LICENSE.txt"
+    "email": "github@smayr.name"
   },
   "whatwg-url@5.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/whatwg-url",
     "publisher": "Sebastian Mayr",
-    "email": "github@smayr.name",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch/node_modules/whatwg-url",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/node-fetch/node_modules/whatwg-url/LICENSE.txt"
+    "email": "github@smayr.name"
   },
   "which-boxed-primitive@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/which-boxed-primitive",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-boxed-primitive",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-boxed-primitive/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "which-builtin-type@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/which-builtin-type",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-builtin-type",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-builtin-type/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "which-collection@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/which-collection",
     "publisher": "Jordan Harband",
-    "email": "ljharb@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-collection",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-collection/LICENSE"
+    "email": "ljharb@gmail.com"
   },
   "which-module@2.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/nexdrew/which-module",
-    "publisher": "nexdrew",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-module",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-module/LICENSE"
+    "publisher": "nexdrew"
   },
   "which-typed-array@1.1.18": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/which-typed-array",
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com",
-    "url": "http://ljharb.codes",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-typed-array",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which-typed-array/LICENSE"
+    "url": "http://ljharb.codes"
   },
   "which@1.3.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-which",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/which",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/execa/node_modules/which/LICENSE"
+    "url": "http://blog.izs.me"
   },
   "which@2.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-which",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/which/LICENSE"
+    "url": "http://blog.izs.me"
   },
   "wonka@6.3.4": {
     "licenses": "MIT",
     "repository": "https://github.com/0no-co/wonka",
     "publisher": "0no.co",
-    "email": "hi@0no.co",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wonka",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wonka/LICENSE.md"
+    "email": "hi@0no.co"
   },
   "word-wrap@1.2.5": {
     "licenses": "MIT",
     "repository": "https://github.com/jonschlinkert/word-wrap",
     "publisher": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/word-wrap",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/word-wrap/LICENSE"
+    "url": "https://github.com/jonschlinkert"
   },
   "wrap-ansi@6.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/wrap-ansi",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/wrap-ansi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/wrap-ansi/license"
+    "url": "sindresorhus.com"
   },
   "wrap-ansi@7.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/wrap-ansi",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wrap-ansi-cjs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wrap-ansi-cjs/license"
+    "url": "https://sindresorhus.com"
   },
   "wrap-ansi@8.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/wrap-ansi",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/wrap-ansi",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@isaacs/cliui/node_modules/wrap-ansi/license"
+    "url": "https://sindresorhus.com"
   },
   "wrappy@1.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/wrappy",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wrappy",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/wrappy/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "write-file-atomic@2.4.3": {
     "licenses": "ISC",
     "repository": "https://github.com/iarna/write-file-atomic",
     "publisher": "Rebecca Turner",
     "email": "me@re-becca.org",
-    "url": "http://re-becca.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/write-file-atomic",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/write-file-atomic/LICENSE"
+    "url": "http://re-becca.org"
   },
   "write-file-atomic@3.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/write-file-atomic",
     "publisher": "Rebecca Turner",
     "email": "me@re-becca.org",
-    "url": "http://re-becca.org",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/write-file-atomic",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/babel-jest/node_modules/write-file-atomic/LICENSE"
+    "url": "http://re-becca.org"
   },
   "write-file-atomic@4.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/write-file-atomic",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/transform/node_modules/write-file-atomic",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@jest/transform/node_modules/write-file-atomic/LICENSE.md"
+    "publisher": "GitHub Inc."
   },
   "write-file-atomic@5.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/write-file-atomic",
-    "publisher": "GitHub Inc.",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/write-file-atomic",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@types/react-native-calendars/node_modules/write-file-atomic/LICENSE.md"
+    "publisher": "GitHub Inc."
   },
   "ws@6.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/websockets/ws",
     "publisher": "Einar Otto Stangvik",
     "email": "einaros@gmail.com",
-    "url": "http://2x.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ws",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/ws/LICENSE"
+    "url": "http://2x.io"
   },
   "ws@7.5.10": {
     "licenses": "MIT",
     "repository": "https://github.com/websockets/ws",
     "publisher": "Einar Otto Stangvik",
     "email": "einaros@gmail.com",
-    "url": "http://2x.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/ws",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/metro/node_modules/ws/LICENSE"
+    "url": "http://2x.io"
   },
   "ws@8.18.0": {
     "licenses": "MIT",
     "repository": "https://github.com/websockets/ws",
     "publisher": "Einar Otto Stangvik",
     "email": "einaros@gmail.com",
-    "url": "http://2x.io",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/ws",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/cli/node_modules/ws/LICENSE"
+    "url": "http://2x.io"
   },
   "xcode@3.0.1": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/apache/cordova-node-xcode",
     "publisher": "Apache Software Foundation",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xcode",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xcode/LICENSE",
     "noticeFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xcode/NOTICE"
   },
   "xdate@0.8.3": {
     "licenses": "(MIT OR GPL-2.0)",
     "repository": "https://github.com/arshaw/xdate",
-    "publisher": "Adam Shaw",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xdate",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xdate/README.md"
+    "publisher": "Adam Shaw"
   },
   "xml-name-validator@4.0.0": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/jsdom/xml-name-validator",
     "publisher": "Domenic Denicola",
     "email": "d@domenic.me",
-    "url": "https://domenic.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xml-name-validator",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xml-name-validator/LICENSE.txt"
+    "url": "https://domenic.me/"
   },
   "xml2js@0.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/Leonidas-from-XIV/node-xml2js",
     "publisher": "Marek Kubica",
     "email": "marek@xivilization.net",
-    "url": "https://xivilization.net",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xml2js",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xml2js/LICENSE"
+    "url": "https://xivilization.net"
   },
   "xmlbuilder@11.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/oozcitak/xmlbuilder-js",
     "publisher": "Ozgur Ozcitak",
-    "email": "oozcitak@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xml2js/node_modules/xmlbuilder",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xml2js/node_modules/xmlbuilder/LICENSE"
+    "email": "oozcitak@gmail.com"
   },
   "xmlbuilder@14.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/oozcitak/xmlbuilder-js",
     "publisher": "Ozgur Ozcitak",
-    "email": "oozcitak@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xmlbuilder",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xmlbuilder/LICENSE"
+    "email": "oozcitak@gmail.com"
   },
   "xmlbuilder@15.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/oozcitak/xmlbuilder-js",
     "publisher": "Ozgur Ozcitak",
-    "email": "oozcitak@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/plist/node_modules/xmlbuilder",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/plist/node_modules/xmlbuilder/LICENSE"
+    "email": "oozcitak@gmail.com"
   },
   "xmlchars@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/lddubeau/xmlchars",
     "publisher": "Louis-Dominique Dubeau",
-    "email": "ldd@lddubeau.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xmlchars",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xmlchars/LICENSE"
+    "email": "ldd@lddubeau.com"
   },
   "xtend@4.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/Raynos/xtend",
     "publisher": "Raynos",
-    "email": "raynos2@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xtend",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/xtend/LICENSE"
+    "email": "raynos2@gmail.com"
   },
   "y18n@4.0.3": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/y18n",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/y18n",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/y18n/LICENSE"
+    "email": "ben@npmjs.com"
   },
   "y18n@5.0.8": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/y18n",
     "publisher": "Ben Coe",
-    "email": "bencoe@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/y18n",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/y18n/LICENSE"
+    "email": "bencoe@gmail.com"
   },
   "yallist@3.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/yallist",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/node_modules/yallist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@babel/helper-compilation-targets/node_modules/yallist/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "yallist@4.0.0": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/yallist",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "url": "http://blog.izs.me/",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yallist",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yallist/LICENSE"
+    "url": "http://blog.izs.me/"
   },
   "yaml@2.7.0": {
     "licenses": "ISC",
     "repository": "https://github.com/eemeli/yaml",
     "publisher": "Eemeli Aro",
-    "email": "eemeli@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yaml",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yaml/LICENSE"
+    "email": "eemeli@gmail.com"
   },
   "yargs-parser@18.1.3": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/yargs-parser",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/yargs-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/yargs-parser/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "yargs-parser@21.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/yargs/yargs-parser",
     "publisher": "Ben Coe",
-    "email": "ben@npmjs.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yargs-parser",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yargs-parser/LICENSE.txt"
+    "email": "ben@npmjs.com"
   },
   "yargs@15.4.1": {
     "licenses": "MIT",
-    "repository": "https://github.com/yargs/yargs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/yargs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/qrcode/node_modules/yargs/LICENSE"
+    "repository": "https://github.com/yargs/yargs"
   },
   "yargs@17.7.2": {
     "licenses": "MIT",
-    "repository": "https://github.com/yargs/yargs",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yargs",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yargs/LICENSE"
+    "repository": "https://github.com/yargs/yargs"
   },
   "yocto-queue@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/yocto-queue",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "https://sindresorhus.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yocto-queue",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/yocto-queue/license"
+    "url": "https://sindresorhus.com"
   },
   "zen-observable-ts@0.8.21": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/apollo-link",
     "publisher": "Evans Hauser",
-    "email": "evanshauser@gmail.com",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/zen-observable-ts",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/zen-observable-ts/LICENSE"
+    "email": "evanshauser@gmail.com"
   },
   "zen-observable@0.8.15": {
     "licenses": "MIT",
-    "repository": "https://github.com/zenparsing/zen-observable",
-    "path": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/zen-observable",
-    "licenseFile": "/home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/zen-observable/LICENSE"
+    "repository": "https://github.com/zenparsing/zen-observable"
   }
-}
-
-```
+}```
