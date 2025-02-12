@@ -39,3 +39,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update LICENSES.md with latest dependencies information
+          file_pattern: "LICENSES.md"
