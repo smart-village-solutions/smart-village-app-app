@@ -104,6 +104,7 @@ import { texts } from '../texts';
 
 const { MATOMO_TRACKING } = consts;
 
+/* eslint-disable complexity */
 export const defaultStackConfig = ({
   initialParams,
   initialRouteName,
@@ -505,7 +506,7 @@ export const defaultStackConfig = ({
           imageKey: 'headlineServiceImage'
         }
       ),
-      screenOptions: { title: texts.screenTitles.service }
+      screenOptions: { title: initialParams?.title || texts.screenTitles.service }
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.settings },
@@ -702,3 +703,4 @@ export const defaultStackConfig = ({
     }
   ]
 });
+/* eslint-enable complexity */
