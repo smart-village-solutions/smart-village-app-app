@@ -32,8 +32,10 @@ jobs:
 
       - name: Create LICENSES.md
         run: |
-          echo "# License Report\n" > LICENSES.md
-          echo "This file contains the licenses of the dependencies used in this project.\n" >> LICENSES.md
+          echo "# License Report" > LICENSES.md
+          echo "" >> LICENSES.md
+          echo "This file contains the licenses of the dependencies used in this project." >> LICENSES.md
+          echo "" >> LICENSES.md
           echo '```json' >> LICENSES.md
           cat licenses.json >> LICENSES.md
           echo '```' >> LICENSES.md
