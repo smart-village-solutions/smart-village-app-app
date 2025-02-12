@@ -40,10 +40,10 @@ jobs:
       - name: Add licenses summary to LICENSES.md
         run: node .github/scripts/license-summary.js
 
-      - name: Add licenses list to LICENSES.md
+      - name: Add licenses detail list to LICENSES.md
         run: |
           echo "" >> LICENSES.md
-          echo "## Licenses details" > LICENSES.md
+          echo "## Licenses details" >> LICENSES.md
           echo "" >> LICENSES.md
           echo '```json' >> LICENSES.md
           cat licenses.json >> LICENSES.md
