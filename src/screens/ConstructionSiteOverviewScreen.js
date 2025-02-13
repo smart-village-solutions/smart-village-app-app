@@ -86,7 +86,7 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <Filter
         filterTypes={filterTypes}
-        initialFilters={initialQueryVariables}
+        initialQueryVariables={initialQueryVariables}
         isOverlay
         queryVariables={queryVariables}
         setQueryVariables={setQueryVariables}

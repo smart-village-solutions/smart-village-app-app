@@ -19,30 +19,86 @@ const { a11yLabel } = consts;
 
 type Props = {
   filterTypes?: FilterTypesProps[];
-  initialFilters?: FilterProps;
+  initialQueryVariables?: FilterProps;
   isOverlay?: boolean;
   queryVariables: FilterProps;
   setQueryVariables: React.Dispatch<FilterProps>;
   withSearch?: boolean;
 };
 
+export const INITIAL_START_DATE = '1900-01-01T00:00:00+01:00';
+
+const deleteInitialStartDateFromQueryVariables = (queryVariables: FilterProps): FilterProps => {
+  if (queryVariables?.start_date === INITIAL_START_DATE) {
+    const newQueryVariables = { ...queryVariables };
+    delete newQueryVariables.start_date;
+
+    return newQueryVariables;
+  }
+
+  return queryVariables;
+};
+
 export const Filter = ({
   filterTypes,
-  initialFilters,
+  initialQueryVariables,
   isOverlay = false,
   queryVariables,
   setQueryVariables,
   withSearch = false
 }: Props) => {
-  const [filters, setFilters] = useState<FilterProps>(queryVariables);
+  const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(queryVariables);
+  const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [filterCount, setFilterCount] = useState(0);
 
   useEffect(() => {
     if (!isOverlay) {
-      setQueryVariables((prev) => ({ search: prev.search || '', ...filters }));
+      setQueryVariables((prev) => {
+        const newFilters = { ...filters };
+
+        if (newFilters.start_date === INITIAL_START_DATE) {
+          delete newFilters.start_date;
+
+          return {
+            ...prev,
+            search: prev.search || '',
+            ...newFilters
+          };
+        }
+
+        if (!newFilters.start_date) {
+          return {
+            ...prev,
+            search: prev.search || '',
+            start_date: INITIAL_START_DATE,
+            ...newFilters
+          };
+        }
+
+        return { ...prev, search: prev.search || '', ...newFilters };
+      });
     }
   }, [filters]);
+
+  const resetFilters = () => {
+    if (!isOverlay) {
+      setIsCollapsed(!isCollapsed);
+
+      setTimeout(() => {
+        setFilters(updatedQueryVariables);
+
+        setQueryVariables({
+          ...queryVariables,
+          start_date: INITIAL_START_DATE
+        });
+      }, 500);
+    } else {
+      setFilters(initialQueryVariables || {});
+      setIsCollapsed(!isCollapsed);
+      setQueryVariables({ saveable: false, ...(initialQueryVariables || {}) });
+    }
+  };
 
   useEffect(() => {
     if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
@@ -52,9 +108,9 @@ export const Filter = ({
 
   useEffect(() => {
     if (isOverlay) {
-      const activeFilters = _omit(filters, Object.keys(initialFilters || {}));
+      const activeFilters = _omit(filters, Object.keys(initialQueryVariables || {}));
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
-        if (key !== 'saveable' || activeFilters[key] !== false) {
+        if ((key !== 'saveable' || key !== 'onlyCurrentlyOpen') && activeFilters[key] !== false) {
           acc[key] = activeFilters[key];
         }
 
@@ -62,14 +118,15 @@ export const Filter = ({
       }, {} as FilterProps);
       setFilterCount(Object.keys(filteredActiveFilters).length);
     }
-  }, [filters, initialFilters, isCollapsed]);
+  }, [filters, initialQueryVariables, isCollapsed]);
 
   if (!filterTypes?.length) {
     return null;
   }
 
   const isNoFilterSet =
-    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
+    filters.start_date === INITIAL_START_DATE &&
+    !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
 
   return (
     <>
@@ -141,11 +198,7 @@ export const Filter = ({
                   disabled={!!isNoFilterSet}
                   invert
                   notFullWidth
-                  onPress={() => {
-                    setFilters(initialFilters || {});
-                    setIsCollapsed(!isCollapsed);
-                    setQueryVariables({ saveable: false, ...(initialFilters || {}) });
-                  }}
+                  onPress={resetFilters}
                   title={texts.filter.resetFilter}
                 />
                 <Button
@@ -200,13 +253,7 @@ export const Filter = ({
               <Button
                 disabled={!!isNoFilterSet}
                 invert
-                onPress={() => {
-                  setIsCollapsed(!isCollapsed);
-
-                  setTimeout(() => {
-                    setFilters(queryVariables);
-                  }, 500);
-                }}
+                onPress={resetFilters}
                 title={texts.filter.resetFilter}
               />
             </WrapperVertical>

@@ -275,7 +275,7 @@ export const EventRecords = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       <Filter
         filterTypes={filterTypes}
-        initialFilters={initialQueryVariables}
+        initialQueryVariables={initialQueryVariables}
         isOverlay
         queryVariables={queryVariables}
         setQueryVariables={setQueryVariables}

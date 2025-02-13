@@ -240,7 +240,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     <SafeAreaViewFlex>
       <Filter
         filterTypes={filterTypes}
-        initialFilters={initialQueryVariables}
+        initialQueryVariables={initialQueryVariables}
         isOverlay
         queryVariables={queryVariables}
         setQueryVariables={setQueryVariables}

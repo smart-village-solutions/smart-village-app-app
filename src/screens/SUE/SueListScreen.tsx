@@ -11,10 +11,9 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { RefreshControl, TouchableOpacity } from 'react-native';
+import { RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
-import { StyleSheet } from 'react-native';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
@@ -22,22 +21,24 @@ import {
   EmptyMessage,
   Filter,
   HeaderLeft,
+  INITIAL_START_DATE,
   ListComponent,
   RegularText,
   SafeAreaViewFlex,
   Search,
   SueLoadingIndicator,
-  Wrapper,
-  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps } from '../../types';
+
 import { SueMapScreen } from './SueMapScreen';
 
 const { a11yLabel, FILTER_TYPES } = consts;
+
+const limit = 20;
 
 const SORT_BY = {
   REQUESTED_DATE_TIME: 'requested_datetime DESC',
@@ -77,16 +78,6 @@ const SORT_OPTIONS = [
   }
 ];
 
-type TFilterSection = {
-  initialQueryVariables: any;
-  services: any;
-  setQueryVariables: any;
-  setViewType: any;
-  showViewSwitcherButton: boolean;
-  statuses: StatusProps[];
-  viewType: string;
-};
-
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
@@ -105,17 +96,17 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const { showViewSwitcherButton = false } = sueListItem;
   const query = route.params?.query ?? '';
 
-  const limit = 20;
-  const initial_start_date = '1900-01-01T00:00:00+01:00';
-  const dataCountQueryVariables = {
-    start_date: initial_start_date
-  };
   const initialQueryVariables = route.params?.queryVariables ?? {
-    initial_start_date,
     limit,
-    offset: 0
+    offset: 0,
+    start_date: INITIAL_START_DATE
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
+  const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
+    ...initialQueryVariables,
+    limit: undefined,
+    offset: undefined
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
   const [viewType, setViewType] = useState(VIEW_TYPE.LIST);
@@ -173,6 +164,12 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       setIsOpening(false);
     }, 50);
   }, []);
+
+  useEffect(() => {
+    const { limit, offset, search, ...rest } = queryVariables;
+
+    setDataCountQueryVariables(rest);
+  }, [queryVariables]);
 
   const listItems = useMemo(() => {
     if (!data?.pages?.length) return [];
