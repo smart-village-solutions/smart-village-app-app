@@ -103,9 +103,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
-    ...initialQueryVariables,
-    limit: undefined,
-    offset: undefined
+    start_date: INITIAL_START_DATE
   });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
@@ -226,7 +224,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
           />
         )
       });
-    } else {
+    } else if (showViewSwitcherButton) {
       navigation.setOptions({
         headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
       });

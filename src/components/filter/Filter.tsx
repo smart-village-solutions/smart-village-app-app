@@ -61,7 +61,6 @@ export const Filter = ({
           delete newFilters.start_date;
 
           return {
-            ...prev,
             search: prev.search || '',
             ...newFilters
           };
@@ -69,14 +68,13 @@ export const Filter = ({
 
         if (!newFilters.start_date) {
           return {
-            ...prev,
             search: prev.search || '',
             start_date: INITIAL_START_DATE,
             ...newFilters
           };
         }
 
-        return { ...prev, search: prev.search || '', ...newFilters };
+        return { search: prev.search || '', ...newFilters };
       });
     }
   }, [filters]);
