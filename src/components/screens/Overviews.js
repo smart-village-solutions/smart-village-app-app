@@ -312,7 +312,7 @@ export const Overviews = ({ navigation, route }) => {
           />
         )
       });
-    } else {
+    } else if (query === QUERY_TYPES.POINTS_OF_INTEREST && !showMap) {
       navigation.setOptions({
         headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
       });
