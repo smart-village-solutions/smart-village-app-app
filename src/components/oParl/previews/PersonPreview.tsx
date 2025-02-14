@@ -1,7 +1,8 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
-import { texts } from '../../../config';
+import { normalize, texts } from '../../../config';
 import { getFullName } from '../../../helpers';
 import { PersonPreviewData } from '../../../types';
 import { TextListItem } from '../../TextListItem';
@@ -30,5 +31,11 @@ export const PersonPreview = ({ data, navigation }: Props) => {
     topDivider: false
   };
 
-  return <TextListItem navigation={navigation} item={item} />;
+  return <TextListItem containerStyle={styles.container} navigation={navigation} item={item} />;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: normalize(16)
+  }
+});

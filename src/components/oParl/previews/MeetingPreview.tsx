@@ -1,10 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 
-import { texts } from '../../../config';
+import { normalize, texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { MeetingPreviewData } from '../../../types';
 import { TextListItem } from '../../TextListItem';
+import { StyleSheet } from 'react-native';
 
 type Props = {
   data: MeetingPreviewData;
@@ -23,5 +24,11 @@ export const MeetingPreview = ({ data, navigation }: Props) => {
     title: name ?? texts.oparl.meeting.meeting
   };
 
-  return <TextListItem navigation={navigation} item={item} />;
+  return <TextListItem containerStyle={styles.container} navigation={navigation} item={item} />;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: normalize(16)
+  }
+});
