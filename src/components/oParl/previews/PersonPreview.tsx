@@ -5,6 +5,7 @@ import { texts } from '../../../config';
 import { getFullName } from '../../../helpers';
 import { PersonPreviewData } from '../../../types';
 import { TextListItem } from '../../TextListItem';
+import { WrapperHorizontal } from '../../Wrapper';
 import { getOrganizationNameString } from '../oParlHelpers';
 
 type Props = {
@@ -30,5 +31,9 @@ export const PersonPreview = ({ data, navigation }: Props) => {
     topDivider: false
   };
 
-  return <TextListItem navigation={navigation} item={item} />;
+  return (
+    <WrapperHorizontal>
+      <TextListItem navigation={navigation} item={item} />
+    </WrapperHorizontal>
+  );
 };
