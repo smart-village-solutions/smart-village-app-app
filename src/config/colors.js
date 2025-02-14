@@ -13,6 +13,7 @@ export const colors = {
   darkerPrimaryRgba: 'rgba(15, 70, 24, 0.6)', // darkerPrimary with 0.6 alpha
   secondary: 'rgb(9, 72, 60)',
   accent: 'rgb(15, 70, 24)',
+  blue: '#5C7ADB',
 
   error: 'rgb(174, 0, 29)',
 

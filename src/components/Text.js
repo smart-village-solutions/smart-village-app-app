@@ -153,6 +153,13 @@ export const RegularText = styled(Text)`
     `};
 
   ${(props) =>
+    props.blue &&
+    css`
+      color: ${colors.blue};
+      text-decoration-color: ${colors.blue};
+    `};
+
+  ${(props) =>
     props.center &&
     css`
       text-align: center;

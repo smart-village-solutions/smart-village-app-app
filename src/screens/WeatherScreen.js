@@ -129,11 +129,15 @@ export const WeatherScreen = () => {
         <WrapperHorizontal>
           <WrapperRow spaceBetween>
             <WrapperVertical itemsCenter>
-              <Icon.SunUp color={colors.primary} strokeColor={colors.primary} strokeWidth="2" />
+              <Icon.SunUp color={colors.transparent} strokeColor={colors.primary} strokeWidth="2" />
               <RegularText>{sunriseTime}</RegularText>
             </WrapperVertical>
             <Wrapper itemsCenter>
-              <Icon.SunDown color={colors.primary} strokeColor={colors.primary} strokeWidth="2" />
+              <Icon.SunDown
+                color={colors.transparent}
+                strokeColor={colors.primary}
+                strokeWidth="2"
+              />
               <RegularText>{sunsetTime}</RegularText>
             </Wrapper>
           </WrapperRow>
@@ -156,9 +160,9 @@ export const WeatherScreen = () => {
             <WrapperRow itemsCenter>
               <Icon.Rain
                 color={colors.transparent}
-                size={normalize(20)}
-                strokeColor={colors.primary}
+                strokeColor={colors.blue}
                 strokeWidth="2"
+                size={normalize(20)}
               />
               <RegularText blue>{todaysRainChance.toFixed(0)}%</RegularText>
             </WrapperRow>
