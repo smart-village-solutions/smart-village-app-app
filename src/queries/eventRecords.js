@@ -14,6 +14,11 @@ const defaultFragment = `
       url
     }
   }
+  webUrls: urls {
+    id
+    url
+    description
+  }
   addresses {
     id
     city
@@ -188,11 +193,6 @@ export const GET_EVENT_RECORD = gql`
           url
           description
         }
-      }
-      webUrls: urls {
-        id
-        url
-        description
       }
       priceInformations {
         id
