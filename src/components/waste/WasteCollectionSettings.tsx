@@ -15,6 +15,7 @@ import {
   Alert,
   FlatList,
   Modal,
+  Platform,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -617,7 +618,9 @@ export const WasteCollectionSettings = ({
                 </Modal>
               )}
               {device.platform === 'android' && showDatePicker && (
-                <DateTimePicker mode="time" onChange={onDatePickerChange} value={reminderTime} />
+                <View style={styles.dateTimePickerContainerAndroid}>
+                  <DateTimePicker mode="time" onChange={onDatePickerChange} value={reminderTime} />
+                </View>
               )}
             </ListItem>
             <Divider style={styles.divider} />
@@ -719,6 +722,9 @@ const styles = StyleSheet.create({
   paddingTop: {
     paddingTop: normalize(14)
   },
+  dateTimePickerContainerAndroid: {
+    marginLeft: normalize(-14)
+  },
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface
   },
@@ -734,7 +740,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.shadowRgba,
     paddingVertical: normalize(6),
     paddingHorizontal: normalize(10),
-    marginRight: normalize(-14)
+    ...Platform.select({
+      ios: {
+        marginRight: normalize(-14)
+      },
+      android: {
+        marginRight: 0
+      }
+    })
   },
   resultsList: {
     padding: normalize(14)
