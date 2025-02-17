@@ -120,16 +120,14 @@ export const defaultStackConfig = ({
   screenOptions: getScreenOptions({ withDrawer: isDrawer }),
   screenConfigs: [
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.about },
       routeName: ScreenName.About,
-      screenComponent: AboutScreen,
-      screenOptions: { title: texts.screenTitles.about }
+      screenComponent: AboutScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.augmentedReality.arInfoScreen.header },
       routeName: ScreenName.ARInfo,
-      screenComponent: ARInfoScreen,
-      screenOptions: { title: texts.augmentedReality.arInfoScreen.header }
+      screenComponent: ARInfoScreen
     },
     {
       initialParams,
@@ -138,10 +136,9 @@ export const defaultStackConfig = ({
       screenOptions: { headerShown: false }
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.augmentedReality.artworkDetailScreen.header },
       routeName: ScreenName.ArtworkDetail,
-      screenComponent: ArtworkDetailScreen,
-      screenOptions: { title: texts.augmentedReality.artworkDetailScreen.header }
+      screenComponent: ArtworkDetailScreen
     },
     {
       initialParams,
@@ -160,9 +157,7 @@ export const defaultStackConfig = ({
       screenComponent: BookmarkCategoryScreen
     },
     {
-      initialParams: initialParams || {
-        title: texts.screenTitles.favorites
-      },
+      initialParams: initialParams || { title: texts.screenTitles.favorites },
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer })
@@ -173,28 +168,24 @@ export const defaultStackConfig = ({
       screenComponent: IndexScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.consul.home },
       routeName: ScreenName.ConsulHomeScreen,
-      screenComponent: ConsulHomeScreen,
-      screenOptions: { title: texts.screenTitles.consul.home }
+      screenComponent: ConsulHomeScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.consul.register },
       routeName: ScreenName.ConsulRegisterScreen,
-      screenComponent: ConsulRegisterScreen,
-      screenOptions: { title: texts.screenTitles.consul.register }
+      screenComponent: ConsulRegisterScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.consul.register },
       routeName: ScreenName.ConsulRegisteredScreen,
-      screenComponent: ConsulRegisteredScreen,
-      screenOptions: { title: texts.screenTitles.consul.register }
+      screenComponent: ConsulRegisteredScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.consul.login },
       routeName: ScreenName.ConsulLoginScreen,
-      screenComponent: ConsulLoginScreen,
-      screenOptions: { title: texts.screenTitles.consul.login }
+      screenComponent: ConsulLoginScreen
     },
     {
       initialParams,
@@ -212,10 +203,9 @@ export const defaultStackConfig = ({
       screenComponent: ConsulStartNewScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.constructionSite },
       routeName: ScreenName.ConstructionSiteDetail,
-      screenComponent: ConstructionSiteDetailScreen,
-      screenOptions: { title: texts.screenTitles.constructionSite }
+      screenComponent: ConstructionSiteDetailScreen
     },
     {
       initialParams,
@@ -244,28 +234,24 @@ export const defaultStackConfig = ({
       screenComponent: DocIconsScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.encounterHome },
       routeName: ScreenName.EncounterData,
-      screenComponent: EncounterDataScreen,
-      screenOptions: { title: texts.screenTitles.encounterHome }
+      screenComponent: EncounterDataScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.encounterHome },
       routeName: ScreenName.EncounterHome,
-      screenComponent: EncounterHomeScreen,
-      screenOptions: { title: texts.screenTitles.encounterHome }
+      screenComponent: EncounterHomeScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.encounterHome },
       routeName: ScreenName.EncounterRegistration,
-      screenComponent: EncounterRegistrationScreen,
-      screenOptions: { title: texts.screenTitles.encounterHome }
+      screenComponent: EncounterRegistrationScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.encounterHome },
       routeName: ScreenName.EncounterScanner,
-      screenComponent: EncounterScannerScreen,
-      screenOptions: { title: texts.screenTitles.encounterHome }
+      screenComponent: EncounterScannerScreen
     },
     {
       initialParams,
@@ -297,22 +283,19 @@ export const defaultStackConfig = ({
       screenComponent: IndexScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.eventSuggestion },
       routeName: ScreenName.EventSuggestion,
-      screenComponent: EventSuggestionScreen,
-      screenOptions: { title: texts.screenTitles.eventSuggestion }
+      screenComponent: EventSuggestionScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.feedback },
       routeName: ScreenName.Form,
-      screenComponent: FeedbackScreen,
-      screenOptions: { title: texts.screenTitles.feedback }
+      screenComponent: FeedbackScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.feedback },
       routeName: ScreenName.Feedback,
-      screenComponent: FeedbackScreen,
-      screenOptions: { title: texts.screenTitles.feedback }
+      screenComponent: FeedbackScreen
     },
     {
       initialParams: initialParams || {
@@ -345,10 +328,9 @@ export const defaultStackConfig = ({
       screenComponent: LunchScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.mapView },
       routeName: ScreenName.MapView,
-      screenComponent: MapViewScreen,
-      screenOptions: { title: texts.screenTitles.mapView }
+      screenComponent: MapViewScreen
     },
     {
       initialParams,
@@ -426,28 +408,24 @@ export const defaultStackConfig = ({
       screenComponent: ProfileConversationsScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileDelete,
-      screenComponent: ProfileDeleteScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileDeleteScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileEditMail,
-      screenComponent: ProfileEditMailScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileEditMailScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileEditPassword,
-      screenComponent: ProfileEditPasswordScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileEditPasswordScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileLogin,
-      screenComponent: ProfileLoginScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileLoginScreen
     },
     {
       initialParams,
@@ -471,31 +449,27 @@ export const defaultStackConfig = ({
       screenComponent: ProfileNoticeboardMemberIndexScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileRegistration,
-      screenComponent: ProfileRegistrationScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileRegistrationScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileResetPassword,
-      screenComponent: ProfileResetPasswordScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileResetPasswordScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileSignup,
-      screenComponent: ProfileSignupScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileSignupScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileUpdate,
-      screenComponent: ProfileUpdateScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
+      screenComponent: ProfileUpdateScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.service },
       routeName: ScreenName.Service,
       screenComponent: getTilesScreen(
         tilesScreenParams || {
@@ -505,8 +479,7 @@ export const defaultStackConfig = ({
           titleKey: 'headlineService',
           imageKey: 'headlineServiceImage'
         }
-      ),
-      screenOptions: { title: initialParams?.title || texts.screenTitles.service }
+      )
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.settings },
@@ -515,9 +488,7 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({ withDrawer: isDrawer })
     },
     {
-      initialParams: initialParams || {
-        title: texts.screenTitles.home
-      },
+      initialParams: initialParams || { title: texts.screenTitles.home },
       routeName: ScreenName.SueHome,
       screenComponent: SueHomeScreen
     },
@@ -549,22 +520,19 @@ export const defaultStackConfig = ({
       screenComponent: SueReportScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.sue.mapView },
       routeName: ScreenName.SueReportMapView,
-      screenComponent: SueMapViewScreen,
-      screenOptions: { title: texts.screenTitles.mapView }
+      screenComponent: SueMapViewScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.survey },
       routeName: ScreenName.SurveyDetail,
-      screenComponent: SurveyDetailScreen,
-      screenOptions: { title: texts.screenTitles.survey }
+      screenComponent: SurveyDetailScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.survey },
       routeName: ScreenName.SurveyOverview,
-      screenComponent: SurveyOverviewScreen,
-      screenOptions: { title: texts.screenTitles.surveys }
+      screenComponent: SurveyOverviewScreen
     },
     {
       initialParams,
@@ -584,9 +552,7 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerFormScreen
     },
     {
-      initialParams: initialParams || {
-        title: texts.screenTitles.volunteer.home
-      },
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerHome,
       screenComponent: VolunteerHomeScreen
     },
@@ -596,10 +562,9 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerIndexScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerLogin,
-      screenComponent: VolunteerLoginScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.home }
+      screenComponent: VolunteerLoginScreen
     },
     {
       initialParams,
@@ -616,28 +581,24 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerMeScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.personal },
       routeName: ScreenName.VolunteerPersonal,
-      screenComponent: VolunteerPersonalScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.personal }
+      screenComponent: VolunteerPersonalScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerRegistered,
-      screenComponent: VolunteerRegisteredScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.home }
+      screenComponent: VolunteerRegisteredScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerRegistration,
-      screenComponent: VolunteerRegistrationScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.home }
+      screenComponent: VolunteerRegistrationScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerSignup,
-      screenComponent: VolunteerSignupScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.home }
+      screenComponent: VolunteerSignupScreen
     },
     {
       initialParams,
@@ -646,10 +607,9 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({ withBookmark: false })
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.voucher.home },
       routeName: ScreenName.VoucherHome,
-      screenComponent: VoucherHomeScreen,
-      screenOptions: { title: texts.screenTitles.voucher.home }
+      screenComponent: VoucherHomeScreen
     },
     {
       initialParams,
@@ -657,28 +617,24 @@ export const defaultStackConfig = ({
       screenComponent: VoucherIndexScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.voucher.home },
       routeName: ScreenName.VoucherLogin,
-      screenComponent: VoucherLoginScreen,
-      screenOptions: { title: texts.screenTitles.voucher.home }
+      screenComponent: VoucherLoginScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.voucher.qr },
       routeName: ScreenName.VoucherScanner,
-      screenComponent: VoucherScannerScreen,
-      screenOptions: { title: texts.screenTitles.voucher.qr }
+      screenComponent: VoucherScannerScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.wasteCollection },
       routeName: ScreenName.WasteCollection,
-      screenComponent: WasteCollectionScreen,
-      screenOptions: { title: texts.screenTitles.wasteCollection }
+      screenComponent: WasteCollectionScreen
     },
     {
-      initialParams,
+      initialParams: initialParams || { title: texts.screenTitles.wasteCollection },
       routeName: ScreenName.WasteReminder,
-      screenComponent: WasteReminderScreen,
-      screenOptions: { title: texts.screenTitles.wasteCollection }
+      screenComponent: WasteReminderScreen
     },
     {
       initialParams,
