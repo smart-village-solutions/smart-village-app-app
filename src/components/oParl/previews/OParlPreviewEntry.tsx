@@ -48,6 +48,7 @@ export const OParlPreviewEntry = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
+    marginHorizontal: normalize(16),
     padding: 0,
     paddingVertical: normalize(12)
   }

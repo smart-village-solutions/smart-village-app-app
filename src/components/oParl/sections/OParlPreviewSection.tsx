@@ -6,10 +6,9 @@ import { Divider } from 'react-native-elements';
 
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
-import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
-import { OParlItemPreview } from '../previews/OParlItemPreview';
 import { SectionHeader } from '../../SectionHeader';
-import { WrapperHorizontal } from '../../Wrapper';
+import { OParlItemPreview } from '../previews/OParlItemPreview';
+import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
 
 type Props = {
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
@@ -47,7 +46,7 @@ export const OParlPreviewSection = ({
     return (
       <View style={styles.marginTop}>
         {header?.length ? <SectionHeader title={header} /> : <Divider />}
-        <WrapperHorizontal>{data.map((item) => renderPreview(item))}</WrapperHorizontal>
+        {data.map((item) => renderPreview(item))}
       </View>
     );
   } else {
