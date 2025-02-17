@@ -8,13 +8,13 @@ This file contains the licenses of the dependencies used in this project.
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 1317 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 1303 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 108 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 39 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 38 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 33 |
 | [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 8 |
-| [0BSD](https://spdx.org/licenses/0BSD.html) | 5 |
+| [0BSD](https://spdx.org/licenses/0BSD.html) | 4 |
 | [Unlicense](https://spdx.org/licenses/Unlicense.html) | 4 |
 | [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 3 |
 | [MPL-2.0](https://spdx.org/licenses/MPL-2.0.html) | 3 |
@@ -26,12 +26,13 @@ This file contains the licenses of the dependencies used in this project.
 | [GPL-3.0](https://spdx.org/licenses/GPL-3.0.html) | 1 |
 | [Public-Domain](https://en.wikipedia.org/wiki/Public_domain) | 1 |
 | [Python-2.0](https://spdx.org/licenses/Python-2.0.html) | 1 |
+| [UNKNOWN](https://spdx.org/licenses/UNKNOWN.html) | 1 |
 
 ## Licenses details
 
 ```json
 {
-  "@0no-co/graphql.web@1.0.13": {
+  "@0no-co/graphql.web@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/0no-co/graphql.web",
     "publisher": "0no.co",
@@ -86,25 +87,25 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/compat-data@7.26.5": {
+  "@babel/compat-data@7.26.8": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/core@7.26.7": {
+  "@babel/core@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/eslint-parser@7.26.5": {
+  "@babel/eslint-parser@7.26.8": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/generator@7.26.5": {
+  "@babel/generator@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -122,7 +123,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/helper-create-class-features-plugin@7.25.9": {
+  "@babel/helper-create-class-features-plugin@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -210,7 +211,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/helpers@7.26.7": {
+  "@babel/helpers@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -222,7 +223,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/parser@7.26.7": {
+  "@babel/parser@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -372,7 +373,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/plugin-transform-async-generator-functions@7.25.9": {
+  "@babel/plugin-transform-async-generator-functions@7.26.8": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -426,7 +427,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/plugin-transform-for-of@7.25.9": {
+  "@babel/plugin-transform-for-of@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -552,7 +553,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/plugin-transform-runtime@7.25.9": {
+  "@babel/plugin-transform-runtime@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -576,13 +577,13 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/plugin-transform-template-literals@7.25.9": {
+  "@babel/plugin-transform-template-literals@7.26.8": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/plugin-transform-typescript@7.26.7": {
+  "@babel/plugin-transform-typescript@7.26.8": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -618,25 +619,25 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/runtime@7.26.7": {
+  "@babel/runtime@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/template@7.25.9": {
+  "@babel/template@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/traverse@7.26.7": {
+  "@babel/traverse@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "url": "https://babel.dev/team"
   },
-  "@babel/types@7.26.7": {
+  "@babel/types@7.26.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
@@ -655,11 +656,11 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Mikeal Rogers",
     "email": "mikeal.rogers@gmail.com"
   },
-  "@config-plugins/react-native-blob-util@8.0.0": {
+  "@config-plugins/react-native-blob-util@9.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/config-plugins"
   },
-  "@config-plugins/react-native-pdf@8.0.0": {
+  "@config-plugins/react-native-pdf@9.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/config-plugins"
   },
@@ -701,7 +702,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "trentm@gmail.com",
     "url": "http://trentm.com"
   },
-  "@expo/cli@0.22.10": {
+  "@expo/cli@0.22.16": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo"
@@ -716,11 +717,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/config-plugins@7.9.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo"
-  },
-  "@expo/config-plugins@9.0.14": {
+  "@expo/config-plugins@9.0.15": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -728,15 +725,11 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/config-types@50.0.1": {
+  "@expo/config-types@52.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/config-types@52.0.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo"
-  },
-  "@expo/config@10.0.8": {
+  "@expo/config@10.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -749,21 +742,16 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/devcert",
     "publisher": "Dave Wasmer"
   },
-  "@expo/env@0.4.1": {
+  "@expo/env@0.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/fingerprint@0.11.7": {
+  "@expo/fingerprint@0.11.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "@expo/fingerprint@0.6.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc."
-  },
-  "@expo/image-utils@0.6.4": {
+  "@expo/image-utils@0.6.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -775,19 +763,19 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/json-file@9.0.1": {
+  "@expo/json-file@9.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/metro-config@0.19.9": {
+  "@expo/metro-config@0.19.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/osascript@2.1.5": {
+  "@expo/osascript@2.1.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/package-manager@1.7.1": {
+  "@expo/package-manager@1.7.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -795,15 +783,11 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo-cli"
   },
-  "@expo/plist@0.1.3": {
+  "@expo/plist@0.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
-  "@expo/plist@0.2.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo"
-  },
-  "@expo/prebuild-config@8.0.25": {
+  "@expo/prebuild-config@8.0.27": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -832,6 +816,9 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/expo/vector-icons",
     "publisher": "Brent Vatne"
+  },
+  "@expo/ws-tunnel@1.0.4": {
+    "licenses": "UNKNOWN"
   },
   "@expo/xcpretty@4.3.2": {
     "licenses": "BSD-3-Clause",
@@ -1097,83 +1084,83 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Mike Nedosekin",
     "email": "crespo8800@gmail.com"
   },
-  "@react-native/assets-registry@0.76.6": {
+  "@react-native/assets-registry@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/assets-registry@0.77.0": {
+  "@react-native/assets-registry@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/babel-plugin-codegen@0.76.6": {
+  "@react-native/babel-plugin-codegen@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/babel-plugin-codegen@0.77.0": {
+  "@react-native/babel-plugin-codegen@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/babel-preset@0.76.6": {
+  "@react-native/babel-preset@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/babel-preset@0.77.0": {
+  "@react-native/babel-preset@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/codegen@0.76.6": {
+  "@react-native/codegen@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/codegen@0.77.0": {
+  "@react-native/codegen@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/community-cli-plugin@0.76.6": {
+  "@react-native/community-cli-plugin@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/community-cli-plugin@0.77.0": {
+  "@react-native/community-cli-plugin@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/debugger-frontend@0.76.6": {
+  "@react-native/debugger-frontend@0.76.7": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/debugger-frontend@0.77.0": {
+  "@react-native/debugger-frontend@0.77.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/dev-middleware@0.76.6": {
+  "@react-native/dev-middleware@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/dev-middleware@0.77.0": {
+  "@react-native/dev-middleware@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/gradle-plugin@0.76.6": {
+  "@react-native/gradle-plugin@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/gradle-plugin@0.77.0": {
+  "@react-native/gradle-plugin@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/js-polyfills@0.76.6": {
+  "@react-native/js-polyfills@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/js-polyfills@0.77.0": {
+  "@react-native/js-polyfills@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/metro-babel-transformer@0.76.6": {
+  "@react-native/metro-babel-transformer@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/metro-babel-transformer@0.77.0": {
+  "@react-native/metro-babel-transformer@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
@@ -1185,19 +1172,19 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/normalize-colors@0.76.6": {
+  "@react-native/normalize-colors@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/normalize-colors@0.77.0": {
+  "@react-native/normalize-colors@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/virtualized-lists@0.76.6": {
+  "@react-native/virtualized-lists@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-native/virtualized-lists@0.77.0": {
+  "@react-native/virtualized-lists@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
@@ -1229,7 +1216,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@reactvision/react-viro@2.41.6": {
+  "@reactvision/react-viro@2.42.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ReactVision/viro"
   },
@@ -1304,7 +1291,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/getsentry/sentry-javascript",
     "publisher": "Sentry"
   },
-  "@shopify/flash-list@1.7.1": {
+  "@shopify/flash-list@1.7.3": {
     "licenses": "MIT",
     "repository": "https://github.com/Shopify/flash-list",
     "publisher": "shopify"
@@ -1485,7 +1472,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
-  "@types/lodash@4.17.14": {
+  "@types/lodash@4.17.15": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
@@ -1493,7 +1480,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
-  "@types/node@22.10.10": {
+  "@types/node@22.13.4": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
@@ -1529,7 +1516,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
-  "@types/react@19.0.8": {
+  "@types/react@19.0.9": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
@@ -2110,7 +2097,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Nicolò Ribaudo",
     "url": "https://github.com/nicolo-ribaudo"
   },
-  "babel-preset-expo@12.0.6": {
+  "babel-preset-expo@12.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
@@ -2279,7 +2266,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
-  "call-bind-apply-helpers@1.0.1": {
+  "call-bind-apply-helpers@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/call-bind-apply-helpers",
     "publisher": "Jordan Harband",
@@ -2346,7 +2333,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "mail@substack.net",
     "url": "http://substack.net"
   },
-  "caniuse-lite@1.0.30001695": {
+  "caniuse-lite@1.0.30001700": {
     "licenses": "CC-BY-4.0",
     "repository": "https://github.com/browserslist/caniuse-lite",
     "publisher": "Ben Briggs",
@@ -2435,7 +2422,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "w@tson.dk",
     "url": "https://twitter.com/wa7son"
   },
-  "cjs-module-lexer@1.4.1": {
+  "cjs-module-lexer@1.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/nodejs/cjs-module-lexer",
     "publisher": "Guy Bedford"
@@ -2599,7 +2586,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/compressible"
   },
-  "compression@1.7.5": {
+  "compression@1.8.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expressjs/compression"
   },
@@ -2647,13 +2634,6 @@ This file contains the licenses of the dependencies used in this project.
   "core-js@1.2.7": {
     "licenses": "MIT",
     "repository": "https://github.com/zloirock/core-js"
-  },
-  "core-util-is@1.0.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/isaacs/core-util-is",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "url": "http://blog.izs.me/"
   },
   "cosmiconfig@5.2.1": {
     "licenses": "MIT",
@@ -2974,11 +2954,6 @@ This file contains the licenses of the dependencies used in this project.
     "email": "felix@debuggable.com",
     "url": "http://debuggable.com/"
   },
-  "denodeify@1.2.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/matthew-andrews/denodeify",
-    "publisher": "Matt Andrews"
-  },
   "depd@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/dougwilson/nodejs-depd",
@@ -3127,7 +3102,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "me@jongleberry.com",
     "url": "http://jongleberry.com"
   },
-  "electron-to-chromium@1.5.88": {
+  "electron-to-chromium@1.5.101": {
     "licenses": "ISC",
     "repository": "https://github.com/kilian/electron-to-chromium",
     "publisher": "Kilian Valkhof"
@@ -3251,7 +3226,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com"
   },
-  "es-shim-unscopables@1.0.2": {
+  "es-shim-unscopables@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/es-shim-unscopables",
     "publisher": "Jordan Harband",
@@ -3509,7 +3484,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-asset@11.0.2": {
+  "expo-asset@11.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3524,7 +3499,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-camera@16.0.14": {
+  "expo-camera@16.0.16": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3539,7 +3514,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-constants@17.0.4": {
+  "expo-constants@17.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3549,12 +3524,12 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-dev-client@5.0.10": {
+  "expo-dev-client@5.0.12": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-dev-launcher@5.0.25": {
+  "expo-dev-launcher@5.0.29": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3564,7 +3539,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-dev-menu@6.0.18": {
+  "expo-dev-menu@6.0.19": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3574,7 +3549,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-document-picker@13.0.2": {
+  "expo-document-picker@13.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3584,7 +3559,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-file-system@18.0.7": {
+  "expo-file-system@18.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3599,7 +3574,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-image-picker@16.0.4": {
+  "expo-image-picker@16.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3619,7 +3594,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-linking@7.0.4": {
+  "expo-linking@7.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3634,17 +3609,17 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-location@18.0.5": {
+  "expo-location@18.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-manifests@0.15.5": {
+  "expo-manifests@0.15.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-media-library@17.0.5": {
+  "expo-media-library@17.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3654,12 +3629,12 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-modules-core@2.1.4": {
+  "expo-modules-core@2.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-notifications@0.29.12": {
+  "expo-notifications@0.29.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3674,7 +3649,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-splash-screen@0.29.21": {
+  "expo-splash-screen@0.29.22": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3694,7 +3669,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-updates@0.26.13": {
+  "expo-updates@0.26.18": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3704,14 +3679,14 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo@52.0.27": {
+  "expo@52.0.35": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo"
   },
-  "exponential-backoff@3.1.1": {
+  "exponential-backoff@3.1.2": {
     "licenses": "Apache-2.0",
-    "repository": "https://github.com/coveo/exponential-backoff",
+    "repository": "https://github.com/coveooss/exponential-backoff",
     "publisher": "Sami Sayegh"
   },
   "ext@1.7.0": {
@@ -3794,7 +3769,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "vince.legoff@gmail.com",
     "url": "https://github.com/zekth"
   },
-  "fastq@1.18.0": {
+  "fastq@1.19.0": {
     "licenses": "ISC",
     "repository": "https://github.com/mcollina/fastq",
     "publisher": "Matteo Collina",
@@ -3904,7 +3879,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/facebook/flow"
   },
-  "flow-parser@0.259.1": {
+  "flow-parser@0.261.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/flow",
     "publisher": "Flow Team",
@@ -3917,7 +3892,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "b.l.stein@gmail.com",
     "url": "http://www.bramstein.com/"
   },
-  "for-each@0.3.4": {
+  "for-each@0.3.5": {
     "licenses": "MIT",
     "repository": "https://github.com/Raynos/for-each",
     "publisher": "Raynos",
@@ -3936,14 +3911,14 @@ This file contains the licenses of the dependencies used in this project.
     "email": "i@izs.me",
     "url": "http://blog.izs.me/"
   },
-  "form-data@3.0.2": {
+  "form-data@3.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/form-data/form-data",
     "publisher": "Felix Geisendörfer",
     "email": "felix@debuggable.com",
     "url": "http://debuggable.com/"
   },
-  "form-data@4.0.1": {
+  "form-data@4.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/form-data/form-data",
     "publisher": "Felix Geisendörfer",
@@ -4272,19 +4247,11 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/facebook/hermes"
   },
-  "hermes-estree@0.24.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes"
-  },
   "hermes-estree@0.25.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/hermes"
   },
   "hermes-parser@0.23.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes"
-  },
-  "hermes-parser@0.24.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/hermes"
   },
@@ -4399,7 +4366,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com"
   },
-  "import-fresh@3.3.0": {
+  "import-fresh@3.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/import-fresh",
     "publisher": "Sindre Sorhus",
@@ -4525,7 +4492,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com"
   },
-  "is-boolean-object@1.2.1": {
+  "is-boolean-object@1.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-boolean-object",
     "publisher": "Jordan Harband",
@@ -4783,7 +4750,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com"
   },
-  "is-weakref@1.1.0": {
+  "is-weakref@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-weakref",
     "publisher": "Jordan Harband",
@@ -4939,7 +4906,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/jestjs/jest"
   },
-  "jest-expo@52.0.3": {
+  "jest-expo@52.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -5251,7 +5218,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "George Zahariev",
     "email": "z@georgezahariev.com"
   },
-  "libphonenumber-js@1.11.18": {
+  "libphonenumber-js@1.11.20": {
     "licenses": "MIT",
     "repository": "git+https://gitlab.com/catamphetamine/libphonenumber-js",
     "publisher": "catamphetamine",
@@ -5549,59 +5516,59 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/teambition/merge2"
   },
-  "metro-babel-transformer@0.81.0": {
+  "metro-babel-transformer@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-cache-key@0.81.0": {
+  "metro-cache-key@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-cache@0.81.0": {
+  "metro-cache@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-config@0.81.0": {
+  "metro-config@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-core@0.81.0": {
+  "metro-core@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-file-map@0.81.0": {
+  "metro-file-map@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-minify-terser@0.81.0": {
+  "metro-minify-terser@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-resolver@0.81.0": {
+  "metro-resolver@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-runtime@0.81.0": {
+  "metro-runtime@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-source-map@0.81.0": {
+  "metro-source-map@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-symbolicate@0.81.0": {
+  "metro-symbolicate@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-transform-plugins@0.81.0": {
+  "metro-transform-plugins@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro-transform-worker@0.81.0": {
+  "metro-transform-worker@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
-  "metro@0.81.0": {
+  "metro@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
@@ -5845,12 +5812,6 @@ This file contains the licenses of the dependencies used in this project.
     "email": "hello@blakeembrey.com",
     "url": "http://blakeembrey.me"
   },
-  "node-abort-controller@3.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/southpolesteve/node-abort-controller",
-    "publisher": "Steve Faulkner",
-    "email": "southpolesteve@gmail.com"
-  },
   "node-dir@0.1.17": {
     "licenses": "MIT",
     "repository": "https://github.com/fshost/node-dir",
@@ -5962,7 +5923,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "diego.perini@gmail.com",
     "url": "http://www.iport.it/"
   },
-  "ob1@0.81.0": {
+  "ob1@0.81.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro"
   },
@@ -5979,7 +5940,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
-  "object-inspect@1.13.3": {
+  "object-inspect@1.13.4": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/object-inspect",
     "publisher": "James Halliday",
@@ -6392,7 +6353,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
-  "possible-typed-array-names@1.0.0": {
+  "possible-typed-array-names@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/possible-typed-array-names",
     "publisher": "Jordan Harband",
@@ -6453,10 +6414,6 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "ISC",
     "repository": "https://github.com/npm/proc-log",
     "publisher": "GitHub Inc."
-  },
-  "process-nextick-args@2.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/calvinmetcalf/process-nextick-args"
   },
   "progress@2.0.3": {
     "licenses": "MIT",
@@ -6590,7 +6547,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react"
   },
-  "react-devtools-core@6.1.0": {
+  "react-devtools-core@6.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react"
   },
@@ -6630,7 +6587,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/RonRadtke/react-native-blob-util",
     "publisher": "RonRadtke"
   },
-  "react-native-calendars@1.1308.1": {
+  "react-native-calendars@1.1309.0": {
     "licenses": "MIT",
     "repository": "https://github.com/wix/react-native-calendars",
     "publisher": "Wix.com"
@@ -6687,6 +6644,10 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/FaridSafi/react-native-gifted-chat",
     "publisher": "Farid Safi"
   },
+  "react-native-gradle-plugin@0.71.19": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/react-native"
+  },
   "react-native-iphone-x-helper@1.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/ptelad/react-native-iphone-x-helper",
@@ -6726,7 +6687,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/taskrabbit/react-native-parsed-text",
     "publisher": "jrichardlai"
   },
-  "react-native-pdf@6.7.6": {
+  "react-native-pdf@6.7.7": {
     "licenses": "MIT",
     "repository": "https://github.com/wonday/react-native-pdf",
     "publisher": "Wonday",
@@ -6839,11 +6800,11 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jamon Holmgren",
     "email": "jamon@infinite.red"
   },
-  "react-native@0.76.6": {
+  "react-native@0.76.7": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "react-native@0.77.0": {
+  "react-native@0.77.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
@@ -6885,10 +6846,6 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
     "url": "http://blog.izs.me/"
-  },
-  "readable-stream@2.3.8": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nodejs/readable-stream"
   },
   "readdir-scoped-modules@1.1.0": {
     "licenses": "ISC",
@@ -7182,13 +7139,6 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com"
   },
-  "safe-buffer@5.1.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/feross/safe-buffer",
-    "publisher": "Feross Aboukhadijeh",
-    "email": "feross@feross.org",
-    "url": "http://feross.org"
-  },
   "safe-buffer@5.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/safe-buffer",
@@ -7270,7 +7220,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/npm/node-semver",
     "publisher": "GitHub Inc."
   },
-  "semver@7.6.3": {
+  "semver@7.7.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
     "publisher": "GitHub Inc."
@@ -7737,10 +7687,6 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jordan Harband",
     "email": "ljharb@gmail.com"
   },
-  "string_decoder@1.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nodejs/string_decoder"
-  },
   "stringify-entities@3.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/wooorm/stringify-entities",
@@ -7969,7 +7915,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com"
   },
-  "terser@5.37.0": {
+  "terser@5.39.0": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/terser/terser",
     "publisher": "Mihai Bazon",
@@ -8013,13 +7959,6 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/ForbesLindesay/throat",
     "publisher": "ForbesLindesay"
-  },
-  "through2@2.0.5": {
-    "licenses": "MIT",
-    "repository": "https://github.com/rvagg/through2",
-    "publisher": "Rod Vagg",
-    "email": "r@va.gg",
-    "url": "https://github.com/rvagg"
   },
   "through@2.3.8": {
     "licenses": "MIT",
@@ -8149,11 +8088,6 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jonas Kello"
   },
   "tslib@1.14.1": {
-    "licenses": "0BSD",
-    "repository": "https://github.com/Microsoft/tslib",
-    "publisher": "Microsoft Corp."
-  },
-  "tslib@2.6.3": {
     "licenses": "0BSD",
     "repository": "https://github.com/Microsoft/tslib",
     "publisher": "Microsoft Corp."
@@ -8412,13 +8346,6 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/jonschlinkert/use",
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
-  },
-  "util-deprecate@1.0.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/TooTallNate/util-deprecate",
-    "publisher": "Nathan Rajlich",
-    "email": "nathan@tootallnate.net",
-    "url": "http://n8.io/"
   },
   "util-extend@1.0.3": {
     "licenses": "MIT",
