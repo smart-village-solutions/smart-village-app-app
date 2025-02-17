@@ -7,7 +7,7 @@ export const defaultAppDesignSystemConfig = {
     textsStyle: {
       subtitleStyle: {},
       titleStyle: {},
-      topTitleStyle: {}
+      overtitleStyle: {}
     }
   },
   sueListItem: {
@@ -19,7 +19,7 @@ export const defaultAppDesignSystemConfig = {
     textsStyle: {
       subtitleStyle: {},
       titleStyle: {},
-      topTitleStyle: {}
+      overtitleStyle: {}
     }
   },
   sueStatus: {
