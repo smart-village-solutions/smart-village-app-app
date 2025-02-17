@@ -6,9 +6,6 @@ on:
       - master
     paths-ignore:
       - LICENSES.md
-  pull_request:
-    branches:
-      - master
 
 jobs:
   licenses_report:
