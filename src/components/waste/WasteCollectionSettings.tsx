@@ -607,8 +607,9 @@ export const WasteCollectionSettings = ({
                           display="spinner"
                           mode="time"
                           onChange={onDatePickerChange}
-                          value={reminderTime}
+                          style={styles.dateTimePickerIOS}
                           textColor={colors.darkText}
+                          value={reminderTime}
                         />
                       </SafeAreaView>
                     </View>
@@ -720,6 +721,9 @@ const styles = StyleSheet.create({
   },
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface
+  },
+  dateTimePickerIOS: {
+    alignSelf: 'center'
   },
   modalContainer: {
     backgroundColor: colors.overlayRgba,
