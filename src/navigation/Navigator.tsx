@@ -9,7 +9,7 @@ import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
 
 export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab' }) => {
-  const { navigatorConfig, linkingConfig } = navigationConfig(navigationType);
+  const { linkingConfig } = navigationConfig(navigationType);
 
   return (
     <NavigationContainer
@@ -20,11 +20,7 @@ export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab'
       linking={linkingConfig}
     >
       <StatusBar style="light" translucent backgroundColor="transparent" />
-      {navigatorConfig.type === 'drawer' ? (
-        <DrawerNavigator />
-      ) : (
-        <MainTabNavigator tabNavigatorConfig={navigatorConfig.config} />
-      )}
+      {navigationType === 'drawer' ? <DrawerNavigator /> : <MainTabNavigator />}
     </NavigationContainer>
   );
 };

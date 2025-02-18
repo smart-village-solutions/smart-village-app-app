@@ -145,6 +145,7 @@ export type CustomTab = {
   params?: Record<string, any>;
   screen: ScreenName;
   tilesScreenParams?: Record<string, any>;
+  unmountOnBlur?: boolean;
 };
 
 export type TabConfig = {
@@ -160,4 +161,4 @@ export type TabNavigatorConfig = {
   tabConfigs: (CustomTab | string | TabConfig)[];
 };
 
-export type NavigatorConfig = { type: 'drawer' } | { type: 'tab'; config: TabNavigatorConfig };
+export type NavigatorConfig = { type: 'drawer' } | { type: 'tab' };

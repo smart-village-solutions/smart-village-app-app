@@ -7,8 +7,8 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
 import { defaultStackConfig } from '../config/navigation';
 import { useStaticContent } from '../hooks';
-import { ScreenName } from '../types';
 import { OrientationContext } from '../OrientationProvider';
+import { ScreenName } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
 import { CustomDrawerContentComponent } from './CustomDrawerContentComponent';

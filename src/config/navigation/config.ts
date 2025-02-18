@@ -4,13 +4,11 @@ import * as Linking from 'expo-linking';
 import { NavigatorConfig, ScreenName } from '../../types';
 import { consts } from '../consts';
 
-import { tabNavigatorConfig } from './tabConfig';
-
 const { HOST_NAMES } = consts;
 
 export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
   let navigatorConfig: NavigatorConfig;
-  const linkingConfig: LinkingOptions = {
+  const linkingConfig: LinkingOptions<{}> = {
     prefixes: [Linking.createURL('/')]
   };
   const screens = {
@@ -24,8 +22,7 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
     const index = 0;
 
     navigatorConfig = {
-      type: 'tab',
-      config: tabNavigatorConfig
+      type: 'tab'
     };
 
     linkingConfig.config = {
@@ -34,7 +31,7 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
         [`Stack${index}`]: {
           // The initialRouteName has to be the initial route of the chosen stack:
           // whatever is specified in the tab config for tab navigation
-          initialRouteName: navigatorConfig.config.tabConfigs[index].stackConfig.initialRouteName,
+          initialRouteName: ScreenName.Home,
           screens
         }
       }
