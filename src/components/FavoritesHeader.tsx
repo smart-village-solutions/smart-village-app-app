@@ -18,7 +18,7 @@ export const FavoritesHeader = ({ navigation, style }: Props) => {
       accessibilityLabel={a11yText.bookmarksIcon}
       accessibilityHint={a11yText.bookmarksHint}
     >
-      <Icon.HeartFilled color={colors.lightestText} style={style} />
+      <Icon.HeartFilled color={colors.darkText} style={style} />
     </TouchableOpacity>
   );
 };

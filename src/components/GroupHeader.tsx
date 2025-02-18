@@ -34,7 +34,7 @@ export const GroupHeader = ({ navigation, style }: Props) => {
       accessibilityLabel={a11yLabel.groupIcon}
       accessibilityHint={a11yLabel.groupHint}
     >
-      <Icon.Plus color={colors.lightestText} style={[style, styles.icon]} size={normalize(28)} />
+      <Icon.Plus color={colors.darkText} style={[style, styles.icon]} size={normalize(28)} />
     </TouchableOpacity>
   );
 };
