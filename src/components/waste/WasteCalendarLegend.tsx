@@ -1,30 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { normalize } from '../../config';
 import { WasteTypeData } from '../../types';
-import { RegularText } from '../Text';
-import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperVertical } from '../Wrapper';
 
-type EntryProps = {
-  color: string;
-  label: string;
-  selectedColor: string;
-};
-
-const Dot = ({ color }: { color: string }) => {
-  return <View style={[styles.dot, { backgroundColor: color }]} />;
-};
-
-const WasteCalendarLegendEntry = ({ color, label, selectedColor }: EntryProps) => {
-  return (
-    <WrapperRow style={styles.marginBottom}>
-      <Dot color={color} />
-      {color !== selectedColor && <Dot color={selectedColor} />}
-      <RegularText>{`  ${label}`}</RegularText>
-    </WrapperRow>
-  );
-};
+import { WasteCalendarLegendEntry } from './WasteCalendarLegendEntry';
 
 export const WasteCalendarLegend = ({
   data,
@@ -57,7 +38,8 @@ export const WasteCalendarLegend = ({
               key={selectedData[key].label}
               color={selectedData[key].color}
               selectedColor={selectedData[key].selected_color}
-              label={selectedData[key].label}
+              label={`  ${selectedData[key].label}`}
+              dotStyle={styles.dot}
             />
           )
       )}
@@ -72,8 +54,5 @@ const styles = StyleSheet.create({
     height: normalize(10),
     margin: normalize(2),
     width: normalize(10)
-  },
-  marginBottom: {
-    marginBottom: normalize(8)
   }
 });

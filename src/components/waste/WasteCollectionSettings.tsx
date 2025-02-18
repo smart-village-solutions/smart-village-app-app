@@ -474,7 +474,7 @@ export const WasteCollectionSettings = ({
                       <WrapperRow itemsCenter>
                         <Dot color={usedTypes[item].color} />
                         {usedTypes[item].color !== usedTypes[item].selected_color && (
-                          <Dot center color={usedTypes[item].selected_color} />
+                          <Dot color={usedTypes[item].selected_color} />
                         )}
                         <BoldText small> {usedTypes[item].label}</BoldText>
                       </WrapperRow>
@@ -641,7 +641,7 @@ export const WasteCollectionSettings = ({
                         <WrapperRow itemsCenter>
                           <Dot color={usedTypes[item].color} />
                           {usedTypes[item].color !== usedTypes[item].selected_color && (
-                            <Dot center color={usedTypes[item].selected_color} />
+                            <Dot color={usedTypes[item].selected_color} />
                           )}
                           <BoldText small> {usedTypes[item].label}</BoldText>
                         </WrapperRow>

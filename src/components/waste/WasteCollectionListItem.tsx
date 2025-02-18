@@ -35,7 +35,7 @@ export const WasteCollectionListItem = ({ item: groupedItem, options }) => {
                         <WrapperRow style={styles.container}>
                           <Dot color={usedTypes[typeKey].color} />
                           {usedTypes[typeKey].color !== usedTypes[typeKey].selected_color && (
-                            <Dot center color={usedTypes[typeKey].selected_color} />
+                            <Dot color={usedTypes[typeKey].selected_color} />
                           )}
                           <RegularText> {usedTypes[typeKey].label}</RegularText>
                         </WrapperRow>
