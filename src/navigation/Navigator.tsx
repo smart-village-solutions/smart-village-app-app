@@ -19,7 +19,7 @@ export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab'
       }}
       linking={linkingConfig}
     >
-      <StatusBar style="light" translucent backgroundColor="transparent" />
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
       {navigatorConfig.type === 'drawer' ? (
         <DrawerNavigator />
       ) : (

@@ -28,6 +28,6 @@ export const ChatHeader = ({ navigation, style }: Props) => (
     accessibilityLabel={a11yLabel.chatIcon}
     accessibilityHint={a11yLabel.chatHint}
   >
-    <Icon.Pen color={colors.lightestText} style={style} size={normalize(20)} />
+    <Icon.Pen color={colors.darkText} style={style} size={normalize(20)} />
   </TouchableOpacity>
 );
