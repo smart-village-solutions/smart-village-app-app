@@ -52,6 +52,7 @@ export const WebScreen = ({
         source={{ uri: webUrl }}
         startInLoadingState
         style={{ backgroundColor: colors.surface }}
+        incognito
         mediaPlaybackRequiresUserAction
         renderLoading={() => (
           <LoadingContainer web>
