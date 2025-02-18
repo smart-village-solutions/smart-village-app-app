@@ -6,7 +6,7 @@ import { colors } from '../config';
 
 export const DiagonalGradient = ({
   children,
-  colors: gradientColors = [colors.primary, colors.secondary],
+  colors: gradientColors = [colors.primary, colors.primary],
   end = { x: 1, y: 1 },
   start = { x: 0, y: 0 },
   style = { flex: 1 },
