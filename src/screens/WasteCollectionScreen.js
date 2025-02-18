@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
@@ -19,7 +19,7 @@ import {
   Button,
   DefaultKeyboardAvoidingView,
   HeaderLeft,
-  LoadingContainer,
+  LoadingSpinner,
   RegularText,
   renderArrow,
   SafeAreaViewFlex,
@@ -182,7 +182,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     if (item?.id) {
       setSelectedStreetId(waste.streetId);
       setIsReset(false);
-      navigation.navigate(ScreenName.WasteReminder, { currentSelectedStreetId: item.id });
+      navigation.navigate(ScreenName.WasteCollectionSettings, { currentSelectedStreetId: item.id });
     }
   }, [addressesData, inputValue, inputValueCity, waste.streetId, getStreetString]);
 
@@ -216,7 +216,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
   const goToReminder = useCallback(
     () =>
-      navigation.navigate(ScreenName.WasteReminder, { currentSelectedStreetId: selectedStreetId }),
+      navigation.navigate(ScreenName.WasteCollectionSettings, {
+        currentSelectedStreetId: selectedStreetId
+      }),
     [navigation, selectedStreetId]
   );
 
@@ -307,11 +309,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   }, []);
 
   if (isRehydrating || loading || typesLoading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   return (

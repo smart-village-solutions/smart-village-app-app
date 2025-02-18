@@ -38,6 +38,6 @@ export * from './SurveyDetailScreen';
 export * from './SurveyOverviewScreen';
 export * from './TilesScreen';
 export * from './WasteCollectionScreen';
-export * from './WasteReminderScreen';
+export * from './WasteCollectionSettingsScreen';
 export * from './WeatherScreen';
 export * from './WebScreen';

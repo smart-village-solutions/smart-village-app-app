@@ -87,12 +87,12 @@ import {
   VoucherLoginScreen,
   VoucherScannerScreen,
   WasteCollectionScreen,
-  WasteReminderScreen,
+  WasteCollectionSettingsScreen,
   WeatherScreen,
   WebScreen,
-  getTilesScreen,
   WhistleblowCodeScreen,
-  WhistleblowFormScreen
+  WhistleblowFormScreen,
+  getTilesScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -633,8 +633,8 @@ export const defaultStackConfig = ({
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.wasteCollection },
-      routeName: ScreenName.WasteReminder,
-      screenComponent: WasteReminderScreen
+      routeName: ScreenName.WasteCollectionSettings,
+      screenComponent: WasteCollectionSettingsScreen
     },
     {
       initialParams,

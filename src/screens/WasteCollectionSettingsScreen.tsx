@@ -1,5 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
 import React, {
@@ -27,6 +27,20 @@ import Collapsible from 'react-native-collapsible';
 import { Divider, ListItem, Tooltip } from 'react-native-elements';
 
 import {
+  BoldText,
+  Button,
+  Dot,
+  HeaderLeft,
+  LoadingSpinner,
+  RegularText,
+  SafeAreaViewFlex,
+  Switch,
+  Wrapper,
+  WrapperHorizontal,
+  WrapperRow,
+  WrapperVertical
+} from '../components';
+import {
   colors,
   consts,
   device,
@@ -36,8 +50,8 @@ import {
   secrets,
   staticRestSuffix,
   texts
-} from '../../config';
-import { formatTime, openLink, storageHelper } from '../../helpers';
+} from '../config';
+import { formatTime, openLink, storageHelper } from '../helpers';
 import {
   useFilterStreets,
   useRenderSuggestions,
@@ -46,26 +60,18 @@ import {
   useWasteStreet,
   useWasteTypes,
   useWasteUsedTypes
-} from '../../hooks';
-import { areValidReminderSettings } from '../../jsonValidation';
+} from '../hooks';
+import { areValidReminderSettings } from '../jsonValidation';
 import {
   getInAppPermission,
   getReminderSettings,
   showPermissionRequiredAlert,
   updateWasteReminderSettings
-} from '../../pushNotifications';
-import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '../../reducers';
-import { getLocationData } from '../../screens';
-import { SettingsContext } from '../../SettingsProvider';
-import { WasteReminderSettingJson } from '../../types';
-import { Button } from '../Button';
-import { HeaderLeft } from '../HeaderLeft';
-import { LoadingSpinner } from '../LoadingSpinner';
-import { Switch } from '../Switch';
-import { BoldText, RegularText } from '../Text';
-import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
-
-import { Dot } from './WasteCalendarLegendEntry';
+} from '../pushNotifications';
+import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '../reducers';
+import { getLocationData } from '../screens';
+import { SettingsContext } from '../SettingsProvider';
+import { WasteReminderSettingJson } from '../types';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 
@@ -81,12 +87,9 @@ const initialWasteSettingsState: WasteSettingsState = {
 };
 
 /* eslint-disable complexity */
-export const WasteCollectionSettings = ({
-  currentSelectedStreetId
-}: {
-  currentSelectedStreetId: number;
-}) => {
+export const WasteCollectionSettingsScreen = () => {
   const navigation = useNavigation();
+  const routeParams = useRoute().params;
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
   const { settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -95,7 +98,7 @@ export const WasteCollectionSettings = ({
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
   const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
   const [errorWithStoredSettings, setErrorWithStoredSettings] = useState(false);
-  const [selectedStreetId, setSelectedStreetId] = useState(currentSelectedStreetId);
+  const [selectedStreetId, setSelectedStreetId] = useState(routeParams?.currentSelectedStreetId);
   const [isStreetSelected, setIsStreetSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isPushPermissionGranted, setIsPushPermissionGranted] = useState(false);
@@ -427,213 +430,49 @@ export const WasteCollectionSettings = ({
 
   if (inputValue && !isStreetSelected) {
     return (
-      <FlatList
-        data={filteredStreets}
-        keyboardShouldPersistTaps="handled"
-        renderItem={renderSuggestion}
-        contentContainerStyle={styles.resultsList}
-      />
+      <SafeAreaViewFlex>
+        <FlatList
+          data={filteredStreets}
+          keyboardShouldPersistTaps="handled"
+          renderItem={renderSuggestion}
+          contentContainerStyle={styles.resultsList}
+        />
+      </SafeAreaViewFlex>
     );
   }
 
   if (selectedStreetId) {
     return (
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        style={styles.container}
-        refreshControl={
-          <RefreshControl
-            refreshing={loadingStoredSettings}
-            onRefresh={() => loadStoredSettingsFromServer()}
-            colors={[colors.refreshControl]}
-            tintColor={colors.refreshControl}
-          />
-        }
-      >
-        {!!locationData && (
-          <Wrapper>
-            <RegularText>{wasteTexts.myLocation}</RegularText>
-            <BoldText>{streetName}</BoldText>
-          </Wrapper>
-        )}
-        {!!usedTypeKeys?.length && !_isEmpty(typeSettings) && (
-          <WrapperVertical style={[styles.paddingHorizontal]}>
-            <WrapperVertical style={styles.mediumPaddingVertical}>
-              <RegularText big>{wasteTexts.chooseCategory}</RegularText>
-            </WrapperVertical>
-            <FlatList
-              data={usedTypeKeys.sort()}
-              renderItem={({ item, index }) => {
-                return (
-                  <ListItem
-                    bottomDivider={index < usedTypeKeys.length - 1}
-                    containerStyle={styles.listItemContainer}
-                    accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
-                  >
-                    <ListItem.Content>
-                      <WrapperRow itemsCenter>
-                        <Dot color={usedTypes[item].color} />
-                        {usedTypes[item].color !== usedTypes[item].selected_color && (
-                          <Dot color={usedTypes[item].selected_color} />
-                        )}
-                        <BoldText small> {usedTypes[item].label}</BoldText>
-                      </WrapperRow>
-                    </ListItem.Content>
-
-                    <Switch
-                      switchValue={typeSettings[item]}
-                      toggleSwitch={() => {
-                        dispatch({
-                          type: WasteSettingsActions.setTypeSetting,
-                          payload: { key: item, value: !typeSettings[item] }
-                        });
-                      }}
-                    />
-                  </ListItem>
-                );
-              }}
-              keyExtractor={keyExtractor}
-              style={styles.borderRadius}
+      <SafeAreaViewFlex>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          style={styles.container}
+          refreshControl={
+            <RefreshControl
+              refreshing={loadingStoredSettings}
+              onRefresh={() => loadStoredSettingsFromServer()}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
             />
-          </WrapperVertical>
-        )}
-        <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
-          <WrapperVertical style={styles.mediumPaddingVertical}>
-            <RegularText big>{wasteTexts.notifications}</RegularText>
-          </WrapperVertical>
-          <ListItem
-            containerStyle={[styles.borderRadius, styles.listItemContainer]}
-            accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
-          >
-            <ListItem.Content>
-              <BoldText small>{wasteTexts.notificationsOn}</BoldText>
-            </ListItem.Content>
-            <Switch
-              switchValue={showNotificationSettings}
-              toggleSwitch={async () => {
-                if (!isPushPermissionGranted) {
-                  showPermissionRequiredAlert(() =>
-                    dispatch({ type: WasteSettingsActions.toggleNotifications })
-                  );
-                  return;
-                }
-
-                dispatch({ type: WasteSettingsActions.toggleNotifications });
-              }}
-            />
-          </ListItem>
-        </Wrapper>
-        <Collapsible collapsed={!showNotificationSettings}>
-          <WrapperHorizontal>
-            <Divider style={styles.divider} />
-            <ListItem
-              bottomDivider
-              containerStyle={[styles.borderRadiusTop, styles.listItemContainer]}
-              accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
-            >
-              <ListItem.Content>
-                <BoldText small>{wasteTexts.daysBefore}</BoldText>
-              </ListItem.Content>
-              <Tooltip
-                ref={tooltipRef}
-                backgroundColor={colors.surface}
-                containerStyle={[styles.borderRadius, styles.tooltipContainer]}
-                height={normalize(70)}
-                popover={
-                  <View>
-                    <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
-                      <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
-                        {wasteTexts.sameDay}
-                      </RegularText>
-                    </TouchableOpacity>
-                    <Divider style={styles.dividerSmall} />
-                    <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
-                      <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
-                        {wasteTexts.oneDayBefore}
-                      </RegularText>
-                    </TouchableOpacity>
-                  </View>
-                }
-                width={normalize(160)}
-                withOverlay={device.platform === 'android'}
-                overlayColor={colors.shadowRgba}
-                withPointer={false}
-              >
-                <WrapperRow itemsCenter>
-                  <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
-                    {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
-                  </RegularText>
-                  <Icon.KeyboardArrowUpDown size={normalize(14)} />
-                </WrapperRow>
-              </Tooltip>
-            </ListItem>
-            <ListItem
-              containerStyle={[
-                styles.borderRadiusBottom,
-                styles.listItemContainer,
-                { paddingVertical: normalize(11.5) }
-              ]}
-              accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
-            >
-              <ListItem.Content>
-                <BoldText small>{wasteTexts.timeOfDay}</BoldText>
-              </ListItem.Content>
-              <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                <View style={[styles.smallBorderRadius, styles.timeContainer]}>
-                  <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
-                </View>
-              </TouchableOpacity>
-              {device.platform === 'ios' && (
-                <Modal
-                  animationType="none"
-                  transparent={true}
-                  visible={showDatePicker}
-                  supportedOrientations={['landscape', 'portrait']}
-                >
-                  <View style={styles.modalContainer}>
-                    <View style={styles.dateTimePickerContainerIOS}>
-                      <SafeAreaView>
-                        <WrapperHorizontal style={styles.paddingTop}>
-                          <WrapperRow spaceBetween>
-                            <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                              <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                              <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
-                            </TouchableOpacity>
-                          </WrapperRow>
-                        </WrapperHorizontal>
-
-                        <DateTimePicker
-                          display="spinner"
-                          mode="time"
-                          onChange={onDatePickerChange}
-                          style={styles.dateTimePickerIOS}
-                          textColor={colors.darkText}
-                          value={reminderTime}
-                        />
-                      </SafeAreaView>
-                    </View>
-                  </View>
-                </Modal>
-              )}
-              {device.platform === 'android' && showDatePicker && (
-                <View style={styles.dateTimePickerContainerAndroid}>
-                  <DateTimePicker mode="time" onChange={onDatePickerChange} value={reminderTime} />
-                </View>
-              )}
-            </ListItem>
-            <Divider style={styles.divider} />
-          </WrapperHorizontal>
-          {!!selectedTypeKeys?.length && usedTypes && !_isEmpty(notificationSettings) && (
-            <WrapperHorizontal>
+          }
+        >
+          {!!locationData && (
+            <Wrapper>
+              <RegularText>{wasteTexts.myLocation}</RegularText>
+              <BoldText>{streetName}</BoldText>
+            </Wrapper>
+          )}
+          {!!usedTypeKeys?.length && !_isEmpty(typeSettings) && (
+            <WrapperVertical style={[styles.paddingHorizontal]}>
+              <WrapperVertical style={styles.mediumPaddingVertical}>
+                <RegularText big>{wasteTexts.chooseCategory}</RegularText>
+              </WrapperVertical>
               <FlatList
-                // filter out the keys in selectedTypeKeys that are not in usedTypes
-                data={selectedTypeKeys.filter((key) => usedTypes[key]).sort()}
+                data={usedTypeKeys.sort()}
                 renderItem={({ item, index }) => {
                   return (
                     <ListItem
-                      bottomDivider={index < selectedTypeKeys.length - 1}
+                      bottomDivider={index < usedTypeKeys.length - 1}
                       containerStyle={styles.listItemContainer}
                       accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
                     >
@@ -648,11 +487,11 @@ export const WasteCollectionSettings = ({
                       </ListItem.Content>
 
                       <Switch
-                        switchValue={notificationSettings[item]}
+                        switchValue={typeSettings[item]}
                         toggleSwitch={() => {
                           dispatch({
-                            type: WasteSettingsActions.setNotificationSetting,
-                            payload: { key: item, value: !notificationSettings[item] }
+                            type: WasteSettingsActions.setTypeSetting,
+                            payload: { key: item, value: !typeSettings[item] }
                           });
                         }}
                       />
@@ -662,18 +501,190 @@ export const WasteCollectionSettings = ({
                 keyExtractor={keyExtractor}
                 style={styles.borderRadius}
               />
-            </WrapperHorizontal>
+            </WrapperVertical>
           )}
-        </Collapsible>
+          <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
+            <WrapperVertical style={styles.mediumPaddingVertical}>
+              <RegularText big>{wasteTexts.notifications}</RegularText>
+            </WrapperVertical>
+            <ListItem
+              containerStyle={[styles.borderRadius, styles.listItemContainer]}
+              accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
+            >
+              <ListItem.Content>
+                <BoldText small>{wasteTexts.notificationsOn}</BoldText>
+              </ListItem.Content>
+              <Switch
+                switchValue={showNotificationSettings}
+                toggleSwitch={async () => {
+                  if (!isPushPermissionGranted) {
+                    showPermissionRequiredAlert(() =>
+                      dispatch({ type: WasteSettingsActions.toggleNotifications })
+                    );
+                    return;
+                  }
 
-        {!!hasExport && (
-          <View style={styles.paddingTop}>
-            <Wrapper style={styles.noPaddingBottom}>
-              <Button title={wasteTexts.exportButton} onPress={triggerExport} />
-            </Wrapper>
-          </View>
-        )}
-      </ScrollView>
+                  dispatch({ type: WasteSettingsActions.toggleNotifications });
+                }}
+              />
+            </ListItem>
+          </Wrapper>
+          <Collapsible collapsed={!showNotificationSettings}>
+            <WrapperHorizontal>
+              <Divider style={styles.divider} />
+              <ListItem
+                bottomDivider
+                containerStyle={[styles.borderRadiusTop, styles.listItemContainer]}
+                accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
+              >
+                <ListItem.Content>
+                  <BoldText small>{wasteTexts.daysBefore}</BoldText>
+                </ListItem.Content>
+                <Tooltip
+                  ref={tooltipRef}
+                  backgroundColor={colors.surface}
+                  containerStyle={[styles.borderRadius, styles.tooltipContainer]}
+                  height={normalize(70)}
+                  popover={
+                    <View>
+                      <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
+                        <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
+                          {wasteTexts.sameDay}
+                        </RegularText>
+                      </TouchableOpacity>
+                      <Divider style={styles.dividerSmall} />
+                      <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
+                        <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
+                          {wasteTexts.oneDayBefore}
+                        </RegularText>
+                      </TouchableOpacity>
+                    </View>
+                  }
+                  width={normalize(160)}
+                  withOverlay={device.platform === 'android'}
+                  overlayColor={colors.shadowRgba}
+                  withPointer={false}
+                >
+                  <WrapperRow itemsCenter>
+                    <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
+                      {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
+                    </RegularText>
+                    <Icon.KeyboardArrowUpDown size={normalize(14)} />
+                  </WrapperRow>
+                </Tooltip>
+              </ListItem>
+              <ListItem
+                containerStyle={[
+                  styles.borderRadiusBottom,
+                  styles.listItemContainer,
+                  { paddingVertical: normalize(11.5) }
+                ]}
+                accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
+              >
+                <ListItem.Content>
+                  <BoldText small>{wasteTexts.timeOfDay}</BoldText>
+                </ListItem.Content>
+                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                  <View style={[styles.smallBorderRadius, styles.timeContainer]}>
+                    <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
+                  </View>
+                </TouchableOpacity>
+                {device.platform === 'ios' && (
+                  <Modal
+                    animationType="none"
+                    transparent={true}
+                    visible={showDatePicker}
+                    supportedOrientations={['landscape', 'portrait']}
+                  >
+                    <View style={styles.modalContainer}>
+                      <View style={styles.dateTimePickerContainerIOS}>
+                        <SafeAreaView>
+                          <WrapperHorizontal style={styles.paddingTop}>
+                            <WrapperRow spaceBetween>
+                              <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                                <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                                <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
+                              </TouchableOpacity>
+                            </WrapperRow>
+                          </WrapperHorizontal>
+
+                          <DateTimePicker
+                            display="spinner"
+                            mode="time"
+                            onChange={onDatePickerChange}
+                            style={styles.dateTimePickerIOS}
+                            textColor={colors.darkText}
+                            value={reminderTime}
+                          />
+                        </SafeAreaView>
+                      </View>
+                    </View>
+                  </Modal>
+                )}
+                {device.platform === 'android' && showDatePicker && (
+                  <View style={styles.dateTimePickerContainerAndroid}>
+                    <DateTimePicker
+                      mode="time"
+                      onChange={onDatePickerChange}
+                      value={reminderTime}
+                    />
+                  </View>
+                )}
+              </ListItem>
+              <Divider style={styles.divider} />
+            </WrapperHorizontal>
+            {!!selectedTypeKeys?.length && usedTypes && !_isEmpty(notificationSettings) && (
+              <WrapperHorizontal>
+                <FlatList
+                  // filter out the keys in selectedTypeKeys that are not in usedTypes
+                  data={selectedTypeKeys.filter((key) => usedTypes[key]).sort()}
+                  renderItem={({ item, index }) => {
+                    return (
+                      <ListItem
+                        bottomDivider={index < selectedTypeKeys.length - 1}
+                        containerStyle={styles.listItemContainer}
+                        accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+                      >
+                        <ListItem.Content>
+                          <WrapperRow itemsCenter>
+                            <Dot color={usedTypes[item].color} />
+                            {usedTypes[item].color !== usedTypes[item].selected_color && (
+                              <Dot color={usedTypes[item].selected_color} />
+                            )}
+                            <BoldText small> {usedTypes[item].label}</BoldText>
+                          </WrapperRow>
+                        </ListItem.Content>
+
+                        <Switch
+                          switchValue={notificationSettings[item]}
+                          toggleSwitch={() => {
+                            dispatch({
+                              type: WasteSettingsActions.setNotificationSetting,
+                              payload: { key: item, value: !notificationSettings[item] }
+                            });
+                          }}
+                        />
+                      </ListItem>
+                    );
+                  }}
+                  keyExtractor={keyExtractor}
+                  style={styles.borderRadius}
+                />
+              </WrapperHorizontal>
+            )}
+          </Collapsible>
+
+          {!!hasExport && (
+            <View style={styles.paddingTop}>
+              <Wrapper style={styles.noPaddingBottom}>
+                <Button title={wasteTexts.exportButton} onPress={triggerExport} />
+              </Wrapper>
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaViewFlex>
     );
   }
 };
