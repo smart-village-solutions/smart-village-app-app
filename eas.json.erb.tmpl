@@ -39,8 +39,12 @@
         "track": "internal"
       },
       "ios": {
-        "ascAppId": "<%= @asc_app_id %>",
-        "appleTeamId": "<%= @apple_team_id %>"
+        <% if @asc_app_id.present? %>
+          "ascAppId": "<%= @asc_app_id %>",
+        <% end %>
+        <% if @apple_team_id.present? %>
+          "appleTeamId": "<%= @apple_team_id %>"
+        <% end %>
       }
     }
   }
