@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { noop } from 'lodash';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
@@ -23,6 +24,7 @@ export const WebScreen = ({
     };
   };
 }) => {
+  const navigation = useNavigation();
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
