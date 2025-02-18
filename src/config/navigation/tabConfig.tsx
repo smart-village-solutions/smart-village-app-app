@@ -40,12 +40,7 @@ const serviceTabConfig: TabConfig = {
     tabBarAccessibilityLabel: `${texts.tabBarLabel.service} (Tab 2 von 5)`,
     tabBarLabel: texts.tabBarLabel.service,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={Icon.Service}
-        size={normalize(22)}
-        style={{ marginTop: normalize(3) }}
-      />
+      <OrientationAwareIcon color={color} Icon={Icon.Service} style={{ marginTop: normalize(3) }} />
     )
   }
 };
@@ -60,9 +55,11 @@ const pointOfInterestTabConfig: TabConfig = {
     tabBarLabel: texts.tabBarLabel.pointsOfInterest,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
-        color={color}
+        color={colors.surface}
         Icon={Icon.Location}
         size={normalize(30)}
+        strokeColor={color}
+        strokeWidth={normalize(1)}
         style={{ marginTop: normalize(8) }}
       />
     )
