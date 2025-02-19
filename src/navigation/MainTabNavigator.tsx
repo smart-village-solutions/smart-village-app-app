@@ -8,21 +8,17 @@ import { colors, normalize } from '../config';
 import { createDynamicTabConfig, tabNavigatorConfig } from '../config/navigation/tabConfig';
 import { useStaticContent } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
-import { TabConfig, TabNavigatorConfig } from '../types';
+import { CustomTab, TabConfig, TabNavigatorConfig } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
 
-const useTabRoutes = () => {
-  const {
-    data: tabRoutesData,
-    error,
-    loading
-  } = useStaticContent<TabNavigatorConfig>({
+export const useTabRoutes = () => {
+  const { data: tabRoutesData, loading } = useStaticContent<TabNavigatorConfig>({
     name: 'tabNavigation',
     type: 'json'
   });
 
-  const [tabRoutes, setTabRoutes] = useState<TabNavigatorConfig>(tabNavigatorConfig);
+  const [tabRoutes, setTabRoutes] = useState<TabNavigatorConfig>();
 
   useEffect(() => {
     const {
@@ -33,44 +29,48 @@ const useTabRoutes = () => {
       tabConfigs
     } = tabRoutesData || tabNavigatorConfig;
 
-    setTabRoutes((prev) => {
-      const dynamicTabs = tabConfigs?.map((tab, index) => {
-        if (typeof tab === 'string') {
-          // here we are comparing defaultTabs with the array on main-server.
-          // if the string in the main-server array matches the `initialRouteName` in the
-          // `tabNavigatorConfig` (default), that tab is automatically selected.
-          return tabNavigatorConfig.tabConfigs.find(
-            (tabConfig) => tabConfig.stackConfig.initialRouteName === tab
-          );
-        } else if ('stackConfig' in tab) {
-          return tab;
-        } else {
-          return createDynamicTabConfig(
-            tab.accessibilityLabel,
-            tab.iconName,
-            tab.iconSize,
-            index,
-            tab.label,
-            tabConfigs.length,
-            tab.screen,
-            tab.iconLandscapeStyle,
-            tab.iconStyle,
-            tab.params,
-            tab.tilesScreenParams
-          );
-        }
-      });
+    !loading &&
+      setTabRoutes((prev) => {
+        const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])?.map(
+          (tabConfig, index) => {
+            if (typeof tabConfig === 'string') {
+              // here we are comparing defaultTabs with the array on main-server.
+              // if the string in the main-server array matches the `initialRouteName` in the
+              // `tabNavigatorConfig` (default), that tab is automatically selected.
+              return tabNavigatorConfig.tabConfigs.find(
+                ({ stackConfig }) => stackConfig.initialRouteName === tabConfig
+              );
+            } else if ('stackConfig' in tabConfig) {
+              return tabConfig;
+            } else {
+              return createDynamicTabConfig(
+                tabConfig.accessibilityLabel,
+                tabConfig.iconName,
+                tabConfig.iconSize,
+                index,
+                tabConfig.label,
+                tabConfigs.length,
+                tabConfig.screen,
+                tabConfig.iconLandscapeStyle,
+                tabConfig.iconStyle,
+                tabConfig.params,
+                tabConfig.tilesScreenParams,
+                tabConfig.unmountOnBlur
+              );
+            }
+          }
+        );
 
-      return {
-        ...prev,
-        activeBackgroundColor,
-        activeTintColor,
-        inactiveBackgroundColor,
-        inactiveTintColor,
-        tabConfigs: dynamicTabs
-      };
-    });
-  }, [tabRoutesData, error]);
+        return {
+          ...prev,
+          activeBackgroundColor,
+          activeTintColor,
+          inactiveBackgroundColor,
+          inactiveTintColor,
+          tabConfigs: dynamicTabs
+        };
+      });
+  }, [loading, tabRoutesData]);
 
   return { loading, tabRoutes };
 };
@@ -86,15 +86,15 @@ export const MainTabNavigator = () => {
     ? normalize(35) + safeAreaInsets.bottom
     : normalize(64) + safeAreaInsets.bottom;
 
-  const [tabConfigs, setTabConfigs] = useState<TabConfig[]>(tabNavigatorConfig.tabConfigs);
+  const [tabConfigs, setTabConfigs] = useState<TabConfig[]>();
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && tabRoutes) {
       setTabConfigs(tabRoutes.tabConfigs);
     }
-  }, [tabRoutes, loading]);
+  }, [loading, tabRoutes]);
 
-  if (loading) return <LoadingSpinner loading />;
+  if (!tabConfigs || loading) return <LoadingSpinner loading />;
 
   return (
     <Tab.Navigator
