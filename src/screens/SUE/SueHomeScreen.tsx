@@ -35,7 +35,7 @@ const ReportListNavigationButton = () => {
   return (
     <Button
       invert
-      onPress={() => navigation.navigate(ScreenName.SueList)}
+      onPress={() => navigation.navigate(ScreenName.SueList, { query: QUERY_TYPES.SUE.REQUESTS })}
       title={texts.sue.viewReports}
     />
   );
