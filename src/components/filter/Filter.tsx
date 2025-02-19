@@ -185,6 +185,7 @@ export const Filter = ({
                 <FilterComponent
                   filters={filters}
                   filterTypes={filterTypes}
+                  isOverlayFilter
                   setFilters={setFilters}
                 />
               </Wrapper>
