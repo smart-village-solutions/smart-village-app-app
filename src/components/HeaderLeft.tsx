@@ -13,7 +13,7 @@ export const HeaderLeft = ({
   text
 }: HeaderBackButtonProps & { text?: string }) => {
   if (!onPress && !backImage) {
-    return device.platform == 'android' ? <Icon.ArrowLeft color={colors.surface} /> : null;
+    return null;
   }
 
   if (!onPress && backImage) {
