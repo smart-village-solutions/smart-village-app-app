@@ -2,7 +2,7 @@ import { HeaderBackButtonProps } from '@react-navigation/elements';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, device, Icon, normalize } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 
 import { HeadlineText } from './Text';
 
