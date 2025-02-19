@@ -17,7 +17,7 @@ type WasteInputFormProps = {
   hasWasteAddressesTwoStep: boolean;
   inputValue: string;
   inputValueCity: string;
-  inputValueCitySelected: string;
+  inputValueCitySelected: boolean;
   isCityInputFocused: boolean;
   isStreetInputFocused: boolean;
   renderSuggestion: ({ item }: { item: any }) => JSX.Element;
