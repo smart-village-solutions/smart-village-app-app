@@ -20,6 +20,7 @@ type Props = {
   fetchMoreData: () => Promise<any>;
   isLoading: boolean;
   ListEmptyComponent: React.ReactElement;
+  ListFooterComponent: React.ReactElement;
   ListHeaderComponent: React.ReactElement;
   navigation: any;
   query: string;
