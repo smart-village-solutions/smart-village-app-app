@@ -1,9 +1,8 @@
 import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 
-import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
@@ -12,14 +11,9 @@ import {
   Disturber,
   HomeSection,
   HomeService,
-  ListComponent,
   NewsSectionPlaceholder,
-  RegularText,
   SafeAreaViewFlex,
-  SectionHeader,
-  Widgets,
-  Wrapper,
-  WrapperVertical
+  Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
 import {
@@ -33,7 +27,6 @@ import {
   usePermanentFilter,
   usePushNotifications,
   useRedeemLocalVouchers,
-  useStaticContent,
   useVersionCheck
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
@@ -170,11 +163,9 @@ const renderItem = ({ item }) => {
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
-    staticContentList = {},
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
@@ -193,13 +184,6 @@ export const HomeScreen = ({ navigation, route }) => {
     limitNews = 15,
     limitPointsOfInterestAndTours = 15
   } = sections;
-  const {
-    staticContentName = 'staticContentList',
-    staticContentListDescription,
-    horizontal = true,
-    showStaticContentList = true,
-    staticContentListTitle
-  } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
@@ -240,31 +224,6 @@ export const HomeScreen = ({ navigation, route }) => {
   useVersionCheck();
   useRedeemLocalVouchers();
 
-  const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
-    refreshTimeKey: `publicJsonFile-${staticContentName}`,
-    name: staticContentName,
-    type: 'json',
-    skip: !showStaticContentList
-  });
-
-  // function to add customized styles from `globalSettings` to the list items
-  const staticContentListItem = useMemo(() => {
-    if (!staticContentListData) {
-      return [];
-    }
-
-    let listItem = staticContentListData;
-
-    if (appDesignSystem?.staticContentList) {
-      listItem = listItem?.map((item: any) => ({
-        ...item,
-        appDesignSystem: appDesignSystem.staticContentList
-      }));
-    }
-
-    return listItem;
-  }, [appDesignSystem, staticContentListData]);
-
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   const refresh = () => {
@@ -273,9 +232,6 @@ export const HomeScreen = ({ navigation, route }) => {
     // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
-
-    // function required to make `contentList` refresh when the screen is refreshed
-    staticContentListRefetch();
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.
@@ -355,37 +311,12 @@ export const HomeScreen = ({ navigation, route }) => {
           </>
         }
         ListFooterComponent={
-          <>
-            {!!staticContentListItem?.length && (
-              <>
-                {!!staticContentListTitle && (
-                  <WrapperVertical style={styles.noPaddingBottom}>
-                    <SectionHeader title={staticContentListTitle} />
-                  </WrapperVertical>
-                )}
-
-                {!!staticContentListDescription && (
-                  <Wrapper>
-                    <RegularText>{staticContentListDescription}</RegularText>
-                  </Wrapper>
-                )}
-
-                <ListComponent
-                  data={staticContentListItem}
-                  horizontal={horizontal}
-                  navigation={navigation}
-                  query={QUERY_TYPES.STATIC_CONTENT_LIST}
-                />
-              </>
-            )}
-
-            {route.params?.isDrawer && (
-              <>
-                <HomeService publicJsonFile="homeService" />
-                <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
-              </>
-            )}
-          </>
+          route.params?.isDrawer && (
+            <>
+              <HomeService publicJsonFile="homeService" />
+              <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
+            </>
+          )
         }
         refreshControl={
           <RefreshControl
@@ -401,12 +332,6 @@ export const HomeScreen = ({ navigation, route }) => {
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  noPaddingBottom: {
-    paddingBottom: 0
-  }
-});
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
