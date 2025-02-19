@@ -288,6 +288,20 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return item.component;
         }
 
+        if (query === QUERY_TYPES.PUBLIC_JSON_FILE) {
+          return (
+            <TextListItem
+              item={{
+                ...item,
+                bottomDivider: true
+              }}
+              navigation={navigation}
+              noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
+            />
+          );
+        }
+
         return (
           <TextListItem
             item={{
