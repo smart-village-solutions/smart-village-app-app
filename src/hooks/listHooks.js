@@ -99,6 +99,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
   const listType = options.listType || getListType(query, listTypesSettings);
   let renderItem;
 
+  const calculateBottomDivider = (item, index, section) => {
+    return (
+      item.bottomDivider ??
+      (_isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+    );
+  };
+
   switch (listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item, index }) => {
@@ -159,9 +166,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
             <TextListItem
               item={{
                 ...item,
-                bottomDivider:
-                  item.bottomDivider ??
-                  (_isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+                bottomDivider: calculateBottomDivider(item, index, section)
               }}
               navigation={navigation}
               noSubtitle={options.noSubtitle}
@@ -200,9 +205,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           <TextListItem
             item={{
               ...item,
-              bottomDivider:
-                item.bottomDivider ??
-                (_isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+              bottomDivider: calculateBottomDivider(item, index, section)
             }}
             {...{
               navigation,
@@ -234,9 +237,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return (
             <VolunteerPostListItem
               post={item}
-              bottomDivider={
-                _isArray(section?.data) ? section.data.length - 1 !== index : undefined
-              }
+              bottomDivider={calculateBottomDivider(item, index, section)}
               openWebScreen={options.openWebScreen}
             />
           );
@@ -251,9 +252,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
             <VolunteerApplicantListItem
               item={{
                 ...item,
-                bottomDivider: _isArray(section?.data)
-                  ? section.data.length - 1 !== index
-                  : undefined
+                bottomDivider: calculateBottomDivider(item, index, section)
               }}
               refetch={options.refetch}
               navigation={navigation}
@@ -288,25 +287,11 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return item.component;
         }
 
-        if (query === QUERY_TYPES.PUBLIC_JSON_FILE) {
-          return (
-            <TextListItem
-              item={{
-                ...item,
-                bottomDivider: true
-              }}
-              navigation={navigation}
-              noSubtitle={options.noSubtitle}
-              noOvertitle={options.noOvertitle}
-            />
-          );
-        }
-
         return (
           <TextListItem
             item={{
               ...item,
-              bottomDivider: _isArray(section?.data) ? section.data.length - 1 !== index : undefined
+              bottomDivider: calculateBottomDivider(item, index, section)
             }}
             {...{
               navigation,

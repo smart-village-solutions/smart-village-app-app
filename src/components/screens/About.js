@@ -51,6 +51,7 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
 
   if (withSettings && !data.find((item) => item.routeName === 'Settings')) {
     data.push({
+      bottomDivider: true,
       isHeadlineTitle: false,
       routeName: 'Settings',
       title: texts.screenTitles.appSettings
