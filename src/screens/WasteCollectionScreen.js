@@ -287,9 +287,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   }, []);
 
   const wasteHeader = useCallback(() => {
-    return (
-      <WasteHeader locationData={locationData} resetSelectedStreetId={resetSelectedStreetId} />
-    );
+    return <WasteHeader locationData={locationData} onPress={resetSelectedStreetId} />;
   }, [locationData, resetSelectedStreetId]);
 
   const wasteList = useCallback(() => {

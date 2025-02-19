@@ -13,10 +13,10 @@ type WasteHeaderProps = {
     street?: string;
     zip?: string;
   };
-  resetSelectedStreetId: () => void;
+  onPress: () => void;
 };
 
-export const WasteHeader = ({ locationData, resetSelectedStreetId }: WasteHeaderProps) => {
+export const WasteHeader = ({ locationData, onPress }: WasteHeaderProps) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -28,10 +28,10 @@ export const WasteHeader = ({ locationData, resetSelectedStreetId }: WasteHeader
 
   return (
     <Wrapper>
-      <RegularText>{wasteTexts.myLocation}</RegularText>
+      <RegularText>{wasteTexts.myLocation}:</RegularText>
       <WrapperRow>
         <BoldText>{getStreetString(locationData)}</BoldText>
-        <TouchableOpacity onPress={resetSelectedStreetId}>
+        <TouchableOpacity onPress={onPress}>
           <Icon.Pen size={normalize(20)} style={styles.icon} />
         </TouchableOpacity>
       </WrapperRow>
