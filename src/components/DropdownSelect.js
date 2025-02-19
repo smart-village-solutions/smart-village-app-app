@@ -18,15 +18,16 @@ export const DropdownSelect = ({
   boldLabel = false,
   data,
   errorMessage,
-  multipleSelect,
-  setData,
+  isOverlayFilter = false,
   label,
   labelWrapperStyle,
+  multipleSelect,
   placeholder,
-  showSearch,
-  searchInputStyle,
   renderSearch,
-  searchPlaceholder
+  searchInputStyle,
+  searchPlaceholder,
+  setData,
+  showSearch
 }) => {
   const dropdownRef = useRef();
   const { orientation } = useContext(OrientationContext);
@@ -39,7 +40,8 @@ export const DropdownSelect = ({
       ...styles,
       height: 'auto',
       left: marginHorizontal,
-      marginTop: device.platform === 'android' ? -normalize(24) : 0,
+      marginTop:
+        device.platform === 'android' ? -normalize(24) : isOverlayFilter ? normalize(65) : 0,
       maxHeight: normalize(320)
     }),
     [marginHorizontal]
@@ -200,13 +202,14 @@ DropdownSelect.propTypes = {
   boldLabel: PropTypes.bool,
   data: PropTypes.array,
   errorMessage: PropTypes.string,
-  multipleSelect: PropTypes.bool,
-  setData: PropTypes.func,
+  isOverlayFilter: PropTypes.bool,
   label: PropTypes.string,
-  placeholder: PropTypes.string,
   labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
-  showSearch: PropTypes.bool,
-  searchInputStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
+  multipleSelect: PropTypes.bool,
+  placeholder: PropTypes.string,
   renderSearch: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  searchPlaceholder: PropTypes.string
+  searchInputStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
+  searchPlaceholder: PropTypes.string,
+  setData: PropTypes.func,
+  showSearch: PropTypes.bool
 };
