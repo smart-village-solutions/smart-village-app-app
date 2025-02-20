@@ -36,6 +36,16 @@ const deleteInitialStartDateFromQueryVariables = (queryVariables: FilterProps): 
     return newQueryVariables;
   }
 
+  if (queryVariables.dateRange?.length) {
+    const newQueryVariables = { ...queryVariables };
+
+    return {
+      ...newQueryVariables,
+      start_date: queryVariables.dateRange[0],
+      end_date: queryVariables.dateRange[1]
+    };
+  }
+
   return queryVariables;
 };
 
@@ -100,7 +110,7 @@ export const Filter = ({
 
   useEffect(() => {
     if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
-      setFilters(queryVariables);
+      setFilters(updatedQueryVariables);
     }
   }, [isCollapsed]);
 
