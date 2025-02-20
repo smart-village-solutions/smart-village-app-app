@@ -20,10 +20,11 @@ const { FILTER_TYPES } = consts;
 type Props = {
   filters: FilterProps;
   filterTypes?: FilterTypesProps[];
+  isOverlayFilter: boolean;
   setFilters: React.Dispatch<FilterProps>;
 };
 
-export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => {
+export const FilterComponent = ({ filters, filterTypes, isOverlayFilter, setFilters }: Props) => {
   const [sliderVisible, setSliderVisible] = useState(
     !filters?.radiusSearch?.currentPosition || false
   );
@@ -50,6 +51,7 @@ export const FilterComponent = ({ filters, filterTypes, setFilters }: Props) => 
                 setFilters={setFilters}
                 {...item}
                 data={item.data as DropdownProps[]}
+                isOverlayFilter={isOverlayFilter}
                 multipleSelect={item.isMultiselect}
                 searchPlaceholder={item.searchPlaceholder}
                 showSearch={item.searchable}

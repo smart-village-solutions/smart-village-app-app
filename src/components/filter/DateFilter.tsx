@@ -45,7 +45,7 @@ const CalendarView = ({
     dates[date] = {
       ...(dates[date] ?? {}),
       selected: true,
-      selectedColor: colors.lighterSecondary
+      selectedColor: colors.lighterPrimary
     };
 
     return dates;

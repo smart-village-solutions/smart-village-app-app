@@ -7,29 +7,31 @@ import { DropdownSelect } from '../DropdownSelect';
 import { colors, normalize } from '../../config';
 
 type Props = {
-  multipleSelect?: boolean;
-  showSearch?: boolean;
-  searchPlaceholder?: string;
   containerStyle?: StyleProp<ViewStyle>;
   data: DropdownProps[];
   filters: FilterProps;
+  isOverlayFilter: boolean;
   label?: string;
+  multipleSelect?: boolean;
   name: keyof FilterProps;
   placeholder?: string;
+  searchPlaceholder?: string;
   setFilters: React.Dispatch<FilterProps>;
+  showSearch?: boolean;
 };
 
 export const DropdownFilter = ({
-  multipleSelect,
-  showSearch,
-  searchPlaceholder,
   containerStyle,
   data,
   filters,
+  isOverlayFilter,
   label,
+  multipleSelect,
   name,
   placeholder,
-  setFilters
+  searchPlaceholder,
+  setFilters,
+  showSearch
 }: Props) => {
   const initiallySelectedItem = {
     id: 0,
@@ -85,6 +87,7 @@ export const DropdownFilter = ({
       <View style={(styles.container, containerStyle)}>
         <DropdownSelect
           data={dropdownData}
+          isOverlayFilter={isOverlayFilter}
           label={label}
           labelWrapperStyle={styles.labelWrapper}
           multipleSelect={multipleSelect}
