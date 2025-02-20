@@ -262,7 +262,6 @@ export const defaultStackConfig = ({
         headerLeft: () => (
           <HeaderLeft
             onPress={() => {
-              // @ts-expect-error we are lacking proper param types here
               if (route.params?.qrId || route.params?.fromPoll) {
                 navigation.goBack();
               } else {
@@ -312,15 +311,13 @@ export const defaultStackConfig = ({
       screenComponent: HtmlScreen
     },
     {
-      routeName: ScreenName.Index,
-      screenComponent: IndexScreen,
-      screenOptions: getScreenOptions({ withInfo: true }),
-      // NOTE: is used as initial screen for the points of interest tab
       initialParams: initialParams || {
         title: texts.screenTitles.pointsOfInterest,
-        query: QUERY_TYPES.CATEGORIES,
-        usedAsInitialScreen: true
-      }
+        query: QUERY_TYPES.CATEGORIES
+      },
+      routeName: ScreenName.Index,
+      screenComponent: IndexScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       initialParams,
@@ -390,9 +387,6 @@ export const defaultStackConfig = ({
       screenComponent: PdfScreen
     },
     {
-      routeName: ScreenName.Profile,
-      screenComponent: ProfileHomeScreen,
-      screenOptions: getScreenOptions({ withInfo: true }),
       initialParams: initialParams || {
         title: texts.screenTitles.profile.home,
         query: QUERY_TYPES.PUBLIC_JSON_FILE,
@@ -400,7 +394,10 @@ export const defaultStackConfig = ({
           name: 'profile'
         },
         rootRouteName: ScreenName.Profile
-      }
+      },
+      routeName: ScreenName.Profile,
+      screenComponent: ProfileHomeScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       initialParams,
@@ -495,8 +492,7 @@ export const defaultStackConfig = ({
     {
       initialParams: initialParams || {
         title: texts.screenTitles.sue.listView,
-        query: QUERY_TYPES.SUE.REQUESTS,
-        usedAsInitialScreen: true
+        query: QUERY_TYPES.SUE.REQUESTS
       },
       routeName: ScreenName.SueList,
       screenComponent: SueListScreen
@@ -504,8 +500,7 @@ export const defaultStackConfig = ({
     {
       initialParams: initialParams || {
         title: texts.screenTitles.sue.mapView,
-        query: QUERY_TYPES.SUE.REQUESTS,
-        usedAsInitialScreen: true
+        query: QUERY_TYPES.SUE.REQUESTS
       },
       routeName: ScreenName.SueMap,
       screenComponent: SueMapScreen
@@ -513,8 +508,7 @@ export const defaultStackConfig = ({
     {
       initialParams: initialParams || {
         title: texts.screenTitles.sue.reportView,
-        query: QUERY_TYPES.SUE.REQUESTS,
-        usedAsInitialScreen: true
+        query: QUERY_TYPES.SUE.REQUESTS
       },
       routeName: ScreenName.SueReport,
       screenComponent: SueReportScreen
