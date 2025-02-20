@@ -47,7 +47,9 @@ export const WasteCollectionListItem = ({ item: groupedItem, options }) => {
           </WrapperHorizontal>
         </WrapperRow>
       </Wrapper>
-      <Divider />
+      <WrapperHorizontal>
+        <Divider />
+      </WrapperHorizontal>
     </>
   );
 };
