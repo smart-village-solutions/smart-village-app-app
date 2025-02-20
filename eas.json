@@ -6,8 +6,8 @@
   "build": {
     "production": {
       "node": "18.19.1",
-      "yarn": "1.22.19",
       "autoIncrement": true,
+      "yarn": "1.22.22",
       "channel": "production",
       "ios": {
         "image": "latest"
