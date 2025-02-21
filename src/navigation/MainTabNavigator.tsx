@@ -82,9 +82,7 @@ export const MainTabNavigator = () => {
   const { orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const isPortrait = orientation === 'portrait';
-  const tabBarHeight = !isPortrait
-    ? normalize(35) + safeAreaInsets.bottom
-    : normalize(64) + safeAreaInsets.bottom;
+  const hasSafeArea = safeAreaInsets.bottom > 0;
 
   const [tabConfigs, setTabConfigs] = useState<TabConfig[]>();
 
@@ -108,18 +106,18 @@ export const MainTabNavigator = () => {
           tabRoutes?.inactiveBackgroundColor || tabNavigatorConfig.inactiveBackgroundColor,
         tabBarInactiveTintColor:
           tabRoutes?.inactiveTintColor || tabNavigatorConfig.inactiveTintColor,
-        tabBarItemStyle: { marginTop: normalize(0) },
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.gray20,
-          borderTopWidth: 1,
-          height: tabBarHeight
+          borderTopWidth: 1
         },
+        tabBarItemStyle:
+          isPortrait && !hasSafeArea
+            ? { marginBottom: normalize(7), marginTop: normalize(4) }
+            : undefined,
         tabBarLabelStyle: {
           fontSize: normalize(12),
-          lineHeight: normalize(14),
-          marginBottom: orientation === 'portrait' ? normalize(10) : undefined,
-          marginTop: orientation === 'portrait' ? normalize(4) : undefined
+          lineHeight: normalize(14)
         },
         tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'
       }}
