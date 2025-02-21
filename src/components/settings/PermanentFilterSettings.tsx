@@ -8,7 +8,7 @@ import { usePermanentFilter, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { addDataProvidersToTokenOnServer } from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { FilterAction } from '../../reducers';
+import { PermanentFilterActions } from '../../reducers';
 import { SettingsToggle } from '../SettingsToggle';
 
 const keyExtractor = (item: { id: number }, index: number) => `index${index}-id${item.id}`;
@@ -51,10 +51,10 @@ export const PermanentFilterSettings = () => {
               bottomDivider: true,
               value: !excludedDataProviderIds.includes(item.id),
               onActivate: () => {
-                dispatch({ type: FilterAction.RemoveDataProvider, payload: item.id });
+                dispatch({ type: PermanentFilterActions.RemoveDataProvider, payload: item.id });
               },
               onDeactivate: () => {
-                dispatch({ type: FilterAction.AddDataProvider, payload: item.id });
+                dispatch({ type: PermanentFilterActions.AddDataProvider, payload: item.id });
               }
             }}
           />
