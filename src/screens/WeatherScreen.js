@@ -7,7 +7,6 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
   View
 } from 'react-native';
 
@@ -142,7 +141,7 @@ export const WeatherScreen = () => {
             </Wrapper>
           </WrapperRow>
           <Wrapper tiny itemsCenter>
-            <Text style={styles.currentTemp}>{currentTemp}°</Text>
+            <RegularText style={styles.currentTemp}>{currentTemp}°</RegularText>
             {!!currentWeatherDescription && <RegularText>{currentWeatherDescription}</RegularText>}
             <WrapperRow>
               <WrapperRow>
@@ -206,16 +205,18 @@ export const WeatherScreen = () => {
         )}
 
         {hasDailyWeather(weatherMap) &&
-          weatherMap.daily.map((day, index) => (
-            <DailyWeather
-              date={day.dt}
-              description={day.weather[0].description}
-              icon={day.weather[0].icon}
-              index={index}
-              key={index}
-              temperatures={day.temp}
-            />
-          ))}
+          weatherMap.daily
+            .slice(0, 7)
+            .map((day, index) => (
+              <DailyWeather
+                date={day.dt}
+                description={day.weather[0].description}
+                icon={day.weather[0].icon}
+                index={index}
+                key={index}
+                temperatures={day.temp}
+              />
+            ))}
       </ScrollView>
     </SafeAreaViewFlex>
   );
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   currentTemp: {
     color: colors.primary,
     fontSize: normalize(72),
-    lineHeight: normalize(72),
+    lineHeight: normalize(86),
     marginTop: -normalize(20),
     paddingLeft: normalize(30)
   },
