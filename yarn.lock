@@ -9491,10 +9491,10 @@ react-native-get-random-values@~1.11.0:
   dependencies:
     fast-base64-decode "^1.0.0"
 
-react-native-gifted-chat@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-2.7.1.tgz#f6836a2444315ca08395eb16b41aea7419f25451"
-  integrity sha512-Sdswp32VggKN7XcvNGSCn7JRv+VfbvxSVY2akURlgWQHy5oJbYY5nCElyQKKFJr3y8RcT1pAhVMl6vMMURkYMw==
+react-native-gifted-chat@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-2.7.3.tgz#5cf357d04ea45b67ab50f24490801305297ef3fc"
+  integrity sha512-XyepHPsCrTUs3ZeNcuRoNlbKL6OcTpM5nD5CnF0/lGXza30F+76ZzPrO3YDQ/fI4fgAsPGMzJe7b9O7IW3FVqQ==
   dependencies:
     "@expo/react-native-action-sheet" "^4.1.0"
     "@types/lodash.isequal" "^4.5.8"

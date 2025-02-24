@@ -17,7 +17,7 @@ import {
   Send
 } from 'react-native-gifted-chat';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
 
@@ -124,7 +124,7 @@ export const Chat = ({
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
-      scrollToBottom
+      isScrollToBottomEnabled
       scrollToBottomComponent={() => <Icon.ArrowDown />}
       listViewProps={{
         contentContainerStyle: {
@@ -222,7 +222,16 @@ export const Chat = ({
             {...props}
             key={`image-${index}`}
             currentMessage={{ image: uri }}
-            lightboxProps={{ springConfig: { useNativeDriver: false } }}
+            lightboxProps={{
+              springConfig: { useNativeDriver: false },
+              activeProps: {
+                style: {
+                  flex: 1,
+                  resizeMode: 'contain',
+                  width: device.width
+                }
+              }
+            }}
           />
         ))
       }

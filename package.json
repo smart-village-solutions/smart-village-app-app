@@ -119,7 +119,7 @@
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-get-random-values": "~1.11.0",
-    "react-native-gifted-chat": "^2.7.1",
+    "react-native-gifted-chat": "^2.7.3",
     "react-native-keyboard-controller": "^1.16.4",
     "react-native-map-clustering": "^3.4.2",
     "react-native-maps": "1.18.0",
