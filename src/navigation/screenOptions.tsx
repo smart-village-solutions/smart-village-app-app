@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React, { useContext } from 'react';
@@ -74,8 +73,6 @@ export const getScreenOptions =
       cardStyleInterpolator: cardStyleInterpolator ?? CardStyleInterpolators.forHorizontalIOS
     };
   };
-
-/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   headerTitleStyle: {
