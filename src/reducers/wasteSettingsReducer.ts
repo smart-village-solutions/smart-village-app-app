@@ -8,12 +8,6 @@ export type WasteSettingsState = {
       storeId?: number | string;
     };
   };
-  activeTypesForOldStreet?: {
-    [key: string]: {
-      active: boolean;
-      storeId?: number | string;
-    };
-  };
   typeSettings: {
     [key: string]: boolean;
   };
@@ -28,8 +22,7 @@ export type WasteSettingsState = {
 
 export enum WasteSettingsActions {
   setActiveType = 'setActiveType',
-  setActiveTypesForOldStreet = 'setActiveTypesForOldStreet',
-  resetActiveTypesWithOldStreetCleanup = 'resetActiveTypesWithOldStreetCleanup',
+  resetActiveTypes = 'resetActiveTypes',
   setTypeSetting = 'setTypeSetting',
   setInitialWasteSettings = 'setInitialWasteSettings',
   updateWasteSettings = 'updateWasteSettings',
@@ -42,16 +35,7 @@ export enum WasteSettingsActions {
 type WasteSettingsAction =
   | { type: WasteSettingsActions.setActiveType; payload: { key: string; value: boolean } }
   | {
-      type: WasteSettingsActions.setActiveTypesForOldStreet;
-      payload: {
-        [key: string]: {
-          active: boolean;
-          storeId?: number | string;
-        };
-      };
-    }
-  | {
-      type: WasteSettingsActions.resetActiveTypesWithOldStreetCleanup;
+      type: WasteSettingsActions.resetActiveTypes;
       payload: {
         [key: string]: {
           active: boolean;
@@ -96,10 +80,8 @@ export const wasteSettingsReducer = (
         }
       };
     }
-    case WasteSettingsActions.setActiveTypesForOldStreet:
-      return { ...state, activeTypesForOldStreet: action.payload };
-    case WasteSettingsActions.resetActiveTypesWithOldStreetCleanup:
-      return { ...state, activeTypes: action.payload, activeTypesForOldStreet: undefined };
+    case WasteSettingsActions.resetActiveTypes:
+      return { ...state, activeTypes: action.payload };
     case WasteSettingsActions.setTypeSetting: {
       const { key, value } = action.payload;
 

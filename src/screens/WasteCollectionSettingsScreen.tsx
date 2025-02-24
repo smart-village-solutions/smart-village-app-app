@@ -1,6 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
 import React, {
   useCallback,
@@ -77,7 +76,6 @@ const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 
 const initialWasteSettingsState: WasteSettingsState = {
   activeTypes: {},
-  activeTypesForOldStreet: undefined,
   typeSettings: {},
   selectedTypeKeys: [],
   notificationSettings: {},
@@ -105,7 +103,6 @@ export const WasteCollectionSettingsScreen = () => {
   const [state, dispatch] = useReducer(wasteSettingsReducer, initialWasteSettingsState);
   const {
     activeTypes,
-    activeTypesForOldStreet,
     typeSettings,
     selectedTypeKeys,
     notificationSettings,
@@ -171,17 +168,6 @@ export const WasteCollectionSettingsScreen = () => {
   const updateSettings = useCallback(async () => {
     let errorOccurred = false;
 
-    // Delete all entries of the old street, if present
-    if (activeTypesForOldStreet) {
-      await Promise.all(
-        Object.values(activeTypesForOldStreet || {})
-          .filter((entry) => !!entry?.storeId)
-          .map(({ storeId }) =>
-            updateWasteReminderSettings(false, new Date(), undefined, undefined, undefined, storeId)
-          )
-      );
-    }
-
     // Process all active waste types
     const resettedActiveTypes: { [key: string]: { active: boolean; storeId?: string | number } } =
       {};
@@ -212,11 +198,10 @@ export const WasteCollectionSettingsScreen = () => {
       })
     );
 
-    // Remove the old location settings from state and update stored state with active types for
-    // the new location if everything was successful
+    // Update stored state with active types for the new location if everything was successful
     if (!errorOccurred) {
       dispatch({
-        type: WasteSettingsActions.resetActiveTypesWithOldStreetCleanup,
+        type: WasteSettingsActions.resetActiveTypes,
         payload: resettedActiveTypes
       });
     } else {
@@ -226,7 +211,6 @@ export const WasteCollectionSettingsScreen = () => {
   }, [
     usedTypeKeys,
     activeTypes,
-    activeTypesForOldStreet,
     notificationSettings,
     locationData,
     onDayBefore,
@@ -340,17 +324,6 @@ export const WasteCollectionSettingsScreen = () => {
     }
   }, [usedTypes]);
 
-  // Store value for old street to be able to delete it later.
-  const storeOldStreetSettings = (oldStreetId, newStreetId) => {
-    if (newStreetId !== oldStreetId) {
-      dispatch({
-        type: WasteSettingsActions.setActiveTypesForOldStreet,
-        payload: _cloneDeep(activeTypes)
-      });
-      setSelectedStreetId(newStreetId);
-    }
-  };
-
   // Use this ref to prevent the useEffect from running multiple times
   const hasStartedLoadingStoredSettingsFromServer = useRef(false);
 
@@ -369,30 +342,6 @@ export const WasteCollectionSettingsScreen = () => {
 
     asyncLoadStoredSettingsFromServer();
   }, [typeSettings]);
-
-  // Use this ref to prevent the useEffect from running multiple times
-  const hasStoredOldStreetSettings = useRef(false);
-
-  useEffect(() => {
-    if (!hasStoredOldStreetSettings.current && loadedStoredSettingsInitially && waste.streetId) {
-      storeOldStreetSettings(waste.streetId, selectedStreetId);
-      hasStoredOldStreetSettings.current = true;
-    }
-  }, [loadedStoredSettingsInitially, waste.streetId, selectedStreetId]);
-
-  useEffect(() => {
-    if (!addressesData || !inputValue) {
-      return;
-    }
-
-    const item = addressesData.find(
-      (address) => getStreetString(address).toLowerCase() === inputValue.toLowerCase()
-    );
-
-    if (item?.id) {
-      storeOldStreetSettings(selectedStreetId, item.id);
-    }
-  }, [addressesData, getStreetString, inputValue, selectedStreetId]);
 
   const onPressUpdateOnDayBefore = useCallback((value: boolean) => {
     tooltipRef?.current?.toggleTooltip();
