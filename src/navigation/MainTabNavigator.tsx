@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoadingSpinner } from '../components';
-import { colors, normalize } from '../config';
+import { colors, device } from '../config';
 import { createDynamicTabConfig, tabNavigatorConfig } from '../config/navigation/tabConfig';
 import { useStaticContent } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
@@ -82,7 +82,7 @@ export const MainTabNavigator = () => {
   const { orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const isPortrait = orientation === 'portrait';
-  const hasSafeArea = safeAreaInsets.bottom > 0;
+  const hasBottomSafeArea = safeAreaInsets.bottom > 0;
 
   const [tabConfigs, setTabConfigs] = useState<TabConfig[]>();
 
@@ -112,12 +112,12 @@ export const MainTabNavigator = () => {
           borderTopWidth: 1
         },
         tabBarItemStyle:
-          isPortrait && !hasSafeArea
-            ? { marginBottom: normalize(7), marginTop: normalize(4) }
+          device.platform == 'ios' && isPortrait && !hasBottomSafeArea
+            ? { marginBottom: 7, marginTop: 4 }
             : undefined,
         tabBarLabelStyle: {
-          fontSize: normalize(12),
-          lineHeight: normalize(14)
+          fontSize: 12,
+          lineHeight: 14
         },
         tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'
       }}
