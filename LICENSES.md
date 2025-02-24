@@ -6638,7 +6638,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/LinusU/react-native-get-random-values"
   },
-  "react-native-gifted-chat@2.7.1": {
+  "react-native-gifted-chat@2.7.3": {
     "licenses": "MIT",
     "repository": "https://github.com/FaridSafi/react-native-gifted-chat",
     "publisher": "Farid Safi"
