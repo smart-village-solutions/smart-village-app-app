@@ -109,12 +109,16 @@ export const SurveyDetailScreen = ({ route }: Props) => {
           ref={scrollViewRef}
         >
           {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
-          <DateComponent
-            date={survey.date.dateStart}
-            isMultilingual={survey.isMultilingual}
-            start
-          />
-          <DateComponent date={survey.date.dateEnd} isMultilingual={survey.isMultilingual} />
+          {!!survey.date?.dateStart && (
+            <DateComponent
+              date={survey.date.dateStart}
+              isMultilingual={survey.isMultilingual}
+              start
+            />
+          )}
+          {!!survey.date?.dateEnd && (
+            <DateComponent date={survey.date.dateEnd} isMultilingual={survey.isMultilingual} />
+          )}
           {!!survey.description?.[languages[0]]?.length && (
             <Wrapper style={styles.noPaddingBottom}>
               <SurveyText content={survey.description[languages[0]]} />
