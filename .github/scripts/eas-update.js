@@ -12,6 +12,13 @@ if (!appJson.expo || typeof appJson.expo.otaVersion !== 'number') {
   process.exit(1);
 }
 
+// Execute EAS Update with provided message argument
+const updateMessage = process.argv.slice(2).join(' ');
+if (!updateMessage) {
+  console.error('❌ Error: You must provide an EAS Update message!');
+  process.exit(1);
+}
+
 // Increment the over-the-air version
 appJson.expo.otaVersion += 1;
 
@@ -21,18 +28,11 @@ execSync(`yarn prettier --write ${appJsonPath}`, { stdio: "inherit" });
 
 console.log(`✅ expo.otaVersion has been incremented to ${appJson.expo.otaVersion}.`);
 
+execSync(`eas update --channel production --message "${updateMessage}"`, { stdio: 'inherit' });
+
 // Perform Git commit
 execSync('git add app.json', { stdio: 'inherit' });
 execSync(`git commit -m "release: increment over-the-air version"`, { stdio: 'inherit' });
-
-// Execute EAS Update with provided message argument
-const updateMessage = process.argv.slice(2).join(' ');
-if (!updateMessage) {
-  console.error('❌ Error: You must provide an EAS Update message!');
-  process.exit(1);
-}
-
-execSync(`eas update --channel production --message "${updateMessage}"`, { stdio: 'inherit' });
 
 // Perform Git push
 execSync('git push', { stdio: 'inherit' });
