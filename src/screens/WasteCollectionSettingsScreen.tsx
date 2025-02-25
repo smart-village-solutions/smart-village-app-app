@@ -349,6 +349,34 @@ export const WasteCollectionSettingsScreen = () => {
     asyncLoadStoredSettingsFromServer();
   }, [typeSettings]);
 
+  // Use this ref to prevent the useEffect from running multiple times
+  const hasStoredStreetSettings = useRef(false);
+
+  useEffect(() => {
+    if (
+      !hasStoredStreetSettings.current &&
+      loadedStoredSettingsInitially &&
+      waste?.streetId !== selectedStreetId
+    ) {
+      setSelectedStreetId(selectedStreetId);
+      hasStoredStreetSettings.current = true;
+    }
+  }, [loadedStoredSettingsInitially, waste.streetId, selectedStreetId]);
+
+  useEffect(() => {
+    if (!addressesData || !inputValue) {
+      return;
+    }
+
+    const item = addressesData.find(
+      (address) => getStreetString(address).toLowerCase() === inputValue.toLowerCase()
+    );
+
+    if (selectedStreetId !== item?.id) {
+      setSelectedStreetId(item.id);
+    }
+  }, [addressesData, getStreetString, inputValue, selectedStreetId]);
+
   const onPressUpdateOnDayBefore = useCallback((value: boolean) => {
     tooltipRef?.current?.toggleTooltip();
     dispatch({ type: WasteSettingsActions.setOnDayBefore, payload: value });
@@ -381,9 +409,9 @@ export const WasteCollectionSettingsScreen = () => {
     return <LoadingSpinner loading />;
   }
 
-  const filteredStreets = filterStreets(inputValue, addressesData);
-
   if (inputValue && !isStreetSelected) {
+    const filteredStreets = filterStreets(inputValue, addressesData);
+
     return (
       <SafeAreaViewFlex>
         <FlatList
