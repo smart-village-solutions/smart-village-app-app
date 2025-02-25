@@ -200,7 +200,7 @@ export const WasteCollectionSettingsScreen = () => {
     );
 
     // Update stored state with active types for the new location if everything was successful
-    if (!errorOccurred) {
+    if (!errorOccurred && !_isEmpty(resettedActiveTypes)) {
       dispatch({
         type: WasteSettingsActions.resetActiveTypes,
         payload: resettedActiveTypes
@@ -321,7 +321,7 @@ export const WasteCollectionSettingsScreen = () => {
         tintColor: colors.primary
       }
     });
-  }, [selectedStreetId, isSavingSettings]);
+  }, [selectedStreetId, isSavingSettings, saveSettings]);
 
   // Set initial waste types used in the selected street
   useEffect(() => {
