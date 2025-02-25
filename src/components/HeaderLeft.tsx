@@ -12,12 +12,22 @@ export const HeaderLeft = ({
   backImage,
   text
 }: HeaderBackButtonProps & { text?: string }) => {
-  if (!onPress && !backImage) {
+  if (!onPress && !backImage && !text) {
     return null;
   }
 
-  if (!onPress && backImage) {
-    return <View>{backImage({ tintColor: colors.darkText })}</View>;
+  if (!onPress) {
+    return (
+      <View>
+        {backImage ? (
+          backImage({ tintColor: colors.darkText })
+        ) : text ? (
+          <HeadlineText placeholder smaller style={styles.text}>
+            {text}
+          </HeadlineText>
+        ) : null}
+      </View>
+    );
   }
 
   return (
