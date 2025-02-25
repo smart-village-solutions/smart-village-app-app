@@ -27,7 +27,7 @@ export const SectionHeader = ({
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { flat = false, uppercase = false } = settings;
+  const { flat = true, uppercase = false } = settings;
 
   if (!title) return null;
 
