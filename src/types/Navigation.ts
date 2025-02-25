@@ -145,7 +145,6 @@ export type CustomTab = {
   params?: Record<string, any>;
   screen: ScreenName;
   tilesScreenParams?: Record<string, any>;
-  unmountOnBlur?: boolean;
 };
 
 export type TabConfig = {

@@ -15,7 +15,8 @@ export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab'
     <NavigationContainer
       theme={{
         dark: DefaultTheme.dark,
-        colors: { ...DefaultTheme.colors, background: colors.surface }
+        colors: { ...DefaultTheme.colors, background: colors.surface },
+        fonts: DefaultTheme.fonts
       }}
       linking={linkingConfig}
     >

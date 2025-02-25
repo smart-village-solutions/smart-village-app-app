@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React, { useContext } from 'react';
@@ -40,7 +39,6 @@ export const getScreenOptions =
     const insets = useSafeAreaInsets();
     const { orientation } = useContext(OrientationContext);
     const isPortrait = orientation === 'portrait';
-    const headerHeight = !isPortrait ? normalize(35) + insets.top : normalize(56) + insets.top;
 
     return {
       // header gradient:
@@ -48,9 +46,6 @@ export const getScreenOptions =
       headerBackground: () => <DiagonalGradient />,
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
-      headerStyle: {
-        height: headerHeight
-      },
       headerRight: () => (
         <HeaderRight
           {...{
@@ -74,8 +69,6 @@ export const getScreenOptions =
       cardStyleInterpolator: cardStyleInterpolator ?? CardStyleInterpolators.forHorizontalIOS
     };
   };
-
-/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   headerTitleStyle: {

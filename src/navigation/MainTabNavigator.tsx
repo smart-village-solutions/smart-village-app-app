@@ -1,10 +1,8 @@
 /* eslint-disable complexity */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useContext, useEffect, useState } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoadingSpinner } from '../components';
-import { colors, device } from '../config';
 import { createDynamicTabConfig, tabNavigatorConfig } from '../config/navigation/tabConfig';
 import { useStaticContent } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
@@ -54,8 +52,7 @@ export const useTabRoutes = () => {
                 tabConfig.iconLandscapeStyle,
                 tabConfig.iconStyle,
                 tabConfig.params,
-                tabConfig.tilesScreenParams,
-                tabConfig.unmountOnBlur
+                tabConfig.tilesScreenParams
               );
             }
           }
@@ -80,9 +77,7 @@ const Tab = createBottomTabNavigator();
 export const MainTabNavigator = () => {
   const { loading, tabRoutes } = useTabRoutes();
   const { orientation } = useContext(OrientationContext);
-  const safeAreaInsets = useSafeAreaInsets();
   const isPortrait = orientation === 'portrait';
-  const hasBottomSafeArea = safeAreaInsets.bottom > 0;
 
   const [tabConfigs, setTabConfigs] = useState<TabConfig[]>();
 
@@ -98,6 +93,7 @@ export const MainTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarAllowFontScaling: false,
         tabBarActiveBackgroundColor:
           tabRoutes?.activeBackgroundColor || tabNavigatorConfig.activeBackgroundColor,
         tabBarActiveTintColor: tabRoutes?.activeTintColor || tabNavigatorConfig.activeTintColor,
@@ -106,19 +102,6 @@ export const MainTabNavigator = () => {
           tabRoutes?.inactiveBackgroundColor || tabNavigatorConfig.inactiveBackgroundColor,
         tabBarInactiveTintColor:
           tabRoutes?.inactiveTintColor || tabNavigatorConfig.inactiveTintColor,
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.gray20,
-          borderTopWidth: 1
-        },
-        tabBarItemStyle:
-          device.platform == 'ios' && isPortrait && !hasBottomSafeArea
-            ? { marginBottom: 7, marginTop: 4 }
-            : undefined,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          lineHeight: 14
-        },
         tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'
       }}
     >

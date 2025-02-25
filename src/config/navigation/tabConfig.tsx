@@ -127,8 +127,7 @@ export const createDynamicTabConfig = (
   iconLandscapeStyle?: ViewStyle,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
-  tilesScreenParams?: Record<string, any>,
-  unmountOnBlur?: boolean
+  tilesScreenParams?: Record<string, any>
 ): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialParams,
@@ -148,7 +147,6 @@ export const createDynamicTabConfig = (
         size={normalize(iconSize)}
         style={iconStyle}
       />
-    ),
-    unmountOnBlur
+    )
   }
 });
