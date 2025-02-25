@@ -36,10 +36,6 @@ export const getScreenOptions =
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
-    const insets = useSafeAreaInsets();
-    const { orientation } = useContext(OrientationContext);
-    const isPortrait = orientation === 'portrait';
-
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
