@@ -7,9 +7,18 @@
     "githubUrl": "https://github.com/smart-village-solutions/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "<%= @mobile_app_version_number %>",
-    "runtimeVersion": { "policy": "appVersion" },
-    "extra": { "eas": { "projectId": "<%= @eas_project_id %>" } },
-    "updates": { "url": "https://u.expo.dev/<%= @eas_project_id %>" },
+    "otaVersion": 1,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "<%= @eas_project_id %>"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/<%= @eas_project_id %>"
+    },
     "icon": "./assets/icon.png",
     "scheme": "<%= @mobile_app_schema_url %>",
     "orientation": "portrait",
@@ -22,7 +31,9 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
-        "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": true },
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        },
         "NSCameraUsageDescription": "Diese App benötigt Zugriff auf die Kamera, um Fotos aufzunehmen und hochzuladen. Die aufgenommenen Fotos werden ausschließlich in der App für den vorgesehenen Zweck verwendet.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSPhotoLibraryAddUsageDescription": "Diese App benötigt Zugriff, um von dir aufgenommene Fotos in deiner Medienbibliothek zu speichern.",
@@ -61,7 +72,6 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      // `READ_MEDIA_IMAGES` permission must be removed from the array when using the ability to save photos from the camera
       "blockedPermissions": ["READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO"],
       "config": {
         "googleMaps": {
@@ -74,8 +84,6 @@
       [
         "expo-document-picker",
         {
-          // `appleTeamId` needs to be added
-          // https://developer.apple.com/help/account/manage-your-team/locate-your-team-id/#:~:text=In%20the%20top%20navigation%20of,to%20view%20your%20Team%20ID
           "appleTeamId": "<%= @apple_team_id %>"
         }
       ],
