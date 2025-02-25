@@ -18,6 +18,7 @@
     "submit:all": "eas submit --platform all",
     "submit:android": "eas submit --platform android",
     "submit:ios": "eas submit --platform ios",
+    "update:all": "node ./.github/scripts/eas-update.js",
     "lint": "./node_modules/.bin/eslint __tests__ src --ext .js,.jsx,.ts,.tsx",
     "clear-state": "maestro test __maestro__/clear-state.yml -e APP_ID=de.dev.smartvillage.app",
     "maestro": "maestro test __maestro__ -e APP_ID=de.dev.smartvillage.app",
