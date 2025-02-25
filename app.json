@@ -27,6 +27,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.dev.smartvillage.app",
+      "buildNumber": "1",
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
@@ -61,6 +62,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "de.dev.smartvillage.app",
+      "versionCode": 1,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
