@@ -6,7 +6,7 @@ import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
 import { LoadingContainer, SafeAreaViewFlex } from '../components';
-import { colors, consts } from '../config';
+import { colors, consts, device } from '../config';
 import { openLink } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -62,7 +62,7 @@ export const WebScreen = ({
         injectedJavaScript={injectedJavaScript}
         onMessage={noop} // needed for making `injectedJavaScript` work in some cases
         // https://github.com/react-native-webview/react-native-webview/blob/19980d888d66554875f3ac64b3e8a35bd7ad998b/src/WebViewTypes.ts#L378-L389
-        decelerationRate="normal"
+        decelerationRate={device.platform === 'ios' ? 'normal' : undefined}
         // https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md#applicationnameforuseragent
         applicationNameForUserAgent={
           !webUrl.includes('bbnavi.de') ? appJson.expo.scheme : undefined
