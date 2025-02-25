@@ -120,7 +120,7 @@ export const useStreetString = () => {
 
   const getStreetString = useCallback(
     (address: { street?: string; zip?: string; city?: string }) => {
-      if (hasWasteAddressesTwoStep) {
+      if (!hasWasteAddressesTwoStep) {
         return address.street || '';
       }
 
