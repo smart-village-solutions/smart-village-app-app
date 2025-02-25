@@ -8,7 +8,7 @@ This file contains the licenses of the dependencies used in this project.
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 1306 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 1311 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 108 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 39 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 38 |
@@ -720,11 +720,19 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
+  "@expo/config-plugins@9.0.16": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo"
+  },
   "@expo/config-types@49.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
   "@expo/config-types@52.0.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo"
+  },
+  "@expo/config-types@52.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -1187,31 +1195,31 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native"
   },
-  "@react-navigation/bottom-tabs@6.6.1": {
+  "@react-navigation/bottom-tabs@7.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@react-navigation/core@6.4.17": {
+  "@react-navigation/core@7.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@react-navigation/drawer@6.7.2": {
+  "@react-navigation/drawer@7.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@react-navigation/elements@1.3.31": {
+  "@react-navigation/elements@2.2.5": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@react-navigation/native@6.1.18": {
+  "@react-navigation/native@7.0.14": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@react-navigation/routers@6.1.9": {
+  "@react-navigation/routers@7.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
-  "@react-navigation/stack@6.4.1": {
+  "@react-navigation/stack@7.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/react-navigation/react-navigation"
   },
@@ -3101,7 +3109,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "me@jongleberry.com",
     "url": "http://jongleberry.com"
   },
-  "electron-to-chromium@1.5.104": {
+  "electron-to-chromium@1.5.103": {
     "licenses": "ISC",
     "repository": "https://github.com/kilian/electron-to-chromium",
     "publisher": "Kilian Valkhof"
@@ -3553,7 +3561,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-eas-client@0.13.2": {
+  "expo-eas-client@0.13.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3618,6 +3626,11 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
+  "expo-manifests@0.15.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc."
+  },
   "expo-media-library@17.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -3668,7 +3681,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
   },
-  "expo-updates@0.26.19": {
+  "expo-updates@0.27.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc."
@@ -3903,7 +3916,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
-  "foreground-child@3.3.1": {
+  "foreground-child@3.3.0": {
     "licenses": "ISC",
     "repository": "https://github.com/tapjs/foreground-child",
     "publisher": "Isaac Z. Schlueter",
@@ -4905,7 +4918,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/jestjs/jest"
   },
-  "jest-expo@52.0.4": {
+  "jest-expo@52.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo"
   },
@@ -6609,6 +6622,10 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Anarchic Knight",
     "email": "anarchicknight@gmail.com",
     "url": "http://www.anarchicknight.co.uk"
+  },
+  "react-native-drawer-layout@4.1.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/react-navigation/react-navigation"
   },
   "react-native-elements@3.4.3": {
     "licenses": "MIT",
@@ -8356,6 +8373,10 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/satya164/use-latest-callback",
     "publisher": "Satyajit Sahoo",
     "email": "satyajit.happy@gmail.com"
+  },
+  "use-sync-external-store@1.4.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/react"
   },
   "use@3.1.1": {
     "licenses": "MIT",
