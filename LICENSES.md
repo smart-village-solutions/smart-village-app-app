@@ -1479,7 +1479,7 @@ This file contains the licenses of the dependencies used in this project.
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
-  "@types/node@22.13.4": {
+  "@types/node@22.13.5": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped"
   },
@@ -3101,7 +3101,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "me@jongleberry.com",
     "url": "http://jongleberry.com"
   },
-  "electron-to-chromium@1.5.102": {
+  "electron-to-chromium@1.5.104": {
     "licenses": "ISC",
     "repository": "https://github.com/kilian/electron-to-chromium",
     "publisher": "Kilian Valkhof"
@@ -3903,7 +3903,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
-  "foreground-child@3.3.0": {
+  "foreground-child@3.3.1": {
     "licenses": "ISC",
     "repository": "https://github.com/tapjs/foreground-child",
     "publisher": "Isaac Z. Schlueter",
@@ -4013,7 +4013,7 @@ This file contains the licenses of the dependencies used in this project.
     "repository": "https://github.com/stefanpenner/get-caller-file",
     "publisher": "Stefan Penner"
   },
-  "get-intrinsic@1.2.7": {
+  "get-intrinsic@1.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ljharb/get-intrinsic",
     "publisher": "Jordan Harband",
@@ -6658,7 +6658,7 @@ This file contains the licenses of the dependencies used in this project.
     "publisher": "Mathieu Acthernoene",
     "email": "zoontek@gmail.com"
   },
-  "react-native-keyboard-controller@1.16.4": {
+  "react-native-keyboard-controller@1.16.5": {
     "licenses": "MIT",
     "repository": "https://github.com/kirillzyusko/react-native-keyboard-controller",
     "publisher": "Kiryl Ziusko",
@@ -8633,7 +8633,7 @@ This file contains the licenses of the dependencies used in this project.
     "email": "einaros@gmail.com",
     "url": "http://2x.io"
   },
-  "ws@8.18.0": {
+  "ws@8.18.1": {
     "licenses": "MIT",
     "repository": "https://github.com/websockets/ws",
     "publisher": "Einar Otto Stangvik",
