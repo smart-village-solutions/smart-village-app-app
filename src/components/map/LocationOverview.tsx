@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
@@ -43,6 +44,7 @@ type Props = {
       index: number;
     };
   };
+  route: RouteProp<Record<string, any>, string>;
 };
 
 // FIXME: with our current setup the data that we receive from a query is not typed
@@ -84,7 +86,8 @@ export const LocationOverview = ({
   currentPosition,
   filterByOpeningTimes,
   navigation,
-  queryVariables
+  queryVariables,
+  route
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation } = useContext(OrientationContext);
@@ -96,6 +99,7 @@ export const LocationOverview = ({
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
+  const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
 
   const {
     data: overviewData,
@@ -212,7 +216,7 @@ export const LocationOverview = ({
             leftImage={!!item?.picture?.url}
             listItemStyle={styles.listItem}
             listsWithoutArrows
-            navigation={navigation}
+            navigation={isPreviewWithoutNavigation ? undefined : navigation}
           />
         </View>
       )}
