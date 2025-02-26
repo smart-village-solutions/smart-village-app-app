@@ -298,12 +298,10 @@ export const EventRecords = ({ navigation, route }) => {
                 {!!eventListIntro.url &&
                   !!eventListIntro.buttonTitle &&
                   eventListIntro.buttonType === EVENT_SUGGESTION_BUTTON.TOP && (
-                    <Wrapper>
-                      <EventSuggestionButton
-                        buttonTitle={eventListIntro.buttonTitle}
-                        onPress={eventSuggestionOnPress}
-                      />
-                    </Wrapper>
+                    <EventSuggestionButton
+                      buttonTitle={eventListIntro.buttonTitle}
+                      onPress={eventSuggestionOnPress}
+                    />
                   )}
                 <Divider />
               </>
