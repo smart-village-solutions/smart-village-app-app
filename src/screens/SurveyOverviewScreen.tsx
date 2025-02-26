@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
-import { SectionList, View } from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
 
 import { SafeAreaViewFlex, SectionHeader, TextListItem, WrapperHorizontal } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -65,17 +65,21 @@ const parseSurveyToItem = (survey: Survey & { archived?: true }, languages: stri
 };
 
 const renderSectionHeader = ({
-  section: { title, data }
+  data,
+  hasOngoingSurveys,
+  title
 }: {
-  section: { title?: string; data: Survey[] };
+  data: Survey[];
+  hasOngoingSurveys: boolean;
+  title?: string;
 }) => {
   if (!data.length || !title) return null;
 
   return (
-    <>
-      <View style={{ height: normalize(20) }} />
-      <SectionHeader title={title} />
-    </>
+    <SectionHeader
+      title={title}
+      containerStyle={hasOngoingSurveys && styles.headerTitleContainer}
+    />
   );
 };
 
@@ -110,6 +114,8 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
     return <LoadingSpinner loading />;
   }
 
+  const hasOngoingSurveys = surveySections.some((section) => section.key === 'ongoing');
+
   return (
     <SafeAreaViewFlex>
       <SectionList
@@ -125,9 +131,21 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
         }
         refreshControl={RefreshControl}
         renderItem={renderSurvey}
-        renderSectionHeader={renderSectionHeader}
+        renderSectionHeader={({ section: { data, title } }) =>
+          renderSectionHeader({
+            data,
+            hasOngoingSurveys,
+            title
+          })
+        }
         sections={surveySections}
       />
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  headerTitleContainer: {
+    paddingTop: normalize(20)
+  }
+});
