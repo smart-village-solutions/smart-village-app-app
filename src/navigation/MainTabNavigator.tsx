@@ -52,6 +52,7 @@ export const useTabRoutes = () => {
                 tabConfig.iconLandscapeStyle,
                 tabConfig.iconStyle,
                 tabConfig.params,
+                tabConfig.tabBarLabelStyle,
                 tabConfig.tilesScreenParams
               );
             }

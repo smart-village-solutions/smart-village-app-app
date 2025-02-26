@@ -127,6 +127,7 @@ export const createDynamicTabConfig = (
   iconLandscapeStyle?: ViewStyle,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
+  tabBarLabelStyle?: ViewStyle,
   tilesScreenParams?: Record<string, any>
 ): TabConfig => ({
   stackConfig: defaultStackConfig({
@@ -138,6 +139,7 @@ export const createDynamicTabConfig = (
   tabOptions: {
     tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${totalCount})`,
     tabBarLabel: label,
+    tabBarLabelStyle,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
