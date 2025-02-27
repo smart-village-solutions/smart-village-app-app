@@ -228,6 +228,10 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables, query
       bottomDivider: !skipLastDivider || index !== data.length - 1
     };
 
+    if (!query) {
+      categories.push(item);
+    }
+
     if (query !== QUERY_TYPES.TOURS && category.pointsOfInterestTreeCount) {
       categories.push({
         ...item,
