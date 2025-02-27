@@ -93,6 +93,7 @@ const DateTimePicker = ({
                   minimumDate={minimumDate}
                   mode={mode}
                   onChange={onDatePickerChange}
+                  style={styles.DateTimePicker}
                   textColor={colors.darkText}
                   value={value}
                 />
@@ -179,6 +180,9 @@ export const DateTimeInput = ({
 };
 
 const styles = StyleSheet.create({
+  DateTimePicker: {
+    alignSelf: 'center'
+  },
   modalContainer: {
     backgroundColor: colors.overlayRgba,
     flex: 1,
