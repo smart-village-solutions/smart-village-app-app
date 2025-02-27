@@ -18,6 +18,7 @@ import {
   BoldText,
   Button,
   DefaultKeyboardAvoidingView,
+  DrawerHeader,
   HeaderLeft,
   LoadingSpinner,
   RegularText,
@@ -77,7 +78,7 @@ export const getLocationData = (streetData) => {
 export const WasteCollectionScreen = ({ navigation }) => {
   const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {}, waste = {} } = globalSettings;
+  const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const {
     twoStep: hasWasteAddressesTwoStep = false,
@@ -226,7 +227,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     navigation.setOptions({
       headerRight: () =>
         !!streetData && !!usedTypes ? (
-          <WrapperRow>
+          <WrapperRow itemsCenter>
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
@@ -249,8 +250,14 @@ export const WasteCollectionScreen = ({ navigation }) => {
                 }
               />
             )}
+
+            {navigationType === 'drawer' && (
+              <DrawerHeader navigation={navigation} style={styles.icon} />
+            )}
           </WrapperRow>
-        ) : undefined
+        ) : navigationType === 'drawer' ? (
+          <DrawerHeader navigation={navigation} style={styles.icon} />
+        ) : null
     });
 
     if (isReset) {

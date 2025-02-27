@@ -317,7 +317,7 @@ export const defaultStackConfig = ({
       },
       routeName: ScreenName.Index,
       screenComponent: IndexScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
@@ -338,13 +338,13 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.NestedInfo,
       screenComponent: NestedInfoScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
       routeName: ScreenName.Noticeboard,
       screenComponent: NoticeboardIndexScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
@@ -397,7 +397,7 @@ export const defaultStackConfig = ({
       },
       routeName: ScreenName.Profile,
       screenComponent: ProfileHomeScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
@@ -433,7 +433,7 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.ProfileNoticeboard,
       screenComponent: ProfileNoticeboardIndexScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
@@ -532,7 +532,7 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.TilesScreen,
       screenComponent: TilesScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
@@ -598,7 +598,7 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.VoucherDetail,
       screenComponent: VoucherDetailScreen,
-      screenOptions: getScreenOptions({ withBookmark: false })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: false })
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.voucher.home },

@@ -29,6 +29,7 @@ import {
   BoldText,
   Button,
   Dot,
+  DrawerHeader,
   HeaderLeft,
   LoadingSpinner,
   RegularText,
@@ -89,7 +90,7 @@ export const WasteCollectionSettingsScreen = () => {
   const navigation = useNavigation();
   const routeParams = useRoute().params;
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
-  const { settings = {}, waste = {} } = globalSettings;
+  const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const { texts: wasteAddressesTexts = {}, hasExport = true } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
@@ -306,10 +307,16 @@ export const WasteCollectionSettingsScreen = () => {
       headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />,
       headerRight: () =>
         selectedStreetId ? (
-          <HeaderLeft
-            onPress={isSavingSettings ? undefined : saveSettings}
-            text={wasteTexts.save}
-          />
+          <WrapperRow itemsCenter>
+            <HeaderLeft
+              onPress={isSavingSettings ? undefined : saveSettings}
+              text={wasteTexts.save}
+            />
+
+            {navigationType === 'drawer' && (
+              <DrawerHeader navigation={navigation} style={styles.icon} />
+            )}
+          </WrapperRow>
         ) : null
     });
   }, [selectedStreetId, isSavingSettings, saveSettings]);
@@ -689,6 +696,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.placeholder,
     marginVertical: normalize(4),
     width: normalize(140)
+  },
+  icon: {
+    paddingRight: normalize(10)
   },
   listItemContainer: {
     backgroundColor: colors.surface,
