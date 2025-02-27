@@ -310,16 +310,7 @@ export const WasteCollectionSettingsScreen = () => {
             onPress={isSavingSettings ? undefined : saveSettings}
             text={wasteTexts.save}
           />
-        ) : null,
-      headerSearchBarOptions: {
-        placeholder: texts.screenTitles.wasteCollection.select,
-        onChangeText: (event) => {
-          setIsStreetSelected(false);
-          setInputValue(event.nativeEvent.text);
-        },
-        onBlur: () => setIsStreetSelected(true),
-        tintColor: colors.primary
-      }
+        ) : null
     });
   }, [selectedStreetId, isSavingSettings, saveSettings]);
 
