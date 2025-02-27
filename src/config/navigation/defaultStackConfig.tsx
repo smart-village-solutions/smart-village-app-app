@@ -317,7 +317,7 @@ export const defaultStackConfig = ({
       },
       routeName: ScreenName.Index,
       screenComponent: IndexScreen,
-      screenOptions: getScreenOptions({ withInfo: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {
       initialParams,
