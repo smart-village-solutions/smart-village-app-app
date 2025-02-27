@@ -77,6 +77,7 @@ enum SueStatus {
 /* eslint-disable complexity */
 export const SueReportLocation = ({
   areaServiceData,
+  configuration,
   control,
   errorMessage,
   requiredInputs,
@@ -87,6 +88,11 @@ export const SueReportLocation = ({
   updateRegionFromImage
 }: {
   areaServiceData?: { postalCodes?: string[] };
+  configuration: {
+    geoMap: {
+      clusterDistance: number;
+    };
+  };
   control: any;
   errorMessage: string;
   getValues: UseFormGetValues<TValues>;
@@ -296,6 +302,7 @@ export const SueReportLocation = ({
       <WrapperHorizontal>
         <Map
           calloutTextEnabled
+          clusterDistance={configuration.geoMap?.clusterDistance}
           clusteringEnabled
           isMaximizeButtonVisible
           isMyLocationButtonVisible={!!locationService}

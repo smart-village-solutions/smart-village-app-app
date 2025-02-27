@@ -174,6 +174,7 @@ const Content = ({
       return (
         <SueReportLocation
           areaServiceData={areaServiceData}
+          configuration={configuration}
           control={control}
           errorMessage={errorMessage}
           getValues={getValues}
