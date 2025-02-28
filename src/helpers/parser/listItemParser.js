@@ -228,7 +228,7 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables, query
       bottomDivider: !skipLastDivider || index !== data.length - 1
     };
 
-    if (!query) {
+    if (query === QUERY_TYPES.CATEGORIES) {
       categories.push(item);
     }
 
@@ -351,7 +351,13 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
     case QUERY_TYPES.TOURS:
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
-      return parseCategories(data[query], skipLastDivider, ScreenName.Category, queryVariables);
+      return parseCategories(
+        data[query],
+        skipLastDivider,
+        ScreenName.Category,
+        queryVariables,
+        query
+      );
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
     case QUERY_TYPES.WASTE_STREET:
