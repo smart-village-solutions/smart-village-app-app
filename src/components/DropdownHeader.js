@@ -53,7 +53,7 @@ export const dropdownEntries = (
       (dataProvider) => !excludeDataProviderIds.includes(dataProvider.id)
     );
 
-    if (filteredDataProviders?.length) {
+    if (filteredDataProviders?.length > 1) {
       entries = _uniqBy(filteredDataProviders, 'name').map((dataProvider, index) => ({
         index: index + 1,
         id: dataProvider.id,

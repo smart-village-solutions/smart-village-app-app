@@ -141,6 +141,8 @@ export const Overviews = ({ navigation, route }) => {
       ? initialQueryVariables.genericType
       : query === QUERY_TYPES.POINTS_OF_INTEREST
       ? initialQueryVariables.category
+      : query === QUERY_TYPES.NEWS_ITEMS
+      ? route.params?.title
       : query;
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
