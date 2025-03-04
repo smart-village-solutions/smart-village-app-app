@@ -118,7 +118,7 @@ export const Filter = ({
     if (isOverlay) {
       const activeFilters = _omit(filters, Object.keys(initialQueryVariables || {}));
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
-        if ((key !== 'saveable' || key !== 'onlyCurrentlyOpen') && activeFilters[key] !== false) {
+        if (key !== 'saveable' && activeFilters[key] !== false) {
           acc[key] = activeFilters[key];
         }
 
