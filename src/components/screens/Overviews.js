@@ -1,4 +1,5 @@
 import * as Location from 'expo-location';
+import _camelCase from 'lodash/camelCase';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
@@ -142,7 +143,7 @@ export const Overviews = ({ navigation, route }) => {
       : query === QUERY_TYPES.POINTS_OF_INTEREST
       ? initialQueryVariables.category
       : query === QUERY_TYPES.NEWS_ITEMS
-      ? route.params?.title
+      ? _camelCase(route.params?.title)
       : query;
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
