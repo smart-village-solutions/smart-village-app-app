@@ -120,7 +120,7 @@ export const LocationSettings = () => {
             </RegularText>
           </Wrapper>
 
-          <Collapsible collapsed={!showMap}>
+          <Collapsible style={styles.collapsible} collapsed={!showMap}>
             <Map
               locations={locations}
               onMapPress={({ nativeEvent }) => {
@@ -170,6 +170,9 @@ export const LocationSettings = () => {
 };
 
 const styles = StyleSheet.create({
+  collapsible: {
+    flex: 1
+  },
   containerStyle: {
     marginBottom: normalize(21)
   }
