@@ -34,9 +34,11 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
           ) : (
             <Icon style={[!!count?.toString() && styles.iconWithCount]} />
           )}
-          <BoldText primary big>
-            {count ?? ''}
-          </BoldText>
+          {!!count && (
+            <BoldText primary big>
+              {count}
+            </BoldText>
+          )}
         </WrapperRow>
         <RegularText primary small>
           {text}
