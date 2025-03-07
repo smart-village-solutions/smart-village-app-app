@@ -370,7 +370,7 @@ export const WasteCollectionSettingsScreen = () => {
       (address) => getStreetString(address).toLowerCase() === inputValue.toLowerCase()
     );
 
-    if (selectedStreetId !== item?.id) {
+    if (!!item && selectedStreetId !== item.id) {
       setSelectedStreetId(item.id);
     }
   }, [addressesData, getStreetString, inputValue, selectedStreetId]);
