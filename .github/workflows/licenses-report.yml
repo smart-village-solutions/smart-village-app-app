@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Generate license report as markdown
+        run: node_modules/.bin/license-checker-rseidelsohn --production --markdown --customPath license-checker.config.json --depth 0 > LICENSES_DIRECT.md
+
       - name: Generate license report as json
-        run: node_modules/.bin/license-checker --json > licenses.json
+        run: node_modules/.bin/license-checker-rseidelsohn --production --json --customPath license-checker.config.json > licenses.json
 
       - name: Cleanup licenses.json
         run: node .github/scripts/cleanup-licenses.js
@@ -35,6 +38,8 @@ jobs:
           echo "# Licenses report" > LICENSES.md
           echo "" >> LICENSES.md
           echo "This file contains the licenses of the dependencies used in this project." >> LICENSES.md
+          echo "" >> LICENSES.md
+          echo "To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LICENSES_DIRECT.md) at the specific screen." >> LICENSES.md
           echo "" >> LICENSES.md
 
       - name: Add licenses summary to LICENSES.md
