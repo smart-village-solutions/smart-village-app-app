@@ -139,6 +139,13 @@ export const consts = {
     3: 3221225472
   },
 
+  MB_TO_BYTES: {
+    1: 1048576,
+    10: 10485760,
+    20: 20971520,
+    30: 31457280
+  },
+
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
     NOTICEBOARD: 'Noticeboard',

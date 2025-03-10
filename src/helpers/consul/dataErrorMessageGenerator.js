@@ -4,7 +4,7 @@ import * as FileSystem from 'expo-file-system';
 import { consts, texts } from '../../config';
 import { formatSize, formatSizeStandard } from '../fileSizeHelper';
 
-const { IMAGE_SELECTOR_ERROR_TYPES, JPG_TYPE_REGEX, PDF_TYPE_REGEX } = consts;
+const { IMAGE_SELECTOR_ERROR_TYPES, JPG_TYPE_REGEX, MB_TO_BYTES, PDF_TYPE_REGEX } = consts;
 
 export const documentErrorMessageGenerator = async (uri, maxFileSize = 3145728) => {
   const { size } = await FileSystem.getInfoAsync(uri);
@@ -28,7 +28,7 @@ export const imageErrorMessageGenerator = async (uri) => {
   const { size } = await FileSystem.getInfoAsync(uri);
 
   const isJPG = JPG_TYPE_REGEX.test(uri);
-  const isGreater1MB = size > 1048576;
+  const isGreater1MB = size > MB_TO_BYTES[1];
 
   const errorMessage =
     !isJPG && isGreater1MB
@@ -73,17 +73,17 @@ export const errorTextGenerator = async ({
       setInfoAndErrorText([
         ...infoAndErrorText,
         {
-          errorText: size > 10485760 && texts.volunteer.imageGreater10MBError,
+          errorText: size > MB_TO_BYTES[10] && texts.volunteer.imageGreater10MBError,
           infoText: `${imageName}`
         }
       ]);
       break;
     case IMAGE_SELECTOR_ERROR_TYPES.SUE:
-      /* the server does not support files more than 10MB in size. */
+      /* the server does not support files more than 30MB in size. */
       setInfoAndErrorText([
         ...infoAndErrorText,
         {
-          errorText: size > 10485760 && texts.sue.report.alerts.imageGreater10MBError
+          errorText: size > MB_TO_BYTES[30] && texts.sue.report.alerts.imageGreater30MBError
         }
       ]);
       break;

@@ -26,7 +26,7 @@ import { RegularText } from './Text';
 import { VolunteerAvatar } from './volunteer';
 import { Wrapper } from './Wrapper';
 
-const { IMAGE_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
+const { IMAGE_TYPE_REGEX, MB_TO_BYTES, VIDEO_TYPE_REGEX } = consts;
 
 /**
  * it is the component used to realise the chat function
@@ -83,7 +83,7 @@ export const Chat = ({
 
   const errorHandler = async (uri) => {
     const { size } = await FileSystem.getInfoAsync(uri);
-    const errorText = size > 10485760 && {
+    const errorText = size > MB_TO_BYTES[10] && {
       title: texts.errors.image.title,
       message: texts.volunteer.mediaGreater10MBError
     };
