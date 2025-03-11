@@ -311,7 +311,7 @@ export const Calendar = ({
 
       {subList && (
         <ListComponent
-          contentContainerStyle={{ paddingHorizontal: normalize(1) }}
+          contentContainerStyle={styles.smallPaddingHorizontal}
           data={loadingSubList || isRefetchingSubList ? [] : listItems}
           fetchMoreData={fetchMoreData}
           ListEmptyComponent={
@@ -328,7 +328,7 @@ export const Calendar = ({
               </>
             )
           }
-          ListHeaderComponent={<View style={{ height: normalize(20) }} />}
+          ListHeaderComponent={<View style={styles.spacerSmall} />}
           navigation={navigation}
           query={query}
           queryVariables={queryVariables}
@@ -344,7 +344,13 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: normalize(16)
   },
+  smallPaddingHorizontal: {
+    paddingHorizontal: normalize(1)
+  },
   spacer: {
     height: normalize(70)
+  },
+  spacerSmall: {
+    height: normalize(20)
   }
 });

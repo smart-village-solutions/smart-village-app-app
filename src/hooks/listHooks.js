@@ -1,7 +1,7 @@
 import _isArray from 'lodash/isArray';
 import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
 import {
@@ -273,12 +273,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return (
-            <View
-              style={{
-                marginLeft: target == 'StickyHeader' ? 0 : -normalize(16),
-                marginRight: target == 'StickyHeader' ? 0 : -normalize(16)
-              }}
-            >
+            <View style={target == 'StickyHeader' ? styes.eventStickyHeader : styes.eventHeader}>
               <EventSectionHeader {...{ item, navigation, options, query }} />
             </View>
           );
@@ -382,3 +377,14 @@ export const useGroupedData = (query, data, groupKey) => {
     }
   }
 };
+
+const styes = StyleSheet.create({
+  eventHeader: {
+    marginLeft: -normalize(16),
+    marginRight: -normalize(16)
+  },
+  eventStickyHeader: {
+    marginLeft: 0,
+    marginRight: 0
+  }
+});
