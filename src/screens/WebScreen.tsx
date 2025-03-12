@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { noop } from 'lodash';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
@@ -51,7 +51,7 @@ export const WebScreen = ({
       <WebView
         source={{ uri: webUrl }}
         startInLoadingState
-        style={{ backgroundColor: colors.surface }}
+        style={styles.container}
         incognito
         mediaPlaybackRequiresUserAction
         renderLoading={() => (
@@ -71,3 +71,9 @@ export const WebScreen = ({
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface
+  }
+});

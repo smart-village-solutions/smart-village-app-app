@@ -91,13 +91,13 @@ export const TextListItem: NamedExoticComponent<Props> & {
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
     let titleText = withCard ? (
-      <BoldText small style={{ marginTop: normalize(4) }}>
+      <BoldText small style={styles.topMargin}>
         {trimNewLines(title)}
       </BoldText>
     ) : isHeadlineTitle ? (
       <HeadlineText small>{trimNewLines(title)}</HeadlineText>
     ) : withCard ? (
-      <BoldText style={{ marginTop: normalize(4) }}>{trimNewLines(title)}</BoldText>
+      <BoldText style={styles.topMargin}>{trimNewLines(title)}</BoldText>
     ) : (
       <BoldText small>{trimNewLines(title)}</BoldText>
     );
@@ -235,6 +235,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: normalize(6)
+  },
+  topMargin: {
+    marginTop: normalize(4)
   },
   withBigCardStyle: {
     height: normalize(72),

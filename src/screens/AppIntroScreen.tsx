@@ -215,9 +215,7 @@ export const AppIntroScreen = ({ setOnboardingComplete, onlyTermsAndConditions }
               <SliderButton
                 isPlaceholder
                 label={texts.appIntro.continue}
-                style={{
-                  borderBottomColor: colors.placeholder
-                }}
+                style={styles.sliderButtonAdditional}
               />
             </TouchableOpacity>
           </View>
@@ -260,6 +258,9 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.darkText,
     borderBottomWidth: 1,
     marginVertical: 12 // no normalization here as the dots position does not use normalization either
+  },
+  sliderButtonAdditional: {
+    borderBottomColor: colors.placeholder
   },
   spacer: {
     height: normalize(40)

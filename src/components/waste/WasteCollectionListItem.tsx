@@ -19,11 +19,11 @@ export const WasteCollectionListItem = ({ item: groupedItem, options }) => {
     <>
       <Wrapper style={styles.cell}>
         <WrapperRow>
-          <View style={{ width: '15%' }}>
+          <View style={styles.width15}>
             <RegularText placeholder>{sectionHeaderTop}</RegularText>
             <HeadlineText biggest>{sectionHeaderBottom}</HeadlineText>
           </View>
-          <WrapperHorizontal style={{ width: '85%' }}>
+          <WrapperHorizontal style={styles.width85}>
             {groupedItem.map((item) => (
               <View key={item.listDate}>
                 {Object.keys(usedTypes).map(
@@ -61,5 +61,11 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: normalize(8),
     alignItems: 'center'
+  },
+  width15: {
+    width: '15%'
+  },
+  width85: {
+    width: '85%'
   }
 });

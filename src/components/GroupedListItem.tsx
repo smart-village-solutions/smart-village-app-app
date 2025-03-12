@@ -16,11 +16,11 @@ export const GroupedListItem = ({ item: groupedItem, navigation, options }) => {
   return (
     <Wrapper style={styles.cell}>
       <WrapperRow>
-        <View style={{ width: '15%' }}>
+        <View style={styles.width15}>
           <RegularText lighter>{sectionHeaderTop}</RegularText>
           <HeadlineText big>{sectionHeaderBottom}</HeadlineText>
         </View>
-        <WrapperHorizontal style={{ width: '85%' }}>
+        <WrapperHorizontal style={styles.width85}>
           {groupedItem.map((item, index) => (
             <View key={item.id}>
               <TouchableOpacity onPress={() => navigation.navigate(ScreenName.Detail, item.params)}>
@@ -49,5 +49,11 @@ const styles = StyleSheet.create({
   },
   spacerTiny: {
     marginBottom: normalize(16)
+  },
+  width15: {
+    width: '15%'
+  },
+  width85: {
+    width: '85%'
   }
 });
