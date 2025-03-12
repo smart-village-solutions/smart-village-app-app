@@ -90,17 +90,19 @@ export const MainTabNavigator = () => {
 
   if (!tabConfigs || loading) return <LoadingSpinner loading />;
 
+  const { inactiveBackgroundColor: backgroundColor } = tabRoutes || tabNavigatorConfig;
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarAllowFontScaling: false,
+        tabBarStyle: { backgroundColor },
         tabBarActiveBackgroundColor:
           tabRoutes?.activeBackgroundColor || tabNavigatorConfig.activeBackgroundColor,
         tabBarActiveTintColor: tabRoutes?.activeTintColor || tabNavigatorConfig.activeTintColor,
         tabBarHideOnKeyboard: true,
-        tabBarInactiveBackgroundColor:
-          tabRoutes?.inactiveBackgroundColor || tabNavigatorConfig.inactiveBackgroundColor,
+        tabBarInactiveBackgroundColor: backgroundColor,
         tabBarInactiveTintColor:
           tabRoutes?.inactiveTintColor || tabNavigatorConfig.inactiveTintColor,
         tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'

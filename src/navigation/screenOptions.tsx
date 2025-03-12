@@ -1,10 +1,8 @@
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { OrientationContext } from '../OrientationProvider';
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import { colors, normalize } from '../config';
 
