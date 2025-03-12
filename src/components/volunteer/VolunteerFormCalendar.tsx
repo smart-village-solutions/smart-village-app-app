@@ -22,7 +22,8 @@ import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
-const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
+const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_TYPE_REGEX, MB_TO_BYTES, PDF_TYPE_REGEX, URL_REGEX } =
+  consts;
 
 const fileFilters = (fileRegex: RegExp, calendarData: Calendar) =>
   JSON.stringify(
@@ -427,7 +428,7 @@ export const VolunteerFormCalendar = ({
                 control,
                 field,
                 isVolunteer: true,
-                maxFileSize: '10485760',
+                maxFileSize: MB_TO_BYTES[10],
                 item: {
                   name: 'documents',
                   label: texts.volunteer.documents,

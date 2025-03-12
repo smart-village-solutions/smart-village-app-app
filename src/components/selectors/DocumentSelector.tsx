@@ -18,7 +18,7 @@ import { Input } from '../form';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
-const { URL_REGEX } = consts;
+const { MB_TO_BYTES, URL_REGEX } = consts;
 
 type TValue = {
   cachedAttachment: string;
@@ -112,7 +112,7 @@ export const DocumentSelector = ({
     if (!uri) return;
 
     /* the server does not support files more than 10MB in size. */
-    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+    const volunteerErrorText = size > MB_TO_BYTES[10] && texts.volunteer.imageGreater10MBError;
     /* the server does not support files more than maxFileSize in size. */
     const errorText = await documentErrorMessageGenerator(uri, maxFileSize);
 

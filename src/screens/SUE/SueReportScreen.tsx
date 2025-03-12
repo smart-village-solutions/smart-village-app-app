@@ -43,7 +43,7 @@ import { postRequests } from '../../queries/SUE';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
 
-const { INPUT_KEYS } = consts;
+const { INPUT_KEYS, MB_TO_BYTES } = consts;
 
 type TRequiredFields = {
   [key: string]: {
@@ -359,15 +359,15 @@ export const SueReportScreen = ({
 
           let totalSize = 0;
           const totalSizeLimit = parseInt(limitation?.maxAttachmentSize?.value);
-          const isImageGreater10MB = images.some(({ size }: { size: number }) => {
+          const isImageGreater30MB = images.some(({ size }: { size: number }) => {
             totalSize += size;
-            return size >= 10485760;
+            return size >= MB_TO_BYTES[30];
           });
 
-          /* the server does not support files more than 10MB in size. */
-          if (isImageGreater10MB) {
+          /* the server does not support files more than 30MB in size. */
+          if (isImageGreater30MB) {
             /* the server does not support files larger than `totalSizeLimit` in total of all files. */
-            alertText = texts.sue.report.alerts.imageGreater10MBError;
+            alertText = texts.sue.report.alerts.imageGreater30MBError;
           } else if (totalSize >= totalSizeLimit) {
             alertText = texts.sue.report.alerts.imagesTotalSizeError(
               formatSizeStandard(totalSizeLimit, 0)
