@@ -1,15 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
-import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useRef } from 'react';
-import { AppState, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { MainApp } from './src';
 import { auth } from './src/auth';
-import { fontConfig, namespace, secrets } from './src/config';
-import { SUE_REPORT_VALUES } from './src/screens';
+import { namespace, secrets } from './src/config';
 
 const sentryApi = secrets[namespace]?.sentryApi;
 
@@ -26,7 +23,6 @@ SplashScreen.preventAutoHideAsync();
 
 const App = () => {
   const appState = useRef(AppState.currentState);
-  const [isFontLoaded] = useFonts(fontConfig);
 
   useEffect(() => {
     // runs auth() if app returns from background or inactive to foreground
@@ -43,33 +39,11 @@ const App = () => {
     };
   }, []);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (isFontLoaded) {
-      // when the application is closed and reopened, the saved data in the sue report form is deleted
-      await AsyncStorage.removeItem(SUE_REPORT_VALUES);
-
-      // This tells the splash screen to hide immediately! If we call this after
-      // `isFontLoaded`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
-      await SplashScreen.hideAsync();
-    }
-  }, [isFontLoaded]);
-
-  if (!isFontLoaded) return null;
-
   return (
-    <GestureHandlerRootView style={styles.flex} onLayout={onLayoutRootView}>
+    <GestureHandlerRootView>
       <MainApp />
     </GestureHandlerRootView>
   );
 };
 
 export default Sentry.wrap(App);
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1
-  }
-});

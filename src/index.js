@@ -9,7 +9,6 @@ import * as SecureStore from 'expo-secure-store';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useContext, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { ActivityIndicator } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import appJson from '../app.json';
@@ -17,8 +16,7 @@ import appJson from '../app.json';
 import { AccessibilityProvider } from './AccessibilityProvider';
 import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
-import { LoadingContainer } from './components';
-import { colors, consts, namespace, secrets } from './config';
+import { consts, namespace, secrets } from './config';
 import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
   geoLocationToLocationObject,
@@ -35,6 +33,7 @@ import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
+import RootView from './RootView';
 import { initialContext, SettingsProvider } from './SettingsProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 
@@ -201,13 +200,7 @@ const MainAppWithApolloProvider = () => {
     !!isMainserverUp && prepare();
   }, [isMainserverUp]);
 
-  if (loading || !client) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
-  }
+  if (loading || !client) return null;
 
   if (initialGlobalSettings.imageAspectRatio) {
     consts.IMAGE_ASPECT_RATIO = parsedImageAspectRatio(initialGlobalSettings.imageAspectRatio);
@@ -227,7 +220,9 @@ const MainAppWithApolloProvider = () => {
           <OnboardingManager>
             <ProfileProvider>
               <UnreadMessagesProvider>
-                <Navigator navigationType={initialGlobalSettings.navigation} />
+                <RootView>
+                  <Navigator navigationType={initialGlobalSettings.navigation} />
+                </RootView>
               </UnreadMessagesProvider>
             </ProfileProvider>
           </OnboardingManager>
