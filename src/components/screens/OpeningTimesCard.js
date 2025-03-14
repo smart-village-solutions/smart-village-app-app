@@ -66,7 +66,7 @@ export const OpeningTimesCard = ({
 
               {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
                 <WrapperRow>
-                  {(open === undefined || open === true) && (!!timeFrom || !!timeTo) && (
+                  {open !== false && (!!timeFrom || !!timeTo) && (
                     <TimeBox>
                       {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
                       {!!timeFrom && !!timeTo && timeFrom !== timeTo && (
