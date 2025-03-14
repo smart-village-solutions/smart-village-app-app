@@ -453,7 +453,11 @@ export const SueReportScreen = ({
       setStoredValues(storedValues);
       setService(storedValues.service);
       setSelectedPosition(storedValues.selectedPosition);
-      Object.entries(storedValues).map(([key, value]) => setValue(key, value));
+      Object.entries(storedValues).forEach(([key, value]) => {
+        if (key !== 'service' && key !== 'selectedPosition') {
+          setValue(key, value);
+        }
+      });
     }
 
     setIsLoadingStoredData(false);
