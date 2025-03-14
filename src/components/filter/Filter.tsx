@@ -42,7 +42,9 @@ const deleteInitialStartDateFromQueryVariables = (queryVariables: FilterProps): 
     return {
       ...newQueryVariables,
       start_date: queryVariables.dateRange[0],
-      end_date: queryVariables.dateRange[1]
+      // if only `start_date` is selected, `end_date` is automatically set to '9999-12-31' and `end_date`
+      // is set to null to avoid seeing this value in the filter
+      end_date: queryVariables.dateRange[1] === '9999-12-31' ? null : queryVariables.dateRange[1]
     };
   }
 
@@ -116,7 +118,11 @@ export const Filter = ({
 
   useEffect(() => {
     if (isOverlay) {
-      const activeFilters = _omit(filters, Object.keys(initialQueryVariables || {}));
+      const activeFilters = _omit(filters, [
+        ...Object.keys(initialQueryVariables || {}),
+        'start_date',
+        'end_date'
+      ]);
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
         if (key !== 'saveable' && activeFilters[key] !== false) {
           acc[key] = activeFilters[key];
