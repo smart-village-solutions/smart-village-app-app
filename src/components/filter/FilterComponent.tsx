@@ -24,7 +24,12 @@ type Props = {
   setFilters: React.Dispatch<FilterProps>;
 };
 
-export const FilterComponent = ({ filters, filterTypes, isOverlayFilter, setFilters }: Props) => {
+export const FilterComponent = ({
+  filters,
+  filterTypes,
+  isOverlayFilter = false,
+  setFilters
+}: Props) => {
   const [sliderVisible, setSliderVisible] = useState(
     !filters?.radiusSearch?.currentPosition || false
   );
