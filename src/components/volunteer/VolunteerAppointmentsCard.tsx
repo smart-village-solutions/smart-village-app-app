@@ -66,6 +66,7 @@ export const VolunteerAppointmentsCard = ({
     })}
   </Wrapper>
 );
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   divider: {

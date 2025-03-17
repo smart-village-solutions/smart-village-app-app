@@ -11,11 +11,16 @@ import {
   CalendarListToggle,
   DefaultKeyboardAvoidingView,
   EmptyMessage,
+  Filter,
+  HtmlView,
   ListComponent,
   LoadingSpinner,
+  RegularText,
   SafeAreaViewFlex,
+  Search,
   VolunteerPostTextField,
-  Wrapper
+  Wrapper,
+  WrapperVertical
 } from '../../components';
 import { colors, consts, texts } from '../../config';
 import {
@@ -23,19 +28,82 @@ import {
   useConversationsHeader,
   useGroupsHeader,
   useOpenWebScreen,
-  useVolunteerData
+  useStaticContent,
+  useVolunteerData,
+  VOLUNTEER_FILTER_BY,
+  VOLUNTEER_SORT_BY
 } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName, VolunteerUser } from '../../types';
 
-const { ROOT_ROUTE_NAMES } = consts;
+const { FILTER_TYPES, ROOT_ROUTE_NAMES } = consts;
 
-// eslint-disable-next-line complexity
+const limit = 99999; // NOTE: we want to receive all groups
+const page = 1;
+
+const STATUSES = [
+  {
+    value: texts.volunteer.filter.statuses.member,
+    selected: false,
+    filterValue: VOLUNTEER_FILTER_BY.MEMBER,
+    index: 1,
+    id: 1
+  },
+  {
+    value: texts.volunteer.filter.statuses.follow,
+    selected: false,
+    filterValue: VOLUNTEER_FILTER_BY.FOLLOW,
+    index: 2,
+    id: 2
+  },
+  {
+    value: texts.volunteer.filter.statuses.none,
+    selected: false,
+    filterValue: VOLUNTEER_FILTER_BY.NONE,
+    index: 3,
+    id: 3
+  },
+  {
+    value: texts.volunteer.filter.statuses.archived,
+    selected: false,
+    filterValue: VOLUNTEER_FILTER_BY.ARCHIVED,
+    index: 4,
+    id: 4
+  }
+];
+
+const SORT_OPTIONS = [
+  {
+    value: texts.filter.sorting.alphabetical,
+    selected: false,
+    filterValue: VOLUNTEER_SORT_BY.ALPHABETICAL,
+    index: 1,
+    id: 1
+  },
+  {
+    value: texts.filter.sorting.createdAtLatestFirst,
+    selected: false,
+    filterValue: VOLUNTEER_SORT_BY.CREATED_AT_LATEST_FIRST,
+    index: 2,
+    id: 2
+  },
+  {
+    value: texts.filter.sorting.createdAtOldestFirst,
+    selected: false,
+    filterValue: VOLUNTEER_SORT_BY.CREATED_AT_OLDEST_FIRST,
+    index: 3,
+    id: 3
+  }
+];
+
+/* eslint-disable complexity */
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { calendarToggle = false } = settings;
-  const [queryVariables] = useState(route.params?.queryVariables ?? {});
+  const initialQueryVariables = route.params?.queryVariables ?? { limit, page };
+  const [queryVariables] = useState(initialQueryVariables);
+  const [filterVariables, setFilterVariables] = useState(initialQueryVariables);
   const [showCalendar, setShowCalendar] = useState(false);
   const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
@@ -48,6 +116,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
+  const isGroups =
+    query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY;
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
   const { data, isLoading, refetch } = useVolunteerData({
@@ -57,7 +127,18 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     isCalendar,
     titleDetail,
     bookmarkable,
-    onlyUpcoming: !showCalendar
+    onlyUpcoming: !showCalendar,
+    filterVariables
+  });
+
+  const {
+    data: dataGroupsIntroText,
+    loading: isLoadingGroupsIntroText,
+    refetch: refetchGroupsIntroText
+  } = useStaticContent({
+    refreshTimeKey: 'publicJsonFile-volunteerGroupsIntroText',
+    name: 'volunteerGroupsIntroText',
+    type: 'html'
   });
 
   // action to open source urls
@@ -70,6 +151,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   useFocusEffect(
     useCallback(() => {
       refetch();
+      refetchGroupsIntroText();
     }, [])
   );
 
@@ -82,7 +164,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     }, [])
   );
 
-  if (isLoading) {
+  if (isLoading || isLoadingGroupsIntroText) {
     return <LoadingSpinner loading />;
   }
 
@@ -103,6 +185,50 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                   contentContainerId={queryVariables?.contentContainerId}
                   refetch={refetch}
                 />
+              )}
+              {isGroups && (
+                <>
+                  <WrapperVertical>
+                    <HtmlView html={dataGroupsIntroText} />
+                  </WrapperVertical>
+                  <WrapperVertical>
+                    <Search
+                      placeholder={texts.filter.search}
+                      setQueryVariables={setFilterVariables}
+                    />
+                  </WrapperVertical>
+                  <Filter
+                    filterTypes={[
+                      {
+                        type: FILTER_TYPES.DROPDOWN,
+                        label: texts.volunteer.filter.status,
+                        name: 'status',
+                        data: STATUSES,
+                        searchable: false,
+                        placeholder: texts.volunteer.filter.chooseStatus
+                      },
+                      {
+                        type: FILTER_TYPES.DROPDOWN,
+                        label: texts.volunteer.filter.sort,
+                        name: 'sortBy',
+                        data: SORT_OPTIONS,
+                        searchable: false,
+                        placeholder: texts.volunteer.filter.chooseSort
+                      }
+                    ]}
+                    initialQueryVariables={initialQueryVariables}
+                    isOverlay
+                    queryVariables={filterVariables}
+                    setQueryVariables={setFilterVariables}
+                    withSearch
+                  />
+
+                  {!!data?.length && (
+                    <RegularText small>
+                      {data.length} {data.length === 1 ? texts.filter.result : texts.filter.results}
+                    </RegularText>
+                  )}
+                </>
               )}
             </>
           }
@@ -159,6 +285,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   noPaddingBottom: {

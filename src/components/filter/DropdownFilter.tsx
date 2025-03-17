@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
+import { colors, normalize } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps } from '../../types';
 import { DropdownSelect } from '../DropdownSelect';
-import { colors, normalize } from '../../config';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   data: DropdownProps[];
   filters: FilterProps;
-  isOverlayFilter: boolean;
+  isOverlayFilter?: boolean;
   label?: string;
   multipleSelect?: boolean;
   name: keyof FilterProps;
@@ -24,7 +24,7 @@ export const DropdownFilter = ({
   containerStyle,
   data,
   filters,
-  isOverlayFilter,
+  isOverlayFilter = false,
   label,
   multipleSelect,
   name,
@@ -41,7 +41,13 @@ export const DropdownFilter = ({
   };
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
     initiallySelectedItem,
-    ...data
+    ...data.map((item) => ({
+      ...item,
+      selected: multipleSelect
+        ? // TODO: für multiple select testen, ob das so stimmt
+          Array.isArray(filters[name]) && filters[name]?.includes(item.id || item.value)
+        : item.filterValue === filters[name] || item.value === filters[name]
+    }))
   ]);
 
   useEffect(() => {
