@@ -149,7 +149,7 @@ export const EventList = ({
         refreshControl={refreshControl}
         renderItem={renderItem}
         stickyHeaderIndices={stickyHeaderIndices}
-        contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
+        contentContainerStyle={{ ...styles.contentContainer, ...contentContainerStyle }}
       />
     </>
   );
