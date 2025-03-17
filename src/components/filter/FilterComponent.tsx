@@ -20,11 +20,16 @@ const { FILTER_TYPES } = consts;
 type Props = {
   filters: FilterProps;
   filterTypes?: FilterTypesProps[];
-  isOverlayFilter: boolean;
+  isOverlayFilter?: boolean;
   setFilters: React.Dispatch<FilterProps>;
 };
 
-export const FilterComponent = ({ filters, filterTypes, isOverlayFilter, setFilters }: Props) => {
+export const FilterComponent = ({
+  filters,
+  filterTypes,
+  isOverlayFilter = false,
+  setFilters
+}: Props) => {
   const [sliderVisible, setSliderVisible] = useState(
     !filters?.radiusSearch?.currentPosition || false
   );

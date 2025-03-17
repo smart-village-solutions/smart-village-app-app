@@ -123,6 +123,7 @@ export const Filter = ({
         'start_date',
         'end_date'
       ]);
+
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
         if (key !== 'saveable' && activeFilters[key] !== false) {
           acc[key] = activeFilters[key];

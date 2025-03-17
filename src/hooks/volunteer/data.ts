@@ -11,6 +11,12 @@ import {
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
 
+export const VOLUNTEER_SORT_BY = {
+  ALPHABETICAL: 'name asc',
+  CREATED_AT_LATEST_FIRST: 'id desc',
+  CREATED_AT_OLDEST_FIRST: 'id asc'
+};
+
 /* eslint-disable complexity */
 export const useVolunteerData = ({
   query,
@@ -20,7 +26,8 @@ export const useVolunteerData = ({
   isSectioned,
   onlyUpcoming = true,
   titleDetail,
-  bookmarkable
+  bookmarkable,
+  filterVariables
 }: {
   query: VolunteerQuery;
   queryVariables?: { dateRange?: string[]; contentContainerId?: number; id?: number };
@@ -30,6 +37,7 @@ export const useVolunteerData = ({
   onlyUpcoming?: boolean;
   titleDetail?: string;
   bookmarkable?: boolean;
+  filterVariables?: { search?: string; sortBy?: string };
 }): {
   data: any[];
   isLoading: boolean;
@@ -51,6 +59,15 @@ export const useVolunteerData = ({
 
     if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
       processedVolunteerData = data?.participants?.attending as any[];
+    }
+
+    if (filterVariables?.search?.length) {
+      processedVolunteerData = processedVolunteerData?.filter(
+        (item: { description?: string; name?: string; tags?: string[] }) =>
+          item.description?.toLowerCase().includes(filterVariables.search.toLowerCase()) ||
+          item.name?.toLowerCase().includes(filterVariables.search.toLowerCase()) ||
+          item.tags?.map((tag) => tag.toLowerCase())?.includes(filterVariables.search.toLowerCase())
+      );
     }
 
     processedVolunteerData = parseListItemsFromQuery(query, processedVolunteerData, titleDetail, {
@@ -88,7 +105,13 @@ export const useVolunteerData = ({
 
     // ORDERING
     if (query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY) {
-      processedVolunteerData = _orderBy(processedVolunteerData, 'name', 'asc');
+      const sortBy = filterVariables?.sortBy || VOLUNTEER_SORT_BY.ALPHABETICAL;
+
+      processedVolunteerData = _orderBy(
+        processedVolunteerData,
+        sortBy.split(' ')[0],
+        sortBy.split(' ')[1]
+      );
     }
 
     if (isCalendar) {
@@ -119,7 +142,17 @@ export const useVolunteerData = ({
 
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
-  }, [query, queryVariables, isCalendar, isSectioned, onlyUpcoming, data, refetch]);
+  }, [
+    query,
+    queryVariables,
+    isCalendar,
+    isSectioned,
+    onlyUpcoming,
+    data,
+    filterVariables,
+    titleDetail,
+    bookmarkable
+  ]);
 
   useEffect(() => {
     processVolunteerData();
