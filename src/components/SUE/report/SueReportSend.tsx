@@ -36,7 +36,7 @@ export const SueReportSend = ({
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = sueConfig;
   const {
-    defaultRating = 4,
+    defaultRating = 0,
     reportSendDone = {},
     reportSendLoading = {},
     showFeedbackSection: feedbackSection

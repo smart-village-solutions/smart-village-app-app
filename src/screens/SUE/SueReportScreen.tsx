@@ -561,14 +561,9 @@ export const SueReportScreen = ({
             return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
           }
 
-          setTimeout(
-            () => {
-              setIsDone(true);
-              resetStoredValues();
-              setIsLoading(false);
-            },
-            JSON.parse(sueReportData?.images).length ? 0 : 3000
-          );
+          setIsDone(true);
+          resetStoredValues();
+          setIsLoading(false);
         }
       });
     },
