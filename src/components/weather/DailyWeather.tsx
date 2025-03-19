@@ -42,18 +42,18 @@ export const DailyWeather = ({ date, description, icon, temperatures, index }: P
           resizeMode="contain"
         />
         <WrapperRow>
-          <WrapperRow>
+          <WrapperRow style={styles.temperatureContainer} itemsCenter>
             <Icon.MinTemperature color={colors.darkText} />
             <RegularText>
-              {min < 10 ? ' ' : ''}
+              {min < 9.5 ? ' ' : ''}
               {min.toFixed(0)}°
             </RegularText>
           </WrapperRow>
           <View style={styles.marginHorizontal} />
-          <WrapperRow>
+          <WrapperRow style={styles.temperatureContainer} itemsCenter>
             <Icon.MaxTemperature color={colors.darkText} />
             <RegularText>
-              {max < 10 ? ' ' : ''}
+              {max < 9.5 ? ' ' : ''}
               {max.toFixed(0)}°
             </RegularText>
           </WrapperRow>
@@ -70,6 +70,9 @@ const styles = StyleSheet.create({
   icon: {
     aspectRatio: 1,
     width: normalize(44)
+  },
+  temperatureContainer: {
+    width: normalize(50)
   },
   textWrapper: {
     width: normalize(70)
