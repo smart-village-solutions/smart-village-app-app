@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
@@ -139,6 +139,7 @@ export const Map = ({
   const { settings = {} } = globalSettings;
   const { zoomLevelForMaps = {}, locationService = {} } = settings;
   const { locationSettings } = useLocationSettings();
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const showsUserLocation =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
@@ -186,6 +187,12 @@ export const Map = ({
       longitude: otherProps.currentPosition.coords.longitude
     };
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMapLoaded(true);
+    }, 300);
+  }, []);
 
   return (
     <View style={[styles.container, style]}>
