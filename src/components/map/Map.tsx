@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
