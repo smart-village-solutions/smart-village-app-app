@@ -127,6 +127,8 @@ export const createDynamicTabConfig = (
   iconLandscapeStyle?: ViewStyle,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
+  strokeColor?: string,
+  strokeWidth?: number,
   tabBarLabelStyle?: ViewStyle,
   tilesScreenParams?: Record<string, any>
 ): TabConfig => ({
@@ -143,10 +145,12 @@ export const createDynamicTabConfig = (
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        iconName={iconName}
         Icon={Icon[iconName as keyof typeof Icon]}
+        iconName={iconName}
         landscapeStyle={iconLandscapeStyle}
         size={normalize(iconSize)}
+        strokeColor={strokeColor}
+        strokeWidth={strokeWidth}
         style={iconStyle}
       />
     )

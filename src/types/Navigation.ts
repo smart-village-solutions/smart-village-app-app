@@ -144,6 +144,8 @@ export type CustomTab = {
   label: string;
   params?: Record<string, any>;
   screen: ScreenName;
+  strokeColor?: string;
+  strokeWidth?: number;
   tabBarLabelStyle?: ViewStyle;
   tilesScreenParams?: Record<string, any>;
 };
