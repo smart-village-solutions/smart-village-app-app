@@ -45,13 +45,13 @@ export class CategoryList extends React.PureComponent {
     }
 
     // Sorting data alphabetically
-    data.sort((a, b) => a.title.localeCompare(b.title));
+    const sortedData = [...data].sort((a, b) => a.title.localeCompare(b.title));
 
     const sectionedData = [
       {
         title: categoryTitlesPointsOfInterest,
         data: _filter(
-          data,
+          sortedData,
           (category) =>
             !!category.pointsOfInterestTreeCount && (!category.parent || queryVariables.ids)
         )
@@ -59,7 +59,7 @@ export class CategoryList extends React.PureComponent {
       {
         title: categoryTitlesTours,
         data: _filter(
-          data,
+          sortedData,
           (category) => !!category.toursTreeCount && (!category.parent || queryVariables.ids)
         )
       }
