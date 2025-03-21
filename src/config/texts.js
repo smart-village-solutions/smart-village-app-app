@@ -28,7 +28,8 @@ export const texts = {
     }
   },
   appIntro: {
-    continue: 'Weiter'
+    continue: 'Weiter',
+    skip: 'Überspringen'
   },
   augmentedReality: {
     arInfoScreen: {
