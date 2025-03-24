@@ -67,6 +67,11 @@ export const WebScreen = ({
         applicationNameForUserAgent={
           !webUrl.includes('bbnavi.de') ? appJson.expo.scheme : undefined
         }
+        // https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md#basicauthcredential
+        basicAuthCredential={{
+          username: '',
+          password: ''
+        }}
       />
     </SafeAreaViewFlex>
   );
