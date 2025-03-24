@@ -26,12 +26,17 @@
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "appleTeamId": "",
       "bundleIdentifier": "de.dev.smartvillage.app",
       "buildNumber": "1",
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
-        "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": true },
+        "AppStoreID": "",
+        "AppStoreCountry": "de",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        },
         "NSCameraUsageDescription": "Diese App benötigt Zugriff auf die Kamera, um Fotos aufzunehmen und hochzuladen. Die aufgenommenen Fotos werden ausschließlich in der App für den vorgesehenen Zweck verwendet.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSPhotoLibraryAddUsageDescription": "Diese App benötigt Zugriff, um von dir aufgenommene Fotos in deiner Medienbibliothek zu speichern.",
