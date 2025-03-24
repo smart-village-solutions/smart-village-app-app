@@ -67,7 +67,7 @@ export const mapToMapMarkers = (
       iconBackgroundColor: backgroundColors?.[item.status],
       activeIconColor: activeIconColors?.[item.status],
       iconColor: iconColors?.[item.status],
-      iconBorderColor: colors.transparent,
+      iconBorderColor: iconColors?.[item.status],
       iconName: `Sue${_upperFirst(item.iconName)}`,
       id: item.serviceRequestId,
       position: {
