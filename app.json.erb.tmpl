@@ -26,11 +26,18 @@
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      <% if @apple_team_id.present? %>
+        "appleTeamId": "<%= @apple_team_id %>"
+      <% end %>
       "bundleIdentifier": "<%= @mobile_app_bundle_identifier %>",
       "buildNumber": "<%= @mobile_app_ios_build_number %>",
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
+         <% if @asc_app_id.present? %>
+          "AppStoreID": "<%= @asc_app_id %>",
+        <% end %>
+        "AppStoreCountry": "de",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
