@@ -157,7 +157,8 @@ export const Calendar = ({
             ? today
             : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
           moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
-        ]
+        ],
+        limit: undefined
       });
     },
     [queryVariablesWithDateRange]
@@ -243,7 +244,8 @@ export const Calendar = ({
   useEffect(() => {
     setQueryVariablesWithDateRange({
       ...queryVariables,
-      dateRange: queryVariablesWithDateRange.dateRange
+      dateRange: queryVariablesWithDateRange.dateRange,
+      limit: undefined
     });
 
     subList &&
