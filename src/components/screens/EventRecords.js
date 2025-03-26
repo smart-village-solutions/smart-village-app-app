@@ -19,7 +19,6 @@ import {
   REFRESH_CALENDAR,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper,
   WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
