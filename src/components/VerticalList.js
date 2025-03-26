@@ -21,6 +21,7 @@ export const VerticalList = ({
   isIndexStartingAt1 = false,
   isLoading = false,
   ListEmptyComponent,
+  ListFooterComponent,
   ListFooterLoadingIndicator,
   ListHeaderComponent,
   listType,
@@ -73,6 +74,10 @@ export const VerticalList = ({
       ListEmptyComponent={ListEmptyComponent}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={() => {
+        if (query === QUERY_TYPES.EVENT_RECORDS && ListFooterComponent) {
+          return <ListFooterComponent />;
+        }
+
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
             if (ListFooterLoadingIndicator) {
@@ -129,7 +134,7 @@ export const VerticalList = ({
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainerStyle}
       stickyHeaderIndices={stickyHeaderIndices}
-      style={styles.container}
+      style={[styles.container, isPartOfIndexScreen && styles.indexScreenContainer]}
     />
   );
 };
@@ -145,6 +150,9 @@ const styles = StyleSheet.create({
   loadingIndicator: {
     margin: normalize(14)
   },
+  indexScreenContainer: {
+    paddingHorizontal: normalize(8)
+  },
   spacer: {
     height: normalize(70)
   }
@@ -156,6 +164,7 @@ VerticalList.propTypes = {
   isIndexStartingAt1: PropTypes.bool,
   isLoading: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
+  ListFooterComponent: PropTypes.object,
   ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   listType: PropTypes.string,
