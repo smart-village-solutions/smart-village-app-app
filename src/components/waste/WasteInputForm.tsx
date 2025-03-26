@@ -3,7 +3,7 @@ import { Platform, StyleSheet } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { colors, device, normalize, texts } from '../../config';
-import { useFilterCities, useFilterStreets } from '../../hooks';
+import { useFilterCities, useFilterStreets, useKeyboardHeight } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
 import { Wrapper } from '../Wrapper';
@@ -58,6 +58,7 @@ export const WasteInputForm = ({
   const { filterStreets } = useFilterStreets(inputValueCity, isStreetInputFocused);
   const filteredCities = filterCities(inputValueCity, addressesData);
   const filteredStreets = filterStreets(inputValue, addressesData);
+  const keyboardHeight = useKeyboardHeight();
   /**
    * The variable `isStreetResultsHidden` indicates whether the street results should be hidden based
    * on the focused state of the street input and the auto-focus configuration, considering the presence
@@ -97,6 +98,7 @@ export const WasteInputForm = ({
         <Wrapper>
           <Label bold>{wasteTexts.location}</Label>
           <Autocomplete
+            autoCorrect={false}
             containerStyle={styles.autoCompleteContainer}
             data={filteredCities}
             disableFullscreenUI
@@ -110,7 +112,10 @@ export const WasteInputForm = ({
             inputContainerStyle={styles.autoCompleteInputContainer}
             listContainerStyle={[
               styles.autoCompleteListContainer,
-              { height: inputValueCitySelected ? undefined : listContainerHeight }
+              {
+                height: inputValueCitySelected ? undefined : listContainerHeight,
+                marginBottom: keyboardHeight
+              }
             ]}
             onChangeText={(text) => {
               setInputValueCitySelected(false);
@@ -142,6 +147,7 @@ export const WasteInputForm = ({
         <Wrapper style={styles.noPaddingTop}>
           <Label bold>{wasteTexts.street}</Label>
           <Autocomplete
+            autoCorrect={false}
             containerStyle={[
               styles.autoCompleteContainer,
               hasWasteAddressesTwoStep && styles.noBorderTop
@@ -156,7 +162,10 @@ export const WasteInputForm = ({
             }}
             hideResults={isStreetResultsHidden}
             inputContainerStyle={styles.autoCompleteInputContainer}
-            listContainerStyle={[styles.autoCompleteListContainer, { height: listContainerHeight }]}
+            listContainerStyle={[
+              styles.autoCompleteListContainer,
+              { height: listContainerHeight, marginBottom: keyboardHeight }
+            ]}
             onChangeText={(text) => setInputValue(text)}
             onBlur={() => setIsStreetInputFocused(false)}
             onFocus={() => {
