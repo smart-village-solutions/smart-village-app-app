@@ -204,7 +204,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     );
   }
 
-  if (!categoryIdsTabs?.length) {
+  if (!categoryIdsTabs?.length && !queryVariables?.categoryId) {
     return (
       <SafeAreaViewFlex>
         <EmptyMessage title={texts.noticeboard.emptyTitle} />
