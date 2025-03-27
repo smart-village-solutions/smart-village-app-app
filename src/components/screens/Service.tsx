@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
 import { usePersonalizedTiles } from '../../hooks';
+import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
@@ -49,6 +50,7 @@ export const Service = ({
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { orientation } = useContext(OrientationContext);
   const { settings = {} } = globalSettings;
   const { personalizedTiles = false, tileSizeFactor = 1 } = settings;
   const navigation = useNavigation<StackNavigationProp<any>>();
@@ -99,6 +101,12 @@ export const Service = ({
 
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
+  const tilesCount = tiles?.length || 0;
+  const isPortrait = orientation === 'portrait';
+  const itemsPerRow = isPortrait ? 3 : 5;
+  const lastRowItems = tilesCount % itemsPerRow;
+  const shouldCenter = lastRowItems > 0;
+
   return isEditMode ? (
     <DiagonalGradient
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
@@ -109,7 +117,12 @@ export const Service = ({
     </DiagonalGradient>
   ) : (
     <>
-      <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
+      <WrapperWrap
+        style={[styles.tilesContainer, shouldCenter && styles.centerLastRow]}
+        spaceBetween
+      >
+        {tiles?.map(renderItem)}
+      </WrapperWrap>
       {!!tiles?.length && toggler}
     </>
   );
@@ -121,5 +134,13 @@ const styles = StyleSheet.create({
   },
   toggler: {
     paddingVertical: normalize(14)
+  },
+  tilesContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  centerLastRow: {
+    justifyContent: 'space-around'
   }
 });
