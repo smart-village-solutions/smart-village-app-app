@@ -108,9 +108,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
   switch (listType) {
     case LIST_TYPES.CARD_LIST: {
-      renderItem = ({ item, index }) => {
+      renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+          return (
+            <View style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}>
+              <EventSectionHeader {...{ item, navigation, options, query }} />
+            </View>
+          );
         }
 
         return (
@@ -126,9 +130,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     case LIST_TYPES.CARD_TEXT_LIST: {
-      renderItem = ({ item, index, section }) => {
+      renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+          return (
+            <View style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}>
+              <EventSectionHeader {...{ item, navigation, options, query }} />
+            </View>
+          );
         }
 
         // in special lists such as `EventList`, since the data starts from the 1st index,
@@ -196,9 +204,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     case LIST_TYPES.IMAGE_TEXT_LIST: {
-      renderItem = ({ item, index, section }) => {
+      renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+          return (
+            <View style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}>
+              <EventSectionHeader {...{ item, navigation, options, query }} />
+            </View>
+          );
         }
 
         return (
@@ -273,7 +285,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return (
-            <View style={target == 'StickyHeader' ? styes.eventStickyHeader : styes.eventHeader}>
+            <View style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}>
               <EventSectionHeader {...{ item, navigation, options, query }} />
             </View>
           );
@@ -378,7 +390,7 @@ export const useGroupedData = (query, data, groupKey) => {
   }
 };
 
-const styes = StyleSheet.create({
+const styles = StyleSheet.create({
   eventHeader: {
     marginLeft: -normalize(16),
     marginRight: -normalize(16)
