@@ -153,7 +153,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 imageStyle,
                 withCard && styles.withBigCardStyle
               ]}
-              borderRadius={withCard ? normalize(8) : undefined}
+              borderRadius={normalize(8)}
               containerStyle={[styles.smallImageContainer, imageContainerStyle]}
             />
           ) : undefined)}
