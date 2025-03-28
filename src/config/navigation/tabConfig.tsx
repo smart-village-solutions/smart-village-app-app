@@ -124,6 +124,7 @@ export const createDynamicTabConfig = (
   label: string,
   totalCount: number,
   screen: ScreenName,
+  activeIconName?: keyof typeof Icon,
   iconLandscapeStyle?: ViewStyle,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
@@ -142,17 +143,29 @@ export const createDynamicTabConfig = (
     tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${totalCount})`,
     tabBarLabel: label,
     tabBarLabelStyle,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={Icon[iconName as keyof typeof Icon]}
-        iconName={iconName}
-        landscapeStyle={iconLandscapeStyle}
-        size={normalize(iconSize)}
-        strokeColor={strokeColor}
-        strokeWidth={strokeWidth}
-        style={iconStyle}
-      />
-    )
+    tabBarIcon: ({ color, focused }: TabBarIconProps) =>
+      !!activeIconName && focused ? (
+        <OrientationAwareIcon
+          color={color}
+          Icon={Icon[activeIconName as keyof typeof Icon]}
+          iconName={activeIconName}
+          landscapeStyle={iconLandscapeStyle}
+          size={normalize(iconSize)}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          style={iconStyle}
+        />
+      ) : (
+        <OrientationAwareIcon
+          color={color}
+          Icon={Icon[iconName as keyof typeof Icon]}
+          iconName={iconName}
+          landscapeStyle={iconLandscapeStyle}
+          size={normalize(iconSize)}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          style={iconStyle}
+        />
+      )
   }
 });
