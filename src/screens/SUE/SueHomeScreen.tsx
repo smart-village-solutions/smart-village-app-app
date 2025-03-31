@@ -14,7 +14,7 @@ import {
 } from '../../components';
 import { normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
-import { useStaticContent } from '../../hooks';
+import { useStaticContent, useVersionCheck } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
@@ -53,6 +53,8 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     showStaticContentList = true,
     staticContentListTitle
   } = staticContentList;
+
+  useVersionCheck();
 
   const { data } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticContentName}`,
