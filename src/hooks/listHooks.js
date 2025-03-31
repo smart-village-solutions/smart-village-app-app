@@ -35,25 +35,24 @@ const getListType = (query, listTypesSettings) => {
 };
 
 const EventSectionHeader = ({ item, navigation, options, query }) => (
-  <View style={styles.sectionHeaderContainer}>
-    <SectionHeader
-      title={momentFormat(item, 'DD.MM.YYYY dddd')}
-      onPress={
-        navigation
-          ? () =>
-              navigation.push(ScreenName.Index, {
-                title: texts.homeTitles.events,
-                query,
-                queryVariables: {
-                  ...options.queryVariables,
-                  dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
-                },
-                rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
-              })
-          : undefined
-      }
-    />
-  </View>
+  <SectionHeader
+    title={momentFormat(item, 'DD.MM.YYYY dddd')}
+    containerStyle={styles.sectionHeaderContainer}
+    onPress={
+      navigation
+        ? () =>
+            navigation.push(ScreenName.Index, {
+              title: texts.homeTitles.events,
+              query,
+              queryVariables: {
+                ...options.queryVariables,
+                dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
+              },
+              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+            })
+        : undefined
+    }
+  />
 );
 
 const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
@@ -390,7 +389,6 @@ const styles = StyleSheet.create({
     marginRight: 0
   },
   sectionHeaderContainer: {
-    backgroundColor: colors.surface,
-    paddingTop: normalize(8)
+    paddingTop: normalize(16)
   }
 });
