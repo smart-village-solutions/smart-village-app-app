@@ -1306,10 +1306,13 @@ export const texts = {
     tour: 'Tourverlauf'
   },
   updateAlert: {
+    later: 'Später',
+    updateMessage: 'Eine neue Version der App ist verfügbar. Möchtest du jetzt aktualisieren?',
     updateNow: 'Jetzt aktualisieren',
     updateRequiredMessage:
       'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisiere jetzt, um von den neuesten Verbesserungen zu profitieren.',
-    updateRequiredTitle: 'Aktualisierung erforderlich'
+    updateRequiredTitle: 'Aktualisierung erforderlich',
+    updateTitle: 'Neue Version verfügbar'
   },
   volunteer: {
     abort: 'Abbrechen',
