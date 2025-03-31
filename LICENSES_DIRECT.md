@@ -378,6 +378,16 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-picker
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-picker/README.md
+- **[expo-in-app-updates@0.9.0](https://github.com/SohelIslamImran/expo-in-app-updates)**
+    - name: expo-in-app-updates
+    - version: 0.9.0
+    - description: Native in-app updates for Android and iOS
+    - copyright: 
+    - licenses: MIT
+    - repository: https://github.com/SohelIslamImran/expo-in-app-updates
+    - publisher: SohelIslamImran
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-in-app-updates
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-in-app-updates/README.md
 - **[expo-linear-gradient@14.0.2](https://github.com/expo/expo)**
     - name: expo-linear-gradient
     - version: 14.0.2
@@ -948,16 +958,6 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-tab-view
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-tab-view/LICENSE
-- **[react-native-version-check-expo@3.4.7]()**
-    - name: react-native-version-check-expo
-    - version: 3.4.7
-    - description: A version checker for react-native expo applications
-    - copyright: Copyright (c) 2016 Taehyun Kim
-    - licenses: MIT
-    - repository: 
-    - publisher: Taehyun Kim
-    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo
-    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-version-check-expo/LICENSE
 - **[react-native-web@0.19.13](https://github.com/necolas/react-native-web)**
     - name: react-native-web
     - version: 0.19.13

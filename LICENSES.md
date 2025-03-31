@@ -10,8 +10,8 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 959 |
-| [ISC](https://spdx.org/licenses/ISC.html) | 89 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 946 |
+| [ISC](https://spdx.org/licenses/ISC.html) | 86 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 27 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 27 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 21 |
@@ -1167,16 +1167,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.0.5",
     "description": "A library for working with expo-updates code signing certificates"
   },
-  "@expo/config-plugins@7.3.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/config-plugins",
-    "version": "7.3.1",
-    "description": "A library for Expo config plugins",
-    "publisher": ""
-  },
   "@expo/config-plugins@9.0.15": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -1195,16 +1185,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@expo/config-plugins",
     "version": "9.0.16",
     "description": "A library for Expo config plugins",
-    "publisher": ""
-  },
-  "@expo/config-types@49.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2020-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2020-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/config-types",
-    "version": "49.0.0",
-    "description": "Types for the Expo config object app.config.ts",
     "publisher": ""
   },
   "@expo/config-types@52.0.4": {
@@ -1234,16 +1214,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config",
     "version": "10.0.10",
-    "description": "A library for interacting with the app.json",
-    "publisher": ""
-  },
-  "@expo/config@8.2.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/config",
-    "version": "8.2.1",
     "description": "A library for interacting with the app.json",
     "publisher": ""
   },
@@ -1287,26 +1257,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A package used by Expo CLI for processing images",
     "publisher": ""
   },
-  "@expo/json-file@8.2.37": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo-cli",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 650 Industries\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015 650 Industries",
-    "name": "@expo/json-file",
-    "version": "8.2.37",
-    "description": "A module for reading, writing, and manipulating JSON files",
-    "publisher": ""
-  },
-  "@expo/json-file@8.3.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/json-file",
-    "version": "8.3.3",
-    "description": "A module for reading, writing, and manipulating JSON files",
-    "publisher": ""
-  },
   "@expo/json-file@9.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -1345,16 +1295,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@expo/package-manager",
     "version": "1.7.2",
     "description": "A library for installing and finding packages in a project",
-    "publisher": ""
-  },
-  "@expo/plist@0.0.20": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo-cli",
-    "licenseText": "<!-- Title -->\n<h1 align=\"center\">\n👋 Welcome to <br><code>@expo/plist</code>\n</h1>\n\n<p align=\"center\">A macOS Plist parser/builder for Node.js and browsers.</p>\n\n<p align=\"center\">\n  <img src=\"https://flat.badgen.net/packagephobia/install/@expo/plist\">\n\n  <a href=\"https://www.npmjs.com/package/@expo/plist\">\n    <img src=\"https://flat.badgen.net/npm/dw/@expo/plist\" target=\"_blank\" />\n  </a>\n</p>\n\n<!-- Body -->\n\nForked from this [repo](https://github.com/TooTallNate/plist.js).",
-    "name": "@expo/plist",
-    "version": "0.0.20",
-    "description": "Mac OS X Plist parser/builder for Node.js and browsers",
-    "copyright": "",
     "publisher": ""
   },
   "@expo/plist@0.2.2": {
@@ -5148,16 +5088,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Provides an interface for getting and setting Clipboard content on Android, iOS and Web.",
     "copyright": ""
   },
-  "expo-constants@14.5.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "licenseText": "# expo-constants\n\nProvides system information that remains constant throughout the lifetime of your app.\n\n# API documentation\n\n- [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/constants.mdx)\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-constants\n```\n\n#### Monorepo Support\n\nIn a monorepo, the `expo-constants` package might be in a different folder than the native scripts are expecting. You can easily symlink the node module to your app's local `node_modules` folder by doing the following:\n\n- Follow the setup instructions for [`expo-yarn-workspaces`](https://github.com/expo/expo/tree/main/packages/expo-yarn-workspaces).\n- Add the following configuration to your app's `package.json`:\n\n```json\n{\n  \"expo-yarn-workspaces\": {\n    \"symlinks\": [\"expo-constants\"]\n  }\n}\n```\n\n- Finally, run `yarn` in the app folder to create symlinks to `expo-constants` in your app's local `node_modules` folder.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
-    "name": "expo-constants",
-    "version": "14.5.1",
-    "description": "Provides system information that remains constant throughout the lifetime of your app.",
-    "copyright": ""
-  },
   "expo-constants@17.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -5288,6 +5218,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Provides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.",
     "copyright": ""
   },
+  "expo-in-app-updates@0.9.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/SohelIslamImran/expo-in-app-updates",
+    "publisher": "SohelIslamImran",
+    "email": "sohelislamimran@gmail.com",
+    "licenseText": "# expo-in-app-updates\n\nA lightweight and easy-to-use module for implementing native in-app updates for Android and iOS.\n\nThis module uses the Android native [in-app updates](https://developer.android.com/guide/playcore/in-app-updates) library on Android and [iTunes Search API](https://performance-partners.apple.com/search-api) on iOS.\n\nOn Android, it will show a native overlay like the screenshots below but on iOS it opens the app in the App Store on a modal to update the app, since iOS does not have any in-app update solution. You may want to show an alert or custom UI on iOS. See the [example](#examples) at the bottom.\n\n<a href=\"https://developer.android.com/guide/playcore/in-app-updates#flexible\"><img src=\"https://developer.android.com/static/images/app-bundle/flexible_flow.png\" alt=\"Example flexible updates\" height=\"400\"/></a>\n\n<a href=\"https://developer.android.com/guide/playcore/in-app-updates#immediate\"><img src=\"https://developer.android.com/static/images/app-bundle/immediate_flow.png\" alt=\"Example immediate updates\" height=\"400\"/></a>\n\n## Installation\n\n```sh\nnpm install expo-in-app-updates\n```\n\nFor iOS, add your `AppStoreID` (the id in your app store link, e.g <https://apps.apple.com/pl/app/example/id1234567890>) in `infoPlist` in your `app.json` / `app.config.js`.\n\nIf your app is not available in the US, the default lookup might not find it. To fix this, you can set the `AppStoreCountry` to a country code where your app is available (e.g `pl` for Poland) in `infoPlist` in your `app.json` / `app.config.js`.\n\n```json\n{\n  \"expo\": {\n    \"ios\": {\n      \"infoPlist\": {\n        \"AppStoreID\": \"1234567890\",\n        \"AppStoreCountry\": \"pl\" // Optional, only if the iTunes lookup used by this library doesn't find your app\n      }\n    }\n  }\n}\n```\n\n> For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n> Run `npx pod-install` after installing the npm package for iOS.\n\n```sh\nnpx expo run:android | run:ios\n```\n\n## Usages\n\n### Check for updates\n\n```ts\nconst {\n  updateAvailable,\n  flexibleAllowed,\n  immediateAllowed,\n  storeVersion,\n  releaseDate,\n  daysSinceRelease\n} = await ExpoInAppUpdates.checkForUpdate();\n```\n\nChecks if an app update is available. Return a promise that resolves `updateAvailable` and `storeVersion` for Android and iOS, `flexibleAllowed` and `immediateAllowed` for Android.\n\n- `updateAvailable`: If an update is available.\n- `flexibleAllowed`: If able to start a [Flexible Update](https://developer.android.com/guide/playcore/in-app-updates/kotlin-java#flexible) (Android)\n- `immediateAllowed`: If able to start an [Immediate Update](https://developer.android.com/guide/playcore/in-app-updates/kotlin-java#immediate) (Android)\n- `storeVersion`: The latest app version published in the App Store / Play Store. On Android, this is the `versionCode` that you defined in `app.json`.\n- `releaseDate`: The release date of the current version of the app (iOS)\n- `daysSinceRelease`: The value of the [clientVersionStalenessDays](https://developer.android.com/reference/com/google/android/play/core/appupdate/AppUpdateInfo.html#clientVersionStalenessDays()). If an update is available or in progress, this will be the number of days since the Google Play Store app on the user's device has learnt about an available update. If update is not available, or if staleness information is unavailable, this will be null. (Android)\n\n### Start an in-app update\n\n```ts\nconst isUpdateStarted = await ExpoInAppUpdates.startUpdate();\n```\n\nStarts an in-app update. Return a boolean whether the update was started successfully.\n\n> [!NOTE]\n> If you want an [Immediate Update](https://developer.android.com/guide/playcore/in-app-updates/kotlin-java#immediate) that will cover the app with the update overlay, pass true to this function. By default, it will start a [Flexible Update](https://developer.android.com/guide/playcore/in-app-updates/kotlin-java#flexible). More details : <https://developer.android.com/guide/playcore/in-app-updates#update-flows>\n>\n> ```ts\n> const isUpdateStarted = await ExpoInAppUpdates.startUpdate(true);\n> ```\n\n### Check and start an in-app update\n\n```ts\nconst isUpdateStarted = await ExpoInAppUpdates.checkAndStartUpdate();\n```\n\nChecks if an app update is available and starts the update process if necessary. Return a boolean whether the update was started successfully.\n\n> [!NOTE]\n> If you want an [Immediate Update](https://developer.android.com/guide/playcore/in-app-updates/kotlin-java#immediate) that will cover the app with the update overlay, pass true to this function. By default, it will start a [Flexible Update](https://developer.android.com/guide/playcore/in-app-updates/kotlin-java#flexible). More details : <https://developer.android.com/guide/playcore/in-app-updates#update-flows>\n>\n> ```ts\n> const isUpdateStarted = await ExpoInAppUpdates.checkAndStartUpdate(true);\n> ```\n\n> [!TIP]\n> You may want to check for updates and show an alert or custom UI on iOS. Since iOS does not have any in-app update solution, it just opens the app in the App Store on a modal to update the app. See the [example](#examples) below.\n\n### Examples\n\nThis example will ask the user for update the app if update available on every app startup until the user update the app.\n\n```tsx\nimport { useEffect } from \"react\";\nimport { Alert, Platform, Text, View } from \"react-native\";\n\nimport * as ExpoInAppUpdates from \"expo-in-app-updates\";\n\nconst useInAppUpdates = () => {\n  useEffect(() => {\n    if (__DEV__ || Platform.OS === \"web\") return;\n\n    if (Platform.OS === \"android\") {\n      ExpoInAppUpdates.checkAndStartUpdate(\n        // If you want an immediate update that will cover the app with the update overlay, set it to true.\n        // More details : https://developer.android.com/guide/playcore/in-app-updates#update-flows\n        false\n      );\n    } else {\n      ExpoInAppUpdates.checkForUpdate().then(({ updateAvailable }) => {\n        if (!updateAvailable) return;\n\n        Alert.alert(\n          \"Update available\",\n          \"A new version of the app is available with many improvements and bug fixes. Would you like to update now?\",\n          [\n            {\n              text: \"Update\",\n              isPreferred: true,\n              async onPress() {\n                await ExpoInAppUpdates.startUpdate();\n              },\n            },\n            { text: \"Cancel\" },\n          ]\n        );\n      });\n    }\n  }, []);\n};\n\nexport default function App() {\n  // Use this hook in your root app or root layout component\n  useInAppUpdates();\n\n  return (\n    <View>\n      <Text>Native in-app updates for Android and iOS</Text>\n    </View>\n  );\n}\n```\n\n---\n\nThis example will ask the user for update the app if update available and if user don't update or cancel the update, then the user will not be asked again for the update until a new version published again.\n\n```tsx\nimport { useEffect } from \"react\";\nimport { Alert, Platform } from \"react-native\";\nimport AsyncStorage from \"expo-sqlite/async-storage\";\n\nimport * as ExpoInAppUpdates from \"expo-in-app-updates\";\n\nconst useInAppUpdates = () => {\n  useEffect(() => {\n    if (__DEV__ || Platform.OS === \"web\") return;\n\n    ExpoInAppUpdates.checkForUpdate().then(\n      async ({ updateAvailable, storeVersion }) => {\n        if (!updateAvailable) return;\n\n        // Get the last saved storeVersion from your local-storage (AsyncStorage/MMKV)\n        const savedStoreVersion = await AsyncStorage.getItem(\"savedStoreVersion\");\n        // Check and return from here to prevent asking for updates again for the same storeVersion.\n        if (savedStoreVersion === storeVersion) return;\n\n        if (Platform.OS === \"android\") {\n          await ExpoInAppUpdates.startUpdate();\n          // Saving the storeVersion after checked for updates, so we can check and ignore asking for updates again for the same storeVersion\n          await AsyncStorage.setItem(\"savedStoreVersion\", storeVersion);\n          return;\n        }\n\n        Alert.alert(\n          \"Update available\",\n          \"A new version of the app is available with many improvements and bug fixes. Would you like to update now?\",\n          [\n            {\n              text: \"Update\",\n              isPreferred: true,\n              async onPress() {\n                await ExpoInAppUpdates.startUpdate();\n                await AsyncStorage.setItem(\"savedStoreVersion\", storeVersion);\n              },\n            },\n            {\n              text: \"Cancel\",\n              async onPress() {\n                // Saving the storeVersion after checked for updates, so we can check and ignore asking for updates again for the same storeVersion\n                await AsyncStorage.setItem(\"savedStoreVersion\", storeVersion);\n              },\n            },\n          ]\n        );\n      }\n    );\n  }, []);\n};\n```\n\n---\n\nThis example checks and prevents asking for updates for 2 days after release of the app.\n\n```tsx\nimport { useEffect } from \"react\";\nimport { Alert, Platform } from \"react-native\";\n\nimport * as ExpoInAppUpdates from \"expo-in-app-updates\";\n\nfunction getDiffInDays(date) {\n  const diffInMs = Math.abs(new Date() - new Date(date)); // Calculate difference in ms\n  return diffInMs / (1000 * 60 * 60 * 24); // Convert ms to days\n}\n\nconst useInAppUpdates = () => {\n  useEffect(() => {\n    if (__DEV__ || Platform.OS === \"web\") return;\n\n    ExpoInAppUpdates.checkForUpdate().then(\n      async ({ updateAvailable, daysSinceRelease, releaseDate }) => {\n        if (!updateAvailable) return;\n\n        // Check and prevent asking for updates for 2 days after release\n        if (Platform.OS === \"android\" && ((daysSinceRelease??0) >= 2)) {\n          return await ExpoInAppUpdates.startUpdate();\n        }\n\n        // Check and prevent asking for updates for 2 days after release\n        if (getDiffInDays(releaseDate) >= 2) {\n          Alert.alert(\n            \"Update available\",\n            \"A new version of the app is available with many improvements and bug fixes. Would you like to update now?\",\n            [\n              {\n                text: \"Update\",\n                isPreferred: true,\n                async onPress() {\n                  await ExpoInAppUpdates.startUpdate();\n                },\n              },\n              { text: \"Cancel\" },\n            ]\n          );\n        }\n      }\n    );\n  }, []);\n};\n```\n\n---\n\n### Testing In-App Updates\n\n#### Android\n\nUse [internal app sharing](https://support.google.com/googleplay/android-developer/answer/9844679) of Play Console to [**Test in-app updates**](https://developer.android.com/guide/playcore/in-app-updates/test)\n\n#### iOS\n\nTo test in-app updates on iOS:\n\n1. First publish your app to App Store at least once. Then make sure you have set the correct `AppStoreID` in your `app.json` / `app.config.js`.\n2. Create a Development/Production/TestFlight build with a lower version number than your App Store version\n3. Install the build on your device\n4. Run the app and the update check should detect the newer App Store version\n\n> [!NOTE]\n> The iTunes Search API used for version checking may have some delay in reflecting the latest App Store version. It's recommended to wait a few minutes after publishing a new version before testing.\n\n---\n\n## Changelog\n\nSee [CHANGELOG.md](CHANGELOG.md) for a list of changes in each release.",
+    "name": "expo-in-app-updates",
+    "version": "0.9.0",
+    "description": "Native in-app updates for Android and iOS",
+    "copyright": ""
+  },
   "expo-json-utils@0.14.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -5326,16 +5267,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "expo-linking",
     "version": "7.0.5",
     "description": "Create and open deep links universally",
-    "copyright": ""
-  },
-  "expo-localization@14.8.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/localization/\">\n    <img\n      src=\"../../.github/resources/expo-localization.svg\"\n      alt=\"expo-localization\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an interface for native user localization information.\n\n# API documentation\n\n- [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/localization.mdx)\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/localization/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/localization/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-localization\n```\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n### Configure for Android\n\nNo additional set up necessary.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
-    "name": "expo-localization",
-    "version": "14.8.4",
-    "description": "Provides an interface for native user localization information.",
     "copyright": ""
   },
   "expo-localization@16.0.1": {
@@ -6040,17 +5971,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "glob",
     "version": "10.4.5",
     "description": "the most correct and second fastest glob implementation in JavaScript"
-  },
-  "glob@7.1.6": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/node-glob",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n\n## Glob Logo\n\nGlob's logo created by Tanya Brassie <http://tanyabrassie.com/>, licensed\nunder a Creative Commons Attribution-ShareAlike 4.0 International License\nhttps://creativecommons.org/licenses/by-sa/4.0/",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "glob",
-    "version": "7.1.6",
-    "description": "a little globber"
   },
   "glob@7.2.3": {
     "licenses": "ISC",
@@ -7323,39 +7243,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "4.5.0",
     "description": "The Lodash method `_.isEqual` exported as a module."
   },
-  "lodash.isfunction@3.0.9": {
-    "licenses": "MIT",
-    "repository": "https://github.com/lodash/lodash",
-    "publisher": "John-David Dalton",
-    "email": "john.david.dalton@gmail.com",
-    "licenseText": "Copyright JS Foundation and other contributors <https://js.foundation/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.",
-    "copyright": "Copyright JS Foundation and other contributors <https://js.foundation/>",
-    "name": "lodash.isfunction",
-    "version": "3.0.9",
-    "description": "The Lodash method `_.isFunction` exported as a module."
-  },
-  "lodash.isnil@4.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/lodash/lodash",
-    "publisher": "John-David Dalton",
-    "email": "john.david.dalton@gmail.com",
-    "licenseText": "Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>\nBased on Underscore.js, copyright 2009-2016 Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>. Based on Underscore.js, copyright 2009-2016 Jeremy Ashkenas,. DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>",
-    "name": "lodash.isnil",
-    "version": "4.0.0",
-    "description": "The lodash method `_.isNil` exported as a module."
-  },
-  "lodash.pick@4.4.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/lodash/lodash",
-    "publisher": "John-David Dalton",
-    "email": "john.david.dalton@gmail.com",
-    "licenseText": "Copyright jQuery Foundation and other contributors <https://jquery.org/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.",
-    "copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-    "name": "lodash.pick",
-    "version": "4.4.0",
-    "description": "The lodash method `_.pick` exported as a module."
-  },
   "lodash.throttle@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/lodash/lodash",
@@ -7431,17 +7318,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
     "name": "lru-cache",
     "version": "5.1.1",
-    "description": "A cache object that deletes the least-recently-used items."
-  },
-  "lru-cache@6.0.0": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/node-lru-cache",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "lru-cache",
-    "version": "6.0.0",
     "description": "A cache object that deletes the least-recently-used items."
   },
   "make-dir@2.1.0": {
@@ -9645,28 +9521,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Tab view component for React Native",
     "publisher": ""
   },
-  "react-native-version-check-expo@3.4.7": {
-    "licenses": "MIT",
-    "publisher": "Taehyun Kim",
-    "email": "kgyoo8232@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) 2016 Taehyun Kim\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2016 Taehyun Kim",
-    "name": "react-native-version-check-expo",
-    "version": "3.4.7",
-    "description": "A version checker for react-native expo applications",
-    "repository": ""
-  },
-  "react-native-version-check@3.4.7": {
-    "licenses": "MIT",
-    "repository": "https://github.com/kimxogus/react-native-version-check",
-    "publisher": "Taehyun Kim",
-    "email": "kgyoo8232@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) 2016 Taehyun Kim\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2016 Taehyun Kim",
-    "name": "react-native-version-check",
-    "version": "3.4.7",
-    "description": "A version checker for react-native applications"
-  },
   "react-native-web@0.19.13": {
     "licenses": "MIT",
     "repository": "https://github.com/necolas/react-native-web",
@@ -10156,16 +10010,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
     "name": "semver",
     "version": "6.3.1",
-    "description": "The semantic version parser used by npm."
-  },
-  "semver@7.5.3": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/node-semver",
-    "publisher": "GitHub Inc.",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "semver",
-    "version": "7.5.3",
     "description": "The semantic version parser used by npm."
   },
   "semver@7.7.1": {
@@ -11523,16 +11367,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "utils-merge",
     "version": "1.0.1",
     "description": "merge() utility function"
-  },
-  "uuid@3.4.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/uuidjs/uuid",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2010-2016 Robert Kieffer and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2010-2016 Robert Kieffer and other contributors",
-    "name": "uuid",
-    "version": "3.4.0",
-    "description": "RFC4122 (v1, v4, and v5) UUIDs",
-    "publisher": ""
   },
   "uuid@7.0.3": {
     "licenses": "MIT",
