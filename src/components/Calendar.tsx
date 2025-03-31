@@ -64,7 +64,8 @@ export const Calendar = ({
   const [queryVariablesWithDateRangeSubList, setQueryVariablesWithDateRangeSubList] = useState<any>(
     {
       ...queryVariables,
-      dateRange: [today, today]
+      dateRange: [today, today],
+      onlyUniqEvents: true
     }
   );
   const contentContainerId = queryVariables.contentContainerId;
@@ -124,7 +125,8 @@ export const Calendar = ({
         if (subList) {
           setQueryVariablesWithDateRangeSubList({
             ...queryVariables,
-            dateRange: [day.dateString, day.dateString]
+            dateRange: [day.dateString, day.dateString],
+            onlyUniqEvents: true
           });
         } else {
           navigation.push(ScreenName.Index, {
@@ -251,7 +253,8 @@ export const Calendar = ({
     subList &&
       setQueryVariablesWithDateRangeSubList({
         ...queryVariables,
-        dateRange: queryVariablesWithDateRangeSubList.dateRange
+        dateRange: queryVariablesWithDateRangeSubList.dateRange,
+        onlyUniqEvents: true
       });
   }, [queryVariables]);
 
@@ -313,9 +316,15 @@ export const Calendar = ({
 
       {subList && (
         <ListComponent
-          contentContainerStyle={styles.smallPaddingHorizontal}
           data={loadingSubList || isRefetchingSubList ? [] : listItems}
           fetchMoreData={fetchMoreData}
+          ListFooterComponent={() => {
+            if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
+              return <View style={styles.spacer} />;
+            }
+
+            return null;
+          }}
           ListEmptyComponent={
             loadingSubList || isRefetchingSubList ? (
               <LoadingContainer>
@@ -334,7 +343,6 @@ export const Calendar = ({
           navigation={navigation}
           query={query}
           queryVariables={queryVariables}
-          sectionByDate
         />
       )}
     </>
@@ -343,12 +351,6 @@ export const Calendar = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    paddingHorizontal: normalize(16)
-  },
-  smallPaddingHorizontal: {
-    paddingHorizontal: normalize(1)
-  },
   spacer: {
     height: normalize(70)
   },

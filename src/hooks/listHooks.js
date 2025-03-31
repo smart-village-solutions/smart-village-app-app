@@ -17,7 +17,7 @@ import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, normalize, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -37,6 +37,7 @@ const getListType = (query, listTypesSettings) => {
 const EventSectionHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
     title={momentFormat(item, 'DD.MM.YYYY dddd')}
+    containerStyle={styles.sectionHeaderContainer}
     onPress={
       navigation
         ? () =>
@@ -273,7 +274,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return (
-            <View style={target == 'StickyHeader' ? styes.eventStickyHeader : styes.eventHeader}>
+            <View style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}>
               <EventSectionHeader {...{ item, navigation, options, query }} />
             </View>
           );
@@ -378,7 +379,7 @@ export const useGroupedData = (query, data, groupKey) => {
   }
 };
 
-const styes = StyleSheet.create({
+const styles = StyleSheet.create({
   eventHeader: {
     marginLeft: -normalize(16),
     marginRight: -normalize(16)
@@ -386,5 +387,8 @@ const styes = StyleSheet.create({
   eventStickyHeader: {
     marginLeft: 0,
     marginRight: 0
+  },
+  sectionHeaderContainer: {
+    paddingTop: normalize(16)
   }
 });
