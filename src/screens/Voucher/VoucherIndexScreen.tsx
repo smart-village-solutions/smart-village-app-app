@@ -13,6 +13,7 @@ import {
   LoadingSpinner,
   RegularText,
   Wrapper,
+  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
@@ -133,14 +134,16 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
           {query === QUERY_TYPES.VOUCHERS && (
             <>
               {!!showFilter && !queryVariables.category && (
-                <DropdownHeader
-                  {...{
-                    data: dropdownData,
-                    query,
-                    queryVariables,
-                    updateListData: updateListDataByDropdown
-                  }}
-                />
+                <WrapperHorizontal>
+                  <DropdownHeader
+                    {...{
+                      data: dropdownData,
+                      query,
+                      queryVariables,
+                      updateListData: updateListDataByDropdown
+                    }}
+                  />
+                </WrapperHorizontal>
               )}
 
               {(!isLoggedIn || !memberId) && (
