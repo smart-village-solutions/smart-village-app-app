@@ -1,8 +1,8 @@
+import * as Crypto from 'expo-crypto';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import { v4 as uuid } from 'uuid';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
@@ -84,7 +84,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
 
     if (!deviceToken) {
-      deviceToken = uuid();
+      deviceToken = Crypto.randomUUID();
       addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
     }
 
