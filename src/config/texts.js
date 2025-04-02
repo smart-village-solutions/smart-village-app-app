@@ -1509,11 +1509,12 @@ export const texts = {
     result: 'Ergebnis',
     results: 'Ergebnisse',
     scannerScreen: {
+      cameraPermissionMissing:
+        'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
       errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       errorButton: 'Erneut versuchen',
       errorTitle: 'Fehler',
-      cameraPermissionMissing:
-        'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+      requestPermissionButton: 'Berechtigung anfordern',
       scannerTitle: 'QR-Code scannen'
     },
     secret: 'Vertragskonto-Nr.'

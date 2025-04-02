@@ -35,7 +35,7 @@ const parseQrCode = (
 };
 
 export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
-  const [permission] = useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(true);
 
   const handleBarCodeScanned = ({ data }: BarcodeScanningResult) => {
@@ -76,8 +76,14 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
       <ScrollView>
         <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
-        <Wrapper>
+        <Wrapper noPaddingBottom>
           <RegularText>{texts.voucher.scannerScreen.cameraPermissionMissing}</RegularText>
+        </Wrapper>
+        <Wrapper>
+          <Button
+            title={texts.voucher.scannerScreen.requestPermissionButton}
+            onPress={requestPermission}
+          />
         </Wrapper>
       </ScrollView>
     );
