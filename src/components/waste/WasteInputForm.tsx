@@ -85,7 +85,7 @@ export const WasteInputForm = ({
       (inputValueCitySelected ? filteredStreets : filteredCities)?.length < 6
         ? device.platform === 'ios'
           ? 'auto'
-          : (inputValueCitySelected ? filteredStreets : filteredCities)?.length *
+          : (inputValueCitySelected ? filteredCities : filteredStreets)?.length *
             (normalize(22) + 2 * normalize(16))
         : dimensions.height / 2.5,
     [inputValueCitySelected, filteredStreets, filteredCities, dimensions.height]
@@ -214,7 +214,8 @@ const styles = StyleSheet.create({
       android: {
         borderColor: colors.gray20,
         borderRadius: 0,
-        borderWidth: normalize(1)
+        borderWidth: normalize(1),
+        maxHeight: normalize(300)
       }
     })
   },
