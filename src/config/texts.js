@@ -1511,6 +1511,10 @@ export const texts = {
     scannerScreen: {
       cameraPermissionMissing:
         'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+      cameraPermissionMissingBody:
+        'Bitte überprüfen Sie Ihre Berechtigungseinstellungen im System.',
+      cameraPermissionMissingButton: 'Zur Berechtigung',
+      cancel: 'Abbrechen',
       errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       errorButton: 'Erneut versuchen',
       errorTitle: 'Fehler',

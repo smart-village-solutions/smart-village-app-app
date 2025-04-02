@@ -82,7 +82,27 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
         <Wrapper>
           <Button
             title={texts.voucher.scannerScreen.requestPermissionButton}
-            onPress={requestPermission}
+            onPress={() => {
+              requestPermission().then(({ canAskAgain }) => {
+                if (!canAskAgain) {
+                  Alert.alert(
+                    texts.voucher.scannerScreen.errorTitle,
+                    texts.voucher.scannerScreen.cameraPermissionMissingBody,
+                    [
+                      {
+                        text: texts.voucher.scannerScreen.cameraPermissionMissingButton,
+                        onPress: () => Linking.openSettings()
+                      },
+                      {
+                        text: texts.voucher.scannerScreen.cancel,
+                        onPress: () => {},
+                        style: 'cancel'
+                      }
+                    ]
+                  );
+                }
+              });
+            }}
           />
         </Wrapper>
       </ScrollView>
