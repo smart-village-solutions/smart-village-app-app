@@ -80,16 +80,16 @@ export const WasteInputForm = ({
     ((!isInputAutoFocus && inputValue) || isInputAutoFocus)
   );
 
-  const listContainerHeight = useMemo(
-    () =>
-      (inputValueCitySelected ? filteredStreets : filteredCities)?.length < 6
-        ? device.platform === 'ios'
-          ? 'auto'
-          : (inputValueCitySelected ? filteredStreets : filteredCities)?.length *
-            (normalize(22) + 2 * normalize(16))
-        : dimensions.height / 2.5,
-    [inputValueCitySelected, filteredStreets, filteredCities, dimensions.height]
-  );
+  const listContainerHeight = useMemo(() => {
+    const activeList = inputValueCitySelected ? filteredStreets : filteredCities;
+    const listLength = activeList?.length ?? 0;
+
+    if (listLength < 6) {
+      return device.platform === 'ios' ? 'auto' : listLength * (normalize(22) + 2 * normalize(16));
+    } else {
+      return dimensions.height / 2.5;
+    }
+  }, [inputValueCitySelected, filteredStreets, filteredCities, dimensions.height]);
 
   return (
     <>
@@ -214,7 +214,8 @@ const styles = StyleSheet.create({
       android: {
         borderColor: colors.gray20,
         borderRadius: 0,
-        borderWidth: normalize(1)
+        borderWidth: normalize(1),
+        maxHeight: normalize(300)
       }
     })
   },
