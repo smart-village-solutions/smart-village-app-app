@@ -52,7 +52,7 @@ export const WeatherWidget = ({ text }: WidgetProps) => {
           </View>
           <View>
             <BoldText primary big>
-              {temperature?.toFixed(1) ?? '—'}°C
+              {temperature?.toFixed(0) ?? '—'}°C
             </BoldText>
             <RegularText primary small>
               {text ?? texts.widgets.weather}
