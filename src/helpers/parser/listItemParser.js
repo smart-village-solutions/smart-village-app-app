@@ -283,6 +283,7 @@ const parseWasteData = (data) => {
   return Object.entries(data).map(([listDate, value]) => ({
     listDate,
     dots: value.dots || [],
+    note: value.note || '',
     title: listDate
   }));
 };
