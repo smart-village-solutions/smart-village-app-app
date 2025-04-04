@@ -1,4 +1,10 @@
 export const defaultAppDesignSystemConfig = {
+  serviceTiles: {
+    fontStyle: {},
+    iconStyle: {},
+    numberOfLines: 3,
+    tileStyle: {}
+  },
   staticContentList: {
     contentContainerStyle: {},
     contentSequence: [],
