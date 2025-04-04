@@ -14,6 +14,7 @@ import { WrapperWrap } from '../Wrapper';
 
 import { DraggableGrid } from './DraggableGrid';
 import { ServiceTile, TServiceTile } from './ServiceTile';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
 
@@ -51,6 +52,8 @@ export const Service = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { personalizedTiles = false, tileSizeFactor = 1 } = settings;
+  const { appDesignSystem } = useContext(ConfigurationsContext);
+  const { serviceTiles = {} } = appDesignSystem;
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
     personalizedTiles,
@@ -82,6 +85,7 @@ export const Service = ({
         item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
+        serviceTileStyles={serviceTiles}
         tileSizeFactor={tileSizeFactor}
       />
     ),
