@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   ListRenderItem,
@@ -10,10 +10,17 @@ import {
   View
 } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  BoldText,
+  Checkbox,
+  Image,
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperVertical
+} from '../components';
 import { colors, device, Icon, normalize, texts } from '../config';
 import { Initializer } from '../helpers';
 import { useStaticContent } from '../hooks';
@@ -26,24 +33,26 @@ import { HtmlScreen } from './HtmlScreen';
 const keyExtractor = (slide: AppIntroSlide, index: number) => `index${index}-text${slide.text}`;
 
 const SliderButton = ({
+  isLightest = false,
+  isPlaceholder = false,
   label,
-  style,
-  isPlaceholder = false
+  style
 }: {
+  isLightest?: boolean;
+  isPlaceholder?: boolean;
   label: string;
   style?: any;
-  isPlaceholder?: boolean;
 }) => {
   return (
-    <View style={[styles.sliderButtonContainer]}>
-      <View style={[styles.sliderButton, style]}>
-        <BoldText placeholder={isPlaceholder}>{label.toUpperCase()}</BoldText>
-      </View>
+    <View style={[styles.sliderButtonContainer, style]}>
+      <BoldText lightest={isLightest} placeholder={isPlaceholder}>
+        {label.toUpperCase()}
+      </BoldText>
     </View>
   );
 };
 
-const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
+const TermsAndConditionsSection = ({ backgroundColor, setShowButtonTermsAndConditions }) => {
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
   const [isModalVisibleDataPrivacy, setModalVisibleDataPrivacy] = useState(false);
 
@@ -51,6 +60,7 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
     <>
       <Wrapper noPaddingTop>
         <Checkbox
+          containerStyle={[styles.leftAligned, { backgroundColor }]}
           boldTitle={false}
           center={false}
           checked={hasAcceptedDataPrivacy}
@@ -95,30 +105,67 @@ const TermsAndConditionsSection = ({ setShowButtonTermsAndConditions }) => {
   );
 };
 
+const termsAndConditionsAlert = () =>
+  Alert.alert(
+    texts.profile.termsAndConditionsAlertTitle,
+    texts.profile.termsAndConditionsAlertMessage,
+    [{ text: texts.profile.termsAndConditionsAlertOk }]
+  );
+
 type Props = {
-  setOnboardingComplete: () => void;
+  backgroundColor?: string;
   onlyTermsAndConditions?: boolean;
+  setOnboardingComplete: () => void;
 };
 
-const renderSlide: ListRenderItem<AppIntroSlide> = ({ item, setShowButtonTermsAndConditions }) => {
+const renderSlide: ListRenderItem<AppIntroSlide> = ({
+  backgroundColor,
+  item,
+  setShowButtonTermsAndConditions
+}) => {
+  const ImageComponent = () => (
+    <Image
+      source={{ uri: item.image }}
+      containerStyle={styles.imageContainer}
+      resizeMode="contain"
+    />
+  );
+
+  const TitleComponent = () => (
+    <BoldText big style={styles.leftAligned}>
+      {item.title.toUpperCase()}
+    </BoldText>
+  );
+
+  const TextComponent = () => (
+    <WrapperVertical>
+      <RegularText style={styles.leftAligned}>{item.text}</RegularText>
+    </WrapperVertical>
+  );
+
+  const getPropertyOrder = (obj: AppIntroSlide) => {
+    const propertyMap = {
+      image: ImageComponent,
+      title: TitleComponent,
+      text: TextComponent
+    };
+
+    return Object.keys(obj)
+      .filter((key) => key in propertyMap)
+      .map((key) => ({ key, Component: propertyMap[key] }));
+  };
+
+  const orderOfProperties = getPropertyOrder(item);
+
   return (
-    <ScrollView>
-      <Image
-        source={{ uri: item.image }}
-        containerStyle={styles.imageContainer}
-        resizeMode="contain"
-      />
-      <Wrapper noPaddingBottom>
-        <BoldText big center>
-          {item.title.toUpperCase()}
-        </BoldText>
-      </Wrapper>
-      <Wrapper>
-        <RegularText center>{item.text}</RegularText>
-      </Wrapper>
+    <ScrollView contentContainerStyle={styles.slideContainer}>
+      {orderOfProperties.map(({ key, Component }) => (
+        <Component key={key} />
+      ))}
 
       {item.onLeaveSlideName === Initializer.TermsAndConditions && (
         <TermsAndConditionsSection
+          backgroundColor={backgroundColor}
           setShowButtonTermsAndConditions={setShowButtonTermsAndConditions}
         />
       )}
@@ -126,10 +173,14 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({ item, setShowButtonTermsAn
   );
 };
 
-export const AppIntroScreen = ({ setOnboardingComplete, onlyTermsAndConditions }: Props) => {
-  const [showNextButtonTermsAndConditions, setShowNextButtonTermsAndConditions] = useState(true);
+export const AppIntroScreen = ({
+  setOnboardingComplete,
+  onlyTermsAndConditions,
+  backgroundColor = colors.surface
+}: Props) => {
   const [showDoneButtonTermsAndConditions, setShowDoneButtonTermsAndConditions] = useState(true);
-  const { bottom: safeAreaBottom } = useSafeAreaInsets();
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const slider = useRef(null);
 
   const { data, error, loading } = useStaticContent({
     name: 'appIntroSlides',
@@ -145,6 +196,43 @@ export const AppIntroScreen = ({ setOnboardingComplete, onlyTermsAndConditions }
       slides?.filter((slide) => slide.onLeaveSlideName === Initializer.TermsAndConditions) || [];
   }
 
+  const termsSlideIndex = slides?.findIndex(
+    (slide) => slide.onLeaveSlideName === Initializer.TermsAndConditions
+  );
+
+  const renderItem = ({ item }) =>
+    renderSlide({
+      backgroundColor,
+      item,
+      setShowButtonTermsAndConditions: (value) => {
+        setShowDoneButtonTermsAndConditions(value);
+        setHasAcceptedTerms(value);
+      }
+    });
+
+  const handleSkip = () => {
+    // Only check for terms acceptance if there is a terms slide
+    if (termsSlideIndex !== -1 && !hasAcceptedTerms && slider.current) {
+      slider.current.goToSlide(termsSlideIndex, true);
+
+      return;
+    }
+
+    setOnboardingComplete();
+  };
+
+  const handleSlideChange = (_, index) => {
+    // Only check for terms acceptance if there is a terms slide
+    if (termsSlideIndex !== -1 && index > termsSlideIndex && !hasAcceptedTerms) {
+      slider.current?.goToSlide(termsSlideIndex, true);
+      termsAndConditionsAlert();
+
+      return;
+    }
+
+    slides?.[index]?.onLeaveSlide?.(true);
+  };
+
   useEffect(() => {
     if (error || (!loading && !slides?.length)) {
       setOnboardingComplete();
@@ -158,69 +246,60 @@ export const AppIntroScreen = ({ setOnboardingComplete, onlyTermsAndConditions }
   }
 
   return (
-    <SafeAreaViewFlex style={styles.background}>
+    <SafeAreaViewFlex style={[styles.background, { backgroundColor }]}>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
         activeDotStyle={onlyTermsAndConditions ? styles.hiddenDot : styles.activeDot}
+        bottomButton
         data={slides}
         dotClickEnabled={false}
         dotStyle={onlyTermsAndConditions ? styles.hiddenDot : styles.inactiveDot}
         keyExtractor={keyExtractor}
         onDone={setOnboardingComplete}
-        onSlideChange={(_, index) => {
-          // hide the next button on the terms and conditions slide
-          if (
-            index + 1 ==
-            slides.findIndex((slide) => slide.onLeaveSlideName === Initializer.TermsAndConditions)
-          ) {
-            setShowNextButtonTermsAndConditions(false);
-          }
+        onSlideChange={handleSlideChange}
+        renderDoneButton={() => <SliderButton label={texts.appIntro.continue} isLightest />}
+        renderItem={renderItem}
+        onSkip={handleSkip}
+        ref={slider}
+        renderNextButton={() => {
+          const currentSlideIndex = slider.current?.state?.activeIndex ?? 0;
+          const isTermsSlide =
+            slides[currentSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
 
-          slides[index]?.onLeaveSlide?.(true);
+          const buttonStyle =
+            isTermsSlide && !hasAcceptedTerms
+              ? [styles.sliderButtonContainer, styles.sliderButtonDisabled]
+              : styles.sliderButtonContainer;
+
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                if (isTermsSlide && !hasAcceptedTerms) {
+                  termsAndConditionsAlert();
+
+                  return;
+                }
+
+                slider.current?.goToSlide(currentSlideIndex + 1, true);
+              }}
+            >
+              <View style={buttonStyle}>
+                <BoldText lightest={!(isTermsSlide && !hasAcceptedTerms)}>
+                  {texts.appIntro.continue.toUpperCase()}
+                </BoldText>
+              </View>
+            </TouchableOpacity>
+          );
         }}
-        renderDoneButton={() => <SliderButton label={texts.appIntro.continue} />}
-        renderItem={({ item }) =>
-          renderSlide({
-            item,
-            setShowButtonTermsAndConditions: (value) => {
-              setShowNextButtonTermsAndConditions(value);
-              setShowDoneButtonTermsAndConditions(value);
-            }
-          })
-        }
-        renderNextButton={() => <SliderButton label={texts.appIntro.continue} />}
+        renderSkipButton={() => (
+          <SliderButton label={texts.appIntro.skip} style={styles.skipButton} />
+        )}
         scrollEnabled={false}
         showDoneButton={showDoneButtonTermsAndConditions}
-        showNextButton={showNextButtonTermsAndConditions}
+        showNextButton
+        showSkipButton
         style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
-      {(!showNextButtonTermsAndConditions || !showDoneButtonTermsAndConditions) && (
-        <View
-          style={[styles.termsAndConditionsNextButtonContainer, { bottom: safeAreaBottom + 16 }]}
-        >
-          <View style={styles.termsAndConditionsNextButton}>
-            <TouchableOpacity
-              onPress={() =>
-                Alert.alert(
-                  texts.profile.termsAndConditionsAlertTitle,
-                  texts.profile.termsAndConditionsAlertMessage,
-                  [
-                    {
-                      text: texts.profile.termsAndConditionsAlertOk
-                    }
-                  ]
-                )
-              }
-            >
-              <SliderButton
-                isPlaceholder
-                label={texts.appIntro.continue}
-                style={styles.sliderButtonAdditional}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
     </SafeAreaViewFlex>
   );
 };
@@ -233,10 +312,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkText,
     borderRadius: normalize(ACTIVE_DOT_SIZE) / 2,
     height: ACTIVE_DOT_SIZE,
-    width: ACTIVE_DOT_SIZE
+    width: ACTIVE_DOT_SIZE * 2
   },
   background: {
     backgroundColor: colors.surface
+  },
+  leftAligned: {
+    paddingHorizontal: normalize(40),
+    textAlign: 'left'
   },
   hiddenDot: {
     backgroundColor: colors.surface
@@ -250,17 +333,29 @@ const styles = StyleSheet.create({
     height: INACTIVE_DOT_SIZE,
     width: INACTIVE_DOT_SIZE
   },
+  skipButton: {
+    backgroundColor: colors.transparent,
+    borderColor: colors.borderRgba,
+    borderWidth: normalize(1),
+    bottom: normalize(72)
+  },
   sliderButtonContainer: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: normalize(8),
+    bottom: normalize(128),
+    height: normalize(32),
     justifyContent: 'center',
-    height: 48
+    position: 'absolute',
+    width: normalize(144)
   },
-  sliderButton: {
-    borderBottomColor: colors.darkText,
-    borderBottomWidth: 1,
-    marginVertical: 12 // no normalization here as the dots position does not use normalization either
+  sliderButtonDisabled: {
+    backgroundColor: colors.borderRgba
   },
-  sliderButtonAdditional: {
-    borderBottomColor: colors.placeholder
+  slideContainer: {
+    flexGrow: 1,
+    marginTop: normalize(144)
   },
   spacer: {
     height: normalize(40)
@@ -271,15 +366,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     width: normalize(40)
-  },
-  termsAndConditionsNextButton: {
-    bottom: 0,
-    height: 48,
-    position: 'absolute',
-    right: 0
-  },
-  termsAndConditionsNextButtonContainer: {
-    position: 'absolute',
-    right: 16
   }
 });
