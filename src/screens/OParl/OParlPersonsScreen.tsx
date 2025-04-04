@@ -153,7 +153,7 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
     setFetchingMore(false);
   };
 
-  if (orgaListLoading) {
+  if (orgaListLoading || personLoading) {
     return <LoadingSpinner loading />;
   }
 
