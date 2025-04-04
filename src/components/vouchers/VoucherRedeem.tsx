@@ -1,4 +1,4 @@
-import * as Crypto from 'expo-crypto';
+import { randomUUID as uuid } from 'expo-crypto';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -84,7 +84,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
 
     if (!deviceToken) {
-      deviceToken = Crypto.randomUUID();
+      deviceToken = uuid();
       addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
     }
 
