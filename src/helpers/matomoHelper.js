@@ -1,5 +1,5 @@
+import { randomUUID as uuid } from 'expo-crypto';
 import { Alert } from 'react-native';
-import { v4 as uuid } from 'uuid';
 
 import { texts } from '../config';
 import { storageHelper } from '../helpers/storageHelper';
