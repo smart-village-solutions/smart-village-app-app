@@ -4,7 +4,7 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, device, Icon, IconSet, normalize } from '../../config';
+import { colors, consts, device, Icon, IconSet, IconUrl, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
@@ -21,6 +21,7 @@ export type TServiceTile = {
   params?: any;
   query?: string;
   routeName: string;
+  svg?: string;
   tile?: string;
   tileSizeFactor?: number;
   title: string;
@@ -33,7 +34,8 @@ export const ServiceTile = ({
   isEditMode = false,
   item,
   onToggleVisibility,
-  tileSizeFactor = 1
+  tileSizeFactor = 1,
+  serviceTileStyles
 }: {
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
@@ -45,6 +47,7 @@ export const ServiceTile = ({
     setIsVisible: (isVisible: boolean) => void
   ) => void;
   tileSizeFactor?: number;
+  serviceTileStyles?: any;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -58,15 +61,22 @@ export const ServiceTile = ({
     [isEditMode, isVisible]
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
+  const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTileStyles;
+
+  const hasFontStyle = !!Object.keys(fontStyle).length;
+  const hasIconStyle = !!Object.keys(iconStyle).length;
+  const hasTileStyle = !!Object.keys(tileStyle).length;
 
   return (
     <ServiceBox
-      orientation={orientation}
+      bigTile={!!item.tile || hasTileStyle}
       dimensions={dimensions}
-      bigTile={!!item.tile}
       numberOfTiles={item?.numberOfTiles}
+      orientation={orientation}
+      style={hasTileStyle && tileStyle}
     >
       <TouchableOpacity
+        style={hasTileStyle && styles.button}
         onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
@@ -84,16 +94,35 @@ export const ServiceTile = ({
         <View style={!isVisible && styles.invisible}>
           {item.iconName ? (
             <Icon.NamedIcon
-              color={hasDiagonalGradientBackground ? colors.lightestText : undefined}
+              color={
+                iconStyle.color || hasDiagonalGradientBackground ? colors.lightestText : undefined
+              }
               name={item.iconName}
-              size={normalize(30)}
-              style={styles.serviceIcon}
+              size={iconStyle.size || normalize(30)}
+              strokeColor={iconStyle.strokeColor}
+              strokeWidth={iconStyle.strokeWidth}
+              style={[styles.serviceIcon, hasIconStyle && iconStyle]}
+            />
+          ) : item.svg ? (
+            <IconUrl
+              color={
+                iconStyle.color || hasDiagonalGradientBackground ? colors.lightestText : undefined
+              }
+              iconName={item.svg}
+              size={iconStyle.size || normalize(30)}
+              strokeColor={iconStyle.strokeColor}
+              strokeWidth={iconStyle.strokeWidth}
+              style={[styles.serviceIcon, hasIconStyle && iconStyle]}
             />
           ) : (
             <Image
               source={{ uri: item.icon || item.tile }}
               childrenContainerStyle={[
                 styles.serviceImage,
+                hasIconStyle &&
+                  !!item.icon && {
+                    height: iconStyle.size || normalize(30)
+                  },
                 !!item.tile &&
                   stylesWithProps({
                     tileSizeFactor,
@@ -115,6 +144,8 @@ export const ServiceTile = ({
               primary={!hasDiagonalGradientBackground}
               center
               accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+              numberOfLines={numberOfLines}
+              style={hasFontStyle && fontStyle}
             >
               {item.title}
             </BoldText>
@@ -127,13 +158,18 @@ export const ServiceTile = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%'
+  },
   serviceIcon: {
     alignSelf: 'center',
     paddingVertical: normalize(7.5)
   },
   serviceImage: {
     alignSelf: 'center',
-    height: normalize(40),
     marginBottom: normalize(7),
     width: '100%'
   },
