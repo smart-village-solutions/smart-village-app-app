@@ -22,6 +22,11 @@ export const WASTE_STREET = gql`
         wasteType
         id
         listPickUpDates
+        pickUpTimes {
+          id
+          note
+          pickupDate
+        }
       }
     }
   }

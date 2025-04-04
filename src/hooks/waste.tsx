@@ -100,10 +100,11 @@ export const useWasteMarkedDates = ({ streetData, selectedTypes }) =>
         }
 
         const { color, selected_color: selectedColor } = selectedTypes[wasteLocationType.wasteType];
-        wasteLocationType?.listPickUpDates?.forEach((date) => {
-          dates[date] = {
+        wasteLocationType?.pickUpTimes?.forEach((date) => {
+          dates[date.pickupDate] = {
             marked: true,
-            dots: [...(dates[date]?.dots ?? []), { color, selectedColor }]
+            note: date.note,
+            dots: [...(dates[date.pickupDate]?.dots ?? []), { color, selectedColor }]
           };
         });
       });
