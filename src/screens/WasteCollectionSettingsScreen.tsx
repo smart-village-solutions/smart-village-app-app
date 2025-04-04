@@ -113,7 +113,10 @@ export const WasteCollectionSettingsScreen = () => {
     reminderTime
   } = state;
   const isInitial = waste.streetId === undefined;
-  const { data, loading } = useWasteAddresses();
+  const { inputValue, setInputValue, renderSuggestion } = useRenderSuggestions(() =>
+    setIsStreetSelected(true)
+  );
+  const { data, loading } = useWasteAddresses({ search: inputValue });
   const addressesData = data?.wasteAddresses;
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
@@ -122,9 +125,6 @@ export const WasteCollectionSettingsScreen = () => {
   const locationData = getLocationData(streetData);
   const { getStreetString } = useStreetString();
   const streetName = locationData ? getStreetString(locationData) : undefined;
-  const { inputValue, setInputValue, renderSuggestion } = useRenderSuggestions(() =>
-    setIsStreetSelected(true)
-  );
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef(null);
 
