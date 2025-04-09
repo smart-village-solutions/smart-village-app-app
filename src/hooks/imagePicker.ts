@@ -16,7 +16,7 @@ import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 
 import appJson from '../../app.json';
-import { texts } from '../config';
+import { device, texts } from '../config';
 
 type TMediaTypeOptions = 'images' | 'videos' | Array<'images' | 'videos'>;
 
@@ -36,6 +36,9 @@ const saveImageToGallery = async (uri: string) => {
 
   try {
     const asset = await createAssetAsync(uri);
+
+    if (device.platform === 'android') return;
+
     const album = await getAlbumAsync(appName);
 
     if (!album) {
