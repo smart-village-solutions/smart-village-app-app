@@ -99,6 +99,7 @@ export const DropdownSelect = ({
         dropdownStyle={[
           styles.dropdownDropdown,
           {
+            backgroundColor: colors.surface,
             width:
               (orientation === 'portrait' ? device.width : device.height) - 2 * marginHorizontal
           }
@@ -144,7 +145,11 @@ export const DropdownSelect = ({
         keyboardShouldPersistTaps="handled"
       >
         <WrapperRow
-          style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
+          style={[
+            styles.dropdownTextWrapper,
+            !errorMessage && { marginBottom: normalize(8) },
+            { backgroundColor: colors.surface }
+          ]}
         >
           <RegularText
             style={styles.selectedValueText}

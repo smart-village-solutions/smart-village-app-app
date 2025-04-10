@@ -162,6 +162,11 @@ export const Filter = ({
           <BoldText small primary={!isCollapsed}>
             {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
           </BoldText>
+          <Icon.Filter
+            size={normalize(16)}
+            style={styles.icon}
+            color={!isCollapsed ? colors.primary : colors.darkText}
+          />
           {filterCount > 0 && (
             <View style={styles.countContainer}>
               <RegularText small lightest>
@@ -169,11 +174,6 @@ export const Filter = ({
               </RegularText>
             </View>
           )}
-          <Icon.Filter
-            size={normalize(16)}
-            style={styles.icon}
-            color={!isCollapsed ? colors.primary : colors.darkText}
-          />
         </TouchableOpacity>
 
         {isOverlay ? (
@@ -184,7 +184,7 @@ export const Filter = ({
             visible={!isCollapsed}
           >
             <Header
-              backgroundColor={colors.transparent}
+              backgroundColor={colors.gray20}
               centerComponent={{
                 text: texts.filter.header,
                 style: {
@@ -203,7 +203,7 @@ export const Filter = ({
               rightContainerStyle={styles.headerRightContainer}
             />
             <Divider />
-            <ScrollView>
+            <ScrollView style={{ backgroundColor: colors.gray20 }}>
               <Wrapper noPaddingTop noPaddingBottom>
                 <FilterComponent
                   filters={filters}
@@ -214,7 +214,7 @@ export const Filter = ({
               </Wrapper>
             </ScrollView>
 
-            <Wrapper style={styles.alignLeft} noPaddingTop>
+            <Wrapper noPaddingTop style={[styles.alignLeft, { backgroundColor: colors.gray20 }]}>
               <WrapperRow style={{ gap: normalize(16) }}>
                 <Button
                   disabled={!!isNoFilterSet}
@@ -296,7 +296,12 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: colors.darkText,
+    borderRadius: normalize(30),
+    padding: normalize(10),
+    marginBottom: normalize(16)
   },
   countContainer: {
     alignItems: 'center',
