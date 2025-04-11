@@ -85,7 +85,7 @@ export const Service = ({
         item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
-        serviceTileStyles={serviceTiles}
+        serviceTiles={serviceTiles}
         tileSizeFactor={tileSizeFactor}
       />
     ),
