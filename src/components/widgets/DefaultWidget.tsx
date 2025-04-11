@@ -34,7 +34,7 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
           ) : (
             <Icon style={[!!count?.toString() && styles.iconWithCount]} />
           )}
-          {!!count && (
+          {count !== undefined && (
             <BoldText primary big>
               {count}
             </BoldText>
