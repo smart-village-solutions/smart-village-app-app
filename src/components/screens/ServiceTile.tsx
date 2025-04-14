@@ -4,12 +4,32 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, device, Icon, IconSet, normalize } from '../../config';
+import { colors, consts, device, Icon, IconSet, IconUrl, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
+
+const normalizeStyleValues = (styleObj: any) => {
+  if (!Object.keys(styleObj).length) return styleObj;
+
+  const normalizedStyle = {};
+
+  for (const key in styleObj) {
+    const value = styleObj[key];
+
+    if (typeof value === 'number') {
+      normalizedStyle[key] = normalize(value);
+    } else if (typeof value === 'object' && value !== null) {
+      normalizedStyle[key] = normalizeStyleValues(value);
+    } else {
+      normalizedStyle[key] = value;
+    }
+  }
+
+  return normalizedStyle;
+};
 
 export type TServiceTile = {
   accessibilityLabel: string;
@@ -21,6 +41,7 @@ export type TServiceTile = {
   params?: any;
   query?: string;
   routeName: string;
+  svg?: string;
   tile?: string;
   tileSizeFactor?: number;
   title: string;
@@ -33,7 +54,8 @@ export const ServiceTile = ({
   isEditMode = false,
   item,
   onToggleVisibility,
-  tileSizeFactor = 1
+  tileSizeFactor = 1,
+  serviceTiles
 }: {
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
@@ -45,6 +67,7 @@ export const ServiceTile = ({
     setIsVisible: (isVisible: boolean) => void
   ) => void;
   tileSizeFactor?: number;
+  serviceTiles?: any;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -58,15 +81,24 @@ export const ServiceTile = ({
     [isEditMode, isVisible]
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
+  const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;
+
+  const hasTileStyle = !!Object.keys(tileStyle).length;
+
+  const normalizedFontStyle = normalizeStyleValues(fontStyle);
+  const normalizedIconStyle = normalizeStyleValues(iconStyle);
+  const normalizedTileStyle = normalizeStyleValues(tileStyle);
 
   return (
     <ServiceBox
-      orientation={orientation}
+      bigTile={!!item.tile || hasTileStyle}
       dimensions={dimensions}
-      bigTile={!!item.tile}
       numberOfTiles={item?.numberOfTiles}
+      orientation={orientation}
+      style={normalizedTileStyle}
     >
       <TouchableOpacity
+        style={[hasTileStyle && styles.button]}
         onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
@@ -81,19 +113,45 @@ export const ServiceTile = ({
             style={[styles.toggleVisibilityIcon, !!item.tile && styles.toggleVisibilityIconBigTile]}
           />
         )}
-        <View style={!isVisible && styles.invisible}>
+        <View style={[!isVisible && styles.invisible]}>
           {item.iconName ? (
             <Icon.NamedIcon
-              color={hasDiagonalGradientBackground ? colors.lightestText : undefined}
+              color={
+                normalizedIconStyle.color
+                  ? normalizedIconStyle.color
+                  : hasDiagonalGradientBackground
+                  ? colors.lightestText
+                  : undefined
+              }
               name={item.iconName}
-              size={normalize(30)}
-              style={styles.serviceIcon}
+              size={normalizedIconStyle.size || normalize(30)}
+              strokeColor={normalizedIconStyle.strokeColor}
+              strokeWidth={normalizedIconStyle.strokeWidth}
+              style={[styles.serviceIcon, normalizedIconStyle]}
+            />
+          ) : item.svg ? (
+            <IconUrl
+              color={
+                normalizedIconStyle.color
+                  ? normalizedIconStyle.color
+                  : hasDiagonalGradientBackground
+                  ? colors.lightestText
+                  : undefined
+              }
+              iconName={item.svg}
+              size={normalizedIconStyle.size || normalize(30)}
+              strokeColor={normalizedIconStyle.strokeColor}
+              strokeWidth={normalizedIconStyle.strokeWidth}
+              style={[styles.serviceIcon, normalizedIconStyle]}
             />
           ) : (
             <Image
               source={{ uri: item.icon || item.tile }}
               childrenContainerStyle={[
                 styles.serviceImage,
+                !!item.icon && {
+                  height: normalizedIconStyle.size || normalize(30)
+                },
                 !!item.tile &&
                   stylesWithProps({
                     tileSizeFactor,
@@ -115,6 +173,8 @@ export const ServiceTile = ({
               primary={!hasDiagonalGradientBackground}
               center
               accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+              numberOfLines={numberOfLines}
+              style={normalizedFontStyle}
             >
               {item.title}
             </BoldText>
@@ -127,13 +187,18 @@ export const ServiceTile = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%'
+  },
   serviceIcon: {
     alignSelf: 'center',
     paddingVertical: normalize(7.5)
   },
   serviceImage: {
     alignSelf: 'center',
-    height: normalize(40),
     marginBottom: normalize(7),
     width: '100%'
   },
