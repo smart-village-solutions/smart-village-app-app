@@ -14,7 +14,9 @@ export const SueCategory = ({
   return (
     <Wrapper>
       <WrapperRow spaceBetween>
-        <BoldText smallest>{serviceName}</BoldText>
+        <BoldText smallest style={{ width: '80%' }}>
+          {serviceName}
+        </BoldText>
         <RegularText smallest placeholder>
           {momentFormat(requestedDatetime)}
         </RegularText>
