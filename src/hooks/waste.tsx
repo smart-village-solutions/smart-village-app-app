@@ -14,7 +14,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { useStaticContent } from './staticContent';
 import { useRefreshTime } from './TimeHooks';
 
-export const useWasteAddresses = () => {
+export const useWasteAddresses = ({ search = '' }: { search?: string }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const addressesRefreshTime = useRefreshTime('waste-addresses');
   const addressesFetchPolicy = graphqlFetchPolicy({
@@ -23,8 +23,9 @@ export const useWasteAddresses = () => {
     refreshTime: addressesRefreshTime
   });
   const { data, loading, error } = useQuery(getQuery(QUERY_TYPES.WASTE_ADDRESSES), {
+    variables: { search },
     fetchPolicy: addressesFetchPolicy,
-    skip: !addressesRefreshTime
+    skip: !addressesRefreshTime || search.length < 5
   });
 
   return {
