@@ -4,10 +4,13 @@ import { StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { LoadingSpinner, MapLibre } from '../components';
+import { consts } from '../config';
 import { useMapSettings } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
+
+const { MAP } = consts;
 
 export const MapScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -33,9 +36,8 @@ export const MapScreen = () => {
   );
 
   const pois = data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.map((poi) => ({
-    [poi.category.iconName]: 1,
-    iconName: poi.category.iconName,
-    iconUrl: poi.category.iconUrl,
+    [poi.category.iconName || MAP.DEFAULT_PIN]: 1,
+    iconName: poi.category.iconName || MAP.DEFAULT_PIN,
     id: poi.id,
     position: {
       latitude: poi.addresses?.[0]?.geoLocation?.latitude,
@@ -63,7 +65,7 @@ export const MapScreen = () => {
 
 const styles = StyleSheet.create({
   map: {
-    width: '100%',
-    height: '100%'
+    height: '100%',
+    width: '100%'
   }
 });

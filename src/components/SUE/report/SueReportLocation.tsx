@@ -210,15 +210,11 @@ export const SueReportLocation = ({
   }
 
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
-  const baseLocationMarker = {
-    iconName: 'location'
-  };
-
   let locations = mapMarkers as MapMarker[];
   let mapCenterPosition = {} as Location.LocationObjectCoords;
 
   if (selectedPosition) {
-    locations = [...mapMarkers, { ...baseLocationMarker, position: selectedPosition }];
+    locations = [...mapMarkers, { iconName: 'location', position: selectedPosition }];
   }
 
   if (alternativePosition) {
