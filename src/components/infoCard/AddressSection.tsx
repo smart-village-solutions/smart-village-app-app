@@ -1,4 +1,4 @@
-import { LocationObject } from 'expo-location';
+import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _filter from 'lodash/filter';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -24,13 +24,7 @@ type Props = {
   openWebScreen?: (link: string, specificTitle?: string) => void;
 };
 
-const addressOnPress = (
-  address?: string,
-  geoLocation?: {
-    latitude: number;
-    longitude: number;
-  }
-) => {
+const addressOnPress = (address?: string, geoLocation?: LocationObjectCoords) => {
   const mapsString = locationString(address);
   const mapsLink = locationLink(mapsString, geoLocation);
 

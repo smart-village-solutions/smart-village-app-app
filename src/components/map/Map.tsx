@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { LocationObject } from 'expo-location';
+import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -25,7 +25,7 @@ type Props = {
   isMyLocationButtonVisible?: boolean;
   locations?: MapMarker[];
   logoContainerStyle?: StyleProp<ViewStyle>;
-  mapCenterPosition?: { latitude: number; longitude: number };
+  mapCenterPosition?: LocationObjectCoords;
   mapStyle?: StyleProp<ViewStyle>;
   minZoom?: number;
   onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
