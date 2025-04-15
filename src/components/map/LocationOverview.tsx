@@ -1,16 +1,16 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { LocationObject } from 'expo-location';
+import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, colors, device, normalize } from '../../config';
+import { Icon, colors, consts, device, normalize } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
@@ -20,12 +20,14 @@ import {
 import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { TextListItem } from '../TextListItem';
 import { getLocationMarker } from '../settings';
 
 import { ChipFilter } from './ChipFilter';
-import { Map } from './Map';
+import { MapLibre } from './MapLibre';
+
+const { MAP } = consts;
 
 type Props = {
   currentPosition?: LocationObject;
@@ -63,7 +65,8 @@ const mapToMapMarkers = (
       if (!latitude || !longitude) return undefined;
 
       return {
-        iconName: item.category?.iconName?.length ? item.category.iconName : undefined,
+        [item.category.iconName || MAP.DEFAULT_PIN]: 1,
+        iconName: item.category.iconName || MAP.DEFAULT_PIN,
         id: item.id,
         position: {
           latitude,
@@ -142,11 +145,7 @@ export const LocationOverview = ({
   );
 
   if (loading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   const mapMarkers = mapToMapMarkers(pointsOfInterest, alternativePosition);
@@ -177,22 +176,33 @@ export const LocationOverview = ({
     );
   }
 
+  let mapCenterPosition = {} as LocationObjectCoords;
+
+  if (alternativePosition) {
+    mapCenterPosition = getLocationMarker(alternativePosition).position;
+  } else if (defaultAlternativePosition) {
+    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
+  }
+
   return (
     <>
       {(queryVariables?.categoryIds?.length || 0) > 1 && (
         <ChipFilter queryVariables={queryVariables} refetch={refetch} />
       )}
 
-      <Map
-        clusteringEnabled
-        currentPosition={currentPosition}
-        isMultipleMarkersMap
-        locations={mapMarkers}
-        mapStyle={styles.map}
-        onMarkerPress={setSelectedPointOfInterest}
-        selectedMarker={selectedPointOfInterest}
-      />
-      {selectedPointOfInterest && !detailsLoading && (
+      {!!mapMarkers?.length && (
+        <MapLibre
+          currentPosition={currentPosition}
+          isMultipleMarkersMap
+          locations={mapMarkers}
+          mapCenterPosition={mapCenterPosition}
+          mapStyle={styles.map}
+          onMarkerPress={setSelectedPointOfInterest}
+          selectedMarker={selectedPointOfInterest}
+        />
+      )}
+
+      {!!selectedPointOfInterest && !detailsLoading && (
         <View
           style={[
             styles.listItemContainer,

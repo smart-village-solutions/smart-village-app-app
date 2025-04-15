@@ -12,17 +12,17 @@ import {
   UserTrackingMode
 } from '@maplibre/maplibre-react-native';
 import { featureCollection, point } from '@turf/helpers';
-import { LocationObjectCoords } from 'expo-location';
-import { default as React, useContext, useRef, useState } from 'react';
+import { LocationObject, LocationObjectCoords } from 'expo-location';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { LatLng, Region } from 'react-native-maps';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { truncateText } from '../../helpers';
+import { getBounds, truncateText } from '../../helpers';
 import { useLocationSettings, useMapFeatureConfig } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
-import { getLocationMarker } from '../settings';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
 const { a11yLabel } = consts;
@@ -55,12 +55,12 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
 type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
-  clusteringEnabled?: boolean;
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations: MapMarker[];
+  mapCenterPosition?: LocationObjectCoords;
   mapStyle?: StyleProp<ViewStyle>;
   minZoom?: number;
   onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
@@ -71,20 +71,24 @@ type Props = {
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   updatedRegion?: Region;
+  currentPosition?: LocationObject;
 };
 
 /* eslint-disable complexity */
 export const MapLibre = ({
   calloutTextEnabled = false,
-  isMultipleMarkersMap = true,
   clusterDistance,
-  clusteringEnabled,
-  locations,
+  geometryTourData,
+  isMaximizeButtonVisible = false,
+  isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
+  locations,
+  mapCenterPosition,
   mapStyle,
   minZoom,
+  onMapPress,
   onMarkerPress,
-  selectedMarker,
+  selectedMarker = '',
   style,
   ...otherProps
 }: Props) => {
@@ -96,6 +100,7 @@ export const MapLibre = ({
     clusterMaxZoom,
     clusterProperties,
     layerStyles = {},
+    loading,
     markerImages,
     zoomLevel = {}
   } = useMapFeatureConfig(locations);
@@ -109,6 +114,7 @@ export const MapLibre = ({
   const { alternativePosition, defaultAlternativePosition } = locationSettings;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -118,22 +124,6 @@ export const MapLibre = ({
     longitude: 10.4515
   };
 
-  if (locations?.[0]?.position?.latitude && locations[0]?.position?.longitude) {
-    initialRegion = {
-      ...initialRegion,
-      latitude: locations[0].position.latitude,
-      longitude: locations[0].position.longitude
-    };
-  }
-
-  let mapCenterPosition = {} as LocationObjectCoords;
-
-  if (alternativePosition) {
-    mapCenterPosition = getLocationMarker(alternativePosition).position;
-  } else if (defaultAlternativePosition) {
-    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
-  }
-
   if (mapCenterPosition) {
     initialRegion = {
       ...initialRegion,
@@ -141,21 +131,73 @@ export const MapLibre = ({
     };
   }
 
-  const handleClusterPress = async (event: any) => {
-    const cluster = event.features[0];
+  if (
+    (!isMultipleMarkersMap || (isMultipleMarkersMap && locations?.length === 1)) &&
+    locations?.[0]?.position?.latitude &&
+    locations?.[0]?.position?.longitude
+  ) {
+    initialRegion = {
+      ...initialRegion,
+      latitude: locations[0].position.latitude,
+      longitude: locations[0].position.longitude
+    };
+  }
 
-    if (cluster?.type === 'Feature') {
-      const zoomForCluster = (await shapeSourceRef.current?.getClusterExpansionZoom(cluster)) ?? 0;
-      const newZoomLevel = Math.min(zoomForCluster, 20);
+  if (
+    showsUserLocation &&
+    otherProps.currentPosition?.coords.latitude &&
+    otherProps.currentPosition?.coords.longitude
+  ) {
+    initialRegion = {
+      ...initialRegion,
+      latitude: otherProps.currentPosition.coords.latitude,
+      longitude: otherProps.currentPosition.coords.longitude
+    };
+  }
+
+  useEffect(() => {
+    if (
+      !mapReady ||
+      loading ||
+      cameraRef.current === null ||
+      !isMultipleMarkersMap ||
+      locations.length < 2
+    ) {
+      return;
+    }
+
+    const { ne, sw } = getBounds(locations);
+
+    cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+  }, [mapReady, loading, cameraRef.current, isMultipleMarkersMap, locations]);
+
+  const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
+
+  const handleOnPress = async (event: any) => {
+    const feature = event.features[0];
+    if (!feature) return;
+
+    if (feature.properties?.cluster) {
+      const currentZoomLevel = await mapRef.current?.getZoom();
+      const zoomForCluster = await shapeSourceRef.current?.getClusterExpansionZoom(feature);
+      const newZoomLevel = Math.min((zoomForCluster ?? currentZoomLevel) + 1, 20);
 
       cameraRef.current?.setCamera({
         animationDuration: 1500,
         animationMode: 'flyTo',
-        centerCoordinate: cluster.geometry.coordinates,
+        centerCoordinate: feature.geometry.coordinates,
         zoomLevel: newZoomLevel
       });
+    } else {
+      cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
+      onMarkerPress?.(feature.properties?.id);
+      !!calloutTextEnabled && setSelectedFeature(feature);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner loading />;
+  }
 
   return (
     <View style={[styles.container, style]}>
@@ -167,9 +209,10 @@ export const MapLibre = ({
         rotateEnabled={false}
         style={[styles.map, mapStyle]}
         zoomEnabled
+        onDidFinishLoadingMap={() => setMapReady(true)}
       >
         <Camera
-          centerCoordinate={[initialRegion.longitude, initialRegion.latitude]}
+          centerCoordinate={centerCoordinate}
           followUserLocation={followsUserLocation}
           followUserMode={UserTrackingMode.FollowWithHeading}
           minZoomLevel={minZoom}
@@ -194,7 +237,7 @@ export const MapLibre = ({
               point([location.position.longitude, location.position.latitude], { ...location })
             )
           )}
-          onPress={handleClusterPress}
+          onPress={handleOnPress}
           cluster
           clusterRadius={50}
           clusterMaxZoomLevel={clusterMaxZoom}
@@ -209,7 +252,16 @@ export const MapLibre = ({
           <SymbolLayer
             id="single-icon"
             filter={['!', ['has', 'point_count']]}
-            style={{ ...layerStyles.singleIcon, iconImage: ['get', 'iconName'] }}
+            style={{
+              ...layerStyles.singleIcon,
+              iconImage: ['get', 'iconName'],
+              iconSize: [
+                'case',
+                ['==', ['get', 'id'], selectedMarker],
+                layerStyles.singleIcon.iconSize * 1.25,
+                layerStyles.singleIcon.iconSize
+              ]
+            }}
           />
 
           <CircleLayer
@@ -232,20 +284,20 @@ export const MapLibre = ({
           />
         </ShapeSource>
 
-        {selectedFeature && calloutTextEnabled && (
-          <MarkerView coordinate={selectedFeature.geometry.coordinates}>
+        {!!selectedFeature && (
+          <MarkerView anchor={{ x: 0.5, y: 0.4 }} coordinate={selectedFeature.geometry.coordinates}>
             <CustomCallout feature={selectedFeature} />
           </MarkerView>
         )}
       </MapView>
 
-      {isMyLocationButtonVisible && (
+      {isMyLocationButtonVisible && showsUserLocation && (
         <View style={styles.myLocationContainer}>
           <TouchableOpacity
             accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
             onPress={() => {
               setFollowsUserLocation(true);
-              setTimeout(() => setFollowsUserLocation(false), 2000);
+              setTimeout(() => setFollowsUserLocation(false), 5000);
             }}
             style={styles.buttons}
           >

@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
 import { useLocationSettings, useSystemPermission } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
@@ -15,12 +15,11 @@ import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
-export const baseLocationMarker = {
-  iconName: 'ownLocation'
-};
+const { MAP } = consts;
 
 export const getLocationMarker = (locationObject) => ({
-  iconName: locationObject?.iconName || baseLocationMarker.iconName,
+  [locationObject?.iconName || MAP.DEFAULT_PIN]: 1,
+  iconName: locationObject?.iconName || MAP.DEFAULT_PIN,
   position: {
     ...locationObject.coords,
     latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
@@ -100,7 +99,7 @@ export const LocationSettings = () => {
   let locations = [];
 
   if (selectedPosition) {
-    locations = [{ ...baseLocationMarker, position: selectedPosition }];
+    locations = [{ iconName: 'ownLocation', position: selectedPosition }];
   } else if (alternativePosition) {
     locations = [getLocationMarker(alternativePosition)];
   } else if (defaultAlternativePosition) {

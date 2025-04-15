@@ -17,7 +17,7 @@ import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
-import { Map } from '../map';
+import { MapLibre } from '../map';
 import { VoucherListItem } from '../vouchers';
 
 import { AvailableVehicles } from './AvailableVehicles';
@@ -26,7 +26,7 @@ import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 import { TravelTimes } from './TravelTimes';
 
-const { MATOMO_TRACKING } = consts;
+const { MAP, MATOMO_TRACKING } = consts;
 export const INITIAL_VOUCHER_COUNT = 3;
 export const INCREMENT_VOUCHER_COUNT = 5;
 
@@ -204,21 +204,17 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
-          <Map
+          <MapLibre
             locations={[
               {
-                position: { latitude, longitude },
-                iconName: nestedCategory?.iconName?.length
-                  ? nestedCategory.iconName
-                  : category?.iconName?.length
-                  ? category.iconName
-                  : undefined,
-                id
+                [category.iconName || MAP.DEFAULT_PIN]: 1,
+                iconName: category.iconName || MAP.DEFAULT_PIN,
+                id,
+                position: { latitude, longitude }
               }
             ]}
             selectedMarker={id}
             mapStyle={styles.mapStyle}
-            logoContainerStyle={styles.logoContainerStyle}
           />
         </WrapperVertical>
       )}
@@ -238,12 +234,10 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  logoContainerStyle: {
-    paddingLeft: normalize(16),
-    width: normalize(124)
-  },
   mapStyle: {
-    borderRadius: normalize(8)
+    // borderRadius: normalize(8),
+    height: normalize(300),
+    width: '100%'
   }
 });
 

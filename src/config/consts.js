@@ -127,6 +127,10 @@ export const consts = {
     FULL_SCREEN_MAX_WIDTH: 504
   },
 
+  MAP: {
+    DEFAULT_PIN: 'defaultPin'
+  },
+
   MEDIA_TYPES: {
     DOCUMENT: 'pdf',
     IMAGE: 'jpg'

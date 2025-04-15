@@ -2,10 +2,12 @@ import { consts } from '../../config';
 import { MapMarker } from '../../types';
 import { useStaticContent } from '../staticContent';
 
+const { MAP, REFRESH_INTERVALS } = consts;
+
 export const useMapSettings = () => {
   const { data, loading } = useStaticContent({
     name: 'mapSettings',
-    refreshInterval: consts.REFRESH_INTERVALS.ONCE_PER_HOUR,
+    refreshInterval: REFRESH_INTERVALS.ONCE_PER_HOUR,
     refreshTimeKey: 'map-settings',
     type: 'json'
   });
@@ -72,9 +74,9 @@ const createClusterProperties = (types: (string | undefined)[]) =>
   );
 
 export const useMapFeatureConfig = (locations: MapMarker[]) => {
-  const types = locations?.map((location) => location.iconName) || [];
+  const types = locations?.map((location) => location.iconName || MAP.DEFAULT_PIN) || [];
   const uniqueTypes = [...new Set(types)];
-  const { data } = useMapSettings();
+  const { data, loading } = useMapSettings();
   const clusterFallbackColor = data?.clusterFallbackColor;
   const clusterMaxZoom = data?.clusterMaxZoom;
   const clusterSuperiorColor = data?.clusterSuperiorColor;
@@ -92,6 +94,7 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
     clusterMaxZoom,
     clusterProperties: createClusterProperties(uniqueTypes),
     layerStyles,
+    loading,
     markerImages,
     zoomLevel
   };
