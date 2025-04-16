@@ -120,7 +120,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY;
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
-  const { data, isLoading, refetch } = useVolunteerData({
+  const { data, isLoading, refetch, userGuid } = useVolunteerData({
     query,
     queryVariables,
     queryOptions,
@@ -249,6 +249,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={isCalendar && showCalendar ? [] : data}
           sectionByDate={isCalendar && !showCalendar}
           query={query}
+          queryVariables={{ userGuid, isPartOfIndexScreen: false }}
           refetch={refetch}
           refreshControl={
             <RefreshControl

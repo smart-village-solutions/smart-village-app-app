@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useId, useLayoutEffect, useState } from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
@@ -87,6 +87,7 @@ export const VolunteerGroup = ({
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
+  const [userGuid, setUserGuid] = useState<string | null>();
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
   const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
@@ -132,8 +133,9 @@ export const VolunteerGroup = ({
   }, []);
 
   const checkIfOwner = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+    const { currentUserId, currentUserGuid } = await volunteerUserData();
 
+    setUserGuid(currentUserGuid);
     setIsGroupOwner(isOwner(currentUserId, owner));
   }, [owner]);
 
@@ -312,6 +314,7 @@ export const VolunteerGroup = ({
             openWebScreen={openWebScreen}
             navigation={navigation}
             isGroupMember={isGroupMember}
+            userGuid={userGuid}
           />
         </>
       )}

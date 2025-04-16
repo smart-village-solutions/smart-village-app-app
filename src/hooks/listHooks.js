@@ -234,8 +234,6 @@ export const useRenderItem = (query, navigation, options = {}) => {
     default: {
       /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
-        const bottomDivider = item.bottomDivider ? true : calculateBottomDivider(index, section);
-
         if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
           return (
             <ConversationListItem
@@ -254,6 +252,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
               bottomDivider={false}
               openWebScreen={options.openWebScreen}
               post={item}
+              userGuid={options.queryVariables?.userGuid}
             />
           );
         }

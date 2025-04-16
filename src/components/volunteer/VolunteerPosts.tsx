@@ -24,13 +24,15 @@ export const VolunteerPosts = ({
   isRefetching,
   openWebScreen,
   navigation,
-  isGroupMember
+  isGroupMember,
+  userGuid
 }: {
   contentContainerId: number;
   isRefetching: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   navigation: StackScreenProps<any>['navigation'];
   isGroupMember?: boolean;
+  userGuid?: string | null;
 }) => {
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
@@ -105,6 +107,7 @@ export const VolunteerPosts = ({
                 bottomDivider={false}
                 openWebScreen={openWebScreen}
                 post={post}
+                userGuid={userGuid}
               />
             )
           )}
