@@ -17,7 +17,7 @@ import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -251,9 +251,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
-              post={item}
-              bottomDivider={calculateBottomDivider(item, index, section)}
+              bottomDivider={false}
               openWebScreen={options.openWebScreen}
+              post={item}
             />
           );
         }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
@@ -10,10 +10,12 @@ import { BoldText, RegularText } from '../Text';
 import { VolunteerAvatar } from './VolunteerAvatar';
 
 export const VolunteerPostListItem = ({
-  post: { message, content },
   bottomDivider = true,
-  openWebScreen
+  openWebScreen,
+  post: { message, content }
 }: {
+  bottomDivider: boolean;
+  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
     id: number;
     message: string;
@@ -21,8 +23,6 @@ export const VolunteerPostListItem = ({
       metadata: { created_by: { guid: string; display_name: string }; created_at: string };
     };
   };
-  bottomDivider: boolean;
-  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
 }) => {
   const { metadata } = content || {};
   const {
@@ -31,7 +31,7 @@ export const VolunteerPostListItem = ({
   } = metadata || { guid: '', display_name: '' };
 
   return (
-    <View>
+    <>
       <ListItem containerStyle={listItemStyles.avatarContainerStyle}>
         <VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />
 
@@ -61,7 +61,7 @@ export const VolunteerPostListItem = ({
           {message}
         </Markdown>
       </ListItem>
-    </View>
+    </>
   );
 };
 
@@ -69,10 +69,12 @@ const listItemStyles = StyleSheet.create({
   avatarContainerStyle: {
     backgroundColor: colors.transparent,
     paddingBottom: 0,
+    paddingHorizontal: normalize(0),
     paddingVertical: normalize(12)
   },
   contentContainerStyle: {
     backgroundColor: colors.transparent,
+    paddingHorizontal: normalize(0),
     paddingVertical: normalize(12)
   }
 });

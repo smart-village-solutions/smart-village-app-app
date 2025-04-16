@@ -7,7 +7,7 @@ import { colors, Icon, normalize, texts } from '../../config';
 import { postNew } from '../../queries/volunteer';
 import { VolunteerPost } from '../../types';
 import { Input } from '../form';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 export const VolunteerPostTextField = ({
   contentContainerId,
@@ -35,7 +35,7 @@ export const VolunteerPostTextField = ({
   };
 
   return (
-    <Wrapper>
+    <WrapperVertical>
       <Input name="contentContainerId" hidden control={control} />
       <WrapperRow>
         <Input
@@ -50,15 +50,15 @@ export const VolunteerPostTextField = ({
           <Icon.Send color={colors.primary} />
         </TouchableOpacity>
       </WrapperRow>
-    </Wrapper>
+    </WrapperVertical>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
     alignItems: 'flex-end',
-    marginBottom: normalize(10),
+    marginBottom: normalize(23),
     width: '10%'
   }
 });
