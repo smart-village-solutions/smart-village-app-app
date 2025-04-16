@@ -75,6 +75,7 @@ export * from './ListSwitchItem';
 export * from './LoadingContainer';
 export * from './LoadingModal';
 export * from './LoadingSpinner';
+export * from './LoginHeader';
 export * from './Logo';
 export * from './MediaSection';
 export * from './Modal';

@@ -24,6 +24,7 @@ export * from './reverseGeocode';
 export * from './staticContent';
 export * from './surveyHooks';
 export * from './TimeHooks';
+export * from './useLoginProfile';
 export * from './versionCheck';
 export * from './voucherHooks';
 export * from './waste';
