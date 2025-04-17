@@ -45,6 +45,7 @@ export const VolunteerPostTextField = ({
           multiline
           rules={{ required: true }}
           control={control}
+          renderErrorMessage={false}
         />
         <TouchableOpacity onPress={handleSubmit(onPress)} style={styles.button}>
           <Icon.Send color={colors.primary} />
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: 'center',
     alignItems: 'flex-end',
-    marginBottom: normalize(23),
+    marginBottom: normalize(4),
     width: '10%'
   }
 });

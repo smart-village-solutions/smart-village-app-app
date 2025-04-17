@@ -20,6 +20,7 @@ import {
   Search,
   VolunteerPostTextField,
   Wrapper,
+  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
 import { colors, consts, texts } from '../../config';
@@ -176,16 +177,18 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
         {isCalendar && calendarToggle && !hasDailyFilterSelection && (
           <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         )}
+        {isPosts && isGroupMember && (
+          <WrapperHorizontal>
+            <VolunteerPostTextField
+              contentContainerId={queryVariables?.contentContainerId}
+              refetch={refetch}
+            />
+          </WrapperHorizontal>
+        )}
         <ListComponent
           ListHeaderComponent={
             <>
               {/* {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />} */}
-              {isPosts && isGroupMember && (
-                <VolunteerPostTextField
-                  contentContainerId={queryVariables?.contentContainerId}
-                  refetch={refetch}
-                />
-              )}
               {isGroups && (
                 <>
                   <WrapperVertical>
