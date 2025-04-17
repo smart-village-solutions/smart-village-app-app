@@ -480,7 +480,7 @@ export const texts = {
     hideFilter: 'Filter ausblenden',
     filter: 'Filtern',
     resetFilter: 'Zurücksetzen',
-    result: 'Ergebnisse',
+    result: 'Ergebnis',
     results: 'Ergebnisse',
     showFilter: 'Filter anzeigen',
     search: 'Was suchen Sie?',
