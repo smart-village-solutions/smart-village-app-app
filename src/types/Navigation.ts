@@ -137,6 +137,7 @@ export type StackConfig = {
 
 export type CustomTab = {
   accessibilityLabel: string;
+  activeIconName?: keyof typeof Icon;
   iconLandscapeStyle?: ViewStyle;
   iconName: keyof typeof Icon;
   iconSize?: number;
