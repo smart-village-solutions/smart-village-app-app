@@ -197,7 +197,7 @@ export const SueReportLocation = ({
     geocode();
   }, [address]);
 
-  const handleGeocode = async (position: { latitude: number; longitude: number }) =>
+  const handleGeocode = async (position: Location.LocationObjectCoords) =>
     await reverseGeocode({
       areaServiceData,
       errorMessage,
@@ -210,15 +210,11 @@ export const SueReportLocation = ({
   }
 
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
-  const baseLocationMarker = {
-    iconName: 'location'
-  };
-
   let locations = mapMarkers as MapMarker[];
-  let mapCenterPosition = {} as { latitude: number; longitude: number };
+  let mapCenterPosition = {} as Location.LocationObjectCoords;
 
   if (selectedPosition) {
-    locations = [...mapMarkers, { ...baseLocationMarker, position: selectedPosition }];
+    locations = [...mapMarkers, { iconName: 'location', position: selectedPosition }];
   }
 
   if (alternativePosition) {

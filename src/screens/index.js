@@ -29,6 +29,7 @@ export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
 export * from './LunchScreen';
+export * from './MapScreen';
 export * from './MapViewScreen';
 export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';

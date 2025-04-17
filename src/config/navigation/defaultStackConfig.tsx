@@ -35,6 +35,7 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
+  MapScreen,
   MapViewScreen,
   MultiButtonScreen,
   NestedInfoScreen,
@@ -323,6 +324,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.Lunch,
       screenComponent: LunchScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.map },
+      routeName: ScreenName.Map,
+      screenComponent: MapScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.mapView },
