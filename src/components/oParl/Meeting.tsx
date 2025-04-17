@@ -1,5 +1,4 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import { isNumber } from 'lodash';
 import React from 'react';
 
 import { texts } from '../../config';
@@ -7,6 +6,7 @@ import { MeetingData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 
+import { getSortedAgendaItems } from './oParlHelpers';
 import { FormattedLocation } from './previews';
 import { Row, SimpleRow } from './Row';
 import {
@@ -47,13 +47,7 @@ export const Meeting = ({ data, navigation }: Props) => {
     web
   } = data;
 
-  const sortedAgendaItems = agendaItem
-    ? [...agendaItem].sort((a, b) => {
-        if (isNumber(a.order) && isNumber(b.order)) return a.order - b.order;
-        return 0;
-      })
-    : undefined;
-
+  const sortedAgendaItems = getSortedAgendaItems(agendaItem);
   const formattedLocation = location && <FormattedLocation location={location} />;
 
   return (
