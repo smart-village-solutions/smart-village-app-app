@@ -2,6 +2,7 @@ import {
   Camera,
   CircleLayer,
   Images,
+  LineLayer,
   MapView,
   MarkerView,
   ShapeSource,
@@ -297,6 +298,28 @@ export const MapLibre = ({
             }}
           />
         </ShapeSource>
+
+        {!!geometryTourData?.length && (
+          <ShapeSource
+            id="polyline"
+            shape={{
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: geometryTourData.map((point) => [point.longitude, point.latitude])
+              }
+            }}
+          >
+            <LineLayer
+              id="polyline-layer"
+              style={{
+                lineColor: colors.primary,
+                lineWidth: 4,
+                lineOpacity: 0.8
+              }}
+            />
+          </ShapeSource>
+        )}
 
         <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
           <SymbolLayer
