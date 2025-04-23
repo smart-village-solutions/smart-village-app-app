@@ -362,7 +362,7 @@ export const MapLibre = ({
         </ShapeSource>
 
         {!!selectedFeature && (
-          <MarkerView anchor={{ x: 0.5, y: 0.4 }} coordinate={selectedFeature.geometry.coordinates}>
+          <MarkerView coordinate={selectedFeature.geometry.coordinates}>
             <CustomCallout feature={selectedFeature} />
           </MarkerView>
         )}
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   calloutContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: normalize(140)
+    marginBottom: normalize(100)
   },
   calloutTriangel: {
     alignSelf: 'center',
