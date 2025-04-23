@@ -56,7 +56,9 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
 type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
+  currentPosition?: LocationObject;
   geometryTourData?: LatLng[];
+  isLocationSelectable?: boolean;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations: MapMarker[];
@@ -68,10 +70,10 @@ type Props = {
   onMaximizeButtonPress?: () => void;
   onMyLocationButtonPress?: () => void;
   selectedMarker?: string;
+  selectedPosition?: LocationObjectCoords;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   updatedRegion?: Region;
-  currentPosition?: LocationObject;
 };
 
 /* eslint-disable complexity */
@@ -79,6 +81,7 @@ export const MapLibre = ({
   calloutTextEnabled = false,
   clusterDistance,
   geometryTourData,
+  isLocationSelectable,
   isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
   locations,
@@ -88,7 +91,9 @@ export const MapLibre = ({
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
+  onMyLocationButtonPress,
   selectedMarker = '',
+  selectedPosition,
   style,
   ...otherProps
 }: Props) => {
@@ -172,18 +177,37 @@ export const MapLibre = ({
     cameraRef.current?.fitBounds(ne, sw, 50, 1000);
   }, [mapReady, loading, cameraRef.current, isMultipleMarkersMap, locations]);
 
+  useEffect(() => {
+    if (!selectedPosition) {
+      setNewPins([]);
+      return;
+    }
+
+    const { latitude, longitude } = selectedPosition;
+    const newPin = point([longitude, latitude], {
+      iconName: MAP.DEFAULT_PIN,
+      id: `${Date.now()}`
+    });
+    setNewPins([newPin]);
+  }, []);
+
   const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
 
   const handleMapPressToSetNewPin = (event: any) => {
     const { geometry } = event;
     if (!geometry) return;
 
-    if (geometry.coordinates) {
-      const newPin = point(geometry.coordinates, {
+    const coordinates = geometry.coordinates as number[];
+    if (!coordinates?.length) return;
+
+    if (isLocationSelectable === undefined || isLocationSelectable) {
+      const newPin = point(coordinates, {
         iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
         id: `new-pin-${Date.now()}`
       });
       setNewPins([newPin]);
+    } else {
+      setNewPins([]);
     }
   };
 
@@ -350,6 +374,7 @@ export const MapLibre = ({
             accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
             onPress={() => {
               setFollowsUserLocation(true);
+              onMyLocationButtonPress?.({});
               setTimeout(() => setFollowsUserLocation(false), 5000);
             }}
             style={styles.buttons}
