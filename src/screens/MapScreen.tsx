@@ -1,4 +1,4 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
@@ -9,6 +9,7 @@ import { useMapSettings } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
+import { ScreenName } from '../types';
 
 const { MAP } = consts;
 
@@ -47,12 +48,18 @@ export const MapScreen = () => {
     title: poi.name
   }));
 
+  const navigation = useNavigation();
   if (isLoading || loading) {
     return <LoadingSpinner loading />;
   }
 
   return (
     <MapLibre
+      onMaximizeButtonPress={() => {
+        navigation.navigate(ScreenName.MapView, {
+          locations: locations || pois
+        });
+      }}
       {...{
         locations: locations || pois,
         mapStyle: styles.map,
