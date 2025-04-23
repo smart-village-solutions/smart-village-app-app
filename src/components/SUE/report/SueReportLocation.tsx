@@ -24,7 +24,7 @@ import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
-import { Map } from '../../map';
+import { MapLibre } from '../../map';
 import { getLocationMarker } from '../../settings';
 
 const { a11yLabel, INPUT_KEYS } = consts;
@@ -84,8 +84,7 @@ export const SueReportLocation = ({
   selectedPosition,
   setSelectedPosition,
   setUpdateRegionFromImage,
-  setValue,
-  updateRegionFromImage
+  setValue
 }: {
   areaServiceData?: { postalCodes?: string[] };
   configuration: {
@@ -123,6 +122,7 @@ export const SueReportLocation = ({
   const [address, setAddress] = useState(
     {} as { street: string; houseNumber: string; postalCode: string; city: string }
   );
+  const [isLocationSelectable, setIsLocationSelectable] = useState<boolean>(false);
 
   const { position } = usePosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
@@ -131,14 +131,6 @@ export const SueReportLocation = ({
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
   );
   const currentPosition = position || lastKnownPosition;
-
-  const [updatedRegion, setUpdatedRegion] = useState(false);
-
-  useEffect(() => {
-    if (updateRegionFromImage) {
-      setUpdatedRegion(true);
-    }
-  }, [selectedPosition, updateRegionFromImage]);
 
   const streetInputRef = useRef();
   const houseNumberInputRef = useRef();
@@ -185,7 +177,6 @@ export const SueReportLocation = ({
       const longitude = data?.[0]?.lon;
 
       if (latitude && longitude) {
-        setUpdatedRegion(true);
         setSelectedPosition({ latitude: Number(latitude), longitude: Number(longitude) });
       }
     } catch (error) {
@@ -210,12 +201,8 @@ export const SueReportLocation = ({
   }
 
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
-  let locations = mapMarkers as MapMarker[];
+  const locations = mapMarkers as MapMarker[];
   let mapCenterPosition = {} as Location.LocationObjectCoords;
-
-  if (selectedPosition) {
-    locations = [...mapMarkers, { iconName: 'location', position: selectedPosition }];
-  }
 
   if (alternativePosition) {
     mapCenterPosition = getLocationMarker(alternativePosition).position;
@@ -228,26 +215,29 @@ export const SueReportLocation = ({
   }
 
   const onMapPress = async ({
-    nativeEvent
+    geometry
   }: {
-    nativeEvent: { action: string; coordinate: Location.LocationObjectCoords };
+    geometry: { coordinates: Location.LocationObjectCoords };
   }) => {
-    if (nativeEvent.action !== 'marker-press' && nativeEvent.action !== 'callout-inside-press') {
-      setSelectedPosition(nativeEvent.coordinate);
-      setUpdatedRegion(false);
-      setUpdateRegionFromImage(false);
+    const coordinate = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
+    setSelectedPosition(coordinate);
 
-      try {
-        await handleGeocode(nativeEvent.coordinate);
-      } catch (error) {
-        setSelectedPosition(undefined);
-        Alert.alert(texts.sue.report.alerts.hint, error.message);
-        return { error: error.message };
-      }
+    try {
+      setIsLocationSelectable(true);
+      await handleGeocode(coordinate);
+    } catch (error) {
+      setIsLocationSelectable(false);
+      setSelectedPosition(undefined);
+      Alert.alert(texts.sue.report.alerts.hint, error?.message);
+      return { error: error?.message };
     }
   };
 
-  const onMyLocationButtonPress = async ({ isFullScreenMap = false }) => {
+  const onMyLocationButtonPress = async ({
+    isFullScreenMap = false
+  }: {
+    isFullScreenMap?: boolean;
+  }) => {
     if (!isFullScreenMap) {
       Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
         {
@@ -264,12 +254,13 @@ export const SueReportLocation = ({
 
             if (currentPosition) {
               setSelectedPosition(currentPosition.coords);
-              setUpdatedRegion(true);
               setUpdateRegionFromImage(false);
 
               try {
+                setIsLocationSelectable(true);
                 await handleGeocode(currentPosition.coords);
               } catch (error) {
+                setIsLocationSelectable(false);
                 setSelectedPosition(undefined);
                 Alert.alert(texts.sue.report.alerts.hint, error.message);
               }
@@ -280,12 +271,13 @@ export const SueReportLocation = ({
     } else {
       if (currentPosition) {
         setSelectedPosition(currentPosition.coords);
-        setUpdatedRegion(true);
         setUpdateRegionFromImage(false);
 
         try {
+          setIsLocationSelectable(true);
           await handleGeocode(currentPosition.coords);
         } catch (error) {
+          setIsLocationSelectable(false);
           setSelectedPosition(undefined);
           Alert.alert(texts.sue.report.alerts.hint, error.message);
         }
@@ -296,17 +288,17 @@ export const SueReportLocation = ({
   return (
     <View style={styles.container}>
       <WrapperHorizontal>
-        <Map
+        <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
-          clusteringEnabled
-          isMaximizeButtonVisible
+          isLocationSelectable={isLocationSelectable}
+          isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
-          mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
-          onMyLocationButtonPress={onMyLocationButtonPress}
           onMapPress={onMapPress}
+          onMyLocationButtonPress={onMyLocationButtonPress}
+          selectedPosition={selectedPosition}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
@@ -320,11 +312,6 @@ export const SueReportLocation = ({
               selectedPosition,
               showsUserLocation: true
             })
-          }
-          updatedRegion={
-            !!selectedPosition && (updatedRegion || updateRegionFromImage)
-              ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-              : undefined
           }
         />
       </WrapperHorizontal>
@@ -424,6 +411,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   map: {
+    height: normalize(300),
     width: device.width - 2 * normalize(14)
   }
 });
