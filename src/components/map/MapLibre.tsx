@@ -25,7 +25,7 @@ import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
-const { a11yLabel } = consts;
+const { a11yLabel, MAP } = consts;
 
 const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
   const { properties = {} } = feature;
@@ -115,6 +115,7 @@ export const MapLibre = ({
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [mapReady, setMapReady] = useState(false);
+  const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -195,6 +196,18 @@ export const MapLibre = ({
     }
   };
 
+  const handleMapPress = (event: any) => {
+    const { geometry } = event;
+    if (geometry?.coordinates) {
+      const newPin = point(geometry.coordinates, {
+        iconName: MAP.DEFAULT_PIN,
+        id: `${Date.now()}`
+      });
+      setNewPins([newPin]);
+    }
+    onMapPress?.(event);
+  };
+
   if (loading) {
     return <LoadingSpinner loading />;
   }
@@ -209,6 +222,7 @@ export const MapLibre = ({
         rotateEnabled={false}
         style={[styles.map, mapStyle]}
         zoomEnabled
+        onPress={!!onMapPress && handleMapPress}
         onDidFinishLoadingMap={() => setMapReady(true)}
       >
         <Camera
@@ -280,6 +294,17 @@ export const MapLibre = ({
               ...layerStyles.clusterCount,
               textField: ['format', ['concat', ['get', 'point_count']]],
               textPitchAlignment: 'map'
+            }}
+          />
+        </ShapeSource>
+
+        <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
+          <SymbolLayer
+            id="new-pin-icon"
+            style={{
+              ...layerStyles.singleIcon,
+              iconImage: ['get', 'iconName'],
+              iconSize: layerStyles.singleIcon.iconSize
             }}
           />
         </ShapeSource>
