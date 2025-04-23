@@ -269,7 +269,12 @@ export const MapLibre = ({
             filter={['!', ['has', 'point_count']]}
             style={{
               ...layerStyles.singleIcon,
-              iconImage: ['get', 'iconName'],
+              iconImage: [
+                'case',
+                ['==', ['get', 'id'], selectedMarker],
+                ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
+                ['get', 'iconName']
+              ],
               iconSize: [
                 'case',
                 ['==', ['get', 'id'], selectedMarker],
