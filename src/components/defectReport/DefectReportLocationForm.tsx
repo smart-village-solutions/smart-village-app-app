@@ -2,6 +2,7 @@ import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useState } from 'react';
 import Collapsible from 'react-native-collapsible';
 
+import { StyleSheet } from 'react-native';
 import { texts } from '../../config';
 import {
   useLastKnownPosition,
@@ -75,7 +76,7 @@ export const DefectReportLocationForm = ({
           <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
         </Wrapper>
       )}
-      <Collapsible collapsed={!showMap}>
+      <Collapsible style={styles.collapsible} collapsed={!showMap}>
         <Map
           locations={locations}
           onMapPress={({ nativeEvent }) => {
@@ -121,3 +122,9 @@ export const DefectReportLocationForm = ({
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  collapsible: {
+    flex: 1
+  }
+});
