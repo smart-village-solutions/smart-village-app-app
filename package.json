@@ -41,6 +41,7 @@
     ]
   },
   "dependencies": {
+    "@animatereactnative/marquee": "^0.5.2",
     "@apollo/react-hooks": "~3.1.5",
     "@config-plugins/react-native-blob-util": "^9.0.0",
     "@config-plugins/react-native-pdf": "^9.0.0",

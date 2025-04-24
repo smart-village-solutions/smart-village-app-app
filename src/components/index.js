@@ -72,6 +72,7 @@ export * from './Link';
 export * from './ListComponent';
 export * from './ListSettingsItem';
 export * from './ListSwitchItem';
+export * from './LiveTicker';
 export * from './LoadingContainer';
 export * from './LoadingModal';
 export * from './LoadingSpinner';

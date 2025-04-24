@@ -11,6 +11,7 @@ import {
   Disturber,
   HomeSection,
   HomeService,
+  LiveTicker,
   NewsSectionPlaceholder,
   SafeAreaViewFlex,
   Widgets
@@ -304,6 +305,8 @@ export const HomeScreen = ({ navigation, route }) => {
               publicJsonFile="homeCarousel"
               refreshTimeKey="publicJsonFile-homeCarousel"
             />
+
+            <LiveTicker publicJsonFile="homeLiveTicker" />
 
             <Widgets widgetConfigs={widgetConfigs} />
 
