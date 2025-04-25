@@ -19,23 +19,15 @@ type Props = {
 export const LoginHeader = ({ route, style }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings } = globalSettings;
-  const { hasProfile = false } = settings;
+  const { profile } = settings;
 
-  const { isLoggedIn, loading, login, logout } = useLoginProfile();
+  const { isLoggedIn, loading, login, logout } = useLoginProfile(profile);
 
-  if (!hasProfile || loading) {
-    return null;
-  }
+  if (loading) return null;
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        if (isLoggedIn) {
-          logout();
-        } else {
-          login();
-        }
-      }}
+      onPress={isLoggedIn ? logout : login}
       accessibilityLabel={isLoggedIn ? a11yLabel.logout : a11yLabel.login}
       accessibilityHint={isLoggedIn ? a11yLabel.logoutHint : a11yLabel.loginHint}
     >

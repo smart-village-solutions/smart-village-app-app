@@ -31,7 +31,7 @@ type Props = {
   withEdit?: boolean;
   withGroup?: boolean;
   withInfo?: boolean;
-  withLogin?: boolean;
+  withProfile?: boolean;
   withShare?: boolean;
 };
 
@@ -48,7 +48,7 @@ export const HeaderRight = ({
   withEdit = false,
   withGroup = false,
   withInfo = false,
-  withLogin = false,
+  withProfile = false,
   withShare = false
 }: Props) => (
   <WrapperRow style={styles.headerRight}>
@@ -60,7 +60,7 @@ export const HeaderRight = ({
     {withEdit && <EditHeader onPress={onPress} style={styles.icon} />}
     {withGroup && <GroupHeader navigation={navigation} style={styles.icon} />}
     {withInfo && <InfoHeader route={route} style={styles.icon} />}
-    {withLogin && <LoginHeader route={route} style={styles.icon} />}
+    {withProfile && <LoginHeader route={route} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
   </WrapperRow>
 );

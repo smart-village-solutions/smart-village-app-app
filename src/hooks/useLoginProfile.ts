@@ -1,34 +1,32 @@
 import {
-  CodeChallengeMethod,
   exchangeCodeAsync,
   makeRedirectUri,
   refreshAsync,
-  ResponseType,
   useAuthRequest
 } from 'expo-auth-session';
 import { useEffect, useState } from 'react';
 
 import * as appJson from '../../app.json';
-import { secrets } from '../config';
 import { addToStore, readFromStore } from '../helpers';
 
 const PROFILE_ACCESS_TOKEN = 'profileAccessToken';
 
-const namespace = appJson.expo.slug as keyof typeof secrets;
-const profile = secrets[namespace]?.profile;
-const serverUrl = profile?.serverUrl;
-
-const keycloakDiscovery = {
-  authorizationEndpoint: serverUrl + '/auth',
-  tokenEndpoint: serverUrl + '/token',
-  revocationEndpoint: serverUrl + '/revoke'
+type TProfile = {
+  serverUrl: string;
+  clientId: string;
+  clientSecret: string;
+  scopes: string[];
 };
 
-const CLIENT_ID = profile?.clientId;
-const CLIENT_SECRET = profile?.clientSecret;
-const SCOPES = ['openid', 'email', 'profile', 'phone', 'address'];
+export const useLoginProfile = (profile: TProfile) => {
+  const { clientId, clientSecret, scopes, serverUrl } = profile;
 
-export const useLoginProfile = () => {
+  const keycloakDiscovery = {
+    authorizationEndpoint: serverUrl + '/auth',
+    tokenEndpoint: serverUrl + '/token',
+    revocationEndpoint: serverUrl + '/revoke'
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -39,11 +37,9 @@ export const useLoginProfile = () => {
 
   const [request, response, promptAsync] = useAuthRequest(
     {
-      clientId: CLIENT_ID,
-      codeChallengeMethod: CodeChallengeMethod.S256,
+      clientId,
       redirectUri,
-      responseType: ResponseType.Code,
-      scopes: SCOPES,
+      scopes,
       usePKCE: false
     },
     keycloakDiscovery
@@ -66,8 +62,8 @@ export const useLoginProfile = () => {
       const tokenResult = await exchangeCodeAsync(
         {
           code,
-          clientId: CLIENT_ID,
-          clientSecret: CLIENT_SECRET,
+          clientId,
+          clientSecret,
           redirectUri,
           extraParams: {
             grant_type: 'authorization_code'
@@ -86,9 +82,7 @@ export const useLoginProfile = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      await checkToken();
-    })();
+    checkToken();
   }, []);
 
   const checkToken = async () => {
@@ -107,11 +101,11 @@ export const useLoginProfile = () => {
 
       if (now >= expiresAt) {
         // Token expired, try refresh
-        const refreshed = await refreshToken(parsedToken.refreshToken);
+        const refreshedToken = await refreshToken(parsedToken.refreshToken);
 
-        if (refreshed) {
+        if (refreshedToken) {
           setIsLoggedIn(true);
-          return refreshed;
+          return refreshedToken;
         } else {
           setIsLoggedIn(false);
           return null;
@@ -131,8 +125,8 @@ export const useLoginProfile = () => {
     try {
       const newToken = await refreshAsync(
         {
-          clientId: CLIENT_ID,
-          clientSecret: CLIENT_SECRET,
+          clientId,
+          clientSecret,
           refreshToken
         },
         keycloakDiscovery
