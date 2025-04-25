@@ -300,6 +300,8 @@ export const HomeScreen = ({ navigation, route }) => {
         data={data}
         ListHeaderComponent={
           <>
+            <LiveTicker publicJsonFile="homeLiveTicker" />
+
             <ConnectedImagesCarousel
               navigation={navigation}
               publicJsonFile="homeCarousel"
@@ -307,8 +309,6 @@ export const HomeScreen = ({ navigation, route }) => {
             />
 
             <Widgets widgetConfigs={widgetConfigs} />
-
-            <LiveTicker publicJsonFile="homeLiveTicker" />
 
             <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>
