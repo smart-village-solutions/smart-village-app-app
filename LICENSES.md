@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 946 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 947 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 86 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 27 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 27 |
@@ -53,6 +53,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.3.0",
     "description": "Remap sequential sourcemaps through transformations to point at the original source code",
     "copyright": ""
+  },
+  "@animatereactnative/marquee@0.5.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/animate-react-native/marquee",
+    "publisher": "catalinmiron",
+    "email": "hi@animatereactnative.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2023 catalinmiron\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2023 catalinmiron. Permission is hereby granted, free of charge, to any person obtaining a copy. of this software and associated documentation files (the \"Software\"), to deal. in the Software without restriction, including without limitation the rights. to use, copy, modify, merge, publish, distribute, sublicense, and/or sell. copies of the Software, and to permit persons to whom the Software is. furnished to do so, subject to the following conditions:",
+    "name": "@animatereactnative/marquee",
+    "version": "0.5.2",
+    "description": "A React Native Marquee component"
   },
   "@apollo/react-common@3.1.4": {
     "licenses": "MIT",
