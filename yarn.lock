@@ -15,6 +15,11 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
+"@animatereactnative/marquee@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@animatereactnative/marquee/-/marquee-0.5.2.tgz#cf97fb474823db66112e0a3869e27e9a37264196"
+  integrity sha512-8VzfT1zc72aiwgL0NrvchgzVEIGVwVnjp93a/nSmw4vLRyhXh/8GSC/e23nJMGps7dxHeU7UrBMJoN2+Z5sYHg==
+
 "@apollo/react-common@^3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-3.1.4.tgz#ec13c985be23ea8e799c9ea18e696eccc97be345"

@@ -11,6 +11,7 @@ import {
   Disturber,
   HomeSection,
   HomeService,
+  LiveTicker,
   NewsSectionPlaceholder,
   SafeAreaViewFlex,
   Widgets
@@ -299,6 +300,8 @@ export const HomeScreen = ({ navigation, route }) => {
         data={data}
         ListHeaderComponent={
           <>
+            <LiveTicker publicJsonFile="homeLiveTicker" />
+
             <ConnectedImagesCarousel
               navigation={navigation}
               publicJsonFile="homeCarousel"
