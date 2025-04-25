@@ -2,6 +2,7 @@ import { Marquee } from '@animatereactnative/marquee';
 import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 
+import { device } from '../config';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 
 import { HtmlView } from './HtmlView';
@@ -10,18 +11,17 @@ type Props = {
   publicJsonFile: string;
 };
 
-interface DataItem {
+type DataItem = {
   liveTickerSettings: {
     direction?: 'horizontal' | 'vertical';
     reverse?: boolean;
     spacing?: number;
     speed?: number;
-    style?: ViewStyle;
+    style?: ViewStyle | ViewStyle[];
   };
   text: string;
-}
+};
 
-// eslint-disable-next-line complexity
 export const LiveTicker = ({ publicJsonFile }: Props) => {
   const { data, refetch } = useStaticContent<DataItem>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
@@ -31,16 +31,10 @@ export const LiveTicker = ({ publicJsonFile }: Props) => {
 
   useHomeRefresh(refetch);
 
-  if (!data) return null;
+  if (!data?.text?.length) return null;
 
   const {
-    liveTickerSettings: {
-      direction = 'horizontal',
-      reverse = false,
-      spacing = 20,
-      speed = 1,
-      style
-    },
+    liveTickerSettings: { direction = '', reverse = false, spacing = 20, speed = 1, style },
     text
   } = data;
 
@@ -52,7 +46,7 @@ export const LiveTicker = ({ publicJsonFile }: Props) => {
       speed={speed}
       style={[styles.container, style]}
     >
-      <HtmlView html={text} />
+      <HtmlView html={`<div style="padding-left: ${device.width / 2}px">${text}</div>`} />
     </Marquee>
   );
 };
