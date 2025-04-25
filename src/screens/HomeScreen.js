@@ -306,9 +306,9 @@ export const HomeScreen = ({ navigation, route }) => {
               refreshTimeKey="publicJsonFile-homeCarousel"
             />
 
-            <LiveTicker publicJsonFile="homeLiveTicker" />
-
             <Widgets widgetConfigs={widgetConfigs} />
+
+            <LiveTicker publicJsonFile="homeLiveTicker" />
 
             <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>
