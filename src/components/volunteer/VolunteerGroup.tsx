@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useEffect, useId, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
@@ -127,6 +127,8 @@ export const VolunteerGroup = ({
   }, [isGroupMember]);
 
   const refreshGroup = useCallback(() => {
+    refetch();
+
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
@@ -185,12 +187,6 @@ export const VolunteerGroup = ({
   useEffect(() => {
     getGroupAdmins();
   }, [getGroupAdmins]);
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [])
-  );
 
   return (
     <View>

@@ -252,6 +252,8 @@ export const useRenderItem = (query, navigation, options = {}) => {
               bottomDivider={false}
               openWebScreen={options.openWebScreen}
               post={item}
+              setIsCollapsed={options.queryVariables?.setIsCollapsed}
+              setPostForModal={options.queryVariables?.setPostForModal}
               userGuid={options.queryVariables?.userGuid}
             />
           );

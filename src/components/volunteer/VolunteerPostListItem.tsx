@@ -12,7 +12,9 @@ import { VolunteerAvatar } from './VolunteerAvatar';
 export const VolunteerPostListItem = ({
   bottomDivider = true,
   openWebScreen,
-  post: { message, content },
+  post: { id, message, content },
+  setIsCollapsed,
+  setPostForModal,
   userGuid
 }: {
   bottomDivider: boolean;
@@ -24,6 +26,8 @@ export const VolunteerPostListItem = ({
       metadata: { created_by: { guid: string; display_name: string }; created_at: string };
     };
   };
+  setIsCollapsed: (isCollapsed: boolean) => void;
+  setPostForModal: (post: { id: number; message: string }) => void;
   userGuid?: string | null;
 }) => {
   const { metadata } = content || {};
@@ -57,7 +61,8 @@ export const VolunteerPostListItem = ({
             badgeStyle={styles.badge}
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
             onPress={() => {
-              alert(1);
+              setPostForModal({ id, message });
+              setIsCollapsed(false);
             }}
           />
         )}

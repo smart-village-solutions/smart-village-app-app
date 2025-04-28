@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge } from 'react-native-elements';
 import { useQuery } from 'react-query';
@@ -15,6 +15,7 @@ import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 import { VolunteerPostListItem } from './VolunteerPostListItem';
+import { VolunteerPostModal } from './VolunteerPostModal';
 import { VolunteerPostTextField } from './VolunteerPostTextField';
 
 const { ROOT_ROUTE_NAMES } = consts;
@@ -34,6 +35,8 @@ export const VolunteerPosts = ({
   isGroupMember?: boolean;
   userGuid?: string | null;
 }) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
     () => postsQuery({ contentContainerId }),
@@ -52,6 +55,11 @@ export const VolunteerPosts = ({
     // refetch posts when group membership changes
     refetch?.();
   }, [isGroupMember]);
+
+  useEffect(() => {
+    // refetch posts when modal is closed
+    isCollapsed && refetch?.();
+  }, [isCollapsed]);
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -85,7 +93,12 @@ export const VolunteerPosts = ({
 
       {!!isGroupMember && (
         <WrapperHorizontal>
-          <VolunteerPostTextField contentContainerId={contentContainerId} refetch={refetch} />
+          <VolunteerPostTextField
+            onPress={() => {
+              setPostForModal(undefined);
+              setIsCollapsed(false);
+            }}
+          />
         </WrapperHorizontal>
       )}
 
@@ -107,6 +120,8 @@ export const VolunteerPosts = ({
                 bottomDivider={false}
                 openWebScreen={openWebScreen}
                 post={post}
+                setIsCollapsed={setIsCollapsed}
+                setPostForModal={setPostForModal}
                 userGuid={userGuid}
               />
             )
@@ -131,6 +146,15 @@ export const VolunteerPosts = ({
             </RegularText>
           </Touchable>
         </Wrapper>
+      )}
+
+      {!!contentContainerId && (
+        <VolunteerPostModal
+          contentContainerId={contentContainerId}
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          post={postForModal}
+        />
       )}
     </>
   );
