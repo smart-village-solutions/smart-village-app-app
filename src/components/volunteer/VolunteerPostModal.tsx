@@ -16,11 +16,13 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 export const VolunteerPostModal = ({
+  authToken,
   contentContainerId,
   isCollapsed,
   post,
   setIsCollapsed
 }: {
+  authToken: string | null;
   contentContainerId: number;
   isCollapsed: boolean;
   post?: {
@@ -134,6 +136,7 @@ export const VolunteerPostModal = ({
             render={({ field }) => (
               <MultiImageSelector
                 {...{
+                  authToken,
                   control,
                   errorType: IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER,
                   field,

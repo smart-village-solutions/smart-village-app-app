@@ -314,6 +314,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           )}
 
         <VolunteerPostModal
+          authToken={authToken}
           contentContainerId={queryVariables?.contentContainerId}
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}

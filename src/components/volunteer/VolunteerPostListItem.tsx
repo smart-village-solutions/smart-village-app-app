@@ -112,9 +112,7 @@ export const VolunteerPostListItem = ({
           ?.map((file) => {
             const imageSource = {
               uri: `${volunteerApiV1Url}file/download/${file.id}`,
-              headers: {
-                Authorization: `Bearer ${authToken}`
-              }
+              headers: { Authorization: `Bearer ${authToken}` }
             };
 
             return (

@@ -162,6 +162,7 @@ export const VolunteerPosts = ({
 
       {!!contentContainerId && (
         <VolunteerPostModal
+          authToken={authToken}
           contentContainerId={contentContainerId}
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}

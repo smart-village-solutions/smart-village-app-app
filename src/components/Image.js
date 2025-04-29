@@ -94,15 +94,15 @@ export const Image = ({
         break effect;
       }
 
+      const cacheOptions = {
+        headers: {
+          ...(sourceProp.headers || {}),
+          ...(apiKey ? { api_key: apiKey } : {})
+        }
+      };
+
       sourceProp.uri
-        ? CacheManager.get(
-            sourceProp.uri,
-            apiKey
-              ? { headers: { api_key: apiKey } }
-              : sourceProp.headers
-              ? { headers: sourceProp.headers }
-              : {}
-          )
+        ? CacheManager.get(sourceProp.uri, cacheOptions)
             .getPath()
             .then((path) => {
               mounted && setSource({ uri: path ?? NO_IMAGE.uri });

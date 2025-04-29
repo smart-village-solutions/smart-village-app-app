@@ -5,7 +5,7 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-nat
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { jsonParser } from '../../helpers';
+import { jsonParser, volunteerApiV1Url } from '../../helpers';
 import { onDeleteImage, onImageSelect } from '../../helpers/selectors';
 import {
   useCaptureImage,
@@ -52,6 +52,7 @@ const deleteImageAlert = (onPress: () => void) =>
 
 /* eslint-disable complexity */
 export const MultiImageSelector = ({
+  authToken,
   configuration,
   control,
   coordinateCheck,
@@ -61,6 +62,7 @@ export const MultiImageSelector = ({
   item,
   selectorType
 }: {
+  authToken: string | null;
   configuration: any;
   control: any;
   coordinateCheck: any;
@@ -81,9 +83,10 @@ export const MultiImageSelector = ({
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
   const { maxCount, maxFileSize } = configuration?.limitation || {};
+  const filesValues = JSON.parse(value);
 
-  const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
-  const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
+  const [infoAndErrorText, setInfoAndErrorText] = useState(filesValues);
+  const [imagesAttributes, setImagesAttributes] = useState(filesValues);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -151,7 +154,7 @@ export const MultiImageSelector = ({
   ) {
     return (
       <>
-        <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
+        <Input {...item} control={control} hidden name={name} value={filesValues} />
 
         <Button
           disabled={!!maxCount && values?.length >= parseInt(maxCount)}
@@ -266,42 +269,51 @@ export const MultiImageSelector = ({
         <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
       )}
 
-      {values?.map((item: TValue, index: number) => (
-        <View key={`image-${index}`} style={styles.volunteerContainer}>
-          <View style={styles.volunteerUploadPreview}>
-            {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
-              <Image
-                source={{ uri: item.uri }}
-                childrenContainerStyle={styles.volunteerImage}
-                borderRadius={normalize(4)}
-              />
-            )}
+      {values?.map((item: TValue, index: number) => {
+        const imageSource = item.uri?.startsWith('file:///')
+          ? { uri: item.uri }
+          : {
+              uri: `${volunteerApiV1Url}file/download/${item.id}`,
+              headers: { Authorization: `Bearer ${authToken}` }
+            };
 
-            {!!infoAndErrorText[index]?.infoText && (
-              <RegularText
-                style={[
-                  styles.infoText,
-                  selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && styles.volunteerInfoText
-                ]}
-                numberOfLines={1}
-                small
-              >
-                {infoAndErrorText[index].infoText}
+        return (
+          <View key={`image-${index}`} style={styles.volunteerContainer}>
+            <View style={styles.volunteerUploadPreview}>
+              {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+                <Image
+                  source={imageSource}
+                  childrenContainerStyle={styles.volunteerImage}
+                  borderRadius={normalize(4)}
+                />
+              )}
+
+              {(!!infoAndErrorText[index]?.infoText || !!filesValues?.[index]?.file_name) && (
+                <RegularText
+                  style={[
+                    styles.infoText,
+                    selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && styles.volunteerInfoText
+                  ]}
+                  numberOfLines={1}
+                  small
+                >
+                  {infoAndErrorText?.[index]?.infoText || filesValues?.[index]?.file_name}
+                </RegularText>
+              )}
+
+              <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(index))}>
+                <Icon.Trash color={colors.darkText} size={normalize(16)} />
+              </TouchableOpacity>
+            </View>
+
+            {!!infoAndErrorText[index]?.errorText && (
+              <RegularText smallest error>
+                {infoAndErrorText[index].errorText}
               </RegularText>
             )}
-
-            <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(index))}>
-              <Icon.Trash color={colors.darkText} size={normalize(16)} />
-            </TouchableOpacity>
           </View>
-
-          {!!infoAndErrorText[index]?.errorText && (
-            <RegularText smallest error>
-              {infoAndErrorText[index].errorText}
-            </RegularText>
-          )}
-        </View>
-      ))}
+        );
+      })}
 
       {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
         <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
