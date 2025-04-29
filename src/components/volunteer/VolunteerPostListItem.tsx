@@ -4,13 +4,21 @@ import { Badge, ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
 import { colors, styles as configStyles, Icon, normalize } from '../../config';
-import { imageHeight, imageWidth, momentFormat, openLink, volunteerListDate } from '../../helpers';
+import {
+  imageHeight,
+  imageWidth,
+  momentFormat,
+  openLink,
+  volunteerApiV1Url,
+  volunteerListDate
+} from '../../helpers';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 
 export const VolunteerPostListItem = ({
+  authToken,
   bottomDivider = true,
   openWebScreen,
   post: { id, message, content },
@@ -18,6 +26,7 @@ export const VolunteerPostListItem = ({
   setPostForModal,
   userGuid
 }: {
+  authToken: string | null;
   bottomDivider: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
@@ -103,7 +112,12 @@ export const VolunteerPostListItem = ({
               borderRadius={normalize(8)}
               childrenContainerStyle={stylesWithProps().image}
               containerStyle={styles.imageContainer}
-              source={{ uri: file.url }}
+              source={{
+                uri: `${volunteerApiV1Url}file/download/${file.id}`,
+                headers: {
+                  Authorization: authToken ? `Bearer ${authToken}` : ''
+                }
+              }}
             />
           </ListItem>
         ))}

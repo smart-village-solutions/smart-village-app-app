@@ -25,6 +25,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { colors, consts, texts } from '../../config';
+import { volunteerAuthToken } from '../../helpers';
 import {
   useCalendarsHeader,
   useConversationsHeader,
@@ -109,6 +110,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const [showCalendar, setShowCalendar] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [postForModal, setPostForModal] = useState();
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
@@ -172,6 +174,15 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     // refetch posts when modal is closed
     isCollapsed && refetch?.();
   }, [isCollapsed]);
+
+  useEffect(() => {
+    const fetchAuthToken = async () => {
+      const token = await volunteerAuthToken();
+      setAuthToken(token);
+    };
+
+    fetchAuthToken();
+  }, []);
 
   if (isLoading || isLoadingGroupsIntroText) {
     return <LoadingSpinner loading />;
@@ -262,7 +273,13 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={isCalendar && showCalendar ? [] : data}
           sectionByDate={isCalendar && !showCalendar}
           query={query}
-          queryVariables={{ setIsCollapsed, setPostForModal, userGuid, isPartOfIndexScreen: false }}
+          queryVariables={{
+            authToken,
+            setIsCollapsed,
+            setPostForModal,
+            userGuid,
+            isPartOfIndexScreen: false
+          }}
           refetch={refetch}
           refreshControl={
             <RefreshControl
