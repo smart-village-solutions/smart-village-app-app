@@ -95,7 +95,14 @@ export const Image = ({
       }
 
       sourceProp.uri
-        ? CacheManager.get(sourceProp.uri, apiKey ? { headers: { api_key: apiKey } } : {})
+        ? CacheManager.get(
+            sourceProp.uri,
+            apiKey
+              ? { headers: { api_key: apiKey } }
+              : sourceProp.headers
+              ? { headers: sourceProp.headers }
+              : {}
+          )
             .getPath()
             .then((path) => {
               mounted && setSource({ uri: path ?? NO_IMAGE.uri });
