@@ -85,15 +85,16 @@ export const VolunteerPostModal = ({
         {!isEdit && <Input name="contentContainerId" hidden control={control} />}
         {!!isEdit && <Input name="id" hidden control={control} />}
         <Input
-          label={texts.volunteer.postLabel}
-          placeholder={texts.volunteer.postLabel}
-          name="message"
-          multiline
-          minHeight={normalize(100)}
-          textContentType="none"
-          rules={{ required: true }}
           control={control}
+          label={texts.volunteer.postLabel}
+          minHeight={normalize(100)}
+          multiline
+          name="message"
+          placeholder={texts.volunteer.postLabel}
           renderErrorMessage={false}
+          rules={{ required: true }}
+          textAlignVertical="top"
+          textContentType="none"
         />
       </Wrapper>
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
+import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, styles as configStyles, Icon, normalize } from '../../config';
+import { colors, styles as configStyles, device, Icon, normalize } from '../../config';
 import {
   imageHeight,
   imageWidth,
@@ -102,25 +103,41 @@ export const VolunteerPostListItem = ({
 
       {files
         ?.filter((file) => file.mime_type.startsWith('image/'))
-        ?.map((file) => (
-          <ListItem
-            bottomDivider={bottomDivider}
-            containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
-            key={file.guid}
-          >
-            <Image
-              borderRadius={normalize(8)}
-              childrenContainerStyle={stylesWithProps().image}
-              containerStyle={styles.imageContainer}
-              source={{
-                uri: `${volunteerApiV1Url}file/download/${file.id}`,
-                headers: {
-                  Authorization: authToken ? `Bearer ${authToken}` : ''
-                }
-              }}
-            />
-          </ListItem>
-        ))}
+        ?.map((file) => {
+          const imageSource = {
+            uri: `${volunteerApiV1Url}file/download/${file.id}`,
+            headers: {
+              Authorization: authToken ? `Bearer ${authToken}` : ''
+            }
+          };
+
+          return (
+            <ListItem
+              bottomDivider={bottomDivider}
+              containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
+              key={file.guid}
+            >
+              <Lightbox
+                renderContent={() => (
+                  <Image
+                    childrenContainerStyle={stylesWithProps().imageLightbox}
+                    containerStyle={styles.imageContainer}
+                    source={imageSource}
+                    resizeMode="contain"
+                  />
+                )}
+                underlayColor={colors.transparent}
+              >
+                <Image
+                  borderRadius={normalize(8)}
+                  childrenContainerStyle={stylesWithProps().image}
+                  containerStyle={styles.imageContainer}
+                  source={imageSource}
+                />
+              </Lightbox>
+            </ListItem>
+          );
+        })}
     </>
   );
 };
@@ -164,6 +181,10 @@ const stylesWithProps = () => {
     image: {
       height: imageHeight(maxWidth),
       width: maxWidth
+    },
+    imageLightbox: {
+      height: device.height * 0.9,
+      width: device.width * 0.9
     }
   });
 };
