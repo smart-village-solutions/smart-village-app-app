@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
+import _isArray from 'lodash/isArray';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, {
@@ -153,6 +154,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
       }
     }
   }, [addressesData, inputValueCity]);
+
+  useEffect(() => {
+    if (
+      !!selectedStreetId &&
+      _isArray(streetData?.wasteAddresses) &&
+      !streetData.wasteAddresses.length
+    ) {
+      resetSelectedStreetId();
+    }
+  }, [streetData?.wasteAddresses, selectedStreetId]);
 
   // Checks whether the user has completed the city and street input.
   // If the input is incomplete, it resets the `selectedStreetId` to allow the user to start over.
