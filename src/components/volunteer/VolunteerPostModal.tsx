@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { Alert, Keyboard, Modal, Pressable, StyleSheet } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { Alert, Keyboard, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Divider, Header } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
-import { colors, normalize, texts } from '../../config';
-import { postDelete, postEdit, postNew } from '../../queries/volunteer';
+import { colors, consts, normalize, texts } from '../../config';
+import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
 import { VolunteerPost } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
+import { MultiImageSelector } from '../selectors';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+
+const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 export const VolunteerPostModal = ({
   contentContainerId,
@@ -23,6 +26,11 @@ export const VolunteerPostModal = ({
   post?: {
     id: number;
     message: string;
+    files: {
+      id: number;
+      guid: string;
+      mime_type: string;
+    }[];
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
@@ -35,24 +43,43 @@ export const VolunteerPostModal = ({
   } = useForm<VolunteerPost>({
     defaultValues: {
       contentContainerId,
-      id: post?.id || undefined,
-      message: post?.message || ''
+      id: post?.id,
+      message: post?.message || '',
+      files: post?.files ? JSON.stringify(post?.files) : '[]'
     }
   });
 
   useEffect(() => {
-    setValue('id', post?.id || undefined);
+    setValue('id', post?.id);
     setValue('message', post?.message || '');
+    setValue('files', post?.files ? JSON.stringify(post.files) : '[]');
   }, [post]);
 
   const { mutateAsync } = useMutation(isEdit ? postEdit : postNew);
+  const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
+  const { mutateAsync: mutateAsyncDelete } = useMutation(postDelete);
+
   const onPress = async (postData: VolunteerPost) => {
     resetForm();
     Keyboard.dismiss();
-    await mutateAsync(postData);
-    setIsCollapsed(true);
+    mutateAsync(
+      isEdit
+        ? { id: postData.id, message: postData.message }
+        : { contentContainerId: postData.contentContainerId, message: postData.message }
+    ).then(async ({ id }: { id: number }) => {
+      if (id) {
+        const files = JSON.parse(postData.files) || [];
+
+        await Promise.all(
+          files.map(
+            async ({ uri, mimeType }) => await mutateAsyncUpload({ id, fileUri: uri, mimeType })
+          )
+        );
+      }
+
+      setIsCollapsed(true);
+    });
   };
-  const { mutateAsync: mutateAsyncDelete } = useMutation(postDelete);
 
   return (
     <Modal
@@ -80,23 +107,52 @@ export const VolunteerPostModal = ({
         }}
         rightContainerStyle={styles.headerRightContainer}
       />
+
       <Divider />
-      <Wrapper>
-        {!isEdit && <Input name="contentContainerId" hidden control={control} />}
-        {!!isEdit && <Input name="id" hidden control={control} />}
-        <Input
-          control={control}
-          label={texts.volunteer.postLabel}
-          minHeight={normalize(100)}
-          multiline
-          name="message"
-          placeholder={texts.volunteer.postLabel}
-          renderErrorMessage={false}
-          rules={{ required: true }}
-          textAlignVertical="top"
-          textContentType="none"
-        />
-      </Wrapper>
+
+      <ScrollView>
+        <Wrapper>
+          {!isEdit && <Input name="contentContainerId" hidden control={control} />}
+          {!!isEdit && <Input name="id" hidden control={control} />}
+          <Input
+            control={control}
+            label={texts.volunteer.postLabel}
+            minHeight={normalize(100)}
+            multiline
+            name="message"
+            placeholder={texts.volunteer.postLabel}
+            renderErrorMessage={false}
+            rules={{ required: true }}
+            textAlignVertical="top"
+            textContentType="none"
+          />
+        </Wrapper>
+
+        <Wrapper>
+          <Controller
+            name="files"
+            render={({ field }) => (
+              <MultiImageSelector
+                {...{
+                  control,
+                  errorType: IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER,
+                  field,
+                  isDeletable: !isEdit,
+                  isMultiImages: true,
+                  item: {
+                    buttonTitle: texts.noticeboard.addImages,
+                    name: 'files'
+                  },
+                  selectorType: IMAGE_SELECTOR_TYPES.VOLUNTEER
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      </ScrollView>
+
+      <Divider />
 
       <Wrapper>
         <WrapperRow spaceAround>
@@ -117,7 +173,7 @@ export const VolunteerPostModal = ({
         </WrapperRow>
 
         {!!isEdit && (
-          <Pressable
+          <TouchableOpacity
             onPress={() => {
               Alert.alert(
                 texts.volunteer.postDelete,
@@ -144,9 +200,11 @@ export const VolunteerPostModal = ({
             style={styles.button}
           >
             <BoldText small>{texts.volunteer.postDelete}</BoldText>
-          </Pressable>
+          </TouchableOpacity>
         )}
       </Wrapper>
+
+      <Wrapper></Wrapper>
     </Modal>
   );
 };

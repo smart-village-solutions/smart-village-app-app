@@ -262,13 +262,30 @@ export const MultiImageSelector = ({
         {infoText}
       </RegularText>
 
-      <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
+      {selectorType !== IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+        <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
+      )}
 
       {values?.map((item: TValue, index: number) => (
         <View key={`image-${index}`} style={styles.volunteerContainer}>
           <View style={styles.volunteerUploadPreview}>
+            {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+              <Image
+                source={{ uri: item.uri }}
+                childrenContainerStyle={styles.volunteerImage}
+                borderRadius={normalize(4)}
+              />
+            )}
+
             {!!infoAndErrorText[index]?.infoText && (
-              <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+              <RegularText
+                style={[
+                  styles.infoText,
+                  selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && styles.volunteerInfoText
+                ]}
+                numberOfLines={1}
+                small
+              >
                 {infoAndErrorText[index].infoText}
               </RegularText>
             )}
@@ -285,12 +302,19 @@ export const MultiImageSelector = ({
           )}
         </View>
       ))}
+
+      {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+        <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
+      )}
     </>
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  infoText: {
+    width: '90%'
+  },
   noPaddingTop: {
     paddingTop: 0
   },
@@ -335,8 +359,12 @@ const styles = StyleSheet.create({
   volunteerContainer: {
     marginBottom: normalize(8)
   },
+  volunteerImage: {
+    height: normalize(55),
+    width: normalize(55)
+  },
   volunteerInfoText: {
-    width: '90%'
+    width: '65%'
   },
   volunteerUploadPreview: {
     alignItems: 'center',

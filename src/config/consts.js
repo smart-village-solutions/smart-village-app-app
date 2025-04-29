@@ -155,7 +155,8 @@ export const consts = {
 
   IMAGE_SELECTOR_TYPES: {
     NOTICEBOARD: 'Noticeboard',
-    SUE: 'Sue'
+    SUE: 'Sue',
+    VOLUNTEER: 'Volunteer'
   },
 
   IMAGE_FROM: {

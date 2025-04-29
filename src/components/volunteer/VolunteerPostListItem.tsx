@@ -39,14 +39,19 @@ export const VolunteerPostListItem = ({
         id: number;
         guid: string;
         mime_type: string;
-        size: number;
-        file_name: string;
-        url: string;
       }[];
     };
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
-  setPostForModal: (post: { id: number; message: string }) => void;
+  setPostForModal: (post: {
+    id: number;
+    message: string;
+    files: {
+      id: number;
+      guid: string;
+      mime_type: string;
+    }[];
+  }) => void;
   userGuid?: string | null;
 }) => {
   const { metadata, files } = content || {};
@@ -80,7 +85,7 @@ export const VolunteerPostListItem = ({
             badgeStyle={styles.badge}
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
             onPress={() => {
-              setPostForModal({ id, message });
+              setPostForModal({ id, message, files });
               setIsCollapsed(false);
             }}
           />
@@ -101,43 +106,44 @@ export const VolunteerPostListItem = ({
         </Markdown>
       </ListItem>
 
-      {files
-        ?.filter((file) => file.mime_type.startsWith('image/'))
-        ?.map((file) => {
-          const imageSource = {
-            uri: `${volunteerApiV1Url}file/download/${file.id}`,
-            headers: {
-              Authorization: authToken ? `Bearer ${authToken}` : ''
-            }
-          };
+      {!!authToken &&
+        files
+          ?.filter((file) => file.mime_type.startsWith('image/'))
+          ?.map((file) => {
+            const imageSource = {
+              uri: `${volunteerApiV1Url}file/download/${file.id}`,
+              headers: {
+                Authorization: `Bearer ${authToken}`
+              }
+            };
 
-          return (
-            <ListItem
-              bottomDivider={bottomDivider}
-              containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
-              key={file.guid}
-            >
-              <Lightbox
-                renderContent={() => (
+            return (
+              <ListItem
+                bottomDivider={bottomDivider}
+                containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
+                key={file.guid}
+              >
+                <Lightbox
+                  renderContent={() => (
+                    <Image
+                      childrenContainerStyle={stylesWithProps().imageLightbox}
+                      containerStyle={styles.imageContainer}
+                      source={imageSource}
+                      resizeMode="contain"
+                    />
+                  )}
+                  underlayColor={colors.transparent}
+                >
                   <Image
-                    childrenContainerStyle={stylesWithProps().imageLightbox}
+                    borderRadius={normalize(8)}
+                    childrenContainerStyle={stylesWithProps().image}
                     containerStyle={styles.imageContainer}
                     source={imageSource}
-                    resizeMode="contain"
                   />
-                )}
-                underlayColor={colors.transparent}
-              >
-                <Image
-                  borderRadius={normalize(8)}
-                  childrenContainerStyle={stylesWithProps().image}
-                  containerStyle={styles.imageContainer}
-                  source={imageSource}
-                />
-              </Lightbox>
-            </ListItem>
-          );
-        })}
+                </Lightbox>
+              </ListItem>
+            );
+          })}
     </>
   );
 };
