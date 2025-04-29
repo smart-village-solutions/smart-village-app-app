@@ -71,13 +71,6 @@ export const Image = ({
         break effect;
       }
 
-      // we needed this control to solve the problem of image not loading on android devices in development environment
-      if (__DEV__ && device.platform === 'android') {
-        setSource({ uri: sourceProp.uri });
-
-        break effect;
-      }
-
       if (refreshInterval !== undefined) {
         setSource({
           uri: addQueryParam(sourceProp.uri, `svaRefreshCount=${timestamp}`)
