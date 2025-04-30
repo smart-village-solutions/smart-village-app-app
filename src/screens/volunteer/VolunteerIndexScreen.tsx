@@ -212,9 +212,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
               {/* {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />} */}
               {isGroups && (
                 <>
-                  <WrapperVertical>
-                    <HtmlView html={dataGroupsIntroText} />
-                  </WrapperVertical>
+                  {!!dataGroupsIntroText && (
+                    <WrapperVertical>
+                      <HtmlView html={dataGroupsIntroText} />
+                    </WrapperVertical>
+                  )}
                   <WrapperVertical>
                     <Search
                       placeholder={texts.filter.search}
