@@ -48,6 +48,9 @@ import { VolunteerPosts } from './VolunteerPosts';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
+const limit = 99999; // NOTE: we want to receive all groups
+const page = 1;
+
 // eslint-disable-next-line complexity
 export const VolunteerGroup = ({
   data,
@@ -285,7 +288,7 @@ export const VolunteerGroup = ({
             }
             navigation={navigation}
             query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-            queryVariables={{ contentContainerId }}
+            queryVariables={{ contentContainerId, limit, page }}
             sectionTitle={texts.volunteer.events}
             showLink
           />

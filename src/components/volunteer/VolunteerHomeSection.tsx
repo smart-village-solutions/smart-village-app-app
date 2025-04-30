@@ -23,7 +23,12 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: VolunteerQuery;
-  queryVariables: { contentContainerId?: number; dateRange?: string[] };
+  queryVariables: {
+    contentContainerId?: number;
+    dateRange?: string[];
+    limit: number;
+    page: number;
+  };
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
