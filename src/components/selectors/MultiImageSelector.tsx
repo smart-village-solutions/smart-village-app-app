@@ -83,12 +83,12 @@ export const MultiImageSelector = ({
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
   const { maxCount, maxFileSize } = configuration?.limitation || {};
-  const filesValues = JSON.parse(value);
 
-  const [infoAndErrorText, setInfoAndErrorText] = useState(filesValues);
-  const [imagesAttributes, setImagesAttributes] = useState(filesValues);
+  const [infoAndErrorText, setInfoAndErrorText] = useState([]);
+  const [imagesAttributes, setImagesAttributes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
@@ -103,8 +103,18 @@ export const MultiImageSelector = ({
     saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 
+  const values = jsonParser(value);
+
   useEffect(() => {
-    onChange(JSON.stringify(imagesAttributes));
+    if (!!values?.length && !hasInitialized) {
+      setImagesAttributes(values);
+      setInfoAndErrorText(values);
+      setHasInitialized(true);
+    }
+  }, [values]);
+
+  useEffect(() => {
+    !!hasInitialized && onChange(JSON.stringify(imagesAttributes));
   }, [imagesAttributes]);
 
   const imageSelect = async (
@@ -146,15 +156,13 @@ export const MultiImageSelector = ({
     });
   };
 
-  const values = jsonParser(value);
-
   if (
     selectorType === IMAGE_SELECTOR_TYPES.SUE ||
     selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
   ) {
     return (
       <>
-        <Input {...item} control={control} hidden name={name} value={filesValues} />
+        <Input {...item} control={control} hidden name={name} value={values} />
 
         <Button
           disabled={!!maxCount && values?.length >= parseInt(maxCount)}
@@ -288,7 +296,7 @@ export const MultiImageSelector = ({
                 />
               )}
 
-              {(!!infoAndErrorText[index]?.infoText || !!filesValues?.[index]?.file_name) && (
+              {(!!infoAndErrorText[index]?.infoText || !!values?.[index]?.file_name) && (
                 <RegularText
                   style={[
                     styles.infoText,
@@ -297,7 +305,7 @@ export const MultiImageSelector = ({
                   numberOfLines={1}
                   small
                 >
-                  {infoAndErrorText?.[index]?.infoText || filesValues?.[index]?.file_name}
+                  {infoAndErrorText?.[index]?.infoText || values?.[index]?.file_name}
                 </RegularText>
               )}
 

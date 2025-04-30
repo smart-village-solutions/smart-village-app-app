@@ -47,7 +47,7 @@ export const VolunteerPostModal = ({
       contentContainerId,
       id: post?.id,
       message: post?.message || '',
-      files: post?.files ? JSON.stringify(post?.files) : '[]'
+      files: post?.files ? JSON.stringify(post.files) : '[]'
     }
   });
 
@@ -73,9 +73,11 @@ export const VolunteerPostModal = ({
         const files = JSON.parse(postData.files) || [];
 
         await Promise.all(
-          files.map(
-            async ({ uri, mimeType }) => await mutateAsyncUpload({ id, fileUri: uri, mimeType })
-          )
+          files
+            .filter((file) => file.uri)
+            .map(
+              async ({ uri, mimeType }) => await mutateAsyncUpload({ id, fileUri: uri, mimeType })
+            )
         );
       }
 
@@ -86,7 +88,10 @@ export const VolunteerPostModal = ({
   return (
     <Modal
       animationType="slide"
-      onRequestClose={() => setIsCollapsed(!isCollapsed)}
+      onRequestClose={() => {
+        resetForm();
+        setIsCollapsed(true);
+      }}
       presentationStyle="pageSheet"
       visible={!isCollapsed}
     >
@@ -104,7 +109,10 @@ export const VolunteerPostModal = ({
         rightComponent={{
           color: colors.darkText,
           icon: 'close',
-          onPress: () => setIsCollapsed(!isCollapsed),
+          onPress: () => {
+            resetForm();
+            setIsCollapsed(true);
+          },
           type: 'ionicon'
         }}
         rightContainerStyle={styles.headerRightContainer}
@@ -140,10 +148,8 @@ export const VolunteerPostModal = ({
                   control,
                   errorType: IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER,
                   field,
-                  isDeletable: !isEdit,
-                  isMultiImages: true,
                   item: {
-                    buttonTitle: texts.noticeboard.addImages,
+                    buttonTitle: texts.volunteer.addImage,
                     name: 'files'
                   },
                   selectorType: IMAGE_SELECTOR_TYPES.VOLUNTEER
