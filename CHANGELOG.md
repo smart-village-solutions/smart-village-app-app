@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.1.1]
+
+This update includes visual improvements, bug fixes and performance enhancements
+
+### Added
+
+- added “live ticker” marquee text feature to `HomeScreen` which can be controlled via main server
+- added service tile feature whose style can be updated via main server
+- added notes feature for waste calendar
+- added the ability to give camera access permission again in voucher module
+- added active and inactive icon feature for tabbar that can be updated via main server
+
+### Changed
+
+- added new sorting logic for agenda items of oparl module
+- removed date header in calendar view on event screen
+- improved new app store update alert feature that can be controlled via main server
+- added MB to BYTES conversions to consts file for better control in different places
+- added more explicit check for opening time null values to catch edge cases
+
+### Fixed
+
+- fixed the problem of saving the picture taken from the camera twice in the SUE module for Android
+- fixed issue with matomo tracking not activating
+- fixed issue where the person list for oparl would not load
+- fixed voucher unavailability issue in voucher module
+- fixed the problem of images not fitting the design by adding `borderRadius` to the images in the text list item
+- fixed layout problem on the weather screen
+- fixed the problem of different background colour of tabbar and navigation bar
+- fixed issue with widget not centering the icon if there is no count number
+
 ## [v4.1.0] :whale:
 
 The new version integrates a brand new filter module, adds a new waste component, updates layouts and upgrades Expo to latest SDK version 52
