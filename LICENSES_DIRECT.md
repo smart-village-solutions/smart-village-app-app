@@ -1018,9 +1018,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react/LICENSE
-- **[smart-village-app@4.1.0]()**
+- **[smart-village-app@4.1.1]()**
     - name: smart-village-app
-    - version: 4.1.0
+    - version: 4.1.1
     - description: <img src="./smart-village-app-logo.png" width="150">
     - copyright: 
     - licenses: GPL-3.0*
