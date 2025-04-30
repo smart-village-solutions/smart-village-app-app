@@ -118,7 +118,7 @@ export const MultiImageSelector = ({
   }, [values]);
 
   useEffect(() => {
-    !!hasInitialized && onChange(JSON.stringify(imagesAttributes));
+    onChange(JSON.stringify(imagesAttributes));
   }, [imagesAttributes]);
 
   const imageSelect = async (
