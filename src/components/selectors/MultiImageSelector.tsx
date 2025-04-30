@@ -3,6 +3,7 @@ import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useMutation } from 'react-query';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { jsonParser, volunteerApiV1Url } from '../../helpers';
@@ -15,6 +16,7 @@ import {
   useSelectImage,
   useSystemPermission
 } from '../../hooks';
+import { deleteFile } from '../../queries/volunteer';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Image } from '../Image';
@@ -103,6 +105,8 @@ export const MultiImageSelector = ({
     saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 
+  const { mutateAsync: mutateAsyncDeleteFile } = useMutation(deleteFile);
+
   const values = jsonParser(value);
 
   useEffect(() => {
@@ -146,6 +150,9 @@ export const MultiImageSelector = ({
   const imageDelete = async (index: number) => {
     await onDeleteImage({
       coordinateCheck,
+      deleteImage:
+        selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER ? mutateAsyncDeleteFile : undefined,
+      imageId,
       imagesAttributes,
       index,
       infoAndErrorText,

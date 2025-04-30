@@ -1,6 +1,10 @@
 import * as FileSystem from 'expo-file-system';
 
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import {
+  volunteerApiV1Url,
+  volunteerApiV2Url,
+  volunteerAuthToken
+} from '../../helpers/volunteerHelper';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
 export const uploadFile = async ({
@@ -31,17 +35,15 @@ export const uploadFile = async ({
   );
 };
 
-export const deleteFile = async (id: number) => {
+export const deleteFile = async (guid: string) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
     method: 'DELETE',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
 
-  return await fetch(`${volunteerApiV1Url}/cfiles/file/${id}`, fetchObj);
+  return await fetch(`${volunteerApiV2Url}file/${guid}`, fetchObj);
 };
