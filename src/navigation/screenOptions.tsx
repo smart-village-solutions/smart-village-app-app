@@ -18,6 +18,7 @@ type OptionConfig = {
   withFavorites?: boolean;
   withShare?: boolean;
   withInfo?: boolean;
+  withProfile?: boolean;
   noHeaderLeft?: boolean;
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
 };
@@ -28,8 +29,9 @@ export const getScreenOptions =
     withDelete,
     withDrawer,
     withFavorites,
-    withShare,
     withInfo,
+    withProfile,
+    withShare,
     noHeaderLeft = false,
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
@@ -49,8 +51,9 @@ export const getScreenOptions =
             withBookmark,
             withDelete,
             withDrawer,
-            withShare,
-            withInfo
+            withInfo,
+            withProfile,
+            withShare
           }}
         />
       ),
