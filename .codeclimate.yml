@@ -23,6 +23,8 @@ ratings:
     - '**.js'
     - '**.jsx'
     - '**.md'
+    - '**.ts'
+    - '**.tsx'
 exclude_paths:
   - .expo/
   - .github/
@@ -32,13 +34,23 @@ exclude_paths:
   - node_modules/
   - scripts/
   - src/config/
+  - __tests__/**/__snapshots__
+  - __maestro__/
+  - patches/
   - .codeclimate.yml
+  - publiccode.yml
   - .eslintrc
   - .gitignore
   - .nvmrc
   - .yvmrc
   - babel.config.js
   - '*.png'
+  - '*.jpg'
+  - '*.tmpl'
+  - '*.json'
+  - '*.txt'
+  - '*.ttf'
+  - '*.gif'
   - jest-setup.js
   - yarn.lock
 checks:
