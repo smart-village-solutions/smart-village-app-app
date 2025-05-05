@@ -28,6 +28,7 @@ import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
 const { a11yLabel, INPUT_KEYS } = consts;
+export const SELECTED_MARKER_ID = 'selectedMarkerId';
 
 export const locationServiceEnabledAlert = ({
   currentPosition,
@@ -218,7 +219,10 @@ export const SueReportLocation = ({
   let mapCenterPosition = {} as { latitude: number; longitude: number };
 
   if (selectedPosition) {
-    locations = [...mapMarkers, { ...baseLocationMarker, position: selectedPosition }];
+    locations = [
+      ...mapMarkers,
+      { ...baseLocationMarker, position: selectedPosition, id: SELECTED_MARKER_ID }
+    ];
   }
 
   if (alternativePosition) {
@@ -315,6 +319,7 @@ export const SueReportLocation = ({
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
               clusteringEnabled: true,
+              selectedMarker: selectedPosition ? SELECTED_MARKER_ID : undefined,
               currentPosition,
               isMyLocationButtonVisible: !!locationService,
               locations,
@@ -325,6 +330,7 @@ export const SueReportLocation = ({
               showsUserLocation: true
             })
           }
+          selectedMarker={selectedPosition ? SELECTED_MARKER_ID : undefined}
           updatedRegion={
             !!selectedPosition && (updatedRegion || updateRegionFromImage)
               ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }

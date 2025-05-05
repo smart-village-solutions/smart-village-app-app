@@ -1,11 +1,16 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
-import { Map, locationServiceEnabledAlert } from '../../components';
+import { Map } from '../../components';
+import {
+  SELECTED_MARKER_ID,
+  locationServiceEnabledAlert
+} from '../../components/SUE/report/SueReportLocation';
 import { colors, normalize, texts } from '../../config';
 import { useLocationSettings } from '../../hooks';
+import { MapMarker } from '../../types';
 
 export const SueMapViewScreen = ({
   navigation,
@@ -25,6 +30,7 @@ export const SueMapViewScreen = ({
     isMaximizeButtonVisible,
     isMyLocationButtonVisible,
     locations,
+    selectedMarker,
     mapCenterPosition,
     onMapPress,
     onMarkerPress,
@@ -36,17 +42,19 @@ export const SueMapViewScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<
     Location.LocationObjectCoords | undefined
   >(position);
-  const [locationsWithPin, setLocationsWithPin] = useState(locations);
   const [updatedRegion, setUpdatedRegion] = useState<boolean>();
 
   const iconName = 'location';
 
-  useEffect(() => {
-    setLocationsWithPin((prevData) =>
-      prevData.map((item) =>
-        item?.iconName === iconName ? { iconName, position: selectedPosition } : item
-      )
-    );
+  const locationsWithPin = useMemo(() => {
+    if (selectedPosition) {
+      return [
+        ...locations.filter((item) => item.id !== SELECTED_MARKER_ID), // Remove old pin
+        { iconName, position: selectedPosition, id: SELECTED_MARKER_ID } // Add new pin
+      ];
+    }
+
+    return locations as MapMarker[];
   }, [selectedPosition]);
 
   return (
@@ -58,10 +66,9 @@ export const SueMapViewScreen = ({
           geometryTourData,
           isMaximizeButtonVisible,
           isMyLocationButtonVisible,
-          locations: selectedPosition
-            ? [...locationsWithPin, { iconName, position: selectedPosition }]
-            : locationsWithPin,
+          locations: locationsWithPin,
           mapCenterPosition,
+          selectedMarker: selectedPosition ? SELECTED_MARKER_ID : selectedMarker,
           mapStyle: styles.map,
           onMarkerPress: onMarkerPress,
           showsUserLocation
