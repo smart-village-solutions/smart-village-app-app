@@ -4,9 +4,11 @@ import {
   refreshAsync,
   useAuthRequest
 } from 'expo-auth-session';
+import { dismissAuthSession } from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 
 import * as appJson from '../../app.json';
+import { device } from '../config';
 import { addToStore, readFromStore } from '../helpers';
 
 const PROFILE_ACCESS_TOKEN = 'profileAccessToken';
@@ -151,15 +153,17 @@ export const useLoginProfile = (profile: TProfile) => {
   const logout = async () => {
     try {
       const token = await checkToken();
-      if (!token?.accessToken) return;
 
-      await fetch(`${serverUrl}/logout`, {
+      if (!token?.idToken) return;
+
+      await fetch(`${serverUrl}/logout?id_token_hint=${token.idToken}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token.accessToken}`
         }
       });
 
+      device.platform === 'ios' && (await dismissAuthSession());
       await addToStore(PROFILE_ACCESS_TOKEN, '');
       setIsLoggedIn(false);
     } catch (err) {
