@@ -37,12 +37,14 @@ export const SueReportSend = ({
   const { sueReportScreen = {} } = sueConfig;
   const {
     defaultRating = 0,
+    feedbackFormTexts = texts.sue.report.sendReportDone,
     reportSendDone = {},
     reportSendLoading = {},
     showFeedbackSection: feedbackSection
   } = sueReportScreen;
   const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
+  const { feedbackHeader, ratingTitle, messageTitle, messagePlaceholder } = feedbackFormTexts;
   const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
 
   const keyboardHeight = useKeyboardHeight();
@@ -127,12 +129,12 @@ export const SueReportSend = ({
 
                 <View style={styles.feedbackContainer}>
                   <View style={styles.headerContainer}>
-                    <BoldText>{texts.sue.report.sendReportDone.feedbackHeader}</BoldText>
+                    <BoldText>{feedbackHeader}</BoldText>
                   </View>
 
                   <View style={styles.ratingContainer}>
                     <RegularText small style={styles.labelText}>
-                      {texts.sue.report.sendReportDone.ratingTitle}
+                      {ratingTitle}
                     </RegularText>
 
                     <Controller
@@ -154,7 +156,7 @@ export const SueReportSend = ({
 
                   <View style={styles.headerContainer}>
                     <RegularText small style={styles.labelText}>
-                      {texts.sue.report.sendReportDone.messageTitle}
+                      {messageTitle}
                     </RegularText>
 
                     <Input
@@ -166,7 +168,7 @@ export const SueReportSend = ({
                       onFocus={() =>
                         scrollViewRef.current?.scrollTo({ x: 0, y: 250, animated: true })
                       }
-                      placeholder={texts.sue.report.sendReportDone.messagePlaceholder}
+                      placeholder={messagePlaceholder}
                       textAlignVertical="top"
                     />
                   </View>
