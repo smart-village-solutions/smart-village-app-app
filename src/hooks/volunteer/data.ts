@@ -26,25 +26,25 @@ export const VOLUNTEER_SORT_BY = {
 
 /* eslint-disable complexity */
 export const useVolunteerData = ({
-  query,
-  queryVariables,
-  queryOptions,
+  bookmarkable,
+  filterVariables,
   isCalendar,
   isSectioned,
   onlyUpcoming = true,
-  titleDetail,
-  bookmarkable,
-  filterVariables
+  query,
+  queryOptions,
+  queryVariables,
+  titleDetail
 }: {
-  query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number; id?: number };
-  queryOptions?: { refetchInterval?: number; enabled?: boolean };
+  bookmarkable?: boolean;
+  filterVariables?: { search?: string; sortBy?: string; status?: string };
   isCalendar?: boolean;
   isSectioned?: boolean;
   onlyUpcoming?: boolean;
+  query: VolunteerQuery;
+  queryOptions?: { refetchInterval?: number; enabled?: boolean };
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number; id?: number };
   titleDetail?: string;
-  bookmarkable?: boolean;
-  filterVariables?: { search?: string; sortBy?: string; status?: string };
 }): {
   data: any[];
   isLoading: boolean;
