@@ -6,9 +6,10 @@ import {
 } from 'expo-auth-session';
 import { dismissAuthSession } from 'expo-web-browser';
 import { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 import * as appJson from '../../app.json';
-import { device } from '../config';
+import { device, texts } from '../config';
 import { addToStore, readFromStore } from '../helpers';
 
 const PROFILE_ACCESS_TOKEN = 'profileAccessToken';
@@ -151,24 +152,36 @@ export const useLoginProfile = (profile: TProfile) => {
   };
 
   const logout = async () => {
-    try {
-      const token = await checkToken();
+    Alert.alert(texts.profile.logout, texts.profile.logoutAlertBody, [
+      {
+        text: texts.profile.abort,
+        style: 'cancel'
+      },
+      {
+        style: 'destructive',
+        text: texts.profile.logout,
+        onPress: async () => {
+          try {
+            const token = await checkToken();
 
-      if (!token?.idToken) return;
+            if (!token?.idToken) return;
 
-      await fetch(`${serverUrl}/logout?id_token_hint=${token.idToken}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token.accessToken}`
+            await fetch(`${serverUrl}/logout?id_token_hint=${token.idToken}`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token.accessToken}`
+              }
+            });
+
+            device.platform === 'ios' && (await dismissAuthSession());
+            await addToStore(PROFILE_ACCESS_TOKEN, '');
+            setIsLoggedIn(false);
+          } catch (err) {
+            console.error('Logout error:', err);
+          }
         }
-      });
-
-      device.platform === 'ios' && (await dismissAuthSession());
-      await addToStore(PROFILE_ACCESS_TOKEN, '');
-      setIsLoggedIn(false);
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
+      }
+    ]);
   };
 
   return {
