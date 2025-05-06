@@ -19,10 +19,11 @@ type TProfile = {
   clientSecret: string;
   scopes: string[];
   serverUrl: string;
+  usePKCE: boolean;
 };
 
 export const useLoginProfile = (profile: TProfile) => {
-  const { clientId, clientSecret, scopes, serverUrl } = profile;
+  const { clientId, clientSecret, scopes, serverUrl, usePKCE = false } = profile;
 
   const keycloakDiscovery = {
     authorizationEndpoint: serverUrl + '/auth',
@@ -43,7 +44,7 @@ export const useLoginProfile = (profile: TProfile) => {
       clientId,
       redirectUri,
       scopes,
-      usePKCE: false
+      usePKCE
     },
     keycloakDiscovery
   );
