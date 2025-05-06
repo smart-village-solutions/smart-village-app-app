@@ -4,21 +4,21 @@ import {
   refreshAsync,
   useAuthRequest
 } from 'expo-auth-session';
+import * as SecureStore from 'expo-secure-store';
 import { dismissAuthSession } from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import * as appJson from '../../app.json';
 import { device, texts } from '../config';
-import { addToStore, readFromStore } from '../helpers';
 
 const PROFILE_ACCESS_TOKEN = 'profileAccessToken';
 
 type TProfile = {
-  serverUrl: string;
   clientId: string;
   clientSecret: string;
   scopes: string[];
+  serverUrl: string;
 };
 
 export const useLoginProfile = (profile: TProfile) => {
@@ -26,16 +26,16 @@ export const useLoginProfile = (profile: TProfile) => {
 
   const keycloakDiscovery = {
     authorizationEndpoint: serverUrl + '/auth',
-    tokenEndpoint: serverUrl + '/token',
-    revocationEndpoint: serverUrl + '/revoke'
+    revocationEndpoint: serverUrl + '/revoke',
+    tokenEndpoint: serverUrl + '/token'
   };
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const redirectUri = makeRedirectUri({
-    scheme: appJson.expo.scheme,
-    path: 'redirect'
+    path: 'redirect',
+    scheme: appJson.expo.scheme
   });
 
   const [request, response, promptAsync] = useAuthRequest(
@@ -64,19 +64,17 @@ export const useLoginProfile = (profile: TProfile) => {
       setLoading(true);
       const tokenResult = await exchangeCodeAsync(
         {
-          code,
           clientId,
           clientSecret,
-          redirectUri,
-          extraParams: {
-            grant_type: 'authorization_code'
-          }
+          code,
+          extraParams: { grant_type: 'authorization_code' },
+          redirectUri
         },
         keycloakDiscovery
       );
 
       setIsLoggedIn(true);
-      await addToStore(PROFILE_ACCESS_TOKEN, JSON.stringify(tokenResult));
+      SecureStore.setItemAsync(PROFILE_ACCESS_TOKEN, JSON.stringify(tokenResult));
     } catch (error) {
       console.error('Error exchanging code:', error);
     } finally {
@@ -89,7 +87,7 @@ export const useLoginProfile = (profile: TProfile) => {
   }, []);
 
   const checkToken = async () => {
-    const storedToken = await readFromStore(PROFILE_ACCESS_TOKEN);
+    const storedToken = await SecureStore.getItemAsync(PROFILE_ACCESS_TOKEN);
 
     if (!storedToken) {
       setIsLoggedIn(false);
@@ -135,7 +133,7 @@ export const useLoginProfile = (profile: TProfile) => {
         keycloakDiscovery
       );
 
-      await addToStore(PROFILE_ACCESS_TOKEN, JSON.stringify(newToken));
+      SecureStore.setItemAsync(PROFILE_ACCESS_TOKEN, JSON.stringify(newToken));
       return newToken;
     } catch (err) {
       console.error('Failed to refresh token:', err);
@@ -174,7 +172,7 @@ export const useLoginProfile = (profile: TProfile) => {
             });
 
             device.platform === 'ios' && (await dismissAuthSession());
-            await addToStore(PROFILE_ACCESS_TOKEN, '');
+            SecureStore.deleteItemAsync(PROFILE_ACCESS_TOKEN);
             setIsLoggedIn(false);
           } catch (err) {
             console.error('Logout error:', err);
