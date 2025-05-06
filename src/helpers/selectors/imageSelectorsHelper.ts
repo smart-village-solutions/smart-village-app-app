@@ -122,8 +122,8 @@ export const onDeleteImage = async ({
   setInfoAndErrorText
 }: {
   coordinateCheck?: any;
-  deleteImage?: any; // For Consul Mutation
-  imageId?: number | string; // For Consul Mutation
+  deleteImage?: any; // for Consul or Volunteer mutation
+  imageId?: number | string; // for Consul mutation
   imagesAttributes: any[];
   index: number;
   infoAndErrorText: any[];
@@ -158,7 +158,17 @@ export const onDeleteImage = async ({
     }
   }
 
-  if (!!imageId && !!deleteImage) {
+  if (
+    selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER &&
+    !!deleteImage &&
+    !!imagesAttributes[index]?.guid
+  ) {
+    try {
+      await deleteImage(imagesAttributes[index].guid);
+    } catch (err) {
+      console.error(err);
+    }
+  } else if (!!imageId && !!deleteImage) {
     try {
       await deleteImage({ variables: { id: imageId } });
     } catch (err) {

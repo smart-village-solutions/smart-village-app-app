@@ -1,5 +1,6 @@
 export type VolunteerPost = {
-  id: number;
-  message: string;
-  contentContainerId: number;
+  contentContainerId?: number;
+  files?: string;
+  id?: number;
+  message?: string;
 };

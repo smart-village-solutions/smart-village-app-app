@@ -5,6 +5,7 @@ import { Badge } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
+import { volunteerAuthToken } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { posts as postsQuery } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
@@ -37,6 +38,7 @@ export const VolunteerPosts = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [postForModal, setPostForModal] = useState();
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
     () => postsQuery({ contentContainerId }),
@@ -60,6 +62,15 @@ export const VolunteerPosts = ({
     // refetch posts when modal is closed
     isCollapsed && refetch?.();
   }, [isCollapsed]);
+
+  useEffect(() => {
+    const fetchAuthToken = async () => {
+      const token = await volunteerAuthToken();
+      setAuthToken(token);
+    };
+
+    fetchAuthToken();
+  }, []);
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -117,6 +128,7 @@ export const VolunteerPosts = ({
             }) => (
               <VolunteerPostListItem
                 key={`post-${post.id}`}
+                authToken={authToken}
                 bottomDivider={false}
                 openWebScreen={openWebScreen}
                 post={post}
@@ -150,6 +162,7 @@ export const VolunteerPosts = ({
 
       {!!contentContainerId && (
         <VolunteerPostModal
+          authToken={authToken}
           contentContainerId={contentContainerId}
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
