@@ -1,7 +1,7 @@
 import _filter from 'lodash/filter';
 import _isArray from 'lodash/isArray';
-import _isString from 'lodash/isString';
 import _isInteger from 'lodash/isInteger';
+import _isString from 'lodash/isString';
 import { Dimensions } from 'react-native';
 
 import { consts } from '../config/consts';
@@ -74,4 +74,20 @@ export const parsedImageAspectRatio = (imageAspectRatio) => {
   }
 
   return IMAGE_ASPECT_RATIO;
+};
+
+export const isImageUrlReachable = async (imageUrl) => {
+  try {
+    const response = await fetch(imageUrl, { method: 'HEAD' });
+    const contentType = response.headers.get('Content-Type');
+
+    if (response.ok && contentType?.startsWith('image/')) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.warn('Image check failed:', imageUrl, error);
+    return false;
+  }
 };

@@ -50,6 +50,7 @@ export const useVolunteerData = ({
   isLoading: boolean;
   isRefetching: boolean;
   refetch: () => void;
+  userGuid?: string | null;
 } => {
   const { data, isLoading, isRefetching, refetch } = useQuery(
     [query, queryVariables],
@@ -58,10 +59,12 @@ export const useVolunteerData = ({
   );
 
   const [isProcessing, setIsProcessing] = useState(true);
+  const [userGuid, setUserGuid] = useState<string | null>();
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
 
   const processVolunteerData = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+    const { currentUserId, currentUserGuid } = await volunteerUserData();
+    setUserGuid(currentUserGuid);
     let processedVolunteerData = data?.results as any[];
 
     if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
@@ -205,7 +208,8 @@ export const useVolunteerData = ({
     data: volunteerData,
     isLoading: isLoading || isProcessing,
     isRefetching,
-    refetch
+    refetch,
+    userGuid
   };
 };
 /* eslint-enable complexity */

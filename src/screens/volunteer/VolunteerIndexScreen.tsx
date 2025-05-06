@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
@@ -18,8 +18,10 @@ import {
   RegularText,
   SafeAreaViewFlex,
   Search,
+  VolunteerPostModal,
   VolunteerPostTextField,
   Wrapper,
+  WrapperHorizontal,
   WrapperVertical
 } from '../../components';
 import { colors, consts, texts } from '../../config';
@@ -105,6 +107,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const [queryVariables] = useState(initialQueryVariables);
   const [filterVariables, setFilterVariables] = useState(initialQueryVariables);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
@@ -120,7 +124,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY;
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
-  const { data, isLoading, refetch } = useVolunteerData({
+  const { data, isLoading, refetch, userGuid } = useVolunteerData({
     query,
     queryVariables,
     queryOptions,
@@ -164,6 +168,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     }, [])
   );
 
+  useEffect(() => {
+    // refetch posts when modal is closed
+    isCollapsed && refetch?.();
+  }, [isCollapsed]);
+
   if (isLoading || isLoadingGroupsIntroText) {
     return <LoadingSpinner loading />;
   }
@@ -176,16 +185,20 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
         {isCalendar && calendarToggle && !hasDailyFilterSelection && (
           <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         )}
+        {isPosts && isGroupMember && (
+          <WrapperHorizontal>
+            <VolunteerPostTextField
+              onPress={() => {
+                setPostForModal(undefined);
+                setIsCollapsed(false);
+              }}
+            />
+          </WrapperHorizontal>
+        )}
         <ListComponent
           ListHeaderComponent={
             <>
               {/* {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />} */}
-              {isPosts && isGroupMember && (
-                <VolunteerPostTextField
-                  contentContainerId={queryVariables?.contentContainerId}
-                  refetch={refetch}
-                />
-              )}
               {isGroups && (
                 <>
                   <WrapperVertical>
@@ -249,6 +262,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={isCalendar && showCalendar ? [] : data}
           sectionByDate={isCalendar && !showCalendar}
           query={query}
+          queryVariables={{ setIsCollapsed, setPostForModal, userGuid, isPartOfIndexScreen: false }}
           refetch={refetch}
           refreshControl={
             <RefreshControl
@@ -281,6 +295,13 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
               />
             </Wrapper>
           )}
+
+        <VolunteerPostModal
+          contentContainerId={queryVariables?.contentContainerId}
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          post={postForModal}
+        />
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );

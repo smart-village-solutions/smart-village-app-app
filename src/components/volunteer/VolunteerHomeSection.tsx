@@ -1,8 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import _isNumber from 'lodash/isNumber';
 import React, { useContext, useState } from 'react';
+import { View } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
+import { normalize } from '../../config';
 import { isUpcomingDate } from '../../helpers';
 import { useVolunteerData, useVolunteerRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -90,7 +92,9 @@ export const VolunteerHomeSection = ({
           />
         )}
         {calendarToggle && (
-          <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+          <View style={{ marginHorizontal: normalize(6) }}>
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+          </View>
         )}
         {showCalendar ? (
           <Calendar
