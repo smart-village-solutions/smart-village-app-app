@@ -44,7 +44,7 @@ export const DropdownFilter = ({
     ...data.map((item) => ({
       ...item,
       selected: multipleSelect
-        ? // TODO: für multiple select testen, ob das so stimmt
+        ? // TODO: test if this still works for multi select
           Array.isArray(filters[name]) && filters[name]?.includes(item.id || item.value)
         : item.filterValue === filters[name] || item.value === filters[name]
     }))
