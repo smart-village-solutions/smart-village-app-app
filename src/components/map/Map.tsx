@@ -331,7 +331,7 @@ export const Map = ({
                 />
               )}
 
-              {calloutTextEnabled && (
+              {calloutTextEnabled && (!!serviceName || !!title) && (
                 <Callout style={styles.callout}>
                   {!!serviceName && (
                     <BoldText smallest center>
