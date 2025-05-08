@@ -5,9 +5,11 @@ import {
   ListRenderItem,
   Modal,
   ScrollView,
+  StyleProp,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
+  ViewStyle
 } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -33,32 +35,94 @@ import { HtmlScreen } from './HtmlScreen';
 const keyExtractor = (slide: AppIntroSlide, index: number) => `index${index}-text${slide.text}`;
 
 const SliderButton = ({
-  isLightest = false,
+  isLightestText = false,
   isPlaceholder = false,
   label,
   style
 }: {
-  isLightest?: boolean;
+  isLightestText?: boolean;
   isPlaceholder?: boolean;
   label: string;
   style?: any;
 }) => {
   return (
     <View style={[styles.sliderButtonContainer, style]}>
-      <BoldText lightest={isLightest} placeholder={isPlaceholder}>
+      <BoldText lightest={isLightestText} placeholder={isPlaceholder}>
         {label.toUpperCase()}
       </BoldText>
     </View>
   );
 };
 
-const TermsAndConditionsSection = ({ backgroundColor, setShowButtonTermsAndConditions }) => {
+type NextButtonProps = {
+  sliderRef: React.RefObject<any>;
+  slides: AppIntroSlide[];
+  hasAcceptedTerms: boolean;
+  termsAndConditionsAlert: () => void;
+  styles: {
+    sliderButtonContainer: StyleProp<ViewStyle>;
+    sliderButtonDisabled: StyleProp<ViewStyle>;
+  };
+  texts: {
+    appIntro: {
+      continue: string;
+    };
+  };
+};
+
+const NextButton = ({
+  sliderRef,
+  slides,
+  hasAcceptedTerms,
+  termsAndConditionsAlert,
+  styles,
+  texts
+}: NextButtonProps) => {
+  const currentSlideIndex = sliderRef.current?.state?.activeIndex ?? 0;
+  const isTermsSlide =
+    slides[currentSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
+
+  const buttonStyle =
+    isTermsSlide && !hasAcceptedTerms
+      ? [styles.sliderButtonContainer, styles.sliderButtonDisabled]
+      : styles.sliderButtonContainer;
+
+  const handlePress = () => {
+    if (isTermsSlide && !hasAcceptedTerms) {
+      termsAndConditionsAlert();
+      return;
+    }
+    sliderRef.current?.goToSlide(currentSlideIndex + 1, true);
+  };
+
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <View style={buttonStyle}>
+        <BoldText lightest={!(isTermsSlide && !hasAcceptedTerms)}>
+          {texts.appIntro.continue.toUpperCase()}
+        </BoldText>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+export default NextButton;
+
+const TermsAndConditionsSection = ({
+  backgroundColor,
+  contentName,
+  setShowButtonTermsAndConditions
+}: {
+  backgroundColor?: string;
+  contentName: string;
+  setShowButtonTermsAndConditions: (value: boolean) => void;
+}) => {
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
   const [isModalVisibleDataPrivacy, setModalVisibleDataPrivacy] = useState(false);
 
   return (
-    <>
-      <Wrapper noPaddingTop>
+    <View style={{ position: 'absolute', bottom: normalize(180), width: '100%' }}>
+      <Wrapper>
         <Checkbox
           containerStyle={[styles.leftAligned, { backgroundColor }]}
           boldTitle={false}
@@ -96,12 +160,12 @@ const TermsAndConditionsSection = ({ backgroundColor, setShowButtonTermsAndCondi
             params: {
               title: texts.profile.privacyCheckLink,
               query: QUERY_TYPES.PUBLIC_HTML_FILE,
-              queryVariables: { name: 'datenschutzProfile' }
+              queryVariables: { name: contentName }
             }
           }}
         />
       </Modal>
-    </>
+    </View>
   );
 };
 
@@ -122,6 +186,10 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
   backgroundColor,
   item,
   setShowButtonTermsAndConditions
+}: {
+  backgroundColor?: string;
+  item: AppIntroSlide;
+  setShowButtonTermsAndConditions: (value: boolean) => void;
 }) => {
   const ImageComponent = () => (
     <Image
@@ -166,6 +234,7 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
       {item.onLeaveSlideName === Initializer.TermsAndConditions && (
         <TermsAndConditionsSection
           backgroundColor={backgroundColor}
+          contentName={item.contentName}
           setShowButtonTermsAndConditions={setShowButtonTermsAndConditions}
         />
       )}
@@ -180,7 +249,7 @@ export const AppIntroScreen = ({
 }: Props) => {
   const [showDoneButtonTermsAndConditions, setShowDoneButtonTermsAndConditions] = useState(true);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
-  const slider = useRef(null);
+  const slider = useRef<AppIntroSlider>(null);
 
   const { data, error, loading } = useStaticContent({
     name: 'appIntroSlides',
@@ -214,6 +283,7 @@ export const AppIntroScreen = ({
     // Only check for terms acceptance if there is a terms slide
     if (termsSlideIndex !== -1 && !hasAcceptedTerms && slider.current) {
       slider.current.goToSlide(termsSlideIndex, true);
+      termsAndConditionsAlert();
 
       return;
     }
@@ -257,46 +327,25 @@ export const AppIntroScreen = ({
         keyExtractor={keyExtractor}
         onDone={setOnboardingComplete}
         onSlideChange={handleSlideChange}
-        renderDoneButton={() => <SliderButton label={texts.appIntro.continue} isLightest />}
+        renderDoneButton={() => <SliderButton label={texts.appIntro.continue} isLightestText />}
         renderItem={renderItem}
         onSkip={handleSkip}
         ref={slider}
-        renderNextButton={() => {
-          const currentSlideIndex = slider.current?.state?.activeIndex ?? 0;
-          const isTermsSlide =
-            slides[currentSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
-
-          const buttonStyle =
-            isTermsSlide && !hasAcceptedTerms
-              ? [styles.sliderButtonContainer, styles.sliderButtonDisabled]
-              : styles.sliderButtonContainer;
-
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                if (isTermsSlide && !hasAcceptedTerms) {
-                  termsAndConditionsAlert();
-
-                  return;
-                }
-
-                slider.current?.goToSlide(currentSlideIndex + 1, true);
-              }}
-            >
-              <View style={buttonStyle}>
-                <BoldText lightest={!(isTermsSlide && !hasAcceptedTerms)}>
-                  {texts.appIntro.continue.toUpperCase()}
-                </BoldText>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
+        renderNextButton={() => (
+          <NextButton
+            sliderRef={slider}
+            slides={slides}
+            hasAcceptedTerms={hasAcceptedTerms}
+            termsAndConditionsAlert={termsAndConditionsAlert}
+            styles={styles}
+            texts={texts}
+          />
+        )}
         renderSkipButton={() => (
           <SliderButton label={texts.appIntro.skip} style={styles.skipButton} />
         )}
         scrollEnabled={false}
         showDoneButton={showDoneButtonTermsAndConditions}
-        showNextButton
         showSkipButton
         style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
@@ -355,7 +404,7 @@ const styles = StyleSheet.create({
   },
   slideContainer: {
     flexGrow: 1,
-    marginTop: normalize(144)
+    marginTop: normalize(40)
   },
   spacer: {
     height: normalize(40)
