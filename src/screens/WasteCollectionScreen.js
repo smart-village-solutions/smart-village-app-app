@@ -81,10 +81,11 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const {
-    twoStep: hasWasteAddressesTwoStep = false,
     hasCalendar = true,
     hasHeaderSearchBarOption = false,
-    texts: wasteAddressesTexts = {}
+    minSearchLength = 5,
+    texts: wasteAddressesTexts = {},
+    twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
   const {
     inputValue,
@@ -104,7 +105,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState('');
-  const { data } = useWasteAddresses({ search: inputValue || inputValueCity });
+  const { data } = useWasteAddresses({ minSearchLength, search: inputValue || inputValueCity });
   const addressesData = data?.wasteAddresses;
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData } = useWasteStreet({ selectedStreetId });
