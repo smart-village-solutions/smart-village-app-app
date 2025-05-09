@@ -174,6 +174,19 @@ export const MapLibre = ({
 
   const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
 
+  const handleMapPressToSetNewPin = (event: any) => {
+    const { geometry } = event;
+    if (!geometry) return;
+
+    if (geometry.coordinates) {
+      const newPin = point(geometry.coordinates, {
+        iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+        id: `new-pin-${Date.now()}`
+      });
+      setNewPins([newPin]);
+    }
+  };
+
   const handleOnPress = async (event: any) => {
     const feature = event.features[0];
     if (!feature) return;
@@ -196,18 +209,6 @@ export const MapLibre = ({
     }
   };
 
-  const handleMapPress = (event: any) => {
-    const { geometry } = event;
-    if (geometry?.coordinates) {
-      const newPin = point(geometry.coordinates, {
-        iconName: MAP.DEFAULT_PIN,
-        id: `${Date.now()}`
-      });
-      setNewPins([newPin]);
-    }
-    onMapPress?.(event);
-  };
-
   if (loading) {
     return <LoadingSpinner loading />;
   }
@@ -222,7 +223,7 @@ export const MapLibre = ({
         rotateEnabled={false}
         style={[styles.map, mapStyle]}
         zoomEnabled
-        onPress={!!onMapPress && handleMapPress}
+        onPress={handleMapPressToSetNewPin}
         onDidFinishLoadingMap={() => setMapReady(true)}
       >
         <Camera
@@ -244,7 +245,7 @@ export const MapLibre = ({
         <Images images={markerImages} />
 
         <ShapeSource
-          id="benches"
+          id="pois"
           ref={shapeSourceRef}
           shape={featureCollection(
             locations?.map((location) =>
@@ -300,7 +301,7 @@ export const MapLibre = ({
 
         <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
           <SymbolLayer
-            id="new-pin-icon"
+            id="pin-single-icon"
             style={{
               ...layerStyles.singleIcon,
               iconImage: ['get', 'iconName'],
