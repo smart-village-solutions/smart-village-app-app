@@ -12,7 +12,7 @@ type TCalendarListToggle = {
 };
 
 export const CalendarListToggle = ({ showCalendar, setShowCalendar }: TCalendarListToggle) => (
-  <WrapperRow>
+  <WrapperRow style={styles.paddingLeft}>
     <TouchableOpacity onPress={() => setShowCalendar(false)}>
       <WrapperRow style={[styles.calendarListToggle, !showCalendar && styles.underline]}>
         <Icon.List color={colors.darkText} size={normalize(12)} style={styles.icon} />
@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
   icon: {
     marginBottom: normalize(1),
     marginRight: normalize(6.5)
+  },
+  paddingLeft: {
+    paddingLeft: normalize(6)
   },
   underline: {
     borderBottomWidth: normalize(1),

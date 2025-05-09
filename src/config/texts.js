@@ -1549,7 +1549,7 @@ export const texts = {
     reminder: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     sameDay: 'selber Tag',
-    save: 'Speichern',
+    save: 'Änderungen speichern',
     street: 'Straße',
     timeOfDay: 'Uhrzeit',
     unableToLoad:
