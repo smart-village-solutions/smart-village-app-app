@@ -4,7 +4,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, DeviceEventEmitter, RefreshControl } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
@@ -21,7 +21,7 @@ import {
   SafeAreaViewFlex,
   WrapperVertical
 } from '../../components';
-import { colors, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -285,7 +285,7 @@ export const EventRecords = ({ navigation, route }) => {
       )}
       <ListComponent
         ListHeaderComponent={
-          <>
+          <View style={{ paddingHorizontal: showCalendar ? normalize(8) : 0 }}>
             {!!eventListIntro && (
               <>
                 {!!eventListIntro.introText && (
@@ -305,7 +305,7 @@ export const EventRecords = ({ navigation, route }) => {
                 <Divider />
               </>
             )}
-          </>
+          </View>
         }
         ListEmptyComponent={
           isLoading ? (
