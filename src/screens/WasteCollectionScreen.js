@@ -253,19 +253,6 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
               )}
             />
 
-            {hasCalendar && (
-              <HeaderLeft
-                onPress={() => setShowCalendar(!showCalendar)}
-                backImage={({ tintColor }) =>
-                  showCalendar ? (
-                    <Icon.List color={tintColor} style={[styles.icon, styles.noPaddingRight]} />
-                  ) : (
-                    <Icon.Calendar color={tintColor} style={[styles.icon, styles.noPaddingRight]} />
-                  )
-                }
-              />
-            )}
-
             {navigationType === 'drawer' && (
               <DrawerHeader navigation={navigation} style={styles.icon} />
             )}
@@ -363,6 +350,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
         ) : showCalendar ? (
           <>
             {wasteHeader()}
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
             <Wrapper>
               <RegularText small>{wasteTexts.calendarIntro}</RegularText>
             </Wrapper>
@@ -424,10 +412,22 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
             <FeedbackFooter containerStyle={styles.feedbackContainer} />
           </>
         ) : selectedTypes ? (
-          wasteList()
+          <>
+            {wasteHeader()}
+            {hasCalendar && (
+              <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+            )}
+            {wasteList()}
+          </>
         ) : null
       ) : selectedTypes && !showCalendar ? (
-        wasteList()
+        <>
+          {wasteHeader()}
+          {hasCalendar && (
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+          )}
+          {wasteList()}
+        </>
       ) : null}
       {!selectedStreetId &&
         (device.platform === 'ios' || (device.platform === 'android' && !keyboardHeight)) && (
