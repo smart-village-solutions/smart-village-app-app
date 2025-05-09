@@ -56,7 +56,6 @@ type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
   geometryTourData?: LatLng[];
-  isMaximizeButtonVisible?: boolean;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations: MapMarker[];
@@ -79,7 +78,6 @@ export const MapLibre = ({
   calloutTextEnabled = false,
   clusterDistance,
   geometryTourData,
-  isMaximizeButtonVisible = false,
   isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
   locations,
@@ -88,6 +86,7 @@ export const MapLibre = ({
   minZoom,
   onMapPress,
   onMarkerPress,
+  onMaximizeButtonPress,
   selectedMarker = '',
   style,
   ...otherProps
@@ -318,7 +317,7 @@ export const MapLibre = ({
       </MapView>
 
       {isMyLocationButtonVisible && showsUserLocation && (
-        <View style={styles.myLocationContainer}>
+        <View style={[styles.buttonsContainer, styles.myLocationButtonContainer]}>
           <TouchableOpacity
             accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
             onPress={() => {
@@ -328,6 +327,18 @@ export const MapLibre = ({
             style={styles.buttons}
           >
             <Icon.GPS size={normalize(18)} />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {!!onMaximizeButtonPress && (
+        <View style={[styles.buttonsContainer, styles.maximizeButtonContainer]}>
+          <TouchableOpacity
+            accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+            style={styles.buttons}
+            onPress={onMaximizeButtonPress}
+          >
+            <Icon.ExpandMap size={normalize(18)} />
           </TouchableOpacity>
         </View>
       )}
@@ -341,6 +352,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center'
+  },
+  buttonsContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: 50,
+    height: normalize(48),
+    justifyContent: 'center',
+    position: 'absolute',
+    right: normalize(15),
+    width: normalize(48),
+    zIndex: 10
   },
   callout: {
     backgroundColor: colors.surface,
@@ -378,16 +400,10 @@ const styles = StyleSheet.create({
   map: {
     flex: 1
   },
-  myLocationContainer: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 50,
-    height: normalize(48),
-    justifyContent: 'center',
-    position: 'absolute',
-    right: normalize(15),
-    top: normalize(15),
-    width: normalize(48),
-    zIndex: 10
+  maximizeButtonContainer: {
+    bottom: normalize(15)
+  },
+  myLocationButtonContainer: {
+    top: normalize(15)
   }
 });
