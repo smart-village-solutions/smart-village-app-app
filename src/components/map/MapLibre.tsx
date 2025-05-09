@@ -25,7 +25,7 @@ import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
-const { a11yLabel } = consts;
+const { a11yLabel, MAP } = consts;
 
 const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
   const { properties = {} } = feature;
@@ -115,6 +115,7 @@ export const MapLibre = ({
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [mapReady, setMapReady] = useState(false);
+  const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -173,6 +174,19 @@ export const MapLibre = ({
 
   const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
 
+  const handleMapPressToSetNewPin = (event: any) => {
+    const { geometry } = event;
+    if (!geometry) return;
+
+    if (geometry.coordinates) {
+      const newPin = point(geometry.coordinates, {
+        iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+        id: `new-pin-${Date.now()}`
+      });
+      setNewPins([newPin]);
+    }
+  };
+
   const handleOnPress = async (event: any) => {
     const feature = event.features[0];
     if (!feature) return;
@@ -209,6 +223,7 @@ export const MapLibre = ({
         rotateEnabled={false}
         style={[styles.map, mapStyle]}
         zoomEnabled
+        onPress={handleMapPressToSetNewPin}
         onDidFinishLoadingMap={() => setMapReady(true)}
       >
         <Camera
@@ -230,7 +245,7 @@ export const MapLibre = ({
         <Images images={markerImages} />
 
         <ShapeSource
-          id="benches"
+          id="pois"
           ref={shapeSourceRef}
           shape={featureCollection(
             locations?.map((location) =>
@@ -280,6 +295,17 @@ export const MapLibre = ({
               ...layerStyles.clusterCount,
               textField: ['format', ['concat', ['get', 'point_count']]],
               textPitchAlignment: 'map'
+            }}
+          />
+        </ShapeSource>
+
+        <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
+          <SymbolLayer
+            id="pin-single-icon"
+            style={{
+              ...layerStyles.singleIcon,
+              iconImage: ['get', 'iconName'],
+              iconSize: layerStyles.singleIcon.iconSize
             }}
           />
         </ShapeSource>
