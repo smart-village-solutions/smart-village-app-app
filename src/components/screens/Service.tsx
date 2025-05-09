@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
 import { usePersonalizedTiles } from '../../hooks';
+import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
@@ -17,6 +18,8 @@ import { ServiceTile, TServiceTile } from './ServiceTile';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
+const ITEMS_PER_ROW_PORTRAIT = 3;
+const ITEMS_PER_ROW_LANDSCAPE = 5;
 
 export const umlautSwitcher = (text: string) => {
   if (!text) return;
@@ -50,6 +53,7 @@ export const Service = ({
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { orientation } = useContext(OrientationContext);
   const { settings = {} } = globalSettings;
   const { personalizedTiles = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
@@ -103,6 +107,12 @@ export const Service = ({
 
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
+  const tilesCount = tiles?.length || 0;
+  const isPortrait = orientation === 'portrait';
+  const itemsPerRow = isPortrait ? ITEMS_PER_ROW_PORTRAIT : ITEMS_PER_ROW_LANDSCAPE;
+  const lastRowItems = tilesCount % itemsPerRow;
+  const shouldCenter = lastRowItems > 0;
+
   return isEditMode ? (
     <DiagonalGradient
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
@@ -113,7 +123,9 @@ export const Service = ({
     </DiagonalGradient>
   ) : (
     <>
-      <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
+      <WrapperWrap spaceAround={shouldCenter} spaceBetween={!shouldCenter}>
+        {tiles?.map(renderItem)}
+      </WrapperWrap>
       {!!tiles?.length && toggler}
     </>
   );
