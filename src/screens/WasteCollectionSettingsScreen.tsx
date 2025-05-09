@@ -71,7 +71,7 @@ export const WasteCollectionSettingsScreen = () => {
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
-  const { texts: wasteAddressesTexts = {}, hasExport = true } = wasteAddresses;
+  const { texts: wasteAddressesTexts = {} } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
   const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
@@ -198,45 +198,6 @@ export const WasteCollectionSettingsScreen = () => {
     reminderTime,
     loadStoredSettingsFromServer
   ]);
-
-  const triggerExport = useCallback(() => {
-    const { street, zip, city } = getLocationData(streetData);
-
-    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
-
-    let params = `street=${encodeURIComponent(street)}`;
-
-    if (zip) {
-      params += `&zip=${encodeURIComponent(zip)}`;
-    }
-
-    if (city) {
-      params += `&city=${encodeURIComponent(city)}`;
-    }
-
-    const combinedUrl = baseUrl + params;
-
-    if (device.platform === 'android') {
-      Alert.alert(
-        wasteTexts.exportAlertTitle,
-        wasteTexts.exportAlertBody,
-        [
-          {
-            onPress: () => {
-              openLink(combinedUrl);
-            }
-          }
-        ],
-        {
-          onDismiss: () => {
-            openLink(combinedUrl);
-          }
-        }
-      );
-    } else {
-      openLink(combinedUrl);
-    }
-  }, [streetData]);
 
   const saveSettings = useCallback(async () => {
     setIsSavingSettings(true);
@@ -617,13 +578,7 @@ export const WasteCollectionSettingsScreen = () => {
             )}
           </Collapsible>
 
-          {!!hasExport && (
-            <View style={styles.paddingTop}>
-              <Wrapper style={styles.noPaddingBottom}>
-                <Button title={wasteTexts.exportButton} onPress={triggerExport} />
-              </Wrapper>
-            </View>
-          )}
+          <View style={styles.spacer} />
         </ScrollView>
 
         <View
