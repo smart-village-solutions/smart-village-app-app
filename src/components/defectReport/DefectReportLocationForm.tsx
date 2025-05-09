@@ -13,7 +13,7 @@ import { MapMarker } from '../../types';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Map } from '../map/Map';
-import { baseLocationMarker, getLocationMarker } from '../settings';
+import { getLocationMarker } from '../settings';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
@@ -61,7 +61,7 @@ export const DefectReportLocationForm = ({
   let locations = [] as MapMarker[];
 
   if (selectedPosition) {
-    locations = [{ ...baseLocationMarker, position: selectedPosition }];
+    locations = [{ iconName: 'ownLocation', position: selectedPosition }];
   } else if (alternativePosition) {
     locations = [getLocationMarker(alternativePosition)];
   } else if (defaultAlternativePosition) {

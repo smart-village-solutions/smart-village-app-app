@@ -3,7 +3,7 @@ import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
-import { Map, locationServiceEnabledAlert } from '../../components';
+import { MapLibre, locationServiceEnabledAlert } from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { useLocationSettings } from '../../hooks';
 
@@ -22,7 +22,6 @@ export const SueMapViewScreen = ({
     clusteringEnabled,
     currentPosition,
     geometryTourData,
-    isMaximizeButtonVisible,
     isMyLocationButtonVisible,
     locations,
     mapCenterPosition,
@@ -36,34 +35,22 @@ export const SueMapViewScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<
     Location.LocationObjectCoords | undefined
   >(position);
-  const [locationsWithPin, setLocationsWithPin] = useState(locations);
-  const [updatedRegion, setUpdatedRegion] = useState<boolean>();
-
-  const iconName = 'location';
-
-  useEffect(() => {
-    setLocationsWithPin((prevData) =>
-      prevData.map((item) =>
-        item?.iconName === iconName ? { iconName, position: selectedPosition } : item
-      )
-    );
-  }, [selectedPosition]);
+  const [isLocationSelectable, setIsLocationSelectable] = useState<boolean>(false);
 
   return (
     <>
-      <Map
+      <MapLibre
         {...{
           calloutTextEnabled,
           clusteringEnabled,
           geometryTourData,
-          isMaximizeButtonVisible,
+          isLocationSelectable,
           isMyLocationButtonVisible,
-          locations: selectedPosition
-            ? [...locationsWithPin, { iconName, position: selectedPosition }]
-            : locationsWithPin,
+          locations,
           mapCenterPosition,
           mapStyle: styles.map,
-          onMarkerPress: onMarkerPress,
+          onMarkerPress,
+          selectedPosition,
           showsUserLocation
         }}
         onMyLocationButtonPress={async () => {
@@ -81,37 +68,37 @@ export const SueMapViewScreen = ({
                 });
 
                 setSelectedPosition(currentPosition.coords);
-                setUpdatedRegion(true);
 
                 try {
+                  setIsLocationSelectable(true);
                   await onMyLocationButtonPress({ isFullScreenMap: true });
                 } catch (error) {
                   setSelectedPosition(undefined);
+                  setIsLocationSelectable(false);
                 }
               }
             }
           ]);
         }}
-        onMapPress={async ({ nativeEvent }) => {
-          if (
-            nativeEvent.action !== 'marker-press' &&
-            nativeEvent.action !== 'callout-inside-press'
-          ) {
-            setSelectedPosition(nativeEvent.coordinate);
-            setUpdatedRegion(false);
+        onMapPress={async ({
+          geometry
+        }: {
+          geometry: { coordinates: Location.LocationObjectCoords };
+        }) => {
+          const coordinate = {
+            latitude: geometry?.coordinates[1],
+            longitude: geometry?.coordinates[0]
+          };
+          setIsLocationSelectable(true);
+          setSelectedPosition(coordinate);
 
-            const mapPress = await onMapPress({ nativeEvent });
+          const mapPress = await onMapPress({ geometry });
 
-            if (mapPress?.error) {
-              setSelectedPosition(undefined);
-            }
+          if (mapPress?.error) {
+            setIsLocationSelectable(false);
+            setSelectedPosition(undefined);
           }
         }}
-        updatedRegion={
-          !!selectedPosition && updatedRegion
-            ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-            : undefined
-        }
       />
     </>
   );

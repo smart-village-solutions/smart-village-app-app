@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { Map, TextListItem, Wrapper } from '../components';
+import { MapLibre, TextListItem, Wrapper } from '../components';
 import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
 
@@ -35,7 +35,7 @@ export const MapViewScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <Map
+      <MapLibre
         {...{
           geometryTourData,
           isMaximizeButtonVisible,
