@@ -591,8 +591,9 @@ export const WasteCollectionSettingsScreen = () => {
           <Wrapper noPaddingBottom>
             <Button
               disabled={isSavingSettings}
-              title={wasteTexts.save}
+              notFullWidth
               onPress={isSavingSettings ? undefined : saveSettings}
+              title={wasteTexts.save}
             />
           </Wrapper>
         </View>

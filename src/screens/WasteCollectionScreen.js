@@ -378,7 +378,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
             {!!hasExport && (
               <View style={styles.paddingTop}>
                 <Wrapper style={styles.noPaddingBottom}>
-                  <Button title={wasteTexts.exportButton} onPress={triggerExport} />
+                  <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
                 </Wrapper>
               </View>
             )}
@@ -443,7 +443,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
           ]}
         >
           <Wrapper noPaddingBottom>
-            <Button title={wasteTexts.exportButton} onPress={triggerExport} />
+            <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
           </Wrapper>
         </View>
       )}
