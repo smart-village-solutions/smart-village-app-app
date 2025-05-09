@@ -445,6 +445,17 @@ const styles = StyleSheet.create({
   }
 });
 
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+export const getPositionStyleByNavigation = ({ navigationType }) => {
+  return StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '5%' : 0
+    }
+  });
+};
+/* eslint-enable react-native/no-unused-styles */
+
 WasteCollectionScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };

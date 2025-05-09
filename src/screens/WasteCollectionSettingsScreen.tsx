@@ -1,17 +1,8 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _isEmpty from 'lodash/isEmpty';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Modal,
   Platform,
@@ -29,8 +20,6 @@ import {
   BoldText,
   Button,
   Dot,
-  DrawerHeader,
-  HeaderLeft,
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
@@ -40,18 +29,8 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../components';
-import {
-  colors,
-  consts,
-  device,
-  Icon,
-  namespace,
-  normalize,
-  secrets,
-  staticRestSuffix,
-  texts
-} from '../config';
-import { formatTime, openLink, storageHelper } from '../helpers';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { formatTime, storageHelper } from '../helpers';
 import {
   useFilterStreets,
   useRenderSuggestions,
@@ -69,7 +48,7 @@ import {
   updateWasteReminderSettings
 } from '../pushNotifications';
 import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '../reducers';
-import { getLocationData } from '../screens';
+import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 import { WasteReminderSettingJson } from '../types';
 
@@ -301,25 +280,6 @@ export const WasteCollectionSettingsScreen = () => {
     updateSettings,
     navigation
   ]);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />,
-      headerRight: () =>
-        selectedStreetId ? (
-          <WrapperRow itemsCenter>
-            <HeaderLeft
-              onPress={isSavingSettings ? undefined : saveSettings}
-              text={wasteTexts.save}
-            />
-
-            {navigationType === 'drawer' && (
-              <DrawerHeader navigation={navigation} style={styles.icon} />
-            )}
-          </WrapperRow>
-        ) : null
-    });
-  }, [selectedStreetId, isSavingSettings, saveSettings]);
 
   // Set initial waste types used in the selected street
   useEffect(() => {
@@ -665,6 +625,22 @@ export const WasteCollectionSettingsScreen = () => {
             </View>
           )}
         </ScrollView>
+
+        <View
+          style={[
+            styles.paddingTop,
+            styles.saveButtonContainer,
+            getPositionStyleByNavigation({ navigationType }).position
+          ]}
+        >
+          <Wrapper noPaddingBottom>
+            <Button
+              disabled={isSavingSettings}
+              title={wasteTexts.save}
+              onPress={isSavingSettings ? undefined : saveSettings}
+            />
+          </Wrapper>
+        </View>
       </SafeAreaViewFlex>
     );
   }
@@ -696,9 +672,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.placeholder,
     marginVertical: normalize(4),
     width: normalize(140)
-  },
-  icon: {
-    paddingRight: normalize(10)
   },
   listItemContainer: {
     backgroundColor: colors.surface,
@@ -746,6 +719,14 @@ const styles = StyleSheet.create({
   },
   resultsList: {
     padding: normalize(14)
+  },
+  saveButtonContainer: {
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '100%'
+  },
+  spacer: {
+    height: normalize(70)
   },
   tooltipContainer: {
     borderColor: colors.shadowRgba,
