@@ -1,9 +1,11 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
@@ -80,8 +82,10 @@ export const SueReportLocation = ({
   configuration,
   control,
   errorMessage,
+  isFullscreenMap,
   requiredInputs,
   selectedPosition,
+  setIsFullscreenMap,
   setSelectedPosition,
   setUpdateRegionFromImage,
   setValue
@@ -95,8 +99,10 @@ export const SueReportLocation = ({
   control: any;
   errorMessage: string;
   getValues: UseFormGetValues<TValues>;
+  isFullscreenMap: boolean;
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
+  setIsFullscreenMap: (value: boolean) => void;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
@@ -136,6 +142,9 @@ export const SueReportLocation = ({
   const houseNumberInputRef = useRef();
   const postalCodeInputRef = useRef();
   const cityInputRef = useRef();
+
+  const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   const queryVariables = {
     start_date: '1900-01-01T00:00:00+01:00',
@@ -276,7 +285,7 @@ export const SueReportLocation = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isFullscreenMap && styles.noPaddingTop]}>
       <WrapperHorizontal>
         <MapLibre
           calloutTextEnabled
@@ -284,36 +293,28 @@ export const SueReportLocation = ({
           isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
-          mapStyle={styles.map}
+          mapStyle={[
+            styles.map,
+            isFullscreenMap && styles.fullscreenMap,
+            isFullscreenMap && {
+              height: device.height - safeAreaBottom - safeAreaTop - bottomTabBarHeight
+            }
+          ]}
           onMapPress={onMapPress}
           onMarkerPress={setSelectedPointOfInterest}
           onMyLocationButtonPress={onMyLocationButtonPress}
-          onMaximizeButtonPress={() =>
-            navigation.navigate(ScreenName.SueReportMapView, {
-              calloutTextEnabled: true,
-              isMyLocationButtonVisible: !!locationService,
-              locations,
-              mapCenterPosition: selectedPosition || mapCenterPosition,
-              onMapPress,
-              onMarkerPress: setSelectedPointOfInterest,
-              onMyLocationButtonPress,
-              selectedMarker: selectedPointOfInterest,
-              selectedPosition,
-              setPinEnabled: true,
-              showsUserLocation: true
-            })
-          }
+          onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}
           selectedMarker={selectedPointOfInterest}
           selectedPosition={selectedPosition}
           setPinEnabled
         />
       </WrapperHorizontal>
 
-      <Wrapper>
+      <Wrapper style={[isFullscreenMap && styles.wrapperHidden]}>
         <RegularText small>{texts.sue.report.mapHint}</RegularText>
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.STREET} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? a11yLabel.required : ''
@@ -333,7 +334,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.houseNumber} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? a11yLabel.required : ''
@@ -353,7 +354,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.postalCode} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? a11yLabel.required : ''
@@ -375,7 +376,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.city} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? a11yLabel.required : ''
@@ -400,11 +401,21 @@ export const SueReportLocation = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: normalize(14),
+    paddingTop: normalize(16),
     width: '100%'
+  },
+  fullscreenMap: {
+    marginLeft: 0,
+    width: device.width
   },
   map: {
     height: normalize(300),
-    width: device.width - 2 * normalize(14)
+    width: device.width - 2 * normalize(16)
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  wrapperHidden: {
+    display: 'none'
   }
 });
