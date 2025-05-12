@@ -210,11 +210,20 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
                 [category.iconName || MAP.DEFAULT_PIN]: 1,
                 iconName: category.iconName || MAP.DEFAULT_PIN,
                 id,
-                position: { latitude, longitude }
+                position: { latitude, longitude },
+                serviceName: title,
+                title
               }
             ]}
-            selectedMarker={id}
             mapStyle={styles.mapStyle}
+            interactivity={{
+              pitchEnabled: false,
+              rotateEnabled: false,
+              scrollEnabled: false,
+              zoomEnabled: false
+            }}
+            isMultipleMarkersMap={false}
+            selectedMarker={id}
           />
         </WrapperVertical>
       )}

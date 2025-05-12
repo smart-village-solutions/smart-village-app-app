@@ -298,7 +298,6 @@ export const SueReportLocation = ({
           mapStyle={styles.map}
           onMapPress={onMapPress}
           onMyLocationButtonPress={onMyLocationButtonPress}
-          selectedPosition={selectedPosition}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
@@ -313,6 +312,7 @@ export const SueReportLocation = ({
               showsUserLocation: true
             })
           }
+          selectedPosition={selectedPosition}
         />
       </WrapperHorizontal>
 

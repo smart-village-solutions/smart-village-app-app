@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -18,6 +18,7 @@ export const MapScreen = () => {
   const { navigation: navigationType } = globalSettings;
   const route = useRoute();
   const { locations, onMarkerPress, showsUserLocation } = route?.params ?? {};
+  const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
   const { data: mapSettings, loading } = useMapSettings();
 
@@ -55,15 +56,16 @@ export const MapScreen = () => {
 
   return (
     <MapLibre
-      onMaximizeButtonPress={() => {
-        navigation.navigate(ScreenName.MapView, {
-          locations: locations || pois
-        });
-      }}
       {...{
         locations: locations || pois,
         mapStyle: styles.map,
-        onMarkerPress,
+        onMarkerPress: onMarkerPress || setSelectedPointOfInterest,
+        onMaximizeButtonPress: () => {
+          navigation.navigate(ScreenName.MapView, {
+            locations: locations || pois
+          });
+        },
+        selectedMarker: selectedPointOfInterest,
         showsUserLocation
       }}
     />

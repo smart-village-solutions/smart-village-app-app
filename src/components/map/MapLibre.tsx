@@ -58,6 +58,12 @@ type Props = {
   clusterDistance?: number;
   currentPosition?: LocationObject;
   geometryTourData?: LatLng[];
+  interactivity?: {
+    pitchEnabled: boolean;
+    rotateEnabled: boolean;
+    scrollEnabled: boolean;
+    zoomEnabled: boolean;
+  };
   isLocationSelectable?: boolean;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
@@ -174,8 +180,8 @@ export const MapLibre = ({
 
     const { ne, sw } = getBounds(locations);
 
-    cameraRef.current?.fitBounds(ne, sw, 50, 1000);
-  }, [mapReady, loading, cameraRef.current, isMultipleMarkersMap, locations]);
+    !selectedMarker && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+  }, [mapReady, loading, cameraRef.current, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
     if (!selectedPosition) {
@@ -185,13 +191,11 @@ export const MapLibre = ({
 
     const { latitude, longitude } = selectedPosition;
     const newPin = point([longitude, latitude], {
-      iconName: MAP.DEFAULT_PIN,
-      id: `${Date.now()}`
+      iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+      id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
   }, []);
-
-  const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
 
   const handleMapPressToSetNewPin = (event: any) => {
     const { geometry } = event;
@@ -200,16 +204,27 @@ export const MapLibre = ({
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
 
-    if (isLocationSelectable === undefined || isLocationSelectable) {
-      const newPin = point(coordinates, {
-        iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
-        id: `new-pin-${Date.now()}`
-      });
-      setNewPins([newPin]);
-    } else {
+    if (isLocationSelectable === false) {
       setNewPins([]);
+      return;
+    }
+
+    const newPin = point(coordinates, {
+      iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+      id: `new-pin-${Date.now()}`
+    });
+    setNewPins([newPin]);
+  };
+
+  const handleMapPress = (event: any) => {
+    if (onMapPress) {
+      onMapPress(event);
+    } else {
+      handleMapPressToSetNewPin(event);
     }
   };
+
+  const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
 
   const handleOnPress = async (event: any) => {
     const feature = event.features[0];
@@ -233,6 +248,14 @@ export const MapLibre = ({
     }
   };
 
+  const handleSourcePress = (event: any) => {
+    if (onMapPress) {
+      onMapPress(event);
+    } else {
+      handleOnPress(event);
+    }
+  };
+
   if (loading) {
     return <LoadingSpinner loading />;
   }
@@ -244,11 +267,10 @@ export const MapLibre = ({
         compassEnabled={false}
         mapStyle="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
         ref={mapRef}
-        rotateEnabled={false}
         style={[styles.map, mapStyle]}
-        zoomEnabled
-        onPress={handleMapPressToSetNewPin}
         onDidFinishLoadingMap={() => setMapReady(true)}
+        onPress={handleMapPress}
+        {...otherProps.interactivity}
       >
         <Camera
           centerCoordinate={centerCoordinate}
@@ -276,7 +298,7 @@ export const MapLibre = ({
               point([location.position.longitude, location.position.latitude], { ...location })
             )
           )}
-          onPress={handleOnPress}
+          onPress={handleSourcePress}
           cluster
           clusterRadius={50}
           clusterMaxZoomLevel={clusterMaxZoom}
@@ -368,7 +390,7 @@ export const MapLibre = ({
         )}
       </MapView>
 
-      {isMyLocationButtonVisible && showsUserLocation && (
+      {isMyLocationButtonVisible && showsUserLocation && !onMapPress && (
         <View style={[styles.buttonsContainer, styles.myLocationButtonContainer]}>
           <TouchableOpacity
             accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
