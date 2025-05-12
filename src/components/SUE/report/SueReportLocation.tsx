@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -160,11 +160,12 @@ export const SueReportLocation = ({
     [data]
   );
 
-  useFocusEffect(() => {
-    if (selectedPosition) {
-      setSelectedPosition(selectedPosition);
-    }
-  });
+  // TODO: do we need this?
+  // useFocusEffect(() => {
+  //   if (selectedPosition) {
+  //     setSelectedPosition(selectedPosition);
+  //   }
+  // });
 
   const geocode = useCallback(async () => {
     const { street, houseNumber, postalCode, city } = address;
@@ -223,6 +224,7 @@ export const SueReportLocation = ({
   const onMapPress = async ({ geometry }: { geometry: { coordinates: number[] } }) => {
     const coordinate = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
     setSelectedPosition(coordinate);
+    setUpdateRegionFromImage(false);
 
     try {
       await handleGeocode(coordinate);
@@ -254,37 +256,23 @@ export const SueReportLocation = ({
               navigation
             });
 
-            if (currentPosition) {
-              setSelectedPosition(currentPosition.coords);
-              setUpdateRegionFromImage(false);
-
-              try {
-                await handleGeocode(currentPosition.coords);
-              } catch (error) {
-                setSelectedPosition(undefined);
-                Alert.alert(texts.sue.report.alerts.hint, error.message);
-                return { error: error.message, isLocationSelectable: false };
-              }
-            }
+            !!currentPosition &&
+              onMapPress({
+                geometry: {
+                  coordinates: [currentPosition.coords.longitude, currentPosition.coords.latitude]
+                }
+              });
           }
         }
       ]);
     } else {
-      if (currentPosition) {
-        setSelectedPosition(currentPosition.coords);
-        setUpdateRegionFromImage(false);
-
-        try {
-          await handleGeocode(currentPosition.coords);
-        } catch (error) {
-          setSelectedPosition(undefined);
-          Alert.alert(texts.sue.report.alerts.hint, error.message);
-          return { error: error.message, isLocationSelectable: false };
-        }
-      }
+      !!currentPosition &&
+        onMapPress({
+          geometry: {
+            coordinates: [currentPosition.coords.longitude, currentPosition.coords.latitude]
+          }
+        });
     }
-
-    return { isLocationSelectable: true };
   };
 
   return (
@@ -303,13 +291,15 @@ export const SueReportLocation = ({
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
-              clusteringEnabled: true,
               isMyLocationButtonVisible: !!locationService,
               locations,
               mapCenterPosition: selectedPosition || mapCenterPosition,
               onMapPress,
+              onMarkerPress: setSelectedPointOfInterest,
               onMyLocationButtonPress,
+              selectedMarker: selectedPointOfInterest,
               selectedPosition,
+              setPinEnabled: true,
               showsUserLocation: true
             })
           }
