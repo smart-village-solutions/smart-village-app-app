@@ -1,11 +1,9 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as Location from 'expo-location';
-import React, { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 
-import { MapLibre, locationServiceEnabledAlert } from '../../components';
-import { colors, normalize, texts } from '../../config';
-import { useLocationSettings } from '../../hooks';
+import { MapLibre } from '../../components';
+import { colors, normalize } from '../../config';
 
 export const SueMapViewScreen = ({
   navigation,
@@ -14,13 +12,9 @@ export const SueMapViewScreen = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
-  const { locationSettings = {} } = useLocationSettings();
-  const { locationService: locationServiceEnabled } = locationSettings;
-
   const {
     calloutTextEnabled,
     clusteringEnabled,
-    currentPosition,
     geometryTourData,
     isMyLocationButtonVisible,
     locations,
@@ -28,13 +22,9 @@ export const SueMapViewScreen = ({
     onMapPress,
     onMarkerPress,
     onMyLocationButtonPress,
-    selectedPosition: position,
+    selectedPosition,
     showsUserLocation
   } = route?.params ?? {};
-
-  const [selectedPosition, setSelectedPosition] = useState<
-    Location.LocationObjectCoords | undefined
-  >(position);
 
   return (
     <>
@@ -47,58 +37,12 @@ export const SueMapViewScreen = ({
           locations,
           mapCenterPosition,
           mapStyle: styles.map,
+          onMapPress,
           onMarkerPress,
+          onMyLocationButtonPress,
           selectedPosition,
           setPinEnabled: true,
           showsUserLocation
-        }}
-        onMyLocationButtonPress={async () => {
-          Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
-            {
-              text: texts.sue.report.alerts.no
-            },
-            {
-              text: texts.sue.report.alerts.yes,
-              onPress: async () => {
-                locationServiceEnabledAlert({
-                  currentPosition,
-                  locationServiceEnabled,
-                  navigation
-                });
-
-                setSelectedPosition(currentPosition.coords);
-
-                try {
-                  await onMyLocationButtonPress({ isFullScreenMap: true });
-                } catch (error) {
-                  setSelectedPosition(undefined);
-                  return { error: error?.message, isLocationSelectable: false };
-                }
-
-                return { isLocationSelectable: true };
-              }
-            }
-          ]);
-        }}
-        onMapPress={async ({
-          geometry
-        }: {
-          geometry: { coordinates: Location.LocationObjectCoords };
-        }) => {
-          const coordinate = {
-            latitude: geometry?.coordinates[1],
-            longitude: geometry?.coordinates[0]
-          };
-          setSelectedPosition(coordinate);
-
-          const { error, isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
-
-          if (error) {
-            setSelectedPosition(undefined);
-            return { error: error?.message, isLocationSelectable: false };
-          }
-
-          return { isLocationSelectable };
         }}
       />
     </>

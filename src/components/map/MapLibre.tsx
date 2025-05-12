@@ -202,7 +202,9 @@ export const MapLibre = ({
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
-  }, []);
+
+    cameraRef.current?.flyTo([longitude, latitude], 1500);
+  }, [selectedPosition]);
 
   const handleMapPressToSetNewPin = async (event: {
     geometry: {
@@ -392,7 +394,10 @@ export const MapLibre = ({
         </ShapeSource>
 
         {!!selectedFeature && (
-          <MarkerView coordinate={selectedFeature.geometry.coordinates}>
+          <MarkerView
+            coordinate={selectedFeature.geometry.coordinates}
+            anchor={{ x: 0.5, y: 1.45 }}
+          >
             <CustomCallout feature={selectedFeature} />
           </MarkerView>
         )}
@@ -459,8 +464,7 @@ const styles = StyleSheet.create({
   },
   calloutContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: normalize(100)
+    justifyContent: 'center'
   },
   calloutTriangel: {
     alignSelf: 'center',

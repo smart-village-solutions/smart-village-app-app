@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -160,6 +160,12 @@ export const SueReportLocation = ({
     [data]
   );
 
+  useFocusEffect(() => {
+    if (selectedPosition) {
+      setSelectedPosition(selectedPosition);
+    }
+  });
+
   const geocode = useCallback(async () => {
     const { street, houseNumber, postalCode, city } = address;
 
@@ -298,7 +304,6 @@ export const SueReportLocation = ({
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
               clusteringEnabled: true,
-              currentPosition,
               isMyLocationButtonVisible: !!locationService,
               locations,
               mapCenterPosition: selectedPosition || mapCenterPosition,
