@@ -64,19 +64,25 @@ type Props = {
     scrollEnabled: boolean;
     zoomEnabled: boolean;
   };
-  isLocationSelectable?: boolean;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations: MapMarker[];
   mapCenterPosition?: LocationObjectCoords;
   mapStyle?: StyleProp<ViewStyle>;
   minZoom?: number;
-  onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
+  onMapPress?: ({
+    geometry: { coordinates }
+  }: {
+    geometry: {
+      coordinates: number[];
+    };
+  }) => Promise<{ isLocationSelectable?: boolean }>;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
-  onMyLocationButtonPress?: () => void;
+  onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
+  setPinEnabled?: boolean;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   updatedRegion?: Region;
@@ -87,7 +93,6 @@ export const MapLibre = ({
   calloutTextEnabled = false,
   clusterDistance,
   geometryTourData,
-  isLocationSelectable,
   isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
   locations,
@@ -100,6 +105,7 @@ export const MapLibre = ({
   onMyLocationButtonPress,
   selectedMarker = '',
   selectedPosition,
+  setPinEnabled,
   style,
   ...otherProps
 }: Props) => {
@@ -183,6 +189,8 @@ export const MapLibre = ({
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
+    if (!setPinEnabled) return;
+
     if (!selectedPosition) {
       setNewPins([]);
       return;
@@ -196,16 +204,20 @@ export const MapLibre = ({
     setNewPins([newPin]);
   }, []);
 
-  const handleMapPress = (event: any) => {
+  const handleMapPressToSetNewPin = async (event: {
+    geometry: {
+      coordinates: [number, number];
+    };
+  }) => {
     const { geometry } = event;
     if (!geometry) return;
 
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
 
-    if (!onMapPress) return;
+    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
 
-    if (isLocationSelectable === false) {
+    if (!isLocationSelectable) {
       setNewPins([]);
       return;
     }
@@ -217,11 +229,22 @@ export const MapLibre = ({
     setNewPins([newPin]);
   };
 
+  const handleMapPress = (event: any) => {
+    if (setPinEnabled) {
+      handleMapPressToSetNewPin(event);
+    } else {
+      onMapPress?.(event);
+    }
+  };
+
   const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
 
-  const handleOnPress = async (event: any) => {
+  const handleSourcePress = async (event: any) => {
     const feature = event.features[0];
-    if (!feature) return;
+    if (!feature) {
+      onMapPress?.(event);
+      return;
+    }
 
     if (feature.properties?.cluster) {
       const currentZoomLevel = await mapRef.current?.getZoom();
@@ -238,14 +261,6 @@ export const MapLibre = ({
       cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
       onMarkerPress?.(feature.properties?.id);
       !!calloutTextEnabled && setSelectedFeature(feature);
-    }
-  };
-
-  const handleSourcePress = (event: any) => {
-    if (onMapPress) {
-      onMapPress(event);
-    } else {
-      handleOnPress(event);
     }
   };
 

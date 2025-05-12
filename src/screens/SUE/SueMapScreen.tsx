@@ -63,8 +63,7 @@ export const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
       position: {
         latitude: item.lat,
         longitude: item.long
-      },
-      title: item.title
+      }
     }));
 
 type Props = {

@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 import { MapLibre, locationServiceEnabledAlert } from '../../components';
@@ -35,7 +35,6 @@ export const SueMapViewScreen = ({
   const [selectedPosition, setSelectedPosition] = useState<
     Location.LocationObjectCoords | undefined
   >(position);
-  const [isLocationSelectable, setIsLocationSelectable] = useState<boolean>(false);
 
   return (
     <>
@@ -44,13 +43,13 @@ export const SueMapViewScreen = ({
           calloutTextEnabled,
           clusteringEnabled,
           geometryTourData,
-          isLocationSelectable,
           isMyLocationButtonVisible,
           locations,
           mapCenterPosition,
           mapStyle: styles.map,
           onMarkerPress,
           selectedPosition,
+          setPinEnabled: true,
           showsUserLocation
         }}
         onMyLocationButtonPress={async () => {
@@ -70,12 +69,13 @@ export const SueMapViewScreen = ({
                 setSelectedPosition(currentPosition.coords);
 
                 try {
-                  setIsLocationSelectable(true);
                   await onMyLocationButtonPress({ isFullScreenMap: true });
                 } catch (error) {
                   setSelectedPosition(undefined);
-                  setIsLocationSelectable(false);
+                  return { error: error?.message, isLocationSelectable: false };
                 }
+
+                return { isLocationSelectable: true };
               }
             }
           ]);
@@ -89,15 +89,16 @@ export const SueMapViewScreen = ({
             latitude: geometry?.coordinates[1],
             longitude: geometry?.coordinates[0]
           };
-          setIsLocationSelectable(true);
           setSelectedPosition(coordinate);
 
-          const mapPress = await onMapPress({ geometry });
+          const { error, isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
 
-          if (mapPress?.error) {
-            setIsLocationSelectable(false);
+          if (error) {
             setSelectedPosition(undefined);
+            return { error: error?.message, isLocationSelectable: false };
           }
+
+          return { isLocationSelectable };
         }}
       />
     </>
