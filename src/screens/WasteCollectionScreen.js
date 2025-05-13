@@ -433,20 +433,17 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
         )}
 
       {!!hasExport && !showCalendar && !!selectedStreetId && (
-        <>
-          <View style={styles.spacer} />
-          <View
-            style={[
-              styles.paddingTop,
-              styles.exportButtonContainer,
-              getPositionStyleByNavigation({ navigationType }).position
-            ]}
-          >
-            <Wrapper noPaddingBottom>
-              <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
-            </Wrapper>
-          </View>
-        </>
+        <View
+          style={[
+            styles.paddingTop,
+            styles.exportButtonContainer,
+            getPositionStyleByNavigation({ navigationType }).position
+          ]}
+        >
+          <Wrapper noPaddingBottom>
+            <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
+          </Wrapper>
+        </View>
       )}
     </SafeAreaViewFlex>
   );
@@ -479,9 +476,6 @@ const styles = StyleSheet.create({
   },
   paddingTop: {
     paddingTop: normalize(14)
-  },
-  spacer: {
-    height: normalize(70)
   }
 });
 
