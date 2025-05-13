@@ -81,7 +81,7 @@ export const WasteInputForm = ({
   );
 
   const listContainerHeight = useMemo(() => {
-    const activeList = inputValueCitySelected ? filteredStreets : filteredCities;
+    const activeList = inputValueCitySelected ? filteredCities : filteredStreets;
     const listLength = activeList?.length ?? 0;
 
     if (listLength < 6) {
