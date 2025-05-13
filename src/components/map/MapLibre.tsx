@@ -393,7 +393,10 @@ export const MapLibre = ({
           />
         </ShapeSource>
 
-        <MarkerView anchor={{ x: 0.5, y: 0.9 }} coordinate={selectedFeature?.geometry?.coordinates}>
+        <MarkerView
+          anchor={{ x: 0.5, y: selectedFeature ? 1.45 : 0.5 }}
+          coordinate={selectedFeature?.geometry?.coordinates}
+        >
           <CustomCallout feature={selectedFeature} />
         </MarkerView>
       </MapView>
