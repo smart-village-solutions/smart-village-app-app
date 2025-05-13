@@ -135,7 +135,7 @@ export const WasteInputForm = ({
       )}
 
       {/* Render empty container for spacing as the inputs are overlaying on Androids */}
-      {device.platform === 'android' && (
+      {hasWasteAddressesTwoStep && device.platform === 'android' && (
         <>
           <Wrapper />
           <Wrapper style={styles.noPaddingTop} />
