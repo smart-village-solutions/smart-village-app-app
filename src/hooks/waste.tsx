@@ -2,14 +2,16 @@ import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { Keyboard, TouchableOpacity } from 'react-native';
+import { Alert, Keyboard, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { RegularText, Wrapper } from '../components';
-import { graphqlFetchPolicy } from '../helpers';
+import { graphqlFetchPolicy, openLink } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { getLocationData } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
+import { secrets, namespace, staticRestSuffix, device } from '../config';
 
 import { useStaticContent } from './staticContent';
 import { useRefreshTime } from './TimeHooks';
@@ -281,5 +283,50 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
     setInputValueCitySelected,
     renderSuggestionCities,
     renderSuggestion
+  };
+};
+
+export const useTriggerExport = ({ streetData, wasteTexts }) => {
+  const triggerExport = useCallback(() => {
+    const { street, zip, city } = getLocationData(streetData);
+
+    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
+
+    let params = `street=${encodeURIComponent(street)}`;
+
+    if (zip) {
+      params += `&zip=${encodeURIComponent(zip)}`;
+    }
+
+    if (city) {
+      params += `&city=${encodeURIComponent(city)}`;
+    }
+
+    const combinedUrl = baseUrl + params;
+
+    if (device.platform === 'android') {
+      return Alert.alert(
+        wasteTexts.exportAlertTitle,
+        wasteTexts.exportAlertBody,
+        [
+          {
+            onPress: () => {
+              openLink(combinedUrl);
+            }
+          }
+        ],
+        {
+          onDismiss: () => {
+            openLink(combinedUrl);
+          }
+        }
+      );
+    } else {
+      openLink(combinedUrl);
+    }
+  }, [streetData]);
+
+  return {
+    triggerExport
   };
 };

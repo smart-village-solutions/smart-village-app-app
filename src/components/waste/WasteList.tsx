@@ -17,10 +17,12 @@ export const WasteList = ({ data, ListHeaderComponent, query, selectedTypes }: W
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
-  const { hasHeaderSearchBarOption = false } = wasteAddresses;
+  const { hasExport = true, hasHeaderSearchBarOption = false } = wasteAddresses;
 
   const ListFooterComponent = !hasHeaderSearchBarOption ? (
-    <FeedbackFooter containerStyle={styles.feedbackContainer} />
+    <FeedbackFooter
+      containerStyle={[styles.feedbackContainer, hasExport && styles.feedbackContainerMarginBottom]}
+    />
   ) : undefined;
 
   return (
@@ -40,5 +42,8 @@ const styles = StyleSheet.create({
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
+  },
+  feedbackContainerMarginBottom: {
+    marginBottom: normalize(70)
   }
 });

@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
-import _sortBy from 'lodash/sortBy';
 import _isArray from 'lodash/isArray';
+import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, {
@@ -11,13 +11,14 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
 import {
   BoldText,
   Button,
+  CalendarListToggle,
   DefaultKeyboardAvoidingView,
   DrawerHeader,
   HeaderLeft,
@@ -41,6 +42,7 @@ import {
   useKeyboardHeight,
   useRenderSuggestions,
   useStreetString,
+  useTriggerExport,
   useWasteAddresses,
   useWasteMarkedDates,
   useWasteStreet,
@@ -76,13 +78,14 @@ export const getLocationData = (streetData) => {
  * reminder screen and handles user interactions for selecting city and street inputs.
  */
 /* eslint-disable complexity */
-export const WasteCollectionScreen = ({ navigation }) => {
+export const WasteCollectionScreen = ({ navigation, route }) => {
   const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const {
     hasCalendar = true,
+    hasExport = true,
     hasHeaderSearchBarOption = false,
     minSearchLength = 5,
     texts: wasteAddressesTexts = {},
@@ -112,6 +115,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { data: streetData } = useWasteStreet({ selectedStreetId });
   const locationData = getLocationData(streetData);
   const usedTypes = useWasteUsedTypes({ streetData, typesData });
+  const { triggerExport } = useTriggerExport({ streetData, wasteTexts });
   const [selectedTypes, setSelectedTypes] = useState();
   const { getStreetString } = useStreetString();
   const markedDates = useWasteMarkedDates({
@@ -250,19 +254,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
               )}
             />
 
-            {hasCalendar && (
-              <HeaderLeft
-                onPress={() => setShowCalendar(!showCalendar)}
-                backImage={({ tintColor }) =>
-                  showCalendar ? (
-                    <Icon.List color={tintColor} style={[styles.icon, styles.noPaddingRight]} />
-                  ) : (
-                    <Icon.Calendar color={tintColor} style={[styles.icon, styles.noPaddingRight]} />
-                  )
-                }
-              />
-            )}
-
             {navigationType === 'drawer' && (
               <DrawerHeader navigation={navigation} style={styles.icon} />
             )}
@@ -313,7 +304,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
     return (
       <WasteList
         data={selectedStreetId ? listItems : []}
-        ListHeaderComponent={wasteHeader()}
         query={query}
         selectedTypes={selectedTypes}
       />
@@ -361,6 +351,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
         ) : showCalendar ? (
           <>
             {wasteHeader()}
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
             <Wrapper>
               <RegularText small>{wasteTexts.calendarIntro}</RegularText>
             </Wrapper>
@@ -384,6 +375,14 @@ export const WasteCollectionScreen = ({ navigation }) => {
                 }
               }}
             />
+
+            {!!hasExport && (
+              <View style={styles.paddingTop}>
+                <Wrapper style={styles.noPaddingBottom}>
+                  <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
+                </Wrapper>
+              </View>
+            )}
             <Overlay
               animationType="fade"
               isVisible={isDayOverlayVisible}
@@ -414,21 +413,52 @@ export const WasteCollectionScreen = ({ navigation }) => {
             <FeedbackFooter containerStyle={styles.feedbackContainer} />
           </>
         ) : selectedTypes ? (
-          wasteList()
+          <>
+            {wasteHeader()}
+            {hasCalendar && (
+              <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+            )}
+            {wasteList()}
+          </>
         ) : null
       ) : selectedTypes && !showCalendar ? (
-        wasteList()
+        <>
+          {wasteHeader()}
+          {hasCalendar && (
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+          )}
+          {wasteList()}
+        </>
       ) : null}
       {!selectedStreetId &&
         (device.platform === 'ios' || (device.platform === 'android' && !keyboardHeight)) && (
           <FeedbackFooter containerStyle={styles.feedbackContainer} />
         )}
+
+      {!!hasExport && !showCalendar && !!selectedStreetId && (
+        <View
+          style={[
+            styles.paddingTop,
+            styles.exportButtonContainer,
+            getPositionStyleByNavigation({ navigationType }).position
+          ]}
+        >
+          <Wrapper noPaddingBottom>
+            <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
+          </Wrapper>
+        </View>
+      )}
     </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  exportButtonContainer: {
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '100%'
+  },
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
@@ -443,9 +473,24 @@ const styles = StyleSheet.create({
   },
   overlayWidth: {
     width: '80%'
+  },
+  paddingTop: {
+    paddingTop: normalize(14)
   }
 });
 
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+export const getPositionStyleByNavigation = ({ navigationType }) => {
+  return StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '5%' : 0
+    }
+  });
+};
+/* eslint-enable react-native/no-unused-styles */
+
 WasteCollectionScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };
