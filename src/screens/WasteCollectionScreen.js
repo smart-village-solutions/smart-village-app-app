@@ -247,19 +247,16 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
-                <Icon.EditSetting
-                  color={tintColor}
-                  style={[styles.icon, !hasCalendar && styles.noPaddingRight]}
-                />
+                <Icon.EditSetting color={tintColor} style={styles.icon} />
               )}
             />
 
             {navigationType === 'drawer' && (
-              <DrawerHeader navigation={navigation} style={styles.icon} />
+              <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
             )}
           </WrapperRow>
         ) : navigationType === 'drawer' ? (
-          <DrawerHeader navigation={navigation} style={styles.icon} />
+          <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
         ) : null
     });
 
@@ -436,17 +433,20 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
         )}
 
       {!!hasExport && !showCalendar && !!selectedStreetId && (
-        <View
-          style={[
-            styles.paddingTop,
-            styles.exportButtonContainer,
-            getPositionStyleByNavigation({ navigationType }).position
-          ]}
-        >
-          <Wrapper noPaddingBottom>
-            <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
-          </Wrapper>
-        </View>
+        <>
+          <View style={styles.spacer} />
+          <View
+            style={[
+              styles.paddingTop,
+              styles.exportButtonContainer,
+              getPositionStyleByNavigation({ navigationType }).position
+            ]}
+          >
+            <Wrapper noPaddingBottom>
+              <Button title={wasteTexts.exportButton} notFullWidth onPress={triggerExport} />
+            </Wrapper>
+          </View>
+        </>
       )}
     </SafeAreaViewFlex>
   );
@@ -464,7 +464,10 @@ const styles = StyleSheet.create({
     marginTop: normalize(10)
   },
   icon: {
-    paddingHorizontal: normalize(10)
+    paddingHorizontal: normalize(16)
+  },
+  noPaddingLeft: {
+    paddingLeft: 0
   },
   overlay: {
     borderRadius: normalize(8),
@@ -476,6 +479,9 @@ const styles = StyleSheet.create({
   },
   paddingTop: {
     paddingTop: normalize(14)
+  },
+  spacer: {
+    height: normalize(70)
   }
 });
 
