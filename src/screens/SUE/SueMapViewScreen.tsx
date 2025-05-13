@@ -24,6 +24,12 @@ export const SueMapViewScreen = ({ route }: { route: any }) => {
       {...{
         calloutTextEnabled,
         geometryTourData,
+        interactivity: {
+          pitchEnabled: true,
+          rotateEnabled: false,
+          scrollEnabled: true,
+          zoomEnabled: true
+        },
         isMyLocationButtonVisible,
         locations,
         mapCenterPosition,

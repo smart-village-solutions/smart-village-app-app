@@ -169,13 +169,6 @@ export const SueReportLocation = ({
     [data]
   );
 
-  // TODO: do we need this?
-  // useFocusEffect(() => {
-  //   if (selectedPosition) {
-  //     setSelectedPosition(selectedPosition);
-  //   }
-  // });
-
   const geocode = useCallback(async () => {
     const { street, houseNumber, postalCode, city } = address;
 
@@ -290,6 +283,12 @@ export const SueReportLocation = ({
         <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
+          interactivity={{
+            pitchEnabled: true,
+            rotateEnabled: false,
+            scrollEnabled: true,
+            zoomEnabled: true
+          }}
           isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
