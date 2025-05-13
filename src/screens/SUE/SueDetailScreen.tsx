@@ -91,10 +91,10 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
       {isFullscreenMap ? (
         <MapLibre
           interactivity={{
-            pitchEnabled: false,
+            pitchEnabled: true,
             rotateEnabled: false,
-            scrollEnabled: false,
-            zoomEnabled: false
+            scrollEnabled: true,
+            zoomEnabled: true
           }}
           isMyLocationButtonVisible={false}
           locations={[
@@ -172,10 +172,10 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
               {!!latitude && !!longitude && isConnected && isMainserverUp && (
                 <MapLibre
                   interactivity={{
-                    pitchEnabled: false,
+                    pitchEnabled: true,
                     rotateEnabled: false,
-                    scrollEnabled: false,
-                    zoomEnabled: false
+                    scrollEnabled: true,
+                    zoomEnabled: true
                   }}
                   isMyLocationButtonVisible={false}
                   locations={[
