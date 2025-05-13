@@ -1540,7 +1540,7 @@ export const texts = {
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',
     location: 'Ortschaft',
-    myLocation: 'Meine Straße:',
+    myLocation: 'Meine Straße',
     notifications: 'Benachrichtigungen',
     notificationsOn: 'Benachrichtigungen an',
     onDayBeforeCollection: 'Am Vortag',

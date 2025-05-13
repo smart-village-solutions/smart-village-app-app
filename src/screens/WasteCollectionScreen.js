@@ -82,27 +82,12 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const {
-    twoStep: hasWasteAddressesTwoStep = false,
     hasCalendar = true,
     hasHeaderSearchBarOption = false,
-    texts: wasteAddressesTexts = {}
+    minSearchLength = 5,
+    texts: wasteAddressesTexts = {},
+    twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
-  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
-  const [isRehydrating, setIsRehydrating] = useState(false);
-  const [isCityInputFocused, setIsCityInputFocused] = useState(false);
-  const [isStreetInputFocused, setIsStreetInputFocused] = useState(false);
-  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
-  const [selectedDay, setSelectedDay] = useState('');
-  const { data, loading } = useWasteAddresses();
-  const addressesData = data?.wasteAddresses;
-  const { data: typesData, loading: typesLoading } = useWasteTypes();
-  const { data: streetData } = useWasteStreet({ selectedStreetId });
-  const locationData = getLocationData(streetData);
-  const usedTypes = useWasteUsedTypes({ streetData, typesData });
-  const [selectedTypes, setSelectedTypes] = useState();
-  const { getStreetString } = useStreetString();
   const {
     inputValue,
     setInputValue,
@@ -113,6 +98,22 @@ export const WasteCollectionScreen = ({ navigation }) => {
     renderSuggestionCities,
     renderSuggestion
   } = useRenderSuggestions();
+  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
+  const [isRehydrating, setIsRehydrating] = useState(false);
+  const [isCityInputFocused, setIsCityInputFocused] = useState(false);
+  const [isStreetInputFocused, setIsStreetInputFocused] = useState(false);
+  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
+  const [selectedDay, setSelectedDay] = useState('');
+  const { data } = useWasteAddresses({ minSearchLength, search: inputValue || inputValueCity });
+  const addressesData = data?.wasteAddresses;
+  const { data: typesData, loading: typesLoading } = useWasteTypes();
+  const { data: streetData } = useWasteStreet({ selectedStreetId });
+  const locationData = getLocationData(streetData);
+  const usedTypes = useWasteUsedTypes({ streetData, typesData });
+  const [selectedTypes, setSelectedTypes] = useState();
+  const { getStreetString } = useStreetString();
   const markedDates = useWasteMarkedDates({
     streetData,
     selectedTypes: selectedTypes || typesData
@@ -324,7 +325,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setIsDayOverlayVisible(true);
   }, []);
 
-  if (isRehydrating || loading || typesLoading) {
+  if (isRehydrating || typesLoading) {
     return <LoadingSpinner loading />;
   }
 
