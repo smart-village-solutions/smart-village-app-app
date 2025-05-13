@@ -122,7 +122,6 @@ export const MapLibre = ({
   const { locationSettings = {} } = useLocationSettings();
   const showsUserLocation =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
-  const { alternativePosition, defaultAlternativePosition } = locationSettings;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [mapReady, setMapReady] = useState(false);
@@ -181,7 +180,7 @@ export const MapLibre = ({
     const { ne, sw } = getBounds(locations);
 
     !selectedMarker && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
-  }, [mapReady, loading, cameraRef.current, isMultipleMarkersMap, locations, selectedMarker]);
+  }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
     if (!selectedPosition) {
@@ -197,12 +196,14 @@ export const MapLibre = ({
     setNewPins([newPin]);
   }, []);
 
-  const handleMapPressToSetNewPin = (event: any) => {
+  const handleMapPress = (event: any) => {
     const { geometry } = event;
     if (!geometry) return;
 
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
+
+    if (!onMapPress) return;
 
     if (isLocationSelectable === false) {
       setNewPins([]);
@@ -214,14 +215,6 @@ export const MapLibre = ({
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
-  };
-
-  const handleMapPress = (event: any) => {
-    if (onMapPress) {
-      onMapPress(event);
-    } else {
-      handleMapPressToSetNewPin(event);
-    }
   };
 
   const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
@@ -390,7 +383,7 @@ export const MapLibre = ({
         )}
       </MapView>
 
-      {isMyLocationButtonVisible && showsUserLocation && !onMapPress && (
+      {isMyLocationButtonVisible && showsUserLocation && (
         <View style={[styles.buttonsContainer, styles.myLocationButtonContainer]}>
           <TouchableOpacity
             accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
