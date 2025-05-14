@@ -24,15 +24,7 @@ type TNewContent = {
   rating: number;
 };
 
-export const SueReportSend = ({
-  isDone,
-  isLoading,
-  navigation
-}: {
-  isDone: boolean;
-  isLoading: boolean;
-  navigation: any;
-}) => {
+export const SueReportSend = ({ isDone, navigation }: { isDone: boolean; navigation: any }) => {
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = sueConfig;
   const {
@@ -46,14 +38,15 @@ export const SueReportSend = ({
   const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
   const { feedbackHeader, ratingTitle, messageTitle, messagePlaceholder } = feedbackFormTexts;
   const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
+  const [rating, setRating] = useState(defaultRating);
 
   const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
 
-  const { control, reset, handleSubmit } = useForm({
+  const { control, reset, handleSubmit, getValues } = useForm({
     defaultValues: {
       message: '',
-      rating: defaultRating
+      rating
     }
   });
 
@@ -142,7 +135,10 @@ export const SueReportSend = ({
                       render={({ field: { onChange, value } }) => (
                         <Rating
                           imageSize={normalize(24)}
-                          onFinishRating={onChange}
+                          onFinishRating={(value: number) => {
+                            onChange(value);
+                            setRating(value);
+                          }}
                           ratingColor={colors.primary}
                           startingValue={value}
                           style={styles.rating}
@@ -174,7 +170,7 @@ export const SueReportSend = ({
                   </View>
 
                   <Button
-                    disabled={loading}
+                    disabled={loading || rating === 0}
                     onPress={handleSubmit(onSubmit)}
                     title={
                       loading
