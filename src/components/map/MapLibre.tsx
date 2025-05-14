@@ -130,6 +130,7 @@ export const MapLibre = ({
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const mapRef = useRef(null);
@@ -185,7 +186,7 @@ export const MapLibre = ({
 
     const { ne, sw } = getBounds(locations);
 
-    !selectedMarker && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+    !selectedMarker && !isMarkerSelected && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
@@ -262,6 +263,7 @@ export const MapLibre = ({
     } else {
       cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
       onMarkerPress?.(feature.properties?.id);
+      setIsMarkerSelected(true);
       !!calloutTextEnabled && setSelectedFeature(feature);
     }
   };
