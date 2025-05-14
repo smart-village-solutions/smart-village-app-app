@@ -1,10 +1,12 @@
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useLayoutEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
   Button,
   ConnectedImagesCarousel,
+  HeaderLeft,
+  Image,
   ListComponent,
   RegularText,
   SafeAreaViewFlex,
@@ -81,6 +83,22 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     return listItem;
   }, [appDesignSystem, data]);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderLeft
+          backImage={() => (
+            <Image
+              source={require('../../../assets/sue-icon.png')}
+              containerStyle={styles.logo}
+              borderRadius={normalize(20)}
+            />
+          )}
+        />
+      )
+    });
+  }, []);
+
   return (
     <SafeAreaViewFlex>
       <ScrollView>
@@ -135,6 +153,11 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
 };
 
 const styles = StyleSheet.create({
+  logo: {
+    height: normalize(25),
+    width: normalize(25),
+    marginRight: normalize(16)
+  },
   noPaddingBottom: {
     paddingBottom: 0
   },
