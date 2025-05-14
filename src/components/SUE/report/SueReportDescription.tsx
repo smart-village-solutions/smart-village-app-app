@@ -87,7 +87,7 @@ export const SueReportDescription = ({
           accessibilityLabel={`${texts.sue.report.title} ${a11yLabel.required}`}
           name={INPUT_KEYS.SUE.TITLE}
           label={texts.sue.report.title + ' *'}
-          placeholder={texts.sue.report.title}
+          placeholder={texts.sue.report.descriptionPlaceholder}
           control={control}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
@@ -103,7 +103,7 @@ export const SueReportDescription = ({
           label={`${texts.sue.report.description} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.DESCRIPTION) ? ' *' : ''
           }`}
-          placeholder={texts.sue.report.description}
+          placeholder={texts.sue.report.descriptionPlaceholder}
           multiline
           control={control}
           ref={descriptionRef}

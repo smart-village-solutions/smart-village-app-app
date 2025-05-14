@@ -1196,6 +1196,7 @@ export const texts = {
       back: 'Zurück',
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
+      descriptionPlaceholder: 'Hier eingeben',
       email: 'E-Mail-Adresse',
       emailHint:
         'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
