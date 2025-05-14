@@ -2,7 +2,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { StackScreenProps } from '@react-navigation/stack';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
@@ -88,39 +88,17 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
   return (
     <SafeAreaViewFlex>
-      {isFullscreenMap ? (
-        <MapLibre
-          interactivity={{
-            pitchEnabled: true,
-            rotateEnabled: false,
-            scrollEnabled: true,
-            zoomEnabled: true
-          }}
-          isMyLocationButtonVisible={false}
-          locations={[
-            {
-              iconName: `Sue${_upperFirst(matchedStatus.iconName)}`,
-              id,
-              position: { latitude, longitude }
-            }
-          ]}
-          mapStyle={[
-            styles.fullscreenMap,
-            { height: device.height - safeAreaBottom - safeAreaTop - bottomTabBarHeight }
-          ]}
-          onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}
-        />
-      ) : (
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={refresh}
-              colors={[colors.refreshControl]}
-              tintColor={colors.refreshControl}
-            />
-          }
-        >
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
+          />
+        }
+      >
+        <View style={[isFullscreenMap && styles.wrapperHidden]}>
           <ImageSection mediaContents={mediaContents} />
           {!mediaContents?.length && <SueImageFallback style={styles.sueImageContainer} />}
 
@@ -154,43 +132,51 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
               </WrapperHorizontal>
             </>
           )}
+        </View>
+        {/* There are several connection states that can happen
+         * a) We are connected to a wifi and our mainserver is up (and reachable)
+         *   a.1) OSM is reachable -> everything is fine
+         *   a.2) OSM is not reachable -> white rectangle is shown
+         * b) We are connected to a wifi and our mainserver is not reachable
+         *   b.1) OSM is reachable -> we don't know and do not show the map for the cached data
+         *   b.2) OSM is not reachable -> everything is fine
+         *
+         * we can also not check for isMainserverUp here, but then we would only verify that we are
+         * connected to a network with no information of internet connectivity.
+         */}
+        {((!!latitude && !!longitude) || !!address) && (
+          <Wrapper noPaddingBottom>
+            <BoldText>{texts.sue.location}</BoldText>
+            {!!latitude && !!longitude && isConnected && isMainserverUp && (
+              <MapLibre
+                interactivity={{
+                  pitchEnabled: true,
+                  rotateEnabled: false,
+                  scrollEnabled: true,
+                  zoomEnabled: true
+                }}
+                isMyLocationButtonVisible={false}
+                locations={[
+                  {
+                    iconName: `Sue${_upperFirst(matchedStatus.iconName)}`,
+                    id,
+                    position: { latitude, longitude }
+                  }
+                ]}
+                mapStyle={[
+                  styles.map,
+                  isFullscreenMap && styles.fullscreenMap,
+                  isFullscreenMap && {
+                    height: device.height - safeAreaBottom - safeAreaTop - bottomTabBarHeight
+                  }
+                ]}
+                onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}
+              />
+            )}
+          </Wrapper>
+        )}
 
-          {/* There are several connection states that can happen
-           * a) We are connected to a wifi and our mainserver is up (and reachable)
-           *   a.1) OSM is reachable -> everything is fine
-           *   a.2) OSM is not reachable -> white rectangle is shown
-           * b) We are connected to a wifi and our mainserver is not reachable
-           *   b.1) OSM is reachable -> we don't know and do not show the map for the cached data
-           *   b.2) OSM is not reachable -> everything is fine
-           *
-           * we can also not check for isMainserverUp here, but then we would only verify that we are
-           * connected to a network with no information of internet connectivity.
-           */}
-          {((!!latitude && !!longitude) || !!address) && (
-            <Wrapper noPaddingBottom>
-              <BoldText>{texts.sue.location}</BoldText>
-              {!!latitude && !!longitude && isConnected && isMainserverUp && (
-                <MapLibre
-                  interactivity={{
-                    pitchEnabled: true,
-                    rotateEnabled: false,
-                    scrollEnabled: true,
-                    zoomEnabled: true
-                  }}
-                  isMyLocationButtonVisible={false}
-                  locations={[
-                    {
-                      iconName: `Sue${_upperFirst(matchedStatus.iconName)}`,
-                      id,
-                      position: { latitude, longitude }
-                    }
-                  ]}
-                  mapStyle={styles.map}
-                  onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}
-                />
-              )}
-            </Wrapper>
-          )}
+        <View style={[isFullscreenMap && styles.wrapperHidden]}>
           {!!address && (
             <Wrapper noPaddingTop>
               <RegularText>{address.replace('\r\n ', '\r\n')}</RegularText>
@@ -219,8 +205,8 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
               </Wrapper>
             </>
           )}
-        </ScrollView>
-      )}
+        </View>
+      </ScrollView>
     </SafeAreaViewFlex>
   );
 };
@@ -237,5 +223,8 @@ const styles = StyleSheet.create({
   },
   sueImageContainer: {
     width: '100%'
+  },
+  wrapperHidden: {
+    display: 'none'
   }
 });
