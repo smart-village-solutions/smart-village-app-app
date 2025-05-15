@@ -154,8 +154,8 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
 
 const styles = StyleSheet.create({
   logo: {
-    height: normalize(25),
-    width: normalize(25),
+    height: normalize(30),
+    width: normalize(30),
     marginRight: normalize(16)
   },
   noPaddingBottom: {
