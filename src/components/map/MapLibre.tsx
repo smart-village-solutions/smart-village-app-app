@@ -17,6 +17,7 @@ import { LocationObject, LocationObjectCoords } from 'expo-location';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { LatLng, Region } from 'react-native-maps';
+import Animated from 'react-native-reanimated';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { getBounds, truncateText } from '../../helpers';
@@ -29,14 +30,13 @@ import { BoldText, RegularText } from '../Text';
 const { a11yLabel, MAP } = consts;
 
 const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
-  const { properties = {} } = feature;
-
+  const { properties = {} } = feature || {};
   const serviceName = truncateText(properties?.serviceName);
   const title = truncateText(properties?.title);
 
   return (
-    <View style={styles.calloutContainer}>
-      <View style={styles.callout}>
+    <Animated.View style={styles.calloutContainer}>
+      <View style={styles.calloutContent}>
         {!!serviceName && (
           <BoldText smallest center>
             {serviceName}
@@ -48,8 +48,8 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
           </RegularText>
         )}
       </View>
-      <View style={styles.calloutTriangel} />
-    </View>
+      <View style={styles.calloutTip} />
+    </Animated.View>
   );
 };
 
@@ -130,6 +130,7 @@ export const MapLibre = ({
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const mapRef = useRef(null);
@@ -185,7 +186,7 @@ export const MapLibre = ({
 
     const { ne, sw } = getBounds(locations);
 
-    !selectedMarker && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+    !selectedMarker && !isMarkerSelected && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
@@ -202,7 +203,9 @@ export const MapLibre = ({
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
-  }, []);
+
+    cameraRef.current?.flyTo([longitude, latitude], 1500);
+  }, [selectedPosition]);
 
   const handleMapPressToSetNewPin = async (event: {
     geometry: {
@@ -260,6 +263,7 @@ export const MapLibre = ({
     } else {
       cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
       onMarkerPress?.(feature.properties?.id);
+      setIsMarkerSelected(true);
       !!calloutTextEnabled && setSelectedFeature(feature);
     }
   };
@@ -391,11 +395,12 @@ export const MapLibre = ({
           />
         </ShapeSource>
 
-        {!!selectedFeature && (
-          <MarkerView coordinate={selectedFeature.geometry.coordinates}>
-            <CustomCallout feature={selectedFeature} />
-          </MarkerView>
-        )}
+        <MarkerView
+          anchor={{ x: 0.5, y: selectedFeature ? 1.45 : 0.5 }}
+          coordinate={selectedFeature?.geometry?.coordinates}
+        >
+          <CustomCallout feature={selectedFeature} />
+        </MarkerView>
       </MapView>
 
       {isMyLocationButtonVisible && showsUserLocation && (
@@ -415,15 +420,15 @@ export const MapLibre = ({
       )}
 
       {!!onMaximizeButtonPress && (
-        <View style={[styles.buttonsContainer, styles.maximizeButtonContainer]}>
-          <TouchableOpacity
-            accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
-            style={styles.buttons}
-            onPress={onMaximizeButtonPress}
-          >
+        <TouchableOpacity
+          accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          style={[styles.buttonsContainer, styles.maximizeButtonContainer]}
+          onPress={onMaximizeButtonPress}
+        >
+          <View style={styles.buttons}>
             <Icon.ExpandMap size={normalize(18)} />
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -447,32 +452,42 @@ const styles = StyleSheet.create({
     width: normalize(48),
     zIndex: 10
   },
-  callout: {
+  calloutContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 'auto',
+    zIndex: 9999999
+  },
+  calloutContent: {
     backgroundColor: colors.surface,
+    borderColor: colors.surface,
     borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
     elevation: 5,
     padding: 10,
+    position: 'relative',
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4
   },
-  calloutContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: normalize(100)
-  },
-  calloutTriangel: {
+  calloutTip: {
     alignSelf: 'center',
+    backgroundColor: colors.transparent,
+    borderBottomColor: colors.transparent,
+    borderBottomWidth: 0,
     borderLeftColor: colors.transparent,
     borderLeftWidth: 10,
     borderRightColor: colors.transparent,
     borderRightWidth: 10,
     borderTopColor: colors.surface,
     borderTopWidth: 10,
+    elevation: 0,
     height: 0,
     marginTop: -1,
-    width: 0
+    width: 0,
+    zIndex: 1000
   },
   container: {
     alignItems: 'center',

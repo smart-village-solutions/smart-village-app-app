@@ -15,17 +15,19 @@ type TProgress = {
 
 export const SueReportProgress = ({
   progress,
-  currentProgress
+  currentProgress,
+  isFullscreenMap
 }: {
   progress: TProgress;
   currentProgress: number;
+  isFullscreenMap: boolean;
 }) => {
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueProgress = {} } = appDesignSystem;
   const { subtitleStyle = {}, textContainer = {}, titleStyle = {} } = sueProgress;
 
   return (
-    <Wrapper style={styles.noPaddingBottom}>
+    <Wrapper style={[styles.noPaddingBottom, isFullscreenMap && styles.wrapperHidden]}>
       <WrapperRow spaceBetween>
         <View accessibilityElementsHidden>
           <CircularProgress
@@ -49,7 +51,10 @@ export const SueReportProgress = ({
                 style={[styles.textContainer, !!textContainer && textContainer]}
               >
                 <BoldText
-                  accessibilityLabel={`${texts.components.sueReportProgress(currentProgress, progress.length)} (${item.title})`}
+                  accessibilityLabel={`${texts.components.sueReportProgress(
+                    currentProgress,
+                    progress.length
+                  )} (${item.title})`}
                   style={!!titleStyle && titleStyle}
                 >
                   {item.title}
@@ -76,5 +81,8 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     width: '80%'
+  },
+  wrapperHidden: {
+    display: 'none'
   }
 });

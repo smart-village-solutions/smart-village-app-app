@@ -54,6 +54,12 @@ export const MapScreen = () => {
   return (
     <MapLibre
       {...{
+        interactivity: {
+          pitchEnabled: true,
+          rotateEnabled: false,
+          scrollEnabled: true,
+          zoomEnabled: true
+        },
         locations: locations || pois,
         mapStyle: styles.map,
         onMarkerPress: onMarkerPress || setSelectedPointOfInterest,

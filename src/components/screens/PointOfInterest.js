@@ -205,6 +205,14 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
           <MapLibre
+            interactivity={{
+              pitchEnabled: true,
+              rotateEnabled: false,
+              scrollEnabled: true,
+              zoomEnabled: true
+            }}
+            isMultipleMarkersMap={false}
+            isMyLocationButtonVisible={false}
             locations={[
               {
                 [category.iconName || MAP.DEFAULT_PIN]: 1,
@@ -214,14 +222,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
               }
             ]}
             mapStyle={styles.mapStyle}
-            interactivity={{
-              pitchEnabled: false,
-              rotateEnabled: false,
-              scrollEnabled: false,
-              zoomEnabled: false
-            }}
-            isMultipleMarkersMap={false}
-            isMyLocationButtonVisible={false}
             selectedMarker={id}
           />
         </WrapperVertical>
