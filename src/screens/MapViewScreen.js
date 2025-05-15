@@ -8,14 +8,8 @@ import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
 
 export const MapViewScreen = ({ navigation, route }) => {
-  const {
-    geometryTourData,
-    isAugmentedReality,
-    isMaximizeButtonVisible,
-    locations,
-    onMarkerPress,
-    showsUserLocation
-  } = route?.params ?? {};
+  const { geometryTourData, isAugmentedReality, locations, onMarkerPress, showsUserLocation } =
+    route?.params ?? {};
 
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
@@ -38,7 +32,6 @@ export const MapViewScreen = ({ navigation, route }) => {
       <MapLibre
         {...{
           geometryTourData,
-          isMaximizeButtonVisible,
           locations,
           mapStyle: styles.map,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,

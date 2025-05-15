@@ -145,11 +145,9 @@ export const AugmentedReality = ({
               augmentedRealityData: { data },
               geometryTourData,
               isAugmentedReality: true,
-              isMaximizeButtonVisible: false,
               locations: mapMarkers
             })
           }
-          isMaximizeButtonVisible
         />
       )}
 

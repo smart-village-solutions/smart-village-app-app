@@ -58,19 +58,31 @@ type Props = {
   clusterDistance?: number;
   currentPosition?: LocationObject;
   geometryTourData?: LatLng[];
-  isLocationSelectable?: boolean;
+  interactivity?: {
+    pitchEnabled: boolean;
+    rotateEnabled: boolean;
+    scrollEnabled: boolean;
+    zoomEnabled: boolean;
+  };
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations: MapMarker[];
   mapCenterPosition?: LocationObjectCoords;
   mapStyle?: StyleProp<ViewStyle>;
   minZoom?: number;
-  onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
+  onMapPress?: ({
+    geometry: { coordinates }
+  }: {
+    geometry: {
+      coordinates: number[];
+    };
+  }) => Promise<{ isLocationSelectable?: boolean }>;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
-  onMyLocationButtonPress?: () => void;
+  onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
+  setPinEnabled?: boolean;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   updatedRegion?: Region;
@@ -81,7 +93,6 @@ export const MapLibre = ({
   calloutTextEnabled = false,
   clusterDistance,
   geometryTourData,
-  isLocationSelectable,
   isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
   locations,
@@ -94,6 +105,7 @@ export const MapLibre = ({
   onMyLocationButtonPress,
   selectedMarker = '',
   selectedPosition,
+  setPinEnabled,
   style,
   ...otherProps
 }: Props) => {
@@ -116,7 +128,6 @@ export const MapLibre = ({
   const { locationSettings = {} } = useLocationSettings();
   const showsUserLocation =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
-  const { alternativePosition, defaultAlternativePosition } = locationSettings;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [mapReady, setMapReady] = useState(false);
@@ -174,10 +185,12 @@ export const MapLibre = ({
 
     const { ne, sw } = getBounds(locations);
 
-    cameraRef.current?.fitBounds(ne, sw, 50, 1000);
-  }, [mapReady, loading, cameraRef.current, isMultipleMarkersMap, locations]);
+    !selectedMarker && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+  }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
+    if (!setPinEnabled) return;
+
     if (!selectedPosition) {
       setNewPins([]);
       return;
@@ -185,35 +198,53 @@ export const MapLibre = ({
 
     const { latitude, longitude } = selectedPosition;
     const newPin = point([longitude, latitude], {
-      iconName: MAP.DEFAULT_PIN,
-      id: `${Date.now()}`
+      iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+      id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
   }, []);
 
-  const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
-
-  const handleMapPressToSetNewPin = (event: any) => {
+  const handleMapPressToSetNewPin = async (event: {
+    geometry: {
+      coordinates: [number, number];
+    };
+  }) => {
     const { geometry } = event;
     if (!geometry) return;
 
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
 
-    if (isLocationSelectable === undefined || isLocationSelectable) {
-      const newPin = point(coordinates, {
-        iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
-        id: `new-pin-${Date.now()}`
-      });
-      setNewPins([newPin]);
-    } else {
+    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
+
+    if (!isLocationSelectable) {
       setNewPins([]);
+      return;
+    }
+
+    const newPin = point(coordinates, {
+      iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+      id: `new-pin-${Date.now()}`
+    });
+    setNewPins([newPin]);
+  };
+
+  const handleMapPress = (event: any) => {
+    if (setPinEnabled) {
+      handleMapPressToSetNewPin(event);
+    } else {
+      onMapPress?.(event);
     }
   };
 
-  const handleOnPress = async (event: any) => {
+  const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
+
+  const handleSourcePress = async (event: any) => {
     const feature = event.features[0];
-    if (!feature) return;
+    if (!feature) {
+      onMapPress?.(event);
+      return;
+    }
 
     if (feature.properties?.cluster) {
       const currentZoomLevel = await mapRef.current?.getZoom();
@@ -244,11 +275,10 @@ export const MapLibre = ({
         compassEnabled={false}
         mapStyle="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
         ref={mapRef}
-        rotateEnabled={false}
         style={[styles.map, mapStyle]}
-        zoomEnabled
-        onPress={handleMapPressToSetNewPin}
         onDidFinishLoadingMap={() => setMapReady(true)}
+        onPress={handleMapPress}
+        {...otherProps.interactivity}
       >
         <Camera
           centerCoordinate={centerCoordinate}
@@ -276,7 +306,7 @@ export const MapLibre = ({
               point([location.position.longitude, location.position.latitude], { ...location })
             )
           )}
-          onPress={handleOnPress}
+          onPress={handleSourcePress}
           cluster
           clusterRadius={50}
           clusterMaxZoomLevel={clusterMaxZoom}

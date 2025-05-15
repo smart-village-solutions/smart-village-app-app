@@ -122,7 +122,7 @@ export const SueReportLocation = ({
   const [address, setAddress] = useState(
     {} as { street: string; houseNumber: string; postalCode: string; city: string }
   );
-  const [isLocationSelectable, setIsLocationSelectable] = useState<boolean>(false);
+  const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
   const { position } = usePosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
@@ -214,23 +214,19 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const onMapPress = async ({
-    geometry
-  }: {
-    geometry: { coordinates: Location.LocationObjectCoords };
-  }) => {
+  const onMapPress = async ({ geometry }: { geometry: { coordinates: number[] } }) => {
     const coordinate = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
     setSelectedPosition(coordinate);
 
     try {
-      setIsLocationSelectable(true);
       await handleGeocode(coordinate);
     } catch (error) {
-      setIsLocationSelectable(false);
       setSelectedPosition(undefined);
       Alert.alert(texts.sue.report.alerts.hint, error?.message);
-      return { error: error?.message };
+      return { error: error?.message, isLocationSelectable: false };
     }
+
+    return { isLocationSelectable: true };
   };
 
   const onMyLocationButtonPress = async ({
@@ -257,12 +253,11 @@ export const SueReportLocation = ({
               setUpdateRegionFromImage(false);
 
               try {
-                setIsLocationSelectable(true);
                 await handleGeocode(currentPosition.coords);
               } catch (error) {
-                setIsLocationSelectable(false);
                 setSelectedPosition(undefined);
                 Alert.alert(texts.sue.report.alerts.hint, error.message);
+                return { error: error.message, isLocationSelectable: false };
               }
             }
           }
@@ -274,15 +269,16 @@ export const SueReportLocation = ({
         setUpdateRegionFromImage(false);
 
         try {
-          setIsLocationSelectable(true);
           await handleGeocode(currentPosition.coords);
         } catch (error) {
-          setIsLocationSelectable(false);
           setSelectedPosition(undefined);
           Alert.alert(texts.sue.report.alerts.hint, error.message);
+          return { error: error.message, isLocationSelectable: false };
         }
       }
     }
+
+    return { isLocationSelectable: true };
   };
 
   return (
@@ -291,14 +287,13 @@ export const SueReportLocation = ({
         <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
-          isLocationSelectable={isLocationSelectable}
           isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
           mapStyle={styles.map}
           onMapPress={onMapPress}
+          onMarkerPress={setSelectedPointOfInterest}
           onMyLocationButtonPress={onMyLocationButtonPress}
-          selectedPosition={selectedPosition}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.SueReportMapView, {
               calloutTextEnabled: true,
@@ -313,6 +308,9 @@ export const SueReportLocation = ({
               showsUserLocation: true
             })
           }
+          selectedMarker={selectedPointOfInterest}
+          selectedPosition={selectedPosition}
+          setPinEnabled
         />
       </WrapperHorizontal>
 

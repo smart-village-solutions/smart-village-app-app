@@ -213,8 +213,16 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
                 position: { latitude, longitude }
               }
             ]}
-            selectedMarker={id}
             mapStyle={styles.mapStyle}
+            interactivity={{
+              pitchEnabled: false,
+              rotateEnabled: false,
+              scrollEnabled: false,
+              zoomEnabled: false
+            }}
+            isMultipleMarkersMap={false}
+            isMyLocationButtonVisible={false}
+            selectedMarker={id}
           />
         </WrapperVertical>
       )}

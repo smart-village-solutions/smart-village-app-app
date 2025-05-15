@@ -140,7 +140,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             <BoldText>{texts.sue.location}</BoldText>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
               <Map
-                isMaximizeButtonVisible
                 locations={[{ position: { latitude, longitude } }]}
                 mapStyle={styles.map}
                 onMaximizeButtonPress={() =>
