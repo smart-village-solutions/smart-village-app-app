@@ -1196,7 +1196,7 @@ export const texts = {
       back: 'Zurück',
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
-      descriptionPlaceholder: 'Hier eingeben',
+      descriptionPlaceholder: 'Weitere Hinweise',
       email: 'E-Mail-Adresse',
       emailHint:
         'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
@@ -1223,6 +1223,7 @@ export const texts = {
       termsOfService: 'Datenschutzbestimmung',
       termsOfUse: 'Nutzungsbedingungen',
       title: 'Kurze Beschreibung',
+      titlePlaceholder: 'Hier eingeben',
       postalCode: 'Postleitzahl'
     },
     result: 'Ergebnis',
