@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import { MapLibre } from '../../components';
 
-export const SueMapViewScreen = ({ route }: { route: any }) => {
+export const SueMapScreen = ({ route }: { route: any }) => {
   const {
     calloutTextEnabled,
     geometryTourData,

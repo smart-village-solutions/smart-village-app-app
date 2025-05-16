@@ -141,7 +141,7 @@ export const AugmentedReality = ({
             })
           }
           onMaximizeButtonPress={() =>
-            navigation.navigate(ScreenName.MapView, {
+            navigation.navigate(ScreenName.Map, {
               augmentedRealityData: { data },
               geometryTourData,
               isAugmentedReality: true,

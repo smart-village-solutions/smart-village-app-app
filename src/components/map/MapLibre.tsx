@@ -98,7 +98,7 @@ export const MapLibre = ({
   locations,
   mapCenterPosition,
   mapStyle,
-  minZoom,
+  minZoom = 5,
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
@@ -116,6 +116,7 @@ export const MapLibre = ({
     clusterCircleColor,
     clusterMaxZoom,
     clusterProperties,
+    clusterTextColor,
     layerStyles = {},
     loading,
     markerImages,
@@ -133,6 +134,7 @@ export const MapLibre = ({
   const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
+  const [isFullscreenMap, setIsFullscreenMap] = useState(false);
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -179,7 +181,8 @@ export const MapLibre = ({
       loading ||
       cameraRef.current === null ||
       !isMultipleMarkersMap ||
-      locations.length < 2
+      !locations?.length ||
+      locations?.length < 2
     ) {
       return;
     }
@@ -306,9 +309,13 @@ export const MapLibre = ({
           id="pois"
           ref={shapeSourceRef}
           shape={featureCollection(
-            locations?.map((location) =>
-              point([location.position.longitude, location.position.latitude], { ...location })
-            )
+            locations
+              ?.filter(
+                (location) => !!location?.position?.latitude && !!location?.position?.longitude
+              )
+              .map((location) =>
+                point([location.position.longitude, location.position.latitude], { ...location })
+              )
           )}
           onPress={handleSourcePress}
           cluster
@@ -347,8 +354,8 @@ export const MapLibre = ({
             filter={['has', 'point_count']}
             style={{
               ...layerStyles.clusteredCircle,
-              circlePitchAlignment: 'map',
-              circleColor: clusterCircleColor
+              circleColor: clusterCircleColor,
+              circlePitchAlignment: 'map'
             }}
           />
 
@@ -356,6 +363,8 @@ export const MapLibre = ({
             id="cluster-count"
             style={{
               ...layerStyles.clusterCount,
+              textColor: clusterTextColor,
+              textFont: ['Noto Sans Bold', 'Open Sans Bold'],
               textField: ['format', ['concat', ['get', 'point_count']]],
               textPitchAlignment: 'map'
             }}
@@ -404,29 +413,36 @@ export const MapLibre = ({
       </MapView>
 
       {isMyLocationButtonVisible && showsUserLocation && (
-        <View style={[styles.buttonsContainer, styles.myLocationButtonContainer]}>
-          <TouchableOpacity
-            accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
-            onPress={() => {
-              setFollowsUserLocation(true);
-              onMyLocationButtonPress?.({});
-              setTimeout(() => setFollowsUserLocation(false), 5000);
-            }}
-            style={styles.buttons}
-          >
+        <TouchableOpacity
+          accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
+          onPress={() => {
+            setFollowsUserLocation(true);
+            onMyLocationButtonPress?.({});
+            setTimeout(() => setFollowsUserLocation(false), 5000);
+          }}
+          style={[styles.buttonsContainer, styles.myLocationButtonContainer]}
+        >
+          <View style={styles.buttons}>
             <Icon.GPS size={normalize(18)} />
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       )}
 
       {!!onMaximizeButtonPress && (
         <TouchableOpacity
           accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          onPress={() => {
+            setIsFullscreenMap((prev) => !prev);
+            onMaximizeButtonPress();
+          }}
           style={[styles.buttonsContainer, styles.maximizeButtonContainer]}
-          onPress={onMaximizeButtonPress}
         >
           <View style={styles.buttons}>
-            <Icon.ExpandMap size={normalize(18)} />
+            {isFullscreenMap ? (
+              <Icon.CondenseMap size={normalize(18)} />
+            ) : (
+              <Icon.ExpandMap size={normalize(18)} />
+            )}
           </View>
         </TouchableOpacity>
       )}
@@ -449,6 +465,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     right: normalize(15),
+    shadowColor: colors.shadowRgba,
+    shadowOffset: {
+      width: 0,
+      height: 6
+    },
+    shadowOpacity: 1,
+    shadowRadius: 4,
     width: normalize(48),
     zIndex: 10
   },

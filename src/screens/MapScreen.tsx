@@ -1,83 +1,118 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { useQuery } from 'react-query';
 
-import { LoadingSpinner, MapLibre } from '../components';
-import { consts } from '../config';
+import { LoadingSpinner, MapLibre, TextListItem, Wrapper } from '../components';
+import { colors, normalize } from '../config';
+import { navigationToArtworksDetailScreen } from '../helpers';
 import { useMapSettings } from '../hooks';
-import { getQuery, QUERY_TYPES } from '../queries';
-import { ReactQueryClient } from '../ReactQueryClient';
-import { ScreenName } from '../types';
-
-const { MAP } = consts;
+import { SettingsContext } from '../SettingsProvider';
 
 export const MapScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
-  const { locations, onMarkerPress, showsUserLocation } = route?.params ?? {};
+  const { geometryTourData, isAugmentedReality, locations, onMarkerPress, showsUserLocation } =
+    route?.params ?? {};
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
-
   const { data: mapSettings, loading } = useMapSettings();
 
-  const { data, isLoading } = useQuery(
-    [QUERY_TYPES.POINTS_OF_INTEREST, mapSettings?.queryVariables],
-    async () => {
-      const client = await ReactQueryClient();
+  /* the next lines has been added for augmented reality feature */
+  const { data } = route?.params?.augmentedRealityData ?? [];
 
-      return await client.request(
-        getQuery(QUERY_TYPES.POINTS_OF_INTEREST),
-        mapSettings?.queryVariables
-      );
-    },
-    {
-      enabled: !loading && !!mapSettings?.queryVariables
+  const [modelId, setModelId] = useState();
+  const [modelData, setModelData] = useState();
+
+  useEffect(() => {
+    if (isAugmentedReality) {
+      navigationToArtworksDetailScreen({ data, isShow: true, modelId, setModelData });
     }
-  );
+  }, [modelId]);
+  /* end of augmented reality feature */
 
-  const pois = data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.map((poi) => ({
-    [poi.category.iconName || MAP.DEFAULT_PIN]: 1,
-    iconName: poi.category.iconName || MAP.DEFAULT_PIN,
-    id: poi.id,
-    position: {
-      latitude: poi.addresses?.[0]?.geoLocation?.latitude,
-      longitude: poi.addresses?.[0]?.geoLocation?.longitude
-    },
-    serviceName: poi.name,
-    title: poi.name
-  }));
-
-  const navigation = useNavigation();
-  if (isLoading || loading) {
+  if (loading) {
     return <LoadingSpinner loading />;
   }
 
   return (
-    <MapLibre
-      {...{
-        interactivity: {
-          pitchEnabled: true,
-          rotateEnabled: false,
-          scrollEnabled: true,
-          zoomEnabled: true
-        },
-        locations: locations || pois,
-        mapStyle: styles.map,
-        onMarkerPress: onMarkerPress || setSelectedPointOfInterest,
-        onMaximizeButtonPress: () => {
-          navigation.navigate(ScreenName.MapView, {
-            locations: locations || pois
-          });
-        },
-        selectedMarker: selectedPointOfInterest,
-        showsUserLocation
-      }}
-    />
+    <>
+      <MapLibre
+        {...{
+          geometryTourData,
+          interactivity: {
+            pitchEnabled: true,
+            rotateEnabled: false,
+            scrollEnabled: true,
+            zoomEnabled: true
+          },
+          locations,
+          mapStyle: styles.map,
+          onMarkerPress: isAugmentedReality
+            ? setModelId
+            : onMarkerPress || setSelectedPointOfInterest,
+          selectedMarker: selectedPointOfInterest,
+          showsUserLocation
+        }}
+      />
+
+      {!!isAugmentedReality && !!modelData && (
+        <Wrapper
+          small
+          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
+        >
+          <TextListItem
+            item={{
+              ...modelData,
+              bottomDivider: false,
+              subtitle: modelData.payload.locationInfo,
+              onPress: () =>
+                navigationToArtworksDetailScreen({
+                  data,
+                  isNavigation: true,
+                  modelId,
+                  navigation
+                })
+            }}
+            navigation={navigation}
+          />
+        </Wrapper>
+      )}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   map: {
-    height: '100%',
-    width: '100%'
+    width: '100%',
+    height: '100%'
+  },
+  listItemContainer: {
+    backgroundColor: colors.surface,
+    borderRadius: normalize(12),
+    left: '4%',
+    position: 'absolute',
+    right: '4%',
+    width: '92%',
+    // shadow:
+    elevation: 2,
+    shadowColor: colors.shadowRgba,
+    shadowOffset: {
+      height: 5,
+      width: 0
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3
   }
 });
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
+  return StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '8%' : '4%'
+    }
+  });
+};
+/* eslint-enable react-native/no-unused-styles */

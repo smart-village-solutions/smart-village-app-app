@@ -1,5 +1,6 @@
 const ONCE_A_DAY = 'ONCE_A_DAY';
 const ONCE_PER_HOUR = 'ONCE_PER_HOUR';
+const ONCE_PER_MINUTE = 'ONCE_PER_MINUTE';
 const NEVER = 'NEVER';
 
 export const consts = {
@@ -101,6 +102,7 @@ export const consts = {
     // refresh intervals per time:
     ONCE_A_DAY,
     ONCE_PER_HOUR,
+    ONCE_PER_MINUTE,
     NEVER,
     // refresh intervals per type:
     BB_BUS: ONCE_A_DAY,

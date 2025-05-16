@@ -7,7 +7,7 @@ const { MAP, REFRESH_INTERVALS } = consts;
 export const useMapSettings = () => {
   const { data, loading } = useStaticContent({
     name: 'mapSettings',
-    refreshInterval: REFRESH_INTERVALS.ONCE_PER_HOUR,
+    refreshInterval: REFRESH_INTERVALS.ONCE_PER_MINUTE,
     refreshTimeKey: 'map-settings',
     type: 'json'
   });
@@ -73,13 +73,48 @@ const createClusterProperties = (types: (string | undefined)[]) =>
     ]) ?? []
   );
 
+/**
+ * Generates a dynamic `textColor` expression for a cluster layer.
+ *
+ * - If two or more of the defined `types` have values >= 1 in a cluster, it uses `clusterSuperiorTextColor`.
+ * - Otherwise, it gets the color from `clusterCountTextColor`.
+ * - Falls back to `clusterFallbackTextColor` if none match.
+ *
+ * This leverages Mapbox expression syntax:
+ * https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/
+ */
+const createTextColorExpression = (
+  types: (string | undefined)[],
+  clusterSuperiorTextColor: string,
+  clusterCountTextColor: string,
+  clusterFallbackTextColor: string
+) => [
+  'case',
+  [
+    '>=',
+    [
+      '+',
+      ...(types?.map((type) => ['case', ['>=', ['coalesce', ['get', type], 0], 1], 1, 0]) ?? [])
+    ],
+    2
+  ],
+  clusterSuperiorTextColor,
+  ...((types || [])?.flatMap((type) => [
+    ['>=', ['coalesce', ['get', type], 0], 1],
+    clusterCountTextColor
+  ]) ?? []),
+  clusterFallbackTextColor
+];
+
 export const useMapFeatureConfig = (locations: MapMarker[]) => {
   const types = locations?.map((location) => location.iconName || MAP.DEFAULT_PIN) || [];
   const uniqueTypes = [...new Set(types)];
   const { data, loading } = useMapSettings();
   const clusterFallbackColor = data?.clusterFallbackColor;
+  const clusterFallbackTextColor = data?.clusterFallbackTextColor;
   const clusterMaxZoom = data?.clusterMaxZoom;
   const clusterSuperiorColor = data?.clusterSuperiorColor;
+  const clusterSuperiorTextColor = data?.clusterSuperiorTextColor;
   const layerStyles = data?.layerStyles;
   const markerImages = data?.markerImages;
   const zoomLevel = data?.zoomLevel;
@@ -93,6 +128,12 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
     ),
     clusterMaxZoom,
     clusterProperties: createClusterProperties(uniqueTypes),
+    clusterTextColor: createTextColorExpression(
+      uniqueTypes,
+      clusterSuperiorTextColor,
+      layerStyles?.clusterCount?.textColor,
+      clusterFallbackTextColor
+    ),
     layerStyles,
     loading,
     markerImages,
