@@ -287,44 +287,51 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
 };
 
 export const useTriggerExport = ({ streetData, wasteTexts }) => {
-  const triggerExport = useCallback(() => {
-    const { street, zip, city } = getLocationData(streetData);
+  const triggerExport = useCallback(
+    ({ selectedTypes }: { selectedTypes: string[] }) => {
+      const { street, zip, city } = getLocationData(streetData);
 
-    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
+      const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
 
-    let params = `street=${encodeURIComponent(street)}`;
+      let params = `street=${encodeURIComponent(street)}`;
 
-    if (zip) {
-      params += `&zip=${encodeURIComponent(zip)}`;
-    }
+      if (zip) {
+        params += `&zip=${encodeURIComponent(zip)}`;
+      }
 
-    if (city) {
-      params += `&city=${encodeURIComponent(city)}`;
-    }
+      if (city) {
+        params += `&city=${encodeURIComponent(city)}`;
+      }
 
-    const combinedUrl = baseUrl + params;
+      if (selectedTypes?.length) {
+        params += `&waste_types=${selectedTypes.join(',')}`;
+      }
 
-    if (device.platform === 'android') {
-      return Alert.alert(
-        wasteTexts.exportAlertTitle,
-        wasteTexts.exportAlertBody,
-        [
+      const combinedUrl = baseUrl + params;
+
+      if (device.platform === 'android') {
+        return Alert.alert(
+          wasteTexts.exportAlertTitle,
+          wasteTexts.exportAlertBody,
+          [
+            {
+              onPress: () => {
+                openLink(combinedUrl);
+              }
+            }
+          ],
           {
-            onPress: () => {
+            onDismiss: () => {
               openLink(combinedUrl);
             }
           }
-        ],
-        {
-          onDismiss: () => {
-            openLink(combinedUrl);
-          }
-        }
-      );
-    } else {
-      openLink(combinedUrl);
-    }
-  }, [streetData]);
+        );
+      } else {
+        openLink(combinedUrl);
+      }
+    },
+    [streetData]
+  );
 
   return {
     triggerExport
