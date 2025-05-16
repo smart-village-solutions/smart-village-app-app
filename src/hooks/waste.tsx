@@ -6,21 +6,21 @@ import { Alert, Keyboard, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { RegularText, Wrapper } from '../components';
+import { device, namespace, secrets, staticRestSuffix } from '../config';
 import { graphqlFetchPolicy, openLink } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { getLocationData } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
-import { secrets, namespace, staticRestSuffix, device } from '../config';
 
 import { useStaticContent } from './staticContent';
 import { useRefreshTime } from './TimeHooks';
 
 export const useWasteAddresses = ({
-  minSearchLength,
+  minSearchLength = 0,
   search = ''
 }: {
-  minSearchLength: number;
+  minSearchLength?: number;
   search?: string;
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
