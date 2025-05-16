@@ -205,12 +205,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
           <MapLibre
-            interactivity={{
-              pitchEnabled: true,
-              rotateEnabled: false,
-              scrollEnabled: true,
-              zoomEnabled: true
-            }}
             isMultipleMarkersMap={false}
             isMyLocationButtonVisible={false}
             locations={[

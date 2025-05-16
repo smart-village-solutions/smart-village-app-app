@@ -27,7 +27,6 @@ import { RegularText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
 import { MapLibre } from '../../map';
-import { getLocationMarker } from '../../settings';
 
 const { a11yLabel, INPUT_KEYS } = consts;
 
@@ -197,46 +196,35 @@ export const SueReportLocation = ({
     geocode();
   }, [address]);
 
-  const handleGeocode = async (position: Location.LocationObjectCoords) =>
-    await reverseGeocode({
-      areaServiceData,
-      errorMessage,
-      position,
-      setValue
-    });
-
   if (!systemPermission) {
     return <LoadingSpinner loading />;
   }
 
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const locations = mapMarkers as MapMarker[];
-  let mapCenterPosition = {} as Location.LocationObjectCoords;
-
-  if (alternativePosition) {
-    mapCenterPosition = getLocationMarker(alternativePosition).position;
-  } else if (defaultAlternativePosition) {
-    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
-  }
 
   if (isLoading) {
     return <LoadingSpinner loading />;
   }
 
-  const onMapPress = async ({ geometry }: { geometry: { coordinates: number[] } }) => {
-    const coordinate = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
-    setSelectedPosition(coordinate);
+  const onMapPress = ({ geometry }: { geometry: { coordinates: number[] } }) => {
+    const position = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
+    setSelectedPosition(position);
     setUpdateRegionFromImage(false);
 
-    try {
-      await handleGeocode(coordinate);
-    } catch (error) {
-      setSelectedPosition(undefined);
-      Alert.alert(texts.sue.report.alerts.hint, error?.message);
-      return { error: error?.message, isLocationSelectable: false };
-    }
-
-    return { isLocationSelectable: true };
+    reverseGeocode({
+      areaServiceData,
+      errorMessage,
+      position,
+      setValue
+    })
+      .then(() => {
+        return { isLocationSelectable: true };
+      })
+      .catch((error) => {
+        setSelectedPosition(undefined);
+        Alert.alert(texts.sue.report.alerts.hint, error?.message);
+        return { isLocationSelectable: false };
+      });
   };
 
   const onMyLocationButtonPress = async ({
@@ -283,12 +271,6 @@ export const SueReportLocation = ({
         <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
-          interactivity={{
-            pitchEnabled: true,
-            rotateEnabled: false,
-            scrollEnabled: true,
-            zoomEnabled: true
-          }}
           isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}

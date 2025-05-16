@@ -76,7 +76,7 @@ type Props = {
     geometry: {
       coordinates: number[];
     };
-  }) => Promise<{ isLocationSelectable?: boolean }>;
+  }) => { isLocationSelectable: boolean };
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
   onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
@@ -93,6 +93,12 @@ export const MapLibre = ({
   calloutTextEnabled = false,
   clusterDistance,
   geometryTourData,
+  interactivity = {
+    pitchEnabled: true,
+    rotateEnabled: false,
+    scrollEnabled: true,
+    zoomEnabled: true
+  },
   isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
   locations,
@@ -114,6 +120,7 @@ export const MapLibre = ({
   const { locationService = {} } = settings;
   const {
     clusterCircleColor,
+    clusterRadius = 50,
     clusterMaxZoom,
     clusterProperties,
     clusterTextColor,
@@ -221,7 +228,7 @@ export const MapLibre = ({
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
 
-    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
+    const { isLocationSelectable = false } = onMapPress?.({ geometry }) ?? {};
 
     if (!isLocationSelectable) {
       setNewPins([]);
@@ -285,7 +292,7 @@ export const MapLibre = ({
         style={[styles.map, mapStyle]}
         onDidFinishLoadingMap={() => setMapReady(true)}
         onPress={handleMapPress}
-        {...otherProps.interactivity}
+        {...interactivity}
       >
         <Camera
           centerCoordinate={centerCoordinate}
@@ -319,7 +326,7 @@ export const MapLibre = ({
           )}
           onPress={handleSourcePress}
           cluster
-          clusterRadius={50}
+          clusterRadius={clusterDistance || clusterRadius}
           clusterMaxZoomLevel={clusterMaxZoom}
           clusterProperties={clusterProperties}
         >

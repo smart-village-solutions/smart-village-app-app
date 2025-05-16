@@ -193,12 +193,6 @@ export const LocationOverview = ({
       {!!mapMarkers?.length && (
         <MapLibre
           currentPosition={currentPosition}
-          interactivity={{
-            pitchEnabled: true,
-            rotateEnabled: false,
-            scrollEnabled: true,
-            zoomEnabled: true
-          }}
           isMultipleMarkersMap
           locations={mapMarkers}
           mapCenterPosition={mapCenterPosition}

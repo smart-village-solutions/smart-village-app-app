@@ -143,12 +143,6 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
       <MapLibre
         clusterDistance={geoMap?.clusterDistance}
         isMultipleMarkersMap
-        interactivity={{
-          pitchEnabled: true,
-          rotateEnabled: false,
-          scrollEnabled: true,
-          zoomEnabled: true
-        }}
         isMyLocationButtonVisible={!!locationService}
         locations={mapMarkers}
         mapStyle={styles.map}

@@ -149,12 +149,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             <BoldText>{texts.sue.location}</BoldText>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
               <MapLibre
-                interactivity={{
-                  pitchEnabled: true,
-                  rotateEnabled: false,
-                  scrollEnabled: true,
-                  zoomEnabled: true
-                }}
                 isMyLocationButtonVisible={false}
                 locations={[
                   {

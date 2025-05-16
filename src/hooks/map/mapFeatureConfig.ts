@@ -112,6 +112,7 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
   const { data, loading } = useMapSettings();
   const clusterFallbackColor = data?.clusterFallbackColor;
   const clusterFallbackTextColor = data?.clusterFallbackTextColor;
+  const clusterRadius = data?.clusterRadius;
   const clusterMaxZoom = data?.clusterMaxZoom;
   const clusterSuperiorColor = data?.clusterSuperiorColor;
   const clusterSuperiorTextColor = data?.clusterSuperiorTextColor;
@@ -126,6 +127,7 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
       clusterSuperiorColor,
       clusterFallbackColor
     ),
+    clusterRadius,
     clusterMaxZoom,
     clusterProperties: createClusterProperties(uniqueTypes),
     clusterTextColor: createTextColorExpression(

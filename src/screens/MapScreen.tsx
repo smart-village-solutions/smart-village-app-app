@@ -40,12 +40,6 @@ export const MapScreen = () => {
       <MapLibre
         {...{
           geometryTourData,
-          interactivity: {
-            pitchEnabled: true,
-            rotateEnabled: false,
-            scrollEnabled: true,
-            zoomEnabled: true
-          },
           locations,
           mapStyle: styles.map,
           onMarkerPress: isAugmentedReality

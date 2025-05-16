@@ -1,19 +1,13 @@
 import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { texts } from '../../config';
-import {
-  useLastKnownPosition,
-  useLocationSettings,
-  usePosition,
-  useSystemPermission
-} from '../../hooks';
-import { MapMarker } from '../../types';
+import { device, normalize, texts } from '../../config';
+import { useLastKnownPosition, usePosition, useSystemPermission } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { Map } from '../map/Map';
-import { getLocationMarker } from '../settings';
+import { MapLibre } from '../map';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
@@ -30,7 +24,6 @@ export const DefectReportLocationForm = ({
   const [shouldGetPosition, setShouldGetPosition] = useState(false);
   const [showMap, setShowMap] = useState(false);
 
-  const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
   const { loading: loadingPosition, position } = usePosition(!shouldGetPosition);
   const { loading: loadingLastKnownPosition, position: lastKnownPosition } =
@@ -56,18 +49,6 @@ export const DefectReportLocationForm = ({
     return <LoadingSpinner loading />;
   }
 
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
-
-  let locations = [] as MapMarker[];
-
-  if (selectedPosition) {
-    locations = [{ iconName: 'ownLocation', position: selectedPosition }];
-  } else if (alternativePosition) {
-    locations = [getLocationMarker(alternativePosition)];
-  } else if (defaultAlternativePosition) {
-    locations = [getLocationMarker(defaultAlternativePosition)];
-  }
-
   return (
     <>
       {systemPermission.status !== Location.PermissionStatus.DENIED && (
@@ -75,15 +56,25 @@ export const DefectReportLocationForm = ({
           <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
         </Wrapper>
       )}
+
+      <MapLibre
+        locations={[]}
+        mapStyle={styles.map}
+        onMapPress={({ geometry }: { geometry: { coordinates: number[] } }) => {
+          const coordinate = {
+            latitude: geometry?.coordinates[1],
+            longitude: geometry?.coordinates[0]
+          };
+
+          setSelectedPosition(coordinate);
+
+          return { isLocationSelectable: true };
+        }}
+        selectedPosition={selectedPosition}
+        setPinEnabled
+        style={{ display: showMap ? 'flex' : 'none' }}
+      />
       <Collapsible collapsed={!showMap}>
-        <Map
-          locations={locations}
-          onMapPress={({ nativeEvent }) => {
-            setSelectedPosition({
-              ...nativeEvent.coordinate
-            });
-          }}
-        />
         <Wrapper>
           <Button
             title={texts.settingsContents.locationService.next}
@@ -121,3 +112,10 @@ export const DefectReportLocationForm = ({
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  map: {
+    height: normalize(300),
+    width: device.width - 2 * normalize(16)
+  }
+});
