@@ -35,6 +35,7 @@ export const Image = ({
   containerStyle,
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
+  placeholderStyle = styles.placeholderStyle,
   refreshInterval,
   resizeMode = 'cover',
   source: sourceProp,
@@ -120,7 +121,7 @@ export const Image = ({
         containerStyle={containerStyle}
         style={style}
         PlaceholderContent={PlaceholderContent}
-        placeholderStyle={styles.placeholderStyle}
+        placeholderStyle={placeholderStyle}
         accessible={!!sourceProp?.captionText}
         accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
           device.platform === 'ios' ? consts.a11yLabel.image : ''
@@ -177,6 +178,7 @@ Image.propTypes = {
   containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
+  placeholderStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   refreshInterval: PropTypes.number,
   resizeMode: PropTypes.string,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
