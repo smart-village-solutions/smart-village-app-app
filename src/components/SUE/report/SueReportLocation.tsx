@@ -209,15 +209,7 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const locations = mapMarkers as MapMarker[];
-  let mapCenterPosition = {} as Location.LocationObjectCoords;
-
-  if (alternativePosition) {
-    mapCenterPosition = getLocationMarker(alternativePosition).position;
-  } else if (defaultAlternativePosition) {
-    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
-  }
 
   if (isLoading) {
     return <LoadingSpinner loading />;

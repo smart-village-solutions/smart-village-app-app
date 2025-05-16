@@ -1,15 +1,15 @@
 import * as Location from 'expo-location';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { consts, normalize, texts } from '../../config';
+import { consts, device, normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
 import { useLocationSettings, useSystemPermission } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { Map } from '../map';
+import { Map, MapLibre } from '../map';
 import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -35,18 +35,32 @@ export const LocationSettings = () => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
 
+  const {
+    locationService = systemPermission?.status !== Location.PermissionStatus.DENIED,
+    alternativePosition,
+    defaultAlternativePosition
+  } = locationSettings || {};
+
   const [showMap, setShowMap] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState();
+
+  useEffect(() => {
+    if (alternativePosition) {
+      setSelectedPosition({
+        latitude: alternativePosition.coords.latitude,
+        longitude: alternativePosition.coords.longitude
+      });
+    } else if (defaultAlternativePosition) {
+      setSelectedPosition({
+        latitude: defaultAlternativePosition.coords.lat,
+        longitude: defaultAlternativePosition.coords.lng
+      });
+    }
+  }, [locationSettings]);
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
   }
-
-  const {
-    locationService = systemPermission.status !== Location.PermissionStatus.DENIED,
-    alternativePosition,
-    defaultAlternativePosition
-  } = locationSettings || {};
 
   const locationServiceSwitchData = {
     title: texts.settingsTitles.locationService,
@@ -98,14 +112,6 @@ export const LocationSettings = () => {
 
   let locations = [];
 
-  if (selectedPosition) {
-    locations = [{ iconName: 'ownLocation', position: selectedPosition }];
-  } else if (alternativePosition) {
-    locations = [getLocationMarker(alternativePosition)];
-  } else if (defaultAlternativePosition) {
-    locations = [getLocationMarker(defaultAlternativePosition)];
-  }
-
   return (
     <ScrollView>
       <WrapperHorizontal>
@@ -119,15 +125,24 @@ export const LocationSettings = () => {
             </RegularText>
           </Wrapper>
 
+          <MapLibre
+            locations={locations}
+            mapStyle={styles.map}
+            onMapPress={({ geometry }) => {
+              const coordinate = {
+                latitude: geometry?.coordinates[1],
+                longitude: geometry?.coordinates[0]
+              };
+
+              setSelectedPosition(coordinate);
+
+              return { isLocationSelectable: true };
+            }}
+            selectedPosition={selectedPosition}
+            setPinEnabled
+            style={{ display: showMap ? 'flex' : 'none' }}
+          />
           <Collapsible style={styles.collapsible} collapsed={!showMap}>
-            <Map
-              locations={locations}
-              onMapPress={({ nativeEvent }) => {
-                setSelectedPosition({
-                  ...nativeEvent.coordinate
-                });
-              }}
-            />
             <Wrapper>
               <Button
                 title={texts.settingsContents.locationService.save}
@@ -174,5 +189,9 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     marginBottom: normalize(21)
+  },
+  map: {
+    height: normalize(300),
+    width: device.width - 2 * normalize(16)
   }
 });
