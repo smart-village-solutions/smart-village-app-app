@@ -5079,13 +5079,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A component that renders a native blur view on iOS and falls back to a semi-transparent view on Android. A common usage of this is for navigation bars, tab bars, and modals.",
     "copyright": ""
   },
-  "expo-build-properties@0.13.2": {
+  "expo-build-properties@0.13.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-build-properties\n\n**`expo-build-properties`** is a [config plugin](https://docs.expo.dev/config-plugins/introduction/) to customize native build properties when using [`npx expo prebuild`](https://docs.expo.dev/workflow/prebuild/).\n\n## API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/build-properties/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/build-properties/)\n\n### Installation\n\n```\nnpx expo install expo-build-properties\n```\n\nAdd plugin to `app.json`. For example:\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\n      [\n        \"expo-build-properties\",\n        {\n          \"android\": {\n            \"compileSdkVersion\": 31,\n            \"targetSdkVersion\": 31,\n            \"buildToolsVersion\": \"31.0.0\"\n          },\n          \"ios\": {\n            \"deploymentTarget\": \"13.0\"\n          }\n        }\n      ]\n    ]\n  }\n}\n```\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide][https://github.com/expo/expo#contributing].",
     "name": "expo-build-properties",
-    "version": "0.13.2",
+    "version": "0.13.3",
     "description": "Config plugin to customize native build properties on prebuild",
     "copyright": ""
   },

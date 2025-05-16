@@ -288,9 +288,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-blur
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-blur/README.md
-- **[expo-build-properties@0.13.2](https://github.com/expo/expo)**
+- **[expo-build-properties@0.13.3](https://github.com/expo/expo)**
     - name: expo-build-properties
-    - version: 0.13.2
+    - version: 0.13.3
     - description: Config plugin to customize native build properties on prebuild
     - copyright: 
     - licenses: MIT
