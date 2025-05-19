@@ -211,7 +211,7 @@ export const SueReportLocation = ({
     setSelectedPosition(position);
     setUpdateRegionFromImage(false);
 
-    reverseGeocode({
+    return reverseGeocode({
       areaServiceData,
       errorMessage,
       position,

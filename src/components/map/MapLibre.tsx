@@ -243,7 +243,7 @@ export const MapLibre = ({
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
 
-    const { isLocationSelectable = false } = onMapPress?.({ geometry }) ?? {};
+    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
 
     if (!isLocationSelectable) {
       setNewPins([]);
