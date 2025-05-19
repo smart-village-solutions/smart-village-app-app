@@ -4,13 +4,18 @@ import { StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 import { device, normalize, texts } from '../../config';
-import { useLastKnownPosition, usePosition, useSystemPermission } from '../../hooks';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { MapLibre } from '../map';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { WrapperHorizontal, WrapperVertical } from '../Wrapper';
 
 export const DefectReportLocationForm = ({
   setIsLocationSelect,
@@ -21,10 +26,13 @@ export const DefectReportLocationForm = ({
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
 }) => {
+  const { locationSettings } = useLocationSettings();
+  const systemPermission = useSystemPermission();
+
+  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
+
   const [shouldGetPosition, setShouldGetPosition] = useState(false);
   const [showMap, setShowMap] = useState(false);
-
-  const systemPermission = useSystemPermission();
   const { loading: loadingPosition, position } = usePosition(!shouldGetPosition);
   const { loading: loadingLastKnownPosition, position: lastKnownPosition } =
     useLastKnownPosition(shouldGetPosition);
@@ -50,32 +58,34 @@ export const DefectReportLocationForm = ({
   }
 
   return (
-    <>
+    <WrapperHorizontal>
       {systemPermission.status !== Location.PermissionStatus.DENIED && (
-        <Wrapper>
+        <WrapperVertical>
           <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
-        </Wrapper>
+        </WrapperVertical>
       )}
 
-      <MapLibre
-        locations={[]}
-        mapStyle={styles.map}
-        onMapPress={({ geometry }: { geometry: { coordinates: number[] } }) => {
-          const coordinate = {
-            latitude: geometry?.coordinates[1],
-            longitude: geometry?.coordinates[0]
-          };
+      {!!showMap && (
+        <MapLibre
+          locations={[]}
+          mapCenterPosition={selectedPosition}
+          mapStyle={styles.map}
+          onMapPress={({ geometry }: { geometry: { coordinates: number[] } }) => {
+            const coordinate = {
+              latitude: geometry?.coordinates[1],
+              longitude: geometry?.coordinates[0]
+            };
 
-          setSelectedPosition(coordinate);
+            setSelectedPosition(coordinate);
 
-          return { isLocationSelectable: true };
-        }}
-        selectedPosition={selectedPosition}
-        setPinEnabled
-        style={{ display: showMap ? 'flex' : 'none' }}
-      />
-      <Collapsible collapsed={!showMap}>
-        <Wrapper>
+            return { isLocationSelectable: true };
+          }}
+          selectedPosition={selectedPosition}
+          setPinEnabled
+        />
+      )}
+      <Collapsible style={styles.collapsible} collapsed={!showMap}>
+        <WrapperVertical>
           <Button
             title={texts.settingsContents.locationService.next}
             onPress={() => {
@@ -97,23 +107,30 @@ export const DefectReportLocationForm = ({
               setSelectedPosition(undefined);
               setShowMap(false);
             }}
+            style={styles.containerStyle}
           >
             <RegularText primary center>
               {texts.settingsContents.locationService.abort}
             </RegularText>
           </Touchable>
-        </Wrapper>
+        </WrapperVertical>
       </Collapsible>
       <Collapsible collapsed={showMap}>
-        <Wrapper>
-          <Button onPress={() => setShowMap(true)} title={texts.defectReport.useMap} />
-        </Wrapper>
+        <WrapperVertical>
+          <Button title={texts.defectReport.useMap} onPress={() => setShowMap(true)} />
+        </WrapperVertical>
       </Collapsible>
-    </>
+    </WrapperHorizontal>
   );
 };
 
 const styles = StyleSheet.create({
+  collapsible: {
+    flex: 1
+  },
+  containerStyle: {
+    marginBottom: normalize(21)
+  },
   map: {
     height: normalize(300),
     width: device.width - 2 * normalize(16)

@@ -13,7 +13,7 @@ import { MapLibre } from '../map';
 import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { WrapperHorizontal, WrapperVertical } from '../Wrapper';
 
 export const LocationSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -133,7 +133,7 @@ export const LocationSettings = () => {
             />
           )}
           <Collapsible style={styles.collapsible} collapsed={!showMap}>
-            <Wrapper>
+            <WrapperVertical>
               <Button
                 title={texts.settingsContents.locationService.save}
                 onPress={() => {
@@ -156,15 +156,15 @@ export const LocationSettings = () => {
                   {texts.settingsContents.locationService.abort}
                 </RegularText>
               </Touchable>
-            </Wrapper>
+            </WrapperVertical>
           </Collapsible>
           <Collapsible collapsed={showMap}>
-            <Wrapper>
+            <WrapperVertical>
               <Button
                 title={texts.settingsContents.locationService.chooseAlternateLocationButton}
                 onPress={() => setShowMap(true)}
               />
-            </Wrapper>
+            </WrapperVertical>
           </Collapsible>
         </WrapperHorizontal>
       )}
