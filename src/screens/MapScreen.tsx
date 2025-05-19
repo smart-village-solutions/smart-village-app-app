@@ -16,7 +16,7 @@ export const MapScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
-  const { data: mapSettings, loading } = useMapSettings();
+  const { loading } = useMapSettings();
 
   /* the next lines has been added for augmented reality feature */
   const { data } = route?.params?.augmentedRealityData ?? [];
