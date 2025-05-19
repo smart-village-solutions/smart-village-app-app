@@ -209,8 +209,8 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             isMyLocationButtonVisible={false}
             locations={[
               {
-                [category.iconName || MAP.DEFAULT_PIN]: 1,
                 iconName: category.iconName || MAP.DEFAULT_PIN,
+                activeIconName: `${category?.iconName || MAP.DEFAULT_PIN}Active`,
                 id,
                 position: { latitude, longitude }
               }

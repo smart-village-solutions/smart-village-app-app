@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { consts, device, normalize, texts } from '../../config';
+import { device, normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
 import { useLocationSettings, useSystemPermission } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
@@ -14,18 +14,6 @@ import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
-
-const { MAP } = consts;
-
-export const getLocationMarker = (locationObject) => ({
-  [locationObject?.iconName || MAP.DEFAULT_PIN]: 1,
-  iconName: locationObject?.iconName || MAP.DEFAULT_PIN,
-  position: {
-    ...locationObject.coords,
-    latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
-    longitude: locationObject?.coords?.longitude || locationObject?.coords?.lng
-  }
-});
 
 export const LocationSettings = () => {
   const { globalSettings } = useContext(SettingsContext);

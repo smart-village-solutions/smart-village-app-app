@@ -376,11 +376,11 @@ export const Overviews = ({ navigation, route }) => {
         )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
+          currentPosition={currentPosition}
           navigation={navigation}
-          route={route}
           position={position}
           queryVariables={queryVariables}
-          currentPosition={currentPosition}
+          route={route}
         />
       ) : (
         <>

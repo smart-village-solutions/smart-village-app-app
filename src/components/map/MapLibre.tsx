@@ -142,6 +142,7 @@ export const MapLibre = ({
   const [mapReady, setMapReady] = useState(false);
   const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
+  const [isOwnLocation, setIsOwnLocation] = useState();
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -196,26 +197,40 @@ export const MapLibre = ({
 
     const { ne, sw } = getBounds(locations);
 
-    !selectedMarker && !isMarkerSelected && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+    !showsUserLocation &&
+      !selectedMarker &&
+      !isMarkerSelected &&
+      cameraRef.current?.fitBounds(ne, sw, 50, 1000);
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
-    if (!setPinEnabled) return;
+    const { latitude, longitude } = selectedPosition || {};
 
-    if (!selectedPosition) {
+    if (!latitude || !longitude) {
+      return;
+    }
+
+    setIsOwnLocation(
+      locationSettings?.alternativePosition?.coords?.latitude == latitude &&
+        locationSettings?.alternativePosition?.coords?.longitude == longitude
+    );
+  }, []);
+
+  useEffect(() => {
+    if (isOwnLocation === undefined || !selectedPosition) {
       setNewPins([]);
       return;
     }
 
     const { latitude, longitude } = selectedPosition;
     const newPin = point([longitude, latitude], {
-      iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : MAP.DEFAULT_PIN,
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
 
     cameraRef.current?.flyTo([longitude, latitude], 1500);
-  }, [selectedPosition]);
+  }, [isOwnLocation, selectedPosition, showsUserLocation]);
 
   const handleMapPressToSetNewPin = async (event: {
     geometry: {
@@ -236,7 +251,7 @@ export const MapLibre = ({
     }
 
     const newPin = point(coordinates, {
-      iconName: MAP.DEFAULT_PIN, // TODO: find a proper default icon for setting a pin
+      iconName: MAP.DEFAULT_PIN,
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
@@ -350,7 +365,7 @@ export const MapLibre = ({
               iconSize: [
                 'case',
                 ['==', ['get', 'id'], selectedMarker],
-                layerStyles.singleIcon.iconSize * 1.25,
+                layerStyles.singleIcon.iconSize * 1.2,
                 layerStyles.singleIcon.iconSize
               ]
             }}

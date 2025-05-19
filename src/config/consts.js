@@ -130,7 +130,8 @@ export const consts = {
   },
 
   MAP: {
-    DEFAULT_PIN: 'defaultPin'
+    DEFAULT_PIN: 'defaultPin',
+    OWN_LOCATION_PIN: 'ownLocationPin'
   },
 
   MEDIA_TYPES: {

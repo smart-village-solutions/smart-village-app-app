@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, colors, consts, device, normalize } from '../../config';
+import { Icon, colors, consts, device, normalize, texts } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
@@ -21,8 +21,9 @@ import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
-import { getLocationMarker } from '../settings';
+import { Wrapper } from '../Wrapper';
 
 import { ChipFilter } from './ChipFilter';
 import { MapLibre } from './MapLibre';
@@ -49,13 +50,18 @@ type Props = {
   route: RouteProp<Record<string, any>, string>;
 };
 
-// FIXME: with our current setup the data that we receive from a query is not typed
-// if we change that then we can fix this place
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapToMapMarkers = (
-  pointsOfInterest: any,
-  alternativePosition: any
-): MapMarker[] | undefined => {
+const getLocationMarker = (locationObject) => ({
+  [locationObject?.iconName || MAP.DEFAULT_PIN]: 1,
+  iconName: locationObject?.iconName || MAP.DEFAULT_PIN,
+  activeIconName: `${locationObject?.iconName || MAP.DEFAULT_PIN}Active`,
+  position: {
+    ...locationObject.coords,
+    latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
+    longitude: locationObject?.coords?.longitude || locationObject?.coords?.lng
+  }
+});
+
+const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
   const markers = pointsOfInterest
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ?.map((item: any) => {
@@ -65,8 +71,9 @@ const mapToMapMarkers = (
       if (!latitude || !longitude) return undefined;
 
       return {
-        [item.category.iconName || MAP.DEFAULT_PIN]: 1,
-        iconName: item.category.iconName || MAP.DEFAULT_PIN,
+        [item.category?.iconName || MAP.DEFAULT_PIN]: 1,
+        iconName: item.category?.iconName || MAP.DEFAULT_PIN,
+        activeIconName: `${item.category?.iconName || MAP.DEFAULT_PIN}Active`,
         id: item.id,
         position: {
           latitude,
@@ -74,12 +81,7 @@ const mapToMapMarkers = (
         }
       };
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .filter((item: any) => item !== undefined);
-
-  if (alternativePosition) {
-    markers.push(getLocationMarker(alternativePosition));
-  }
 
   return markers;
 };
@@ -102,7 +104,24 @@ export const LocationOverview = ({
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState();
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
+
+  const updateSelectedPosition = useCallback(() => {
+    if (alternativePosition) {
+      setSelectedPosition({
+        latitude: alternativePosition.coords.latitude,
+        longitude: alternativePosition.coords.longitude
+      });
+    } else if (defaultAlternativePosition) {
+      setSelectedPosition({
+        latitude: defaultAlternativePosition.coords.lat,
+        longitude: defaultAlternativePosition.coords.lng
+      });
+    }
+  }, [alternativePosition, defaultAlternativePosition]);
+
+  useEffect(() => updateSelectedPosition(), [updateSelectedPosition]);
 
   const {
     data: overviewData,
@@ -148,7 +167,17 @@ export const LocationOverview = ({
     return <LoadingSpinner loading />;
   }
 
-  const mapMarkers = mapToMapMarkers(pointsOfInterest, alternativePosition);
+  const mapMarkers = mapToMapMarkers(pointsOfInterest);
+
+  if (!mapMarkers?.length) {
+    return (
+      <Wrapper>
+        <RegularText placeholder small center>
+          {texts.map.noGeoLocations}
+        </RegularText>
+      </Wrapper>
+    );
+  }
 
   const item = detailsData
     ? parseListItemsFromQuery(
@@ -199,6 +228,7 @@ export const LocationOverview = ({
           mapStyle={styles.map}
           onMarkerPress={setSelectedPointOfInterest}
           selectedMarker={selectedPointOfInterest}
+          selectedPosition={selectedPosition}
         />
       )}
 
