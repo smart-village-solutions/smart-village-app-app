@@ -134,6 +134,7 @@ export const MapLibre = ({
     : zoomLevel.singleMarker;
 
   const { locationSettings = {} } = useLocationSettings();
+  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const showsUserLocation =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
@@ -205,16 +206,28 @@ export const MapLibre = ({
 
   useEffect(() => {
     const { latitude, longitude } = selectedPosition || {};
+    let alternativeCoords;
 
-    if (!latitude || !longitude) {
+    if (alternativePosition) {
+      alternativeCoords = {
+        latitude: alternativePosition.coords.latitude,
+        longitude: alternativePosition.coords.longitude
+      };
+    } else if (defaultAlternativePosition) {
+      alternativeCoords = {
+        latitude: defaultAlternativePosition.coords.lat,
+        longitude: defaultAlternativePosition.coords.lng
+      };
+    }
+
+    if (!latitude || !longitude || !alternativeCoords) {
       return;
     }
 
     setIsOwnLocation(
-      locationSettings?.alternativePosition?.coords?.latitude == latitude &&
-        locationSettings?.alternativePosition?.coords?.longitude == longitude
+      alternativeCoords.latitude == latitude && alternativeCoords.longitude == longitude
     );
-  }, []);
+  }, [alternativePosition, defaultAlternativePosition]);
 
   useEffect(() => {
     if (isOwnLocation === undefined || !selectedPosition) {
@@ -251,7 +264,7 @@ export const MapLibre = ({
     }
 
     const newPin = point(coordinates, {
-      iconName: MAP.DEFAULT_PIN,
+      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : MAP.DEFAULT_PIN,
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
