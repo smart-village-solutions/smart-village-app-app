@@ -17,7 +17,6 @@ import { featureCollection, point } from '@turf/helpers';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { LatLng, Region } from 'react-native-maps';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -59,7 +58,7 @@ type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
   currentPosition?: LocationObject;
-  geometryTourData?: LatLng[];
+  geometryTourData?: LocationObjectCoords[];
   interactivity?: {
     pitchEnabled: boolean;
     rotateEnabled: boolean;
@@ -87,7 +86,6 @@ type Props = {
   setPinEnabled?: boolean;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
-  updatedRegion?: Region;
 };
 
 /* eslint-disable complexity */

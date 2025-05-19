@@ -124,8 +124,6 @@
     "react-native-get-random-values": "~1.11.0",
     "react-native-gifted-chat": "^2.7.3",
     "react-native-keyboard-controller": "^1.16.4",
-    "react-native-map-clustering": "^3.4.2",
-    "react-native-maps": "1.18.0",
     "react-native-markdown-display": "^7.0.2",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-pdf": "^6.7.6",
