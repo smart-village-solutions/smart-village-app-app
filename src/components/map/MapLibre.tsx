@@ -12,12 +12,14 @@ import {
   UserLocationRenderMode,
   UserTrackingMode
 } from '@maplibre/maplibre-react-native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { featureCollection, point } from '@turf/helpers';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { LatLng, Region } from 'react-native-maps';
 import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { getBounds, truncateText } from '../../helpers';
@@ -147,6 +149,8 @@ export const MapLibre = ({
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
+  const { bottom: safeAreaBottom } = useSafeAreaInsets();
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   let initialRegion: LocationObjectCoords = {
     latitude: 51.1657,
@@ -198,10 +202,7 @@ export const MapLibre = ({
 
     const { ne, sw } = getBounds(locations);
 
-    !showsUserLocation &&
-      !selectedMarker &&
-      !isMarkerSelected &&
-      cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+    !selectedMarker && !isMarkerSelected && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
@@ -455,7 +456,11 @@ export const MapLibre = ({
             onMyLocationButtonPress?.({});
             setTimeout(() => setFollowsUserLocation(false), 5000);
           }}
-          style={[styles.buttonsContainer, styles.myLocationButtonContainer]}
+          style={[
+            styles.buttonsContainer,
+            styles.myLocationButtonContainer,
+            isFullscreenMap && { right: normalize(4) }
+          ]}
         >
           <View style={styles.buttons}>
             <Icon.GPS size={normalize(18)} />
@@ -470,7 +475,14 @@ export const MapLibre = ({
             setIsFullscreenMap((prev) => !prev);
             onMaximizeButtonPress();
           }}
-          style={[styles.buttonsContainer, styles.maximizeButtonContainer]}
+          style={[
+            styles.buttonsContainer,
+            styles.maximizeButtonContainer,
+            isFullscreenMap && {
+              bottom: normalize(15) + (safeAreaBottom ? 0 : bottomTabBarHeight),
+              right: normalize(4)
+            }
+          ]}
         >
           <View style={styles.buttons}>
             {isFullscreenMap ? (

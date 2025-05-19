@@ -13,7 +13,7 @@ import { MapLibre } from '../map';
 import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 
 export const LocationSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -106,12 +106,12 @@ export const LocationSettings = () => {
         <SettingsToggle item={locationServiceSwitchData} />
       </WrapperHorizontal>
       {!!showAlternativeLocationButton && (
-        <>
-          <Wrapper>
+        <WrapperHorizontal>
+          <WrapperVertical>
             <RegularText>
               {texts.settingsContents.locationService.alternativePositionHint}
             </RegularText>
-          </Wrapper>
+          </WrapperVertical>
 
           {!!showMap && (
             <MapLibre
@@ -166,7 +166,7 @@ export const LocationSettings = () => {
               />
             </Wrapper>
           </Collapsible>
-        </>
+        </WrapperHorizontal>
       )}
     </ScrollView>
   );
