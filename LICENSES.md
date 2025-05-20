@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 949 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 950 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 86 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 27 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 27 |
@@ -5458,6 +5458,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "expo-video",
     "version": "2.0.6",
     "description": "A cross-platform, performant video component for React Native and Expo with Web support",
+    "copyright": ""
+  },
+  "expo-web-browser@14.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/webbrowser/\">\n    <img\n      src=\"../../.github/resources/expo-web-browser.svg\"\n      alt=\"expo-web-browser\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/webbrowser/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/webbrowser/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/webbrowser/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-web-browser\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
+    "name": "expo-web-browser",
+    "version": "14.0.2",
+    "description": "Provides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.",
     "copyright": ""
   },
   "expo@52.0.46": {
