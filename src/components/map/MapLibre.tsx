@@ -213,13 +213,13 @@ export const MapLibre = ({
 
     if (alternativePosition) {
       alternativeCoords = {
-        latitude: alternativePosition.coords.latitude,
-        longitude: alternativePosition.coords.longitude
+        latitude: alternativePosition.coords?.latitude,
+        longitude: alternativePosition.coords?.longitude
       };
     } else if (defaultAlternativePosition) {
       alternativeCoords = {
-        latitude: defaultAlternativePosition.coords.lat,
-        longitude: defaultAlternativePosition.coords.lng
+        latitude: defaultAlternativePosition.coords?.lat,
+        longitude: defaultAlternativePosition.coords?.lng
       };
     }
 
@@ -239,6 +239,12 @@ export const MapLibre = ({
     }
 
     const { latitude, longitude } = selectedPosition;
+
+    if (!latitude || !longitude) {
+      setNewPins([]);
+      return;
+    }
+
     const newPin = point([longitude, latitude], {
       iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
       id: `new-pin-${Date.now()}`
@@ -318,7 +324,7 @@ export const MapLibre = ({
       <MapView
         attributionEnabled={false}
         compassEnabled={false}
-        mapStyle="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
+        // mapStyle="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
         ref={mapRef}
         style={[styles.map, mapStyle]}
         onDidFinishLoadingMap={() => setMapReady(true)}
@@ -454,16 +460,18 @@ export const MapLibre = ({
           />
         </ShapeSource>
 
-        <MarkerView
-          anchor={
-            layerStyles.singleIcon.iconAnchor == 'bottom'
-              ? { x: 0.5, y: selectedFeature ? 1.85 : 0.5 }
-              : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
-          }
-          coordinate={selectedFeature?.geometry?.coordinates}
-        >
-          <CustomCallout feature={selectedFeature} />
-        </MarkerView>
+        {!!selectedFeature && (
+          <MarkerView
+            anchor={
+              layerStyles.singleIcon.iconAnchor == 'bottom'
+                ? { x: 0.5, y: selectedFeature ? 1.85 : 0.5 }
+                : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
+            }
+            coordinate={selectedFeature?.geometry?.coordinates}
+          >
+            <CustomCallout feature={selectedFeature} />
+          </MarkerView>
+        )}
       </MapView>
 
       {isMyLocationButtonVisible && showsUserLocation && (
