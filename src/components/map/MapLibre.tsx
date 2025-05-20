@@ -84,6 +84,7 @@ type Props = {
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
   setPinEnabled?: boolean;
+  setOwnLocation?: boolean;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -112,6 +113,7 @@ export const MapLibre = ({
   selectedMarker = '',
   selectedPosition,
   setPinEnabled,
+  setOwnLocation,
   style,
   ...otherProps
 }: Props) => {
@@ -143,7 +145,7 @@ export const MapLibre = ({
   const [mapReady, setMapReady] = useState(false);
   const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
-  const [isOwnLocation, setIsOwnLocation] = useState();
+  const [isOwnLocation, setIsOwnLocation] = useState(setOwnLocation);
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -238,7 +240,7 @@ export const MapLibre = ({
 
     const { latitude, longitude } = selectedPosition;
     const newPin = point([longitude, latitude], {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : MAP.DEFAULT_PIN,
+      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
@@ -265,7 +267,7 @@ export const MapLibre = ({
     }
 
     const newPin = point(coordinates, {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : MAP.DEFAULT_PIN,
+      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
@@ -453,7 +455,11 @@ export const MapLibre = ({
         </ShapeSource>
 
         <MarkerView
-          anchor={{ x: 0.5, y: selectedFeature ? 1.45 : 0.5 }}
+          anchor={
+            layerStyles.singleIcon.iconAnchor == 'bottom'
+              ? { x: 0.5, y: selectedFeature ? 1.85 : 0.5 }
+              : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
+          }
           coordinate={selectedFeature?.geometry?.coordinates}
         >
           <CustomCallout feature={selectedFeature} />

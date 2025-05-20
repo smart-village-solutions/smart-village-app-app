@@ -130,6 +130,7 @@ export const LocationSettings = () => {
               }}
               selectedPosition={selectedPosition}
               setPinEnabled
+              setOwnLocation
             />
           )}
           <Collapsible style={styles.collapsible} collapsed={!showMap}>
