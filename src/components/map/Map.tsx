@@ -87,7 +87,10 @@ const renderCluster = (cluster: TCluster) => {
         latitude: geometry.coordinates[1]
       }}
       style={styles.clusterMarker}
-      // onPress={onPress} // HINT: https://github.com/venits/react-native-map-clustering/issues/251
+      onPress={(e) => {
+        e.stopPropagation();
+        onPress();
+      }} // HINT: https://github.com/venits/react-native-map-clustering/issues/251
     >
       {CIRCLE_SIZES.map((size, index) => (
         <View
@@ -204,11 +207,14 @@ export const Map = ({
         renderCluster={renderCluster}
         initialRegion={initialRegion}
         region={updatedRegion}
-        mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.STANDARD}
+        mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.SATELLITE}
         onPress={onMapPress}
         ref={refForMapView}
         rotateEnabled={false}
+        scrollDuringRotateOrZoomEnabled={false}
         showsBuildings={false}
+        showsCompass={false}
+        showsIndoors={false}
         showsPointsOfInterest={false}
         showsUserLocation={showsUserLocation}
         showsMyLocationButton={false}
@@ -258,7 +264,10 @@ export const Map = ({
               coordinate={marker.position}
               identifier={marker.id}
               key={`${index}-${marker.id}`}
-              onPress={() => onMarkerPress?.(marker.id)}
+              onPress={(e) => {
+                e.stopPropagation();
+                onMarkerPress?.(marker.id);
+              }}
               zIndex={isActiveMarker ? 1010 : 1}
             >
               {!!marker.iconName &&
