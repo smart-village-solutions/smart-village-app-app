@@ -204,6 +204,8 @@ export const MapLibre = ({
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
 
   useEffect(() => {
+    if (showsUserLocation) return;
+
     const { latitude, longitude } = selectedPosition || {};
     let alternativeCoords;
 
@@ -226,7 +228,7 @@ export const MapLibre = ({
     setIsOwnLocation(
       alternativeCoords.latitude == latitude && alternativeCoords.longitude == longitude
     );
-  }, [alternativePosition, defaultAlternativePosition]);
+  }, [showsUserLocation, alternativePosition, defaultAlternativePosition]);
 
   useEffect(() => {
     if (isOwnLocation === undefined || !selectedPosition) {
@@ -242,7 +244,7 @@ export const MapLibre = ({
     setNewPins([newPin]);
 
     cameraRef.current?.flyTo([longitude, latitude], 1500);
-  }, [isOwnLocation, selectedPosition, showsUserLocation]);
+  }, [isOwnLocation, selectedPosition]);
 
   const handleMapPressToSetNewPin = async (event: {
     geometry: {
