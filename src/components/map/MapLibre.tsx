@@ -379,6 +379,12 @@ export const MapLibre = ({
                 ['==', ['get', 'id'], selectedMarker],
                 layerStyles.singleIcon.iconSize * 1.2,
                 layerStyles.singleIcon.iconSize
+              ],
+              iconAnchor: [
+                'case',
+                ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
+                'center',
+                layerStyles.singleIcon.iconAnchor
               ]
             }}
           />
@@ -433,7 +439,13 @@ export const MapLibre = ({
             style={{
               ...layerStyles.singleIcon,
               iconImage: ['get', 'iconName'],
-              iconSize: layerStyles.singleIcon.iconSize
+              iconSize: layerStyles.singleIcon.iconSize,
+              iconAnchor: [
+                'case',
+                ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
+                'center',
+                layerStyles.singleIcon.iconAnchor
+              ]
             }}
           />
         </ShapeSource>
