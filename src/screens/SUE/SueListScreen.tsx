@@ -210,7 +210,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   useLayoutEffect(() => {
     if (viewType === VIEW_TYPE.MAP) {
       navigation.setOptions({
-        headerTitle: texts.screenTitles.sue.mapView,
         headerLeft: () => (
           <HeaderLeft
             onPress={() => setViewType(VIEW_TYPE.LIST)}
