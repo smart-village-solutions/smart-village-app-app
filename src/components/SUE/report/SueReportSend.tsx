@@ -24,7 +24,15 @@ type TNewContent = {
   rating: number;
 };
 
-export const SueReportSend = ({ isDone, navigation }: { isDone: boolean; navigation: any }) => {
+export const SueReportSend = ({
+  isDone,
+  isLoading,
+  navigation
+}: {
+  isDone: boolean;
+  isLoading: boolean;
+  navigation: any;
+}) => {
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = sueConfig;
   const {

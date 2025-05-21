@@ -5628,6 +5628,11 @@ expo-video@~2.0.6:
   resolved "https://registry.yarnpkg.com/expo-video/-/expo-video-2.0.6.tgz#4da4e4d427ad42649881a5336697b5a7164aaab3"
   integrity sha512-oDorKwjreHT596oY6ZfktbDa3VF+Sq7gVsTbnQ4QVqGYL13mIO0s+h4y9xMyG/cDWyFpiRc4UT8KkPdxL0wViQ==
 
+expo-web-browser@~14.0.2:
+  version "14.0.2"
+  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-14.0.2.tgz#52d53947c42fdfb225e8c230418ffe508bcf98a7"
+  integrity sha512-Hncv2yojhTpHbP6SGWARBFdl7P6wBHc1O8IKaNsH0a/IEakq887o1eRhLxZ5IwztPQyRDhpqHdgJ+BjWolOnwA==
+
 expo@~52.0.46:
   version "52.0.46"
   resolved "https://registry.yarnpkg.com/expo/-/expo-52.0.46.tgz#3869b87b585da67406a8216539d12a16d736f16e"
