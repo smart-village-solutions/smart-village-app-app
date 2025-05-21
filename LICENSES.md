@@ -9352,7 +9352,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "React Native Map Clustering both for Android and iOS",
     "copyright": ""
   },
-  "react-native-maps@1.18.0": {
+  "react-native-maps@1.23.5": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-maps/react-native-maps",
     "publisher": "Leland Richardson",
@@ -9360,7 +9360,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Airbnb\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015 Airbnb",
     "name": "react-native-maps",
-    "version": "1.18.0",
+    "version": "1.23.5",
     "description": "React Native Mapview component for iOS + Android"
   },
   "react-native-markdown-display@7.0.2": {

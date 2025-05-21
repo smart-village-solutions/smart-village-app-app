@@ -828,9 +828,9 @@
     - publisher: Venits
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-map-clustering
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-map-clustering/README.md
-- **[react-native-maps@1.18.0](https://github.com/react-native-maps/react-native-maps)**
+- **[react-native-maps@1.23.5](https://github.com/react-native-maps/react-native-maps)**
     - name: react-native-maps
-    - version: 1.18.0
+    - version: 1.23.5
     - description: React Native Mapview component for iOS + Android
     - copyright: Copyright (c) 2015 Airbnb
     - licenses: MIT
