@@ -115,7 +115,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
           <>
             <Wrapper>
               <BoldText>{texts.sue.description}</BoldText>
-              <HtmlView html={description} />
+              <HtmlView big={false} html={description} />
             </Wrapper>
 
             <WrapperHorizontal>
@@ -176,7 +176,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
             <Wrapper>
               <BoldText>{texts.sue.answer}</BoldText>
-              <HtmlView html={serviceNotice} />
+              <HtmlView big={false} html={serviceNotice} />
             </Wrapper>
           </>
         )}

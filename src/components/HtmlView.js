@@ -69,7 +69,7 @@ const htmlConfig = {
   }
 };
 
-export const HtmlView = memo(({ html, tagsStyles = {}, openWebScreen, width }) => {
+export const HtmlView = memo(({ big = true, html, openWebScreen, tagsStyles = {}, width }) => {
   const { isBoldTextEnabled } = useContext(AccessibilityContext);
 
   let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
@@ -82,7 +82,7 @@ export const HtmlView = memo(({ html, tagsStyles = {}, openWebScreen, width }) =
   const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
   if (!html.match(HTML_REGEX)) {
-    return <RegularText big>{html}</RegularText>;
+    return <RegularText big={big}>{html}</RegularText>;
   }
 
   return (
@@ -128,8 +128,9 @@ export const HtmlView = memo(({ html, tagsStyles = {}, openWebScreen, width }) =
 HtmlView.displayName = 'HtmlView';
 
 HtmlView.propTypes = {
+  big: PropTypes.bool,
   html: PropTypes.string,
-  tagsStyles: PropTypes.object,
   openWebScreen: PropTypes.func,
+  tagsStyles: PropTypes.object,
   width: PropTypes.number
 };
