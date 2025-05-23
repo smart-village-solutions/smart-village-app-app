@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useEffect, useRef, useState } from 'react';
@@ -207,8 +206,9 @@ export const Map = ({
         renderCluster={renderCluster}
         initialRegion={initialRegion}
         region={updatedRegion}
-        mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.SATELLITE}
+        mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.MUTEDSTANDARD}
         onPress={onMapPress}
+        provider={null}
         ref={refForMapView}
         rotateEnabled={false}
         scrollDuringRotateOrZoomEnabled={false}
@@ -247,7 +247,6 @@ export const Map = ({
             zIndex={1}
           />
         )}
-        {/* eslint-disable complexity */}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
           const serviceName = truncateText(marker.serviceName);
@@ -358,7 +357,6 @@ export const Map = ({
           );
         })}
       </MapView>
-      {/* eslint-enable complexity */}
       {isMaximizeButtonVisible && (
         <TouchableOpacity
           accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
