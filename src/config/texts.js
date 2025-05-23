@@ -1229,7 +1229,7 @@ export const texts = {
     result: 'Ergebnis',
     results: 'Ergebnisse',
     showListView: 'Liste',
-    showMapView: 'Karte',
+    showMapView: 'Karte öffnen',
     viewReports: 'Meldungen ansehen'
   },
   survey: {
