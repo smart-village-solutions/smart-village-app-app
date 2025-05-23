@@ -208,7 +208,7 @@ export const Map = ({
         region={updatedRegion}
         mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.MUTEDSTANDARD}
         onPress={onMapPress}
-        provider={null}
+        provider={device.platform === 'android' ? null : undefined}
         ref={refForMapView}
         rotateEnabled={false}
         scrollDuringRotateOrZoomEnabled={false}
