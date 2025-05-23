@@ -57,6 +57,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     requestedDatetime,
     serviceName,
     serviceNotice,
+    serviceRequestId,
     status,
     title
   } = data;
@@ -141,13 +142,15 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
               <Map
                 isMaximizeButtonVisible
-                locations={[{ position: { latitude, longitude } }]}
+                locations={[{ position: { latitude, longitude }, id: serviceRequestId }]}
                 mapStyle={styles.map}
                 onMaximizeButtonPress={() =>
                   navigation.navigate(ScreenName.MapView, {
-                    locations: [{ position: { latitude, longitude } }]
+                    locations: [{ position: { latitude, longitude }, id: serviceRequestId }],
+                    selectedMarker: serviceRequestId
                   })
                 }
+                selectedMarker={serviceRequestId}
               />
             )}
           </Wrapper>

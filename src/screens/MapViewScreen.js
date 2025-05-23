@@ -14,6 +14,7 @@ export const MapViewScreen = ({ navigation, route }) => {
     isMaximizeButtonVisible,
     locations,
     onMarkerPress,
+    selectedMarker,
     showsUserLocation
   } = route?.params ?? {};
 
@@ -42,6 +43,7 @@ export const MapViewScreen = ({ navigation, route }) => {
           locations,
           mapStyle: styles.map,
           onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
+          selectedMarker,
           showsUserLocation
         }}
       />
