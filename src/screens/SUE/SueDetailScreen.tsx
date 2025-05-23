@@ -8,6 +8,7 @@ import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
+  HeadlineText,
   HtmlView,
   ImageSection,
   LoadingContainer,
@@ -102,7 +103,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
         {!!title && (
           <WrapperHorizontal>
-            <BoldText big>{title}</BoldText>
+            <HeadlineText big>{title}</HeadlineText>
           </WrapperHorizontal>
         )}
 
