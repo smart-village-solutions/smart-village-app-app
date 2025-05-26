@@ -91,6 +91,7 @@ export const QUERY_TYPES = {
     PROFILE: 'profile',
     TASKS: 'tasks',
     USER_GROUPS: 'userGroups',
+    USER_NOTIFICATION_SETTINGS: 'userNotificationSettings',
     USER: 'volunteerUser',
     USERS: 'volunteerUsers'
   } as const,
