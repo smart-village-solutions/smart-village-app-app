@@ -43,6 +43,7 @@ export const DropdownInput = ({
   onChange,
   name,
   label,
+  placeholder,
   control,
   showSearch = true
 }: DropdownInputProps) => {
@@ -77,6 +78,7 @@ export const DropdownInput = ({
         boldLabel={boldLabel}
         label={label}
         labelWrapperStyle={styles.labelWrapper}
+        placeholder={placeholder}
         showSearch={showSearch}
         searchInputStyle={styles.searchInput}
         searchPlaceholder={texts.volunteer.search}

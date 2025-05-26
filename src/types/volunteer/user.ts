@@ -36,6 +36,8 @@ export type VolunteerUser = {
 export type VolunteerRegistration = {
   username: string;
   email: string;
+  firstname: string;
+  group: string;
   password: string;
   passwordConfirmation: string;
   dataPrivacyCheck: boolean;

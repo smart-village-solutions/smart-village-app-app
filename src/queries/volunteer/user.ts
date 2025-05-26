@@ -118,3 +118,15 @@ export const userEdit = async ({
 
   return (await fetch(`${volunteerApiV1Url}user/${id}`, fetchObj)).json();
 };
+
+export const userGroups = async () => {
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  };
+
+  return (await fetch(`${volunteerApiV2Url}user/group`, fetchObj)).json();
+};

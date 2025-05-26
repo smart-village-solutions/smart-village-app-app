@@ -56,9 +56,9 @@ export const DropdownSelect = ({
 
   const renderRow = useCallback(
     (rowData, rowID, highlighted) => {
-      if (multipleSelect) {
-        highlighted = selectedMultipleValues.includes(rowData);
-      }
+      highlighted = multipleSelect
+        ? selectedMultipleValues.includes(rowData)
+        : selectedValue === rowData;
 
       return (
         <Wrapper
@@ -72,7 +72,7 @@ export const DropdownSelect = ({
         </Wrapper>
       );
     },
-    [data]
+    [data, selectedMultipleValues, selectedValue, multipleSelect, placeholder]
   );
 
   const preselect = (index) => dropdownRef.current.select(index);
