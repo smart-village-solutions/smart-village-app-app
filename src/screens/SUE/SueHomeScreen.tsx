@@ -89,7 +89,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
         <HeaderLeft
           backImage={() => (
             <Image
-              source={require('../../../assets/sue-icon.png')}
+              source={require('../../../assets/sue-icon-pin.png')}
               containerStyle={styles.logo}
               borderRadius={normalize(20)}
             />

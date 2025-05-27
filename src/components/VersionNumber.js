@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import appJson from '../../app.json';
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, consts, device, normalize } from '../config';
+import { colors, consts, device } from '../config';
 
 import { RegularText } from './Text.js';
 import { Wrapper } from './Wrapper.js';
@@ -16,8 +16,10 @@ export const VersionNumber = () => {
   return (
     <Wrapper>
       <RegularText
-        small
-        style={[styles.version, isReduceTransparencyEnabled && styles.accessibilityColor]}
+        center
+        smallest
+        lighter
+        style={[isReduceTransparencyEnabled && styles.accessibilityColor]}
         accessibilityLabel={`${consts.a11yLabel.appVersion} ${appJson.expo.version}`}
       >
         Version: {appJson.expo.version} (build: {buildNumber} - OTA: {appJson.expo.otaVersion})
@@ -29,10 +31,5 @@ export const VersionNumber = () => {
 const styles = StyleSheet.create({
   accessibilityColor: {
     color: colors.darkText
-  },
-  version: {
-    color: colors.shadow,
-    fontSize: normalize(11),
-    textAlign: 'center'
   }
 });
