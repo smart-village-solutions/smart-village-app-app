@@ -22,6 +22,12 @@ export const routeNameFromQuery = (query: string) => {
   switch (query) {
     case QUERY_TYPES.PROFILE.GET_MESSAGES:
       return ScreenName.ProfileMessaging;
+    case QUERY_TYPES.VOLUNTEER.HOME:
+      return ScreenName.VolunteerHome;
+    case QUERY_TYPES.VOLUNTEER.CONVERSATION:
+      return ScreenName.VolunteerDetail;
+    case QUERY_TYPES.VOLUNTEER.GROUP:
+      return ScreenName.VolunteerDetail;
     default:
       return ScreenName.Detail;
   }

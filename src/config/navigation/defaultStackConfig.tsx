@@ -80,6 +80,7 @@ import {
   VolunteerPersonalScreen,
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
+  VolunteerSettingsScreen,
   VolunteerSignupScreen,
   VoucherDetailScreen,
   VoucherHomeScreen,
@@ -588,6 +589,11 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerRegistration,
       screenComponent: VolunteerRegistrationScreen
+    },
+    {
+      initialParams,
+      routeName: ScreenName.VolunteerSettings,
+      screenComponent: VolunteerSettingsScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.volunteer.home },

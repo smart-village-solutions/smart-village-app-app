@@ -1,21 +1,25 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, consts, device, normalize } from '../config';
 
 import { Switch } from './Switch';
-import { BoldText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 // TODO: snack bar / toast als nutzerinfo
 export const SettingsToggle = ({ item }) => {
-  const { title, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
+  const { title, description, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
 
   const [loading, setLoading] = useState(false);
   const [switchValue, setSwitchValue] = useState(!!value);
+
+  useEffect(() => {
+    setSwitchValue(!!value);
+  }, [value]);
 
   const toggleSwitch = (newSwitchValue) => {
     setLoading(true);
@@ -46,7 +50,10 @@ export const SettingsToggle = ({ item }) => {
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     >
-      <ListItem.Content>{title && <BoldText small>{title}</BoldText>}</ListItem.Content>
+      <ListItem.Content>
+        {!!title && <BoldText small>{title}</BoldText>}
+        {!!description && <RegularText small>{description}</RegularText>}
+      </ListItem.Content>
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}

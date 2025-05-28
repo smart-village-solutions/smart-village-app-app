@@ -20,7 +20,7 @@ import {
 import { consts, secrets, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
-import { logIn, me } from '../../queries/volunteer';
+import { logIn, me, storePushToken } from '../../queries/volunteer';
 import { ScreenName, VolunteerLogin } from '../../types';
 
 const { a11yLabel } = consts;
@@ -46,6 +46,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   });
 
   const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
+  const { mutate: mutateStorePushToken } = useMutation(storePushToken);
   const {
     isLoading: isLoadingMe,
     isError: isErrorMe,
@@ -72,6 +73,9 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
         if (!responseData?.auth_token) {
           return;
         }
+
+        // put push token to user data in volunteer instance
+        mutateStorePushToken(responseData.auth_token);
 
         // wait for saving auth token to global state
         return storeVolunteerAuthToken(responseData.auth_token);
