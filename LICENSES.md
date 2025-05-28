@@ -11189,13 +11189,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A stand-alone types package for Undici",
     "publisher": ""
   },
-  "undici@6.21.1": {
+  "undici@6.21.3": {
     "licenses": "MIT",
     "repository": "https://github.com/nodejs/undici",
     "licenseText": "MIT License\n\nCopyright (c) Matteo Collina and Undici contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) Matteo Collina and Undici contributors",
     "name": "undici",
-    "version": "6.21.1",
+    "version": "6.21.3",
     "description": "An HTTP/1.1 client, written from scratch for Node.js",
     "publisher": ""
   },
