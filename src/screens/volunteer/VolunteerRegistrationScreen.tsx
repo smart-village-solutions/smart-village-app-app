@@ -169,7 +169,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                         label: texts.volunteer.group,
                         name,
                         onChange,
-                        placeholder: texts.volunteer.group,
+                        placeholder: texts.volunteer.groupPlaceholder,
                         required: true,
                         showSearch: false,
                         value

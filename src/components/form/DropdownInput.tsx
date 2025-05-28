@@ -47,13 +47,19 @@ export const DropdownInput = ({
   control,
   showSearch = true
 }: DropdownInputProps) => {
-  const [dropdownData, setDropdownData] = useState(
-    data.map((item) =>
+  const [dropdownData, setDropdownData] = useState([
+    {
+      id: 0,
+      index: 0,
+      value: placeholder || '',
+      selected: value ? false : true
+    },
+    ...data.map((item) =>
       multipleSelect
         ? { ...item, selected: (value as any[]).includes(item[valueKey]) }
         : { ...item, selected: item[valueKey] == value }
     )
-  );
+  ]);
 
   useEffect(() => {
     if (multipleSelect) {

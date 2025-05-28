@@ -147,6 +147,7 @@ export const DropdownSelect = ({
           style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
         >
           <RegularText
+            small
             style={styles.selectedValueText}
             placeholder={selectedValue == placeholder}
             numberOfLines={1}
