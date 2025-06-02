@@ -27,7 +27,11 @@ import {
   removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { ONBOARDING_STORE_KEY, TERMS_AND_CONDITIONS_STORE_KEY } from '../OnboardingManager';
+import {
+  HAS_TERMS_AND_CONDITIONS_STORE_KEY,
+  ONBOARDING_STORE_KEY,
+  TERMS_AND_CONDITIONS_STORE_KEY
+} from '../OnboardingManager';
 import {
   handleSystemPermissions,
   PushNotificationStorageKeys,
@@ -175,6 +179,7 @@ export const SettingsScreen = ({ navigation, route }) => {
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
   useEffect(() => {
+    /* eslint-disable complexity */
     const updateData = async () => {
       const settingsList = [];
 
@@ -281,8 +286,13 @@ export const SettingsScreen = ({ navigation, route }) => {
       }
 
       const termsAndConditionsAccepted = await readFromStore(TERMS_AND_CONDITIONS_STORE_KEY);
+      const hasTermsAndConditionsSection = await readFromStore(HAS_TERMS_AND_CONDITIONS_STORE_KEY);
 
-      if (termsAndConditionsAccepted != null && termsAndConditionsAccepted != 'unknown') {
+      if (
+        !!hasTermsAndConditionsSection &&
+        termsAndConditionsAccepted != null &&
+        termsAndConditionsAccepted != 'unknown'
+      ) {
         settingsList.push({
           data: [
             {
@@ -350,6 +360,7 @@ export const SettingsScreen = ({ navigation, route }) => {
 
       setData(settingsList);
     };
+    /* eslint-enable complexity */
 
     setting == '' && updateData();
   }, [setting]);

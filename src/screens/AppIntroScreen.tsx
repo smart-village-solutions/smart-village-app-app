@@ -27,6 +27,7 @@ import { colors, device, Icon, normalize, texts } from '../config';
 import { Initializer } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
+import { HAS_TERMS_AND_CONDITIONS_STORE_KEY } from '../OnboardingManager';
 import { QUERY_TYPES } from '../queries';
 import { AppIntroSlide } from '../types';
 
@@ -339,6 +340,12 @@ export const AppIntroScreen = ({
   useEffect(() => {
     if (error || (!loading && !slides?.length)) {
       setOnboardingComplete();
+    }
+
+    // if there is a slide for terms and conditions, we need to store this information to know about
+    // it in the settings screen
+    if (slides?.find((slide) => slide.onLeaveSlideName === Initializer.TermsAndConditions)) {
+      addToStore(HAS_TERMS_AND_CONDITIONS_STORE_KEY, true);
     }
 
     onlyTermsAndConditions && setShowDoneButtonTermsAndConditions(false);
