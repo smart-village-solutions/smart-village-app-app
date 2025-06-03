@@ -41,6 +41,12 @@ export type TServiceTile = {
   params?: any;
   query?: string;
   routeName: string;
+  style?: {
+    fontStyle?: any;
+    iconStyle?: any;
+    numberOfLines?: number;
+    tileStyle?: any;
+  };
   svg?: string;
   tile?: string;
   tileSizeFactor?: number;
@@ -82,12 +88,25 @@ export const ServiceTile = ({
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
   const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;
+  const { style: itemStyle } = item;
+  const {
+    fontStyle: itemFontStyle = {},
+    iconStyle: itemIconStyle = {},
+    numberOfLines: itemNumberOfLines,
+    tileStyle: itemTileStyle = {}
+  } = itemStyle || {};
 
-  const hasTileStyle = !!Object.keys(tileStyle).length;
+  const hasTileStyle = !!Object.keys(itemTileStyle).length || !!Object.keys(tileStyle).length;
 
-  const normalizedFontStyle = normalizeStyleValues(fontStyle);
-  const normalizedIconStyle = normalizeStyleValues(iconStyle);
-  const normalizedTileStyle = normalizeStyleValues(tileStyle);
+  const normalizedFontStyle = normalizeStyleValues(
+    Object.keys(itemFontStyle).length ? itemFontStyle : fontStyle
+  );
+  const normalizedIconStyle = normalizeStyleValues(
+    Object.keys(itemIconStyle).length ? itemIconStyle : iconStyle
+  );
+  const normalizedTileStyle = normalizeStyleValues(
+    Object.keys(itemTileStyle).length ? itemTileStyle : tileStyle
+  );
 
   return (
     <ServiceBox
@@ -173,7 +192,7 @@ export const ServiceTile = ({
               primary={!hasDiagonalGradientBackground}
               center
               accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
-              numberOfLines={numberOfLines}
+              numberOfLines={itemNumberOfLines || numberOfLines}
               style={normalizedFontStyle}
             >
               {item.title}
