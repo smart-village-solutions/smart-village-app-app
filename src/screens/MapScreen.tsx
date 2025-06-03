@@ -1,20 +1,24 @@
-import PropTypes from 'prop-types';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { SettingsContext } from '../SettingsProvider';
-import { MapLibre, TextListItem, Wrapper } from '../components';
+import { LoadingSpinner, MapLibre, TextListItem, Wrapper } from '../components';
 import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
+import { useMapSettings } from '../hooks';
+import { SettingsContext } from '../SettingsProvider';
 
-export const MapViewScreen = ({ navigation, route }) => {
+export const MapScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
   const { geometryTourData, isAugmentedReality, locations, onMarkerPress, showsUserLocation } =
     route?.params ?? {};
-
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+  const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
+  const { loading } = useMapSettings();
 
-  /* the improvement in the next comment line has been added for augmented reality feature. */
+  /* the next lines has been added for augmented reality feature */
   const { data } = route?.params?.augmentedRealityData ?? [];
 
   const [modelId, setModelId] = useState();
@@ -27,6 +31,10 @@ export const MapViewScreen = ({ navigation, route }) => {
   }, [modelId]);
   /* end of augmented reality feature */
 
+  if (loading) {
+    return <LoadingSpinner loading />;
+  }
+
   return (
     <>
       <MapLibre
@@ -34,12 +42,15 @@ export const MapViewScreen = ({ navigation, route }) => {
           geometryTourData,
           locations,
           mapStyle: styles.map,
-          onMarkerPress: isAugmentedReality ? setModelId : onMarkerPress,
+          onMarkerPress: isAugmentedReality
+            ? setModelId
+            : onMarkerPress || setSelectedPointOfInterest,
+          selectedMarker: selectedPointOfInterest,
           showsUserLocation
         }}
       />
 
-      {isAugmentedReality && modelData && (
+      {!!isAugmentedReality && !!modelData && (
         <Wrapper
           small
           style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
@@ -66,15 +77,9 @@ export const MapViewScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  augmentedRealityInfoContainer: {
-    width: '90%'
-  },
   map: {
     width: '100%',
     height: '100%'
-  },
-  marginTop: {
-    marginTop: normalize(14)
   },
   listItemContainer: {
     backgroundColor: colors.surface,
@@ -95,15 +100,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const stylesWithProps = ({ navigationType }) => {
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
   return StyleSheet.create({
     position: {
       bottom: navigationType === 'drawer' ? '8%' : '4%'
     }
   });
 };
-
-MapViewScreen.propTypes = {
-  navigation: PropTypes.object,
-  route: PropTypes.object
-};
+/* eslint-enable react-native/no-unused-styles */
