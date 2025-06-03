@@ -287,8 +287,6 @@ export const MapLibre = ({
     }
   };
 
-  const [centerCoordinate] = useState([initialRegion.longitude, initialRegion.latitude]);
-
   const handleSourcePress = async (event: any) => {
     const feature = event.features[0];
     if (!feature) {
@@ -324,7 +322,7 @@ export const MapLibre = ({
       <MapView
         attributionEnabled={false}
         compassEnabled={false}
-        // mapStyle="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
+        mapStyle="https://tileserver-gl.smart-village.app/styles/osm-liberty/style.json"
         ref={mapRef}
         style={[styles.map, mapStyle]}
         onDidFinishLoadingMap={() => setMapReady(true)}
@@ -332,12 +330,14 @@ export const MapLibre = ({
         {...interactivity}
       >
         <Camera
-          centerCoordinate={centerCoordinate}
+          defaultSettings={{
+            centerCoordinate: [initialRegion.longitude, initialRegion.latitude],
+            zoomLevel: initialZoomLevel
+          }}
           followUserLocation={followsUserLocation}
           followUserMode={UserTrackingMode.FollowWithHeading}
           minZoomLevel={minZoom}
           ref={cameraRef}
-          zoomLevel={initialZoomLevel}
         />
 
         <UserLocation
