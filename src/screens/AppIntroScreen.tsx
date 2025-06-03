@@ -24,7 +24,7 @@ import {
   WrapperVertical
 } from '../components';
 import { colors, device, Icon, normalize, texts } from '../config';
-import { Initializer } from '../helpers';
+import { addToStore, Initializer } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
 import { HAS_TERMS_AND_CONDITIONS_STORE_KEY } from '../OnboardingManager';
@@ -160,6 +160,7 @@ const DoneButton = ({
       label={texts.appIntro.continue}
       onPress={handlePress}
       style={styles.sliderButtonContainer}
+      isLightest
     />
   );
 };
