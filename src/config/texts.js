@@ -482,7 +482,7 @@ export const texts = {
     filter: 'Filtern',
     resetFilter: 'Zurücksetzen',
     showFilter: 'Filter anzeigen',
-    search: 'Was suchen Sie?',
+    search: 'Suche Gruppen anhand ihrer Beschreibung',
     settings: 'Filtereinstellungen',
     sorting: {
       updatedDatetime: 'Änderungsdatum',
