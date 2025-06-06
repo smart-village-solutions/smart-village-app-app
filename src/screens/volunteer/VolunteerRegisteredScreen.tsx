@@ -54,14 +54,14 @@ export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
         </Wrapper>
         <Wrapper>
           <Button
-            invert
-            title={texts.volunteer.next}
             onPress={() => {
               navigation.navigate(ScreenName.VolunteerHome, {
                 // refreshUser param causes the home screen to update and to le logged in
                 refreshUser: new Date().valueOf()
               });
             }}
+            title={texts.volunteer.next}
+            notFullWidth
           />
         </Wrapper>
       </ScrollView>
