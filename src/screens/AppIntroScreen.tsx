@@ -83,6 +83,7 @@ const NextButton = ({
   texts
 }: ButtonProps) => {
   const currentSlideIndex = sliderRef.current?.state?.activeIndex ?? 0;
+  const currentSlide = slides[currentSlideIndex];
   const isTermsSlide =
     slides[currentSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
 
@@ -91,6 +92,11 @@ const NextButton = ({
       termsAndConditionsAlert();
       return;
     }
+
+    if (currentSlide.onLeaveSlide) {
+      currentSlide.onLeaveSlide(true);
+    }
+
     sliderRef.current?.goToSlide(currentSlideIndex + 1, true);
   };
 
