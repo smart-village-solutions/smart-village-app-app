@@ -68,7 +68,7 @@ const SliderButton = ({
   const buttonStyle = isDisabled ? [style, styles.sliderButtonDisabled] : style;
 
   return (
-    <TouchableOpacity onPress={onPress} style={buttonStyle} disabled={isDisabled}>
+    <TouchableOpacity onPress={onPress} style={buttonStyle}>
       <BoldText lightest={isLightest}>{label.toUpperCase()}</BoldText>
     </TouchableOpacity>
   );
