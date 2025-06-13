@@ -81,7 +81,7 @@ export const handleSystemPermissions = async (
 
   const isGranted = finalStatus === PermissionStatus.GRANTED;
 
-  if (shouldSetInAppPermission) {
+  if (shouldSetInAppPermission && inAppPermission == null) {
     try {
       const successfullyHandledInAppPermission = await setInAppPermission(isGranted);
 
