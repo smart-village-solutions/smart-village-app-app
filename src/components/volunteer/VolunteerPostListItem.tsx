@@ -1,12 +1,11 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image as RNImage, StyleSheet } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
 
 import { colors, styles as configStyles, device, Icon, normalize } from '../../config';
 import {
-  imageHeight,
   imageWidth,
   momentFormat,
   openLink,
@@ -61,6 +60,37 @@ export const VolunteerPostListItem = ({
   } = metadata || { guid: '', display_name: '' };
   const isUserAuthor = userGuid == guid;
 
+  const [filesWithImages, setFilesWithImages] = useState([]);
+  const [aspectRatios, setAspectRatios] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    if (!authToken || !files) return;
+
+    const filesWithImageUriAndHeader = files
+      .filter((file) => file.mime_type.startsWith('image/'))
+      .map((file) => ({
+        ...file,
+        uri: `${volunteerApiV1Url}file/download/${file.id}`,
+        headers: { Authorization: `Bearer ${authToken}` }
+      }));
+
+    filesWithImageUriAndHeader?.forEach(({ guid, id, uri, headers }) => {
+      RNImage.getSizeWithHeaders(
+        uri,
+        headers,
+        (width, height) => {
+          setAspectRatios((prev) => ({
+            ...prev,
+            [guid]: width / height
+          }));
+        },
+        () => console.warn('Could not get size for image', id)
+      );
+    });
+
+    setFilesWithImages(filesWithImageUriAndHeader);
+  }, [authToken, files]);
+
   return (
     <>
       <ListItem containerStyle={styles.avatarContainerStyle}>
@@ -106,42 +136,43 @@ export const VolunteerPostListItem = ({
         </Markdown>
       </ListItem>
 
-      {!!authToken &&
-        files
-          ?.filter((file) => file.mime_type.startsWith('image/'))
-          ?.map((file) => {
-            const imageSource = {
-              uri: `${volunteerApiV1Url}file/download/${file.id}`,
-              headers: { Authorization: `Bearer ${authToken}` }
-            };
+      {filesWithImages?.map((file) => {
+        const imageSource = {
+          uri: `${volunteerApiV1Url}file/download/${file.id}`,
+          headers: { Authorization: `Bearer ${authToken}` }
+        };
 
-            return (
-              <ListItem
-                bottomDivider={bottomDivider}
-                containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
-                key={file.guid}
-              >
-                <Lightbox
-                  renderContent={() => (
-                    <Image
-                      childrenContainerStyle={stylesWithProps().imageLightbox}
-                      containerStyle={styles.imageContainer}
-                      source={imageSource}
-                      resizeMode="contain"
-                    />
-                  )}
-                  underlayColor={colors.transparent}
-                >
-                  <Image
-                    borderRadius={normalize(8)}
-                    childrenContainerStyle={stylesWithProps().image}
-                    containerStyle={styles.imageContainer}
-                    source={imageSource}
-                  />
-                </Lightbox>
-              </ListItem>
-            );
-          })}
+        return (
+          <ListItem
+            bottomDivider={bottomDivider}
+            containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
+            key={file.guid}
+          >
+            <Lightbox
+              renderContent={() => (
+                <Image
+                  childrenContainerStyle={stylesWithProps().imageLightbox}
+                  containerStyle={styles.imageContainer}
+                  source={imageSource}
+                  resizeMode="contain"
+                />
+              )}
+              underlayColor={colors.transparent}
+            >
+              <Image
+                borderRadius={normalize(8)}
+                childrenContainerStyle={{
+                  ...stylesWithProps().image,
+                  aspectRatio: aspectRatios[file.guid] || undefined
+                }}
+                containerStyle={styles.imageContainer}
+                source={imageSource}
+                resizeMode="contain"
+              />
+            </Lightbox>
+          </ListItem>
+        );
+      })}
     </>
   );
 };
@@ -183,7 +214,7 @@ const stylesWithProps = () => {
 
   return StyleSheet.create({
     image: {
-      height: imageHeight(maxWidth),
+      maxHeight: normalize(250),
       width: maxWidth
     },
     imageLightbox: {
