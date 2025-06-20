@@ -58,14 +58,16 @@ export const ServiceTile = ({
   draggableId,
   hasDiagonalGradientBackground = false,
   isEditMode = false,
+  isLastRow = false,
   item,
   onToggleVisibility,
-  tileSizeFactor = 1,
-  serviceTiles
+  serviceTiles,
+  tileSizeFactor = 1
 }: {
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
   isEditMode?: boolean;
+  isLastRow?: boolean;
   item: TServiceTile;
   onToggleVisibility: (
     toggleableId: string,
@@ -114,7 +116,7 @@ export const ServiceTile = ({
       dimensions={dimensions}
       numberOfTiles={item?.numberOfTiles}
       orientation={orientation}
-      style={normalizedTileStyle}
+      style={[normalizedTileStyle, isLastRow && styles.marginLeft]}
     >
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
@@ -211,6 +213,9 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     width: '100%'
+  },
+  marginLeft: {
+    marginLeft: normalize(8)
   },
   serviceIcon: {
     alignSelf: 'center',

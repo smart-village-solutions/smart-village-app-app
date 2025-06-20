@@ -80,12 +80,13 @@ export const Service = ({
     [isEditMode, hasDiagonalGradientBackground]
   );
   const renderItem = useCallback(
-    (item: TServiceTile, index: number) => (
+    (item: TServiceTile, index: number, isLastRow?: boolean) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
+        isLastRow={isLastRow}
         item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
@@ -132,14 +133,15 @@ export const Service = ({
         const isLastRow = rows[rows.length - 1] === row;
         const isIncompleteRow = row.length < itemsPerRow;
         const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
+        const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
 
         return (
           <WrapperWrap
             key={rowKey}
-            spaceAround={isLastRow && isIncompleteRow}
-            spaceBetween={!isLastRow || !isIncompleteRow}
+            center={isLastAndIncompleteRow}
+            spaceBetween={!isLastAndIncompleteRow}
           >
-            {row.map(renderItem)}
+            {row.map((item, index) => renderItem(item, index, isLastAndIncompleteRow))}
           </WrapperWrap>
         );
       })}
