@@ -31,26 +31,26 @@ export const VolunteerPostListItem = ({
   bottomDivider: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
-    id: number;
-    message: string;
     content: {
-      metadata: { created_by: { guid: string; display_name: string }; created_at: string };
       files: {
-        id: number;
         guid: string;
+        id: number;
         mime_type: string;
       }[];
+      metadata: { created_by: { guid: string; display_name: string }; created_at: string };
     };
+    id: number;
+    message: string;
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
   setPostForModal: (post: {
-    id: number;
-    message: string;
     files: {
-      id: number;
       guid: string;
+      id: number;
       mime_type: string;
     }[];
+    id: number;
+    message: string;
   }) => void;
   userGuid?: string | null;
 }) => {
@@ -126,8 +126,8 @@ export const VolunteerPostListItem = ({
                     <Image
                       childrenContainerStyle={stylesWithProps().imageLightbox}
                       containerStyle={styles.imageContainer}
-                      source={imageSource}
                       resizeMode="contain"
+                      source={imageSource}
                     />
                   )}
                   underlayColor={colors.transparent}

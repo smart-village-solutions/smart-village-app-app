@@ -217,9 +217,6 @@ export const MultiImageSelector = ({
         </ScrollView>
 
         <Modal
-          isBackdropPress
-          isVisible={isModalVisible}
-          onModalVisible={() => setIsModalVisible(false)}
           closeButton={
             <TouchableOpacity
               disabled={loading}
@@ -234,6 +231,9 @@ export const MultiImageSelector = ({
               </>
             </TouchableOpacity>
           }
+          isBackdropPress
+          isVisible={isModalVisible}
+          onModalVisible={() => setIsModalVisible(false)}
           overlayStyle={styles.overlay}
         >
           <WrapperVertical style={styles.noPaddingTop}>
@@ -250,16 +250,16 @@ export const MultiImageSelector = ({
             ) : (
               <>
                 <Button
-                  icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
                   disabled={loading}
+                  icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
                   iconPosition="left"
                   invert
                   onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
                   title={texts.sue.report.alerts.imageSelectAlert.camera}
                 />
                 <Button
-                  icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
                   disabled={loading}
+                  icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
                   iconPosition="left"
                   invert
                   onPress={() => imageSelect(selectImage)}
@@ -297,20 +297,20 @@ export const MultiImageSelector = ({
             <View style={styles.volunteerUploadPreview}>
               {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
                 <Image
-                  source={imageSource}
-                  childrenContainerStyle={styles.volunteerImage}
                   borderRadius={normalize(4)}
+                  childrenContainerStyle={styles.volunteerImage}
+                  source={imageSource}
                 />
               )}
 
               {(!!infoAndErrorText[index]?.infoText || !!values?.[index]?.file_name) && (
                 <RegularText
+                  numberOfLines={1}
+                  small
                   style={[
                     styles.infoText,
                     selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && styles.volunteerInfoText
                   ]}
-                  numberOfLines={1}
-                  small
                 >
                   {infoAndErrorText?.[index]?.infoText || values?.[index]?.file_name}
                 </RegularText>
