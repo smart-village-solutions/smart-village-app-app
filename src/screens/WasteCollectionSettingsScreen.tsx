@@ -92,9 +92,7 @@ export const WasteCollectionSettingsScreen = () => {
     reminderTime
   } = state;
   const isInitial = waste.streetId === undefined;
-  const { inputValue, setInputValue, renderSuggestion } = useRenderSuggestions(() =>
-    setIsStreetSelected(true)
-  );
+  const { inputValue, renderSuggestion } = useRenderSuggestions(() => setIsStreetSelected(true));
   const { data, loading } = useWasteAddresses({ search: inputValue });
   const addressesData = data?.wasteAddresses;
   const { data: typesData, loading: typesLoading } = useWasteTypes();
