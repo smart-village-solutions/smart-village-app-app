@@ -19,7 +19,8 @@ export const Button = ({
   onPress,
   small,
   smallest,
-  title
+  title,
+  whiteInvert = false
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
@@ -60,7 +61,8 @@ export const Button = ({
         needLandscapeStyle && styles.titleLandscape,
         big && styles.bigTitle,
         small && styles.smallTitle,
-        smallest && styles.smallestTitle
+        smallest && styles.smallestTitle,
+        whiteInvert && styles.titleWhiteInvert
       ]}
       disabledStyle={styles.buttonDisabled}
       disabledTitleStyle={styles.title}
@@ -71,10 +73,11 @@ export const Button = ({
         !invert && isDelete && styles.rejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
-        smallest && [styles.smallestButton, styles.smallestButtonRadius]
+        smallest && [styles.smallestButton, styles.smallestButtonRadius],
+        whiteInvert && [styles.buttonInvert, styles.whiteInvert]
       ]}
       containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
-      ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
+      ViewComponent={invert || whiteInvert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
@@ -179,6 +182,12 @@ const styles = StyleSheet.create({
   },
   titleLandscape: {
     paddingHorizontal: normalize(14)
+  },
+  titleWhiteInvert: {
+    color: colors.surface
+  },
+  whiteInvert: {
+    borderColor: colors.surface
   }
 });
 
@@ -192,5 +201,6 @@ Button.propTypes = {
   onPress: PropTypes.func.isRequired,
   small: PropTypes.bool,
   smallest: PropTypes.bool,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  whiteInvert: PropTypes.bool
 };

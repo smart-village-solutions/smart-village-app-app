@@ -31,6 +31,7 @@ export const Image = ({
   aspectRatio,
   borderRadius = 0,
   button,
+  buttons = [],
   childrenContainerStyle,
   containerStyle,
   message,
@@ -133,6 +134,8 @@ export const Image = ({
           <View style={styles.contentContainerStyle}>
             {!!message && <ImageMessage message={message} />}
             {!!button && <ImageButton button={button} />}
+            {!!buttons?.length &&
+              buttons.map((button, index) => <ImageButton key={index} button={button} />)}
             {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
           </View>
         )}
@@ -174,6 +177,7 @@ Image.propTypes = {
   aspectRatio: PropTypes.object,
   borderRadius: PropTypes.number,
   button: PropTypes.object,
+  buttons: PropTypes.arrayOf(PropTypes.object),
   childrenContainerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   message: PropTypes.string,
