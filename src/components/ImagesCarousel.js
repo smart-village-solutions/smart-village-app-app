@@ -188,6 +188,7 @@ const pauseButton = (
   verticalPosition
 ) => (
   <TouchableOpacity
+    activeOpacity={0.8}
     style={[
       styles.pauseButton,
       {
