@@ -249,6 +249,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
+              authToken={options.queryVariables?.authToken}
               bottomDivider={false}
               openWebScreen={options.openWebScreen}
               post={item}

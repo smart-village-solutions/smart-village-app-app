@@ -1,15 +1,25 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
+import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, styles as configStyles, Icon, normalize } from '../../config';
-import { momentFormat, openLink, volunteerListDate } from '../../helpers';
+import { colors, styles as configStyles, device, Icon, normalize } from '../../config';
+import {
+  imageHeight,
+  imageWidth,
+  momentFormat,
+  openLink,
+  volunteerApiV1Url,
+  volunteerListDate
+} from '../../helpers';
+import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 
 export const VolunteerPostListItem = ({
+  authToken,
   bottomDivider = true,
   openWebScreen,
   post: { id, message, content },
@@ -17,20 +27,34 @@ export const VolunteerPostListItem = ({
   setPostForModal,
   userGuid
 }: {
+  authToken: string | null;
   bottomDivider: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
-    id: number;
-    message: string;
     content: {
+      files: {
+        guid: string;
+        id: number;
+        mime_type: string;
+      }[];
       metadata: { created_by: { guid: string; display_name: string }; created_at: string };
     };
+    id: number;
+    message: string;
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
-  setPostForModal: (post: { id: number; message: string }) => void;
+  setPostForModal: (post: {
+    files: {
+      guid: string;
+      id: number;
+      mime_type: string;
+    }[];
+    id: number;
+    message: string;
+  }) => void;
   userGuid?: string | null;
 }) => {
-  const { metadata } = content || {};
+  const { metadata, files } = content || {};
   const {
     created_by: { guid, display_name: displayName },
     created_at: createdAt
@@ -61,14 +85,16 @@ export const VolunteerPostListItem = ({
             badgeStyle={styles.badge}
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
             onPress={() => {
-              setPostForModal({ id, message });
+              setPostForModal({ id, message, files });
               setIsCollapsed(false);
             }}
           />
         )}
       </ListItem>
 
-      <ListItem bottomDivider={bottomDivider} containerStyle={styles.contentContainerStyle}>
+      <ListItem
+        containerStyle={[styles.contentContainerStyle, !files.length && styles.paddingBottom]}
+      >
         <Markdown
           onLinkPress={(url) => {
             openLink(url, openWebScreen);
@@ -79,6 +105,43 @@ export const VolunteerPostListItem = ({
           {message}
         </Markdown>
       </ListItem>
+
+      {!!authToken &&
+        files
+          ?.filter((file) => file.mime_type.startsWith('image/'))
+          ?.map((file) => {
+            const imageSource = {
+              uri: `${volunteerApiV1Url}file/download/${file.id}`,
+              headers: { Authorization: `Bearer ${authToken}` }
+            };
+
+            return (
+              <ListItem
+                bottomDivider={bottomDivider}
+                containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}
+                key={file.guid}
+              >
+                <Lightbox
+                  renderContent={() => (
+                    <Image
+                      childrenContainerStyle={stylesWithProps().imageLightbox}
+                      containerStyle={styles.imageContainer}
+                      resizeMode="contain"
+                      source={imageSource}
+                    />
+                  )}
+                  underlayColor={colors.transparent}
+                >
+                  <Image
+                    borderRadius={normalize(8)}
+                    childrenContainerStyle={stylesWithProps().image}
+                    containerStyle={styles.imageContainer}
+                    source={imageSource}
+                  />
+                </Lightbox>
+              </ListItem>
+            );
+          })}
     </>
   );
 };
@@ -87,7 +150,7 @@ const styles = StyleSheet.create({
   avatarContainerStyle: {
     backgroundColor: colors.transparent,
     paddingBottom: 0,
-    paddingHorizontal: normalize(0),
+    paddingHorizontal: 0,
     paddingVertical: normalize(12)
   },
   badge: {
@@ -98,7 +161,34 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     backgroundColor: colors.transparent,
+    paddingHorizontal: 0,
+    paddingBottom: 0,
+    paddingTop: normalize(12)
+  },
+  filesContainerStyle: {
+    backgroundColor: colors.transparent,
     paddingHorizontal: normalize(0),
-    paddingVertical: normalize(12)
+    paddingTop: 0
+  },
+  imageContainer: {
+    alignSelf: 'center'
+  },
+  paddingBottom: {
+    paddingBottom: normalize(12)
   }
 });
+
+const stylesWithProps = () => {
+  const maxWidth = imageWidth() - 2 * normalize(16); // width of an image minus paddings
+
+  return StyleSheet.create({
+    image: {
+      height: imageHeight(maxWidth),
+      width: maxWidth
+    },
+    imageLightbox: {
+      height: device.height * 0.9,
+      width: device.width * 0.9
+    }
+  });
+};
