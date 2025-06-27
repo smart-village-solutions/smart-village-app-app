@@ -34,6 +34,7 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
             )}
             tagsStyles={{ div: { fontFamily: 'bold' }, p: { fontFamily: 'bold' } }}
             openWebScreen={openWebScreen}
+            selectable
           />
         </WrapperHorizontal>
       )}
@@ -46,7 +47,11 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
       {(!settings?.displayOnlySummary || settings.displayOnlySummary === 'false') &&
         !!contentBlock.body && (
           <WrapperHorizontal>
-            <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
+            <HtmlView
+              html={trimNewLines(contentBlock.body)}
+              openWebScreen={openWebScreen}
+              selectable
+            />
           </WrapperHorizontal>
         )}
       <MediaSection mediaContents={contentBlock.mediaContents} />
