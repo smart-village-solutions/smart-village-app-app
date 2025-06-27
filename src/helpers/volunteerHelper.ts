@@ -62,16 +62,16 @@ export const storeVolunteerUserData = (userData?: {
 
 export const volunteerUserData = async (): Promise<{
   currentUserId: string | null;
-  currentUserGuId: string | null;
+  currentUserGuid: string | null;
   currentUserContentContainerId: string | null;
 }> => {
   let currentUserId = null;
-  let currentUserGuId = null;
+  let currentUserGuid = null;
   let currentUserContentContainerId = null;
 
   try {
     currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
-    currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+    currentUserGuid = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
     currentUserContentContainerId = await SecureStore.getItemAsync(
       VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
     );
@@ -84,7 +84,7 @@ export const volunteerUserData = async (): Promise<{
 
   return {
     currentUserId,
-    currentUserGuId,
+    currentUserGuid,
     currentUserContentContainerId
   };
 };

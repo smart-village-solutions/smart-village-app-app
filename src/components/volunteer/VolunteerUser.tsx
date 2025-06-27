@@ -4,7 +4,12 @@ import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
 import { consts, normalize, texts } from '../../config';
-import { volunteerBannerImage, volunteerProfileImage, volunteerUserData } from '../../helpers';
+import {
+  isImageUrlReachable,
+  volunteerBannerImage,
+  volunteerProfileImage,
+  volunteerUserData
+} from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -28,7 +33,7 @@ export const VolunteerUser = ({
 }: { data: any } & StackScreenProps<any>) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
-
+  const [bannerImageUrl, setBannerImageUrl] = useState<string>();
   const [isMe, setIsMe] = useState<boolean>();
 
   const name = data?.display_name;
@@ -54,13 +59,19 @@ export const VolunteerUser = ({
     { url: data?.profile?.url_youtube }
   ];
   const about = data?.profile?.about;
+  const logo = volunteerProfileImage(data?.guid);
   const mediaContents = [
     {
       contentType: 'image',
-      sourceUrl: { url: volunteerBannerImage(data?.guid) }
+      sourceUrl: { url: bannerImageUrl }
     }
   ];
-  const logo = volunteerProfileImage(data?.guid);
+
+  useEffect(() => {
+    isImageUrlReachable(volunteerBannerImage(data?.guid)).then(
+      (isReachable) => !!isReachable && setBannerImageUrl(volunteerBannerImage(data?.guid))
+    );
+  }, [data?.guid]);
 
   const checkIfMe = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -112,7 +123,9 @@ export const VolunteerUser = ({
     <>
       <ImageSection mediaContents={mediaContents} />
 
-      {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
+      {!!logo && (
+        <Logo source={{ uri: logo }} containerStyle={[!!bannerImageUrl && styles.logoContainer]} />
+      )}
 
       <SectionHeader title={name} />
       {!!about && (
@@ -151,7 +164,7 @@ export const VolunteerUser = ({
 
 const styles = StyleSheet.create({
   logoContainer: {
-    left: normalize(20),
+    left: normalize(7),
     paddingLeft: 100,
     position: 'absolute',
     top: -80

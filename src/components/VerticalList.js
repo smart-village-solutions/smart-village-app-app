@@ -39,7 +39,7 @@ export const VerticalList = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
-  const isPartOfIndexScreen = !!query && !!queryVariables;
+  const isPartOfIndexScreen = !!query && queryVariables?.isPartOfIndexScreen != false;
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 

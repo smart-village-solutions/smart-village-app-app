@@ -90,6 +90,7 @@ export const VolunteerGroup = ({
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
+  const [userGuid, setUserGuid] = useState<string | null>();
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
   const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
@@ -129,14 +130,17 @@ export const VolunteerGroup = ({
   }, [isGroupMember]);
 
   const refreshGroup = useCallback(() => {
+    refetch();
+
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
   }, []);
 
   const checkIfOwner = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+    const { currentUserId, currentUserGuid } = await volunteerUserData();
 
+    setUserGuid(currentUserGuid);
     setIsGroupOwner(isOwner(currentUserId, owner));
   }, [owner]);
 
@@ -186,12 +190,6 @@ export const VolunteerGroup = ({
   useEffect(() => {
     getGroupAdmins();
   }, [getGroupAdmins]);
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [])
-  );
 
   return (
     <View>
@@ -315,6 +313,7 @@ export const VolunteerGroup = ({
             openWebScreen={openWebScreen}
             navigation={navigation}
             isGroupMember={isGroupMember}
+            userGuid={userGuid}
           />
         </>
       )}

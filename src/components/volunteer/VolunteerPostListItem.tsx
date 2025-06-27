@@ -1,19 +1,24 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { StyleSheet } from 'react-native';
+import { Badge, ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, normalize, styles } from '../../config';
+import { colors, styles as configStyles, Icon, normalize } from '../../config';
 import { momentFormat, openLink, volunteerListDate } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 
 export const VolunteerPostListItem = ({
-  post: { message, content },
   bottomDivider = true,
-  openWebScreen
+  openWebScreen,
+  post: { id, message, content },
+  setIsCollapsed,
+  setPostForModal,
+  userGuid
 }: {
+  bottomDivider: boolean;
+  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
     id: number;
     message: string;
@@ -21,18 +26,20 @@ export const VolunteerPostListItem = ({
       metadata: { created_by: { guid: string; display_name: string }; created_at: string };
     };
   };
-  bottomDivider: boolean;
-  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
+  setIsCollapsed: (isCollapsed: boolean) => void;
+  setPostForModal: (post: { id: number; message: string }) => void;
+  userGuid?: string | null;
 }) => {
   const { metadata } = content || {};
   const {
     created_by: { guid, display_name: displayName },
     created_at: createdAt
   } = metadata || { guid: '', display_name: '' };
+  const isUserAuthor = userGuid == guid;
 
   return (
-    <View>
-      <ListItem containerStyle={listItemStyles.avatarContainerStyle}>
+    <>
+      <ListItem containerStyle={styles.avatarContainerStyle}>
         <VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />
 
         <ListItem.Content>
@@ -48,31 +55,50 @@ export const VolunteerPostListItem = ({
             )}
           </RegularText>
         </ListItem.Content>
+
+        {isUserAuthor && (
+          <Badge
+            badgeStyle={styles.badge}
+            value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
+            onPress={() => {
+              setPostForModal({ id, message });
+              setIsCollapsed(false);
+            }}
+          />
+        )}
       </ListItem>
 
-      <ListItem bottomDivider={bottomDivider} containerStyle={listItemStyles.contentContainerStyle}>
+      <ListItem bottomDivider={bottomDivider} containerStyle={styles.contentContainerStyle}>
         <Markdown
           onLinkPress={(url) => {
             openLink(url, openWebScreen);
             return false;
           }}
-          style={styles.markdown}
+          style={configStyles.markdown}
         >
           {message}
         </Markdown>
       </ListItem>
-    </View>
+    </>
   );
 };
 
-const listItemStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   avatarContainerStyle: {
     backgroundColor: colors.transparent,
     paddingBottom: 0,
+    paddingHorizontal: normalize(0),
     paddingVertical: normalize(12)
+  },
+  badge: {
+    backgroundColor: colors.gray20,
+    borderRadius: normalize(40),
+    height: normalize(40),
+    width: normalize(40)
   },
   contentContainerStyle: {
     backgroundColor: colors.transparent,
+    paddingHorizontal: normalize(0),
     paddingVertical: normalize(12)
   }
 });
