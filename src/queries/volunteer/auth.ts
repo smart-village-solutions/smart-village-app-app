@@ -25,6 +25,7 @@ export const logIn = async ({ username, password }: { username: string; password
 export const register = async ({
   username,
   email,
+  firstname,
   password,
   passwordConfirmation,
   dataPrivacyCheck
@@ -33,6 +34,9 @@ export const register = async ({
     account: {
       username,
       email
+    },
+    profile: {
+      firstname
     },
     password: {
       newPassword: password,

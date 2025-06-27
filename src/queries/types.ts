@@ -90,6 +90,7 @@ export const QUERY_TYPES = {
     POSTS: 'posts',
     PROFILE: 'profile',
     TASKS: 'tasks',
+    USER_GROUPS: 'userGroups',
     USER: 'volunteerUser',
     USERS: 'volunteerUsers'
   } as const,
