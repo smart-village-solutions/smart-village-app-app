@@ -101,6 +101,7 @@ export const ImagesCarousel = ({
                 <ImagesCarouselItem
                   aspectRatio={aspectRatio}
                   button={item.button}
+                  buttons={item.buttons}
                   containerStyle={styles.imageContainer}
                   message={item.message}
                   navigation={navigation}
@@ -117,6 +118,7 @@ export const ImagesCarousel = ({
         <ImagesCarouselItem
           aspectRatio={aspectRatio}
           button={item.button}
+          buttons={item.buttons}
           containerStyle={styles.imageContainer}
           message={item.message}
           navigation={navigation}
