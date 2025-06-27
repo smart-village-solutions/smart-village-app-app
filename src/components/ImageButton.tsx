@@ -19,13 +19,24 @@ export type TImageButton = {
     notFullWidth?: boolean;
     small?: boolean;
     smallest?: boolean;
+    whiteInvert?: boolean;
   };
   title?: string;
 };
 
 export const ImageButton = ({ button }: { button: TImageButton }) => {
   const { iconName, params, routeName, style = {}, title } = button;
-  const { big, disabled, iconColor, iconPosition, invert, notFullWidth, small, smallest } = style;
+  const {
+    big,
+    disabled,
+    iconColor,
+    iconPosition,
+    invert,
+    notFullWidth,
+    small,
+    smallest,
+    whiteInvert
+  } = style;
 
   const SelectedIcon = Icon[iconName as keyof typeof Icon];
   const navigation = useNavigation();
@@ -40,7 +51,7 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
         icon={!!iconName && <SelectedIcon color={iconColor} />}
         title={title}
         onPress={() => navigation.navigate(routeName, params)}
-        {...{ big, disabled, iconPosition, invert, notFullWidth, small, smallest }}
+        {...{ big, disabled, iconPosition, invert, notFullWidth, small, smallest, whiteInvert }}
       />
     </Wrapper>
   );
