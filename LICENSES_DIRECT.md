@@ -818,6 +818,16 @@
     - publisher: Kiryl Ziusko
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-keyboard-controller
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-keyboard-controller/LICENSE
+- **[react-native-lightbox-v2@0.9.2](https://github.com/cbbfcd/react-native-lightbox)**
+    - name: react-native-lightbox-v2
+    - version: 0.9.2
+    - description: Images etc in Full Screen Lightbox Popovers for React Native
+    - copyright: Copyright (c) 2015 Joel Arvidsson
+    - licenses: MIT
+    - repository: https://github.com/cbbfcd/react-native-lightbox
+    - publisher: Joel Arvidsson
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-lightbox-v2
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-lightbox-v2/LICENSE
 - **[react-native-map-clustering@3.4.2](https://github.com/venits/react-native-map-clustering)**
     - name: react-native-map-clustering
     - version: 3.4.2
