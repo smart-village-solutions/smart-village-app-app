@@ -176,7 +176,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.description} />
           <WrapperHorizontal>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
+            <HtmlView html={description} openWebScreen={openWebScreen} selectable />
           </WrapperHorizontal>
         </WrapperVertical>
       )}

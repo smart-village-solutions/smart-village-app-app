@@ -171,7 +171,7 @@ export const EventRecord = ({ data, route }) => {
         <WrapperVertical>
           <SectionHeader title={texts.eventRecord.description} />
           <WrapperHorizontal>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
+            <HtmlView html={description} openWebScreen={openWebScreen} selectable />
           </WrapperHorizontal>
         </WrapperVertical>
       )}
