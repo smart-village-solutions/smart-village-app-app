@@ -89,17 +89,17 @@ export const VolunteerUserNotificationSettings = () => {
         <WrapperHorizontal key={keyExtractor(setting, index)}>
           <SettingsToggle
             item={{
-              title:
-                categories?.find((category) => category.id === setting.category)?.title ||
-                setting.key,
+              bottomDivider: true,
               description:
                 categories?.find((category) => category.id === setting.category)?.description ||
                 setting.key,
-              bottomDivider: true,
-              topDivider: index !== 0,
-              value: setting.isEnabled,
               onActivate: (revert) => onUpdate(setting, revert),
-              onDeactivate: (revert) => onUpdate(setting, revert)
+              onDeactivate: (revert) => onUpdate(setting, revert),
+              title:
+                categories?.find((category) => category.id === setting.category)?.title ||
+                setting.key,
+              topDivider: index !== 0,
+              value: setting.isEnabled
             }}
           />
         </WrapperHorizontal>
