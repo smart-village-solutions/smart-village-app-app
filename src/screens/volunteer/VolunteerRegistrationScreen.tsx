@@ -268,6 +268,9 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               notFullWidth
             />
             <TouchableOpacity onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
+              <RegularText small center>
+                {texts.volunteer.enterCodeInfo}
+              </RegularText>
               <RegularText primary center>
                 {texts.volunteer.enterCode}
               </RegularText>

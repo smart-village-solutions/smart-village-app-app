@@ -1353,6 +1353,10 @@ export const texts = {
     endDate: 'Enddatum',
     endTime: 'Endzeit',
     enterCode: 'Code eingeben',
+    enterCodeInfo:
+      'Bitte klicken Sie hier, wenn Sie bereits einen Bestätigungs-Code von uns erhalten haben:\n',
+    enterCodeSentInfo:
+      'Wir haben gerade einen Bestätigungs-Code an die von Ihnen angegebene E-Mail-Adresse versandt. Bitte geben Sie diesen Code in das entsprechende Feld ein.',
     entranceFee: 'Eintrittspreis',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
     errorLoadingUserNotificationSettings:

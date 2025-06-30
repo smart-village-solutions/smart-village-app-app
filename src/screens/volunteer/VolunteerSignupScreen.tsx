@@ -92,6 +92,9 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
         <ScrollView keyboardShouldPersistTaps="handled">
           <SectionHeader title={texts.volunteer.registrationTitle} big center />
           <Wrapper noPaddingTop>
+            <RegularText small>{texts.volunteer.enterCodeSentInfo}</RegularText>
+          </Wrapper>
+          <Wrapper noPaddingTop>
             <Input
               name="email"
               label={texts.volunteer.email}
