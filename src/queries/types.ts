@@ -91,6 +91,7 @@ export const QUERY_TYPES = {
     PROFILE: 'profile',
     TASKS: 'tasks',
     USER_GROUPS: 'userGroups',
+    USER_NOTIFICATION_SETTINGS: 'userNotificationSettings',
     USER: 'volunteerUser',
     USERS: 'volunteerUsers'
   } as const,
@@ -114,7 +115,10 @@ export const getQueryType = (input: string) => {
     QUERY_TYPES.TOUR,
     QUERY_TYPES.POINTS_OF_INTEREST,
     QUERY_TYPES.NEWS_ITEM,
-    QUERY_TYPES.EVENT_RECORD
+    QUERY_TYPES.EVENT_RECORD,
+    QUERY_TYPES.VOLUNTEER.HOME,
+    QUERY_TYPES.VOLUNTEER.CONVERSATION,
+    QUERY_TYPES.VOLUNTEER.GROUP
   ];
 
   // special condition used for push notifications coming from messaging

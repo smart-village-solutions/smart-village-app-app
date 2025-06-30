@@ -1355,6 +1355,8 @@ export const texts = {
     enterCode: 'Code eingeben',
     entranceFee: 'Eintrittspreis',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
+    errorLoadingUserNotificationSettings:
+      'Beim Laden deiner Einstellungen ist ein Fehler aufgetreten. Bitte erneut versuchen.',
     eventRecord: {
       appointments: 'Termine'
     },
@@ -1419,6 +1421,7 @@ export const texts = {
     next: 'Weiter',
     noGroups: 'Dir gehören keine Gruppen oder Vereine, in denen du Termine eintragen könntest.',
     notAttend: 'Nicht mehr interessiert',
+    notificationsTitle: 'Benachrichtigungen',
     noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
     ok: 'OK',
     organizer: 'Veranstalter',
