@@ -484,7 +484,7 @@ export const texts = {
     result: 'Ergebnis',
     results: 'Ergebnisse',
     showFilter: 'Filter anzeigen',
-    search: 'Was suchen Sie?',
+    search: 'Suche Gruppen anhand ihrer Beschreibung',
     settings: 'Filtereinstellungen',
     sorting: {
       alphabetical: 'Alphabetisch',
