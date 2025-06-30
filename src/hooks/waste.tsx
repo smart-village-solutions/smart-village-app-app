@@ -151,18 +151,14 @@ export const useFilterCities = (isCityInputFocused: boolean) => {
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const { isInputAutoFocus, cityCount: wasteAddressesCityCount = 5 } = wasteAddresses;
-  const { getStreetString } = useStreetString();
 
-  // show cities that contain the string in it
-  // return empty list on an exact match (except for capitalization)
+  // filter cities that contain the string in it
   const filterCities = useCallback(
     (currentInputValue, addressesData) => {
       if (isInputAutoFocus && currentInputValue === '' && !isCityInputFocused) return [];
 
-      const cities = addressesData?.filter(
-        (address) =>
-          address.city !== currentInputValue &&
-          address.city?.toLowerCase().includes(currentInputValue.toLowerCase())
+      const cities = addressesData?.filter((address) =>
+        address.city?.toLowerCase().includes(currentInputValue?.toLowerCase())
       );
 
       const sortedCities = _sortBy(_uniqBy(cities, 'city'), 'city');
@@ -173,7 +169,7 @@ export const useFilterCities = (isCityInputFocused: boolean) => {
 
       return sortedCities.slice(0, wasteAddressesCityCount);
     },
-    [getStreetString, isCityInputFocused]
+    [isCityInputFocused]
   );
 
   return {
@@ -192,9 +188,8 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
   } = wasteAddresses;
   const { getStreetString } = useStreetString();
 
-  // show streets that contain the string in it
+  // filter streets that contain the string in it
   // consider the city if it is set because of the two step process
-  // return empty list on an exact match (except for capitalization)
   const filterStreets = useCallback(
     (currentInputValue, addressesData) => {
       if (hasWasteAddressesTwoStep && inputValueCity === '') return [];
@@ -204,10 +199,7 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
         ?.filter((address) => {
           const street = getStreetString(address);
 
-          return (
-            street !== currentInputValue &&
-            street?.toLowerCase().includes(currentInputValue.toLowerCase())
-          );
+          return street?.toLowerCase().includes(currentInputValue.toLowerCase());
         })
         ?.filter((address) => (hasWasteAddressesTwoStep ? address.city === inputValueCity : true));
 
