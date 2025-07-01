@@ -1,4 +1,3 @@
-import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
@@ -161,7 +160,7 @@ export const useFilterCities = (isCityInputFocused: boolean) => {
         address.city?.toLowerCase().includes(currentInputValue?.toLowerCase())
       );
 
-      const sortedCities = _sortBy(_uniqBy(cities, 'city'), 'city');
+      const sortedCities = _uniqBy(cities, 'city');
 
       if (isInputAutoFocus) {
         return sortedCities;
@@ -203,13 +202,11 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
         })
         ?.filter((address) => (hasWasteAddressesTwoStep ? address.city === inputValueCity : true));
 
-      const sortedStreets = _sortBy(streets, 'street');
-
       if (isInputAutoFocus) {
-        return sortedStreets;
+        return streets;
       }
 
-      return sortedStreets.slice(0, wasteAddressesStreetCount);
+      return streets.slice(0, wasteAddressesStreetCount);
     },
     [getStreetString, inputValueCity, isStreetInputFocused]
   );
