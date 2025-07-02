@@ -203,10 +203,10 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
         ?.filter((address) => (hasWasteAddressesTwoStep ? address.city === inputValueCity : true));
 
       if (isInputAutoFocus) {
-        return streets;
+        return streets || [];
       }
 
-      return streets.slice(0, wasteAddressesStreetCount);
+      return streets.slice(0, wasteAddressesStreetCount) || [];
     },
     [getStreetString, inputValueCity, isStreetInputFocused]
   );
