@@ -157,7 +157,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
       return;
     }
 
-    const item = addressesData.find((address) => {
+    const item = addressesData?.find((address) => {
       if (hasWasteAddressesTwoStep) {
         return (
           address.city === inputValueCity &&
