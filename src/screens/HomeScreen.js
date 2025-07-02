@@ -274,7 +274,7 @@ export const HomeScreen = ({ navigation, route }) => {
         )
       });
     }
-  }, [globalSettings?.settings?.search]);
+  }, [globalSettings?.settings?.search, navigation, route]);
 
   const data = [
     {

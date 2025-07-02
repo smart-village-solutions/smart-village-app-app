@@ -2,10 +2,9 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Keyboard, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { Icon, colors, consts, normalize, texts } from '../config';
-
-import { WrapperRow } from './Wrapper';
-import { Input } from './form';
+import { Icon, colors, consts, normalize, texts } from '../../config';
+import { WrapperRow } from '../Wrapper';
+import { Input } from '../form';
 
 const { a11yLabel } = consts;
 

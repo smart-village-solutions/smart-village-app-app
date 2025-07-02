@@ -1044,7 +1044,15 @@ export const texts = {
   },
   search: {
     abort: 'Abbrechen',
-    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren'
+    noResults: 'Keine Ergebnisse gefunden.',
+    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren',
+    pleaseSearch: 'Bitte geben Sie einen Suchbegriff ein.',
+    recordTypes: {
+      eventRecord: 'Veranstaltungen',
+      newsItem: 'Nachrichten',
+      pointOfInterest: 'Orte',
+      tour: 'Touren'
+    }
   },
   serviceTiles: {
     done: 'Fertig',

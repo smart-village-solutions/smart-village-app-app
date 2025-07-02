@@ -58,8 +58,8 @@ export const QUERY_TYPES = {
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   RESOURCE_FILTERS: 'resourceFilters',
+  SEARCH: 'search',
   STATIC_CONTENT_LIST: 'staticContentList',
-  TOUR: 'tour',
   SUE: {
     AREA_SERVICE: 'areaService',
     CONFIGURATIONS: 'configurations',
@@ -71,6 +71,7 @@ export const QUERY_TYPES = {
     STATUSES: 'statuses'
   },
   TOUR_STOPS: 'tourStops',
+  TOUR: 'tour',
   TOURS: 'tours',
   VOLUNTEER: {
     APPLICANTS: 'applicants',
