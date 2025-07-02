@@ -89,6 +89,7 @@ export * from './Radiobutton';
 export * from './Results';
 export * from './SafeAreaViewFlex';
 export * from './Search';
+export * from './SearchHeader';
 export * from './SectionHeader';
 export * from './ServiceBox';
 export * from './SettingsToggle';

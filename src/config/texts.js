@@ -1013,6 +1013,7 @@ export const texts = {
     },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
+    search: 'Suche',
     service: 'Service',
     settings: 'Einstellungen',
     sue: {
@@ -1040,6 +1041,10 @@ export const texts = {
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
+  },
+  search: {
+    abort: 'Abbrechen',
+    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren'
   },
   serviceTiles: {
     done: 'Fertig',

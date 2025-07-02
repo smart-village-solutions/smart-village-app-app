@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -9,6 +9,7 @@ import {
   About,
   ConnectedImagesCarousel,
   Disturber,
+  HeaderRight,
   HomeSection,
   HomeService,
   LiveTicker,
@@ -258,6 +259,22 @@ export const HomeScreen = ({ navigation, route }) => {
       }, 500);
     }, [])
   );
+
+  useLayoutEffect(() => {
+    if (globalSettings?.settings?.search) {
+      navigation.setOptions({
+        headerRight: () => (
+          <HeaderRight
+            {...{
+              navigation,
+              route,
+              withSearch: true
+            }}
+          />
+        )
+      });
+    }
+  }, [globalSettings?.settings?.search]);
 
   const data = [
     {

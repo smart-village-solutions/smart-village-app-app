@@ -69,6 +69,7 @@ export enum ScreenName {
   ProfileResetPassword = 'ProfileResetPassword',
   ProfileSignup = 'ProfileSignup',
   ProfileUpdate = 'ProfileUpdate',
+  Search = 'Search',
   Service = 'Service',
   Settings = 'Settings',
   SueHome = 'SueHome',
