@@ -56,4 +56,4 @@ describe('testing Wrapper style component', () => {
     const tree = renderer.create(<InfoBox />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-
+});
