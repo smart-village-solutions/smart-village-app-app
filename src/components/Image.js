@@ -135,7 +135,9 @@ export const Image = ({
             {!!message && <ImageMessage message={message} />}
             {!!button && <ImageButton button={button} />}
             {!!buttons?.length &&
-              buttons.map((button, index) => <ImageButton key={index} button={button} />)}
+              buttons.map((button, index) => (
+                <ImageButton key={`${button.title}-${index}`} button={button} />
+              ))}
             {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
           </View>
         )}
