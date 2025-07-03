@@ -53,17 +53,19 @@ export const SETTINGS_SCREENS = {
   PERMANENT_FILTER: 'permanentFilterSettings'
 };
 
-const renderItem = ({ item, navigation, listsWithoutArrows }) => {
+/* eslint-disable complexity */
+const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListItemTitles }) => {
   let component;
+  const title = settingsScreenListItemTitles[item];
 
   if (item === SETTINGS_SCREENS.LOCATION) {
     component = (
       <TextListItem
         item={{
           isHeadlineTitle: false,
-          params: { setting: item, title: texts.settingsContents.locationService.setting },
+          params: { setting: item, title: title || texts.settingsContents.locationService.setting },
           routeName: ScreenName.Settings,
-          title: texts.settingsContents.locationService.setting,
+          title: title || texts.settingsContents.locationService.setting,
           topDivider: true
         }}
         listsWithoutArrows={listsWithoutArrows}
@@ -75,9 +77,9 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
       <TextListItem
         item={{
           isHeadlineTitle: false,
-          params: { setting: item, title: texts.settingsContents.permanentFilter.setting },
+          params: { setting: item, title: title || texts.settingsContents.permanentFilter.setting },
           routeName: ScreenName.Settings,
-          title: texts.settingsContents.permanentFilter.setting
+          title: title || texts.settingsContents.permanentFilter.setting
         }}
         listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
@@ -88,9 +90,9 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
       <TextListItem
         item={{
           isHeadlineTitle: false,
-          params: { setting: item, title: texts.settingsContents.mowasRegion.setting },
+          params: { setting: item, title: title || texts.settingsContents.mowasRegion.setting },
           routeName: ScreenName.Settings,
-          title: texts.settingsContents.mowasRegion.setting
+          title: title || texts.settingsContents.mowasRegion.setting
         }}
         listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
@@ -101,9 +103,9 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
       <TextListItem
         item={{
           isHeadlineTitle: false,
-          params: { setting: item, title: texts.settingsContents.list.setting },
+          params: { setting: item, title: title || texts.settingsContents.list.setting },
           routeName: ScreenName.Settings,
-          title: texts.settingsContents.list.setting
+          title: title || texts.settingsContents.list.setting
         }}
         listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
@@ -114,9 +116,9 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
       <TextListItem
         item={{
           isHeadlineTitle: false,
-          params: { setting: item, title: texts.settingsContents.ar.setting },
+          params: { setting: item, title: title || texts.settingsContents.ar.setting },
           routeName: ScreenName.Settings,
-          title: texts.settingsContents.ar.setting
+          title: title || texts.settingsContents.ar.setting
         }}
         listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
@@ -128,6 +130,7 @@ const renderItem = ({ item, navigation, listsWithoutArrows }) => {
 
   return component;
 };
+/* eslint-enable complexity */
 
 renderItem.propTypes = {
   item: PropTypes.object.isRequired,
@@ -172,7 +175,7 @@ const onDeactivatePushNotifications = (revert) => {
 export const SettingsScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
-  const { listsWithoutArrows = false } = settings;
+  const { listsWithoutArrows = false, settingsScreenListItemTitles = {} } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
 
@@ -190,7 +193,9 @@ export const SettingsScreen = ({ navigation, route }) => {
         settingsList.push({
           data: [
             {
-              title: texts.settingsTitles.pushNotifications,
+              title:
+                settingsScreenListItemTitles.pushNotifications ||
+                texts.settingsTitles.pushNotifications,
               topDivider: false,
               value: pushPermission,
               onActivate: onActivatePushNotifications,
@@ -207,7 +212,7 @@ export const SettingsScreen = ({ navigation, route }) => {
         settingsList.push({
           data: [
             {
-              title: texts.settingsTitles.analytics,
+              title: settingsScreenListItemTitles.matomo || texts.settingsTitles.analytics,
               topDivider: true,
               value: matomoValue,
               onActivate: (revert) =>
@@ -255,7 +260,7 @@ export const SettingsScreen = ({ navigation, route }) => {
         settingsList.push({
           data: [
             {
-              title: texts.settingsTitles.onboarding,
+              title: settingsScreenListItemTitles.onboarding || texts.settingsTitles.onboarding,
               topDivider: true,
               value: onboarding === 'incomplete',
               onActivate: () =>
@@ -296,7 +301,9 @@ export const SettingsScreen = ({ navigation, route }) => {
         settingsList.push({
           data: [
             {
-              title: texts.settingsTitles.termsAndConditions,
+              title:
+                settingsScreenListItemTitles.termsAndConditions ||
+                texts.settingsTitles.termsAndConditions,
               topDivider: true,
               value: termsAndConditionsAccepted === 'accepted',
               onActivate: () => null,
@@ -398,7 +405,9 @@ export const SettingsScreen = ({ navigation, route }) => {
           initialNumToRender={100}
           keyExtractor={keyExtractor}
           sections={data}
-          renderItem={({ item }) => renderItem({ item, navigation, listsWithoutArrows })}
+          renderItem={({ item }) =>
+            renderItem({ item, navigation, listsWithoutArrows, settingsScreenListItemTitles })
+          }
           ListHeaderComponent={
             !!texts.settingsScreen.intro && (
               <Wrapper>
