@@ -15,12 +15,12 @@ export const Button = ({
   icon,
   iconPosition = 'right',
   invert = false,
+  lightest = false,
   notFullWidth = false,
   onPress,
   small,
   smallest,
-  title,
-  whiteInvert = false
+  title
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
@@ -62,7 +62,7 @@ export const Button = ({
         big && styles.bigTitle,
         small && styles.smallTitle,
         smallest && styles.smallestTitle,
-        whiteInvert && styles.titleWhiteInvert
+        lightest && styles.titleLightest
       ]}
       disabledStyle={styles.buttonDisabled}
       disabledTitleStyle={styles.title}
@@ -74,10 +74,10 @@ export const Button = ({
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
         smallest && [styles.smallestButton, styles.smallestButtonRadius],
-        whiteInvert && [styles.buttonInvert, styles.whiteInvert]
+        lightest && styles.lightestBorderColor
       ]}
       containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
-      ViewComponent={invert || whiteInvert || isDelete || disabled ? undefined : DiagonalGradient}
+      ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
@@ -150,6 +150,9 @@ const styles = StyleSheet.create({
     marginLeft: normalize(-14),
     paddingRight: normalize(14)
   },
+  lightestBorderColor: {
+    borderColor: colors.surface
+  },
   rejectButton: {
     backgroundColor: colors.error
   },
@@ -183,11 +186,8 @@ const styles = StyleSheet.create({
   titleLandscape: {
     paddingHorizontal: normalize(14)
   },
-  titleWhiteInvert: {
-    color: colors.surface
-  },
-  whiteInvert: {
-    borderColor: colors.surface
+  titleLightest: {
+    color: colors.lightestText
   }
 });
 
@@ -197,10 +197,10 @@ Button.propTypes = {
   icon: PropTypes.node,
   iconPosition: PropTypes.string,
   invert: PropTypes.bool,
+  lightest: PropTypes.bool,
   notFullWidth: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
   small: PropTypes.bool,
   smallest: PropTypes.bool,
-  title: PropTypes.string.isRequired,
-  whiteInvert: PropTypes.bool
+  title: PropTypes.string.isRequired
 };
