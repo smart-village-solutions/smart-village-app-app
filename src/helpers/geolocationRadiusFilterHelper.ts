@@ -63,7 +63,7 @@ export const geoLocationFilteredListItem = ({
   const lng =
     currentPosition?.coords.longitude ||
     alternativePosition?.coords.longitude ||
-    defaultAlternativePosition?.coords.latitude;
+    defaultAlternativePosition?.coords.longitude;
 
   if (queryVariables.radiusSearch.currentPosition) {
     if (!locationServiceEnabled && !isLocationAlertShow) {
