@@ -201,17 +201,14 @@ export const SearchScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
         inputContainerStyle={styles.inputContainerStyle}
+        lightTheme
         loadingProps={{
           color: colors.darkerPrimary
         }}
         onChangeText={setSearch}
         placeholder={searchTexts.placeholder}
         placeholderTextColor={colors.placeholder}
-        platform={
-          device.platform === 'windows' || device.platform === 'macos' || device.platform === 'web'
-            ? 'default'
-            : device.platform
-        }
+        platform={device.platform === 'ios' ? device.platform : 'default'}
         ref={searchBarRef}
         searchIcon={() => <Icon.Search color={colors.darkerPrimary} />}
         showCancel
