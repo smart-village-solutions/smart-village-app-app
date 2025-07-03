@@ -15,6 +15,7 @@ export const Button = ({
   icon,
   iconPosition = 'right',
   invert = false,
+  lightest = false,
   notFullWidth = false,
   onPress,
   small,
@@ -60,7 +61,8 @@ export const Button = ({
         needLandscapeStyle && styles.titleLandscape,
         big && styles.bigTitle,
         small && styles.smallTitle,
-        smallest && styles.smallestTitle
+        smallest && styles.smallestTitle,
+        lightest && styles.titleLightest
       ]}
       disabledStyle={styles.buttonDisabled}
       disabledTitleStyle={styles.title}
@@ -71,7 +73,8 @@ export const Button = ({
         !invert && isDelete && styles.rejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
-        smallest && [styles.smallestButton, styles.smallestButtonRadius]
+        smallest && [styles.smallestButton, styles.smallestButtonRadius],
+        lightest && styles.lightestBorderColor
       ]}
       containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
       ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
@@ -147,6 +150,9 @@ const styles = StyleSheet.create({
     marginLeft: normalize(-14),
     paddingRight: normalize(14)
   },
+  lightestBorderColor: {
+    borderColor: colors.surface
+  },
   rejectButton: {
     backgroundColor: colors.error
   },
@@ -179,6 +185,9 @@ const styles = StyleSheet.create({
   },
   titleLandscape: {
     paddingHorizontal: normalize(14)
+  },
+  titleLightest: {
+    color: colors.lightestText
   }
 });
 
@@ -188,6 +197,7 @@ Button.propTypes = {
   icon: PropTypes.node,
   iconPosition: PropTypes.string,
   invert: PropTypes.bool,
+  lightest: PropTypes.bool,
   notFullWidth: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
   small: PropTypes.bool,
