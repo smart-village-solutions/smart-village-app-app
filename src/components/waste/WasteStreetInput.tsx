@@ -7,6 +7,7 @@ import { useFilterStreets, useKeyboardHeight, useWasteAddresses } from '../../ho
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Wrapper } from '../Wrapper';
 
 type Props = {
@@ -33,9 +34,10 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
   } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const { inputValue, inputValueCity, setInputValue, renderSuggestion } = renderSuggestions;
-  const { data } = useWasteAddresses({ minSearchLength, search: inputValue });
+  const { data, loading } = useWasteAddresses({ minSearchLength, search: inputValue });
   const { filterStreets } = useFilterStreets(inputValueCity, isFocused);
   const streets = filterStreets(inputValue, data?.wasteAddresses);
+  const isLoading = inputValue.length >= minSearchLength && loading;
   const keyboardHeight = useKeyboardHeight();
   const listContainerHeight = useMemo(() => {
     const listLength = streets?.length ?? 0;
@@ -89,6 +91,7 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
         style={styles.autoCompleteInput}
         value={inputValue}
       />
+      <LoadingSpinner loading={isLoading} />
     </Wrapper>
   );
 };
