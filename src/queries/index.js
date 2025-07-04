@@ -34,6 +34,7 @@ import { GET_CONVERSATIONS, GET_MESSAGES, member } from './profile';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { GET_RESOURCE_FILTERS } from './resourceFilters';
+import { GET_SEARCH } from './search';
 import {
   areaService,
   configurations,
@@ -97,6 +98,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.PUBLIC_HTML_FILE]: GET_PUBLIC_HTML_FILE,
     [QUERY_TYPES.PUBLIC_JSON_FILE]: GET_PUBLIC_JSON_FILE,
     [QUERY_TYPES.RESOURCE_FILTERS]: GET_RESOURCE_FILTERS,
+    [QUERY_TYPES.SEARCH]: GET_SEARCH,
     [QUERY_TYPES.TOUR_STOPS]: GET_TOUR_STOPS,
     [QUERY_TYPES.TOUR]: GET_TOUR,
     [QUERY_TYPES.TOURS]: GET_TOURS,

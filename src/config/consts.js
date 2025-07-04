@@ -58,6 +58,8 @@ export const consts = {
     price: '(Preis)',
     privacy: 'Datenschutz',
     required: '(Erforderlich)',
+    searchHint: 'Nach Inhalten suchen',
+    searchIcon: 'Suchen (Taste)',
     settingsHint: 'Anpassen des Layouts von',
     settingsIcon: 'Einstellungen (Taste)',
     settingsIconHint: 'Zu den Einstellungen wechseln',

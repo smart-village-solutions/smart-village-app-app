@@ -220,6 +220,7 @@ export const Icon = {
   RadioButtonFilled: (props: IconProps) => <NamedIcon name="circle-filled" {...props} />,
   Rain: (props: IconProps) => <SvgIcon xml={rain} {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
+  Search: (props: IconProps) => <NamedIcon name="search" {...props} />,
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => <NamedIcon name="settings" {...props} />,

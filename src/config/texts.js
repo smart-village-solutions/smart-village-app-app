@@ -1013,6 +1013,7 @@ export const texts = {
     },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
+    search: 'Suche',
     service: 'Service',
     settings: 'Einstellungen',
     sue: {
@@ -1040,6 +1041,18 @@ export const texts = {
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
+  },
+  search: {
+    abort: 'Abbrechen',
+    noResults: 'Keine Ergebnisse gefunden.',
+    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren',
+    pleaseSearch: 'Bitte geben Sie einen Suchbegriff ein.',
+    recordTypes: {
+      eventRecord: 'Veranstaltungen',
+      newsItem: 'Nachrichten',
+      pointOfInterest: 'Orte',
+      tour: 'Touren'
+    }
   },
   serviceTiles: {
     done: 'Fertig',

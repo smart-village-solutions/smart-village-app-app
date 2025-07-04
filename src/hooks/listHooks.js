@@ -8,6 +8,7 @@ import {
   ConversationListItem,
   GroupedListItem,
   GroupedSectionHeader,
+  SearchResultSectionList,
   SectionHeader,
   VoucherListItem,
   WasteCollectionListItem
@@ -194,6 +195,18 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return <GroupedSectionHeader item={item} />;
         }
 
+        if (query === QUERY_TYPES.SEARCH) {
+          return (
+            <SearchResultSectionList
+              data={item}
+              listsWithoutArrows={listsWithoutArrows}
+              navigation={navigation}
+              noOvertitle={options.noOvertitle}
+              noSubtitle={options.noSubtitle}
+            />
+          );
+        }
+
         if (query === QUERY_TYPES.WASTE_STREET) {
           return <WasteCollectionListItem item={item} options={options.queryVariables} />;
         }
@@ -335,7 +348,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
  *
  * @param {string} query - String used to specify the method of grouping.
  * @param {Array} data - An array of objects to be grouped. Objects should contain a property with the date format "YYYY-MM-DD".
- * @param {Array} groupKey - The key used to group the data.
+ * @param {String} groupKey - The key used to group the data.
  * @returns {Array} The returned array contains grouped objects and their corresponding month. Each month is followed by objects published in it.
  *
  * @inner
