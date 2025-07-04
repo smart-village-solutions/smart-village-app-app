@@ -217,32 +217,34 @@ export const GET_GENERIC_ITEM = gql`
 
 export const CREATE_GENERIC_ITEM = gql`
   mutation createGenericItem(
-    $id: ID
     $addresses: [AddressInput!]
     $categoryName: String
     $contacts: [ContactInput!]
     $contentBlocks: [ContentBlockInput!]
     $dates: [DateInput!]
+    $forceCreate: Boolean = false
     $genericType: String
+    $id: ID
     $mediaContents: [MediaContentInput!]
+    $payload: JSON
     $priceInformations: [PriceInput!]
     $publishedAt: String
     $title: String
-    $forceCreate: Boolean = false
   ) {
     createGenericItem(
-      id: $id
       addresses: $addresses
       categoryName: $categoryName
       contacts: $contacts
       contentBlocks: $contentBlocks
       dates: $dates
+      forceCreate: $forceCreate
       genericType: $genericType
+      id: $id
       mediaContents: $mediaContents
+      payload: $payload
       priceInformations: $priceInformations
       publishedAt: $publishedAt
       title: $title
-      forceCreate: $forceCreate
     ) {
       id
     }
