@@ -1,8 +1,9 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, device, Icon, normalize } from '../config';
+import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
 const { a11yLabel } = consts;
@@ -13,6 +14,12 @@ type Props = {
 };
 
 export const SearchHeader = ({ navigation, style }: Props) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { search = {} } = settings;
+
+  if (!search) return null;
+
   return (
     <TouchableOpacity
       onPress={() =>
