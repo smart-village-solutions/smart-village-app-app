@@ -6,6 +6,7 @@ import { PersonData } from '../../types';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { getOrganizationNameString } from './oParlHelpers';
+import { FormattedLocation, hasLocationData } from './previews';
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
@@ -52,6 +53,8 @@ export const Person = ({ data, navigation }: Props) => {
     (membership) => membership.organization?.classification === 'Fraktion' && !membership.endDate
   );
 
+  const formattedLocation = location && <FormattedLocation location={location} />;
+
   return (
     <>
       <WrapperHorizontal>
@@ -93,7 +96,11 @@ export const Person = ({ data, navigation }: Props) => {
           fullText
         />
       </WrapperHorizontal>
-      <OParlPreviewSection data={location} header={personTexts.location} navigation={navigation} />
+      <OParlPreviewSection
+        data={location}
+        header={personTexts.location}
+        navigation={hasLocationData(location) ? navigation : undefined}
+      />
       <OParlPreviewSection data={body} header={personTexts.body} navigation={navigation} />
       <OParlPreviewSection
         data={membership}

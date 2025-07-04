@@ -79,7 +79,7 @@ const useListData = (
           ) ?? []
       );
     } else {
-      setListData((persons ?? []).filter((person: PersonPreviewData) => !person.deleted));
+      setListData(persons.filter((person: PersonPreviewData) => !person.deleted));
     }
   }, [organization, personData, setListData]);
 
@@ -133,23 +133,31 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
   const listData = useListData(orgaData?.[organizationMembersQueryName][0], personData);
 
   const onEndReached = async () => {
-    if (fetchingMore) return;
+    if (fetchingMore || selectedOrganization?.id) return;
 
     setFetchingMore(true);
-    if (!selectedOrganization?.id) {
-      await personFetchMore({
-        variables: { pageSize, offset: personData?.[personQueryName]?.length },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult?.[personQueryName].length) {
-            setFinished(true);
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            [personQueryName]: [...prev[personQueryName], ...fetchMoreResult[personQueryName]]
-          });
+
+    await personFetchMore({
+      variables: { pageSize, offset: personData?.[personQueryName]?.length },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult?.[personQueryName].length) {
+          setFinished(true);
+          return prev;
         }
-      });
-    }
+
+        // Deduplicate persons by id
+        const uniquePersons = [
+          ...prev[personQueryName],
+          ...fetchMoreResult[personQueryName]
+        ].filter((item, index, self) => self.findIndex((p) => p.id === item.id) === index);
+
+        return {
+          ...prev,
+          [personQueryName]: uniquePersons
+        };
+      }
+    });
+
     setFetchingMore(false);
   };
 
@@ -166,6 +174,8 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
       </SafeAreaViewFlex>
     );
   }
+
+  console.log({ listDataCount: listData.length });
 
   return (
     <SafeAreaViewFlex>

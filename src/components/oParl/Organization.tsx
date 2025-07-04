@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useCallback } from 'react';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -7,7 +7,7 @@ import { OrganizationData } from '../../types';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
-import { FormattedLocation } from './previews';
+import { FormattedLocation, hasLocationData } from './previews';
 import {
   KeywordSection,
   ModifiedSection,
@@ -109,12 +109,15 @@ export const Organization = ({ data, navigation }: Props) => {
           left={organizationTexts.location}
           right={formattedLocation}
           leftWidth={leftWidth}
-          onPress={() =>
-            navigation.push('OParlDetail', {
-              type: location?.type,
-              id: location?.id,
-              title: texts.oparl.location.location
-            })
+          onPress={
+            hasLocationData(location)
+              ? () =>
+                  navigation.push('OParlDetail', {
+                    type: location?.type,
+                    id: location?.id,
+                    title: texts.oparl.location.location
+                  })
+              : undefined
           }
         />
       </WrapperHorizontal>

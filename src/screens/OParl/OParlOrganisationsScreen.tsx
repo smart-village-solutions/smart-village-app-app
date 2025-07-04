@@ -44,6 +44,7 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
     if (fetchingMore) return;
 
     setFetchingMore(true);
+
     await fetchMore({
       variables: { pageSize, offset: data?.[queryName]?.length },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -51,11 +52,19 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
           setFinished(true);
           return prev;
         }
-        return Object.assign({}, prev, {
-          [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
-        });
+
+        // Deduplicate persons by id
+        const uniqueOrganizations = [...prev[queryName], ...fetchMoreResult[queryName]].filter(
+          (item, index, self) => self.findIndex((o) => o.id === item.id) === index
+        );
+
+        return {
+          ...prev,
+          [queryName]: uniqueOrganizations
+        };
       }
     });
+
     setFetchingMore(false);
   };
 
@@ -77,6 +86,7 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <FlatList
         data={listData}
+        initialNumToRender={pageSize}
         keyExtractor={keyExtractor}
         renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
         onEndReachedThreshold={1.5}

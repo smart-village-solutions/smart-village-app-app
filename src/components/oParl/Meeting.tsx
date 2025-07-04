@@ -7,7 +7,7 @@ import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 import { getSortedAgendaItems } from './oParlHelpers';
-import { FormattedLocation } from './previews';
+import { FormattedLocation, hasLocationData } from './previews';
 import { Row, SimpleRow } from './Row';
 import {
   DateSection,
@@ -65,13 +65,16 @@ export const Meeting = ({ data, navigation }: Props) => {
         <Row
           left={meetingTexts.location}
           right={formattedLocation}
-          onPress={() => {
-            navigation.push('OParlDetail', {
-              type: location?.type,
-              id: location?.id,
-              title: texts.oparl.location.location
-            });
-          }}
+          onPress={
+            hasLocationData(location)
+              ? () =>
+                  navigation.push('OParlDetail', {
+                    type: location?.type,
+                    id: location?.id,
+                    title: texts.oparl.location.location
+                  })
+              : undefined
+          }
         />
         <Row left={meetingTexts.meetingState} right={meetingState} />
       </WrapperHorizontal>
