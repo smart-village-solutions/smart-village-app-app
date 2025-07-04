@@ -142,13 +142,11 @@ export const Map = ({
   const { zoomLevelForMaps = {}, locationService = {} } = settings;
   const { locationSettings } = useLocationSettings();
   const [mapLoaded, setMapLoaded] = useState(false);
-
   const showsUserLocation =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const zoom = isMultipleMarkersMap
     ? zoomLevelForMaps.multipleMarkers
     : zoomLevelForMaps.singleMarker;
-
   const refForMapView = useRef<MapView>(null);
   // LATITUDE_DELTA handles the zoom, see: https://github.com/react-native-maps/react-native-maps/issues/2129#issuecomment-457056572
   const LATITUDE_DELTA = zoom || 0.0922;

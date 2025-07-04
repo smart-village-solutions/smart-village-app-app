@@ -160,10 +160,10 @@ export const Overviews = ({ navigation, route }) => {
     locationServiceEnabled &&
     (locationService.sortByDistance ?? true);
   const { loading: loadingPosition, position } = usePosition(
-    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
   const { position: lastKnownPosition } = useLastKnownPosition(
-    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
   const currentPosition = position || lastKnownPosition;
   const title = route.params?.title ?? '';

@@ -60,16 +60,19 @@ export const sortPOIsByDistanceFromPosition = (pointsOfInterest: any[], position
   sortByDistancesFromPoint(pointsOfInterest, getLatLonForPOI, position);
 
 export const geoLocationToLocationObject = (geoLocation: {
-  latitude: number;
-  longitude: number;
+  lat?: number;
+  latitude?: number;
+  lng?: number;
+  longitude?: number;
 }): LocationObject => {
   return {
     coords: {
-      ...geoLocation,
-      altitude: null,
       accuracy: null,
+      altitude: null,
       altitudeAccuracy: null,
       heading: null,
+      latitude: (geoLocation.latitude || geoLocation.lat) as number,
+      longitude: (geoLocation.longitude || geoLocation.lng) as number,
       speed: null
     },
     timestamp: new Date().valueOf()
