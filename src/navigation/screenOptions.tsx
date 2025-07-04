@@ -1,10 +1,11 @@
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import { colors, normalize } from '../config';
+import { SettingsContext } from '../SettingsProvider';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -12,28 +13,30 @@ type OptionProps = {
 };
 
 type OptionConfig = {
+  cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
+  noHeaderLeft?: boolean;
   withBookmark?: boolean;
   withDelete?: boolean;
   withDrawer?: boolean;
   withFavorites?: boolean;
-  withShare?: boolean;
   withInfo?: boolean;
-  noHeaderLeft?: boolean;
-  cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
+  withShare?: boolean;
 };
 
 export const getScreenOptions =
   ({
+    cardStyleInterpolator,
+    noHeaderLeft = false,
     withBookmark,
     withDelete,
     withDrawer,
     withFavorites,
-    withShare,
     withInfo,
-    noHeaderLeft = false,
-    cardStyleInterpolator
+    withShare
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
+    const { globalSettings } = useContext(SettingsContext);
+
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
@@ -49,8 +52,9 @@ export const getScreenOptions =
             withBookmark,
             withDelete,
             withDrawer,
-            withShare,
-            withInfo
+            withInfo,
+            withSearch: !!globalSettings?.settings?.search,
+            withShare
           }}
         />
       ),

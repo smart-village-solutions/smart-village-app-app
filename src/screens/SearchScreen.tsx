@@ -5,7 +5,13 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useQueries, useQuery } from 'react-query';
 
-import { EmptyMessage, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  DefaultKeyboardAvoidingView,
+  EmptyMessage,
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper
+} from '../components';
 import { colors, device, Icon, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { useRenderItem } from '../hooks';
@@ -97,14 +103,16 @@ export const SearchScreen = ({ navigation }) => {
   );
 
   const sections = useMemo(() => {
-    const arr = [];
+    if (!data?.[query]) return [];
 
-    (data?.[query] || []).forEach((item) => {
+    const sectionsFromData = [];
+
+    data?.[query].forEach((item) => {
       if (!item.id || !item.recordType) return;
 
       const recordType = item.recordType;
 
-      let section = arr.find((s) => s.recordType === recordType);
+      let section = sectionsFromData.find((s) => s.recordType === recordType);
 
       if (!section) {
         section = {
@@ -112,13 +120,13 @@ export const SearchScreen = ({ navigation }) => {
           recordType,
           title: searchTexts.recordTypes?.[_camelCase(recordType)] || recordType
         };
-        arr.push(section);
+        sectionsFromData.push(section);
       }
 
       section.ids.push(item.id);
     });
 
-    return arr;
+    return sectionsFromData;
   }, [data, query, searchTexts]);
 
   const recordTypeQueries = useQueries(
@@ -141,7 +149,7 @@ export const SearchScreen = ({ navigation }) => {
   );
 
   const sectionedData = useMemo(() => {
-    const arr = [];
+    const sectionedDataFromSections = [];
 
     sections.forEach((section, index) => {
       const recordTypeQuery = recordTypeQueries[index];
@@ -161,11 +169,11 @@ export const SearchScreen = ({ navigation }) => {
 
       if (!items || items.length === 0) return;
 
-      arr.push(section.title);
-      arr.push(items);
+      sectionedDataFromSections.push(section.title);
+      sectionedDataFromSections.push(items);
     });
 
-    return arr;
+    return sectionedDataFromSections;
   }, [sections, recordTypeQueries]);
 
   const groupKey = 'recordType';
@@ -189,55 +197,57 @@ export const SearchScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <SearchBar
-        cancelButtonProps={{
-          accessibilityLabel: searchTexts.abort,
-          color: colors.darkerPrimary
-        }}
-        cancelButtonTitle={searchTexts.abort}
-        clearIcon={() => (
-          <TouchableOpacity activeOpacity={1} onPress={() => searchBarRef?.current?.clear?.()}>
-            <Icon.Close color={colors.darkerPrimary} />
-          </TouchableOpacity>
-        )}
-        inputContainerStyle={styles.inputContainerStyle}
-        lightTheme
-        loadingProps={{
-          color: colors.darkerPrimary
-        }}
-        onChangeText={setSearch}
-        placeholder={searchTexts.placeholder}
-        placeholderTextColor={colors.placeholder}
-        platform={device.platform === 'ios' ? device.platform : 'default'}
-        ref={searchBarRef}
-        searchIcon={() => <Icon.Search color={colors.darkerPrimary} />}
-        showCancel
-        showLoading={isLoading}
-        value={search}
-      />
-      <FlashList
-        ref={flashListRef}
-        keyExtractor={keyExtractor}
-        estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
-        data={sectionedData}
-        renderItem={renderItem}
-        ListEmptyComponent={
-          !isLoading && search.length >= minSearchLength ? (
-            <EmptyMessage title={searchTexts.noResults} />
-          ) : (
-            !isLoading && (
-              <Wrapper>
-                <RegularText placeholder small center>
-                  {searchTexts.pleaseSearch}
-                </RegularText>
-              </Wrapper>
+      <DefaultKeyboardAvoidingView>
+        <SearchBar
+          cancelButtonProps={{
+            accessibilityLabel: searchTexts.abort,
+            color: colors.darkerPrimary
+          }}
+          cancelButtonTitle={searchTexts.abort}
+          clearIcon={() => (
+            <TouchableOpacity activeOpacity={1} onPress={() => searchBarRef?.current?.clear?.()}>
+              <Icon.Close color={colors.darkerPrimary} />
+            </TouchableOpacity>
+          )}
+          inputContainerStyle={styles.inputContainerStyle}
+          lightTheme
+          loadingProps={{
+            color: colors.darkerPrimary
+          }}
+          onChangeText={setSearch}
+          placeholder={searchTexts.placeholder}
+          placeholderTextColor={colors.placeholder}
+          platform={device.platform === 'ios' ? device.platform : 'default'}
+          ref={searchBarRef}
+          searchIcon={() => <Icon.Search color={colors.darkerPrimary} />}
+          showCancel
+          showLoading={isLoading}
+          value={search}
+        />
+        <FlashList
+          data={sectionedData}
+          estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
+          ItemSeparatorComponent={null}
+          keyboardShouldPersistTaps="handled"
+          keyExtractor={keyExtractor}
+          ListEmptyComponent={
+            !isLoading && search.length >= minSearchLength ? (
+              <EmptyMessage title={searchTexts.noResults} />
+            ) : (
+              !isLoading && (
+                <Wrapper>
+                  <RegularText placeholder small center>
+                    {searchTexts.pleaseSearch}
+                  </RegularText>
+                </Wrapper>
+              )
             )
-          )
-        }
-        stickyHeaderIndices={stickyHeaderIndices}
-        keyboardShouldPersistTaps="handled"
-        ItemSeparatorComponent={null}
-      />
+          }
+          ref={flashListRef}
+          renderItem={renderItem}
+          stickyHeaderIndices={stickyHeaderIndices}
+        />
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
