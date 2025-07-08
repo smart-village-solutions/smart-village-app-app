@@ -16,7 +16,7 @@ type Props = {
 export const SearchHeader = ({ navigation, style }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { search = {} } = settings;
+  const { search } = settings;
 
   if (!search) return null;
 

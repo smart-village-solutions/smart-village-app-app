@@ -1,6 +1,6 @@
 {
   "name": "smart-village-app",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "scripts": {
     "android": "npx expo run:android",
     "ios": "npx expo run:ios",
@@ -67,7 +67,7 @@
     "apollo-link-context": "1.0.20",
     "apollo-link-http": "1.5.17",
     "apollo-link-rest": "~0.7.3",
-    "expo": "~52.0.46",
+    "expo": "~52.0.47",
     "expo-application": "~6.0.2",
     "expo-asset": "~11.0.5",
     "expo-blur": "~14.0.3",

@@ -14,6 +14,7 @@ export const consts = {
     bookmarkListHint: '(Zu der Lesezeichenliste hinzufügen)',
     bookmarksHint: 'Zu den Lesezeichen wechseln',
     bookmarksIcon: 'Lesezeichen (Taste)',
+    buildNumber: '(Build-Nummer)',
     button: '(Taste)',
     calendarHint: 'Einen neuen Termin erstellen',
     calendarIcon: 'Neuer Termin (Taste)',
@@ -51,6 +52,7 @@ export const consts = {
     informationHint: 'Zu den Informationen wechseln',
     openMenuHint: 'Navigiert zum Menü',
     openMenuIcon: 'Menü (Taste)',
+    otaVersion: '(Over-The-Air-Version)',
     password: 'Kennwort',
     phoneAppHint: '(Wechselt zur Telefon-App)',
     phoneNumber: '(Telefonnummer)',
@@ -70,6 +72,7 @@ export const consts = {
     username: 'Benutzername',
     verified: 'Verifiziert',
     verifiedInfo: 'Informationen zur Verifikation',
+    versionInfos: 'Versionshinweise',
     website: '(Webseite)',
     webViewHint: '(Öffnet Webseite in der aktuellen App)'
   },

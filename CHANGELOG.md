@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.1.2]
+
+This version includes many improvements for the volunteer and waste calendar modules and the first beta version for the search module
+
+### Added
+
+- added the ability to upload images to entries in the volunteer module
+- added the ability to edit and delete entries in the volunteer module
+- added informative text to the registration screen of the volunteer module
+- added two new input options on the registration screen for the volunteer module
+- added push notifications for volunteer module
+- added search and filtering for volunteer module
+- implemented a first version of the search module (0.0.1-beta)
+- added options to customize each service tile within itself
+- added ability to export selected waste calendar types
+- added skip button to onboarding screen
+- added remote update feature for feedback form in sue module
+- added feature for copying the description text on detail screens of main resources
+- added new version information alert
+
+### Changed
+
+- optimized city and street inputs for waste calendar
+- updated design elements for the waste calendar
+- improved performance of the waste calendar
+- updated the position of service tiles in the last row closer to each other
+- enhanced oparl location handling and adjusted member rendering
+
+### Fixed
+
+- fixed the issue of not asking for permissions on the onboarding screen directly after slides
+- fixed wrong value of push settings toggle in some cases
+- fixed issues with geolocation when sorting after distance was disabled
+
 ## [v4.1.1]
 
 This update includes visual improvements, bug fixes and performance enhancements
