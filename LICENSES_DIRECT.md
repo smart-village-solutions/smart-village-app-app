@@ -528,9 +528,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-web-browser
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-web-browser/README.md
-- **[expo@52.0.46](https://github.com/expo/expo)**
+- **[expo@52.0.47](https://github.com/expo/expo)**
     - name: expo
-    - version: 52.0.46
+    - version: 52.0.47
     - description: The Expo SDK
     - copyright: 
     - licenses: MIT
@@ -1038,9 +1038,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react/LICENSE
-- **[smart-village-app@4.1.1]()**
+- **[smart-village-app@4.1.2]()**
     - name: smart-village-app
-    - version: 4.1.1
+    - version: 4.1.2
     - description: <img src="./smart-village-app-logo.png" width="150">
     - copyright: 
     - licenses: GPL-3.0*
