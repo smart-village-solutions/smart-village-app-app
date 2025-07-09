@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet, TouchableHighlight, View } from 'react-native';
 import { Divider, Tab } from 'react-native-elements';
 
-import { colors, normalize } from '../../../config';
+import { colors, normalize } from '../../config';
 
-export const ProfileNoticeboardCategoryTabs = ({
+export const NoticeboardCategoryTabs = ({
   categoryIdsTabs,
   categoryNames,
   selectedCategory,

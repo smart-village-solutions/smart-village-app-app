@@ -11,6 +11,7 @@ import {
   LoadingContainer,
   NoticeboardCreateForm,
   NoticeboardMessageForm,
+  ProfileNoticeboardCreateForm,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -34,6 +35,7 @@ export const NoticeboardFormScreen = ({
   const [refreshing, setRefreshing] = useState(false);
 
   const name = route?.params?.name ?? '';
+  const isLoginRequired = route.params?.isLoginRequired || false;
   const isNewEntryForm = route?.params?.isNewEntryForm ?? false;
   const details = route?.params?.details ?? {};
   const queryVariables = route?.params?.queryVariables ?? {};
@@ -68,7 +70,10 @@ export const NoticeboardFormScreen = ({
 
   const images = details?.mediaContents?.filter((item) => item.contentType === 'image');
 
-  const Component = isNewEntryForm ? NoticeboardCreateForm : NoticeboardMessageForm;
+  const CreateFormComponent = isLoginRequired
+    ? ProfileNoticeboardCreateForm
+    : NoticeboardCreateForm;
+  const Component = isNewEntryForm ? CreateFormComponent : NoticeboardMessageForm;
 
   return (
     <SafeAreaViewFlex>

@@ -40,6 +40,7 @@ import {
   NestedInfoScreen,
   NoticeboardFormScreen,
   NoticeboardIndexScreen,
+  NoticeboardMemberIndexScreen,
   OParlCalendarScreen,
   OParlDetailScreen,
   OParlOrganizationsScreen,
@@ -54,9 +55,6 @@ import {
   ProfileHomeScreen,
   ProfileLoginScreen,
   ProfileMessagingScreen,
-  ProfileNoticeboardFormScreen,
-  ProfileNoticeboardIndexScreen,
-  ProfileNoticeboardMemberIndexScreen,
   ProfileRegistrationScreen,
   ProfileResetPasswordScreen,
   ProfileSignupScreen,
@@ -355,6 +353,11 @@ export const defaultStackConfig = ({
     },
     {
       initialParams,
+      routeName: ScreenName.NoticeboardMemberIndex,
+      screenComponent: NoticeboardMemberIndexScreen
+    },
+    {
+      initialParams,
       routeName: ScreenName.OParlCalendar,
       screenComponent: OParlCalendarScreen
     },
@@ -430,22 +433,6 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.ProfileMessaging,
       screenComponent: ProfileMessagingScreen
-    },
-    {
-      initialParams,
-      routeName: ScreenName.ProfileNoticeboard,
-      screenComponent: ProfileNoticeboardIndexScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
-    },
-    {
-      initialParams,
-      routeName: ScreenName.ProfileNoticeboardForm,
-      screenComponent: ProfileNoticeboardFormScreen
-    },
-    {
-      initialParams,
-      routeName: ScreenName.ProfileNoticeboardMemberIndex,
-      screenComponent: ProfileNoticeboardMemberIndexScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.profile.home },

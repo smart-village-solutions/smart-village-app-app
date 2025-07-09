@@ -20,7 +20,7 @@ const { FILTER_TYPES } = consts;
 type Props = {
   filters: FilterProps;
   filterTypes?: FilterTypesProps[];
-  isOverlayFilter: boolean;
+  isOverlayFilter?: boolean;
   setFilters: React.Dispatch<FilterProps>;
 };
 
