@@ -275,13 +275,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={isCalendar && showCalendar ? [] : data}
           sectionByDate={isCalendar && !showCalendar}
           query={query}
-          queryVariables={{
-            authToken,
-            setIsCollapsed,
-            setPostForModal,
-            userGuid,
-            isPartOfIndexScreen: false
-          }}
+          queryVariables={{ authToken, setIsCollapsed, setPostForModal, userGuid }}
           refetch={refetch}
           refreshControl={
             <RefreshControl
