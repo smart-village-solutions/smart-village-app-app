@@ -7,21 +7,17 @@ import { Alert, StyleSheet, View } from 'react-native';
 import {
   FlagMemberFooter,
   ListComponent,
-  ProfileNoticeboardCategoryTabs,
   SafeAreaViewFlex,
   SectionHeader,
   VolunteerAvatar,
   Wrapper
-} from '../../../components';
-import { texts } from '../../../config';
-import { parseListItemsFromQuery } from '../../../helpers';
-import { createQuery, QUERY_TYPES } from '../../../queries';
+} from '../../components';
+import { texts } from '../../config';
+import { parseListItemsFromQuery } from '../../helpers';
+import { createQuery, QUERY_TYPES } from '../../queries';
 
 // eslint-disable-next-line complexity
-export const ProfileNoticeboardMemberIndexScreen = ({
-  navigation,
-  route
-}: StackScreenProps<any>) => {
+export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
 
@@ -70,7 +66,7 @@ export const ProfileNoticeboardMemberIndexScreen = ({
   !!categoryIdsTabs?.length &&
     filteredListItems?.unshift({
       component: (
-        <ProfileNoticeboardCategoryTabs
+        <NoticeboardCategoryTabs
           categoryIdsTabs={categoryIdsTabs}
           categoryNames={categoryNames}
           selectedCategory={selectedCategory}

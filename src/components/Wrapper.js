@@ -63,6 +63,18 @@ export const WrapperVertical = styled.View`
     css`
       align-items: center;
     `};
+
+  ${(props) =>
+    props.noPaddingBottom &&
+    css`
+      padding-bottom: 0px;
+    `};
+
+  ${(props) =>
+    props.noPaddingTop &&
+    css`
+      padding-top: 0px;
+    `};
 `;
 
 export const WrapperRow = styled.View`

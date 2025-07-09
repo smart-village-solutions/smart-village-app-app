@@ -4,32 +4,32 @@ import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { useProfileContext } from '../../../../ProfileProvider';
-import { Icon, normalize, texts } from '../../../../config';
+import { useProfileContext } from '../../../ProfileProvider';
+import { Icon, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
   matomoTrackingString
-} from '../../../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../../../hooks';
-import { QUERY_TYPES, getQuery } from '../../../../queries';
-import { DELETE_GENERIC_ITEM } from '../../../../queries/genericItem';
-import { ScreenName } from '../../../../types';
-import { Button } from '../../../Button';
-import { ImageSection } from '../../../ImageSection';
-import { LoadingSpinner } from '../../../LoadingSpinner';
-import { SectionHeader } from '../../../SectionHeader';
-import { StorySection } from '../../../StorySection';
-import { BoldText, HeadlineText } from '../../../Text';
-import { TextListItem } from '../../../TextListItem';
-import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../../Wrapper';
-import { InfoCard } from '../../../infoCard';
-import { VolunteerAvatar } from '../../../volunteer';
+} from '../../../helpers';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../../hooks';
+import { QUERY_TYPES, getQuery } from '../../../queries';
+import { DELETE_GENERIC_ITEM } from '../../../queries/genericItem';
+import { ScreenName } from '../../../types';
+import { Button } from '../../Button';
+import { ImageSection } from '../../ImageSection';
+import { LoadingSpinner } from '../../LoadingSpinner';
+import { SectionHeader } from '../../SectionHeader';
+import { StorySection } from '../../StorySection';
+import { BoldText, HeadlineText } from '../../Text';
+import { TextListItem } from '../../TextListItem';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../Wrapper';
+import { InfoCard } from '../../infoCard';
+import { VolunteerAvatar } from '../../volunteer';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
-export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
+export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
   const {
     id,
     categories,
@@ -134,7 +134,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
               notFullWidth
               title={texts.noticeboard.edit}
               onPress={() =>
-                navigation.push(ScreenName.ProfileNoticeboardForm, {
+                navigation.push(ScreenName.NoticeboardForm, {
                   consentForDataProcessingText: subQuery?.params?.consentForDataProcessingText,
                   details: data,
                   genericType,
@@ -225,7 +225,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
                 ),
                 routeName: ScreenName.ProfileUpdate,
                 onPress: () =>
-                  navigation.push(ScreenName.ProfileNoticeboardMemberIndex, {
+                  navigation.push(ScreenName.NoticeboardMemberIndex, {
                     data: dataMemberIndex,
                     isCurrentUser,
                     memberId,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   }
 });
 
-ProfileNoticeboardDetail.propTypes = {
+NoticeboardDetail.propTypes = {
   data: PropTypes.object.isRequired,
   fetchPolicy: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,
