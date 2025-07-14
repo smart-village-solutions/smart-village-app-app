@@ -1,12 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import {
   FlagMemberFooter,
   ListComponent,
+  NoticeboardCategoryTabs,
   SafeAreaViewFlex,
   SectionHeader,
   VolunteerAvatar,
@@ -16,27 +17,35 @@ import { texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { createQuery, QUERY_TYPES } from '../../queries';
 
-// eslint-disable-next-line complexity
+/* eslint-disable complexity */
 export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const subQuery = route.params?.subQuery ?? {};
+
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
 
   const { data, isCurrentUser, memberId, memberEmail, memberName, query } = route.params;
-  const listItems = parseListItemsFromQuery(query, data, '', { queryVariables: { isCurrentUser } });
+  const listItems = parseListItemsFromQuery(query, data, '', {
+    queryVariables: { isCurrentUser },
+    subQuery
+  });
 
   // create new object of list items filtered by selected category
-  const filteredListItems = listItems?.filter((item: { categories: { id: string }[] }) =>
-    item.categories.some((category: { id: string }) => category.id == selectedCategory)
-  );
+  const filteredListItems = useMemo(() => {
+    return listItems?.filter((item: { categories: { id: string }[] }) =>
+      item.categories.some((category: { id: string }) => category.id == selectedCategory)
+    );
+  }, [listItems, selectedCategory]);
 
   // get all category names from list items
-  const categoryNames = listItems?.reduce((acc, item) => {
-    if (item.categories.length) {
-      acc[item.categories[0].id] = item.categories[0].name;
-    }
-
-    return acc;
-  }, {});
+  const categoryNames = useMemo(() => {
+    return listItems?.reduce((acc, item) => {
+      if (item.categories.length) {
+        acc[item.categories[0].id] = item.categories[0].name;
+      }
+      return acc;
+    }, {});
+  }, [listItems]);
 
   // sort the category names object by value alphabetically, because we do not have passed
   // categories like for the `NoticeboardIndexScreen`
@@ -63,17 +72,23 @@ export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenP
 
   // add the section header component to the beginning of the list items, that will be at index 1,
   // that we want to stick to the top of the screen when scrolling
-  !!categoryIdsTabs?.length &&
-    filteredListItems?.unshift({
-      component: (
-        <NoticeboardCategoryTabs
-          categoryIdsTabs={categoryIdsTabs}
-          categoryNames={categoryNames}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-      )
-    });
+  const listData = useMemo(() => {
+    if (!categoryIdsTabs?.length) return filteredListItems;
+
+    return [
+      {
+        component: (
+          <NoticeboardCategoryTabs
+            categoryIdsTabs={categoryIdsTabs}
+            categoryNames={categoryNames}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        )
+      },
+      ...filteredListItems
+    ];
+  }, [categoryIdsTabs, filteredListItems, categoryNames, selectedCategory]);
 
   const onSubmit = async () => {
     const formData = {
@@ -102,7 +117,7 @@ export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenP
   return (
     <SafeAreaViewFlex>
       <ListComponent
-        data={filteredListItems}
+        data={listData}
         ListHeaderComponent={
           memberName ? (
             <Wrapper style={styles.center}>
@@ -134,6 +149,7 @@ export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenP
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   center: {

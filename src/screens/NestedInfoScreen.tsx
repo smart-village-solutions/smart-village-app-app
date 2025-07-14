@@ -55,7 +55,9 @@ export const ListHeaderComponent = ({
     <WrapperVertical style={styles.noPaddingBottom}>
       {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
       <HtmlView html={html} />
-      <MultiButtonWithSubQuery {...{ navigation, subQuery, title: navigationTitle }} />
+      {!!navigationTitle && (
+        <MultiButtonWithSubQuery {...{ navigation, subQuery, title: navigationTitle }} />
+      )}
     </WrapperVertical>
   );
 };

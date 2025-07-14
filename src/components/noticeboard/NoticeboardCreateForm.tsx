@@ -30,7 +30,6 @@ import {
   momentFormat,
   parseListItemsFromQuery
 } from '../../helpers';
-import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
@@ -56,23 +55,6 @@ type TNoticeboardCreateData = {
   priceType?: string;
   termsOfService: boolean;
   title: string;
-  // Carpool specific fields
-  age?: string;
-  autoBrand?: string;
-  autoColor?: string;
-  availablePlaces?: string;
-  comments?: string;
-  departureAddress?: string;
-  departureDate?: string;
-  departureTime?: string;
-  destinationAddress?: string;
-  drivingFrequency?: string;
-  drivingFrequencyDays?: string;
-  licensePlate?: string;
-};
-
-type CarpoolInputConfig = {
-  [key: string]: string[];
 };
 
 /* eslint-disable complexity */
@@ -108,40 +90,16 @@ export const NoticeboardCreateForm = ({
   } = showNoticeboardMediaContent;
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
-  const isCarpool = route?.params?.isCarpool ?? false;
   const [isLoading, setIsLoading] = useState(false);
-  const [frequency, setFrequency] = useState<string | undefined>(undefined);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const { data: categories } = useQuery(getQuery(QUERY_TYPES.CATEGORIES), {
     fetchPolicy,
     variables: queryVariables
   });
 
-  const { data: carpoolInputConfig } = useStaticContent<CarpoolInputConfig>({
-    name: 'carpoolInputConfig',
-    type: 'json',
-    skip: !isCarpool
-  });
-
   const NOTICEBOARD_TYPE_OPTIONS = parseListItemsFromQuery(QUERY_TYPES.CATEGORIES, categories, '', {
     queryVariables
   }).map((item) => ({ value: item.title, title: item.title }));
-
-  const CARPOOL_FREQUENCY_OPTIONS = [
-    { value: 'oneTime', title: texts.noticeboard.carpoolFrequencyOneTime },
-    { value: 'regularly', title: texts.noticeboard.carpoolFrequencyRegularly }
-  ];
-
-  const WEEK_DAYS = [
-    { value: 'monday', title: texts.noticeboard.weekday.monday },
-    { value: 'tuesday', title: texts.noticeboard.weekday.tuesday },
-    { value: 'wednesday', title: texts.noticeboard.weekday.wednesday },
-    { value: 'thursday', title: texts.noticeboard.weekday.thursday },
-    { value: 'friday', title: texts.noticeboard.weekday.friday },
-    { value: 'saturday', title: texts.noticeboard.weekday.saturday },
-    { value: 'sunday', title: texts.noticeboard.weekday.sunday }
-  ];
 
   const formImages = data?.mediaContents?.map((image: any) => {
     const uri = image.sourceUrl.url;
@@ -177,20 +135,7 @@ export const NoticeboardCreateForm = ({
       price: data?.priceInformations?.[0]?.description?.replace('€', '').trim() ?? '',
       priceType: data?.priceInformations?.[0]?.priceType ?? '€',
       termsOfService: false,
-      title: data?.title ?? '',
-      // Carpool specific fields
-      age: data?.age ?? '',
-      autoBrand: data?.autoBrand ?? '',
-      autoColor: data?.autoColor ?? '',
-      availablePlaces: data?.availablePlaces ?? '',
-      comments: data?.comments ?? '',
-      departureAddress: data?.departureAddress ?? '',
-      departureDate: data?.departureDate ?? moment().toDate(),
-      departureTime: data?.departureTime ?? moment().toDate(),
-      destinationAddress: data?.destinationAddress ?? '',
-      drivingFrequency: data?.drivingFrequency ?? '',
-      drivingFrequencyDays: data?.drivingFrequencyDays ?? '[]',
-      licensePlate: data?.licensePlate ?? ''
+      title: data?.title ?? ''
     }
   });
 
@@ -228,7 +173,7 @@ export const NoticeboardCreateForm = ({
         .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
       const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
 
-      // check if any document size is bigger than `imageMaxSizes.file`
+      // check if any image size is bigger than `imageMaxSizes.file`
       for (const image of images) {
         if (!!imageMaxSizes.file && image.size > imageMaxSizes.file) {
           setIsLoading(false);
@@ -239,7 +184,7 @@ export const NoticeboardCreateForm = ({
         }
       }
 
-      // check if documents size is bigger than `imageMaxSizes.total`
+      // check if images size is bigger than `imageMaxSizes.total`
       if (imageMaxSizes.total && imagesSize > imageMaxSizes.total) {
         setIsLoading(false);
         return Alert.alert(
@@ -313,6 +258,7 @@ export const NoticeboardCreateForm = ({
                   contentType: document.mimeType
                 });
             } catch (error) {
+              setIsLoading(false);
               Alert.alert(
                 texts.noticeboard.alerts.hint,
                 texts.noticeboard.alerts.documentUploadError
@@ -339,7 +285,6 @@ export const NoticeboardCreateForm = ({
           genericType,
           id: noticeboardNewData.id,
           mediaContents,
-          payload: noticeboardNewData,
           priceInformations: [{ description: price }],
           publishedAt: momentFormat(noticeboardNewData.dateStart),
           title: noticeboardNewData.title
@@ -391,31 +336,6 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      {!!isCarpool && (
-        <Wrapper noPaddingTop>
-          <Input
-            name="age"
-            label={`${texts.noticeboard.inputAge} *`}
-            placeholder={texts.noticeboard.inputAge}
-            validate
-            keyboardType="numeric"
-            rules={{
-              required: `${texts.noticeboard.inputAge} ${texts.noticeboard.inputErrorText}`,
-              min: {
-                value: 18,
-                message: texts.noticeboard.alerts.ageMin
-              },
-              max: {
-                value: 99,
-                message: texts.noticeboard.alerts.ageMax
-              }
-            }}
-            errorMessage={errors.age && errors.age.message}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
       <Wrapper noPaddingTop>
         <Label bold>{`${texts.noticeboard.selectNoticeboardType} *`}</Label>
         <Controller
@@ -429,12 +349,7 @@ export const NoticeboardCreateForm = ({
                   checkedIcon={<Icon.CircleCheckFilled />}
                   containerStyle={styles.checkboxContainerStyle}
                   key={noticeboardItem.title}
-                  onPress={() => {
-                    if (isCarpool) {
-                      setSelectedCategory(noticeboardItem.value);
-                    }
-                    onChange(noticeboardItem.value);
-                  }}
+                  onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
                   uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
                 />
@@ -452,342 +367,84 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      {(!isCarpool || carpoolInputConfig?.[selectedCategory]?.includes('title')) && (
-        <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop>
+        <Input
+          name="title"
+          label={`${texts.noticeboard.inputTitle} *`}
+          placeholder={texts.noticeboard.inputTitle}
+          validate
+          rules={{
+            required: `${texts.noticeboard.inputTitle} ${texts.noticeboard.inputErrorText}`
+          }}
+          errorMessage={errors.title && errors.title.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          control={control}
+          errorMessage={errors.body && errors.body.message}
+          inputStyle={styles.textArea}
+          label={`${texts.noticeboard.inputDescription} *`}
+          multiline
+          name="body"
+          placeholder={texts.noticeboard.inputDescription}
+          rules={{
+            required: `${texts.noticeboard.inputDescription} ${texts.noticeboard.inputErrorText}`
+          }}
+          textAlignVertical="top"
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <WrapperRow spaceBetween>
           <Input
-            name="title"
-            label={`${texts.noticeboard.inputTitle} *`}
-            placeholder={texts.noticeboard.inputTitle}
+            name="price"
+            label={texts.noticeboard.inputPrice}
+            placeholder={texts.noticeboard.inputPrice}
             validate
-            rules={{
-              required: `${texts.noticeboard.inputTitle} ${texts.noticeboard.inputErrorText}`
-            }}
-            errorMessage={errors.title && errors.title.message}
+            errorMessage={errors.price && errors.price.message}
             control={control}
+            row
           />
-        </Wrapper>
-      )}
-
-      {(!isCarpool || carpoolInputConfig?.[selectedCategory]?.includes('body')) && (
-        <Wrapper noPaddingTop>
           <Input
+            name="priceType"
+            label={texts.noticeboard.inputPriceType}
+            placeholder={texts.noticeboard.inputPriceTypePlaceholder}
             control={control}
-            errorMessage={errors.body && errors.body.message}
-            inputStyle={styles.textArea}
-            label={`${texts.noticeboard.inputDescription} *`}
-            multiline
-            name="body"
-            placeholder={texts.noticeboard.inputDescription}
-            rules={{
-              required: `${texts.noticeboard.inputDescription} ${texts.noticeboard.inputErrorText}`
-            }}
-            textAlignVertical="top"
-            validate
+            row
           />
-        </Wrapper>
-      )}
+        </WrapperRow>
+      </Wrapper>
 
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('departureDate') && (
-        <Wrapper noPaddingTop>
-          <Controller
-            name="departureDate"
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: `${texts.noticeboard.inputDepartureDate} *`,
-                  minimumDate: moment().toDate(),
-                  mode: 'date',
-                  name,
-                  onChange,
-                  placeholder: texts.noticeboard.inputDepartureDate,
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('departureTime') && (
-        <Wrapper noPaddingTop>
-          <Controller
-            name="departureTime"
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: `${texts.noticeboard.inputDepartureTime} *`,
-                  minimumDate: moment().toDate(),
-                  mode: 'time',
-                  name,
-                  onChange,
-                  placeholder: texts.noticeboard.inputDepartureTime,
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('departureAddress') && (
-        <Wrapper noPaddingTop>
-          <Input
-            name="departureAddress"
-            label={`${texts.noticeboard.inputDepartureAddress} *`}
-            placeholder={texts.noticeboard.inputDepartureAddress}
-            validate
-            rules={{
-              required: `${texts.noticeboard.inputDepartureAddress} ${texts.noticeboard.inputErrorText}`
-            }}
-            errorMessage={errors.departureAddress && errors.departureAddress.message}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('destinationAddress') && (
-        <Wrapper noPaddingTop>
-          <Input
-            name="destinationAddress"
-            label={`${texts.noticeboard.inputDestinationAddress} *`}
-            placeholder={texts.noticeboard.inputDestinationAddress}
-            validate
-            rules={{
-              required: `${texts.noticeboard.inputDestinationAddress} ${texts.noticeboard.inputErrorText}`
-            }}
-            errorMessage={errors.destinationAddress && errors.destinationAddress.message}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('drivingFrequency') && (
-        <Wrapper noPaddingTop>
-          <Label bold>{texts.noticeboard.drivingFrequency} *</Label>
-          <Controller
-            name="drivingFrequency"
-            render={({ field: { onChange, value } }) => (
-              <>
-                {CARPOOL_FREQUENCY_OPTIONS.map(
-                  (carpoolFrequencyItem: { value: string; title: string }) => (
-                    <Checkbox
-                      checked={value === carpoolFrequencyItem.value}
-                      checkedIcon={<Icon.CircleCheckFilled />}
-                      containerStyle={styles.checkboxContainerStyle}
-                      key={carpoolFrequencyItem.title}
-                      onPress={() => {
-                        setFrequency(carpoolFrequencyItem.value);
-                        onChange(carpoolFrequencyItem.value);
-                      }}
-                      title={carpoolFrequencyItem.title}
-                      uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
-                    />
-                  )
-                )}
-                <Input
-                  control={control}
-                  errorMessage={errors.drivingFrequency && errors.drivingFrequency.message}
-                  hidden
-                  name={'drivingFrequency'}
-                  validate
-                />
-              </>
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && frequency === CARPOOL_FREQUENCY_OPTIONS[1].value && (
-        <Wrapper noPaddingTop>
-          <Label bold>{texts.noticeboard.selectDrivingDays}</Label>
-          <Controller
-            name="drivingFrequencyDays"
-            control={control}
-            render={({ field: { onChange, value } }) => {
-              // Parse value if it's a stringified array
-              let days: string[] = [];
-              if (Array.isArray(value)) {
-                days = value;
-              } else if (typeof value === 'string') {
-                try {
-                  const parsed = JSON.parse(value);
-                  days = Array.isArray(parsed) ? parsed : [];
-                } catch {
-                  days = [];
-                }
-              }
-              return (
-                <>
-                  {WEEK_DAYS.map((weekDaysItem: { value: string; title: string }) => {
-                    const isChecked = days.includes(weekDaysItem.value);
-
-                    return (
-                      <Checkbox
-                        checked={isChecked}
-                        checkedIcon={<Icon.CircleCheckFilled />}
-                        containerStyle={styles.checkboxContainerStyle}
-                        key={weekDaysItem.title}
-                        onPress={() => {
-                          let newValue;
-                          if (isChecked) {
-                            newValue = days.filter((v: string) => v !== weekDaysItem.value);
-                          } else {
-                            newValue = [...days, weekDaysItem.value];
-                          }
-                          onChange(newValue);
-                        }}
-                        title={weekDaysItem.title}
-                        uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
-                      />
-                    );
-                  })}
-                  <Input
-                    control={control}
-                    errorMessage={
-                      errors.drivingFrequencyDays && errors.drivingFrequencyDays.message
-                    }
-                    hidden
-                    name={'drivingFrequencyDays'}
-                    validate
-                  />
-                </>
-              );
-            }}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('availablePlaces') && (
-        <Wrapper>
-          <Input
-            name="availablePlaces"
-            label={`${texts.noticeboard.inputAvailablePlaces} *`}
-            placeholder={texts.noticeboard.inputAvailablePlaces}
-            validate
-            keyboardType="numeric"
-            rules={{
-              required: `${texts.noticeboard.inputAvailablePlaces} ${texts.noticeboard.inputErrorText}`,
-              pattern: {
-                value: /^\d+$/,
-                message: texts.noticeboard.inputAvailablePlacesError
-              }
-            }}
-            errorMessage={errors.availablePlaces && errors.availablePlaces.message}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {(!isCarpool || carpoolInputConfig?.[selectedCategory]?.includes('price')) && (
-        <Wrapper noPaddingTop>
-          <WrapperRow spaceBetween>
-            <Input
-              name="price"
-              label={texts.noticeboard.inputPrice}
-              placeholder={texts.noticeboard.inputPrice}
-              validate
-              errorMessage={errors.price && errors.price.message}
-              control={control}
-              row
+      <Wrapper noPaddingTop>
+        <Controller
+          name="dateEnd"
+          render={({ field: { name, onChange, value } }) => (
+            <DateTimeInput
+              {...{
+                boldLabel: true,
+                control,
+                errors,
+                label: texts.noticeboard.inputDate(requestedDateDifference),
+                maximumDate: moment().add(requestedDateDifference, 'months').toDate(),
+                minimumDate: moment().toDate(),
+                mode: 'date',
+                name,
+                onChange,
+                placeholder: texts.noticeboard.inputDate(requestedDateDifference),
+                required: true,
+                value
+              }}
             />
-            <Input
-              name="priceType"
-              label={texts.noticeboard.inputPriceType}
-              placeholder={texts.noticeboard.inputPriceTypePlaceholder}
-              control={control}
-              row
-            />
-          </WrapperRow>
-        </Wrapper>
-      )}
+          )}
+          control={control}
+        />
+      </Wrapper>
 
-      {(!isCarpool || carpoolInputConfig?.[selectedCategory]?.includes('dateEnd')) && (
-        <Wrapper noPaddingTop>
-          <Controller
-            name="dateEnd"
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: texts.noticeboard.inputDate(requestedDateDifference),
-                  maximumDate: moment().add(requestedDateDifference, 'months').toDate(),
-                  minimumDate: moment().toDate(),
-                  mode: 'date',
-                  name,
-                  onChange,
-                  placeholder: texts.noticeboard.inputDate(requestedDateDifference),
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('licensePlate') && (
-        <Wrapper noPaddingTop>
-          <Input
-            name="licensePlate"
-            label={texts.noticeboard.inputLicensePlate}
-            placeholder={texts.noticeboard.inputLicensePlate}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('autoBrand') && (
-        <Wrapper noPaddingTop>
-          <Input
-            name="autoBrand"
-            label={texts.noticeboard.inputAutoBrand}
-            placeholder={texts.noticeboard.inputAutoBrand}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('autoColor') && (
-        <Wrapper noPaddingTop>
-          <Input
-            name="autoColor"
-            label={texts.noticeboard.inputAutoColor}
-            placeholder={texts.noticeboard.inputAutoColor}
-            control={control}
-          />
-        </Wrapper>
-      )}
-
-      {!!isCarpool && carpoolInputConfig?.[selectedCategory]?.includes('comments') && (
-        <Wrapper noPaddingTop>
-          <Input
-            control={control}
-            inputStyle={styles.textArea}
-            label={texts.noticeboard.inputComments}
-            multiline
-            name="comments"
-            placeholder={texts.noticeboard.inputComments}
-            textAlignVertical="top"
-            validate
-          />
-        </Wrapper>
-      )}
-
-      {!isCarpool && showDocument && (
+      {showDocument && (
         <Wrapper noPaddingTop>
           <Controller
             name="documents"
@@ -815,7 +472,7 @@ export const NoticeboardCreateForm = ({
         </Wrapper>
       )}
 
-      {!isCarpool && showImage && (
+      {showImage && (
         <Wrapper noPaddingTop>
           <Controller
             name="image"
@@ -847,58 +504,46 @@ export const NoticeboardCreateForm = ({
         </Wrapper>
       )}
 
-      {(!isCarpool || carpoolInputConfig?.[selectedCategory]?.includes('termsOfService')) && (
-        <>
-          {!!consentForDataProcessingText && (
-            <WrapperHorizontal>
-              <HtmlView html={consentForDataProcessingText} />
-            </WrapperHorizontal>
-          )}
-
-          <Wrapper>
-            <Controller
-              name="termsOfService"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox
-                  checked={!!value}
-                  checkedIcon={<Icon.SquareCheckFilled />}
-                  containerStyle={styles.checkboxContainerStyle}
-                  onPress={() => onChange(!value)}
-                  textStyle={styles.checkboxTextStyle}
-                  title={`${texts.noticeboard.inputCheckbox} *`}
-                  uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-                />
-              )}
-              control={control}
-            />
-          </Wrapper>
-        </>
+      {!!consentForDataProcessingText && (
+        <WrapperHorizontal>
+          <HtmlView html={consentForDataProcessingText} />
+        </WrapperHorizontal>
       )}
 
-      {(!isCarpool || !!selectedCategory) && (
-        <Wrapper noPaddingTop>
-          {loading || isLoading ? (
-            <LoadingSpinner loading />
-          ) : (
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              title={
-                isCarpool
-                  ? texts.noticeboard.sendCarpool
-                  : isEdit
-                  ? texts.noticeboard.editButton
-                  : texts.noticeboard.sendButton
-              }
+      <Wrapper>
+        <Controller
+          name="termsOfService"
+          render={({ field: { onChange, value } }) => (
+            <Checkbox
+              checked={!!value}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              containerStyle={styles.checkboxContainerStyle}
+              onPress={() => onChange(!value)}
+              textStyle={styles.checkboxTextStyle}
+              title={`${texts.noticeboard.inputCheckbox} *`}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
+          control={control}
+        />
+      </Wrapper>
 
-          <Touchable onPress={() => navigation.goBack()}>
-            <RegularText primary center>
-              {texts.noticeboard.abort}
-            </RegularText>
-          </Touchable>
-        </Wrapper>
-      )}
+      <Wrapper noPaddingTop>
+        {loading || isLoading ? (
+          <LoadingSpinner loading />
+        ) : (
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
+          />
+        )}
+
+        <Touchable onPress={() => navigation.goBack()}>
+          <RegularText primary center>
+            {texts.noticeboard.abort}
+          </RegularText>
+        </Touchable>
+      </Wrapper>
     </>
   );
 };

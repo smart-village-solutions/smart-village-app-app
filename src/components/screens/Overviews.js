@@ -170,7 +170,7 @@ export const Overviews = ({ navigation, route }) => {
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories; // HINT: defined on a nested category list screen
-  const subQuery = route.params?.subQuery;
+  const subQuery = route.params?.subQuery ?? {};
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =

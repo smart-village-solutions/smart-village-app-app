@@ -35,7 +35,7 @@ export const NoticeboardFormScreen = ({
   const [refreshing, setRefreshing] = useState(false);
 
   const name = route?.params?.name ?? '';
-  const isLoginRequired = route.params?.isLoginRequired || false;
+  const isLoginRequired = route?.params?.isLoginRequired || false;
   const isNewEntryForm = route?.params?.isNewEntryForm ?? false;
   const details = route?.params?.details ?? {};
   const queryVariables = route?.params?.queryVariables ?? {};
