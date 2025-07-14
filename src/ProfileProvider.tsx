@@ -29,6 +29,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const { isLoading: isLoadingMember } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    enabled: isLoggedIn,
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
         storeProfileAuthToken();

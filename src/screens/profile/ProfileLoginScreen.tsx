@@ -78,7 +78,9 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       }
 
       // refreshUser param causes the home screen to update and no longer show the welcome component
-      navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
+      navigation.navigate(ScreenName.Profile, {
+        refreshUser: data?.member?.authentication_token_created_at
+      });
     }
   });
 
