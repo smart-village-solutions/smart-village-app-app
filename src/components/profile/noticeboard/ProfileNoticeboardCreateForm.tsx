@@ -14,6 +14,7 @@ import {
   DateTimeInput,
   HtmlView,
   Input,
+  Label,
   LoadingSpinner,
   RegularText,
   Touchable,
@@ -230,6 +231,7 @@ export const ProfileNoticeboardCreateForm = ({
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Label bold>{`${texts.noticeboard.selectNoticeboardType} *`}</Label>
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}

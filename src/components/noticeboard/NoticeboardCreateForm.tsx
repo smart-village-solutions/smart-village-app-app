@@ -417,7 +417,7 @@ export const NoticeboardCreateForm = ({
       )}
 
       <Wrapper noPaddingTop>
-        <Label bold>{texts.noticeboard.selectNoticeboardType}</Label>
+        <Label bold>{`${texts.noticeboard.selectNoticeboardType} *`}</Label>
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
