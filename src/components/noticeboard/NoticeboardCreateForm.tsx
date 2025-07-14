@@ -787,7 +787,7 @@ export const NoticeboardCreateForm = ({
         </Wrapper>
       )}
 
-      {showDocument && !isCarpool && (
+      {!isCarpool && showDocument && (
         <Wrapper noPaddingTop>
           <Controller
             name="documents"
@@ -815,7 +815,7 @@ export const NoticeboardCreateForm = ({
         </Wrapper>
       )}
 
-      {showImage && !isCarpool && (
+      {!isCarpool && showImage && (
         <Wrapper noPaddingTop>
           <Controller
             name="image"
