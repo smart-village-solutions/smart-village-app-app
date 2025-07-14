@@ -24,7 +24,6 @@
     "scheme": "smart-village-app",
     "orientation": "portrait",
     "primaryColor": "#107821",
-    "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "appleTeamId": "",
@@ -135,6 +134,7 @@
       "expo-localization",
       "expo-secure-store",
       "expo-video",
+      "expo-web-browser",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }
