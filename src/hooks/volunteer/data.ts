@@ -67,6 +67,13 @@ export const useVolunteerData = ({
     setUserGuid(currentUserGuid);
     let processedVolunteerData = data?.results as any[];
 
+    // Filter out deleted entries (state === 100)
+    // see states here: https://github.com/humhub/humhub/blob/master/protected/humhub/modules/content/models/Content.php#L133-L136
+    processedVolunteerData = processedVolunteerData?.filter(
+      (item: { content?: { metadata?: { state?: number } } }) =>
+        item.content?.metadata?.state !== 100
+    );
+
     if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
       processedVolunteerData = data?.participants?.attending as any[];
     }
