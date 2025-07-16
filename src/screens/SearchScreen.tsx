@@ -162,7 +162,7 @@ export const SearchScreen = ({ navigation }) => {
               texts.detailTitles.newsItem
           : undefined,
         {
-          withDate: false,
+          withDate: innerQuery === QUERY_TYPES.EVENT_RECORDS,
           withTime: innerQuery === QUERY_TYPES.EVENT_RECORDS
         }
       );
