@@ -890,7 +890,7 @@ export const texts = {
     deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
     deleteProfileConsent: 'Ich bin mit dem Löschen meiner Daten einverstanden.',
     deleteProfileConsentOptIn:
-      'Bitte bestätige, dass du mit dem Löschen deiner Daten einverstanden bist.',
+      'Bitte bestätigen Sie, dass Sie mit dem Löschen Ihrer Daten einverstanden sind.',
     deleteProfileSubject: 'Anfrage zur Löschung des Nutzerprofils',
     editMail: 'E-Mail-Adresse ändern',
     editPassword: 'Passwort ändern',
@@ -914,7 +914,7 @@ export const texts = {
     flagProfile: 'Anbieter melden',
     flagProfileAlertDoneTitle: 'Vielen Dank',
     flagProfileAlertDoneMessage: 'Anbieter wurde erfolgreich gemeldet.',
-    flagProfileAlertMessage: 'Bist du sicher, dass du diesen Anbieter jetzt melden möchtest?',
+    flagProfileAlertMessage: 'Sind Sie sicher, dass Sie diesen Anbieter jetzt melden möchten?',
     flagProfileSubject: 'Nutzerprofil melden',
     gender: 'Anrede',
     hint: 'Hinweis',

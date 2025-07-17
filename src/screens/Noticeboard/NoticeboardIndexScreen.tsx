@@ -14,7 +14,7 @@ import {
   LoadingContainer,
   LoginModal,
   navigateWithSubQuery,
-  ProfileNoticeboardCategoryTabs,
+  NoticeboardCategoryTabs,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
@@ -79,6 +79,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
+    skip: isLoginRequired && !isProfileLoggedIn,
     variables: queryVariables
   });
 
@@ -183,7 +184,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   !!categoryIdsTabs?.length &&
     filteredListItems?.unshift({
       component: (
-        <ProfileNoticeboardCategoryTabs
+        <NoticeboardCategoryTabs
           categoryIdsTabs={categoryIdsTabs}
           categoryNames={categoryNames}
           selectedCategory={selectedCategory}
@@ -192,7 +193,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       )
     });
 
-  if (userData && userData.member && !Object.keys(userData.member.preferences).length) {
+  if (userData?.member?.preferences && !Object.keys(userData.member.preferences).length) {
     return <ProfileUpdateScreen navigation={navigation} route={route} />;
   }
 
@@ -211,7 +212,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
         {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
           <>
             <Divider style={styles.divider} />
-            <Wrapper style={styles.noPaddingBotton}>
+            <Wrapper noPaddingBotton>
               <Button
                 icon={<Icon.PencilPlus size={normalize(24)} />}
                 iconPosition="left"
@@ -246,17 +247,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
         setQueryVariables={setQueryVariables}
       />
       <ListComponent
-        data={listItems}
-        navigation={navigation}
-        query={query}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[colors.refreshControl]}
-            tintColor={colors.refreshControl}
-          />
-        }
+        data={filteredListItems}
         ListHeaderComponent={
           !currentMember ? (
             <ListHeaderComponent
@@ -270,12 +261,22 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
             <View />
           )
         }
+        navigation={navigation}
+        query={query}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
+          />
+        }
         stickyHeaderIndices={[1]}
       />
       {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
         <>
           <Divider style={styles.divider} />
-          <Wrapper style={styles.noPaddingBotton}>
+          <Wrapper noPaddingBotton>
             <Button
               icon={<Icon.PencilPlus />}
               iconPosition="left"
@@ -303,8 +304,5 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 const styles = StyleSheet.create({
   divider: {
     backgroundColor: colors.placeholder
-  },
-  noPaddingBotton: {
-    paddingBottom: 0
   }
 });
