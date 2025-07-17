@@ -1,4 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
+import * as Device from 'expo-device';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
@@ -28,7 +29,7 @@ import { ScreenName, VoucherLogin } from '../../types';
 const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
 
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { refresh, isLoggedIn, memberId } = useVoucher();
+  const { refresh, isLoading, isLoggedIn, memberId } = useVoucher();
   const [loadingAccountCheck, setLoadingAccountCheck] = useState(true);
 
   const imageUri = route?.params?.headerImage;
@@ -76,15 +77,45 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
       setLoadingAccountCheck(false);
     };
 
-    accountCheck();
+    // at the moment we don't need account check as we log in with a specific key and secret
+    // but it can be used later
+    // accountCheck();
+  }, []);
+
+  useEffect(() => {
+    // this section is temporary. it can be removed when the real login section is completed
+    const login = async () => {
+      const uniqDeviceKey = (Device.deviceName + Device.modelId + Device.modelName)
+        .replace(/\s+/g, '-')
+        .toLowerCase();
+
+      mutateLogIn(
+        { key: uniqDeviceKey, secret: '-' },
+        {
+          onSuccess: (responseData) => {
+            if (!responseData?.member) {
+              return;
+            }
+
+            // save auth token and member id to global state
+            storeVoucherAuthToken(responseData.member.authentication_token);
+            storeVoucherMemberId(responseData.member.id);
+            storeVoucherMemberLoginInfo(JSON.stringify({ key: uniqDeviceKey, secret: '-' }));
+            refresh();
+          }
+        }
+      );
+    };
+
+    login();
   }, []);
 
   const refreshHome = useCallback(async () => {
     await refetchHomeText();
   }, []);
 
-  if (loadingHomeText || loadingAccountCheck) {
-    return <LoadingSpinner />;
+  if (loadingHomeText || isLoading) {
+    return <LoadingSpinner loading />;
   }
 
   return (

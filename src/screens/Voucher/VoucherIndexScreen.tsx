@@ -38,7 +38,7 @@ const hasFilterSelection = (queryVariables: any) => {
 
 /* eslint-disable complexity */
 export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { isLoggedIn, memberId } = useVoucher();
+  const { isLoggedIn, memberId, isLoading } = useVoucher();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
@@ -122,6 +122,10 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const count = vouchersCount?.[queryKey]?.filter(
     ({ categories }: { categories: { id: number; name: string }[] }) => !!categories?.length
   )?.length;
+
+  if (isLoading) {
+    return <LoadingSpinner loading />;
+  }
 
   return (
     <ListComponent
