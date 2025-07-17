@@ -86,7 +86,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     return null;
   }
 
-  const { backgroundColor, description, headline, picture, title } = contentData;
+  const { backgroundColor, description, headline, picture, title } = contentData || {};
 
   return (
     <Overlay
