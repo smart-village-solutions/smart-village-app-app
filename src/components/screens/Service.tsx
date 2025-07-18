@@ -55,12 +55,12 @@ export const Service = ({
   const { globalSettings } = useContext(SettingsContext);
   const { orientation } = useContext(OrientationContext);
   const { settings = {} } = globalSettings;
-  const { personalizedTiles = false, tileSizeFactor = 1 } = settings;
+  const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
   const { serviceTiles = {} } = appDesignSystem;
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
-    personalizedTiles,
+    isPersonalizable,
     data,
     isEditMode,
     staticJsonName
@@ -96,7 +96,7 @@ export const Service = ({
     ),
     [isEditMode, hasDiagonalGradientBackground]
   );
-  const toggler = personalizedTiles && (
+  const toggler = isPersonalizable && (
     <View style={styles.toggler}>
       <TouchableOpacity onPress={onPress}>
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>
