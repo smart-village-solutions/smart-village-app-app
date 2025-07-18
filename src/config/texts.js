@@ -613,7 +613,7 @@ export const texts = {
     inputPrice: 'Preis',
     inputPriceType: ' ',
     inputPriceTypePlaceholder: 'Währung oder Zusatz',
-    inputTitle: 'Titel',
+    inputTitle: 'Anzeigentitel',
     invalidMail: '-Adresse ist nicht gültig.',
     member: 'Anbieter',
     myNoticeboard: 'Meine Anzeige',
@@ -629,6 +629,7 @@ export const texts = {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
+      entryProfile: 'Ihre Anzeige wurde veröffentlicht.',
       header: 'Vielen Dank'
     },
     takePhoto: 'Bild aufnehmen',

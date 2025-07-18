@@ -425,7 +425,10 @@ export const ProfileNoticeboardCreateForm = ({
       });
 
       navigation.goBack();
-      Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
+      Alert.alert(
+        texts.noticeboard.successScreen.header,
+        texts.noticeboard.successScreen.entryProfile
+      );
     } catch (error) {
       setIsLoading(false);
       console.error(error);
