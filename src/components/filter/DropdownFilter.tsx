@@ -33,14 +33,17 @@ export const DropdownFilter = ({
   setFilters,
   showSearch
 }: Props) => {
-  const initiallySelectedItem = {
-    id: 0,
-    index: 0,
-    value: placeholder || '',
-    selected: filters[name] ? false : true
-  };
+  const initiallySelectedItem = !data.some((item) => item.selected)
+    ? {
+        id: 0,
+        index: 0,
+        value: placeholder || '',
+        selected: filters[name] ? false : true
+      }
+    : undefined;
+
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
-    initiallySelectedItem,
+    ...(initiallySelectedItem ? [initiallySelectedItem] : []),
     ...data.map((item) => ({
       ...item,
       selected: multipleSelect
@@ -84,7 +87,7 @@ export const DropdownFilter = ({
   // added to make the placeholder data appear in the dropdown after resetting the filter
   useEffect(() => {
     if (!filters[name]?.length && !dropdownData[0].selected) {
-      setDropdownData([initiallySelectedItem, ...data]);
+      setDropdownData([...(initiallySelectedItem ? [initiallySelectedItem] : []), ...data]);
     }
   }, [filters]);
 

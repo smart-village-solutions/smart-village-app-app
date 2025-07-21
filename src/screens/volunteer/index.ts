@@ -1,5 +1,6 @@
 export * from './VolunteerDetailScreen';
 export * from './VolunteerFormScreen';
+export * from './VolunteerGroupSearchScreen';
 export * from './VolunteerHomeScreen';
 export * from './VolunteerIndexScreen';
 export * from './VolunteerLoginScreen';
