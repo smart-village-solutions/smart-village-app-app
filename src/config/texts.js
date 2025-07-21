@@ -539,10 +539,12 @@ export const texts = {
     alerts: {
       ageMax: 'Das Höchstalter beträgt 99 Jahre.',
       ageMin: 'Das Mindestalter beträgt 18 Jahre.',
-      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
+      dateDifference: (requestedDateDifference) =>
+        `Bitte wählen Sie eine maximale Laufzeit von ${requestedDateDifference} Monaten.`,
       delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
       deleteButton: 'Löschen',
       deleteConversation: 'Wollen Sie diese Unterhaltung wirklich löschen?',
+      departureDateAfterEndDate: 'Das Abfahrtsdatum kann nicht nach dem Ende der Laufzeit liegen.',
       documentHint: (count) => `ⓘ Es können bis zu ${count} Dokumente hochgeladen werden.`,
       documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
       documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,

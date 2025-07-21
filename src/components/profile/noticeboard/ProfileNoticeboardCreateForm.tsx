@@ -128,7 +128,6 @@ export const ProfileNoticeboardCreateForm = ({
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
   const isCarpool = (route?.params?.isCarpool || !!data?.payload?.departureDate) ?? false;
   const [isLoading, setIsLoading] = useState(false);
-  const [frequency, setFrequency] = useState<string | undefined>(data?.payload?.drivingFrequency);
   const [selectedCategory, setSelectedCategory] = useState<string>(
     data?.categories?.[0]?.name || ''
   );
@@ -181,8 +180,10 @@ export const ProfileNoticeboardCreateForm = ({
   const {
     control,
     formState: { errors },
+    getValues,
     handleSubmit,
-    setValue
+    setValue,
+    watch
   } = useForm({
     defaultValues: {
       id: data?.id ?? '',
@@ -236,6 +237,16 @@ export const ProfileNoticeboardCreateForm = ({
     );
   }, [memberData]);
 
+  const departureDate = watch('departureDate');
+  const drivingFrequency = watch('drivingFrequency');
+
+  // add effect to change the end date when the departure date changes
+  useEffect(() => {
+    if (drivingFrequency === CARPOOL_FREQUENCY_OPTIONS[0].value) {
+      setValue('dateEnd', departureDate);
+    }
+  }, [departureDate]);
+
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
   let imageUrl: string | undefined;
 
@@ -247,7 +258,21 @@ export const ProfileNoticeboardCreateForm = ({
     const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
 
     if (dateDifference > requestedDateDifference || dateDifference < 0) {
-      return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.dateDifference);
+      return Alert.alert(
+        texts.noticeboard.alerts.hint,
+        texts.noticeboard.alerts.dateDifference(requestedDateDifference)
+      );
+    }
+
+    // if carpool, check that the departure date is before or equal to the end date
+    if (
+      isCarpool &&
+      moment(noticeboardNewData.departureDate).isAfter(moment(noticeboardNewData.dateEnd))
+    ) {
+      return Alert.alert(
+        texts.noticeboard.alerts.hint,
+        texts.noticeboard.alerts.departureDateAfterEndDate
+      );
     }
 
     setIsLoading(true);
@@ -817,8 +842,22 @@ export const ProfileNoticeboardCreateForm = ({
                           containerStyle={styles.checkboxContainerStyle}
                           key={carpoolFrequencyItem.title}
                           onPress={() => {
-                            setFrequency(carpoolFrequencyItem.value);
                             onChange(carpoolFrequencyItem.value);
+
+                            if (carpoolFrequencyItem.value === CARPOOL_FREQUENCY_OPTIONS[0].value) {
+                              // reset prior set driving frequency days
+                              setValue('drivingFrequencyDays', '[]');
+                              // limit end date to departure date if it is a one-time carpool
+                              setValue('dateEnd', getValues('departureDate'));
+                            } else if (
+                              carpoolFrequencyItem.value === CARPOOL_FREQUENCY_OPTIONS[1].value
+                            ) {
+                              // set end date to 3 months from now if it is a regular carpool
+                              setValue(
+                                'dateEnd',
+                                moment().add(requestedDateDifference, 'months').toDate()
+                              );
+                            }
                           }}
                           title={carpoolFrequencyItem.title}
                           uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
@@ -839,7 +878,7 @@ export const ProfileNoticeboardCreateForm = ({
             </Wrapper>
           )}
 
-          {frequency === CARPOOL_FREQUENCY_OPTIONS[1].value && (
+          {drivingFrequency === CARPOOL_FREQUENCY_OPTIONS[1].value && (
             <Wrapper noPaddingTop>
               <Label bold>{texts.noticeboard.selectDrivingDays}</Label>
               <Controller

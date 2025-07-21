@@ -60,7 +60,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, rout
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const subQuery = route.params?.subQuery ?? {};
-  const isCarpool = subQuery?.params?.isCarpool ?? false;
+  const isCarpool = (subQuery?.params?.isCarpool || payload?.departureDate) ?? false;
   const toRelated = route.params?.toRelated ?? false;
 
   // action to open source urls
