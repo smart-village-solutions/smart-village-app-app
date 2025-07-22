@@ -30,8 +30,8 @@ export const VersionNumber = () => {
             [
               `Smart Village App: ${appJson.expo.version}`,
               `Build: ${buildNumber}`,
-              `OTA: ${appJson.expo.otaVersion}`,
-              search ? `Suche: ${appJson.expo.searchVersion}` : undefined
+              `OTA: ${appJson.expo.extra.otaVersion}`,
+              search ? `Suche: ${appJson.expo.extra.searchVersion}` : undefined
             ]
               .filter(Boolean)
               .join('\n')

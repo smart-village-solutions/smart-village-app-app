@@ -7,14 +7,15 @@
     "githubUrl": "https://github.com/smart-village-solutions/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "<%= @mobile_app_version_number %>",
-    "otaVersion": 1,
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "extra": {
       "eas": {
         "projectId": "<%= @eas_project_id %>"
-      }
+      },
+       "otaVersion": 1,
+       "searchVersion": "0.0.1-beta"
     },
     "updates": {
       "url": "https://u.expo.dev/<%= @eas_project_id %>"
