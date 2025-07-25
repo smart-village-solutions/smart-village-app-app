@@ -79,11 +79,16 @@ export const useVolunteerData = ({
     }
 
     if (filterVariables?.search?.length) {
+      const searchWords = filterVariables.search.toLowerCase().split(' ').filter(Boolean);
+
       processedVolunteerData = processedVolunteerData?.filter(
         (item: { description?: string; name?: string; tags?: string[] }) =>
-          item.description?.toLowerCase().includes(filterVariables.search.toLowerCase()) ||
-          item.name?.toLowerCase().includes(filterVariables.search.toLowerCase()) ||
-          item.tags?.map((tag) => tag.toLowerCase())?.includes(filterVariables.search.toLowerCase())
+          searchWords.every(
+            (word) =>
+              (item.description?.toLowerCase().includes(word) ?? false) ||
+              (item.name?.toLowerCase().includes(word) ?? false) ||
+              (item.tags?.some((tag) => tag.toLowerCase().includes(word)) ?? false)
+          )
       );
     }
 
