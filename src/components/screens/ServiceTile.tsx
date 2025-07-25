@@ -86,7 +86,7 @@ export const ServiceTile = ({
       isEditMode
         ? onToggleVisibility(draggableId, isVisible, setIsVisible)
         : navigation.push(item.routeName, item.params),
-    [isEditMode, isVisible]
+    [isEditMode, onToggleVisibility, draggableId, isVisible, item]
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
   const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;
