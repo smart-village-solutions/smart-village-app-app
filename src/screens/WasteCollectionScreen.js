@@ -85,7 +85,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     hasCalendar = true,
     hasExport = true,
     hasHeaderSearchBarOption = false,
-    minSearchLength = 5,
+    minSearchLength = 2,
     texts: wasteAddressesTexts = {},
     twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
