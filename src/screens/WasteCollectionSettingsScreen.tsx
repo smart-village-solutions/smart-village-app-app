@@ -142,7 +142,14 @@ export const WasteCollectionSettingsScreen = () => {
     }
 
     setLoadingStoredSettings(false);
-  }, [getStreetString, state, streetName, waste, selectedStreetId, selectedTypeKeys]);
+  }, [
+    getStreetString,
+    waste.streetId,
+    waste.streetName,
+    waste.selectedTypeKeys,
+    selectedStreetId,
+    usedTypeKeys
+  ]);
 
   const updateSettings = useCallback(async () => {
     let errorOccurred = false;
@@ -266,20 +273,6 @@ export const WasteCollectionSettingsScreen = () => {
     asyncLoadStoredSettingsFromServer();
   }, [typeSettings]);
 
-  // Use this ref to prevent the useEffect from running multiple times
-  const hasStoredStreetSettings = useRef(false);
-
-  useEffect(() => {
-    if (
-      !hasStoredStreetSettings.current &&
-      loadedStoredSettingsInitially &&
-      waste?.streetId !== selectedStreetId
-    ) {
-      setSelectedStreetId(selectedStreetId);
-      hasStoredStreetSettings.current = true;
-    }
-  }, [loadedStoredSettingsInitially, waste.streetId, selectedStreetId]);
-
   useEffect(() => {
     if (!addressesData || !inputValue) {
       return;
@@ -292,7 +285,7 @@ export const WasteCollectionSettingsScreen = () => {
     if (!!item && selectedStreetId !== item.id) {
       setSelectedStreetId(item.id);
     }
-  }, [addressesData, getStreetString, inputValue, selectedStreetId]);
+  }, [addressesData, inputValue, getStreetString, selectedStreetId]);
 
   const onPressUpdateOnDayBefore = useCallback((value: boolean) => {
     tooltipRef?.current?.toggleTooltip();

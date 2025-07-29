@@ -216,7 +216,7 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
   };
 };
 
-export const useRenderSuggestions = (selectionCallback?: () => void) => {
+export const useRenderSuggestions = (selectionCallback?: (item: any) => void) => {
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -249,7 +249,7 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
         <TouchableOpacity
           onPress={() => {
             setInputValue(streetString);
-            selectionCallback?.();
+            selectionCallback?.(item);
             Keyboard.dismiss();
           }}
         >
