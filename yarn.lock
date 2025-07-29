@@ -5389,6 +5389,11 @@ expo-build-properties@~0.13.3:
     ajv "^8.11.0"
     semver "^7.6.0"
 
+expo-calendar@~14.0.6:
+  version "14.0.6"
+  resolved "https://registry.yarnpkg.com/expo-calendar/-/expo-calendar-14.0.6.tgz#b72194e231f0ccdd0425f39ee08b93b1efcefbe7"
+  integrity sha512-aOby7ueR8lB9sWTHXkECZiPDZNVRsGQYhJTe05puNZicMWCV4c53Z/LRiCTTq3LBXV4zpBOB5rXiCyA1f082yA==
+
 expo-camera@~16.0.18:
   version "16.0.18"
   resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-16.0.18.tgz#5b54dc1a929c12732c585b137b04cef2b01dee3b"

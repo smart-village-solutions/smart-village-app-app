@@ -107,6 +107,12 @@ export const texts = {
       'Es wurde noch nichts für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
+  calendarExport: {
+    abort: 'Abbrechen',
+    body: 'Um ein Event zu erstellen, müssen Sie den Kalenderzugriff erlauben.',
+    settings: 'Einstellungen',
+    title: 'Hinweis'
+  },
   calendarToggle: {
     calendar: 'Kalender',
     list: 'Liste'
@@ -1349,6 +1355,7 @@ export const texts = {
     birthday: 'Geburtstag',
     calendarMy: 'Mein Kalender',
     calendarNew: 'Termin erstellen',
+    calendarExport: 'In Kalender exportieren',
     city: 'Ort',
     contactGroupOwner: 'Gruppenbesitzer kontaktieren',
     conversationAllStart: 'Unterhaltung mit allen beginnen',

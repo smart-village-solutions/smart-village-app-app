@@ -22,6 +22,7 @@ import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
+import { createCalendarEvent } from '../../helpers/createCalendarEvent';
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
 
@@ -227,6 +228,21 @@ export const VolunteerEventRecord = ({
             invert={isAttendingEvent}
             onPress={attend}
           />
+          <Touchable
+            onPress={() =>
+              createCalendarEvent({
+                description,
+                endDatetime,
+                location,
+                startDatetime,
+                title
+              })
+            }
+          >
+            <RegularText primary center>
+              {texts.volunteer.calendarExport}
+            </RegularText>
+          </Touchable>
         </Wrapper>
       )}
     </View>
