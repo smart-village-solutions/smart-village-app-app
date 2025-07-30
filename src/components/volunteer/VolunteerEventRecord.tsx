@@ -44,6 +44,7 @@ export const VolunteerEventRecord = ({
 }: { data: any; refetch: () => void } & StackScreenProps<any>) => {
   const {
     id,
+    all_day: allDay,
     content,
     description,
     location,
@@ -77,6 +78,7 @@ export const VolunteerEventRecord = ({
   const headerTitle = route.params?.title ?? '';
   const appointments = [
     {
+      allDay,
       dateFrom: momentFormat(startDatetime, 'YYYY-MM-DD'),
       dateTo: momentFormat(endDatetime, 'YYYY-MM-DD'),
       timeFrom: momentFormat(startDatetime, 'HH:mm'),
