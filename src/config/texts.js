@@ -110,6 +110,8 @@ export const texts = {
   calendarExport: {
     abort: 'Abbrechen',
     body: 'Um ein Event zu erstellen, müssen Sie den Kalenderzugriff erlauben.',
+    errorBody: 'Beim Exportieren des Kalendereintrags ist ein Fehler aufgetreten.',
+    errorTitle: 'Fehler',
     settings: 'Einstellungen',
     title: 'Hinweis'
   },

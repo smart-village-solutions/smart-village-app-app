@@ -1,5 +1,6 @@
 import * as Calendar from 'expo-calendar';
-import { Platform, Alert, Linking } from 'react-native';
+import moment from 'moment';
+import { Alert, Linking, Platform } from 'react-native';
 
 import appJson from '../../app.json';
 import { texts } from '../config';
@@ -14,6 +15,7 @@ const isOlderIOS = (): boolean => {
 };
 
 type Event = {
+  allDay?: number;
   description?: string;
   endDatetime: string;
   location?: string;
@@ -22,7 +24,7 @@ type Event = {
 };
 
 export const createCalendarEvent = async (eventDetails: Event) => {
-  if (Platform.OS === 'ios' && isOlderIOS()) {
+  if (isOlderIOS()) {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
 
     if (status !== 'granted') {
@@ -41,22 +43,35 @@ export const createCalendarEvent = async (eventDetails: Event) => {
     }
   }
 
-  const defaultCalendarSource =
-    Platform.OS === 'ios' && isOlderIOS()
-      ? await Calendar.getDefaultCalendarAsync()
-      : {
-          isLocalAccount: true,
-          name: appJson.expo.name
-        };
+  const defaultCalendarSource = isOlderIOS()
+    ? await Calendar.getDefaultCalendarAsync()
+    : {
+        id: undefined,
+        isLocalAccount: true,
+        name: appJson.expo.name
+      };
 
-  const { description = '', endDatetime, location = '', startDatetime, title } = eventDetails;
-
-  await Calendar.createEventInCalendarAsync({
-    calendarId: defaultCalendarSource.id,
-    endDate: new Date(endDatetime).toISOString(),
-    location,
-    notes: description,
-    startDate: new Date(startDatetime).toISOString(),
+  const {
+    allDay,
+    description = '',
+    endDatetime,
+    location = '',
+    startDatetime,
     title
-  });
+  } = eventDetails;
+
+  try {
+    await Calendar.createEventInCalendarAsync({
+      allDay: !!allDay,
+      calendarId: defaultCalendarSource.id,
+      endDate: moment(endDatetime).toISOString(),
+      location,
+      notes: description,
+      startDate: moment(startDatetime).toISOString(),
+      title
+    });
+  } catch (error) {
+    Alert.alert(texts.calendarExport.errorTitle, texts.calendarExport.errorBody);
+    return;
+  }
 };
