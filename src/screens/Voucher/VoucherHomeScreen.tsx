@@ -1,5 +1,4 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import * as Device from 'expo-device';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
@@ -20,10 +19,11 @@ import {
   storeVoucherAuthToken,
   storeVoucherMemberId,
   storeVoucherMemberLoginInfo,
+  voucherAuthKey,
   voucherMemberLoginInfo
 } from '../../helpers/voucherHelper';
 import { useStaticContent, useVoucher } from '../../hooks';
-import { logIn } from '../../queries/vouchers';
+import { profileLogIn as logIn } from '../../queries/profile';
 import { ScreenName, VoucherLogin } from '../../types';
 
 const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
@@ -77,30 +77,30 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
       setLoadingAccountCheck(false);
     };
 
-    // at the moment we don't need account check as we log in with a specific key and secret
-    // but it can be used later
+    // NOTE: at the moment we don't need account check as we log in with a specific profile key
     // accountCheck();
   }, []);
 
   useEffect(() => {
     // this section is temporary. it can be removed when the real login section is completed
     const login = async () => {
-      const uniqDeviceKey = (Device.deviceName + Device.modelId + Device.modelName)
-        .replace(/\s+/g, '-')
-        .toLowerCase();
+      const key = await voucherAuthKey();
 
       mutateLogIn(
-        { key: uniqDeviceKey, secret: '-' },
+        { key, secret: '-' },
         {
           onSuccess: (responseData) => {
             if (!responseData?.member) {
+              storeVoucherAuthToken();
+              storeVoucherMemberId();
+              storeVoucherMemberLoginInfo();
+              refresh();
               return;
             }
 
-            // save auth token and member id to global state
             storeVoucherAuthToken(responseData.member.authentication_token);
             storeVoucherMemberId(responseData.member.id);
-            storeVoucherMemberLoginInfo(JSON.stringify({ key: uniqDeviceKey, secret: '-' }));
+            storeVoucherMemberLoginInfo(JSON.stringify({ key, secret: '-' }));
             refresh();
           }
         }
