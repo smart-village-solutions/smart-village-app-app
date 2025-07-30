@@ -70,7 +70,9 @@ export const VoucherListItem = memo(
           </WrapperRow>
         </Card>
 
-        <Divider />
+        <WrapperHorizontal>
+          <Divider />
+        </WrapperHorizontal>
       </TouchableOpacity>
     );
   }
