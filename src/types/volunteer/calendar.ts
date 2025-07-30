@@ -7,7 +7,7 @@ export enum PARTICIPANT_TYPE {
 
 export type Calendar = {
   id: number;
-  allDay: number;
+  allDay: 0 | 1;
   allowDecline: number;
   allowMaybe: number;
   calendarId: number;

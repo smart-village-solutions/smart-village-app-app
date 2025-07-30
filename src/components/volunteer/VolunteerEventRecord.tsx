@@ -222,22 +222,20 @@ export const VolunteerEventRecord = ({
       )}
 
       <Wrapper>
-        {isAttendingEvent !== undefined && (
-          <>
-            {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
-            <Button
-              title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
-              invert={isAttendingEvent}
-              onPress={attend}
-            />
-          </>
+        {isAttendingEvent !== undefined && !isAttendingEvent && (
+          <RegularText small>{texts.volunteer.attendInfo}</RegularText>
         )}
+        <Button
+          title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
+          invert={isAttendingEvent}
+          onPress={attend}
+        />
         <TouchableOpacity
           accessibilityLabel={`${texts.volunteer.calendarExport} ${consts.a11yLabel.button}`}
           accessibilityRole="button"
           onPress={() =>
             createCalendarEvent({
-              allDay,
+              allDay: !!allDay,
               description,
               endDatetime,
               location,

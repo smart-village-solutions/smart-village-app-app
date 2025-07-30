@@ -1,4 +1,8 @@
-import * as Calendar from 'expo-calendar';
+import {
+  createEventInCalendarAsync,
+  getDefaultCalendarAsync,
+  requestCalendarPermissionsAsync
+} from 'expo-calendar';
 import moment from 'moment';
 import { Alert, Linking, Platform } from 'react-native';
 
@@ -15,7 +19,7 @@ const isOlderIOS = (): boolean => {
 };
 
 type Event = {
-  allDay?: number;
+  allDay: boolean;
   description?: string;
   endDatetime: string;
   location?: string;
@@ -25,7 +29,7 @@ type Event = {
 
 export const createCalendarEvent = async (eventDetails: Event) => {
   if (isOlderIOS()) {
-    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    const { status } = await requestCalendarPermissionsAsync();
 
     if (status !== 'granted') {
       Alert.alert(texts.calendarExport.title, texts.calendarExport.body, [
@@ -44,7 +48,7 @@ export const createCalendarEvent = async (eventDetails: Event) => {
   }
 
   const defaultCalendarSource = isOlderIOS()
-    ? await Calendar.getDefaultCalendarAsync()
+    ? await getDefaultCalendarAsync()
     : {
         id: undefined,
         isLocalAccount: true,
@@ -61,8 +65,8 @@ export const createCalendarEvent = async (eventDetails: Event) => {
   } = eventDetails;
 
   try {
-    await Calendar.createEventInCalendarAsync({
-      allDay: !!allDay,
+    await createEventInCalendarAsync({
+      allDay,
       calendarId: defaultCalendarSource.id,
       endDate: moment(endDatetime).toISOString(),
       location,
