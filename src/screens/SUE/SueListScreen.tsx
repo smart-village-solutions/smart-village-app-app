@@ -3,40 +3,33 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState
-} from 'react';
-import { RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { RefreshControl, StyleSheet } from 'react-native';
+import { Divider } from 'react-native-elements';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
-  BoldText,
   EmptyMessage,
   Filter,
-  HeaderLeft,
   INITIAL_START_DATE,
   ListComponent,
+  MapAndListSwitcher,
   RegularText,
   SafeAreaViewFlex,
   Search,
   SueLoadingIndicator,
   WrapperVertical
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps } from '../../types';
 
 import { SueMapScreen } from './SueMapScreen';
 
-const { a11yLabel, FILTER_TYPES } = consts;
+const { FILTER_TYPES } = consts;
 
 const limit = 20;
 
@@ -83,10 +76,12 @@ type Props = {
   route: RouteProp<any, never>;
 };
 
-const VIEW_TYPE = {
-  LIST: 'list',
-  MAP: 'map'
-};
+export const SUE_VIEW_TYPE = {
+  MAP: 'map',
+  LIST: 'list'
+} as const;
+
+export type SueViewType = (typeof SUE_VIEW_TYPE)[keyof typeof SUE_VIEW_TYPE];
 
 export const SueListScreen = ({ navigation, route }: Props) => {
   const { isConnected } = useContext(NetworkContext);
@@ -107,7 +102,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
-  const [viewType, setViewType] = useState(VIEW_TYPE.LIST);
+  const [viewType, setViewType] = useState(route.params?.viewType || SUE_VIEW_TYPE.LIST);
 
   const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     [
@@ -207,36 +202,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     return {};
   }, [data, fetchNextPage, hasNextPage, query]);
 
-  useLayoutEffect(() => {
-    if (viewType === VIEW_TYPE.MAP) {
-      navigation.setOptions({
-        headerLeft: () => (
-          <HeaderLeft
-            onPress={() => setViewType(VIEW_TYPE.LIST)}
-            backImage={({ tintColor }) => (
-              <Icon.Close
-                color={tintColor}
-                size={normalize(22)}
-                style={{ paddingHorizontal: normalize(14) }}
-              />
-            )}
-          />
-        )
-      });
-    } else if (showViewSwitcherButton) {
-      navigation.setOptions({
-        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
-      });
-    }
-  }, [query, viewType]);
-
   if (isOpening) return null;
 
   return (
     <SafeAreaViewFlex>
-      {viewType === VIEW_TYPE.MAP ? (
+      {viewType === SUE_VIEW_TYPE.MAP ? (
         <>
-          <SueMapScreen navigation={navigation} route={route} />
+          <SueMapScreen navigation={navigation} route={route} setViewType={setViewType} />
         </>
       ) : (
         <ListComponent
@@ -255,23 +227,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
               <WrapperVertical>
                 {!!showViewSwitcherButton && (
-                  <TouchableOpacity
-                    onPress={() => setViewType(VIEW_TYPE.MAP)}
-                    accessibilityLabel={`${
-                      viewType === VIEW_TYPE.LIST ? texts.sue.showMapView : texts.sue.showListView
-                    } ${a11yLabel.button}`}
-                    style={styles.button}
-                  >
-                    <BoldText small>
-                      {viewType === VIEW_TYPE.LIST ? texts.sue.showMapView : texts.sue.showListView}
-                    </BoldText>
-
-                    {viewType === VIEW_TYPE.LIST ? (
-                      <Icon.Map size={normalize(16)} style={styles.icon} color={colors.darkText} />
-                    ) : (
-                      <Icon.List size={normalize(14)} style={styles.icon} color={colors.darkText} />
-                    )}
-                  </TouchableOpacity>
+                  <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
                 )}
                 <Filter
                   filterTypes={[
@@ -318,6 +274,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                   setQueryVariables={setQueryVariables}
                   withSearch
                 />
+              </WrapperVertical>
+
+              <WrapperVertical>
+                <Divider />
               </WrapperVertical>
 
               {!!dataCount?.length && (
