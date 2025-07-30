@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
@@ -14,22 +15,30 @@ const TimeBox = styled.View`
   margin-bottom: ${normalize(5)}px;
 `;
 
-const DateBox = styled(TimeBox)`
+const DateBox = styled.View`
   align-items: flex-end;
   flex-direction: column;
+  flex-wrap: wrap;
+  flex: 1;
 `;
 
 /* eslint-disable complexity */
 export const VolunteerAppointmentsCard = ({
   appointments
 }: {
-  appointments: { dateFrom: string; dateTo: string; timeFrom: string; timeTo: string }[];
+  appointments: {
+    allDay: boolean;
+    dateFrom: string;
+    dateTo: string;
+    timeFrom: string;
+    timeTo: string;
+  }[];
 }) => (
   <Wrapper>
     {appointments?.map((item, index) => {
-      const { dateFrom, dateTo, timeFrom, timeTo } = item;
+      const { allDay, dateFrom, dateTo, timeFrom, timeTo } = item;
       const returnFormatDate = 'DD.MM.YYYY';
-      const fullDay = timeFrom === '00:00' && timeTo === '00:00';
+      const fullDay = allDay || (timeFrom === '00:00' && timeTo === '00:00');
 
       return (
         <View key={index} style={index !== appointments.length - 1 ? styles.divider : null}>
@@ -47,12 +56,15 @@ export const VolunteerAppointmentsCard = ({
                   {!!dateTo && dateTo !== dateFrom && (
                     <RegularText>
                       <RegularText small>bis </RegularText>
-                      {momentFormat(dateTo, returnFormatDate)}
+                      {momentFormat(
+                        fullDay ? moment(dateTo).subtract(1, 'day').format('YYYY-MM-DD') : dateTo,
+                        returnFormatDate
+                      )}
                     </RegularText>
                   )}
                 </DateBox>
               )}
-              {(!!timeFrom || !!timeTo) && !fullDay && (
+              {!fullDay && (!!timeFrom || !!timeTo) && (
                 <TimeBox>
                   {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
                   {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
