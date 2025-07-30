@@ -73,6 +73,7 @@ import {
   TilesScreen,
   VolunteerDetailScreen,
   VolunteerFormScreen,
+  VolunteerGroupSearchScreen,
   VolunteerHomeScreen,
   VolunteerIndexScreen,
   VolunteerLoginScreen,
@@ -551,6 +552,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.VolunteerForm,
       screenComponent: VolunteerFormScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.groupSearch },
+      routeName: ScreenName.VolunteerGroupSearch,
+      screenComponent: VolunteerGroupSearchScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.volunteer.home },

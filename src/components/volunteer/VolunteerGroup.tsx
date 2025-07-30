@@ -43,6 +43,7 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
+import { VolunteerGroupSearch } from './VolunteerGroupSearch';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
 
@@ -307,12 +308,22 @@ export const VolunteerGroup = ({
             </Wrapper>
           )}
 
+          {(isGroupOwner || isGroupMember) && (
+            <VolunteerGroupSearch
+              contentContainerId={contentContainerId}
+              guid={guid}
+              isGroupMember={isGroupMember}
+              navigation={navigation}
+              userGuid={userGuid}
+            />
+          )}
+
           <VolunteerPosts
             contentContainerId={contentContainerId}
-            isRefetching={isRefetching}
-            openWebScreen={openWebScreen}
-            navigation={navigation}
             isGroupMember={isGroupMember}
+            isRefetching={isRefetching}
+            navigation={navigation}
+            openWebScreen={openWebScreen}
             userGuid={userGuid}
           />
         </>

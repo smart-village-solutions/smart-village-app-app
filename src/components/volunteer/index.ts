@@ -11,6 +11,8 @@ export * from './VolunteerFormGroup';
 export * from './VolunteerFormProfile';
 export * from './VolunteerGroup';
 export * from './VolunteerGroupMembersAndApplicants';
+export * from './VolunteerGroupSearch';
+export * from './VolunteerGroupSearchField';
 export * from './VolunteerHomeSection';
 export * from './VolunteerMessage';
 export * from './VolunteerPostListItem';

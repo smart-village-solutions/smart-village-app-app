@@ -44,14 +44,17 @@ export type FilterProps = {
   };
   date?: string;
   dateEnd?: string;
+  dateFrom?: string;
   dateRange?: string[];
   dateStart?: string;
+  dateTo?: string;
   end_date?: string;
   ids?: string;
   initial_start_date?: string;
   location?: string;
   locations?: string;
   onlyCurrentlyOpen?: string;
+  orderBy?: string;
   radiusSearch?: {
     currentPosition?: boolean;
     distance?: number;
