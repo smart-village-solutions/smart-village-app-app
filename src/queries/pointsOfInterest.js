@@ -259,6 +259,11 @@ export const GET_POINT_OF_INTEREST = gql`
             url
           }
         }
+        pointOfInterest {
+          operatingCompany {
+            name
+          }
+        }
         payload
       }
       hasTravelTimes

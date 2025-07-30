@@ -9,7 +9,7 @@ import { QUERY_TYPES } from '../../queries';
 import { TVoucherItem } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
 import { Discount } from './Discount';
 
@@ -23,7 +23,17 @@ export const VoucherListItem = memo(
     horizontal: boolean;
     item: TVoucherItem;
   }) => {
-    const { discountType, id, picture, params, payload, routeName: name, subtitle, title } = item;
+    const {
+      discountType,
+      id,
+      picture,
+      params,
+      payload,
+      pointOfInterest,
+      routeName: name,
+      subtitle,
+      title
+    } = item;
 
     return (
       <TouchableOpacity
@@ -62,6 +72,12 @@ export const VoucherListItem = memo(
               {!!subtitle && (
                 <RegularText small numberOfLines={1}>
                   {subtitle}
+                </RegularText>
+              )}
+
+              {!!pointOfInterest?.operatingCompany?.name && (
+                <RegularText small numberOfLines={1}>
+                  {pointOfInterest.operatingCompany.name}
                 </RegularText>
               )}
             </View>

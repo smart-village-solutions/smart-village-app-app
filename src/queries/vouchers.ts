@@ -73,6 +73,11 @@ export const GET_VOUCHERS = gql`
           url
         }
       }
+      pointOfInterest {
+        operatingCompany {
+          name
+        }
+      }
       payload
     }
   }
