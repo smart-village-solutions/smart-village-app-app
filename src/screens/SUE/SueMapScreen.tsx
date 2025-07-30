@@ -14,6 +14,7 @@ import {
   Image,
   LoadingContainer,
   Map,
+  MapAndListSwitcher,
   RegularText,
   SafeAreaViewFlex,
   SueImageFallback,
@@ -32,6 +33,8 @@ import {
 } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
+
+import { SueViewType } from './SueListScreen';
 
 const CloseButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableOpacity
@@ -80,24 +83,27 @@ export const mapToMapMarkers = (
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
+  setViewType: (viewType: SueViewType) => void;
 };
 
 /* eslint-disable complexity */
-export const SueMapScreen = ({ navigation, route }: Props) => {
+export const SueMapScreen = ({ navigation, route, setViewType }: Props) => {
   const { locationSettings = {} } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
   const { locationService } = settings;
-  const { sueStatus = {} } = appDesignSystem;
+  const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { mapPinColors = {} } = sueStatus;
+  const { showViewSwitcherButton = false } = sueListItem;
   const { geoMap = {} } = sueConfig;
   const systemPermission = useSystemPermission();
   const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
+  const viewType = route.params?.viewType;
 
   const {
     activeBackgroundColors = {},
@@ -245,6 +251,9 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
             </ListItem.Content>
           </ListItem>
         </View>
+      )}
+      {!!showViewSwitcherButton && (
+        <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
       )}
     </SafeAreaViewFlex>
   );
