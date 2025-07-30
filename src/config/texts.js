@@ -356,6 +356,7 @@ export const texts = {
   },
   dropdownFilter: {
     category: 'Kategorie',
+    city: 'Ort auswählen',
     dataProvider: 'Datenquellenauswahl',
     location: 'Ort'
   },
@@ -1008,6 +1009,7 @@ export const texts = {
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
+    myCity: 'Mein Ort',
     profile: {
       home: 'Profil'
     },
