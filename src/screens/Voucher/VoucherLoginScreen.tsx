@@ -22,7 +22,7 @@ import {
   storeVoucherMemberLoginInfo
 } from '../../helpers/voucherHelper';
 import { useStaticContent } from '../../hooks';
-import { logIn } from '../../queries/vouchers';
+import { profileLogIn as logIn } from '../../queries/profile';
 import { ScreenName, VoucherLogin } from '../../types';
 
 const showLoginFailAlert = () =>

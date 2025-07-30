@@ -11,6 +11,11 @@ export type TVoucherItem = {
   picture: {
     url: string;
   };
+  pointOfInterest: {
+    operatingCompany: {
+      name: string;
+    };
+  };
   quota: TQuota;
   routeName: string;
   subtitle: string;

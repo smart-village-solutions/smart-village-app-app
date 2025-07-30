@@ -6,12 +6,11 @@ import { ProfileRegistration, ProfileResetPassword, ProfileUpdate } from '../../
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.serverUrl;
 
-export const profileLogIn = async ({ email, password }: { email: string; password: string }) => {
+export const profileLogIn = async (
+  member: { email: string; password: string } | { key: string; secret: string }
+) => {
   const formData = {
-    member: {
-      email,
-      password
-    }
+    member
   };
 
   const fetchObj = {

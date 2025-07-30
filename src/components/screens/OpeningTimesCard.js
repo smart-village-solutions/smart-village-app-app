@@ -127,7 +127,7 @@ export const OpeningTimesCard = ({
 
 const styles = StyleSheet.create({
   divider: {
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.gray60,
     borderBottomWidth: StyleSheet.hairlineWidth
   },
   marginBottom: {

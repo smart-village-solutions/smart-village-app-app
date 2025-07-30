@@ -1,8 +1,10 @@
+import { randomUUID as uuid } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 
 import { addToStore, readFromStore, removeFromStore } from './storageHelper';
 
 const VOUCHER_AUTH_TOKEN = 'VOUCHER_AUTH_TOKEN';
+const VOUCHER_AUTH_KEY = 'VOUCHER_AUTH_KEY';
 export const VOUCHER_MEMBER_ID = 'VOUCHER_MEMBER_ID';
 export const VOUCHER_MEMBER_LOGIN_INFO = 'VOUCHER_MEMBER_LOGIN_INFO';
 export const VOUCHER_TRANSACTIONS = 'VOUCHER_TRANSACTIONS';
@@ -27,6 +29,25 @@ export const voucherAuthToken = async () => {
   }
 
   return authToken;
+};
+
+export const storeVoucherAuthKey = async (authKey?: string) => {
+  if (authKey) {
+    await SecureStore.setItemAsync(VOUCHER_AUTH_KEY, authKey);
+  } else {
+    SecureStore.deleteItemAsync(VOUCHER_AUTH_KEY);
+  }
+};
+
+export const voucherAuthKey = async () => {
+  let authKey = await SecureStore.getItemAsync(VOUCHER_AUTH_KEY);
+
+  if (!authKey) {
+    authKey = uuid();
+    await storeVoucherAuthKey(authKey);
+  }
+
+  return authKey;
 };
 
 export const storeVoucherMemberId = (memberId?: string) => {
