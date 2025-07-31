@@ -1323,6 +1323,9 @@ export const texts = {
       titlePlaceholder: 'Hier eingeben',
       postalCode: 'Postleitzahl'
     },
+    reports: 'Meldungen',
+    result: 'Ergebnis',
+    results: 'Ergebnisse',
     showListView: 'Liste',
     showMapView: 'Karte öffnen',
     viewReports: 'Meldungen ansehen'
