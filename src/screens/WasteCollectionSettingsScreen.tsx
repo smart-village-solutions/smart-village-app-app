@@ -44,6 +44,7 @@ import { areValidReminderSettings } from '../jsonValidation';
 import {
   getInAppPermission,
   getReminderSettings,
+  handleSystemPermissions,
   showPermissionRequiredAlert,
   updateWasteReminderSettings
 } from '../pushNotifications';
@@ -126,6 +127,10 @@ export const WasteCollectionSettingsScreen = () => {
     } else {
       if (waste.streetId !== selectedStreetId) {
         dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+        // Activate notifications if the user has allowed system permissions
+        handleSystemPermissions().then((permission) => {
+          if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
+        });
       } else {
         dispatch({
           type: WasteSettingsActions.updateWasteSettings,
@@ -251,6 +256,10 @@ export const WasteCollectionSettingsScreen = () => {
   useEffect(() => {
     if (usedTypes) {
       dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+      // Activate notifications if the user has allowed system permissions
+      handleSystemPermissions().then((permission) => {
+        if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
+      });
     }
   }, [usedTypes]);
 
