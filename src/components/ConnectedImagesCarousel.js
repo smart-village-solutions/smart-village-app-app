@@ -11,9 +11,9 @@ import { SettingsContext } from '../SettingsProvider';
 import { ImagesCarousel } from './ImagesCarousel';
 import { LoadingContainer } from './LoadingContainer';
 
-export const ConnectedImagesCarousel = ({ navigation, publicJsonFile }) => {
+export const ConnectedImagesCarousel = ({ navigation, publicJsonFile, refreshTimeKey }) => {
   const { data, loading, refetch } = useStaticContent({
-    refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
+    refreshTimeKey: refreshTimeKey || `publicJsonFile-${publicJsonFile}`,
     name: publicJsonFile,
     type: 'json'
   });
@@ -45,5 +45,6 @@ export const ConnectedImagesCarousel = ({ navigation, publicJsonFile }) => {
 
 ConnectedImagesCarousel.propTypes = {
   navigation: PropTypes.object.isRequired,
-  publicJsonFile: PropTypes.string.isRequired
+  publicJsonFile: PropTypes.string.isRequired,
+  refreshTimeKey: PropTypes.string
 };
