@@ -155,7 +155,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
     setSelectedTypes(
       Object.fromEntries(
-        (waste.selectedTypeKeys?.length ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
+        (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
           (typeKey) => [typeKey, usedTypes[typeKey]]
         )
       )
