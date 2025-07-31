@@ -32,9 +32,7 @@ import {
   useSystemPermission
 } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { MapMarker } from '../../types';
-
-import { SueViewType } from './SueListScreen';
+import { MapMarker, SueViewType } from '../../types';
 
 const CloseButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableOpacity
@@ -83,11 +81,12 @@ export const mapToMapMarkers = (
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
+  viewType: SueViewType;
   setViewType: (viewType: SueViewType) => void;
 };
 
 /* eslint-disable complexity */
-export const SueMapScreen = ({ navigation, route, setViewType }: Props) => {
+export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props) => {
   const { locationSettings = {} } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
@@ -103,7 +102,6 @@ export const SueMapScreen = ({ navigation, route, setViewType }: Props) => {
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
-  const viewType = route.params?.viewType;
 
   const {
     activeBackgroundColors = {},

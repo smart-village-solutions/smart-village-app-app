@@ -25,7 +25,7 @@ import {
 import { colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { StatusProps } from '../../types';
+import { StatusProps, SueViewType } from '../../types';
 
 import { SueMapScreen } from './SueMapScreen';
 
@@ -76,20 +76,13 @@ type Props = {
   route: RouteProp<any, never>;
 };
 
-export const SUE_VIEW_TYPE = {
-  MAP: 'map',
-  LIST: 'list'
-} as const;
-
-export type SueViewType = (typeof SUE_VIEW_TYPE)[keyof typeof SUE_VIEW_TYPE];
-
 export const SueListScreen = ({ navigation, route }: Props) => {
   const { isConnected } = useContext(NetworkContext);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
   const { showViewSwitcherButton = false } = sueListItem;
-  const query = route.params?.query ?? '';
+  const query = route.params?.query ?? QUERY_TYPES.SUE.REQUESTS;
 
   const initialQueryVariables = route.params?.queryVariables ?? {
     limit,
@@ -102,7 +95,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
-  const [viewType, setViewType] = useState(route.params?.viewType || SUE_VIEW_TYPE.LIST);
+  const [viewType, setViewType] = useState(route.params?.viewType || SueViewType.List);
 
   const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     [
@@ -206,10 +199,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      {viewType === SUE_VIEW_TYPE.MAP ? (
-        <>
-          <SueMapScreen navigation={navigation} route={route} setViewType={setViewType} />
-        </>
+      {viewType === SueViewType.Map ? (
+        <SueMapScreen
+          navigation={navigation}
+          route={route}
+          setViewType={setViewType}
+          viewType={viewType}
+        />
       ) : (
         <ListComponent
           navigation={navigation}
