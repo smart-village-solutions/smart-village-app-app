@@ -1,9 +1,8 @@
-import _upperFirst from 'lodash/upperFirst';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, Icon, normalize } from '../config';
-import { SUE_VIEW_TYPE, SueViewType } from '../screens';
+import { SueViewType } from '../types';
 
 import { RegularText } from './Text';
 import { WrapperRow } from './Wrapper';
@@ -21,14 +20,14 @@ export const MapAndListSwitcher = ({
     <WrapperRow
       style={[
         containerStyle,
-        viewType === SUE_VIEW_TYPE.MAP && styles.mapViewContainer,
-        viewType === SUE_VIEW_TYPE.LIST && styles.listViewContainer,
+        viewType === SueViewType.List && styles.listViewContainer,
+        viewType === SueViewType.Map && styles.mapViewContainer,
         styles.container
       ]}
     >
-      {(Object.values(SUE_VIEW_TYPE) as SueViewType[]).map((type, index) => (
+      {Object.values(SueViewType).map((type, index) => (
         <TouchableOpacity
-          accessibilityLabel={`${_upperFirst(type)} ${consts.a11yLabel.button}`}
+          accessibilityLabel={`${type} ${consts.a11yLabel.button}`}
           activeOpacity={0.7}
           key={`${type}-${index}`}
           onPress={() => setViewType(type)}
@@ -40,12 +39,12 @@ export const MapAndListSwitcher = ({
           ]}
         >
           <RegularText smallest lightest>
-            {_upperFirst(type)}
+            {type}
           </RegularText>
-          {type === SUE_VIEW_TYPE.MAP ? (
+          {type === SueViewType.Map ? (
             <Icon.Map color={colors.surface} size={normalize(16)} style={styles.icon} />
           ) : (
-            <Icon.List color={colors.surface} size={normalize(14)} style={styles.icon} />
+            <Icon.List color={colors.surface} size={normalize(12)} style={styles.icon} />
           )}
         </TouchableOpacity>
       ))}
