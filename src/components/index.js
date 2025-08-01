@@ -77,6 +77,7 @@ export * from './LoadingContainer';
 export * from './LoadingModal';
 export * from './LoadingSpinner';
 export * from './Logo';
+export * from './MapAndListSwitcher';
 export * from './MediaSection';
 export * from './Modal';
 export * from './MultiButtonWithSubQuery';
