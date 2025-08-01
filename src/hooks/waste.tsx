@@ -260,7 +260,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
         </TouchableOpacity>
       );
     },
-    [setInputValue]
+    [getStreetString, selectionCallback, setInputValue]
   );
 
   return {
