@@ -271,83 +271,85 @@ export const WasteCollectionScreen = ({ navigation }) => {
               setSelectedStreetId={setSelectedStreetId}
             />
           </DefaultKeyboardAvoidingView>
-        ) : showCalendar ? (
-          <>
-            {wasteHeader()}
-            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
-            <Wrapper>
-              <RegularText small>{wasteTexts.calendarIntro}</RegularText>
-            </Wrapper>
-            <RNCalendar
-              dayComponent={DayComponent}
-              firstDay={1}
-              markedDates={markedDates}
-              markingType="multi-dot"
-              onDayPress={onDayPress}
-              renderArrow={renderArrow}
-              theme={{
-                todayTextColor: colors.primary,
-                todayBackgroundColor: colors.lighterPrimaryRgba,
-                indicatorColor: colors.refreshControl,
-                dotStyle: {
-                  borderRadius: DOT_SIZE / 2,
-                  height: DOT_SIZE,
-                  marginBottom: normalize(8),
-                  marginTop: normalize(8),
-                  width: DOT_SIZE
-                }
-              }}
-            />
-
-            {!!hasExport && (
-              <View style={styles.paddingTop}>
-                <Wrapper style={styles.noPaddingBottom}>
-                  <Button
-                    title={wasteTexts.exportButton}
-                    notFullWidth
-                    onPress={() => triggerExport({ selectedTypes: waste.selectedTypeKeys })}
-                  />
-                </Wrapper>
-              </View>
-            )}
-            <Overlay
-              animationType="fade"
-              isVisible={isDayOverlayVisible}
-              onBackdropPress={() => setIsDayOverlayVisible(false)}
-              windowBackgroundColor={colors.overlayRgba}
-              overlayStyle={[styles.overlay, styles.overlayWidth]}
-              supportedOrientations={['portrait', 'landscape']}
-            >
-              {!!selectedDay && (
-                <WrapperRow spaceBetween>
-                  <BoldText>{momentFormat(selectedDay, 'dddd, DD.MM.YYYY')}</BoldText>
-
-                  <TouchableOpacity
-                    onPress={() => setIsDayOverlayVisible(false)}
-                    style={styles.overlayCloseButton}
-                  >
-                    <Icon.Close size={normalize(20)} color={colors.darkText} />
-                  </TouchableOpacity>
-                </WrapperRow>
-              )}
-
-              {!!usedTypes && (
-                <WasteCalendarLegend data={usedTypes} dots={markedDates?.[selectedDay]?.dots} />
-              )}
-
-              <Button title={texts.close} onPress={() => setIsDayOverlayVisible(false)} />
-            </Overlay>
-            <FeedbackFooter containerStyle={styles.feedbackContainer} />
-          </>
-        ) : selectedTypes ? (
+        ) : (
           <>
             {wasteHeader()}
             {hasCalendar && (
               <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
             )}
-            {wasteList()}
+            {showCalendar ? (
+              <>
+                <Wrapper>
+                  <RegularText small>{wasteTexts.calendarIntro}</RegularText>
+                </Wrapper>
+                <RNCalendar
+                  dayComponent={DayComponent}
+                  firstDay={1}
+                  markedDates={markedDates}
+                  markingType="multi-dot"
+                  onDayPress={onDayPress}
+                  renderArrow={renderArrow}
+                  theme={{
+                    todayTextColor: colors.primary,
+                    todayBackgroundColor: colors.lighterPrimaryRgba,
+                    indicatorColor: colors.refreshControl,
+                    dotStyle: {
+                      borderRadius: DOT_SIZE / 2,
+                      height: DOT_SIZE,
+                      marginBottom: normalize(8),
+                      marginTop: normalize(8),
+                      width: DOT_SIZE
+                    }
+                  }}
+                />
+
+                {!!hasExport && (
+                  <View style={styles.paddingTop}>
+                    <Wrapper style={styles.noPaddingBottom}>
+                      <Button
+                        title={wasteTexts.exportButton}
+                        notFullWidth
+                        onPress={() => triggerExport({ selectedTypes: waste.selectedTypeKeys })}
+                      />
+                    </Wrapper>
+                  </View>
+                )}
+                <Overlay
+                  animationType="fade"
+                  isVisible={isDayOverlayVisible}
+                  onBackdropPress={() => setIsDayOverlayVisible(false)}
+                  windowBackgroundColor={colors.overlayRgba}
+                  overlayStyle={[styles.overlay, styles.overlayWidth]}
+                  supportedOrientations={['portrait', 'landscape']}
+                >
+                  {!!selectedDay && (
+                    <WrapperRow spaceBetween>
+                      <BoldText>{momentFormat(selectedDay, 'dddd, DD.MM.YYYY')}</BoldText>
+
+                      <TouchableOpacity
+                        onPress={() => setIsDayOverlayVisible(false)}
+                        style={styles.overlayCloseButton}
+                      >
+                        <Icon.Close size={normalize(20)} color={colors.darkText} />
+                      </TouchableOpacity>
+                    </WrapperRow>
+                  )}
+
+                  {!!usedTypes && (
+                    <WasteCalendarLegend data={usedTypes} dots={markedDates?.[selectedDay]?.dots} />
+                  )}
+
+                  <Button title={texts.close} onPress={() => setIsDayOverlayVisible(false)} />
+                </Overlay>
+                <FeedbackFooter containerStyle={styles.feedbackContainer} />
+              </>
+            ) : selectedTypes ? (
+              wasteList()
+            ) : (
+              <LoadingSpinner loading />
+            )}
           </>
-        ) : null
+        )
       ) : selectedTypes && !showCalendar ? (
         <>
           {wasteHeader()}
@@ -356,7 +358,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
           )}
           {wasteList()}
         </>
-      ) : null}
+      ) : (
+        <LoadingSpinner loading />
+      )}
       {!selectedStreetId &&
         (device.platform === 'ios' || (device.platform === 'android' && !keyboardHeight)) && (
           <FeedbackFooter containerStyle={styles.feedbackContainer} />
