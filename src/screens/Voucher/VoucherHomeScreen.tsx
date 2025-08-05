@@ -19,16 +19,17 @@ import {
   storeVoucherAuthToken,
   storeVoucherMemberId,
   storeVoucherMemberLoginInfo,
+  voucherAuthKey,
   voucherMemberLoginInfo
 } from '../../helpers/voucherHelper';
 import { useStaticContent, useVoucher } from '../../hooks';
-import { logIn } from '../../queries/vouchers';
+import { profileLogIn as logIn } from '../../queries/profile';
 import { ScreenName, VoucherLogin } from '../../types';
 
 const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
 
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { refresh, isLoggedIn, memberId } = useVoucher();
+  const { refresh, isLoading, isLoggedIn, memberId } = useVoucher();
   const [loadingAccountCheck, setLoadingAccountCheck] = useState(true);
 
   const imageUri = route?.params?.headerImage;
@@ -76,15 +77,45 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
       setLoadingAccountCheck(false);
     };
 
-    accountCheck();
+    // NOTE: at the moment we don't need account check as we log in with a specific profile key
+    // accountCheck();
+  }, []);
+
+  useEffect(() => {
+    // this section is temporary. it can be removed when the real login section is completed
+    const login = async () => {
+      const key = await voucherAuthKey();
+
+      mutateLogIn(
+        { key, secret: '-' },
+        {
+          onSuccess: (responseData) => {
+            if (!responseData?.member) {
+              storeVoucherAuthToken();
+              storeVoucherMemberId();
+              storeVoucherMemberLoginInfo();
+              refresh();
+              return;
+            }
+
+            storeVoucherAuthToken(responseData.member.authentication_token);
+            storeVoucherMemberId(responseData.member.id);
+            storeVoucherMemberLoginInfo(JSON.stringify({ key, secret: '-' }));
+            refresh();
+          }
+        }
+      );
+    };
+
+    login();
   }, []);
 
   const refreshHome = useCallback(async () => {
     await refetchHomeText();
   }, []);
 
-  if (loadingHomeText || loadingAccountCheck) {
-    return <LoadingSpinner />;
+  if (loadingHomeText || isLoading) {
+    return <LoadingSpinner loading />;
   }
 
   return (
