@@ -1,12 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
+import { colors, styles as configStyles, consts, Icon, normalize, texts } from '../../config';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
+import { createCalendarEvent } from '../../helpers/createCalendarEvent';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { calendarAttend } from '../../queries/volunteer';
@@ -43,11 +44,12 @@ export const VolunteerEventRecord = ({
   route
 }: { data: any; refetch: () => void } & StackScreenProps<any>) => {
   const {
-    id,
+    all_day: allDay,
     content,
     description,
-    location,
     end_datetime: endDatetime,
+    id,
+    location,
     participant_info: participantInfo,
     participants,
     start_datetime: startDatetime,
@@ -219,16 +221,34 @@ export const VolunteerEventRecord = ({
         </View>
       )}
 
-      {isAttendingEvent !== undefined && (
-        <Wrapper>
-          {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
-          <Button
-            title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
-            invert={isAttendingEvent}
-            onPress={attend}
-          />
-        </Wrapper>
-      )}
+      <Wrapper>
+        {isAttendingEvent !== undefined && !isAttendingEvent && (
+          <RegularText small>{texts.volunteer.attendInfo}</RegularText>
+        )}
+        <Button
+          title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
+          invert={isAttendingEvent}
+          onPress={attend}
+        />
+        <TouchableOpacity
+          accessibilityLabel={`${texts.volunteer.calendarExport} ${consts.a11yLabel.button}`}
+          accessibilityRole="button"
+          onPress={() =>
+            createCalendarEvent({
+              allDay: !!allDay,
+              description,
+              endDatetime,
+              location,
+              startDatetime,
+              title
+            })
+          }
+        >
+          <RegularText primary center>
+            {texts.volunteer.calendarExport}
+          </RegularText>
+        </TouchableOpacity>
+      </Wrapper>
     </View>
   );
 };

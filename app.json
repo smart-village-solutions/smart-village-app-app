@@ -95,6 +95,12 @@
         }
       ],
       [
+        "expo-calendar",
+        {
+          "calendarPermission": "Erlauben Sie $(PRODUCT_NAME) den Zugriff auf Ihren Kalender."
+        }
+      ],
+      [
         "expo-camera",
         {
           "recordAudioAndroid": false
