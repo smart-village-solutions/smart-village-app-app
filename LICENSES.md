@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 953 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 954 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 86 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 27 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 27 |
@@ -5117,6 +5117,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "expo-build-properties",
     "version": "0.13.3",
     "description": "Config plugin to customize native build properties on prebuild",
+    "copyright": ""
+  },
+  "expo-calendar@14.0.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/calendar/\">\n    <img\n      src=\"../../.github/resources/expo-calendar.svg\"\n      alt=\"expo-calendar\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an API for interacting with the device's system calendars, events, reminders, and associated records.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/calendar/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/calendar/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/calendar/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-calendar\n```\n\n### Configure for Android\n\nAdd `android.permission.READ_CALENDAR` and `android.permission.WRITE_CALENDAR` permissions to your manifest (`android/app/src/main/AndroidManifest.xml`):\n\n```xml\n<uses-permission android:name=\"android.permission.READ_CALENDAR\" />\n<uses-permission android:name=\"android.permission.WRITE_CALENDAR\" />\n```\n\n### Configure for iOS\n\nAdd `NSCalendarsUsageDescription`, and `NSRemindersUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSCalendarsUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to access your calendar</string>\n<key>NSRemindersUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to access your reminders</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
+    "name": "expo-calendar",
+    "version": "14.0.6",
+    "description": "Provides an API for interacting with the device's system calendars, events, reminders, and associated records.",
     "copyright": ""
   },
   "expo-camera@16.0.18": {
