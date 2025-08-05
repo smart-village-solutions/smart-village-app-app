@@ -75,6 +75,7 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
 const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter(filterGenericItems);
+  const isCarpool = subQuery?.params?.isCarpool ?? false;
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
@@ -82,7 +83,8 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
     overtitle:
       genericItem.genericType !== GenericType.Deadline &&
       subtitle(
-        momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
+        (isCarpool && genericItem?.payload?.departureDate) ||
+          momentFormatUtcToLocal(genericItem.publicationDate || genericItem.createdAt),
         getGenericItemSubtitle(genericItem)
       ),
     title: genericItem.title,

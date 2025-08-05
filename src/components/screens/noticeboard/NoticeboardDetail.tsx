@@ -4,32 +4,34 @@ import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { useProfileContext } from '../../../../ProfileProvider';
-import { Icon, normalize, texts } from '../../../../config';
+import { useProfileContext } from '../../../ProfileProvider';
+import { colors, Icon, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
-  matomoTrackingString
-} from '../../../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../../../hooks';
-import { QUERY_TYPES, getQuery } from '../../../../queries';
-import { DELETE_GENERIC_ITEM } from '../../../../queries/genericItem';
-import { ScreenName } from '../../../../types';
-import { Button } from '../../../Button';
-import { ImageSection } from '../../../ImageSection';
-import { LoadingSpinner } from '../../../LoadingSpinner';
-import { SectionHeader } from '../../../SectionHeader';
-import { StorySection } from '../../../StorySection';
-import { BoldText, HeadlineText } from '../../../Text';
-import { TextListItem } from '../../../TextListItem';
-import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../../Wrapper';
-import { InfoCard } from '../../../infoCard';
-import { VolunteerAvatar } from '../../../volunteer';
+  matomoTrackingString,
+  trimNewLines
+} from '../../../helpers';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../../hooks';
+import { getQuery, QUERY_TYPES } from '../../../queries';
+import { DELETE_GENERIC_ITEM } from '../../../queries/genericItem';
+import { ScreenName } from '../../../types';
+import { Button } from '../../Button';
+import { HtmlView } from '../../HtmlView';
+import { ImageSection } from '../../ImageSection';
+import { LoadingSpinner } from '../../LoadingSpinner';
+import { SectionHeader } from '../../SectionHeader';
+import { StorySection } from '../../StorySection';
+import { BoldText, HeadlineText, RegularText } from '../../Text';
+import { TextListItem } from '../../TextListItem';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../Wrapper';
+import { InfoCard } from '../../infoCard';
+import { VolunteerAvatar } from '../../volunteer';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
-// eslint-disable-next-line complexity
-export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
+/* eslint-disable complexity */
+export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
   const {
     id,
     categories,
@@ -40,6 +42,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
     genericType,
     mediaContents,
     memberId,
+    payload,
     priceInformations,
     sourceUrl,
     title
@@ -57,12 +60,13 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const subQuery = route.params?.subQuery ?? {};
+  const isCarpool = (subQuery?.params?.isCarpool || payload?.departureDate) ?? false;
   const toRelated = route.params?.toRelated ?? false;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
-  const { currentUserData, isLoading } = useProfileContext();
+  const { currentUserData, isLoading, isLoggedIn } = useProfileContext();
   const currentUserMemberId = currentUserData?.member?.id;
   const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId == memberId;
 
@@ -111,7 +115,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
   useLayoutEffect(() => {
     isCurrentUser &&
       navigation.setOptions({
-        headerTitle: () => <HeadlineText>{texts.noticeboard.myNoticeboard}</HeadlineText>
+        headerTitle: () => <HeadlineText lightest>{texts.noticeboard.myNoticeboard}</HeadlineText>
       });
   }, [isCurrentUser]);
 
@@ -129,13 +133,14 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
         <Wrapper>
           <WrapperRow spaceAround>
             <Button
-              icon={<Icon.Pencil size={normalize(24)} />}
+              icon={<Icon.Pencil color={colors.lightestText} />}
               iconPosition="left"
               notFullWidth
               title={texts.noticeboard.edit}
               onPress={() =>
-                navigation.push(ScreenName.ProfileNoticeboardForm, {
+                navigation.push(ScreenName.NoticeboardForm, {
                   consentForDataProcessingText: subQuery?.params?.consentForDataProcessingText,
+                  isLoginRequired: toRelated || isLoggedIn,
                   details: data,
                   genericType,
                   isNewEntryForm: true,
@@ -146,7 +151,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
               }
             />
             <Button
-              icon={<Icon.Trash size={normalize(24)} />}
+              icon={<Icon.Trash />}
               iconPosition="left"
               invert
               notFullWidth
@@ -204,6 +209,89 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
         </>
       )}
 
+      {isCarpool && (
+        <>
+          <Wrapper>
+            {!!payload?.departureDate && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputDepartureDate}: </BoldText>
+                <RegularText>{payload.departureDate}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.departureTime && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputDepartureTime}: </BoldText>
+                <RegularText>{payload.departureTime} Uhr</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.departureAddress && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputDepartureAddress}: </BoldText>
+                <RegularText>{payload.departureAddress}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.destinationAddress && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputDestinationAddress}: </BoldText>
+                <RegularText>{payload.destinationAddress}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.drivingFrequency && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.drivingFrequency}: </BoldText>
+                <RegularText>
+                  {texts.noticeboard.carpoolFrequency[payload.drivingFrequency]}
+                </RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.drivingFrequencyDays?.length && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.drivingDays}: </BoldText>
+                <RegularText>
+                  {payload.drivingFrequencyDays
+                    .map((day) => texts.noticeboard.weekday[day])
+                    .join(', ')}
+                </RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.availablePlaces && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputAvailablePlaces}: </BoldText>
+                <RegularText>{payload.availablePlaces}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.licensePlate && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputLicensePlate}: </BoldText>
+                <RegularText>{payload.licensePlate}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.carBrand && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputCarBrand}: </BoldText>
+                <RegularText>{payload.carBrand}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.carColor && (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputCarColor}: </BoldText>
+                <RegularText>{payload.carColor}</RegularText>
+              </WrapperRow>
+            )}
+            {!!payload?.comments && (
+              <>
+                <BoldText>{texts.noticeboard.inputComments}: </BoldText>
+                <HtmlView
+                  html={trimNewLines(payload.comments)}
+                  openWebScreen={openWebScreen}
+                  selectable
+                />
+              </>
+            )}
+          </Wrapper>
+        </>
+      )}
+
       {!!dates?.length && (
         <>
           <SectionHeader title={texts.noticeboard.duration} containerStyle={styles.paddingTop} />
@@ -225,13 +313,14 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
                 ),
                 routeName: ScreenName.ProfileUpdate,
                 onPress: () =>
-                  navigation.push(ScreenName.ProfileNoticeboardMemberIndex, {
+                  navigation.push(ScreenName.NoticeboardMemberIndex, {
                     data: dataMemberIndex,
                     isCurrentUser,
                     memberId,
                     memberEmail: contacts[0].email,
                     memberName: contacts[0].firstName,
                     query: QUERY_TYPES.GENERIC_ITEMS,
+                    subQuery,
                     title: texts.noticeboard.member
                   }),
                 title: contacts[0].firstName
@@ -245,7 +334,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
       {!isCurrentUser && (
         <Wrapper>
           <Button
-            icon={<Icon.Mail />}
+            icon={<Icon.Mail color={colors.lightestText} />}
             iconPosition="left"
             title={
               toRelated
@@ -274,6 +363,7 @@ export const ProfileNoticeboardDetail = ({ data, navigation, fetchPolicy, refetc
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   noPaddingTop: {
@@ -284,7 +374,7 @@ const styles = StyleSheet.create({
   }
 });
 
-ProfileNoticeboardDetail.propTypes = {
+NoticeboardDetail.propTypes = {
   data: PropTypes.object.isRequired,
   fetchPolicy: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,

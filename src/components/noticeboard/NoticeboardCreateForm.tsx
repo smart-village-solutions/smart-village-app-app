@@ -14,6 +14,7 @@ import {
   DocumentSelector,
   HtmlView,
   Input,
+  Label,
   LoadingSpinner,
   MultiImageSelector,
   RegularText,
@@ -41,18 +42,18 @@ const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, MEDIA_TYP
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
-  id: string;
   body: string;
   dateEnd: string;
   dateStart: string;
   documents: string;
   email: string;
+  id: string;
   image: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
-  termsOfService: boolean;
   price: string;
   priceType?: string;
+  termsOfService: boolean;
   title: string;
 };
 
@@ -172,7 +173,7 @@ export const NoticeboardCreateForm = ({
         .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
       const imagesSize = images.reduce((acc: number, image: any) => acc + image.size, 0);
 
-      // check if any document size is bigger than `imageMaxSizes.file`
+      // check if any image size is bigger than `imageMaxSizes.file`
       for (const image of images) {
         if (!!imageMaxSizes.file && image.size > imageMaxSizes.file) {
           setIsLoading(false);
@@ -183,7 +184,7 @@ export const NoticeboardCreateForm = ({
         }
       }
 
-      // check if documents size is bigger than `imageMaxSizes.total`
+      // check if images size is bigger than `imageMaxSizes.total`
       if (imageMaxSizes.total && imagesSize > imageMaxSizes.total) {
         setIsLoading(false);
         return Alert.alert(
@@ -257,6 +258,7 @@ export const NoticeboardCreateForm = ({
                   contentType: document.mimeType
                 });
             } catch (error) {
+              setIsLoading(false);
               Alert.alert(
                 texts.noticeboard.alerts.hint,
                 texts.noticeboard.alerts.documentUploadError
@@ -271,21 +273,21 @@ export const NoticeboardCreateForm = ({
 
       await createGenericItem({
         variables: {
-          id: noticeboardNewData.id,
           categoryName: noticeboardNewData.noticeboardType,
-          genericType,
-          publishedAt: momentFormat(noticeboardNewData.dateStart),
-          title: noticeboardNewData.title,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
-          mediaContents,
           dates: [
             {
               dateEnd: momentFormat(noticeboardNewData.dateEnd),
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
           ],
-          priceInformations: [{ description: price }]
+          genericType,
+          id: noticeboardNewData.id,
+          mediaContents,
+          priceInformations: [{ description: price }],
+          publishedAt: momentFormat(noticeboardNewData.dateStart),
+          title: noticeboardNewData.title
         }
       });
 
@@ -335,6 +337,7 @@ export const NoticeboardCreateForm = ({
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Label bold>{`${texts.noticeboard.selectNoticeboardType} *`}</Label>
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}

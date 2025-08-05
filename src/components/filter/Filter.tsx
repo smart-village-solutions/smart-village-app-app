@@ -262,7 +262,7 @@ export const Filter = ({
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
-            <WrapperVertical style={styles.noPaddingTop}>
+            <WrapperVertical noPaddingTop>
               <FilterComponent
                 filters={filters}
                 filterTypes={filterTypes}
@@ -272,7 +272,7 @@ export const Filter = ({
 
             <Divider />
 
-            <WrapperVertical style={styles.noPaddingBottom}>
+            <WrapperVertical noPaddingBottom>
               <Button
                 disabled={!!isNoFilterSet}
                 invert
@@ -315,11 +315,5 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingLeft: normalize(8)
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

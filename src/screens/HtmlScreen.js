@@ -46,7 +46,7 @@ export const HtmlScreen = ({ navigation, route }) => {
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  const subQuery = route.params?.subQuery ?? '';
+  const subQuery = route.params?.subQuery ?? {};
   const rootRouteName = route.params?.rootRouteName ?? '';
 
   if (loading) {

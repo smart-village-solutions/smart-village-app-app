@@ -8,9 +8,9 @@ import {
   EventRecord,
   LoadingContainer,
   NewsItem,
+  NoticeboardDetail,
   Offer,
   PointOfInterest,
-  ProfileNoticeboardDetail,
   SafeAreaViewFlex,
   Tour
 } from '../components';
@@ -35,7 +35,7 @@ const getGenericComponent = (genericType) => {
     case GenericType.Job:
       return Offer;
     case GenericType.Noticeboard:
-      return ProfileNoticeboardDetail;
+      return NoticeboardDetail;
   }
 };
 
