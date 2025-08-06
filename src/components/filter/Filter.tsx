@@ -101,15 +101,18 @@ export const Filter = ({
       }, 500);
     } else {
       setIsCollapsed(!isCollapsed);
+
+      const { dateRange, ...rest } = initialQueryVariables || {};
+
       setFilters((prev) => ({
         saveable: false,
         search: prev.search || '',
-        ...(initialQueryVariables || {})
+        ...(rest || {})
       }));
       setQueryVariables((prev) => ({
         saveable: false,
         search: prev.search || '',
-        ...(initialQueryVariables || {})
+        ...(rest || {})
       }));
     }
   };
