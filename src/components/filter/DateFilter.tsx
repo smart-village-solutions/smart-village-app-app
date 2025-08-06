@@ -157,10 +157,10 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
                 <RegularText
                   style={styles.buttonText}
                   placeholder={
-                    !filters[item.name] || filters.start_date === filters.initial_start_date
+                    !filters[item.name] || filters[item.name] === filters[`initial_${item.name}`]
                   }
                 >
-                  {filters[item.name] && filters.start_date !== filters.initial_start_date
+                  {filters[item.name] && filters[item.name] !== filters[`initial_${item.name}`]
                     ? momentFormat(filters[item.name], 'DD.MM.YYYY')
                     : item.placeholder}
                 </RegularText>
