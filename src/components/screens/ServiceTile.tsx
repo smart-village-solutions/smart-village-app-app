@@ -116,7 +116,7 @@ export const ServiceTile = ({
       dimensions={dimensions}
       numberOfTiles={item?.numberOfTiles}
       orientation={orientation}
-      style={[normalizedTileStyle, isLastRow && styles.marginLeft]}
+      style={[normalizedTileStyle, isEditMode && styles.editModeServiceBox]}
     >
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
@@ -214,8 +214,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%'
   },
-  marginLeft: {
-    marginLeft: normalize(8)
+  editModeServiceBox: {
+    flex: 1,
+    marginBottom: 0
   },
   serviceIcon: {
     alignSelf: 'center',
@@ -229,8 +230,8 @@ const styles = StyleSheet.create({
   toggleVisibilityIcon: {
     backgroundColor: colors.surface,
     position: 'absolute',
-    right: 0,
-    top: normalize(-14),
+    right: normalize(-1),
+    top: normalize(-1),
     zIndex: 1
   },
   toggleVisibilityIconBigTile: {
