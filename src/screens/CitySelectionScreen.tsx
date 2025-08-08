@@ -1,10 +1,10 @@
+import _kebabCase from 'lodash/kebabCase';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 import {
   Button,
   DropdownSelect,
-  EmptyMessage,
   HtmlView,
   LoadingSpinner,
   SafeAreaViewFlex,
@@ -16,8 +16,8 @@ import {
 } from '../components';
 import { colors, Icon, normalize, texts } from '../config';
 import { useCitySelection, useStaticContent } from '../hooks';
-import { DropdownProps } from '../types';
 import { SettingsContext } from '../SettingsProvider';
+import { DropdownProps } from '../types';
 
 export const CitySelectionScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -46,7 +46,7 @@ export const CitySelectionScreen = () => {
     const setContentNameWithCity = async () => {
       const city = await loadStoredCity();
       if (city) {
-        setContentName(`city${city}`);
+        setContentName(`city-${_kebabCase(city)}`);
       }
     };
 
@@ -122,7 +122,7 @@ export const CitySelectionScreen = () => {
             onPress={() => {
               storeCity(selectedCity);
               setSelectedCity(selectedCity);
-              setContentName(`city${selectedCity}`);
+              setContentName(`city-${_kebabCase(selectedCity)}`);
             }}
           />
         </Wrapper>
