@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Alert, StyleSheet } from 'react-native';
 
 import {
   Button,
@@ -14,61 +14,29 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { colors, Icon, normalize } from '../config';
-import { addToStore, readFromStore, removeFromStore } from '../helpers';
-import { useStaticContent } from '../hooks';
+import { colors, Icon, normalize, texts } from '../config';
+import { useCitySelection, useStaticContent } from '../hooks';
 import { DropdownProps } from '../types';
-
-const SELECTED_CITY = 'selectedCity';
-
-const useCitySelection = () => {
-  const [storedCity, setStoredCity] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const loadStoredCity = useCallback(async () => {
-    setLoading(true);
-    const city = await readFromStore(SELECTED_CITY);
-    setStoredCity(city);
-    setLoading(false);
-
-    return city;
-  }, []);
-
-  const storeCity = useCallback(async (city: string | null) => {
-    if (city) {
-      await addToStore(SELECTED_CITY, city);
-      setStoredCity(city);
-    }
-  }, []);
-
-  const resetCity = useCallback(async () => {
-    await removeFromStore(SELECTED_CITY);
-    setStoredCity(null);
-  }, []);
-
-  return { storeCity, storedCity, loadStoredCity, loading, resetCity };
-};
+import { SettingsContext } from '../SettingsProvider';
 
 export const CitySelectionScreen = () => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { citySelection = {} } = settings;
+
   const { data: citiesData, loading: citiesLoading } = useStaticContent<Array<string>>({
-    refreshTimeKey: 'cities',
-    name: 'cities',
+    refreshTimeKey: `publicJsonFile-${citySelection.cityListName}`,
+    name: `${citySelection.cityListName}`,
     type: 'json'
   });
 
   const { data: htmlContent, loading: htmlLoading } = useStaticContent({
-    refreshTimeKey: 'cityHtmlContent',
-    name: 'cityHtmlContent',
+    refreshTimeKey: `publicHtmlFile-${citySelection.htmlFileName}`,
+    name: `${citySelection.htmlFileName}`,
     type: 'html'
   });
 
-  const initiallySelectedItem = {
-    id: 0,
-    index: 0,
-    value: 'z.B. Stuttgart',
-    selected: true
-  };
-  const [dropdownData, setDropdownData] = useState<DropdownProps[]>([initiallySelectedItem]);
+  const [dropdownData, setDropdownData] = useState<DropdownProps[]>([]);
 
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [contentName, setContentName] = useState<string | null>(null);
@@ -93,48 +61,48 @@ export const CitySelectionScreen = () => {
 
   useEffect(() => {
     setSelectedCity(
-      dropdownData[0].selected
+      dropdownData?.[0]?.selected
         ? null
         : dropdownData[dropdownData.findIndex((item) => item.selected)]?.value
     );
   }, [dropdownData]);
 
   const updateDropdownData = useCallback(() => {
-    const cities =
+    const items =
       citiesData?.map((city, index) => ({
-        id: index + 1,
-        index: index + 1,
+        id: index,
+        index: index,
         value: city,
-        selected: city === storedCity
+        selected: index === 0 || city === storedCity
       })) || [];
 
-    setDropdownData([initiallySelectedItem, ...cities]);
+    setDropdownData(items);
   }, [citiesData]);
 
   const onResetPress = useCallback(() => {
-    Alert.alert('Ort zurücksetzen', 'Möchten Sie den ausgewählten Ort wirklich zurücksetzen?', [
-      {
-        text: 'Abbrechen',
-        style: 'cancel'
-      },
-      {
-        text: 'OK',
-        onPress: async () => {
-          setSelectedCity(null);
-          setContentName(null);
-          updateDropdownData();
-          await resetCity();
+    Alert.alert(
+      texts.citySelection.alerts.resetAlertTitle,
+      texts.citySelection.alerts.resetAlertMessage,
+      [
+        {
+          text: texts.citySelection.alerts.cancel,
+          style: 'cancel'
+        },
+        {
+          text: texts.citySelection.alerts.ok,
+          onPress: async () => {
+            setSelectedCity(null);
+            setContentName(null);
+            updateDropdownData();
+            await resetCity();
+          }
         }
-      }
-    ]);
+      ]
+    );
   }, [updateDropdownData]);
 
   if (loading || htmlLoading || citiesLoading) {
     return <LoadingSpinner loading />;
-  }
-
-  if (dropdownData?.length < 2) {
-    return <EmptyMessage title="Orte nicht verfügbar" />;
   }
 
   if (!storedCity && !contentName) {
@@ -143,16 +111,14 @@ export const CitySelectionScreen = () => {
         <Wrapper>
           <HtmlView html={htmlContent} />
 
-          <DropdownSelect
-            data={dropdownData}
-            placeholder="z.B. Stuttgart"
-            setData={setDropdownData}
-          />
+          {!!dropdownData?.length && (
+            <DropdownSelect data={dropdownData} setData={setDropdownData} />
+          )}
         </Wrapper>
         <Wrapper noPaddingTop>
           <Button
             disabled={!selectedCity}
-            title="Weiter"
+            title={texts.citySelection.next}
             onPress={() => {
               storeCity(selectedCity);
               setSelectedCity(selectedCity);
@@ -171,11 +137,7 @@ export const CitySelectionScreen = () => {
           <Title>{storedCity}</Title>
 
           <Touchable onPress={onResetPress}>
-            <Icon.Pen
-              color={colors.darkText}
-              size={normalize(18)}
-              style={{ paddingLeft: normalize(16) }}
-            />
+            <Icon.Pen color={colors.darkText} size={normalize(18)} style={styles.paddingLeft} />
           </Touchable>
         </WrapperRow>
       </Wrapper>
@@ -184,3 +146,9 @@ export const CitySelectionScreen = () => {
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  paddingLeft: {
+    paddingLeft: normalize(16)
+  }
+});

@@ -118,6 +118,16 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  citySelection: {
+    alerts: {
+      cancel: 'Abbrechen',
+      ok: 'OK',
+      resetAlertMessage: 'Möchten Sie den ausgewählten Ort wirklich zurücksetzen?',
+      resetAlertTitle: 'Ort zurücksetzen'
+    },
+    emptyMessage: 'Orte nicht verfügbar',
+    next: 'Weiter'
+  },
   close: 'Schließen',
   commercial: {
     commercial: 'Angebot',
@@ -1099,7 +1109,7 @@ export const texts = {
     onboarding: {
       onActivate: 'Beim nächsten Start wird die App-Einführung angezeigt.',
       onDeactivate: 'Die App-Einführung wird beim nächsten Start nicht angezeigt.',
-      ok: 'Ok'
+      ok: 'OK'
     },
     permanentFilter: {
       setting: 'Datenquellen'
