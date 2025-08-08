@@ -447,18 +447,16 @@ const styles = StyleSheet.create({
   skipButton: {
     backgroundColor: colors.transparent,
     borderColor: colors.borderRgba,
-    borderWidth: normalize(1),
-    bottom: normalize(72)
+    borderWidth: normalize(1)
   },
   sliderButtonContainer: {
     alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: colors.primary,
     borderRadius: normalize(8),
-    bottom: normalize(128),
     height: normalize(32),
     justifyContent: 'center',
-    position: 'absolute',
+    marginBottom: normalize(16),
     width: normalize(144)
   },
   sliderButtonDisabled: {
