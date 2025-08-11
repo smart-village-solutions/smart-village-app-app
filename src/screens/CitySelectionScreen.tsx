@@ -1,5 +1,5 @@
 import _kebabCase from 'lodash/kebabCase';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 import {
@@ -30,7 +30,7 @@ export const CitySelectionScreen = () => {
     type: 'json'
   });
 
-  const { data: htmlContent, loading: htmlLoading } = useStaticContent({
+  const { data: htmlContent, loading: htmlLoading } = useStaticContent<string>({
     refreshTimeKey: `publicHtmlFile-${citySelection.htmlFileName}`,
     name: `${citySelection.htmlFileName}`,
     type: 'html'
@@ -39,25 +39,18 @@ export const CitySelectionScreen = () => {
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([]);
 
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [contentName, setContentName] = useState<string | null>(null);
-  const { storeCity, loadStoredCity, storedCity, loading, resetCity } = useCitySelection();
+  const { storeCity, storedCity, loading, resetCity } = useCitySelection();
 
-  useEffect(() => {
-    const setContentNameWithCity = async () => {
-      const city = await loadStoredCity();
-      if (city) {
-        setContentName(`city-${_kebabCase(city)}`);
-      }
-    };
-
-    setContentNameWithCity();
-  }, []);
+  const contentName = useMemo(
+    () => (storedCity ? `city-${_kebabCase(storedCity)}` : null),
+    [storedCity]
+  );
 
   useEffect(() => {
     if (citiesData?.length) {
       updateDropdownData();
     }
-  }, [citiesData]);
+  }, [citiesData, storedCity]);
 
   useEffect(() => {
     setSelectedCity(
@@ -73,11 +66,12 @@ export const CitySelectionScreen = () => {
         id: index,
         index: index,
         value: city,
-        selected: index === 0 || city === storedCity
+        // Select the stored city if present; otherwise select the first item
+        selected: storedCity ? city === storedCity : index === 0
       })) || [];
 
     setDropdownData(items);
-  }, [citiesData]);
+  }, [citiesData, storedCity]);
 
   const onResetPress = useCallback(() => {
     Alert.alert(
@@ -92,14 +86,13 @@ export const CitySelectionScreen = () => {
           text: texts.citySelection.alerts.ok,
           onPress: async () => {
             setSelectedCity(null);
-            setContentName(null);
-            updateDropdownData();
             await resetCity();
+            updateDropdownData();
           }
         }
       ]
     );
-  }, [updateDropdownData]);
+  }, [updateDropdownData, resetCity]);
 
   if (loading || htmlLoading || citiesLoading) {
     return <LoadingSpinner loading />;
@@ -122,7 +115,6 @@ export const CitySelectionScreen = () => {
             onPress={() => {
               storeCity(selectedCity);
               setSelectedCity(selectedCity);
-              setContentName(`city-${_kebabCase(selectedCity)}`);
             }}
           />
         </Wrapper>
@@ -142,7 +134,7 @@ export const CitySelectionScreen = () => {
         </WrapperRow>
       </Wrapper>
 
-      <ServiceTiles staticJsonName={contentName} />
+      {contentName && <ServiceTiles staticJsonName={contentName} />}
     </SafeAreaViewFlex>
   );
 };

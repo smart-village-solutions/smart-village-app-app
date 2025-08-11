@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { addToStore, readFromStore, removeFromStore } from '../helpers';
 
@@ -16,6 +16,10 @@ export const useCitySelection = () => {
 
     return city;
   }, []);
+
+  useEffect(() => {
+    loadStoredCity();
+  }, [loadStoredCity]);
 
   const storeCity = useCallback(async (city: string | null) => {
     if (city) {
