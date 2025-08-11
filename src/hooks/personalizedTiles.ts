@@ -13,8 +13,8 @@ export const usePersonalizedTiles = (
   isEditMode = false,
   staticJsonName: string
 ) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [tiles, setTiles] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(isPersonalizable);
+  const [tiles, setTiles] = useState<any[]>(!isPersonalizable ? data : []);
 
   const getPersonalizedTiles = useCallback(async () => {
     setIsLoading(true);
