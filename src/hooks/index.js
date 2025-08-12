@@ -5,7 +5,6 @@ export * from './volunteer';
 export * from './apollo';
 export * from './appInfo';
 export * from './Bookmarks';
-export * from './citySelection';
 export * from './constructionSites';
 export * from './DetailRefresh';
 export * from './documentPicker';

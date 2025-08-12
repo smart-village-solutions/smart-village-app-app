@@ -15,7 +15,8 @@ import {
   WrapperRow
 } from '../components';
 import { colors, Icon, normalize, texts } from '../config';
-import { useCitySelection, useStaticContent } from '../hooks';
+import { loadStoredCity, resetCity, storeCity } from '../helpers';
+import { useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
 import { DropdownProps } from '../types';
 
@@ -37,9 +38,9 @@ export const CitySelectionScreen = () => {
   });
 
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([]);
-
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const { storeCity, storedCity, loading, resetCity } = useCitySelection();
+  const [storedCity, setStoredCity] = useState<string | null>(null);
 
   const contentName = useMemo(
     () => (storedCity ? `city-${_kebabCase(storedCity)}` : null),
@@ -47,10 +48,20 @@ export const CitySelectionScreen = () => {
   );
 
   useEffect(() => {
+    const fetchStoredCity = async () => {
+      const city = await loadStoredCity();
+      setStoredCity(city);
+      setLoading(false);
+    };
+
+    fetchStoredCity();
+  }, []);
+
+  useEffect(() => {
     if (citiesData?.length) {
       updateDropdownData();
     }
-  }, [citiesData, storedCity]);
+  }, [citiesData]);
 
   useEffect(() => {
     setSelectedCity(
@@ -86,13 +97,14 @@ export const CitySelectionScreen = () => {
           text: texts.citySelection.alerts.ok,
           onPress: async () => {
             setSelectedCity(null);
+            setStoredCity(null);
             await resetCity();
             updateDropdownData();
           }
         }
       ]
     );
-  }, [updateDropdownData, resetCity]);
+  }, [updateDropdownData]);
 
   if (loading || htmlLoading || citiesLoading) {
     return <LoadingSpinner loading />;
@@ -114,7 +126,7 @@ export const CitySelectionScreen = () => {
             title={texts.citySelection.next}
             onPress={() => {
               storeCity(selectedCity);
-              setSelectedCity(selectedCity);
+              setStoredCity(selectedCity);
             }}
           />
         </Wrapper>
@@ -134,7 +146,7 @@ export const CitySelectionScreen = () => {
         </WrapperRow>
       </Wrapper>
 
-      {contentName && <ServiceTiles staticJsonName={contentName} />}
+      {!!contentName && <ServiceTiles staticJsonName={contentName} />}
     </SafeAreaViewFlex>
   );
 };
