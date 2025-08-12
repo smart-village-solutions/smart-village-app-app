@@ -1,7 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
+import { Alert } from 'react-native';
 
 import * as appJson from '../../app.json';
-import { device, secrets } from '../config';
+import { device, secrets, texts } from '../config';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
@@ -56,7 +57,13 @@ const removeTokenFromServer = async (token: string) => {
 
     // 204 means that it was a success on the server
     // 404 means that the token was already not on the server and can be treated as a success
-    return response.status === 204 || response.status === 404;
+    const isSuccess = response.status === 204 || response.status === 404;
+
+    if (!isSuccess) {
+      Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+    }
+
+    return isSuccess;
   }
 
   return false;
@@ -84,7 +91,13 @@ const addTokenToServer = async (token: string) => {
     const response = await fetch(requestPath, fetchObj);
 
     // 201 means that it was a success on the server
-    return response.status === 201;
+    const isSuccess = response.status === 201;
+
+    if (!isSuccess) {
+      Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+    }
+
+    return isSuccess;
   }
 
   return false;
