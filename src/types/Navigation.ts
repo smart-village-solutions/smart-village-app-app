@@ -15,6 +15,7 @@ export enum ScreenName {
   BookmarkCategory = 'BookmarkCategory',
   Bookmarks = 'Bookmarks',
   Category = 'Category',
+  CitySelection = 'CitySelection',
   Company = 'Company',
   ConstructionSiteDetail = 'ConstructionSiteDetail',
   ConstructionSiteOverview = 'ConstructionSiteOverview',

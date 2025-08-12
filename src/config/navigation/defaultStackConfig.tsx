@@ -11,6 +11,7 @@ import {
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
+  CitySelectionScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
   ConsulDetailScreen,
@@ -166,6 +167,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.Category,
       screenComponent: IndexScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.myCity },
+      routeName: ScreenName.CitySelection,
+      screenComponent: CitySelectionScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.consul.home },
