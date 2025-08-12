@@ -15,7 +15,7 @@ import {
   WrapperRow
 } from '../components';
 import { colors, Icon, normalize, texts } from '../config';
-import { loadStoredCity, resetCity, storeCity } from '../helpers';
+import { readFromStore, SELECTED_CITY, storeSelectedCity } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
 import { DropdownProps } from '../types';
@@ -49,7 +49,7 @@ export const CitySelectionScreen = () => {
 
   useEffect(() => {
     const fetchStoredCity = async () => {
-      const city = await loadStoredCity();
+      const city = await readFromStore(SELECTED_CITY);
       setStoredCity(city);
       setLoading(false);
     };
@@ -98,7 +98,7 @@ export const CitySelectionScreen = () => {
           onPress: async () => {
             setSelectedCity(null);
             setStoredCity(null);
-            await resetCity();
+            await storeSelectedCity(null);
             updateDropdownData();
           }
         }
@@ -125,7 +125,7 @@ export const CitySelectionScreen = () => {
             disabled={!selectedCity}
             title={texts.citySelection.next}
             onPress={() => {
-              storeCity(selectedCity);
+              storeSelectedCity(selectedCity);
               setStoredCity(selectedCity);
             }}
           />
