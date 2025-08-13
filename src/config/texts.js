@@ -522,6 +522,7 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
+    buttons: 'Wichtig & Nützlich',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
     service: 'Service'

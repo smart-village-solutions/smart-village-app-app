@@ -9,6 +9,7 @@ import {
   About,
   ConnectedImagesCarousel,
   Disturber,
+  HomeButtons,
   HomeSection,
   HomeService,
   LiveTicker,
@@ -314,11 +315,14 @@ export const HomeScreen = ({ navigation, route }) => {
           </>
         }
         ListFooterComponent={
-          route.params?.isDrawer && (
+          route.params?.isDrawer ? (
             <>
               <HomeService publicJsonFile="homeService" />
+              <HomeButtons publicJsonFile="homeButtons" />
               <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
             </>
+          ) : (
+            <HomeButtons publicJsonFile="homeButtons" />
           )
         }
         refreshControl={

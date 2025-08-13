@@ -57,6 +57,7 @@ export * from './GroupedSectionHeader';
 export * from './GroupHeader';
 export * from './HeaderLeft';
 export * from './HeaderRight';
+export * from './HomeButtons';
 export * from './HomeSection';
 export * from './HomeService';
 export * from './HtmlView';
