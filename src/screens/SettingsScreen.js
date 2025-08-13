@@ -159,7 +159,7 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-const onActivatePushNotifications = (revert) => {
+export const onActivatePushNotifications = (revert) => {
   handleSystemPermissions(false)
     .then((hasPermission) => {
       if (!hasPermission) {
@@ -182,7 +182,7 @@ const onActivatePushNotifications = (revert) => {
     });
 };
 
-const onDeactivatePushNotifications = (revert) => {
+export const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false)
     .then((success) => !success && revert())
     .catch((error) => {
