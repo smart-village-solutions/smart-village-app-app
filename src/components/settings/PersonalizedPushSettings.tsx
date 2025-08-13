@@ -5,14 +5,23 @@ import { useQuery } from 'react-query';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 import { normalize, texts } from '../../config';
-import { getInAppPermission } from '../../pushNotifications';
+import {
+  addExcludeCategoriesPushTokenOnServer,
+  getInAppPermission,
+  getPushTokenFromStorage
+} from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../screens';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { SettingsToggle } from '../SettingsToggle';
 
-type Category = { id: string; iconName?: string | null; name: string };
+type Category = {
+  iconName?: string | null;
+  id: string;
+  name: string;
+  tagList: string[];
+};
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -25,6 +34,10 @@ export const PersonalizedPushSettings = () => {
   };
 
   const [permission, setPermission] = useState<boolean>(false);
+  const [pushToken, setPushToken] = useState<string | null>(null);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<{ id: string; tag: string[] }[]>(
+    []
+  );
 
   const { data, isLoading: loading } = useQuery(
     [QUERY_TYPES.CATEGORIES_FILTER, queryVariables],
@@ -44,6 +57,34 @@ export const PersonalizedPushSettings = () => {
       setPermission(!!inAppPermission);
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const storedToken = await getPushTokenFromStorage();
+      setPushToken(storedToken);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (pushToken) {
+      const tagList = queryVariables?.tagList;
+
+      const excludeCategoryIds: Record<string, Record<string, unknown>> = {};
+
+      tagList.forEach((tag) => {
+        excludeCategoryIds[tag] = {};
+      });
+
+      selectedCategoryIds?.forEach(({ tag, id }) => {
+        if (!excludeCategoryIds[tag]) {
+          excludeCategoryIds[tag] = {};
+        }
+        excludeCategoryIds[tag][id] = {};
+      });
+
+      addExcludeCategoriesPushTokenOnServer(pushToken, excludeCategoryIds);
+    }
+  }, [selectedCategoryIds, queryVariables?.tagList]);
 
   const onActivate = (revert: () => void) => {
     setPermission(true);
@@ -79,9 +120,10 @@ export const PersonalizedPushSettings = () => {
       iconName: category.iconName,
       id: category.id,
       isDisabled: !permission,
-      // TODO: the necessary functions to activate and deactivate the push by category will be updated
-      onActivate: onActivatePushNotifications,
-      onDeactivate: onDeactivatePushNotifications,
+      onDeactivate: () =>
+        setSelectedCategoryIds((prev) => [...prev, { id: category.id, tag: category.tagList }]),
+      onActivate: () =>
+        setSelectedCategoryIds((prev) => prev.filter((item) => item.id !== category.id)),
       title: category.name,
       topDivider: true,
       // TODO: The value will then depend on the response from the api
