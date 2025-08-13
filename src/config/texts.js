@@ -1165,6 +1165,9 @@ export const texts = {
     permanentFilter: {
       setting: 'Datenquellen'
     },
+    personalizedPush: {
+      setting: 'Push-Benachrichtigungen'
+    },
     termsAndConditions: {
       abort: 'Abbrechen',
       onActivate: '',
