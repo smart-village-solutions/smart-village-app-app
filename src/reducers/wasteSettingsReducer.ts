@@ -127,18 +127,13 @@ export const wasteSettingsReducer = (
         {}
       );
 
-      let showNotificationSettings = false;
-      handleSystemPermissions().then((permission) => {
-        showNotificationSettings = permission;
-      });
-
       return {
         ...state,
         activeTypes,
         typeSettings,
         selectedTypeKeys: usedTypeKeys,
         notificationSettings,
-        showNotificationSettings
+        showNotificationSettings: false
       };
     }
     case WasteSettingsActions.updateWasteSettings: {
