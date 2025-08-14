@@ -20,17 +20,15 @@ const thumbColorEnabled = Platform.select({
   ios: colors.lightestText
 });
 
-export const Switch = ({ switchValue, toggleSwitch }) => {
+export const Switch = ({ isDisabled, switchValue, toggleSwitch }) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
   return (
     <RNSwitch
-      trackColor={trackColor}
-      thumbColor={switchValue ? thumbColorEnabled : thumbColor}
+      accessibilityRole="button"
+      disabled={isDisabled}
       ios_backgroundColor={isReduceTransparencyEnabled ? colors.overlayRgba : colors.shadow}
       onValueChange={toggleSwitch}
-      value={switchValue}
-      accessibilityRole="button"
       style={[
         device.platform === 'ios' &&
           !device.isTablet && {
@@ -38,11 +36,15 @@ export const Switch = ({ switchValue, toggleSwitch }) => {
             transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
           }
       ]}
+      thumbColor={switchValue ? thumbColorEnabled : thumbColor}
+      trackColor={trackColor}
+      value={switchValue}
     />
   );
 };
 
 Switch.propTypes = {
+  isDisabled: PropTypes.bool,
   switchValue: PropTypes.bool.isRequired,
   toggleSwitch: PropTypes.func.isRequired
 };
