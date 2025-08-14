@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
@@ -9,9 +10,7 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 
 const TimeBox = styled.View`
   flex-direction: row;
-  flex-wrap: wrap;
   flex: 1;
-  margin-bottom: ${normalize(5)}px;
 `;
 
 const DateBox = styled(TimeBox)`
@@ -23,18 +22,31 @@ const DateBox = styled(TimeBox)`
 export const VolunteerAppointmentsCard = ({
   appointments
 }: {
-  appointments: { dateFrom: string; dateTo: string; timeFrom: string; timeTo: string }[];
+  appointments: {
+    allDay: boolean;
+    dateFrom: string;
+    dateTo: string;
+    timeFrom: string;
+    timeTo: string;
+  }[];
 }) => (
   <Wrapper>
     {appointments?.map((item, index) => {
-      const { dateFrom, dateTo, timeFrom, timeTo } = item;
+      const { allDay, dateFrom, dateTo, timeFrom, timeTo } = item;
       const returnFormatDate = 'DD.MM.YYYY';
-      const fullDay = timeFrom === '00:00' && timeTo === '00:00';
+      const fullDay = allDay || (timeFrom === '00:00' && timeTo === '00:00');
 
       return (
         <View key={index} style={index !== appointments.length - 1 ? styles.divider : null}>
           {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
             <WrapperRow>
+              {!fullDay && (!!timeFrom || !!timeTo) && (
+                <TimeBox>
+                  {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
+                  {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
+                  {!!timeTo && <RegularText> {timeTo}</RegularText>}
+                </TimeBox>
+              )}
               {(!!dateFrom || !!dateTo) && (
                 <DateBox>
                   {!!dateFrom && (
@@ -47,17 +59,13 @@ export const VolunteerAppointmentsCard = ({
                   {!!dateTo && dateTo !== dateFrom && (
                     <RegularText>
                       <RegularText small>bis </RegularText>
-                      {momentFormat(dateTo, returnFormatDate)}
+                      {momentFormat(
+                        fullDay ? moment(dateTo).subtract(1, 'day').format('YYYY-MM-DD') : dateTo,
+                        returnFormatDate
+                      )}
                     </RegularText>
                   )}
                 </DateBox>
-              )}
-              {(!!timeFrom || !!timeTo) && !fullDay && (
-                <TimeBox>
-                  {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                  {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                  {!!timeTo && <RegularText> {timeTo}</RegularText>}
-                </TimeBox>
               )}
             </WrapperRow>
           )}
