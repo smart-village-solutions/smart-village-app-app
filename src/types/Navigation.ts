@@ -81,6 +81,7 @@ export enum ScreenName {
   TilesScreen = 'TilesScreen',
   VolunteerDetail = 'VolunteerDetail',
   VolunteerForm = 'VolunteerForm',
+  VolunteerGroupSearch = 'VolunteerGroupSearch',
   VolunteerHome = 'VolunteerHome',
   VolunteerIndex = 'VolunteerIndex',
   VolunteerLogin = 'VolunteerLogin',

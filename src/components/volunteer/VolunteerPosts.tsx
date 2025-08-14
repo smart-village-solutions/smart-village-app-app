@@ -23,17 +23,17 @@ const { ROOT_ROUTE_NAMES } = consts;
 
 export const VolunteerPosts = ({
   contentContainerId,
-  isRefetching,
-  openWebScreen,
-  navigation,
   isGroupMember,
+  isRefetching,
+  navigation,
+  openWebScreen,
   userGuid
 }: {
   contentContainerId: number;
-  isRefetching: boolean;
-  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
-  navigation: StackScreenProps<any>['navigation'];
   isGroupMember?: boolean;
+  isRefetching: boolean;
+  navigation: StackScreenProps<any>['navigation'];
+  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   userGuid?: string | null;
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -120,6 +120,7 @@ export const VolunteerPosts = ({
               id: number;
               message: string;
               content: {
+                files: { guid: string; id: number; mime_type: string }[];
                 metadata: {
                   created_by: { guid: string; display_name: string };
                   created_at: string;
@@ -149,6 +150,7 @@ export const VolunteerPosts = ({
                 title: texts.volunteer.posts,
                 query: QUERY_TYPES.VOLUNTEER.POSTS,
                 queryVariables: { contentContainerId },
+                isGroupMember,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
               })
             }

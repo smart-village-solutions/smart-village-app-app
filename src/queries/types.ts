@@ -81,6 +81,7 @@ export const QUERY_TYPES = {
     CALENDAR: 'calendar',
     CONVERSATION: 'conversation',
     CONVERSATIONS: 'conversations',
+    GROUP_SEARCH: 'groupSearch',
     GROUP: 'group',
     GROUPS_MY: 'groupsMy',
     GROUPS: 'groups',

@@ -41,9 +41,6 @@ import { ScreenName, VolunteerUser } from '../../types';
 
 const { FILTER_TYPES, ROOT_ROUTE_NAMES } = consts;
 
-const limit = 99999; // NOTE: we want to receive all groups
-const page = 1;
-
 const STATUSES = [
   {
     value: texts.volunteer.filter.statuses.member,
@@ -104,7 +101,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { calendarToggle = false } = settings;
-  const initialQueryVariables = route.params?.queryVariables ?? { limit, page };
+  const initialQueryVariables = route.params?.queryVariables || {};
   const [queryVariables] = useState(initialQueryVariables);
   const [filterVariables, setFilterVariables] = useState(initialQueryVariables);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -209,7 +206,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
         <ListComponent
           ListHeaderComponent={
             <>
-              {/* {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />} */}
               {isGroups && (
                 <>
                   {!!dataGroupsIntroText && (

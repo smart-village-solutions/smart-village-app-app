@@ -123,7 +123,7 @@ export const VolunteerPostListItem = ({
       </ListItem>
 
       <ListItem
-        containerStyle={[styles.contentContainerStyle, !files.length && styles.paddingBottom]}
+        containerStyle={[styles.contentContainerStyle, !files?.length && styles.paddingBottom]}
       >
         <Markdown
           onLinkPress={(url) => {

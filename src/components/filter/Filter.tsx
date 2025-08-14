@@ -243,9 +243,12 @@ export const Filter = ({
                       dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
                     } else if (!filters.start_date && filters.end_date) {
                       // because of the requirement to specify the start and end date of the `dateRange`,
-                      // if only `endDate` is selected, `startDate` is set to today's date.
+                      // if only `endDate` is selected, `startDate` is set to today's date or if
+                      // `endDate` is in the past, it is set to the date of the `endDate`
                       dateRange = [
-                        moment().format('YYYY-MM-DD'),
+                        moment().isAfter(filters.end_date)
+                          ? momentFormat(filters.end_date, 'YYYY-MM-DD')
+                          : moment().format('YYYY-MM-DD'),
                         momentFormat(filters.end_date, 'YYYY-MM-DD')
                       ];
                     }
