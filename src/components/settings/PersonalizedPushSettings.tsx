@@ -7,6 +7,7 @@ import { SettingsContext } from '../../SettingsProvider';
 import { normalize, texts } from '../../config';
 import {
   addExcludeCategoriesPushTokenOnServer,
+  getExcludedCategoriesPushTokenFromServer,
   getInAppPermission,
   getPushTokenFromStorage
 } from '../../pushNotifications';
@@ -38,6 +39,7 @@ export const PersonalizedPushSettings = () => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<{ id: string; tag: string[] }[]>(
     []
   );
+  const [excludeCategoryIds, setExcludeCategoryIds] = useState<{ id: string; tag: string[] }[]>([]);
 
   const { data, isLoading: loading } = useQuery(
     [QUERY_TYPES.CATEGORIES_FILTER, queryVariables],
@@ -64,6 +66,15 @@ export const PersonalizedPushSettings = () => {
       setPushToken(storedToken);
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (pushToken) {
+        const categories = await getExcludedCategoriesPushTokenFromServer(pushToken);
+        setExcludeCategoryIds(categories);
+      }
+    })();
+  }, [pushToken]);
 
   useEffect(() => {
     if (pushToken) {
@@ -116,22 +127,34 @@ export const PersonalizedPushSettings = () => {
 
     if (!categories?.length) return [initialListItem];
 
-    const parsedListItems = categories.map((category) => ({
-      iconName: category.iconName,
-      id: category.id,
-      isDisabled: !permission,
-      onDeactivate: () =>
-        setSelectedCategoryIds((prev) => [...prev, { id: category.id, tag: category.tagList }]),
-      onActivate: () =>
-        setSelectedCategoryIds((prev) => prev.filter((item) => item.id !== category.id)),
-      title: category.name,
-      topDivider: true,
-      // TODO: The value will then depend on the response from the api
-      value: true
-    }));
+    const parsedListItems = categories.map((category) => {
+      const tagListArray = Array.isArray(category.tagList)
+        ? category.tagList
+        : typeof category.tagList === 'string'
+        ? category.tagList.split(',').map((tag) => tag.trim())
+        : [];
+
+      const isExcluded = tagListArray.some(
+        (tag) => excludeCategoryIds?.[tag]?.[category.id] !== undefined
+      );
+
+      return {
+        categoryId: category.id,
+        iconName: category.iconName,
+        id: category.id,
+        isDisabled: !permission,
+        onActivate: () =>
+          setSelectedCategoryIds((prev) => prev.filter((item) => item.id !== category.id)),
+        onDeactivate: () =>
+          setSelectedCategoryIds((prev) => [...prev, { id: category.id, tag: category.tagList }]),
+        title: category.name,
+        topDivider: true,
+        value: !isExcluded
+      };
+    });
 
     return [initialListItem, ...parsedListItems];
-  }, [data, permission]);
+  }, [data, permission, excludeCategoryIds]);
 
   if (loading) {
     return <LoadingSpinner loading />;
