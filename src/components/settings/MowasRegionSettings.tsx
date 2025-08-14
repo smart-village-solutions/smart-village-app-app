@@ -41,10 +41,19 @@ export const MowasRegionSettings = ({
     loadFilters();
   }, [loadFilters]);
 
-  useEffect(() => {
-    !!mowasRegionalKeys?.length &&
-      addMowasRegionalKeysToTokenOnServer(selectedMowasRegionalKeys.map((id) => parseInt(id, 10)));
-  }, [selectedMowasRegionalKeys]);
+  const handleToggle = async (rs: string, makeActive: boolean) => {
+    let next = selectedMowasRegionalKeys;
+
+    if (makeActive) {
+      next = selectedMowasRegionalKeys.filter((x) => x !== rs);
+      dispatch({ type: MowasRegionalKeysActions.RemoveMowasRegionalKey, payload: rs });
+    } else {
+      next = [...selectedMowasRegionalKeys, rs];
+      dispatch({ type: MowasRegionalKeysActions.AddMowasRegionalKey, payload: rs });
+    }
+
+    await addMowasRegionalKeysToTokenOnServer(next.map((id) => parseInt(id, 10)));
+  };
 
   if (!mowasRegionalKeys?.length || loading) {
     return <LoadingSpinner loading />;
@@ -61,15 +70,8 @@ export const MowasRegionSettings = ({
               title: item.name,
               bottomDivider: true,
               value: !selectedMowasRegionalKeys.includes(item.rs),
-              onActivate: () => {
-                dispatch({
-                  type: MowasRegionalKeysActions.RemoveMowasRegionalKey,
-                  payload: item.rs
-                });
-              },
-              onDeactivate: () => {
-                dispatch({ type: MowasRegionalKeysActions.AddMowasRegionalKey, payload: item.rs });
-              }
+              onActivate: () => handleToggle(item.rs, true), // kullanıcı açtı
+              onDeactivate: () => handleToggle(item.rs, false) // kullanıcı kapattı
             }}
           />
         </WrapperHorizontal>
