@@ -141,7 +141,6 @@ export const addExcludeCategoriesPushTokenOnServer = async (
 
     if (!isSuccess) {
       Alert.alert(texts.errors.errorTitle, texts.errors.noData);
-      return false;
     }
 
     return isSuccess;
