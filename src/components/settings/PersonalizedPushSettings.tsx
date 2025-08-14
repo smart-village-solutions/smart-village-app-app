@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
-import { normalize, texts } from '../../config';
+import { texts } from '../../config';
 import {
   addExcludeCategoriesPushTokenOnServer,
   getExcludedCategoriesPushTokenFromServer,
@@ -14,8 +14,9 @@ import {
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../screens';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { SettingsToggle } from '../SettingsToggle';
+import { RegularText } from '../Text';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 type Category = {
   iconName?: string | null;
@@ -30,7 +31,7 @@ export const PersonalizedPushSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
-  const queryVariables = personalizedPush.variables || {
+  const queryVariables = personalizedPush.categories?.queryVariables || {
     tagList: ['news_item']
   };
 
@@ -71,7 +72,7 @@ export const PersonalizedPushSettings = () => {
     (async () => {
       if (pushToken) {
         const categories = await getExcludedCategoriesPushTokenFromServer(pushToken);
-        setExcludeCategoryIds(categories);
+        setExcludeCategoryIds(categories?.length ? categories : []);
       }
     })();
   }, [pushToken]);
@@ -114,20 +115,7 @@ export const PersonalizedPushSettings = () => {
   };
 
   const listItems = useMemo(() => {
-    const categories: Category[] = data?.categories ?? [];
-
-    const initialListItem = {
-      onActivate,
-      onDeactivate,
-      title:
-        settingsScreenListItemTitles.pushNotifications || texts.settingsTitles.pushNotifications,
-      topDivider: false,
-      value: permission
-    };
-
-    if (!categories?.length) return [initialListItem];
-
-    const parsedListItems = categories.map((category) => {
+    const parsedListItems = data?.categories?.map((category) => {
       const tagListArray = Array.isArray(category.tagList)
         ? category.tagList
         : typeof category.tagList === 'string'
@@ -139,6 +127,7 @@ export const PersonalizedPushSettings = () => {
       );
 
       return {
+        bottomDivider: true,
         categoryId: category.id,
         iconName: category.iconName,
         id: category.id,
@@ -148,12 +137,11 @@ export const PersonalizedPushSettings = () => {
         onDeactivate: () =>
           setSelectedCategoryIds((prev) => [...prev, { id: category.id, tag: category.tagList }]),
         title: category.name,
-        topDivider: true,
         value: !isExcluded
       };
     });
 
-    return [initialListItem, ...parsedListItems];
+    return parsedListItems?.sort((a, b) => a.title.localeCompare(b.title)) || [];
   }, [data, permission, excludeCategoryIds]);
 
   if (loading) {
@@ -161,19 +149,37 @@ export const PersonalizedPushSettings = () => {
   }
 
   return (
-    <SafeAreaViewFlex>
+    <>
+      <WrapperHorizontal>
+        <SettingsToggle
+          item={{
+            onActivate,
+            onDeactivate,
+            title:
+              settingsScreenListItemTitles.pushNotifications ||
+              texts.settingsTitles.pushNotifications,
+            topDivider: false,
+            value: permission
+          }}
+        />
+      </WrapperHorizontal>
       <FlatList
         data={listItems}
         keyExtractor={keyExtractor}
-        renderItem={({ item }) => <SettingsToggle item={item} />}
-        style={styles.container}
+        ListHeaderComponent={
+          <Wrapper noPaddingBottom>
+            <RegularText small placeholder>
+              {personalizedPush.categories?.sectionTitle ||
+                texts.settingsContents.personalizedPush.sectionTitle}
+            </RegularText>
+          </Wrapper>
+        }
+        renderItem={({ item }) => (
+          <WrapperHorizontal>
+            <SettingsToggle item={item} />
+          </WrapperHorizontal>
+        )}
       />
-    </SafeAreaViewFlex>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: normalize(16)
-  }
-});

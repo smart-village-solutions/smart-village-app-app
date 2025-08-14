@@ -53,10 +53,10 @@ export const SettingsToggle = ({ item }) => {
     <ListItem
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
       bottomDivider={bottomDivider ?? false}
-      Component={Touchable}
+      Component={!isDisabled ? Touchable : undefined}
       containerStyle={styles.container}
       delayPressIn={0}
-      onPress={onPress}
+      onPress={!isDisabled ? onPress : undefined}
       topDivider={topDivider ?? false}
     >
       <ListItem.Content>
