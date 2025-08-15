@@ -88,10 +88,18 @@ export const PersonalizedPushSettings = () => {
       });
 
       selectedCategoryIds?.forEach(({ tag, id }) => {
-        if (!excludeCategoryIds[tag]) {
-          excludeCategoryIds[tag] = {};
-        }
-        excludeCategoryIds[tag][id] = {};
+        const tagsArray = Array.isArray(tag)
+          ? tag
+          : typeof tag === 'string'
+          ? tag.split(',').map((t) => t.trim())
+          : [];
+
+        tagsArray.forEach((t) => {
+          if (!excludeCategoryIds[t]) {
+            excludeCategoryIds[t] = {};
+          }
+          excludeCategoryIds[t][id] = {};
+        });
       });
 
       addExcludeCategoriesPushTokenOnServer(pushToken, excludeCategoryIds);
@@ -115,7 +123,7 @@ export const PersonalizedPushSettings = () => {
   };
 
   const listItems = useMemo(() => {
-    const parsedListItems = data?.categories?.map((category) => {
+    const parsedListItems = data?.categories?.map((category: Category) => {
       const tagListArray = Array.isArray(category.tagList)
         ? category.tagList
         : typeof category.tagList === 'string'

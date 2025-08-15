@@ -63,6 +63,7 @@ export const GET_CATEGORIES_FILTER = gql`
       id
       iconName
       name
+      tagList
     }
   }
 `;
