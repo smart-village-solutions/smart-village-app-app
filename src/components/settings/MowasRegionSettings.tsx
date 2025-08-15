@@ -3,7 +3,10 @@ import { FlatList } from 'react-native';
 
 import { LoadingSpinner, WrapperHorizontal } from '..';
 import { readFromStore } from '../../helpers';
-import { addMowasRegionalKeysToTokenOnServer } from '../../pushNotifications';
+import {
+  addMowasRegionalKeysToTokenOnServer,
+  serverConnectionAlert
+} from '../../pushNotifications';
 import {
   MOWAS_REGIONAL_KEYS,
   MowasRegionalKeysActions,
@@ -69,6 +72,7 @@ export const MowasRegionSettings = ({
           payload: rs
         });
         console.error('Failed to update MOWAS regional keys on server', e);
+        serverConnectionAlert(false);
       }
     },
     [selectedMowasRegionalKeys, dispatch]
