@@ -1166,7 +1166,8 @@ export const texts = {
       setting: 'Datenquellen'
     },
     personalizedPush: {
-      setting: 'Push-Benachrichtigungen'
+      setting: 'Push-Benachrichtigungen',
+      sectionTitle: 'Push-Benachrichtigungen für Nachrichtenkategorien'
     },
     termsAndConditions: {
       abort: 'Abbrechen',

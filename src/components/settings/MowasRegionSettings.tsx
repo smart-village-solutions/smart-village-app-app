@@ -5,9 +5,9 @@ import { LoadingSpinner, WrapperHorizontal } from '..';
 import { readFromStore } from '../../helpers';
 import { addMowasRegionalKeysToTokenOnServer } from '../../pushNotifications';
 import {
-    MOWAS_REGIONAL_KEYS,
-    MowasRegionalKeysActions,
-    mowasRegionalKeysReducer
+  MOWAS_REGIONAL_KEYS,
+  MowasRegionalKeysActions,
+  mowasRegionalKeysReducer
 } from '../../reducers';
 import { SettingsToggle } from '../SettingsToggle';
 

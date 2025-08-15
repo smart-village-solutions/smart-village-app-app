@@ -111,6 +111,82 @@ const storeTokenSecurely = (token?: string) => {
   }
 };
 
+export const addExcludeCategoriesPushTokenOnServer = async (
+  token: string,
+  excludeCategoryIds: Record<string, Record<string, unknown>>
+) => {
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const requestPath =
+    secrets[namespace].serverUrl + '/notification/devices/0/exclusion_filter_config.json';
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      notification_device: {
+        token,
+        exclude_notification_configuration: excludeCategoryIds || {}
+      }
+    })
+  };
+
+  if (accessToken) {
+    const response = await fetch(requestPath, fetchObj);
+
+    const isSuccess = response.status === 200;
+
+    if (!isSuccess) {
+      Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+    }
+
+    return isSuccess;
+  }
+
+  return false;
+};
+
+export const getExcludedCategoriesPushTokenFromServer = async (token: string) => {
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const requestPath =
+    secrets[namespace].serverUrl + '/notification/devices/0/exclusion_filter_config.json';
+
+  if (!accessToken) {
+    return false;
+  }
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json',
+      // Since we cannot make the GET request with the body, we send a POST request and tell the server that it is a GET request.
+      'X-HTTP-Method-Override': 'GET'
+    },
+    body: JSON.stringify({
+      notification_device: { token }
+    })
+  };
+
+  if (accessToken) {
+    const response = await fetch(requestPath, fetchObj);
+
+    if (response.status !== 200) {
+      Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+      return false;
+    }
+
+    const responseData = await response.json();
+    return responseData.exclude_notification_configuration;
+  }
+
+  return false;
+};
+
 export const getPushTokenFromStorage = () =>
   SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
 
