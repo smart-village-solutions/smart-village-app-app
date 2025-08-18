@@ -1,18 +1,29 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
-import { normalize, texts } from '../../config';
-import { getInAppPermission } from '../../pushNotifications';
+import { texts } from '../../config';
+import {
+  addExcludeCategoriesPushTokenOnServer,
+  getExcludedCategoriesPushTokenFromServer,
+  getInAppPermission,
+  getPushTokenFromStorage
+} from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../screens';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { SettingsToggle } from '../SettingsToggle';
+import { RegularText } from '../Text';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
-type Category = { id: string; iconName?: string | null; name: string };
+type Category = {
+  iconName?: string | null;
+  id: string;
+  name: string;
+  tagList: string[];
+};
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -20,11 +31,16 @@ export const PersonalizedPushSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
-  const queryVariables = personalizedPush.variables || {
+  const queryVariables = personalizedPush.categories?.queryVariables || {
     tagList: ['news_item']
   };
 
   const [permission, setPermission] = useState<boolean>(false);
+  const [pushToken, setPushToken] = useState<string | null>(null);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<{ id: string; tag: string[] }[]>(
+    []
+  );
+  const [excludeCategoryIds, setExcludeCategoryIds] = useState<{ id: string; tag: string[] }[]>([]);
 
   const { data, isLoading: loading } = useQuery(
     [QUERY_TYPES.CATEGORIES_FILTER, queryVariables],
@@ -45,6 +61,43 @@ export const PersonalizedPushSettings = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      const storedToken = await getPushTokenFromStorage();
+      setPushToken(storedToken);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (pushToken) {
+        const categories = await getExcludedCategoriesPushTokenFromServer(pushToken);
+        setExcludeCategoryIds(categories?.length ? categories : []);
+      }
+    })();
+  }, [pushToken]);
+
+  useEffect(() => {
+    if (pushToken) {
+      const tagList = queryVariables?.tagList;
+
+      const excludeCategoryIds: Record<string, Record<string, unknown>> = {};
+
+      tagList.forEach((tag) => {
+        excludeCategoryIds[tag] = {};
+      });
+
+      selectedCategoryIds?.forEach(({ tag, id }) => {
+        if (!excludeCategoryIds[tag]) {
+          excludeCategoryIds[tag] = {};
+        }
+        excludeCategoryIds[tag][id] = {};
+      });
+
+      addExcludeCategoriesPushTokenOnServer(pushToken, excludeCategoryIds);
+    }
+  }, [selectedCategoryIds, queryVariables?.tagList]);
+
   const onActivate = (revert: () => void) => {
     setPermission(true);
     onActivatePushNotifications(() => {
@@ -62,53 +115,71 @@ export const PersonalizedPushSettings = () => {
   };
 
   const listItems = useMemo(() => {
-    const categories: Category[] = data?.categories ?? [];
+    const parsedListItems = data?.categories?.map((category) => {
+      const tagListArray = Array.isArray(category.tagList)
+        ? category.tagList
+        : typeof category.tagList === 'string'
+        ? category.tagList.split(',').map((tag) => tag.trim())
+        : [];
 
-    const initialListItem = {
-      onActivate,
-      onDeactivate,
-      title:
-        settingsScreenListItemTitles.pushNotifications || texts.settingsTitles.pushNotifications,
-      topDivider: false,
-      value: permission
-    };
+      const isExcluded = tagListArray.some(
+        (tag) => excludeCategoryIds?.[tag]?.[category.id] !== undefined
+      );
 
-    if (!categories?.length) return [initialListItem];
+      return {
+        bottomDivider: true,
+        categoryId: category.id,
+        iconName: category.iconName,
+        id: category.id,
+        isDisabled: !permission,
+        onActivate: () =>
+          setSelectedCategoryIds((prev) => prev.filter((item) => item.id !== category.id)),
+        onDeactivate: () =>
+          setSelectedCategoryIds((prev) => [...prev, { id: category.id, tag: category.tagList }]),
+        title: category.name,
+        value: !isExcluded
+      };
+    });
 
-    const parsedListItems = categories.map((category) => ({
-      iconName: category.iconName,
-      id: category.id,
-      isDisabled: !permission,
-      // TODO: the necessary functions to activate and deactivate the push by category will be updated
-      onActivate: onActivatePushNotifications,
-      onDeactivate: onDeactivatePushNotifications,
-      title: category.name,
-      topDivider: true,
-      // TODO: The value will then depend on the response from the api
-      value: true
-    }));
-
-    return [initialListItem, ...parsedListItems];
-  }, [data, permission]);
+    return parsedListItems?.sort((a, b) => a.title.localeCompare(b.title)) || [];
+  }, [data, permission, excludeCategoryIds]);
 
   if (loading) {
     return <LoadingSpinner loading />;
   }
 
   return (
-    <SafeAreaViewFlex>
+    <>
+      <WrapperHorizontal>
+        <SettingsToggle
+          item={{
+            onActivate,
+            onDeactivate,
+            title:
+              settingsScreenListItemTitles.pushNotifications ||
+              texts.settingsTitles.pushNotifications,
+            topDivider: false,
+            value: permission
+          }}
+        />
+      </WrapperHorizontal>
       <FlatList
         data={listItems}
         keyExtractor={keyExtractor}
-        renderItem={({ item }) => <SettingsToggle item={item} />}
-        style={styles.container}
+        ListHeaderComponent={
+          <Wrapper noPaddingBottom>
+            <RegularText small placeholder>
+              {personalizedPush.categories?.sectionTitle ||
+                texts.settingsContents.personalizedPush.sectionTitle}
+            </RegularText>
+          </Wrapper>
+        }
+        renderItem={({ item }) => (
+          <WrapperHorizontal>
+            <SettingsToggle item={item} />
+          </WrapperHorizontal>
+        )}
       />
-    </SafeAreaViewFlex>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: normalize(16)
-  }
-});
