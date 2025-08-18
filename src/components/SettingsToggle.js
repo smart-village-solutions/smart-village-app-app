@@ -12,7 +12,16 @@ import { WrapperRow } from './Wrapper';
 
 // TODO: snack bar / toast als nutzerinfo
 export const SettingsToggle = ({ item }) => {
-  const { title, description, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
+  const {
+    bottomDivider,
+    description,
+    isDisabled,
+    onActivate,
+    onDeactivate,
+    title,
+    topDivider,
+    value
+  } = item;
 
   const [loading, setLoading] = useState(false);
   const [switchValue, setSwitchValue] = useState(!!value);
@@ -42,13 +51,13 @@ export const SettingsToggle = ({ item }) => {
 
   return (
     <ListItem
-      bottomDivider={bottomDivider ?? false}
-      topDivider={topDivider ?? false}
-      containerStyle={styles.container}
-      onPress={onPress}
-      delayPressIn={0}
-      Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+      bottomDivider={bottomDivider ?? false}
+      Component={Touchable}
+      containerStyle={styles.container}
+      delayPressIn={0}
+      onPress={onPress}
+      topDivider={topDivider ?? false}
     >
       <ListItem.Content>
         {!!title && <BoldText small>{title}</BoldText>}
@@ -57,7 +66,7 @@ export const SettingsToggle = ({ item }) => {
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
-        <Switch switchValue={switchValue} toggleSwitch={toggleSwitch} />
+        <Switch isDisabled={isDisabled} switchValue={switchValue} toggleSwitch={toggleSwitch} />
       </WrapperRow>
     </ListItem>
   );
