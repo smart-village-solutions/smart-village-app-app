@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.1.3]
+
+This release includes a new Android target API level, important UI/UX improvements and several bug fixes for better stability
+
+### Added
+
+- upgraded Android targetSdkVersion to 35 to comply with new Play Store policies
+- added new module to show multiple buttons in a home section on the bottom of the screen
+- added Map/List view switcher in the sue module
+- added automatic login with device-specific ID for the coupon module to enable coupon redemption without repeated authentication
+- added ability to export volunteer events to the OS calendar via expo-calendar
+- added new inputs for the carpool module in the noticeboard
+- added noticeboard and profile components with adjustments fo carpool noticeboard integration
+- added `isExternal` and `inModalBrowser` parameters to web widget navigation
+- implemented group search functionality in the volunteer module
+
+### Changed
+
+- improved handling and presentation of all-day appointments in the Volunteer module, ensuring correct date alignment
+
+### Fixed
+
+- fixed errors causing tiles not to display correctly in the customizable tile edit page
+- fixed issue where Android screen reader could not recognize buttons on app intro slides
+- improved sorting and visibility toggling behavior for tiles
+- fixed invisibility of non-customizable tiles
+- fixed date filter reset issue and inability to select only an end date in the overlay filter
+- fixed waste module suggestion rendering and loading state behavior for more efficient performance
+
 ## [v4.1.2]
 
 This version includes many improvements for the volunteer and waste calendar modules and the first beta version for the search module
