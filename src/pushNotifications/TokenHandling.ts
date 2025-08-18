@@ -60,7 +60,6 @@ const removeTokenFromServer = async (token: string) => {
 
   if (accessToken) {
     const response = await fetch(requestPath, fetchObj);
-
     // 204 means that it was a success on the server
     // 404 means that the token was already not on the server and can be treated as a success
     const isSuccess = response.status === 204 || response.status === 404;
@@ -93,8 +92,6 @@ const addTokenToServer = async (token: string) => {
 
   if (accessToken) {
     const response = await fetch(requestPath, fetchObj);
-
-    // 201 means that it was a success on the server
     const isSuccess = response.status === 201;
 
     serverConnectionAlert(isSuccess);
@@ -138,7 +135,6 @@ export const addExcludeCategoriesPushTokenOnServer = async (
 
   if (accessToken) {
     const response = await fetch(requestPath, fetchObj);
-
     const isSuccess = response.status === 200;
 
     serverConnectionAlert(isSuccess);
@@ -174,7 +170,6 @@ export const getExcludedCategoriesPushTokenFromServer = async (token: string) =>
 
   if (accessToken) {
     const response = await fetch(requestPath, fetchObj);
-
     const isSuccess = response.status === 200;
 
     if (!isSuccess) {
@@ -213,7 +208,6 @@ export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: nu
 
   if (storedToken && accessToken) {
     const response = await fetch(requestPath, fetchObj);
-
     const isSuccess = response.status === 200;
 
     serverConnectionAlert(isSuccess);
@@ -244,7 +238,6 @@ export const addMowasRegionalKeysToTokenOnServer = async (mowasRegionalKeys: num
 
   if (storedToken && accessToken) {
     const response = await fetch(requestPath, fetchObj);
-
     const isSuccess = response.status === 200;
 
     serverConnectionAlert(isSuccess);
