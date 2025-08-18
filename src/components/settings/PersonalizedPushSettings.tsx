@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import _cloneDeep from 'lodash/cloneDeep';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -25,7 +26,17 @@ type Category = {
   tagList: string[];
 };
 
+type ExcludeMap = Record<string, Record<string, unknown>>;
+
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+
+const tagListArray = (tag) => {
+  return Array.isArray(tag)
+    ? tag
+    : typeof tag === 'string'
+    ? tag.split(',').map((x) => x.trim())
+    : [];
+};
 
 export const PersonalizedPushSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -37,10 +48,10 @@ export const PersonalizedPushSettings = () => {
 
   const [permission, setPermission] = useState<boolean>(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<{ id: string; tag: string[] }[]>(
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<{ id: string; tags: string[] }[]>(
     []
   );
-  const [excludeCategoryIds, setExcludeCategoryIds] = useState<{ id: string; tag: string[] }[]>([]);
+  const [excludeCategoryIds, setExcludeCategoryIds] = useState<ExcludeMap>({});
 
   const { data, isLoading: loading } = useQuery(
     [QUERY_TYPES.CATEGORIES_FILTER, queryVariables],
@@ -70,40 +81,50 @@ export const PersonalizedPushSettings = () => {
 
   useEffect(() => {
     (async () => {
-      if (pushToken) {
-        const categories = await getExcludedCategoriesPushTokenFromServer(pushToken);
-        setExcludeCategoryIds(categories?.length ? categories : []);
-      }
+      if (!pushToken) return;
+
+      const categories = await getExcludedCategoriesPushTokenFromServer(pushToken);
+      setExcludeCategoryIds(categories);
     })();
   }, [pushToken]);
 
   useEffect(() => {
-    if (pushToken) {
-      const tagList = queryVariables?.tagList;
+    if (!Object.keys(excludeCategoryIds).length) return;
 
-      const excludeCategoryIds: Record<string, Record<string, unknown>> = {};
+    const newCategories = Object.entries(excludeCategoryIds).flatMap(([tag, items]) =>
+      Object.keys(items).map((id) => ({ id, tags: [tag] }))
+    );
 
-      tagList.forEach((tag) => {
-        excludeCategoryIds[tag] = {};
+    setSelectedCategoryIds((prev) => [...prev, ...newCategories]);
+  }, [excludeCategoryIds]);
+
+  useEffect(() => {
+    if (!pushToken) return;
+
+    const tagList = queryVariables?.tagList ?? [];
+    const categoryIds: ExcludeMap = _cloneDeep(excludeCategoryIds || {});
+    const selectedByTag = new Map<string, Set<string>>();
+
+    selectedCategoryIds.forEach(({ id, tags }) => {
+      tagListArray(tags)?.forEach((t) => {
+        if (!selectedByTag.has(t)) selectedByTag.set(t, new Set());
+        const set = selectedByTag.get(t);
+        if (set) set.add(String(id));
+      });
+    });
+
+    tagList.forEach((t: string) => {
+      const ids = selectedByTag.get(t) ?? new Set<string>();
+      const obj: Record<string, {}> = {};
+
+      ids.forEach((id) => {
+        obj[id] = {};
       });
 
-      selectedCategoryIds?.forEach(({ tag, id }) => {
-        const tagsArray = Array.isArray(tag)
-          ? tag
-          : typeof tag === 'string'
-          ? tag.split(',').map((t) => t.trim())
-          : [];
+      categoryIds[t] = obj;
+    });
 
-        tagsArray.forEach((t) => {
-          if (!excludeCategoryIds[t]) {
-            excludeCategoryIds[t] = {};
-          }
-          excludeCategoryIds[t][id] = {};
-        });
-      });
-
-      addExcludeCategoriesPushTokenOnServer(pushToken, excludeCategoryIds);
-    }
+    addExcludeCategoriesPushTokenOnServer(pushToken, categoryIds);
   }, [selectedCategoryIds, queryVariables?.tagList]);
 
   const onActivate = (revert: () => void) => {
@@ -124,15 +145,8 @@ export const PersonalizedPushSettings = () => {
 
   const listItems = useMemo(() => {
     const parsedListItems = data?.categories?.map((category: Category) => {
-      const tagListArray = Array.isArray(category.tagList)
-        ? category.tagList
-        : typeof category.tagList === 'string'
-        ? category.tagList.split(',').map((tag) => tag.trim())
-        : [];
-
-      const isExcluded = tagListArray.some(
-        (tag) => excludeCategoryIds?.[tag]?.[category.id] !== undefined
-      );
+      const tags = tagListArray(category.tagList);
+      const isExcluded = !tags.some((tag) => !!excludeCategoryIds?.[tag]?.[category.id]);
 
       return {
         bottomDivider: true,
@@ -142,10 +156,9 @@ export const PersonalizedPushSettings = () => {
         isDisabled: !permission,
         onActivate: () =>
           setSelectedCategoryIds((prev) => prev.filter((item) => item.id !== category.id)),
-        onDeactivate: () =>
-          setSelectedCategoryIds((prev) => [...prev, { id: category.id, tag: category.tagList }]),
+        onDeactivate: () => setSelectedCategoryIds((prev) => [...prev, { id: category.id, tags }]),
         title: category.name,
-        value: !isExcluded
+        value: isExcluded
       };
     });
 
