@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 
 import * as appJson from '../../app.json';
-import { device, secrets, staticRestSuffix } from '../config';
+import { device, secrets, staticRestSuffix, texts } from '../config';
 
 import {
   getPushTokenFromStorage,
@@ -125,15 +125,16 @@ const deleteReminderSetting = async (id: number | string) => {
   if (accessToken && pushToken) {
     try {
       const response = await fetch(requestPath, fetchObj);
+      const isSuccess = response.ok;
 
-      if (!response.ok) {
-        serverConnectionAlert(false);
+      if (!isSuccess) {
+        serverConnectionAlert(isSuccess);
       }
 
-      return response.ok;
+      return isSuccess;
     } catch (error) {
       console.warn('An error occurred while deleting a reminder setting:', error);
-      serverConnectionAlert(false);
+      serverConnectionAlert(false, texts.errors.noData);
     }
   }
 

@@ -12,9 +12,12 @@ export enum PushNotificationStorageKeys {
   IN_APP_PERMISSION = 'IN_APP_PERMISSION'
 }
 
-export const serverConnectionAlert = (isSuccess: boolean) => {
+export const serverConnectionAlert = (
+  isSuccess: boolean,
+  message: string = texts.weather.noData
+) => {
   if (!isSuccess) {
-    return Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+    return Alert.alert(texts.errors.errorTitle, message);
   }
 };
 
