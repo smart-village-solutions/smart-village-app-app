@@ -3,7 +3,10 @@ import { FlatList } from 'react-native';
 
 import { LoadingSpinner, WrapperHorizontal } from '..';
 import { readFromStore } from '../../helpers';
-import { addMowasRegionalKeysToTokenOnServer } from '../../pushNotifications';
+import {
+  addMowasRegionalKeysToTokenOnServer,
+  serverConnectionAlert
+} from '../../pushNotifications';
 import {
   MOWAS_REGIONAL_KEYS,
   MowasRegionalKeysActions,
@@ -41,10 +44,39 @@ export const MowasRegionSettings = ({
     loadFilters();
   }, [loadFilters]);
 
-  useEffect(() => {
-    !!mowasRegionalKeys?.length &&
-      addMowasRegionalKeysToTokenOnServer(selectedMowasRegionalKeys.map((id) => parseInt(id, 10)));
-  }, [selectedMowasRegionalKeys]);
+  const handleToggle = useCallback(
+    async (rs: string, nextEnabled: boolean) => {
+      const isCurrentlyEnabled = !selectedMowasRegionalKeys.includes(rs);
+      if (isCurrentlyEnabled === nextEnabled) return;
+
+      const nextList = nextEnabled
+        ? selectedMowasRegionalKeys.filter((x) => x !== rs)
+        : [...selectedMowasRegionalKeys, rs];
+
+      // optimistic update
+      dispatch({
+        type: nextEnabled
+          ? MowasRegionalKeysActions.RemoveMowasRegionalKey
+          : MowasRegionalKeysActions.AddMowasRegionalKey,
+        payload: rs
+      });
+
+      try {
+        await addMowasRegionalKeysToTokenOnServer(nextList.map((id) => parseInt(id, 10)));
+      } catch (e) {
+        // rollback on failure
+        dispatch({
+          type: nextEnabled
+            ? MowasRegionalKeysActions.AddMowasRegionalKey
+            : MowasRegionalKeysActions.RemoveMowasRegionalKey,
+          payload: rs
+        });
+        console.error('Failed to update MOWAS regional keys on server', e);
+        serverConnectionAlert(false);
+      }
+    },
+    [selectedMowasRegionalKeys, dispatch]
+  );
 
   if (!mowasRegionalKeys?.length || loading) {
     return <LoadingSpinner loading />;
@@ -61,15 +93,8 @@ export const MowasRegionSettings = ({
               title: item.name,
               bottomDivider: true,
               value: !selectedMowasRegionalKeys.includes(item.rs),
-              onActivate: () => {
-                dispatch({
-                  type: MowasRegionalKeysActions.RemoveMowasRegionalKey,
-                  payload: item.rs
-                });
-              },
-              onDeactivate: () => {
-                dispatch({ type: MowasRegionalKeysActions.AddMowasRegionalKey, payload: item.rs });
-              }
+              onActivate: () => handleToggle(item.rs, true),
+              onDeactivate: () => handleToggle(item.rs, false)
             }}
           />
         </WrapperHorizontal>
