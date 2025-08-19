@@ -19,6 +19,16 @@ const thumbColorEnabled = Platform.select({
   android: colors.gray20,
   ios: colors.lightestText
 });
+const disabledTrackColor = {
+  ...Platform.select({
+    android: { false: colors.shadow, true: colors.primary },
+    ios: { false: colors.shadow, true: colors.primary }
+  })
+};
+const disabledThumbColor = Platform.select({
+  android: colors.gray40,
+  ios: colors.lightestText
+});
 
 export const Switch = ({ isDisabled, switchValue, toggleSwitch }) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
@@ -36,8 +46,8 @@ export const Switch = ({ isDisabled, switchValue, toggleSwitch }) => {
             transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
           }
       ]}
-      thumbColor={switchValue ? thumbColorEnabled : thumbColor}
-      trackColor={trackColor}
+      thumbColor={isDisabled ? disabledThumbColor : switchValue ? thumbColorEnabled : thumbColor}
+      trackColor={isDisabled ? disabledTrackColor : trackColor}
       value={switchValue}
     />
   );

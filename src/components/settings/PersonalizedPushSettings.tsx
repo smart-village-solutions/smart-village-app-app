@@ -1,5 +1,5 @@
 import _cloneDeep from 'lodash/cloneDeep';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
 
