@@ -8,6 +8,7 @@ export type ResourceFilters = {
       options?: string[];
       searchable?: boolean;
       type?: string;
+      where?: string;
     };
   };
   dataResourceType: string;
@@ -28,6 +29,7 @@ export type FilterTypesProps = {
   searchPlaceholder?: string;
   type?: string;
   value?: string;
+  where?: string;
 };
 
 export type FilterProps = {
