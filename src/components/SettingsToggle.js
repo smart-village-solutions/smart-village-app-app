@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, device, normalize } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
+import { NetworkContext } from '../NetworkProvider';
+import { serverConnectionAlert } from '../pushNotifications';
 
 import { Switch } from './Switch';
 import { BoldText, RegularText } from './Text';
@@ -11,7 +13,8 @@ import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 // TODO: snack bar / toast als nutzerinfo
-export const SettingsToggle = ({ item }) => {
+export const SettingsToggle = ({ item, needsConnection = true }) => {
+  const { isConnected } = useContext(NetworkContext);
   const {
     bottomDivider,
     description,
@@ -31,6 +34,10 @@ export const SettingsToggle = ({ item }) => {
   }, [value]);
 
   const toggleSwitch = (newSwitchValue) => {
+    if (!isConnected && needsConnection) {
+      serverConnectionAlert(isConnected, texts.errors.noData);
+      return;
+    }
     setLoading(true);
 
     setSwitchValue(newSwitchValue);
@@ -84,5 +91,6 @@ const styles = StyleSheet.create({
 });
 
 SettingsToggle.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  needsConnection: PropTypes.bool
 };
