@@ -1,4 +1,5 @@
 import _cloneDeep from 'lodash/cloneDeep';
+import _isEmpty from 'lodash/isEmpty';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
@@ -146,7 +147,11 @@ export const PersonalizedPushSettings = () => {
   const listItems = useMemo(() => {
     const parsedListItems = data?.categories?.map((category: Category) => {
       const tags = tagListArray(category.tagList);
-      const isExcluded = !tags.some((tag) => !!excludeCategoryIds?.[tag]?.[category.id]);
+      const isExcluded = !tags.some((tag) => {
+        const value = excludeCategoryIds?.[tag]?.[category.id];
+
+        return value !== undefined && _isEmpty(value);
+      });
 
       return {
         bottomDivider: true,
