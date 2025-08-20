@@ -113,7 +113,7 @@ const storeTokenSecurely = (token?: string) => {
   }
 };
 
-export const addExcludeCategoriesPushTokenOnServer = async (
+export const addExcludeNotificationConfigurationOnServer = async (
   token: string,
   excludeCategoryIds: Record<string, Record<string, unknown>>
 ) => {
@@ -148,14 +148,12 @@ export const addExcludeCategoriesPushTokenOnServer = async (
   return false;
 };
 
-export const getExcludedCategoriesPushTokenFromServer = async (token: string) => {
+export const getExcludeNotificationConfigurationFromServer = async (token: string) => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + '/notification/devices/0/exclusion_filter_config.json';
 
-  if (!accessToken) {
-    return false;
-  }
+  if (!accessToken) return;
 
   const fetchObj = {
     method: 'POST',
@@ -171,21 +169,18 @@ export const getExcludedCategoriesPushTokenFromServer = async (token: string) =>
     })
   };
 
-  if (accessToken) {
-    const response = await fetch(requestPath, fetchObj);
-    const isSuccess = response.status === 200;
+  const response = await fetch(requestPath, fetchObj);
+  const isSuccess = response.status === 200;
 
-    if (!isSuccess) {
-      serverConnectionAlert(isSuccess);
+  if (!isSuccess) {
+    serverConnectionAlert(isSuccess);
 
-      return false;
-    }
-
-    const responseData = await response.json();
-    return responseData.exclude_notification_configuration;
+    return;
   }
 
-  return false;
+  const responseData = await response.json();
+
+  return responseData.exclude_notification_configuration;
 };
 
 export const getPushTokenFromStorage = () =>
