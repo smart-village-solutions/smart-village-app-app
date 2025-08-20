@@ -16,7 +16,8 @@ import {
   navigateWithSubQuery,
   NoticeboardCategoryTabs,
   SafeAreaViewFlex,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../../components';
 import { colors, Icon, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
@@ -83,13 +84,25 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     variables: queryVariables
   });
 
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data,
+      query: GenericType.Noticeboard,
+      queryVariables,
+      resourceFilters
+    });
+  }, [data]);
+
   const listItems = parseListItemsFromQuery(query, data, '', {
     queryVariables,
-    subQuery
+    subQuery,
+    filterTypes
   });
 
   // create new object of list items filtered by selected category
   const filteredListItems = useMemo(() => {
+    if (!selectedCategory) return listItems;
+
     return listItems?.filter((item: { categories: { id: string }[] }) =>
       item.categories.some((category: { id: string }) => category.id == selectedCategory)
     );
@@ -129,15 +142,6 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  const filterTypes = useMemo(() => {
-    return filterTypesHelper({
-      data,
-      query: GenericType.Noticeboard,
-      queryVariables,
-      resourceFilters
-    });
-  }, [data]);
-
   useEffect(() => {
     updateResourceFiltersStateHelper({
       query: GenericType.Noticeboard,
@@ -175,7 +179,8 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       if (
         !loading &&
         !filteredListItems?.filter((item: any) => !item.component)?.length &&
-        !!categoryIdsTabs?.length
+        !!categoryIdsTabs?.length &&
+        !!selectedCategory
       ) {
         setSelectedCategory(
           categoryIdsTabs.find((categoryId: number) => categoryId != selectedCategory)
@@ -204,6 +209,20 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     ];
   }, [categoryIdsTabs, filteredListItems, categoryNames, selectedCategory]);
 
+  const ResultListHeaderComponent = useMemo(() => {
+    return !currentMember ? (
+      <ListHeaderComponent
+        html={dataHtml}
+        loading={loadingHtml}
+        navigation={navigation}
+        navigationTitle=""
+        subQuery={subQuery}
+      />
+    ) : (
+      <View />
+    );
+  }, [dataHtml, loadingHtml, navigation, subQuery]);
+
   if (
     isLoginRequired &&
     isProfileLoggedIn &&
@@ -226,6 +245,14 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   if (!categoryIdsTabs?.length && !queryVariables?.categoryId) {
     return (
       <SafeAreaViewFlex>
+        <Filter
+          filterTypes={filterTypes}
+          initialQueryVariables={initialQueryVariables}
+          isOverlay
+          queryVariables={queryVariables}
+          setQueryVariables={setQueryVariables}
+        />
+        <WrapperHorizontal>{ResultListHeaderComponent}</WrapperHorizontal>
         <EmptyMessage title={texts.noticeboard.emptyTitle} />
         {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
           <>
@@ -266,19 +293,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       />
       <ListComponent
         data={listData}
-        ListHeaderComponent={
-          !currentMember ? (
-            <ListHeaderComponent
-              html={dataHtml}
-              loading={loadingHtml}
-              navigation={navigation}
-              navigationTitle=""
-              subQuery={subQuery}
-            />
-          ) : (
-            <View />
-          )
-        }
+        ListHeaderComponent={ResultListHeaderComponent}
         navigation={navigation}
         query={query}
         refreshControl={

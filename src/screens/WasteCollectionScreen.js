@@ -88,6 +88,8 @@ export const WasteCollectionScreen = ({ navigation }) => {
   } = wasteAddresses;
   const renderSuggestions = useRenderSuggestions((item) => {
     if (item?.id) {
+      setSelectedStreetId(item.id);
+      setIsReset(false);
       navigation.navigate(ScreenName.WasteCollectionSettings, { currentSelectedStreetId: item.id });
     }
   });
