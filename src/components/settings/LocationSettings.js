@@ -110,7 +110,7 @@ export const LocationSettings = () => {
   return (
     <ScrollView>
       <WrapperHorizontal>
-        <SettingsToggle item={locationServiceSwitchData} />
+        <SettingsToggle item={locationServiceSwitchData} needsConnection={false} />
       </WrapperHorizontal>
       {!!showAlternativeLocationButton && (
         <>
