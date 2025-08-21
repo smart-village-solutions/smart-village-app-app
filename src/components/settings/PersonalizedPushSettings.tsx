@@ -139,7 +139,7 @@ export const PersonalizedPushSettings = () => {
   }, [addIdsOnServer, selectedCategoryIds, pushToken]);
 
   useEffect(() => {
-    if (!!pushToken && permission) return;
+    if (!!pushToken || permission) return;
 
     (async () => {
       const storedCategories = await readFromStore(PERSONALIZED_PUSH_SETTINGS);

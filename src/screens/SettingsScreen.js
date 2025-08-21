@@ -144,7 +144,7 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
       />
     );
   } else {
-    component = <SettingsToggle item={item} />;
+    component = <SettingsToggle needsConnection={false} item={item} />;
   }
 
   return component;
