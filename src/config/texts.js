@@ -1169,6 +1169,10 @@ export const texts = {
     permanentFilter: {
       setting: 'Datenquellen'
     },
+    personalizedPush: {
+      setting: 'Push-Benachrichtigungen',
+      sectionTitle: 'Push-Benachrichtigungen für Nachrichtenkategorien'
+    },
     termsAndConditions: {
       abort: 'Abbrechen',
       onActivate: '',
