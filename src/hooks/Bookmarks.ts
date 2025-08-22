@@ -6,11 +6,11 @@ import { BookmarkList, getKeyFromTypeAndSuffix, getListQueryType } from '../help
 import { QUERY_TYPES, getQuery } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 
+/* eslint-disable complexity */
 export const useBookmarks = (itemType?: string, category?: number | string) => {
   const { bookmarks } = useContext(BookmarkContext);
 
-  // query all vouchers and get ids from all items, that have corresponding ids in payload,
-  // because vouchers have changing ids
+  // query all vouchers to resolve current server IDs for stable payload IDs
   const { data: dataVouchers } = useQuery(
     [QUERY_TYPES.VOUCHERS],
     async () => {
@@ -23,24 +23,54 @@ export const useBookmarks = (itemType?: string, category?: number | string) => {
     }
   );
 
-  if (bookmarks?.[QUERY_TYPES.VOUCHERS]?.length) {
-    const voucherIds = dataVouchers?.genericItems
-      ?.filter((voucher) => bookmarks[QUERY_TYPES.VOUCHERS].includes(voucher.payload.id))
-      ?.map((voucher) => voucher.id);
+  // build a derived bookmarks object that keeps payload IDs as source of truth
+  // and resolves to current server IDs at read-time
+  let derivedBookmarks: BookmarkList | undefined = bookmarks;
 
-    if (voucherIds?.length) {
-      bookmarks[QUERY_TYPES.VOUCHERS] = voucherIds;
-    }
+  const rawVoucherBookmarks = (bookmarks?.[QUERY_TYPES.VOUCHERS] ?? []) as string[];
+
+  if (rawVoucherBookmarks.length && dataVouchers?.genericItems) {
+    // detect if stored values are payload IDs or old server IDs
+    const hasAnyPayloadId =
+      rawVoucherBookmarks.some((id) =>
+        dataVouchers.genericItems?.some((voucher: any) => voucher?.payload?.id === id)
+      ) || false;
+
+    const hasAnyServerId =
+      rawVoucherBookmarks.some((id) =>
+        dataVouchers.genericItems?.some((voucher: any) => voucher?.id === id)
+      ) || false;
+
+    // if old server IDs are stored, convert them to payload IDs in-memory
+    const effectivePayloadIds: string[] = hasAnyPayloadId
+      ? rawVoucherBookmarks
+      : hasAnyServerId
+      ? dataVouchers.genericItems
+          .filter((voucher: any) => rawVoucherBookmarks.includes(voucher.id))
+          .map((voucher: any) => voucher?.payload?.id)
+          .filter(Boolean)
+      : rawVoucherBookmarks;
+
+    // resolve current server IDs for the effective payload IDs (no mutation of context data)
+    const resolvedVoucherIds: string[] =
+      dataVouchers.genericItems
+        ?.filter((voucher: any) => effectivePayloadIds.includes(voucher?.payload?.id))
+        ?.map((voucher: any) => voucher.id) ?? [];
+
+    derivedBookmarks = {
+      ...(bookmarks || {}),
+      [QUERY_TYPES.VOUCHERS]: resolvedVoucherIds
+    };
   }
 
-  if (itemType && bookmarks) {
+  if (itemType && derivedBookmarks) {
     const key = getKeyFromTypeAndSuffix(itemType, category);
-
-    return bookmarks[key];
+    return derivedBookmarks[key];
   }
 
-  return bookmarks;
+  return derivedBookmarks;
 };
+/* eslint-enable complexity */
 
 export const useBookmarkedStatus = (itemType: string, id: string, suffix?: number | string) => {
   const bookmarks: BookmarkList | undefined = useBookmarks();
