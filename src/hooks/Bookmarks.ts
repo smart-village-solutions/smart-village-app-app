@@ -1,22 +1,31 @@
 import { useContext } from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery } from 'react-query';
 
 import { BookmarkContext } from '../BookmarkProvider';
 import { BookmarkList, getKeyFromTypeAndSuffix, getListQueryType } from '../helpers';
 import { QUERY_TYPES, getQuery } from '../queries';
+import { ReactQueryClient } from '../ReactQueryClient';
 
 export const useBookmarks = (itemType?: string, category?: number | string) => {
   const { bookmarks } = useContext(BookmarkContext);
 
   // query all vouchers and get ids from all items, that have corresponding ids in payload,
   // because vouchers have changing ids
-  const { data: dataVouchers } = useQuery(getQuery(QUERY_TYPES.VOUCHERS), {
-    skip: !bookmarks?.[QUERY_TYPES.VOUCHERS]?.length
-  });
+  const { data: dataVouchers } = useQuery(
+    [QUERY_TYPES.VOUCHERS],
+    async () => {
+      const client = await ReactQueryClient();
 
-  if (bookmarks) {
+      return await client.request(getQuery(QUERY_TYPES.VOUCHERS));
+    },
+    {
+      enabled: !!bookmarks?.[QUERY_TYPES.VOUCHERS]?.length
+    }
+  );
+
+  if (bookmarks?.[QUERY_TYPES.VOUCHERS]?.length) {
     const voucherIds = dataVouchers?.genericItems
-      ?.filter((voucher) => bookmarks?.[QUERY_TYPES.VOUCHERS].includes(voucher.payload.id))
+      ?.filter((voucher) => bookmarks[QUERY_TYPES.VOUCHERS].includes(voucher.payload.id))
       ?.map((voucher) => voucher.id);
 
     if (voucherIds?.length) {

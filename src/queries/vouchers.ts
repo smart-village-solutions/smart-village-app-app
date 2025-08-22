@@ -1,6 +1,5 @@
 import gql from 'graphql-tag';
 
-
 export const GET_VOUCHERS = gql`
   query GenericItems(
     $ids: [ID]
@@ -25,7 +24,6 @@ export const GET_VOUCHERS = gql`
       createdAt
       publishedAt
       genericType
-      id
       title
       subtitle: teaser
       categories {

@@ -36,7 +36,7 @@ export const Discount = ({
 
   const onPress = useCallback(() => {
     toggleBookmark(query, payloadId);
-  }, [payloadId, query]);
+  }, [toggleBookmark, query, payloadId]);
 
   return (
     <View style={styles.container}>

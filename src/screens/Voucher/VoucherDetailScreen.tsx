@@ -177,7 +177,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
       {!!quota && (
         <Wrapper noPaddingTop>
-          <VoucherRedeem quota={quota} voucherId={id} />
+          <VoucherRedeem dates={dates} quota={quota} voucherId={id} />
         </Wrapper>
       )}
 

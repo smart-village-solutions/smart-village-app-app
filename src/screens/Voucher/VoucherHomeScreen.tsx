@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
@@ -81,8 +81,17 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
     // accountCheck();
   }, []);
 
+  const isFirstMount = useRef(true);
+  const lastLoginTime = useRef<number>(Date.now());
+  const LOGIN_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
+  // this effect is temporary. it can be removed when the real login section is completed
   useEffect(() => {
-    // this section is temporary. it can be removed when the real login section is completed
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+
     const login = async () => {
       const key = await voucherAuthKey();
 
@@ -107,7 +116,11 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
       );
     };
 
-    login();
+    const now = Date.now();
+    if (now - lastLoginTime.current >= LOGIN_INTERVAL) {
+      lastLoginTime.current = now;
+      login();
+    }
   }, []);
 
   const refreshHome = useCallback(async () => {

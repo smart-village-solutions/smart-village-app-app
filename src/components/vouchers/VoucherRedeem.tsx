@@ -1,4 +1,5 @@
 import { randomUUID as uuid } from 'expo-crypto';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -19,7 +20,15 @@ import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 const defaultTime = 15 * 60; // 15 * 60 sec.
 
 /* eslint-disable complexity */
-export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: string }) => {
+export const VoucherRedeem = ({
+  dates,
+  quota,
+  voucherId
+}: {
+  dates: TVoucherDates[];
+  quota: TQuota;
+  voucherId: string;
+}) => {
   const { isLoggedIn, memberId } = useVoucher();
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
@@ -46,10 +55,14 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   };
 
   useEffect(() => {
+    // check with dates?.[0]?.dateStart and dates?.[0]?.dateEnd against now to see if it is outdated and does not start in future
+    const isInTime =
+      moment(dates?.[0]?.dateStart).startOf('day').isBefore(moment()) &&
+      moment(dates?.[0]?.dateEnd).endOf('day').isAfter(moment());
     const hasAvailableQuantity = availableQuantity !== 0;
     const hasNoAvailableQuantityForMember = availableQuantityForMember === 0;
 
-    setIsAvailableVoucher(hasAvailableQuantity);
+    setIsAvailableVoucher(isInTime && hasAvailableQuantity);
 
     if (hasNoAvailableQuantityForMember) {
       setIsRedeemedVoucher(true);
