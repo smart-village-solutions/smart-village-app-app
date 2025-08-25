@@ -64,7 +64,8 @@ export const dateOfAvailabilityText = (
   }
 
   if (dateStart && dateEnd) {
-    const dates = momentFormat(dateStart, returnFormat) + '-' + momentFormat(dateEnd, returnFormat);
+    const dates =
+      momentFormat(dateStart, returnFormat) + ' - ' + momentFormat(dateEnd, returnFormat);
 
     return `${texts.voucher.detailScreen.available}: ${dates}`;
   } else if (dateStart) {

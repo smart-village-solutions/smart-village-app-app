@@ -89,7 +89,6 @@ export const DataListSection = ({
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
     withTime: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
-    skipLastDivider: false,
     queryKey: query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query
   });
 

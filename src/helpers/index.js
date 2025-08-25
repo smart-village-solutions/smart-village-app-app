@@ -46,3 +46,4 @@ export * from './surveyHelper';
 export * from './textHelper';
 export * from './updateResourceFiltersStateHelper';
 export * from './volunteerHelper';
+export * from './voucherHelper';

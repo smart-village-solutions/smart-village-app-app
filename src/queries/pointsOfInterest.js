@@ -254,8 +254,12 @@ export const GET_POINT_OF_INTEREST = gql`
           timeEnd
         }
         mediaContents {
+          id
           contentType
+          captionText
+          copyright
           sourceUrl {
+            id
             url
           }
         }

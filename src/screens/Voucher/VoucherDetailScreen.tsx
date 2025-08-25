@@ -1,9 +1,9 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useQuery } from 'react-apollo';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, ScrollView } from 'react-native';
+import { useQuery as RQuseQuery } from 'react-query';
 
-import { NetworkContext } from '../../NetworkProvider';
+import { ReactQueryClient } from '../../ReactQueryClient';
 import {
   BoldText,
   Button,
@@ -21,7 +21,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
-import { dateOfAvailabilityText, graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
@@ -29,8 +29,6 @@ import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { memberId } = useVoucher();
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
 
@@ -40,9 +38,14 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   // action to open source urls
   const openWebScreen = useOpenWebScreen('Anbieter', undefined, route.params?.rootRouteName);
 
-  const { data, loading, refetch } = useQuery(getQuery(query), {
-    variables: { memberId, ...queryVariables },
-    fetchPolicy
+  const {
+    data,
+    isLoading: loading,
+    refetch
+  } = RQuseQuery([query, { memberId, ...queryVariables }], async () => {
+    const client = await ReactQueryClient();
+
+    return await client.request(getQuery(query), { memberId, ...queryVariables });
   });
 
   const {
@@ -59,20 +62,20 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     title
   } = data?.[QUERY_TYPES.GENERIC_ITEM] ?? {};
 
-  const ids = pointOfInterest?.vouchers?.reduce((acc: string[], voucher: TVoucherItem) => {
-    if (voucher.id !== queryVariables?.id) {
-      acc.push(voucher.id);
-    }
+  const ids: string[] =
+    pointOfInterest?.vouchers?.flatMap((voucher: TVoucherItem) =>
+      voucher.id !== queryVariables?.id ? [voucher.id] : []
+    ) ?? [];
 
-    return acc;
-  }, []);
+  const { data: actualVouchersData, refetch: actualVouchersRefetch } = RQuseQuery(
+    [QUERY_TYPES.VOUCHERS, { ids }],
+    async () => {
+      const client = await ReactQueryClient();
 
-  const { data: actualVouchersData, refetch: actualVouchersRefetch } = useQuery(
-    getQuery(QUERY_TYPES.VOUCHERS),
+      return await client.request(getQuery(QUERY_TYPES.VOUCHERS), { ids });
+    },
     {
-      variables: { ids },
-      skip: !ids?.length,
-      fetchPolicy
+      enabled: !!ids?.length
     }
   );
 
@@ -85,12 +88,10 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
-    if (isConnected) {
-      await refetch();
-      await actualVouchersRefetch();
-    }
+    await refetch();
+    await actualVouchersRefetch();
     setRefreshing(false);
-  }, [isConnected, refetch, setRefreshing]);
+  }, [refetch, setRefreshing]);
 
   if (!data || loading) {
     return <LoadingSpinner loading />;
@@ -177,7 +178,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
       {!!quota && (
         <Wrapper noPaddingTop>
-          <VoucherRedeem quota={quota} voucherId={id} />
+          <VoucherRedeem dates={dates} quota={quota} voucherId={id} />
         </Wrapper>
       )}
 

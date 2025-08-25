@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { Query } from 'react-apollo';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
+import { useQuery } from 'react-query';
 
 import {
   EmptyMessage,
@@ -21,6 +21,7 @@ import { useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
@@ -106,14 +107,6 @@ export const DetailScreen = ({ navigation, route }) => {
     return <SueDetailScreen navigation={navigation} route={route} />;
   }
 
-  if (!refreshTime) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
-  }
-
   const refresh = async (refetch) => {
     setRefreshing(true);
 
@@ -131,83 +124,94 @@ export const DetailScreen = ({ navigation, route }) => {
     refreshTime
   });
 
+  const {
+    data,
+    isLoading: loading,
+    isRefetching,
+    refetch
+  } = useQuery(
+    [query, { id: queryVariables.id }, refreshTime],
+    async () => {
+      const client = await ReactQueryClient();
+      return await client.request(getQuery(query), { id: queryVariables.id });
+    },
+    {
+      enabled: !!refreshTime
+    }
+  );
+
+  if (!refreshTime) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
+  }
+
+  if (loading && !isRefetching) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
+  }
+
+  // we can have `data` from GraphQL or `details` from the previous list view.
+  // if there is no cached `data` or network fetched `data` we fallback to the `details`.
+  if ((!data || !data[query]) && !details) {
+    return <EmptyMessage title={texts.empty.content} />;
+  }
+
+  let Component;
+
+  // check for special generic item cases first
+  const genericType = data?.[query]?.genericType || details?.genericType;
+  if (genericType === GenericType.DefectReport) {
+    Component = DefectReportFormScreen;
+  }
+  if (genericType === GenericType.Noticeboard && !conversations) {
+    Component = NoticeboardFormScreen;
+  }
+
+  if (Component) {
+    return (
+      <Component
+        data={(data && data[query]) || details}
+        navigation={navigation}
+        fetchPolicy={fetchPolicy}
+        refetch={refetch}
+        route={route}
+      />
+    );
+  }
+
+  // otherwise determine detail screen based on query and generic type
+  Component = getComponent(query, genericType);
+
+  if (!Component) return null;
+
   return (
-    <Query
-      query={getQuery(query)}
-      variables={{ id: queryVariables.id }}
-      fetchPolicy={query === QUERY_TYPES.EVENT_RECORD ? 'cache-and-network' : fetchPolicy}
-    >
-      {({ data, loading, refetch, networkStatus }) => {
-        // show loading indicator if loading but not if refetching (network status 4 means refetch)
-        if (loading && networkStatus !== 4) {
-          return (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.refreshControl} />
-            </LoadingContainer>
-          );
+    <SafeAreaViewFlex>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => refresh(refetch)}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
+          />
         }
-
-        // we can have `data` from GraphQL or `details` from the previous list view.
-        // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-        if ((!data || !data[query]) && !details) {
-          return <EmptyMessage title={texts.empty.content} />;
-        }
-
-        let Component;
-
-        const genericType = data?.[query]?.genericType || details?.genericType;
-
-        // check for form screens a detail screen first
-        if (genericType === GenericType.DefectReport) {
-          Component = DefectReportFormScreen;
-        }
-
-        if (genericType === GenericType.Noticeboard && !conversations) {
-          Component = NoticeboardFormScreen;
-        }
-
-        if (Component) {
-          return (
-            <Component
-              data={(data && data[query]) || details}
-              navigation={navigation}
-              fetchPolicy={fetchPolicy}
-              refetch={refetch}
-              route={route}
-            />
-          );
-        }
-
-        // otherwise determine detail screen based on query and generic type
-        Component = getComponent(query, genericType);
-
-        if (!Component) return null;
-
-        return (
-          <SafeAreaViewFlex>
-            <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={() => refresh(refetch)}
-                  colors={[colors.refreshControl]}
-                  tintColor={colors.refreshControl}
-                />
-              }
-            >
-              <Component
-                data={(data && data[query]) || details}
-                navigation={navigation}
-                fetchPolicy={fetchPolicy}
-                refetch={refetch}
-                route={route}
-              />
-              <FeedbackFooter />
-            </ScrollView>
-          </SafeAreaViewFlex>
-        );
-      }}
-    </Query>
+      >
+        <Component
+          data={(data && data[query]) || details}
+          navigation={navigation}
+          fetchPolicy={fetchPolicy}
+          refetch={refetch}
+          route={route}
+        />
+        <FeedbackFooter />
+      </ScrollView>
+    </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */

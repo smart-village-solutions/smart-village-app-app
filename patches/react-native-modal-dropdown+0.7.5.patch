@@ -1,0 +1,56 @@
+diff --git a/node_modules/react-native-modal-dropdown/components/ModalDropdown.js b/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
+index 1a10990..05d49b6 100644
+--- a/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
++++ b/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
+@@ -1,20 +1,19 @@
+-import React, { Component } from 'react';
++import PropTypes from 'prop-types';
++import { Component } from 'react';
+ import {
+-  StyleSheet,
+-  Dimensions,
+-  View,
+-  Text,
+-  TouchableWithoutFeedback,
+-  TouchableNativeFeedback,
+-  TouchableOpacity,
+-  TouchableHighlight,
+-  Modal,
+   ActivityIndicator,
++  Dimensions,
+   FlatList,
++  Modal,
+   Platform,
+-  TextInput
++  StyleSheet,
++  Text,
++  TextInput,
++  TouchableHighlight,
++  TouchableOpacity,
++  TouchableWithoutFeedback,
++  View
+ } from 'react-native';
+-import PropTypes from 'prop-types';
+ 
+ const TOUCHABLE_ELEMENTS = [
+   'TouchableHighlight',
+@@ -434,13 +433,17 @@ export default class ModalDropdown extends Component {
+     );
+ 
+     const touchableProps = {
+-      key,
+       accessible,
+       onPress: () => this._onRowPress(item, index, separators),
+       ...renderRowProps
+     };
+ 
+-    return <RowTouchable {...touchableProps}>{row}</RowTouchable>;
++    // React warns when `key` is part of the spread props. Pass it directly instead.
++    return (
++      <RowTouchable key={key} {...touchableProps}>
++        {row}
++      </RowTouchable>
++    );
+   };
+ 
+   _onRowPress(rowData, rowID, highlightRow) {

@@ -5,11 +5,14 @@ import { fetchSueEndpoints } from '../../helpers';
 
 export const configurations = async () => {
   const {
+    apiKey,
     sueConfigurationsUrl = '',
     sueContactRequiredFieldConfigurationUrl = '',
     sueFetchObj = {},
     sueGeoMapConfigurationUrl = ''
   } = await fetchSueEndpoints();
+
+  if (!apiKey) throw new Error('SUE API key is missing');
 
   const urls = [
     sueConfigurationsUrl,

@@ -51,7 +51,7 @@ export const VoucherListItem = memo(
           )}
 
           {!!discountType && (
-            <WrapperVertical>
+            <WrapperVertical noPaddingTop>
               <Discount
                 discount={discountType}
                 id={id}
@@ -61,7 +61,7 @@ export const VoucherListItem = memo(
             </WrapperVertical>
           )}
 
-          <WrapperRow spaceBetween style={styles.centeredItems}>
+          <WrapperRow spaceBetween itemsCenter>
             <View style={styles.textContainer}>
               {!!title && (
                 <BoldText small numberOfLines={2}>
@@ -95,9 +95,6 @@ export const VoucherListItem = memo(
 );
 
 const styles = StyleSheet.create({
-  centeredItems: {
-    alignItems: 'center'
-  },
   container: {
     backgroundColor: colors.transparent,
     borderWidth: 0,
@@ -113,7 +110,8 @@ const styles = StyleSheet.create({
     })
   },
   imageContainer: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginBottom: normalize(8)
   },
   textContainer: {
     width: '90%'
