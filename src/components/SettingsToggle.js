@@ -51,7 +51,7 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
     // imitate a short duration of toggling taking action
     setTimeout(() => {
       setLoading(false);
-    }, 300);
+    }, 1300);
   };
 
   const onPress = () => toggleSwitch(!switchValue);
