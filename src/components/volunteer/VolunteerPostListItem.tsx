@@ -12,10 +12,13 @@ import {
   volunteerApiV1Url,
   volunteerListDate
 } from '../../helpers';
+import { useLike } from '../../hooks';
+import { VolunteerObjectModelType } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
+import { VolunteerLike } from './VolunteerLike';
 
 export const VolunteerPostListItem = ({
   authToken,
@@ -36,6 +39,9 @@ export const VolunteerPostListItem = ({
         id: number;
         mime_type: string;
       }[];
+      likes: {
+        total: number;
+      };
       metadata: { created_by: { guid: string; display_name: string }; created_at: string };
     };
     id: number;
@@ -53,7 +59,7 @@ export const VolunteerPostListItem = ({
   }) => void;
   userGuid?: string | null;
 }) => {
-  const { metadata, files } = content || {};
+  const { files, likes, metadata } = content || {};
   const {
     created_by: { guid, display_name: displayName },
     created_at: createdAt
@@ -62,6 +68,12 @@ export const VolunteerPostListItem = ({
 
   const [filesWithImages, setFilesWithImages] = useState([]);
   const [aspectRatios, setAspectRatios] = useState<{ [key: string]: number }>({});
+  const { liked, likeCount, toggleLike } = useLike({
+    initialLikeCount: likes?.total,
+    objectId: id,
+    objectModel: VolunteerObjectModelType.Post,
+    userGuid
+  });
 
   useEffect(() => {
     if (!authToken || !files) return;
@@ -125,15 +137,19 @@ export const VolunteerPostListItem = ({
       <ListItem
         containerStyle={[styles.contentContainerStyle, !files?.length && styles.paddingBottom]}
       >
-        <Markdown
-          onLinkPress={(url) => {
-            openLink(url, openWebScreen);
-            return false;
-          }}
-          style={configStyles.markdown}
-        >
-          {message}
-        </Markdown>
+        <ListItem.Content>
+          <Markdown
+            onLinkPress={(url) => {
+              openLink(url, openWebScreen);
+              return false;
+            }}
+            style={configStyles.markdown}
+          >
+            {message}
+          </Markdown>
+
+          <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+        </ListItem.Content>
       </ListItem>
 
       {filesWithImages?.map((file) => {

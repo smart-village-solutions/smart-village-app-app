@@ -1,10 +1,10 @@
 appId: ${APP_ID}
 ---
 - waitForAnimationToEnd
-- tapOn: "http://localhost:8081"
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible: "Continue"
-- swipe:
-   from: "Smart Village App"
-   direction: DOWN
+
+# pass expo start screen if it's visible
+- runFlow:
+    when:
+      visible:
+        text: "Development servers"
+    file: "expo-app-select.yml"

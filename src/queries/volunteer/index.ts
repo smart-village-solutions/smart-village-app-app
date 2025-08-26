@@ -3,6 +3,7 @@ export * from './calendar';
 export * from './calendarUpload';
 export * from './conversation';
 export * from './group';
+export * from './like';
 export * from './post';
 export * from './push';
 export * from './upload';
