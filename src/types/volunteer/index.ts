@@ -7,4 +7,8 @@ export * from './group';
 export * from './post';
 export * from './user';
 
-export type VolunteerQuery = typeof QUERY_TYPES.VOLUNTEER[keyof typeof QUERY_TYPES.VOLUNTEER];
+export type VolunteerQuery = (typeof QUERY_TYPES.VOLUNTEER)[keyof typeof QUERY_TYPES.VOLUNTEER];
+
+export enum VolunteerModulesType {
+  CALENDAR = 'calendar'
+}
