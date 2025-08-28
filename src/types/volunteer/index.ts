@@ -12,3 +12,7 @@ export type VolunteerQuery = (typeof QUERY_TYPES.VOLUNTEER)[keyof typeof QUERY_T
 export enum VolunteerModulesType {
   CALENDAR = 'calendar'
 }
+
+export enum VolunteerObjectModelType {
+  Post = 'humhub\\modules\\post\\models\\Post'
+}

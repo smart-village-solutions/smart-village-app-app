@@ -1,0 +1,20 @@
+appId: ${APP_ID}
+onFlowStart:
+  - runFlow: ../../setup/index.yml
+---
+# go to volunteer screen
+- tapOn: "Service (Tab 2 von 5)"
+- tapOn: "(Ehrenamt) (Taste)"
+
+# go to spaces screen
+- tapOn: "(Gruppen & Vereine) (Taste)"
+
+# go to space
+- tapOn:
+    id: "padView"
+    index: 3
+- scrollUntilVisible:
+    element:
+      text: "Gefällt mir (1)"
+- tapOn: "Gefällt mir (1)"
+- tapOn: "Gefällt mir nicht mehr (2)"
