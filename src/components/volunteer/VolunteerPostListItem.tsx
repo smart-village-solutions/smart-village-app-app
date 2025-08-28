@@ -134,9 +134,7 @@ export const VolunteerPostListItem = ({
         )}
       </ListItem>
 
-      <ListItem
-        containerStyle={[styles.contentContainerStyle, !files?.length && styles.paddingBottom]}
-      >
+      <ListItem containerStyle={[styles.contentContainerStyle]}>
         <ListItem.Content>
           <Markdown
             onLinkPress={(url) => {
@@ -147,8 +145,6 @@ export const VolunteerPostListItem = ({
           >
             {message}
           </Markdown>
-
-          <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
         </ListItem.Content>
       </ListItem>
 
@@ -189,6 +185,12 @@ export const VolunteerPostListItem = ({
           </ListItem>
         );
       })}
+
+      <ListItem containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}>
+        <ListItem.Content>
+          <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+        </ListItem.Content>
+      </ListItem>
     </>
   );
 };
