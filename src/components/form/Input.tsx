@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext, useEffect, useRef } from 'react';
+import React, { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import { useController, UseControllerProps } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { InputProps, Input as RNEInput } from 'react-native-elements';
@@ -45,13 +45,21 @@ export const Input = forwardRef(
   ) => {
     const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
-    const { field } = useController({
-      control,
-      name,
-      rules
-    });
+    const { field } = control
+      ? useController({
+          control,
+          name,
+          rules
+        })
+      : {
+          field: {
+            value: furtherProps.value,
+            onChange: furtherProps.onChange,
+            onBlur: furtherProps.onBlur
+          }
+        };
     const inputRef = ref || useRef(null);
-    const [isActive, setIsActive] = React.useState(false);
+    const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
       // NOTE: need to set the font family for android explicitly on android, because password
@@ -99,8 +107,8 @@ export const Input = forwardRef(
         label={label && <Label bold={boldLabel}>{label}</Label>}
         value={field.value}
         onChangeText={field.onChange}
-        onBlur={() => {
-          field.onBlur();
+        onBlur={(e) => {
+          field.onBlur(e);
           setIsActive(false);
         }}
         onFocus={() => {
