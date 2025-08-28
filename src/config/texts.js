@@ -1596,7 +1596,7 @@ export const texts = {
       desiredQuantity: 'Gewünschte Anzahl',
       emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
       frequency: (maxPerPerson, frequency) =>
-        `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
+        `${maxPerPerson || 1}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
       isNotAvailable: 'Gutschein derzeit nicht verfügbar',
       limit: (availableQuantity, maxQuantity) =>
         `Limitiert: ${availableQuantity}/${maxQuantity} verfügbar`,
