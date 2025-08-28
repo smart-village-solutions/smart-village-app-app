@@ -1,6 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
@@ -31,6 +38,7 @@ import {
   ROLE_TYPES,
   ScreenName,
   VolunteerGroup as TVolunteerGroup,
+  VolunteerModulesType,
   VolunteerUser
 } from '../../types';
 import { Button } from '../Button';
@@ -74,6 +82,7 @@ export const VolunteerGroup = ({
     guid,
     id,
     join_policy: joinPolicy,
+    modules,
     name,
     owner,
     tags
@@ -192,6 +201,11 @@ export const VolunteerGroup = ({
     getGroupAdmins();
   }, [getGroupAdmins]);
 
+  const isCalendarModuleEnabled = useMemo(
+    () => !!modules?.find(({ id }) => id === VolunteerModulesType.CALENDAR)?.enabled,
+    [modules]
+  );
+
   return (
     <View>
       <View>
@@ -267,45 +281,49 @@ export const VolunteerGroup = ({
 
       {!!contentContainerId && (
         <>
-          <VolunteerHomeSection
-            linkTitle="Alle Termine anzeigen"
-            navigateLink={() =>
-              navigation.push(ScreenName.VolunteerIndex, {
-                title: texts.volunteer.events,
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: { contentContainerId },
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigate={() =>
-              navigation.push(ScreenName.VolunteerIndex, {
-                title: texts.volunteer.events,
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: { contentContainerId },
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-            queryVariables={{ contentContainerId, limit, page }}
-            sectionTitle={texts.volunteer.events}
-            showLink
-          />
-
-          {(isGroupOwner || isGroupMember) && (
-            <Wrapper>
-              <Button
-                title="Termin eintragen"
-                onPress={() =>
-                  navigation.navigate(ScreenName.VolunteerForm, {
-                    title: 'Termin eintragen',
-                    query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                    groupId: contentContainerId,
+          {isCalendarModuleEnabled && (
+            <>
+              <VolunteerHomeSection
+                linkTitle="Alle Termine anzeigen"
+                navigateLink={() =>
+                  navigation.push(ScreenName.VolunteerIndex, {
+                    title: texts.volunteer.events,
+                    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                    queryVariables: { contentContainerId },
                     rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
                   })
                 }
+                navigate={() =>
+                  navigation.push(ScreenName.VolunteerIndex, {
+                    title: texts.volunteer.events,
+                    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                    queryVariables: { contentContainerId },
+                    rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                  })
+                }
+                navigation={navigation}
+                query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+                queryVariables={{ contentContainerId, limit, page }}
+                sectionTitle={texts.volunteer.events}
+                showLink
               />
-            </Wrapper>
+
+              {(isGroupOwner || isGroupMember) && (
+                <Wrapper>
+                  <Button
+                    title="Termin eintragen"
+                    onPress={() =>
+                      navigation.navigate(ScreenName.VolunteerForm, {
+                        title: 'Termin eintragen',
+                        query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                        groupId: contentContainerId,
+                        rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                      })
+                    }
+                  />
+                </Wrapper>
+              )}
+            </>
           )}
 
           {(isGroupOwner || isGroupMember) && (
