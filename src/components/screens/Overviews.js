@@ -159,12 +159,12 @@ export const Overviews = ({ navigation, route }) => {
     query === QUERY_TYPES.POINTS_OF_INTEREST &&
     locationServiceEnabled &&
     (locationService.sortByDistance ?? true);
-  const { loading: loadingPosition, position } = usePosition(
-    systemPermission?.status !== Location.PermissionStatus.GRANTED
-  );
-  const { position: lastKnownPosition } = useLastKnownPosition(
-    systemPermission?.status !== Location.PermissionStatus.GRANTED
-  );
+  const radiusSearchByDistance = !!queryVariables?.radiusSearch?.distance;
+  const skipPosition =
+    systemPermission?.status !== Location.PermissionStatus.GRANTED ||
+    (!sortByDistance && !radiusSearchByDistance);
+  const { loading: loadingPosition, position } = usePosition(skipPosition);
+  const { position: lastKnownPosition } = useLastKnownPosition(skipPosition);
   const currentPosition = position || lastKnownPosition;
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
@@ -220,11 +220,11 @@ export const Overviews = ({ navigation, route }) => {
       );
     }
 
-    if (sortByDistance && position && parsedListItems?.length) {
-      parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, position.coords);
+    if (sortByDistance && currentPosition && parsedListItems?.length) {
+      parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, currentPosition.coords);
     }
 
-    if (queryVariables?.radiusSearch?.distance) {
+    if (radiusSearchByDistance && currentPosition && parsedListItems?.length) {
       parsedListItems = geoLocationFilteredListItem({
         currentPosition,
         isLocationAlertShow,
