@@ -14,5 +14,6 @@ export enum VolunteerModulesType {
 }
 
 export enum VolunteerObjectModelType {
-  Post = 'humhub\\modules\\post\\models\\Post'
+  CALENDAR = 'humhub\\modules\\calendar\\models\\CalendarEntry',
+  POST = 'humhub\\modules\\post\\models\\Post'
 }

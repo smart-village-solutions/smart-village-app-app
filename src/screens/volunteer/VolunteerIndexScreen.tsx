@@ -121,6 +121,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
   const isGroups =
     query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY;
+  const isConversations = query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS;
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
   const { data, isLoading, refetch, userGuid } = useVolunteerData({
@@ -141,7 +142,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-volunteerGroupsIntroText',
     name: 'volunteerGroupsIntroText',
-    type: 'html'
+    type: 'html',
+    skip: !isGroups
   });
 
   // action to open source urls
@@ -154,13 +156,13 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   useFocusEffect(
     useCallback(() => {
       refetch();
-      refetchGroupsIntroText();
+      isGroups && refetchGroupsIntroText();
     }, [])
   );
 
   useFocusEffect(
     useCallback(() => {
-      if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
+      if (isConversations) {
         // this is needed because the chat screen is locked to portrait mode
         ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
       }
@@ -305,13 +307,15 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
             </Wrapper>
           )}
 
-        <VolunteerPostModal
-          authToken={authToken}
-          contentContainerId={queryVariables?.contentContainerId}
-          isCollapsed={isCollapsed}
-          setIsCollapsed={setIsCollapsed}
-          post={postForModal}
-        />
+        {isPosts && isGroupMember && (
+          <VolunteerPostModal
+            authToken={authToken}
+            contentContainerId={queryVariables?.contentContainerId}
+            isCollapsed={isCollapsed}
+            setIsCollapsed={setIsCollapsed}
+            post={postForModal}
+          />
+        )}
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );

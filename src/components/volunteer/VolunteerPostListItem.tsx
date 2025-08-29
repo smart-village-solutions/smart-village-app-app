@@ -42,13 +42,18 @@ export const VolunteerPostListItem = ({
       likes: {
         total: number;
       };
-      metadata: { created_by: { guid: string; display_name: string }; created_at: string };
+      metadata: {
+        contentcontainer_id: number;
+        created_by: { guid: string; display_name: string };
+        created_at: string;
+      };
     };
     id: number;
     message: string;
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
   setPostForModal: (post: {
+    contentContainerId: number;
     files: {
       guid: string;
       id: number;
@@ -61,6 +66,7 @@ export const VolunteerPostListItem = ({
 }) => {
   const { files, likes, metadata } = content || {};
   const {
+    contentcontainer_id,
     created_by: { guid, display_name: displayName },
     created_at: createdAt
   } = metadata || { guid: '', display_name: '' };
@@ -71,7 +77,7 @@ export const VolunteerPostListItem = ({
   const { liked, likeCount, toggleLike } = useLike({
     initialLikeCount: likes?.total,
     objectId: id,
-    objectModel: VolunteerObjectModelType.Post,
+    objectModel: VolunteerObjectModelType.POST,
     userGuid
   });
 
@@ -127,7 +133,7 @@ export const VolunteerPostListItem = ({
             badgeStyle={styles.badge}
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
             onPress={() => {
-              setPostForModal({ id, message, files });
+              setPostForModal({ contentContainerId: contentcontainer_id, id, message, files });
               setIsCollapsed(false);
             }}
           />
