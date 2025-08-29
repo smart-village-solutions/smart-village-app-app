@@ -11,3 +11,4 @@ export * from './VolunteerRegisteredScreen';
 export * from './VolunteerRegistrationScreen';
 export * from './VolunteerSettingsScreen';
 export * from './VolunteerSignupScreen';
+export * from './VolunteerStreamScreen';
