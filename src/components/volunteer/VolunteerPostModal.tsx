@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Divider, Header } from 'react-native-elements';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
 import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
@@ -57,9 +57,23 @@ export const VolunteerPostModal = ({
     setValue('files', post?.files ? JSON.stringify(post.files) : '[]');
   }, [post]);
 
-  const { mutateAsync } = useMutation(isEdit ? postEdit : postNew);
+  const queryClient = useQueryClient();
+
+  const { mutateAsync } = useMutation({
+    mutationFn: isEdit ? postEdit : postNew,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['stream'] });
+    }
+  });
   const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
-  const { mutateAsync: mutateAsyncDelete } = useMutation(postDelete);
+  const { mutateAsync: mutateAsyncDelete } = useMutation({
+    mutationFn: postDelete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['stream'] });
+    }
+  });
 
   const onPress = async (postData: VolunteerPost) => {
     resetForm();

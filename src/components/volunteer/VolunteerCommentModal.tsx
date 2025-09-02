@@ -25,7 +25,6 @@ export const VolunteerCommentModal = ({
   setIsCollapsed
 }: {
   authToken: string | null;
-  isCollapsed: boolean;
   comment?: {
     id: number;
     message: string;
@@ -35,6 +34,7 @@ export const VolunteerCommentModal = ({
       mime_type: string;
     }[];
   };
+  isCollapsed: boolean;
   objectId: number;
   objectModel: VolunteerObjectModelType;
   setIsCollapsed: (isCollapsed: boolean) => void;
@@ -102,7 +102,7 @@ export const VolunteerCommentModal = ({
       <Header
         backgroundColor={colors.transparent}
         centerComponent={{
-          text: isEdit ? texts.volunteer.postEdit : texts.volunteer.postNew,
+          text: isEdit ? texts.volunteer.commentEdit : texts.volunteer.commentNew,
           style: {
             color: colors.darkText,
             fontFamily: 'condbold',
@@ -130,11 +130,11 @@ export const VolunteerCommentModal = ({
           {!!isEdit && <Input name="id" hidden control={control} />}
           <Input
             control={control}
-            label={texts.volunteer.postLabel}
+            label={texts.volunteer.commentLabel}
             minHeight={normalize(100)}
             multiline
             name="message"
-            placeholder={texts.volunteer.postLabel}
+            placeholder={texts.volunteer.commentLabel}
             renderErrorMessage={false}
             rules={{ required: true }}
             textAlignVertical="top"
@@ -189,8 +189,8 @@ export const VolunteerCommentModal = ({
           <TouchableOpacity
             onPress={() => {
               Alert.alert(
-                texts.volunteer.postDelete,
-                texts.volunteer.postDeleteConfirm,
+                texts.volunteer.commentDelete,
+                texts.volunteer.commentDeleteConfirm,
                 [
                   {
                     text: texts.volunteer.abort,
@@ -212,7 +212,7 @@ export const VolunteerCommentModal = ({
             }}
             style={styles.button}
           >
-            <BoldText small>{texts.volunteer.postDelete}</BoldText>
+            <BoldText small>{texts.volunteer.commentDelete}</BoldText>
           </TouchableOpacity>
         )}
       </Wrapper>

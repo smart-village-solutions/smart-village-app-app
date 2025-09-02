@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Image as RNImage, StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image as RNImage, StyleSheet, View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
@@ -20,6 +20,7 @@ import { WrapperRow } from '../Wrapper';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerComment } from './VolunteerComment';
+import { VolunteerComments } from './VolunteerComments';
 import { VolunteerLike } from './VolunteerLike';
 
 export const VolunteerPostListItem = ({
@@ -95,6 +96,14 @@ export const VolunteerPostListItem = ({
     userGuid
   });
 
+  const onLinkPress = useCallback(
+    (url: string) => {
+      openLink(url, openWebScreen);
+      return false;
+    },
+    [openLink, openWebScreen]
+  );
+
   useEffect(() => {
     if (!authToken || !files) return;
 
@@ -155,17 +164,9 @@ export const VolunteerPostListItem = ({
       </ListItem>
 
       <ListItem containerStyle={[styles.contentContainerStyle]}>
-        <ListItem.Content>
-          <Markdown
-            onLinkPress={(url) => {
-              openLink(url, openWebScreen);
-              return false;
-            }}
-            style={configStyles.markdown}
-          >
-            {message}
-          </Markdown>
-        </ListItem.Content>
+        <Markdown onLinkPress={onLinkPress} style={configStyles.markdown}>
+          {message}
+        </Markdown>
       </ListItem>
 
       {filesWithImages?.map((file) => {
@@ -207,19 +208,26 @@ export const VolunteerPostListItem = ({
       })}
 
       <ListItem containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}>
-        <ListItem.Content>
-          <WrapperRow>
-            <VolunteerComment
-              authToken={authToken}
-              commentsCount={comments?.total}
-              objectId={id}
-              objectModel={VolunteerObjectModelType.POST}
-            />
-            <RegularText small> • </RegularText>
-            <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
-          </WrapperRow>
-        </ListItem.Content>
+        <WrapperRow>
+          <VolunteerComment
+            authToken={authToken}
+            commentsCount={comments?.total}
+            objectId={id}
+            objectModel={VolunteerObjectModelType.POST}
+          />
+          <RegularText small> • </RegularText>
+          <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+        </WrapperRow>
       </ListItem>
+
+      <View style={[styles.filesContainerStyle, styles.paddingBottom]}>
+        <VolunteerComments
+          authToken={authToken}
+          latestComments={comments?.latest || []}
+          onLinkPress={onLinkPress}
+          userGuid={userGuid}
+        />
+      </View>
     </>
   );
 };
