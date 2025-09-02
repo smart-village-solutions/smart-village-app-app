@@ -1,6 +1,7 @@
 import { QUERY_TYPES } from '../../queries';
 
 export * from './calendar';
+export * from './comment';
 export * from './conversation';
 export * from './countries';
 export * from './group';

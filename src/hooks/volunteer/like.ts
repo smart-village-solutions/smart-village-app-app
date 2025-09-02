@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { createLike, deleteLike, likesByObject } from '../../queries/volunteer';
+import { likeDelete, likeNew, likesByObject } from '../../queries/volunteer';
 
 export const useLike = ({
   initialLikeCount = 0,
@@ -42,7 +42,7 @@ export const useLike = ({
   }, [likesData, userGuid]);
 
   const createLikeMutation = useMutation({
-    mutationFn: createLike,
+    mutationFn: likeNew,
     onMutate: () => {
       // Optimistic update
       setLiked(true);
@@ -53,7 +53,7 @@ export const useLike = ({
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['likesByObject', objectModel, objectId] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
     },
     onError: () => {
       // Revert optimistic update
@@ -63,7 +63,7 @@ export const useLike = ({
   });
 
   const deleteLikeMutation = useMutation({
-    mutationFn: deleteLike,
+    mutationFn: likeDelete,
     onMutate: () => {
       // Optimistic update
       setLiked(false);

@@ -16,8 +16,10 @@ import { useLike } from '../../hooks';
 import { VolunteerObjectModelType } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
+import { WrapperRow } from '../Wrapper';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
+import { VolunteerComment } from './VolunteerComment';
 import { VolunteerLike } from './VolunteerLike';
 
 export const VolunteerPostListItem = ({
@@ -34,6 +36,18 @@ export const VolunteerPostListItem = ({
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
     content: {
+      comments: {
+        latest: {
+          created_at: string;
+          created_by: { guid: string; display_name: string };
+          id: number;
+          likes: {
+            total: number;
+          };
+          message: string;
+        }[];
+        total: number;
+      };
       files: {
         guid: string;
         id: number;
@@ -44,8 +58,8 @@ export const VolunteerPostListItem = ({
       };
       metadata: {
         contentcontainer_id: number;
-        created_by: { guid: string; display_name: string };
         created_at: string;
+        created_by: { guid: string; display_name: string };
       };
     };
     id: number;
@@ -64,7 +78,7 @@ export const VolunteerPostListItem = ({
   }) => void;
   userGuid?: string | null;
 }) => {
-  const { files, likes, metadata } = content || {};
+  const { comments, files, likes, metadata } = content || {};
   const {
     contentcontainer_id,
     created_by: { guid, display_name: displayName },
@@ -194,7 +208,16 @@ export const VolunteerPostListItem = ({
 
       <ListItem containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}>
         <ListItem.Content>
-          <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+          <WrapperRow>
+            <VolunteerComment
+              authToken={authToken}
+              commentsCount={comments?.total}
+              objectId={id}
+              objectModel={VolunteerObjectModelType.POST}
+            />
+            <RegularText small> • </RegularText>
+            <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+          </WrapperRow>
         </ListItem.Content>
       </ListItem>
     </>
