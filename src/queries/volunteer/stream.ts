@@ -7,7 +7,6 @@ export const stream = async ({ page = 1 }: { page?: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };

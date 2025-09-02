@@ -16,6 +16,7 @@ export const createLike = async ({
   const fetchObj = {
     method: 'POST',
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     },
@@ -53,6 +54,7 @@ export const likesByObject = async ({
   const fetchObj = {
     method: 'GET',
     headers: {
+      Accept: 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
