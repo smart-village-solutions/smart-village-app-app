@@ -37,24 +37,24 @@ export const VolunteerPostModal = ({
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
   const isEdit = !!post;
+
+  const getDefaultValues = () => ({
+    contentContainerId,
+    id: post?.id,
+    message: post?.message || '',
+    files: post?.files ? JSON.stringify(post.files) : '[]'
+  });
+
   const {
     control,
     handleSubmit,
-    reset: resetForm,
-    setValue
+    reset: resetForm
   } = useForm<VolunteerPost>({
-    defaultValues: {
-      contentContainerId,
-      id: post?.id,
-      message: post?.message || '',
-      files: post?.files ? JSON.stringify(post.files) : '[]'
-    }
+    defaultValues: getDefaultValues()
   });
 
   useEffect(() => {
-    setValue('id', post?.id);
-    setValue('message', post?.message || '');
-    setValue('files', post?.files ? JSON.stringify(post.files) : '[]');
+    resetForm(getDefaultValues());
   }, [post]);
 
   const queryClient = useQueryClient();
@@ -76,7 +76,6 @@ export const VolunteerPostModal = ({
   });
 
   const onPress = async (postData: VolunteerPost) => {
-    resetForm();
     Keyboard.dismiss();
     mutateAsync(
       isEdit
@@ -103,7 +102,7 @@ export const VolunteerPostModal = ({
     <Modal
       animationType="slide"
       onRequestClose={() => {
-        resetForm();
+        resetForm(getDefaultValues());
         setIsCollapsed(true);
       }}
       presentationStyle="pageSheet"
@@ -124,7 +123,7 @@ export const VolunteerPostModal = ({
           color: colors.darkText,
           icon: 'close',
           onPress: () => {
-            resetForm();
+            resetForm(getDefaultValues());
             setIsCollapsed(true);
           },
           type: 'ionicon'
@@ -183,7 +182,7 @@ export const VolunteerPostModal = ({
             invert
             notFullWidth
             onPress={() => {
-              resetForm();
+              resetForm(getDefaultValues());
               setIsCollapsed(true);
             }}
             title={texts.volunteer.abort}
@@ -209,7 +208,7 @@ export const VolunteerPostModal = ({
                   {
                     text: texts.volunteer.delete,
                     onPress: async () => {
-                      resetForm();
+                      resetForm(getDefaultValues());
                       Keyboard.dismiss();
                       await mutateAsyncDelete({ id: post?.id });
                       setIsCollapsed(true);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { texts } from '../../config';
@@ -7,25 +7,29 @@ import { VolunteerObjectModelType } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
-import { VolunteerCommentModal } from './VolunteerCommentModal';
 import { VolunteerLike } from './VolunteerLike';
 
 export const VolunteerCommentAnswer = ({
-  authToken,
   commentsCount,
   likesCount,
   objectId,
   objectModel,
-  userGuid
+  userGuid,
+  setCommentForModal,
+  setIsCommentModalCollapsed
 }: {
-  authToken: string | null;
   commentsCount: number;
   likesCount: number;
   objectId: number;
   objectModel: VolunteerObjectModelType;
   userGuid?: string | null;
+  setCommentForModal: (comment: {
+    message?: string;
+    objectId: number;
+    objectModel: VolunteerObjectModelType;
+  }) => void;
+  setIsCommentModalCollapsed: (isCollapsed: boolean) => void;
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const { liked, likeCount, toggleLike } = useLike({
     initialLikeCount: likesCount,
     objectId,
@@ -36,7 +40,12 @@ export const VolunteerCommentAnswer = ({
   return (
     <>
       <WrapperRow>
-        <TouchableOpacity onPress={() => setIsCollapsed(false)}>
+        <TouchableOpacity
+          onPress={() => {
+            setCommentForModal({ objectId, objectModel });
+            setIsCommentModalCollapsed(false);
+          }}
+        >
           <WrapperRow>
             <RegularText small>
               {texts.volunteer.commentAnswerNew}
@@ -47,14 +56,6 @@ export const VolunteerCommentAnswer = ({
         <RegularText small> • </RegularText>
         <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
       </WrapperRow>
-
-      <VolunteerCommentModal
-        authToken={authToken}
-        isCollapsed={isCollapsed}
-        objectId={objectId}
-        objectModel={objectModel}
-        setIsCollapsed={setIsCollapsed}
-      />
     </>
   );
 };

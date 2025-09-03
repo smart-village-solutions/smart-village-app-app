@@ -266,7 +266,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
               bottomDivider={false}
               openWebScreen={options.openWebScreen}
               post={item}
-              setIsCollapsed={options.queryVariables?.setIsCollapsed}
+              setCommentForModal={options.queryVariables?.setCommentForModal}
+              setIsCommentModalCollapsed={options.queryVariables?.setIsCommentModalCollapsed}
+              setIsPostModalCollapsed={options.queryVariables?.setIsPostModalCollapsed}
               setPostForModal={options.queryVariables?.setPostForModal}
               userGuid={options.queryVariables?.userGuid}
             />

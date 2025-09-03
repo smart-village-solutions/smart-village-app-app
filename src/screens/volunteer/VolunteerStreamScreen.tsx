@@ -7,6 +7,7 @@ import {
   DefaultKeyboardAvoidingView,
   LoadingSpinner,
   SafeAreaViewFlex,
+  VolunteerCommentModal,
   VolunteerPostModal
 } from '../../components';
 import { colors, consts, normalize } from '../../config';
@@ -31,9 +32,11 @@ export const VolunteerStreamScreen = () => {
   const query = QUERY_TYPES.VOLUNTEER.STREAM;
   const headerTitle = route.params?.title ?? '';
   const queryKey = [query];
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [postForModal, setPostForModal] = useState();
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [commentForModal, setCommentForModal] = useState();
+  const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
+  const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const [userGuid, setUserGuid] = useState<string | null>(null);
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage } = useInfiniteQuery(
     queryKey,
@@ -87,13 +90,19 @@ export const VolunteerStreamScreen = () => {
 
   const renderCalendarItem = useRenderItem(QUERY_TYPES.VOLUNTEER.CALENDAR, navigation, {
     openWebScreen,
-    queryVariables: { authToken, setIsCollapsed, setPostForModal, userGuid },
     refetch
   });
 
   const renderPostItem = useRenderItem(QUERY_TYPES.VOLUNTEER.POSTS, navigation, {
     openWebScreen,
-    queryVariables: { authToken, setIsCollapsed, setPostForModal, userGuid },
+    queryVariables: {
+      authToken,
+      setCommentForModal,
+      setIsCommentModalCollapsed: setIsCommentModalCollapsed,
+      setIsPostModalCollapsed: setIsPostModalCollapsed,
+      setPostForModal,
+      userGuid
+    },
     refetch
   });
 
@@ -206,9 +215,20 @@ export const VolunteerStreamScreen = () => {
           <VolunteerPostModal
             authToken={authToken}
             contentContainerId={postForModal.contentContainerId}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed}
+            isCollapsed={isPostModalCollapsed}
             post={postForModal}
+            setIsCollapsed={setIsPostModalCollapsed}
+          />
+        )}
+
+        {!!commentForModal?.objectId && !!commentForModal?.objectModel && (
+          <VolunteerCommentModal
+            authToken={authToken}
+            comment={commentForModal}
+            isCollapsed={isCommentModalCollapsed}
+            objectId={commentForModal.objectId}
+            objectModel={commentForModal.objectModel}
+            setIsCollapsed={setIsCommentModalCollapsed}
           />
         )}
       </DefaultKeyboardAvoidingView>

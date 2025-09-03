@@ -26,7 +26,6 @@ export const VolunteerCommentModal = ({
 }: {
   authToken: string | null;
   comment?: {
-    id: number;
     message: string;
     files: {
       id: number;
@@ -39,27 +38,26 @@ export const VolunteerCommentModal = ({
   objectModel: VolunteerObjectModelType;
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
-  const isEdit = !!comment;
+  const isEdit = !!comment?.message;
   const { createComment, deleteComment, updateComment } = useComments({ objectId, objectModel });
+
+  const getDefaultValues = () => ({
+    id: objectId,
+    message: comment?.message || '',
+    files: comment?.files ? JSON.stringify(comment.files) : '[]'
+  });
 
   const {
     control,
     handleSubmit,
-    reset: resetForm,
-    setValue
+    reset: resetForm
   } = useForm<VolunteerComment>({
-    defaultValues: {
-      id: comment?.id,
-      message: comment?.message || '',
-      files: comment?.files ? JSON.stringify(comment.files) : '[]'
-    }
+    defaultValues: getDefaultValues()
   });
 
   useEffect(() => {
-    setValue('id', comment?.id);
-    setValue('message', comment?.message || '');
-    setValue('files', comment?.files ? JSON.stringify(comment.files) : '[]');
-  }, [comment]);
+    resetForm(getDefaultValues());
+  }, [comment, objectId]);
 
   const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
 
@@ -67,7 +65,6 @@ export const VolunteerCommentModal = ({
     if (!commentData.message) return;
     if (isEdit && !commentData.id) return;
 
-    resetForm();
     Keyboard.dismiss();
     (isEdit
       ? updateComment(commentData.id as number, commentData.message)
@@ -93,7 +90,7 @@ export const VolunteerCommentModal = ({
     <Modal
       animationType="slide"
       onRequestClose={() => {
-        resetForm();
+        resetForm(getDefaultValues());
         setIsCollapsed(true);
       }}
       presentationStyle="pageSheet"
@@ -114,7 +111,7 @@ export const VolunteerCommentModal = ({
           color: colors.darkText,
           icon: 'close',
           onPress: () => {
-            resetForm();
+            resetForm(getDefaultValues());
             setIsCollapsed(true);
           },
           type: 'ionicon'
@@ -173,7 +170,7 @@ export const VolunteerCommentModal = ({
             invert
             notFullWidth
             onPress={() => {
-              resetForm();
+              resetForm(getDefaultValues());
               setIsCollapsed(true);
             }}
             title={texts.volunteer.abort}
@@ -199,7 +196,7 @@ export const VolunteerCommentModal = ({
                   {
                     text: texts.volunteer.delete,
                     onPress: async () => {
-                      resetForm();
+                      resetForm(getDefaultValues());
                       Keyboard.dismiss();
                       await deleteComment(comment?.id);
                       setIsCollapsed(true);

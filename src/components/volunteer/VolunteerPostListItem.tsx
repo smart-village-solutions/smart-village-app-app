@@ -28,7 +28,9 @@ export const VolunteerPostListItem = ({
   bottomDivider = true,
   openWebScreen,
   post: { id, message, content },
-  setIsCollapsed,
+  setCommentForModal,
+  setIsCommentModalCollapsed,
+  setIsPostModalCollapsed,
   setPostForModal,
   userGuid
 }: {
@@ -66,7 +68,12 @@ export const VolunteerPostListItem = ({
     id: number;
     message: string;
   };
-  setIsCollapsed: (isCollapsed: boolean) => void;
+  setCommentForModal: (comment: {
+    objectId: number;
+    objectModel: VolunteerObjectModelType;
+  }) => void;
+  setIsCommentModalCollapsed: (isCollapsed: boolean) => void;
+  setIsPostModalCollapsed: (isCollapsed: boolean) => void;
   setPostForModal: (post: {
     contentContainerId: number;
     files: {
@@ -157,7 +164,7 @@ export const VolunteerPostListItem = ({
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
             onPress={() => {
               setPostForModal({ contentContainerId: contentcontainer_id, id, message, files });
-              setIsCollapsed(false);
+              setIsPostModalCollapsed(false);
             }}
           />
         )}
@@ -210,10 +217,11 @@ export const VolunteerPostListItem = ({
       <ListItem containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}>
         <WrapperRow>
           <VolunteerComment
-            authToken={authToken}
             commentsCount={comments?.total}
-            objectId={id}
-            objectModel={VolunteerObjectModelType.POST}
+            onPress={() => {
+              setCommentForModal({ objectId: id, objectModel: VolunteerObjectModelType.POST });
+              setIsCommentModalCollapsed(false);
+            }}
           />
           <RegularText small> • </RegularText>
           <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
@@ -225,6 +233,8 @@ export const VolunteerPostListItem = ({
           authToken={authToken}
           latestComments={comments?.latest || []}
           onLinkPress={onLinkPress}
+          setCommentForModal={setCommentForModal}
+          setIsCommentModalCollapsed={setIsCommentModalCollapsed}
           userGuid={userGuid}
         />
       </View>
