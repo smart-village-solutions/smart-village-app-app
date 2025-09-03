@@ -198,7 +198,7 @@ export const VolunteerCommentModal = ({
                     onPress: async () => {
                       resetForm(getDefaultValues());
                       Keyboard.dismiss();
-                      await deleteComment(comment?.id);
+                      await deleteComment(objectId);
                       setIsCollapsed(true);
                     },
                     style: 'destructive'
