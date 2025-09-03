@@ -11,54 +11,51 @@ export const useComments = ({
 }) => {
   const queryClient = useQueryClient();
 
-  const { isLoading: commentsLoading, refetch: commentsRefetch } = useQuery(
+  const {
+    data: commentsData,
+    isLoading: commentsLoading,
+    refetch: commentsRefetch
+  } = useQuery(
     ['commentsByObject', objectModel, objectId],
-    () => commentsByObject({ objectModel, objectId })
+    () => commentsByObject({ objectModel, objectId }),
+    {
+      staleTime: 0
+    }
   );
+
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
+    queryClient.invalidateQueries({ queryKey: ['commentsByObject'] });
+    queryClient.invalidateQueries({ queryKey: ['posts'] });
+    queryClient.invalidateQueries({ queryKey: ['stream'] });
+    commentsRefetch();
+  };
 
   const createCommentMutation = useMutation({
     mutationFn: commentNew,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['stream'] });
-      commentsRefetch();
-    }
+    onSuccess: invalidateAll
   });
 
   const updateCommentMutation = useMutation({
     mutationFn: commentEdit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['stream'] });
-      commentsRefetch();
-    }
+    onSuccess: invalidateAll
   });
 
   const deleteCommentMutation = useMutation({
     mutationFn: commentDelete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['stream'] });
-      commentsRefetch();
-    }
+    onSuccess: invalidateAll
   });
 
-  const createComment = async (message: string) => {
-    return await createCommentMutation.mutateAsync({ objectId, objectModel, message });
-  };
+  const createComment = async (message: string) =>
+    await createCommentMutation.mutateAsync({ objectId, objectModel, message });
 
-  const updateComment = async (id: number, message: string) => {
-    return await updateCommentMutation.mutateAsync({ id, message });
-  };
+  const updateComment = async (id: number, message: string) =>
+    await updateCommentMutation.mutateAsync({ id, message });
 
-  const deleteComment = async (id: number) => {
-    return await deleteCommentMutation.mutateAsync(id);
-  };
+  const deleteComment = async (id: number) => await deleteCommentMutation.mutateAsync(id);
 
   return {
+    comments: commentsData,
     createComment,
     deleteComment,
     loading:

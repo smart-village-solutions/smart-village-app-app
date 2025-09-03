@@ -231,7 +231,10 @@ export const VolunteerPostListItem = ({
       <View style={[styles.filesContainerStyle, styles.paddingBottom]}>
         <VolunteerComments
           authToken={authToken}
+          commentsCount={comments?.total}
           latestComments={comments?.latest || []}
+          objectId={id}
+          objectModel={VolunteerObjectModelType.POST}
           onLinkPress={onLinkPress}
           setCommentForModal={setCommentForModal}
           setIsCommentModalCollapsed={setIsCommentModalCollapsed}

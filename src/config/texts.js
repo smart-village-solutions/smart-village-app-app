@@ -1566,6 +1566,7 @@ export const texts = {
     save: 'Speichern',
     search: 'Suche',
     send: 'Senden',
+    showPreviousComments: (commentsCount) => `Zeige die vorherigen ${commentsCount} Kommentare`,
     signupFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     signupFailedTitle: 'Fehler bei der Registrierung',
     skype: 'Skype',
