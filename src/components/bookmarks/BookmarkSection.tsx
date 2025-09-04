@@ -100,6 +100,7 @@ export const BookmarkSection = ({
         listType={listType}
         loading={loading}
         navigate={onPressShowMore}
+        navigateButton={onPressShowMore}
         navigation={navigation}
         query={query}
         queryVariables={variables}
