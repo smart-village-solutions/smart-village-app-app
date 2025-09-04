@@ -1,6 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useCallback, useMemo, useState } from 'react';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { commentDelete, commentEdit, commentNew, commentsByObject } from '../../queries/volunteer';
+import { VolunteerComment } from '../../types';
 
 export const useComments = ({
   objectId,
@@ -25,6 +27,14 @@ export const useComments = ({
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
+    queryClient.invalidateQueries({
+      predicate: ({ queryKey }) =>
+        Array.isArray(queryKey) &&
+        queryKey[0] === 'commentsByObject' &&
+        queryKey[1] === objectModel &&
+        queryKey[2] === objectId &&
+        queryKey.includes('infinite')
+    }); // Infinite Varianten
     queryClient.invalidateQueries({ queryKey: ['commentsByObject'] });
     queryClient.invalidateQueries({ queryKey: ['posts'] });
     queryClient.invalidateQueries({ queryKey: ['stream'] });
@@ -64,5 +74,90 @@ export const useComments = ({
       updateCommentMutation.isPending ||
       deleteCommentMutation.isPending,
     updateComment
+  };
+};
+
+export const useInfiniteComments = ({
+  commentsCount,
+  latestComments,
+  objectId,
+  objectModel
+}: {
+  commentsCount: number;
+  latestComments: VolunteerComment[];
+  objectId: number;
+  objectModel: string;
+}) => {
+  const [hasLoadedPrevious, setHasLoadedPrevious] = useState(false);
+  const latestCount = latestComments?.length || 0;
+  const previousCommentsCount = Math.max(0, commentsCount - latestCount);
+
+  const {
+    data: pagesData,
+    fetchNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery(
+    ['commentsByObject', objectModel, objectId, 'infinite'],
+    ({ pageParam = 1 }) => commentsByObject({ objectId, objectModel, page: pageParam }),
+    {
+      enabled: hasLoadedPrevious,
+      getNextPageParam: (lastPage) => {
+        if (!lastPage) return undefined;
+
+        // try to determine page/pages from lastPage
+        const current = typeof lastPage.page === 'number' ? lastPage.page : Number(lastPage.page);
+        const totalPages =
+          typeof lastPage.pages === 'number' ? lastPage.pages : Number(lastPage.pages);
+
+        if (current && totalPages && current < totalPages) {
+          return current + 1;
+        }
+
+        // fallback: get page param from links.next
+        const next = lastPage?.links?.next;
+        if (typeof next === 'string') {
+          const match = next.match(/[?&]page=(\d+)/);
+          if (match) return Number(match[1]);
+        }
+      }
+    }
+  );
+
+  const loadedComments = useMemo(() => {
+    if (!hasLoadedPrevious) return [];
+
+    const pages = pagesData?.pages || [];
+    const results = pages.flatMap((page) => (Array.isArray(page) ? page : page?.results || []));
+    const latestIds = new Set(latestComments?.map((comment) => comment.id) || []);
+
+    return results.filter((comment) => !latestIds.has(comment?.id));
+  }, [hasLoadedPrevious, pagesData?.pages, latestComments]);
+
+  const comments = useMemo(() => {
+    if (!hasLoadedPrevious) return latestComments;
+
+    const byId = new Map<number, VolunteerComment>();
+
+    loadedComments.forEach((comment) => comment?.id && byId.set(comment.id, comment));
+    latestComments?.forEach((comment) => comment?.id && byId.set(comment.id, comment));
+
+    return Array.from(byId.values());
+  }, [hasLoadedPrevious, latestComments, loadedComments]);
+
+  const loadPreviousComments = useCallback(() => {
+    if (!hasLoadedPrevious) {
+      setHasLoadedPrevious(true);
+    } else {
+      if (!isFetchingNextPage) {
+        fetchNextPage();
+      }
+    }
+  }, [hasLoadedPrevious, isFetchingNextPage, fetchNextPage]);
+
+  return {
+    comments,
+    hasLoadedPrevious,
+    loadPreviousComments,
+    previousCommentsCount
   };
 };

@@ -79,12 +79,19 @@ export const commentDelete = async (id: number) => {
 
 export const commentsByObject = async ({
   objectId,
-  objectModel
+  objectModel,
+  page = 1
 }: {
   objectId: number;
   objectModel: string;
+  page?: number;
 }) => {
   const authToken = await volunteerAuthToken();
+
+  const params = new URLSearchParams();
+  params.append('objectModel', objectModel);
+  params.append('objectId', String(objectId));
+  params.append('page', String(page));
 
   const fetchObj = {
     method: 'GET',
@@ -94,10 +101,5 @@ export const commentsByObject = async ({
     }
   };
 
-  return (
-    await fetch(
-      `${volunteerApiV1Url}comment/find-by-object?objectModel=${objectModel}&objectId=${objectId}`,
-      fetchObj
-    )
-  ).json();
+  return (await fetch(`${volunteerApiV1Url}comment/find-by-object?${params}`, fetchObj)).json();
 };

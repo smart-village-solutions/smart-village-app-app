@@ -1,21 +1,18 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
+import { colors, styles as configStyles, Icon, normalize } from '../../config';
 import { momentFormat, volunteerListDate } from '../../helpers';
-import { useComments } from '../../hooks';
+import { useInfiniteComments } from '../../hooks/volunteer/comment';
 import { VolunteerComment, VolunteerObjectModelType } from '../../types';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerCommentAnswer } from './VolunteerCommentAnswer';
 
-const keyExtractor = (item, index) => `index${index}-comment${item.id}`;
-
 export const VolunteerComments = ({
-  authToken,
   commentsCount,
   commentId,
   isAnswer,
@@ -27,7 +24,6 @@ export const VolunteerComments = ({
   setIsCommentModalCollapsed,
   userGuid
 }: {
-  authToken: string | null;
   commentsCount: number;
   commentId: number;
   isAnswer: boolean;
@@ -36,71 +32,28 @@ export const VolunteerComments = ({
   objectModel: VolunteerObjectModelType;
   onLinkPress: (url: string) => void;
   setCommentForModal: (comment: {
-    message: string;
+    message?: string;
     objectId: number;
     objectModel: VolunteerObjectModelType;
   }) => void;
   setIsCommentModalCollapsed: (isCollapsed: boolean) => void;
   userGuid?: string | null;
 }) => {
-  const [loadedComments, setLoadedComments] = useState<VolunteerComment[]>([]);
-  const [isLoadingPrevious, setIsLoadingPrevious] = useState(false);
-  const latestCount = latestComments?.length || 0;
-  const previousCommentsCount = commentsCount - latestCount;
-  const hasLoadedPrevious = loadedComments?.length > 0;
-  const { comments: allComments } = useComments({
-    objectId: isAnswer ? commentId : objectId,
-    objectModel
-  });
-
-  useEffect(() => {
-    if (!hasLoadedPrevious) return;
-
-    const latestIds = latestComments?.map(({ id }: { id: number }) => id) || [];
-    const nextPrevious =
-      allComments?.results?.filter(({ id }: { id: number }) => !latestIds.includes(id)) || [];
-
-    setLoadedComments(nextPrevious);
-  }, [hasLoadedPrevious, allComments?.results, latestComments]);
-
-  const comments = useMemo(() => {
-    if (!hasLoadedPrevious) return latestComments;
-
-    const byId = new Map<number, VolunteerComment>();
-
-    loadedComments?.forEach((comment) => comment?.id && byId.set(comment.id, comment));
-    latestComments?.forEach((comment) => comment?.id && byId.set(comment.id, comment));
-
-    return Array.from(byId.values());
-  }, [hasLoadedPrevious, loadedComments, latestComments]);
-
-  const loadPreviousComments = useCallback(async () => {
-    if (isLoadingPrevious || hasLoadedPrevious) return;
-
-    setIsLoadingPrevious(true);
-
-    try {
-      const latestIds = latestComments?.map(({ id }: { id: number }) => id) || [];
-      const previousComments =
-        allComments?.results?.filter(({ id }: { id: number }) => !latestIds.includes(id)) || [];
-
-      setLoadedComments(previousComments);
-    } catch (error) {
-      console.error('Error loading previous comments:', error);
-    } finally {
-      setIsLoadingPrevious(false);
-    }
-  }, [isLoadingPrevious, hasLoadedPrevious, latestComments, allComments?.results]);
+  const { comments, hasLoadedPrevious, loadPreviousComments, previousCommentsCount } =
+    useInfiniteComments({
+      commentsCount,
+      latestComments,
+      objectId: isAnswer ? commentId : objectId,
+      objectModel
+    });
 
   return (
     <>
       {previousCommentsCount > 0 && !hasLoadedPrevious && (
         <ListItem containerStyle={styles.loadPreviousContainer}>
-          <TouchableOpacity onPress={loadPreviousComments} disabled={isLoadingPrevious}>
+          <TouchableOpacity onPress={loadPreviousComments}>
             <RegularText small>
-              {isLoadingPrevious
-                ? texts.volunteer.loading
-                : `${texts.volunteer.showPreviousComments(previousCommentsCount)}`}
+              {`Zeige die vorherigen ${previousCommentsCount} Kommentare`}
             </RegularText>
           </TouchableOpacity>
         </ListItem>
@@ -108,7 +61,7 @@ export const VolunteerComments = ({
 
       {comments?.map((comment, index) => {
         const {
-          commentsCount = 0,
+          commentsCount: childCommentsCount = 0,
           comments,
           id = 0,
           likes,
@@ -120,7 +73,7 @@ export const VolunteerComments = ({
         const isUserAuthor = userGuid === guid;
 
         return (
-          <Fragment key={keyExtractor(comment, index)}>
+          <Fragment key={`index${index}-comment${id}`}>
             <ListItem containerStyle={styles.commentsContainer}>
               <VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />
 
@@ -164,7 +117,7 @@ export const VolunteerComments = ({
               containerStyle={[styles.commentsContainer, styles.noPaddingTop, styles.paddingBottom]}
             >
               <VolunteerCommentAnswer
-                commentsCount={commentsCount}
+                commentsCount={childCommentsCount}
                 likesCount={likes.total}
                 objectId={isAnswer ? commentId : id}
                 objectModel={VolunteerObjectModelType.COMMENT}
@@ -174,11 +127,10 @@ export const VolunteerComments = ({
               />
             </ListItem>
 
-            {!!commentsCount && (
+            {!!childCommentsCount && (
               <View style={[styles.answerCommentsContainer, styles.noPaddingTop]}>
                 <VolunteerComments
-                  authToken={authToken}
-                  commentsCount={commentsCount}
+                  commentsCount={childCommentsCount}
                   commentId={id}
                   isAnswer
                   latestComments={comments || []}
