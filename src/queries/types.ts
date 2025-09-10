@@ -91,6 +91,7 @@ export const QUERY_TYPES = {
     PERSONAL: 'personal',
     POSTS: 'posts',
     PROFILE: 'profile',
+    STREAM: 'stream',
     TASKS: 'tasks',
     USER_GROUPS: 'userGroups',
     USER_NOTIFICATION_SETTINGS: 'userNotificationSettings',

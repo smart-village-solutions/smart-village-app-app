@@ -124,11 +124,14 @@ export const volunteerSubtitle = (
   withDate: boolean,
   isSectioned?: boolean
 ) => {
-  let date = eventDate(
-    volunteerListDate(volunteer, withDate),
-    undefined,
-    isSectioned ? 'HH:mm [Uhr]' : 'D. MMMM YYYY[,] HH:mm [Uhr]'
-  );
+  const listDate = volunteerListDate(volunteer, withDate);
+  const hasTime = withDate && typeof listDate === 'string' && /\d{2}:\d{2}/.test(listDate);
+  const format = isSectioned
+    ? 'HH:mm [Uhr]'
+    : hasTime
+    ? 'D. MMMM YYYY[,] HH:mm [Uhr]'
+    : 'D. MMMM YYYY';
+  let date = eventDate(listDate, undefined, format);
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
     date = eventDate(volunteerListDate(volunteer), undefined, 'D. MMMM YYYY[,] HH:mm [Uhr]');
