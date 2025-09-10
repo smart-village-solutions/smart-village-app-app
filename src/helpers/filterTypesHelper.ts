@@ -15,7 +15,9 @@ export const FILTER_KEYS = {
   LOCATION: 'location',
   ONLY_CURRENTLY_OPEN: 'onlyCurrentlyOpen',
   RADIUS_SEARCH: 'radiusSearch',
-  SAVEABLE: 'saveable'
+  SAVEABLE: 'saveable',
+  ZIP_START: 'zipStart',
+  ZIP_END: 'zipEnd'
 };
 
 enum QUERY_VARIABLES_ATTRIBUTES {
@@ -39,7 +41,9 @@ const getLabel = (key: string) =>
     [FILTER_KEYS.LOCATION]: 'Orte',
     [FILTER_KEYS.ONLY_CURRENTLY_OPEN]: 'Nur aktuell geöffnete',
     [FILTER_KEYS.RADIUS_SEARCH]: 'Entfernung (km)',
-    [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen'
+    [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen',
+    [FILTER_KEYS.ZIP_START]: 'PLZ von',
+    [FILTER_KEYS.ZIP_END]: 'PLZ bis'
   }[key] || key);
 
 const getPlaceholder = (key: string, query: string) =>
@@ -69,7 +73,9 @@ const getPlaceholder = (key: string, query: string) =>
     [FILTER_KEYS.LOCATION]: 'Alle Orte',
     [FILTER_KEYS.ONLY_CURRENTLY_OPEN]: 'Nur aktuell geöffnete anzeigen',
     [FILTER_KEYS.RADIUS_SEARCH]: 'Entfernung wählen',
-    [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen dauerhaft speichern'
+    [FILTER_KEYS.SAVEABLE]: 'Filtereinstellungen dauerhaft speichern',
+    [FILTER_KEYS.ZIP_START]: 'PLZ von',
+    [FILTER_KEYS.ZIP_END]: 'PLZ bis'
   }[key] || key);
 
 const getSearchPlaceholder = (key: string) =>
@@ -131,7 +137,8 @@ export const filterTypesHelper = ({
         placeholder: getPlaceholder(key, query),
         searchable: value.searchable,
         searchPlaceholder: getSearchPlaceholder(key),
-        type: value.type
+        type: value.type,
+        where: value.where
       };
 
       switch (key) {

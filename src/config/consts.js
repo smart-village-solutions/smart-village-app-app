@@ -124,7 +124,8 @@ export const consts = {
     SLIDER: 'slider',
     SUE: {
       STATUS: 'status'
-    }
+    },
+    TEXT: 'text'
   },
 
   DIMENSIONS: {
