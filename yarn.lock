@@ -2188,13 +2188,13 @@
     "@react-navigation/elements" "^2.2.5"
     color "^4.2.3"
 
-"@reactvision/react-viro@^2.41.6":
-  version "2.42.0"
-  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.42.0.tgz#1ec1530e8097c809df068bb433585f8e390a6893"
-  integrity sha512-mxo/oQCnxWIuhhV2iA6MxAktDkSLQUAj1TItd8yMfvDoeZlNpKOj5YorIEG7CsBXBoQ1l+5AgHpvJAGJttCZpA==
+"@reactvision/react-viro@^2.43.4":
+  version "2.43.4"
+  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.43.4.tgz#87b451f2365b90c15b6a704a10c53489bd7356dc"
+  integrity sha512-0/J1Glsl2N3ztDukcqX4qkBubhPez9Fv9q1TURK3l1NJcHc07JlizqPZnnUGLr/6idHICbVkMzSqQcb219Z7eA==
   dependencies:
     "@expo/config-plugins" "^9.0.14"
-    react "^18.3.1"
+    react "19.0.0"
     react-native-gradle-plugin "^0.71.19"
 
 "@rtsao/scc@^1.1.0":
