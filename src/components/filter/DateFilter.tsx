@@ -83,15 +83,15 @@ const CalendarView = ({
   return (
     <Collapsible collapsed={isCollapsed}>
       <Calendar
-        renderArrow={renderArrow}
         firstDay={1}
-        minDate={minDate}
+        markedDates={markedDates}
+        markingType="dot"
         maxDate={maxDate}
+        minDate={minDate}
         onDayPress={(date: { dateString: string }) =>
           setDate(momentFormat(date.dateString, 'YYYY-MM-DD'))
         }
-        markedDates={markedDates}
-        markingType="dot"
+        renderArrow={renderArrow}
         theme={{
           todayTextColor: colors.secondary,
           indicatorColor: colors.secondary,
