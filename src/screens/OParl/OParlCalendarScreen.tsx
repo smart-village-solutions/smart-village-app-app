@@ -100,11 +100,11 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
       <ScrollView>
         <RNCalendar
           dayComponent={NoTouchDay}
-          onMonthChange={updateMonth}
+          firstDay={1}
           markedDates={markedDates}
           markingType="multi-dot"
+          onMonthChange={updateMonth}
           renderArrow={renderArrow}
-          firstDay={1}
           theme={{
             todayTextColor: colors.primary,
             todayBackgroundColor: colors.lighterPrimaryRgba,
