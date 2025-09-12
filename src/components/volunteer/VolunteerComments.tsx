@@ -11,11 +11,13 @@ import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerCommentAnswer } from './VolunteerCommentAnswer';
+import { VolunteerCommentFiles } from './VolunteerCommentFiles';
 
 export const VolunteerComments = ({
+  authToken,
   commentsCount,
   commentId,
-  isAnswer,
+  isAnswer = false,
   latestComments,
   objectId,
   objectModel,
@@ -24,6 +26,7 @@ export const VolunteerComments = ({
   setIsCommentModalCollapsed,
   userGuid
 }: {
+  authToken: string | null;
   commentsCount: number;
   commentId: number;
   isAnswer: boolean;
@@ -32,6 +35,11 @@ export const VolunteerComments = ({
   objectModel: VolunteerObjectModelType;
   onLinkPress: (url: string) => void;
   setCommentForModal: (comment: {
+    files?: {
+      guid: string;
+      id: number;
+      mime_type: string;
+    }[];
     message?: string;
     objectId: number;
     objectModel: VolunteerObjectModelType;
@@ -63,6 +71,7 @@ export const VolunteerComments = ({
         const {
           commentsCount: childCommentsCount = 0,
           comments,
+          files,
           id = 0,
           likes,
           message,
@@ -97,6 +106,7 @@ export const VolunteerComments = ({
                   value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
                   onPress={() => {
                     setCommentForModal({
+                      files,
                       message,
                       objectId: id,
                       objectModel: VolunteerObjectModelType.COMMENT
@@ -113,23 +123,31 @@ export const VolunteerComments = ({
               </Markdown>
             </ListItem>
 
+            <VolunteerCommentFiles authToken={authToken} files={files} isAnswer={isAnswer} />
+
             <ListItem
               containerStyle={[styles.commentsContainer, styles.noPaddingTop, styles.paddingBottom]}
             >
               <VolunteerCommentAnswer
                 commentsCount={childCommentsCount}
                 likesCount={likes.total}
-                objectId={isAnswer ? commentId : id}
+                objectId={id}
                 objectModel={VolunteerObjectModelType.COMMENT}
-                setCommentForModal={setCommentForModal}
-                setIsCommentModalCollapsed={setIsCommentModalCollapsed}
+                onPress={() => {
+                  setCommentForModal({
+                    objectId: isAnswer ? commentId : id,
+                    objectModel: VolunteerObjectModelType.COMMENT
+                  });
+                  setIsCommentModalCollapsed(false);
+                }}
                 userGuid={userGuid}
               />
             </ListItem>
 
-            {!!childCommentsCount && (
+            {!isAnswer && (
               <View style={[styles.answerCommentsContainer, styles.noPaddingTop]}>
                 <VolunteerComments
+                  authToken={authToken}
                   commentsCount={childCommentsCount}
                   commentId={id}
                   isAnswer

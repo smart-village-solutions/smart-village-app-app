@@ -43,6 +43,11 @@ export const VolunteerPostListItem = ({
         latest: {
           created_at: string;
           created_by: { guid: string; display_name: string };
+          files: {
+            guid: string;
+            id: number;
+            mime_type: string;
+          }[];
           id: number;
           likes: {
             total: number;

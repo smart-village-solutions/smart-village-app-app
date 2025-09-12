@@ -3,6 +3,7 @@ export * from './VolunteerAppointmentsCard';
 export * from './VolunteerAvatar';
 export * from './VolunteerComment';
 export * from './VolunteerCommentAnswer';
+export * from './VolunteerCommentFiles';
 export * from './VolunteerCommentModal';
 export * from './VolunteerComments';
 export * from './VolunteerConversationListItem';

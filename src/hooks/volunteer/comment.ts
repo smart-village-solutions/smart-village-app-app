@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
+import { DeviceEventEmitter } from 'react-native';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { QUERY_TYPES } from '../../queries';
 import { commentDelete, commentEdit, commentNew, commentsByObject } from '../../queries/volunteer';
 import { VolunteerComment } from '../../types';
+import { useVolunteerRefresh, VOLUNTEER_STREAM_REFRESH_EVENT } from '../HomeRefresh';
 
 export const useComments = ({
   objectId,
@@ -25,20 +28,16 @@ export const useComments = ({
     }
   );
 
+  useVolunteerRefresh(commentsRefetch, QUERY_TYPES.VOLUNTEER.STREAM);
+
   const invalidateAll = () => {
-    queryClient.invalidateQueries({ queryKey: ['commentsByObject', objectModel, objectId] });
-    queryClient.invalidateQueries({
-      predicate: ({ queryKey }) =>
-        Array.isArray(queryKey) &&
-        queryKey[0] === 'commentsByObject' &&
-        queryKey[1] === objectModel &&
-        queryKey[2] === objectId &&
-        queryKey.includes('infinite')
-    }); // Infinite Varianten
     queryClient.invalidateQueries({ queryKey: ['commentsByObject'] });
     queryClient.invalidateQueries({ queryKey: ['posts'] });
     queryClient.invalidateQueries({ queryKey: ['stream'] });
-    commentsRefetch();
+
+    // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
   };
 
   const createCommentMutation = useMutation({
@@ -95,7 +94,8 @@ export const useInfiniteComments = ({
   const {
     data: pagesData,
     fetchNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
+    refetch: refetchInfiniteComments
   } = useInfiniteQuery(
     ['commentsByObject', objectModel, objectId, 'infinite'],
     ({ pageParam = 1 }) => commentsByObject({ objectId, objectModel, page: pageParam }),
@@ -122,6 +122,8 @@ export const useInfiniteComments = ({
       }
     }
   );
+
+  useVolunteerRefresh(refetchInfiniteComments, QUERY_TYPES.VOLUNTEER.STREAM);
 
   const loadedComments = useMemo(() => {
     if (!hasLoadedPrevious) return [];

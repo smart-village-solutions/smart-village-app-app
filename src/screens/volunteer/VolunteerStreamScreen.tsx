@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, StyleSheet } from 'react-native';
 import { useInfiniteQuery } from 'react-query';
 
 import {
@@ -10,7 +10,7 @@ import {
   VolunteerCommentModal,
   VolunteerPostModal
 } from '../../components';
-import { colors, consts, normalize } from '../../config';
+import { consts, normalize } from '../../config';
 import {
   getTitleForQuery,
   volunteerAuthToken,
@@ -18,7 +18,13 @@ import {
   volunteerSubtitle,
   volunteerUserData
 } from '../../helpers';
-import { useOpenWebScreen, useRenderItem } from '../../hooks';
+import {
+  useOpenWebScreen,
+  usePullToRefetch,
+  useRenderItem,
+  useVolunteerRefresh,
+  VOLUNTEER_STREAM_REFRESH_EVENT
+} from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ScreenName, VolunteerObjectModelType } from '../../types';
 
@@ -67,10 +73,20 @@ export const VolunteerStreamScreen = () => {
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle);
 
+  useVolunteerRefresh(refetch, QUERY_TYPES.VOLUNTEER.STREAM);
+
+  const onRefresh = useCallback(async () => {
+    // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
+  }, [refetch]);
+
+  const RefreshControl = usePullToRefetch(onRefresh);
+
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [])
+      onRefresh();
+    }, [onRefresh])
   );
 
   useEffect(() => {
@@ -199,14 +215,7 @@ export const VolunteerStreamScreen = () => {
           ListFooterComponent={isRefetching ? <LoadingSpinner loading /> : null}
           onEndReachedThreshold={0.5}
           onEndReached={onEndReached}
-          refreshControl={
-            <RefreshControl
-              refreshing={false}
-              onRefresh={refetch}
-              colors={[colors.refreshControl]}
-              tintColor={colors.refreshControl}
-            />
-          }
+          refreshControl={RefreshControl}
           keyboardShouldPersistTaps="handled"
           style={styles.container}
         />

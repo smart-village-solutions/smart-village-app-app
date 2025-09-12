@@ -1,11 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  DeviceEventEmitter,
+  Keyboard,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { Divider, Header } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { useComments } from '../../hooks';
+import { useComments, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
 import { uploadFile } from '../../queries/volunteer';
 import { VolunteerComment, VolunteerObjectModelType } from '../../types';
 import { Button } from '../Button';
@@ -40,24 +48,37 @@ export const VolunteerCommentModal = ({
 }) => {
   const isEdit = !!comment?.message;
   const { createComment, deleteComment, updateComment } = useComments({ objectId, objectModel });
+  const [isPublishing, setIsPublishing] = React.useState(false);
 
-  const getDefaultValues = () => ({
-    id: objectId,
-    message: comment?.message || '',
-    files: comment?.files ? JSON.stringify(comment.files) : '[]'
-  });
+  const defaultValues = useMemo(
+    () => ({
+      id: objectId,
+      message: comment?.message || '',
+      files: comment?.files ? JSON.stringify(comment.files) : '[]'
+    }),
+    [objectId, comment?.message, comment?.files]
+  );
 
   const {
     control,
+    formState: { errors },
     handleSubmit,
     reset: resetForm
   } = useForm<VolunteerComment>({
-    defaultValues: getDefaultValues()
+    defaultValues
   });
 
   useEffect(() => {
-    resetForm(getDefaultValues());
-  }, [comment, objectId]);
+    resetForm(defaultValues);
+  }, [defaultValues, resetForm]);
+
+  const handleModalClose = () => {
+    resetForm({
+      ...defaultValues,
+      files: '[]'
+    });
+    setIsCollapsed(true);
+  };
 
   const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
 
@@ -65,6 +86,7 @@ export const VolunteerCommentModal = ({
     if (!commentData.message) return;
     if (isEdit && !commentData.id) return;
 
+    setIsPublishing(true);
     Keyboard.dismiss();
     (isEdit
       ? updateComment(commentData.id as number, commentData.message)
@@ -77,22 +99,30 @@ export const VolunteerCommentModal = ({
           files
             .filter((file) => file.uri)
             .map(
-              async ({ uri, mimeType }) => await mutateAsyncUpload({ id, fileUri: uri, mimeType })
+              async ({ uri, mimeType }) =>
+                await mutateAsyncUpload({
+                  id,
+                  fileUri: uri,
+                  mimeType,
+                  objectModel: VolunteerObjectModelType.COMMENT
+                })
             )
         );
       }
 
-      setIsCollapsed(true);
+      setIsPublishing(false);
+      handleModalClose();
+
+      // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+      // in other components.
+      DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
     });
   };
 
   return (
     <Modal
       animationType="slide"
-      onRequestClose={() => {
-        resetForm(getDefaultValues());
-        setIsCollapsed(true);
-      }}
+      onRequestClose={handleModalClose}
       presentationStyle="pageSheet"
       visible={!isCollapsed}
     >
@@ -110,10 +140,7 @@ export const VolunteerCommentModal = ({
         rightComponent={{
           color: colors.darkText,
           icon: 'close',
-          onPress: () => {
-            resetForm(getDefaultValues());
-            setIsCollapsed(true);
-          },
+          onPress: handleModalClose,
           type: 'ionicon'
         }}
         rightContainerStyle={styles.headerRightContainer}
@@ -132,7 +159,7 @@ export const VolunteerCommentModal = ({
             multiline
             name="message"
             placeholder={texts.volunteer.commentLabel}
-            renderErrorMessage={false}
+            errorMessage={errors.message && `${texts.volunteer.message} muss ausgefüllt werden`}
             rules={{ required: true }}
             textAlignVertical="top"
             textContentType="none"
@@ -167,15 +194,14 @@ export const VolunteerCommentModal = ({
       <Wrapper>
         <WrapperRow spaceAround>
           <Button
+            disabled={isPublishing}
             invert
             notFullWidth
-            onPress={() => {
-              resetForm(getDefaultValues());
-              setIsCollapsed(true);
-            }}
+            onPress={handleModalClose}
             title={texts.volunteer.abort}
           />
           <Button
+            disabled={isPublishing}
             notFullWidth
             onPress={handleSubmit(onPress)}
             title={isEdit ? texts.volunteer.save : texts.volunteer.publish}
@@ -196,10 +222,9 @@ export const VolunteerCommentModal = ({
                   {
                     text: texts.volunteer.delete,
                     onPress: async () => {
-                      resetForm(getDefaultValues());
                       Keyboard.dismiss();
                       await deleteComment(objectId);
-                      setIsCollapsed(true);
+                      handleModalClose();
                     },
                     style: 'destructive'
                   }

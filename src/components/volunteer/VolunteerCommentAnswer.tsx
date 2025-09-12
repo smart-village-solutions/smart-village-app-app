@@ -14,21 +14,15 @@ export const VolunteerCommentAnswer = ({
   likesCount,
   objectId,
   objectModel,
-  userGuid,
-  setCommentForModal,
-  setIsCommentModalCollapsed
+  onPress,
+  userGuid
 }: {
   commentsCount: number;
   likesCount: number;
   objectId: number;
   objectModel: VolunteerObjectModelType;
+  onPress: () => void;
   userGuid?: string | null;
-  setCommentForModal: (comment: {
-    message?: string;
-    objectId: number;
-    objectModel: VolunteerObjectModelType;
-  }) => void;
-  setIsCommentModalCollapsed: (isCollapsed: boolean) => void;
 }) => {
   const { liked, likeCount, toggleLike } = useLike({
     initialLikeCount: likesCount,
@@ -40,12 +34,7 @@ export const VolunteerCommentAnswer = ({
   return (
     <>
       <WrapperRow>
-        <TouchableOpacity
-          onPress={() => {
-            setCommentForModal({ objectId, objectModel });
-            setIsCommentModalCollapsed(false);
-          }}
-        >
+        <TouchableOpacity onPress={onPress}>
           <WrapperRow>
             <RegularText small>
               {texts.volunteer.commentAnswerNew}
