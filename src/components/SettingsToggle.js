@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, device, normalize } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
+import { NetworkContext } from '../NetworkProvider';
+import { serverConnectionAlert } from '../pushNotifications';
 
 import { Switch } from './Switch';
 import { BoldText, RegularText } from './Text';
@@ -11,8 +13,18 @@ import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 // TODO: snack bar / toast als nutzerinfo
-export const SettingsToggle = ({ item }) => {
-  const { title, description, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
+export const SettingsToggle = ({ item, needsConnection = true }) => {
+  const { isConnected } = useContext(NetworkContext);
+  const {
+    bottomDivider,
+    description,
+    isDisabled,
+    onActivate,
+    onDeactivate,
+    title,
+    topDivider,
+    value
+  } = item;
 
   const [loading, setLoading] = useState(false);
   const [switchValue, setSwitchValue] = useState(!!value);
@@ -22,6 +34,10 @@ export const SettingsToggle = ({ item }) => {
   }, [value]);
 
   const toggleSwitch = (newSwitchValue) => {
+    if (!isConnected && needsConnection) {
+      serverConnectionAlert(isConnected, texts.errors.noData);
+      return;
+    }
     setLoading(true);
 
     setSwitchValue(newSwitchValue);
@@ -35,20 +51,20 @@ export const SettingsToggle = ({ item }) => {
     // imitate a short duration of toggling taking action
     setTimeout(() => {
       setLoading(false);
-    }, 300);
+    }, 1300);
   };
 
   const onPress = () => toggleSwitch(!switchValue);
 
   return (
     <ListItem
-      bottomDivider={bottomDivider ?? false}
-      topDivider={topDivider ?? false}
-      containerStyle={styles.container}
-      onPress={onPress}
-      delayPressIn={0}
-      Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+      bottomDivider={bottomDivider ?? false}
+      Component={!isDisabled ? Touchable : undefined}
+      containerStyle={styles.container}
+      delayPressIn={0}
+      onPress={!isDisabled ? onPress : undefined}
+      topDivider={topDivider ?? false}
     >
       <ListItem.Content>
         {!!title && <BoldText small>{title}</BoldText>}
@@ -57,7 +73,7 @@ export const SettingsToggle = ({ item }) => {
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
-        <Switch switchValue={switchValue} toggleSwitch={toggleSwitch} />
+        <Switch isDisabled={isDisabled} switchValue={switchValue} toggleSwitch={toggleSwitch} />
       </WrapperRow>
     </ListItem>
   );
@@ -75,5 +91,6 @@ const styles = StyleSheet.create({
 });
 
 SettingsToggle.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  needsConnection: PropTypes.bool
 };
