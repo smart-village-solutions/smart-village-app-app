@@ -13,7 +13,11 @@ import { Divider, Header } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { useComments, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
+import {
+  useComments,
+  VOLUNTEER_GROUP_REFRESH_EVENT,
+  VOLUNTEER_STREAM_REFRESH_EVENT
+} from '../../hooks';
 import { uploadFile } from '../../queries/volunteer';
 import { VolunteerComment, VolunteerObjectModelType } from '../../types';
 import { Button } from '../Button';
@@ -116,6 +120,7 @@ export const VolunteerCommentModal = ({
       // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
       // in other components.
       DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
+      DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
     });
   };
 

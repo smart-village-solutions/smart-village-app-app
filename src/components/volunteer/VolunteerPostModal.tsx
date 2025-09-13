@@ -13,7 +13,7 @@ import { Divider, Header } from 'react-native-elements';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
+import { VOLUNTEER_GROUP_REFRESH_EVENT, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
 import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
 import { VolunteerPost } from '../../types';
 import { Button } from '../Button';
@@ -122,6 +122,7 @@ export const VolunteerPostModal = ({
       // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
       // in other components.
       DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
+      DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
     });
   };
 

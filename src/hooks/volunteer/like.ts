@@ -30,6 +30,7 @@ export const useLike = ({
   );
 
   useVolunteerRefresh(likesRefetch, QUERY_TYPES.VOLUNTEER.STREAM);
+  useVolunteerRefresh(likesRefetch, QUERY_TYPES.VOLUNTEER.GROUP);
 
   // check if user has liked the post already
   useEffect(() => {

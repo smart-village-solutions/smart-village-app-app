@@ -5,7 +5,11 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from 'react-q
 import { QUERY_TYPES } from '../../queries';
 import { commentDelete, commentEdit, commentNew, commentsByObject } from '../../queries/volunteer';
 import { VolunteerComment } from '../../types';
-import { useVolunteerRefresh, VOLUNTEER_STREAM_REFRESH_EVENT } from '../HomeRefresh';
+import {
+  useVolunteerRefresh,
+  VOLUNTEER_GROUP_REFRESH_EVENT,
+  VOLUNTEER_STREAM_REFRESH_EVENT
+} from '../HomeRefresh';
 
 export const useComments = ({
   objectId,
@@ -29,6 +33,7 @@ export const useComments = ({
   );
 
   useVolunteerRefresh(commentsRefetch, QUERY_TYPES.VOLUNTEER.STREAM);
+  useVolunteerRefresh(commentsRefetch, QUERY_TYPES.VOLUNTEER.GROUP);
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ['commentsByObject'] });
@@ -38,6 +43,7 @@ export const useComments = ({
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
+    DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
   };
 
   const createCommentMutation = useMutation({
@@ -124,6 +130,7 @@ export const useInfiniteComments = ({
   );
 
   useVolunteerRefresh(refetchInfiniteComments, QUERY_TYPES.VOLUNTEER.STREAM);
+  useVolunteerRefresh(refetchInfiniteComments, QUERY_TYPES.VOLUNTEER.GROUP);
 
   const loadedComments = useMemo(() => {
     if (!hasLoadedPrevious) return [];
