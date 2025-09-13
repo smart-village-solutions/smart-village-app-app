@@ -81,6 +81,7 @@ export const VolunteerGroup = ({
     contentcontainer_id: contentContainerId,
     description,
     guid,
+    hideMembers,
     id,
     join_policy: joinPolicy,
     modules,
@@ -217,6 +218,7 @@ export const VolunteerGroup = ({
       <SectionHeader title={name} />
       <VolunteerGroupMembersAndApplicants
         groupId={id}
+        hideMembers={!!hideMembers}
         navigation={navigation}
         isGroupOwner={isGroupOwner}
         isGroupMember={isGroupMember}
