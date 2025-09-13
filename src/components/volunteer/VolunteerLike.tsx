@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { texts } from '../../config';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
@@ -21,7 +22,8 @@ export const VolunteerLike = ({
     <TouchableOpacity onPress={onToggleLike} disabled={loading}>
       <WrapperRow>
         <RegularText small>
-          {liked ? 'Gefällt mir nicht mehr' : 'Gefällt mir'} ({likeCount})
+          {liked ? texts.volunteer.likeDelete : texts.volunteer.likeNew}
+          {!!likeCount && ` (${likeCount})`}
         </RegularText>
       </WrapperRow>
     </TouchableOpacity>

@@ -10,12 +10,16 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Divider, Header } from 'react-native-elements';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { VOLUNTEER_GROUP_REFRESH_EVENT, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
-import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
-import { VolunteerPost } from '../../types';
+import {
+  useComments,
+  VOLUNTEER_GROUP_REFRESH_EVENT,
+  VOLUNTEER_STREAM_REFRESH_EVENT
+} from '../../hooks';
+import { uploadFile } from '../../queries/volunteer';
+import { VolunteerComment, VolunteerObjectModelType } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { MultiImageSelector } from '../selectors';
@@ -24,18 +28,16 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
-export const VolunteerPostModal = ({
+export const VolunteerCommentModal = ({
   authToken,
-  contentContainerId,
+  comment,
   isCollapsed,
-  post,
+  objectId,
+  objectModel,
   setIsCollapsed
 }: {
   authToken: string | null;
-  contentContainerId: number;
-  isCollapsed: boolean;
-  post?: {
-    id: number;
+  comment?: {
     message: string;
     files: {
       id: number;
@@ -43,50 +45,36 @@ export const VolunteerPostModal = ({
       mime_type: string;
     }[];
   };
+  isCollapsed: boolean;
+  objectId: number;
+  objectModel: VolunteerObjectModelType;
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
-  const isEdit = !!post;
+  const isEdit = !!comment?.message;
+  const { createComment, deleteComment, updateComment } = useComments({ objectId, objectModel });
   const [isPublishing, setIsPublishing] = React.useState(false);
 
   const defaultValues = useMemo(
     () => ({
-      contentContainerId,
-      id: post?.id,
-      message: post?.message || '',
-      files: post?.files ? JSON.stringify(post.files) : '[]'
+      id: objectId,
+      message: comment?.message || '',
+      files: comment?.files ? JSON.stringify(comment.files) : '[]'
     }),
-    [contentContainerId, post?.id, post?.message, post?.files]
+    [objectId, comment?.message, comment?.files]
   );
 
   const {
     control,
+    formState: { errors },
     handleSubmit,
     reset: resetForm
-  } = useForm<VolunteerPost>({
+  } = useForm<VolunteerComment>({
     defaultValues
   });
 
   useEffect(() => {
     resetForm(defaultValues);
   }, [defaultValues, resetForm]);
-
-  const queryClient = useQueryClient();
-
-  const { mutateAsync } = useMutation({
-    mutationFn: isEdit ? postEdit : postNew,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['stream'] });
-    }
-  });
-  const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
-  const { mutateAsync: mutateAsyncDelete } = useMutation({
-    mutationFn: postDelete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['stream'] });
-    }
-  });
 
   const handleModalClose = () => {
     resetForm({
@@ -96,22 +84,32 @@ export const VolunteerPostModal = ({
     setIsCollapsed(true);
   };
 
-  const onPress = async (postData: VolunteerPost) => {
+  const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
+
+  const onPress = async (commentData: VolunteerComment) => {
+    if (!commentData.message) return;
+    if (isEdit && !commentData.id) return;
+
     setIsPublishing(true);
     Keyboard.dismiss();
-    mutateAsync(
-      isEdit
-        ? { id: postData.id, message: postData.message }
-        : { contentContainerId: postData.contentContainerId, message: postData.message }
+    (isEdit
+      ? updateComment(commentData.id as number, commentData.message)
+      : createComment(commentData.message)
     ).then(async ({ id }: { id: number }) => {
       if (id) {
-        const files = JSON.parse(postData.files) || [];
+        const files = JSON.parse(commentData.files) || [];
 
         await Promise.all(
           files
             .filter((file) => file.uri)
             .map(
-              async ({ uri, mimeType }) => await mutateAsyncUpload({ id, fileUri: uri, mimeType })
+              async ({ uri, mimeType }) =>
+                await mutateAsyncUpload({
+                  id,
+                  fileUri: uri,
+                  mimeType,
+                  objectModel: VolunteerObjectModelType.COMMENT
+                })
             )
         );
       }
@@ -136,7 +134,7 @@ export const VolunteerPostModal = ({
       <Header
         backgroundColor={colors.transparent}
         centerComponent={{
-          text: isEdit ? texts.volunteer.postEdit : texts.volunteer.postNew,
+          text: isEdit ? texts.volunteer.commentEdit : texts.volunteer.commentNew,
           style: {
             color: colors.darkText,
             fontFamily: 'condbold',
@@ -161,12 +159,12 @@ export const VolunteerPostModal = ({
           {!!isEdit && <Input name="id" hidden control={control} />}
           <Input
             control={control}
-            label={texts.volunteer.postLabel}
+            label={texts.volunteer.commentLabel}
             minHeight={normalize(100)}
             multiline
             name="message"
-            placeholder={texts.volunteer.postLabel}
-            renderErrorMessage={false}
+            placeholder={texts.volunteer.commentLabel}
+            errorMessage={errors.message && `${texts.volunteer.message} muss ausgefüllt werden`}
             rules={{ required: true }}
             textAlignVertical="top"
             textContentType="none"
@@ -219,8 +217,8 @@ export const VolunteerPostModal = ({
           <TouchableOpacity
             onPress={() => {
               Alert.alert(
-                texts.volunteer.postDelete,
-                texts.volunteer.postDeleteConfirm,
+                texts.volunteer.commentDelete,
+                texts.volunteer.commentDeleteConfirm,
                 [
                   {
                     text: texts.volunteer.abort,
@@ -230,7 +228,7 @@ export const VolunteerPostModal = ({
                     text: texts.volunteer.delete,
                     onPress: async () => {
                       Keyboard.dismiss();
-                      await mutateAsyncDelete({ id: post?.id });
+                      await deleteComment(objectId);
                       handleModalClose();
                     },
                     style: 'destructive'
@@ -241,7 +239,7 @@ export const VolunteerPostModal = ({
             }}
             style={styles.button}
           >
-            <BoldText small>{texts.volunteer.postDelete}</BoldText>
+            <BoldText small>{texts.volunteer.commentDelete}</BoldText>
           </TouchableOpacity>
         )}
       </Wrapper>

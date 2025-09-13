@@ -1,15 +1,16 @@
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, StyleSheet } from 'react-native';
 import { useInfiniteQuery } from 'react-query';
 
 import {
   DefaultKeyboardAvoidingView,
   LoadingSpinner,
   SafeAreaViewFlex,
+  VolunteerCommentModal,
   VolunteerPostModal
 } from '../../components';
-import { colors, consts, normalize } from '../../config';
+import { consts, normalize } from '../../config';
 import {
   getTitleForQuery,
   volunteerAuthToken,
@@ -17,7 +18,13 @@ import {
   volunteerSubtitle,
   volunteerUserData
 } from '../../helpers';
-import { useOpenWebScreen, useRenderItem } from '../../hooks';
+import {
+  useOpenWebScreen,
+  usePullToRefetch,
+  useRenderItem,
+  useVolunteerRefresh,
+  VOLUNTEER_STREAM_REFRESH_EVENT
+} from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ScreenName, VolunteerObjectModelType } from '../../types';
 
@@ -31,9 +38,11 @@ export const VolunteerStreamScreen = () => {
   const query = QUERY_TYPES.VOLUNTEER.STREAM;
   const headerTitle = route.params?.title ?? '';
   const queryKey = [query];
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [postForModal, setPostForModal] = useState();
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [commentForModal, setCommentForModal] = useState();
+  const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
+  const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const [userGuid, setUserGuid] = useState<string | null>(null);
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage } = useInfiniteQuery(
     queryKey,
@@ -64,10 +73,20 @@ export const VolunteerStreamScreen = () => {
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle);
 
+  useVolunteerRefresh(refetch, QUERY_TYPES.VOLUNTEER.STREAM);
+
+  const onRefresh = useCallback(async () => {
+    // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
+  }, [refetch]);
+
+  const RefreshControl = usePullToRefetch(onRefresh);
+
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [])
+      onRefresh();
+    }, [onRefresh])
   );
 
   useEffect(() => {
@@ -87,13 +106,19 @@ export const VolunteerStreamScreen = () => {
 
   const renderCalendarItem = useRenderItem(QUERY_TYPES.VOLUNTEER.CALENDAR, navigation, {
     openWebScreen,
-    queryVariables: { authToken, setIsCollapsed, setPostForModal, userGuid },
     refetch
   });
 
   const renderPostItem = useRenderItem(QUERY_TYPES.VOLUNTEER.POSTS, navigation, {
     openWebScreen,
-    queryVariables: { authToken, setIsCollapsed, setPostForModal, userGuid },
+    queryVariables: {
+      authToken,
+      setCommentForModal,
+      setIsCommentModalCollapsed: setIsCommentModalCollapsed,
+      setIsPostModalCollapsed: setIsPostModalCollapsed,
+      setPostForModal,
+      userGuid
+    },
     refetch
   });
 
@@ -190,14 +215,7 @@ export const VolunteerStreamScreen = () => {
           ListFooterComponent={isRefetching ? <LoadingSpinner loading /> : null}
           onEndReachedThreshold={0.5}
           onEndReached={onEndReached}
-          refreshControl={
-            <RefreshControl
-              refreshing={false}
-              onRefresh={refetch}
-              colors={[colors.refreshControl]}
-              tintColor={colors.refreshControl}
-            />
-          }
+          refreshControl={RefreshControl}
           keyboardShouldPersistTaps="handled"
           style={styles.container}
         />
@@ -206,9 +224,20 @@ export const VolunteerStreamScreen = () => {
           <VolunteerPostModal
             authToken={authToken}
             contentContainerId={postForModal.contentContainerId}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed}
+            isCollapsed={isPostModalCollapsed}
             post={postForModal}
+            setIsCollapsed={setIsPostModalCollapsed}
+          />
+        )}
+
+        {!!commentForModal?.objectId && !!commentForModal?.objectModel && (
+          <VolunteerCommentModal
+            authToken={authToken}
+            comment={commentForModal}
+            isCollapsed={isCommentModalCollapsed}
+            objectId={commentForModal.objectId}
+            objectModel={commentForModal.objectModel}
+            setIsCollapsed={setIsCommentModalCollapsed}
           />
         )}
       </DefaultKeyboardAvoidingView>

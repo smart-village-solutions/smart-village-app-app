@@ -5,16 +5,19 @@ import {
   volunteerApiV2Url,
   volunteerAuthToken
 } from '../../helpers/volunteerHelper';
+import { VolunteerObjectModelType } from '../../types';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
 export const uploadFile = async ({
   id,
   fileUri,
-  mimeType
+  mimeType,
+  objectModel = VolunteerObjectModelType.POST
 }: {
   id: number;
   fileUri: string;
   mimeType: string;
+  objectModel: VolunteerObjectModelType;
 }) => {
   const authToken = await volunteerAuthToken();
 
@@ -28,8 +31,11 @@ export const uploadFile = async ({
     mimeType
   };
 
+  const apiUrl =
+    objectModel === VolunteerObjectModelType.POST ? volunteerApiV1Url : volunteerApiV2Url;
+
   return await FileSystem.uploadAsync(
-    `${volunteerApiV1Url}post/${id}/upload-files`,
+    `${apiUrl}${objectModel.split('\\').pop()?.toLowerCase()}/${id}/upload-files`,
     fileUri,
     fetchObj
   );

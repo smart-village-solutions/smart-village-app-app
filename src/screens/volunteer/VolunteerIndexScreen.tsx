@@ -18,6 +18,7 @@ import {
   RegularText,
   SafeAreaViewFlex,
   Search,
+  VolunteerCommentModal,
   VolunteerPostModal,
   VolunteerPostTextField,
   Wrapper,
@@ -105,9 +106,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const [queryVariables] = useState(initialQueryVariables);
   const [filterVariables, setFilterVariables] = useState(initialQueryVariables);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [postForModal, setPostForModal] = useState();
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [commentForModal, setCommentForModal] = useState();
+  const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
+  const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
@@ -170,11 +173,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   );
 
   useEffect(() => {
-    // refetch posts when modal is closed
-    isCollapsed && refetch?.();
-  }, [isCollapsed]);
-
-  useEffect(() => {
     const fetchAuthToken = async () => {
       const token = await volunteerAuthToken();
       setAuthToken(token);
@@ -200,7 +198,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
             <VolunteerPostTextField
               onPress={() => {
                 setPostForModal(undefined);
-                setIsCollapsed(false);
+                setIsPostModalCollapsed(false);
               }}
             />
           </WrapperHorizontal>
@@ -273,7 +271,14 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={isCalendar && showCalendar ? [] : data}
           sectionByDate={isCalendar && !showCalendar}
           query={query}
-          queryVariables={{ authToken, setIsCollapsed, setPostForModal, userGuid }}
+          queryVariables={{
+            authToken,
+            setCommentForModal,
+            setIsCommentModalCollapsed,
+            setIsPostModalCollapsed,
+            setPostForModal,
+            userGuid
+          }}
           refetch={refetch}
           refreshControl={
             <RefreshControl
@@ -311,9 +316,20 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           <VolunteerPostModal
             authToken={authToken}
             contentContainerId={queryVariables?.contentContainerId}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed}
+            isCollapsed={isPostModalCollapsed}
             post={postForModal}
+            setIsCollapsed={setIsPostModalCollapsed}
+          />
+        )}
+
+        {isPosts && !!commentForModal?.objectId && !!commentForModal?.objectModel && (
+          <VolunteerCommentModal
+            authToken={authToken}
+            comment={commentForModal}
+            isCollapsed={isCommentModalCollapsed}
+            objectId={commentForModal.objectId}
+            objectModel={commentForModal.objectModel}
+            setIsCollapsed={setIsCommentModalCollapsed}
           />
         )}
       </DefaultKeyboardAvoidingView>

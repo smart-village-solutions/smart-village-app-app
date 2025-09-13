@@ -12,7 +12,6 @@ export const groups = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -27,7 +26,6 @@ export const groupsMy = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -42,7 +40,6 @@ export const group = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -129,7 +126,6 @@ export const groupMembership = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -174,8 +170,6 @@ export const groupLeave = async ({ id, userId }: { id: number; userId: string })
   const fetchObj = {
     method: 'DELETE',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };

@@ -13,7 +13,6 @@ export const users = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -28,7 +27,6 @@ export const user = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -120,11 +118,13 @@ export const userEdit = async ({
 };
 
 export const userGroups = async () => {
+  const authToken = await volunteerAuthToken();
+
   const fetchObj = {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
 
@@ -138,7 +138,6 @@ export const userNotificationSettings = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
