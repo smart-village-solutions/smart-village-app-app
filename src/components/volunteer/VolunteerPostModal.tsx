@@ -1,10 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  DeviceEventEmitter,
+  Keyboard,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { Divider, Header } from 'react-native-elements';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { colors, consts, normalize, texts } from '../../config';
+import { VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
 import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
 import { VolunteerPost } from '../../types';
 import { Button } from '../Button';
@@ -37,25 +46,29 @@ export const VolunteerPostModal = ({
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
   const isEdit = !!post;
+  const [isPublishing, setIsPublishing] = React.useState(false);
 
-  const getDefaultValues = () => ({
-    contentContainerId,
-    id: post?.id,
-    message: post?.message || '',
-    files: post?.files ? JSON.stringify(post.files) : '[]'
-  });
+  const defaultValues = useMemo(
+    () => ({
+      contentContainerId,
+      id: post?.id,
+      message: post?.message || '',
+      files: post?.files ? JSON.stringify(post.files) : '[]'
+    }),
+    [contentContainerId, post?.id, post?.message, post?.files]
+  );
 
   const {
     control,
     handleSubmit,
     reset: resetForm
   } = useForm<VolunteerPost>({
-    defaultValues: getDefaultValues()
+    defaultValues
   });
 
   useEffect(() => {
-    resetForm(getDefaultValues());
-  }, [post]);
+    resetForm(defaultValues);
+  }, [defaultValues, resetForm]);
 
   const queryClient = useQueryClient();
 
@@ -75,7 +88,16 @@ export const VolunteerPostModal = ({
     }
   });
 
+  const handleModalClose = () => {
+    resetForm({
+      ...defaultValues,
+      files: '[]'
+    });
+    setIsCollapsed(true);
+  };
+
   const onPress = async (postData: VolunteerPost) => {
+    setIsPublishing(true);
     Keyboard.dismiss();
     mutateAsync(
       isEdit
@@ -94,17 +116,19 @@ export const VolunteerPostModal = ({
         );
       }
 
-      setIsCollapsed(true);
+      setIsPublishing(false);
+      handleModalClose();
+
+      // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+      // in other components.
+      DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
     });
   };
 
   return (
     <Modal
       animationType="slide"
-      onRequestClose={() => {
-        resetForm(getDefaultValues());
-        setIsCollapsed(true);
-      }}
+      onRequestClose={handleModalClose}
       presentationStyle="pageSheet"
       visible={!isCollapsed}
     >
@@ -122,10 +146,7 @@ export const VolunteerPostModal = ({
         rightComponent={{
           color: colors.darkText,
           icon: 'close',
-          onPress: () => {
-            resetForm(getDefaultValues());
-            setIsCollapsed(true);
-          },
+          onPress: handleModalClose,
           type: 'ionicon'
         }}
         rightContainerStyle={styles.headerRightContainer}
@@ -179,15 +200,14 @@ export const VolunteerPostModal = ({
       <Wrapper>
         <WrapperRow spaceAround>
           <Button
+            disabled={isPublishing}
             invert
             notFullWidth
-            onPress={() => {
-              resetForm(getDefaultValues());
-              setIsCollapsed(true);
-            }}
+            onPress={handleModalClose}
             title={texts.volunteer.abort}
           />
           <Button
+            disabled={isPublishing}
             notFullWidth
             onPress={handleSubmit(onPress)}
             title={isEdit ? texts.volunteer.save : texts.volunteer.publish}
@@ -208,10 +228,9 @@ export const VolunteerPostModal = ({
                   {
                     text: texts.volunteer.delete,
                     onPress: async () => {
-                      resetForm(getDefaultValues());
                       Keyboard.dismiss();
                       await mutateAsyncDelete({ id: post?.id });
-                      setIsCollapsed(true);
+                      handleModalClose();
                     },
                     style: 'destructive'
                   }
