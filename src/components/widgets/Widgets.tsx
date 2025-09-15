@@ -22,6 +22,7 @@ type WidgetConfig =
 
 type Props = {
   widgetConfigs?: WidgetConfig[];
+  widgetStyle?: object;
 };
 
 const EXISTING_WIDGETS: {
@@ -39,7 +40,7 @@ const EXISTING_WIDGETS: {
   web: WebWidget
 };
 
-export const Widgets = ({ widgetConfigs }: Props) => {
+export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   if (!widgetConfigs) return null;
 
   const widgetComponents = widgetConfigs.map((widgetConfig, index) => {
@@ -52,7 +53,14 @@ export const Widgets = ({ widgetConfigs }: Props) => {
 
     if (!Component) return null;
 
-    return <Component key={index} additionalProps={additionalProps} text={widgetText} />;
+    return (
+      <Component
+        additionalProps={additionalProps}
+        key={index}
+        text={widgetText}
+        widgetStyle={widgetStyle}
+      />
+    );
   });
 
   const filteredWidgetComponents = widgetComponents.filter((component) => !!component);

@@ -11,7 +11,7 @@ import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 
-const normalizeStyleValues = (styleObj: any) => {
+export const normalizeStyleValues = (styleObj: any) => {
   if (!Object.keys(styleObj).length) return styleObj;
 
   const normalizedStyle = {};
