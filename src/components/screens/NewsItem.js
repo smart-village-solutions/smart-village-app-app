@@ -71,7 +71,7 @@ export const NewsItem = ({ data, route }) => {
       )}
 
       {/* the images from the first content block will be present in the main image carousel */}
-      <ImageSection mediaContents={contentBlocks?.[0]?.mediaContents} />
+      <ImageSection isNews mediaContents={contentBlocks?.[0]?.mediaContents} />
 
       {!!contentBlocks?.length &&
         contentBlocks.map((contentBlock, index) => (
