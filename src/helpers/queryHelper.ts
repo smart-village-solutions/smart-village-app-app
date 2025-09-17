@@ -28,6 +28,8 @@ export const routeNameFromQuery = (query: string) => {
       return ScreenName.VolunteerDetail;
     case QUERY_TYPES.VOLUNTEER.GROUP:
       return ScreenName.VolunteerDetail;
+    case QUERY_TYPES.WASTE_ADDRESSES:
+      return ScreenName.WasteCollection;
     default:
       return ScreenName.Detail;
   }
