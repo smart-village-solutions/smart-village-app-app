@@ -62,7 +62,7 @@ export const ImagesCarousel = ({
   const itemWidth = imageWidth();
 
   const renderItem = useCallback(
-    ({ item, refreshInterval }) => {
+    ({ item }) => {
       const { routeName: name, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
@@ -104,7 +104,7 @@ export const ImagesCarousel = ({
                   containerStyle={styles.imageContainer}
                   message={item.message}
                   navigation={navigation}
-                  refreshInterval={item.refreshInterval || refreshInterval}
+                  refreshKey={refreshTime}
                   source={item.picture}
                 />
               );
@@ -120,12 +120,12 @@ export const ImagesCarousel = ({
           containerStyle={styles.imageContainer}
           message={item.message}
           navigation={navigation}
-          refreshInterval={item.refreshInterval || refreshInterval}
+          refreshKey={refreshTime}
           source={item.picture}
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio]
+    [navigation, fetchPolicy, aspectRatio, refreshTime]
   );
 
   if (!data || data.length === 0) return null;
@@ -160,9 +160,7 @@ export const ImagesCarousel = ({
         onScrollIndexChanged={setCarouselImageIndex}
         ref={carouselRef}
         removeClippedSubviews={false}
-        renderItem={({ item }) =>
-          renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
-        }
+        renderItem={renderItem}
         sliderWidth={dimensions.width}
       />
 

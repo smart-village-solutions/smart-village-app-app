@@ -8,7 +8,6 @@ import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
-import { useInterval } from '../hooks/TimeHooks';
 
 import { ImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
@@ -36,14 +35,13 @@ export const Image = ({
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
   placeholderStyle = styles.placeholderStyle,
-  refreshInterval,
+  refreshKey,
   resizeMode = 'cover',
   source: sourceProp,
   style
 }) => {
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
-  const timestamp = useInterval(refreshInterval);
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { apiConfig = {} } = sueConfig;
   const { apiKey = '' } = apiConfig[apiConfig?.whichApi] || apiConfig;
@@ -72,12 +70,12 @@ export const Image = ({
         break effect;
       }
 
-      if (refreshInterval !== undefined) {
+      if (refreshKey !== undefined) {
         setSource({
-          uri: addQueryParam(sourceProp.uri, `svaRefreshCount=${timestamp}`)
+          uri: addQueryParam(sourceProp.uri, `v=${encodeURIComponent(String(refreshKey))}`)
         });
 
-        // we do not want to use the cache when the refreshInterval is defined and can return immediately
+        // we do not want to use the cache when the refreshKey is defined and can return immediately
         break effect;
       }
 
@@ -113,7 +111,7 @@ export const Image = ({
     }
 
     return () => (mounted = false);
-  }, [timestamp, refreshInterval, sourceProp, setSource]);
+  }, [refreshKey, sourceProp, setSource]);
 
   if (source?.uri === NO_IMAGE.uri) return null;
 
@@ -186,7 +184,7 @@ Image.propTypes = {
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
   placeholderStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  refreshInterval: PropTypes.number,
+  refreshKey: PropTypes.number,
   resizeMode: PropTypes.string,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
