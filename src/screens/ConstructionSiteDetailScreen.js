@@ -6,7 +6,7 @@ import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   BoldText,
   Image,
-  Map,
+  MapLibre,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -18,7 +18,7 @@ import { colors, consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 
-const { MATOMO_TRACKING } = consts;
+const { MATOMO_TRACKING, MAP } = consts;
 
 const formatDates = (startDate, endDate) => {
   const formattedStartDate = momentFormat(startDate, 'DD.MM.YYYY');
@@ -133,15 +133,17 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
           )}
         </Wrapper>
         {!!location && (
-          <Map
+          <MapLibre
             locations={[
               {
+                iconName: MAP.DEFAULT_PIN,
                 position: {
                   latitude: location.lat,
                   longitude: location.lon
                 }
               }
             ]}
+            mapStyle={styles.mapStyle}
           />
         )}
       </ScrollView>
@@ -155,6 +157,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignSelf: 'center'
+  },
+  mapStyle: {
+    height: normalize(300),
+    width: '100%'
   }
 });
 
