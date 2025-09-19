@@ -236,9 +236,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaViewFlex>
       {viewType === VIEW_TYPE.MAP ? (
-        <>
-          <SueMapScreen navigation={navigation} route={route} />
-        </>
+        <SueMapScreen navigation={navigation} route={route} />
       ) : (
         <ListComponent
           navigation={navigation}

@@ -122,6 +122,7 @@
           "image": "./assets/icon.png"
         }
       ],
+      "@maplibre/maplibre-react-native",
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
       "expo-asset",

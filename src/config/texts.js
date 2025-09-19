@@ -1001,6 +1001,7 @@ export const texts = {
     favorites: 'Favoriten',
     feedback: 'Feedback',
     home: appJson.expo.name,
+    map: 'Karte',
     mapView: 'Kartenansicht',
     profile: {
       home: 'Profil'

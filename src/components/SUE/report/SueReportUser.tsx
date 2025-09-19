@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     marginRight: 0
   },
   container: {
-    paddingTop: normalize(14),
+    paddingTop: normalize(16),
     width: '100%'
   }
 });
