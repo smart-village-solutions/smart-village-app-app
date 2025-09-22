@@ -38,7 +38,6 @@ export const VolunteerPosts = ({
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   userGuid?: string | null;
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [commentForModal, setCommentForModal] = useState();
   const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
@@ -65,8 +64,8 @@ export const VolunteerPosts = ({
 
   useEffect(() => {
     // refetch posts when modal is closed
-    isCollapsed && refetch?.();
-  }, [isCollapsed]);
+    (isCommentModalCollapsed || isPostModalCollapsed) && refetch?.();
+  }, [isCommentModalCollapsed, isPostModalCollapsed]);
 
   useEffect(() => {
     const fetchAuthToken = async () => {
@@ -112,7 +111,7 @@ export const VolunteerPosts = ({
           <VolunteerPostTextField
             onPress={() => {
               setPostForModal(undefined);
-              setIsCollapsed(false);
+              setIsPostModalCollapsed(false);
             }}
           />
         </WrapperHorizontal>
