@@ -79,7 +79,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
     const login = async () => {
       const key = await voucherAuthKey();
 
-      mutateLogIn(
+      await mutateLogIn(
         { key, secret: '-' },
         {
           onSuccess: (responseData) => {
