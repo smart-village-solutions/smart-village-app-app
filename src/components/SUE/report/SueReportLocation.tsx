@@ -28,7 +28,8 @@ import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
 import { MapLibre } from '../../map';
 
-const { a11yLabel, INPUT_KEYS } = consts;
+const { a11yLabel, INPUT_KEYS, MAP } = consts;
+export const SELECTED_MARKER_ID = 'selectedMarkerId';
 
 export const locationServiceEnabledAlert = ({
   currentPosition,
@@ -200,7 +201,19 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const locations = mapMarkers as MapMarker[];
+  let locations = mapMarkers as MapMarker[];
+
+  const baseLocationMarker = {
+    iconName: MAP.DEFAULT_PIN,
+    activeIconName: MAP.DEFAULT_PIN + 'Active'
+  };
+
+  if (selectedPosition) {
+    locations = [
+      ...mapMarkers,
+      { ...baseLocationMarker, position: selectedPosition, id: SELECTED_MARKER_ID }
+    ];
+  }
 
   if (isLoading) {
     return <LoadingSpinner loading />;
