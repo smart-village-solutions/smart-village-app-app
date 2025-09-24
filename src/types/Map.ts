@@ -3,6 +3,7 @@ import { LocationObjectCoords } from 'expo-location';
 export type MapMarker = {
   activeBackgroundColor?: string;
   activeIconColor?: string;
+  activeIconName?: string;
   iconBackgroundColor?: string;
   iconBorderColor?: string;
   iconColor?: string;
