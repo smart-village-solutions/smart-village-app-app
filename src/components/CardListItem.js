@@ -44,8 +44,8 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
       !!picture?.url && (
         <Image
           borderRadius={sue ? 0 : imageBorderRadius}
-          childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
-          containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
+          containerStyle={[styles.imageContainer, imageStyle]}
           key={keyExtractor(picture.url, index)}
           placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
@@ -110,7 +110,7 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
       pictureFallback: () => (
         <SueImageFallback
           key={keyExtractor('fallbackImage', index)}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImageContainer]}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
         />
       ),
       status: () => (
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '100%'
   },
-  sueImageContainer: {
+  sueImage: {
     alignSelf: 'auto',
     borderTopLeftRadius: normalize(8),
     borderTopRightRadius: normalize(8),

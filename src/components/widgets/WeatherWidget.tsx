@@ -46,7 +46,7 @@ export const WeatherWidget = ({ text }: WidgetProps) => {
                 uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
                 captionText: description
               }}
-              childrenContainerStyle={styles.icon}
+              style={styles.icon}
               resizeMode="contain"
             />
           </View>

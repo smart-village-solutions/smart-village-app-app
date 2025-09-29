@@ -38,7 +38,7 @@ export const DailyWeather = ({ date, description, icon, temperatures, index }: P
             uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
             captionText: description
           }}
-          childrenContainerStyle={styles.icon}
+          style={styles.icon}
           resizeMode="contain"
         />
         <WrapperRow>
