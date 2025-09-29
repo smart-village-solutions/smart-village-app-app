@@ -5614,6 +5614,11 @@ expo-image-picker@~17.0.8:
   dependencies:
     expo-image-loader "~6.0.0"
 
+expo-image@~3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/expo-image/-/expo-image-3.0.8.tgz#ec76f7a300712cc659b197e5478362426e411424"
+  integrity sha512-L83fTHVjvE5hACxUXPk3dpABteI/IypeqxKMeOAAcT2eB/jbqT53ddsYKEvKAP86eoByQ7+TCtw9AOUizEtaTQ==
+
 expo-in-app-updates@^0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/expo-in-app-updates/-/expo-in-app-updates-0.9.0.tgz#bc6f909864928f78681de9b1f61d84511b27eb21"
