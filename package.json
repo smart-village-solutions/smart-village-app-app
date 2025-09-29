@@ -82,6 +82,7 @@
     "expo-device": "~8.0.8",
     "expo-document-picker": "~14.0.7",
     "expo-font": "~14.0.8",
+    "expo-image": "~3.0.8",
     "expo-image-picker": "~17.0.8",
     "expo-in-app-updates": "^0.9.0",
     "expo-linear-gradient": "~15.0.7",
