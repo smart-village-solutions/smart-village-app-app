@@ -183,8 +183,5 @@
     "react-test-renderer": "^19.0.0",
     "set-value": "^4.1.0",
     "typescript": "~5.9.2"
-  },
-  "resolutions": {
-    "metro": "0.82.5"
   }
 }
