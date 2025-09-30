@@ -1,5 +1,5 @@
 import 'dayjs/locale/de';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';

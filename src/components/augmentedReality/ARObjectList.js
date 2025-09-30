@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';

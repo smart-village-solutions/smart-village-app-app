@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { consts, texts } from '../../config';
 import { formatSize, formatSizeStandard } from '../fileSizeHelper';
