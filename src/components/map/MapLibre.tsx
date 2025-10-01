@@ -16,7 +16,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { featureCollection, point } from '@turf/helpers';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -553,7 +553,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: normalize(150),
     width: 'auto',
-    zIndex: 9999999
+    zIndex: 9999999,
+    ...Platform.select({
+      android: {
+        position: 'absolute'
+      }
+    })
   },
   calloutContent: {
     backgroundColor: colors.surface,
