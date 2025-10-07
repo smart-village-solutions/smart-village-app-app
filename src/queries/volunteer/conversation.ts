@@ -14,7 +14,6 @@ export const conversations = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -29,7 +28,6 @@ export const conversation = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -44,7 +42,6 @@ export const conversationRecipients = async (id: number) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -103,6 +100,7 @@ export const conversationUpload = async (uri: string, conversationId: number, mi
   const fetchObj = {
     method: 'POST',
     headers: {
+      Accept: 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     },
     uploadType: FileSystem.FileSystemUploadType.MULTIPART,

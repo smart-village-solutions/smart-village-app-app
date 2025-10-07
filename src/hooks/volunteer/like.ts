@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { createLike, deleteLike, likesByObject } from '../../queries/volunteer';
+import { QUERY_TYPES } from '../../queries';
+import { likeDelete, likeNew, likesByObject } from '../../queries/volunteer';
+import { useVolunteerRefresh } from '../HomeRefresh';
 
 export const useLike = ({
   initialLikeCount = 0,
@@ -19,13 +21,21 @@ export const useLike = ({
   const [likeId, setLikeId] = useState<number | undefined>();
   const queryClient = useQueryClient();
 
-  const { data: likesData, isLoading: likesLoading } = useQuery(
-    ['likesByObject', objectModel, objectId],
-    () => likesByObject({ objectModel, objectId })
+  const {
+    data: likesData,
+    isLoading: likesLoading,
+    refetch: likesRefetch
+  } = useQuery(['likesByObject', objectModel, objectId], () =>
+    likesByObject({ objectModel, objectId })
   );
+
+  useVolunteerRefresh(likesRefetch, QUERY_TYPES.VOLUNTEER.STREAM);
+  useVolunteerRefresh(likesRefetch, QUERY_TYPES.VOLUNTEER.GROUP);
 
   // check if user has liked the post already
   useEffect(() => {
+    setLikeCount(likesData?.total || 0);
+
     if (likesData?.results?.length && userGuid) {
       const hasUserLiked = likesData.results.find(
         ({ createdBy }: { createdBy: { guid: string } }) => userGuid === createdBy?.guid
@@ -38,11 +48,14 @@ export const useLike = ({
         setLiked(false);
         setLikeId(undefined);
       }
+    } else {
+      setLiked(false);
+      setLikeId(undefined);
     }
   }, [likesData, userGuid]);
 
   const createLikeMutation = useMutation({
-    mutationFn: createLike,
+    mutationFn: likeNew,
     onMutate: () => {
       // Optimistic update
       setLiked(true);
@@ -50,10 +63,10 @@ export const useLike = ({
     },
     onSuccess: ({ id }) => {
       setLikeId(id);
-      // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: ['likesByObject', objectModel, objectId] });
+      queryClient.invalidateQueries({ queryKey: ['likesByObject'] });
+      queryClient.invalidateQueries({ queryKey: ['commentsByObject'] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['stream'] });
     },
     onError: () => {
       // Revert optimistic update
@@ -63,7 +76,7 @@ export const useLike = ({
   });
 
   const deleteLikeMutation = useMutation({
-    mutationFn: deleteLike,
+    mutationFn: likeDelete,
     onMutate: () => {
       // Optimistic update
       setLiked(false);
@@ -71,10 +84,10 @@ export const useLike = ({
     },
     onSuccess: () => {
       setLikeId(undefined);
-      // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: ['likesByObject', objectModel, objectId] });
+      queryClient.invalidateQueries({ queryKey: ['likesByObject'] });
+      queryClient.invalidateQueries({ queryKey: ['commentsByObject'] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['stream'] });
     },
     onError: () => {
       // Revert optimistic update

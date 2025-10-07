@@ -4,7 +4,7 @@ import {
   volunteerAuthToken
 } from '../../helpers/volunteerHelper';
 
-export const createLike = async ({
+export const likeNew = async ({
   objectId,
   objectModel
 }: {
@@ -16,6 +16,7 @@ export const createLike = async ({
   const fetchObj = {
     method: 'POST',
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     },
@@ -28,7 +29,7 @@ export const createLike = async ({
   return (await fetch(`${volunteerApiV2Url}like`, fetchObj)).json();
 };
 
-export const deleteLike = async (id: number) => {
+export const likeDelete = async (id: number) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -53,6 +54,7 @@ export const likesByObject = async ({
   const fetchObj = {
     method: 'GET',
     headers: {
+      Accept: 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };

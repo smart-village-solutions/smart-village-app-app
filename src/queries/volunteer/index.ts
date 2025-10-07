@@ -1,6 +1,7 @@
 export * from './auth';
 export * from './calendar';
 export * from './calendarUpload';
+export * from './comment';
 export * from './conversation';
 export * from './group';
 export * from './like';

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Image as RNImage, StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image as RNImage, StyleSheet, View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
@@ -16,8 +16,11 @@ import { useLike } from '../../hooks';
 import { VolunteerObjectModelType } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
+import { WrapperRow } from '../Wrapper';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
+import { VolunteerComment } from './VolunteerComment';
+import { VolunteerComments } from './VolunteerComments';
 import { VolunteerLike } from './VolunteerLike';
 
 export const VolunteerPostListItem = ({
@@ -25,7 +28,9 @@ export const VolunteerPostListItem = ({
   bottomDivider = true,
   openWebScreen,
   post: { id, message, content },
-  setIsCollapsed,
+  setCommentForModal,
+  setIsCommentModalCollapsed,
+  setIsPostModalCollapsed,
   setPostForModal,
   userGuid
 }: {
@@ -34,6 +39,23 @@ export const VolunteerPostListItem = ({
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
     content: {
+      comments: {
+        latest: {
+          created_at: string;
+          created_by: { guid: string; display_name: string };
+          files: {
+            guid: string;
+            id: number;
+            mime_type: string;
+          }[];
+          id: number;
+          likes: {
+            total: number;
+          };
+          message: string;
+        }[];
+        total: number;
+      };
       files: {
         guid: string;
         id: number;
@@ -44,14 +66,19 @@ export const VolunteerPostListItem = ({
       };
       metadata: {
         contentcontainer_id: number;
-        created_by: { guid: string; display_name: string };
         created_at: string;
+        created_by: { guid: string; display_name: string };
       };
     };
     id: number;
     message: string;
   };
-  setIsCollapsed: (isCollapsed: boolean) => void;
+  setCommentForModal: (comment: {
+    objectId: number;
+    objectModel: VolunteerObjectModelType;
+  }) => void;
+  setIsCommentModalCollapsed: (isCollapsed: boolean) => void;
+  setIsPostModalCollapsed: (isCollapsed: boolean) => void;
   setPostForModal: (post: {
     contentContainerId: number;
     files: {
@@ -64,7 +91,7 @@ export const VolunteerPostListItem = ({
   }) => void;
   userGuid?: string | null;
 }) => {
-  const { files, likes, metadata } = content || {};
+  const { comments, files, likes, metadata } = content || {};
   const {
     contentcontainer_id,
     created_by: { guid, display_name: displayName },
@@ -80,6 +107,14 @@ export const VolunteerPostListItem = ({
     objectModel: VolunteerObjectModelType.POST,
     userGuid
   });
+
+  const onLinkPress = useCallback(
+    (url: string) => {
+      openLink(url, openWebScreen);
+      return false;
+    },
+    [openLink, openWebScreen]
+  );
 
   useEffect(() => {
     if (!authToken || !files) return;
@@ -134,24 +169,16 @@ export const VolunteerPostListItem = ({
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
             onPress={() => {
               setPostForModal({ contentContainerId: contentcontainer_id, id, message, files });
-              setIsCollapsed(false);
+              setIsPostModalCollapsed(false);
             }}
           />
         )}
       </ListItem>
 
       <ListItem containerStyle={[styles.contentContainerStyle]}>
-        <ListItem.Content>
-          <Markdown
-            onLinkPress={(url) => {
-              openLink(url, openWebScreen);
-              return false;
-            }}
-            style={configStyles.markdown}
-          >
-            {message}
-          </Markdown>
-        </ListItem.Content>
+        <Markdown onLinkPress={onLinkPress} style={configStyles.markdown}>
+          {message}
+        </Markdown>
       </ListItem>
 
       {filesWithImages?.map((file) => {
@@ -193,10 +220,32 @@ export const VolunteerPostListItem = ({
       })}
 
       <ListItem containerStyle={[styles.filesContainerStyle, styles.paddingBottom]}>
-        <ListItem.Content>
+        <WrapperRow>
+          <VolunteerComment
+            commentsCount={comments?.total}
+            onPress={() => {
+              setCommentForModal({ objectId: id, objectModel: VolunteerObjectModelType.POST });
+              setIsCommentModalCollapsed(false);
+            }}
+          />
+          <RegularText small> • </RegularText>
           <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
-        </ListItem.Content>
+        </WrapperRow>
       </ListItem>
+
+      <View style={[styles.filesContainerStyle, styles.paddingBottom]}>
+        <VolunteerComments
+          authToken={authToken}
+          commentsCount={comments?.total}
+          latestComments={comments?.latest || []}
+          objectId={id}
+          objectModel={VolunteerObjectModelType.POST}
+          onLinkPress={onLinkPress}
+          setCommentForModal={setCommentForModal}
+          setIsCommentModalCollapsed={setIsCommentModalCollapsed}
+          userGuid={userGuid}
+        />
+      </View>
     </>
   );
 };

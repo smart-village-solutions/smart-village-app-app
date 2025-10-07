@@ -22,6 +22,7 @@ const MAX_AVATARS_COUNT = 10;
 
 export const VolunteerGroupMembersAndApplicants = ({
   groupId,
+  hideMembers = false,
   navigation,
   isGroupOwner,
   isGroupMember,
@@ -35,6 +36,7 @@ export const VolunteerGroupMembersAndApplicants = ({
   isSuccessRequest
 }: {
   groupId: number;
+  hideMembers: boolean;
   navigation: StackScreenProps<any>['navigation'];
   isGroupOwner?: boolean;
   isGroupMember?: boolean;
@@ -100,7 +102,7 @@ export const VolunteerGroupMembersAndApplicants = ({
 
   return (
     <>
-      {!!groupMembers?.length && (
+      {!hideMembers && !!groupMembers?.length && (
         <Wrapper>
           <TouchableOpacity
             onPress={() =>
