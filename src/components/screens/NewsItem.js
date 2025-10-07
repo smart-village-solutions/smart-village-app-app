@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { consts } from '../../config';
 import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { SettingsContext } from '../../SettingsProvider';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
 import { SectionHeader } from '../SectionHeader';
@@ -17,6 +18,10 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, route }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { showImageRights } = globalSettings || {};
+  const imageRightsPosition = showImageRights?.newsDetail?.imageRightsPosition;
+
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings, categories } =
     data;
 
@@ -71,7 +76,10 @@ export const NewsItem = ({ data, route }) => {
       )}
 
       {/* the images from the first content block will be present in the main image carousel */}
-      <ImageSection isNews mediaContents={contentBlocks?.[0]?.mediaContents} />
+      <ImageSection
+        imageRightsPosition={imageRightsPosition}
+        mediaContents={contentBlocks?.[0]?.mediaContents}
+      />
 
       {!!contentBlocks?.length &&
         contentBlocks.map((contentBlock, index) => (

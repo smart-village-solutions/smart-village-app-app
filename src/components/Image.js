@@ -33,7 +33,7 @@ export const Image = ({
   button,
   childrenContainerStyle,
   containerStyle,
-  isNews,
+  imageRightsPosition,
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
   placeholderStyle = styles.placeholderStyle,
@@ -141,12 +141,14 @@ export const Image = ({
           <View style={styles.contentContainerStyle}>
             {!!message && <ImageMessage message={message} />}
             {!!button && <ImageButton button={button} />}
-            {!isNews && showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
+            {!imageRightsPosition && showImageRights && (
+              <ImageRights imageRights={sourceProp.copyright} />
+            )}
           </View>
         )}
       </RNEImage>
-      {isNews && showImageRights && (
-        <ImageRights imageRights={sourceProp.copyright} isNews={isNews} />
+      {!!imageRightsPosition && showImageRights && (
+        <ImageRights imageRights={sourceProp.copyright} imageRightsPosition={imageRightsPosition} />
       )}
     </View>
   );
@@ -187,7 +189,7 @@ Image.propTypes = {
   button: PropTypes.object,
   childrenContainerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  isNews: PropTypes.bool,
+  imageRightsPosition: PropTypes.string,
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
   placeholderStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

@@ -6,14 +6,19 @@ import { colors, normalize } from '../config';
 
 import { RegularText } from './Text';
 
-export const ImageRights = ({ imageRights, isNews }) => (
-  <View style={[styles.containerStyle, isNews && styles.isNewsStyle]}>
-    {!isNews && (
+export const ImageRights = ({ imageRights, imageRightsPosition = 'inside-bottom-right' }) => (
+  <View
+    style={[
+      styles.containerStyle,
+      imageRightsPosition === 'outside-bottom' && styles.imageRightsBottomPositionStyle
+    ]}
+  >
+    {!imageRightsPosition && (
       <RegularText small style={styles.copyrightStyle}>
         ©
       </RegularText>
     )}
-    <RegularText style={[!isNews ? styles.textStyle : styles.newsTextStyle]}>
+    <RegularText style={[!imageRightsPosition ? styles.textStyle : styles.newsTextStyle]}>
       {imageRights}
     </RegularText>
   </View>
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
     paddingRight: normalize(1.5),
     paddingTop: normalize(1.5)
   },
-  isNewsStyle: {
+  imageRightsBottomPositionStyle: {
     position: 'relative',
     paddingHorizontal: normalize(16),
     backgroundColor: colors.transparent
@@ -49,5 +54,5 @@ const styles = StyleSheet.create({
 
 ImageRights.propTypes = {
   imageRights: PropTypes.string.isRequired,
-  isNews: PropTypes.bool
+  imageRightsPosition: PropTypes.string
 };
