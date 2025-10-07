@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, styles as configStyles, Icon, normalize } from '../../config';
+import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
 import { momentFormat, volunteerListDate } from '../../helpers';
 import { useInfiniteComments } from '../../hooks/volunteer/comment';
 import { VolunteerComment, VolunteerObjectModelType } from '../../types';
@@ -28,8 +28,8 @@ export const VolunteerComments = ({
 }: {
   authToken: string | null;
   commentsCount: number;
-  commentId: number;
-  isAnswer: boolean;
+  commentId?: number;
+  isAnswer?: boolean;
   latestComments: VolunteerComment[];
   objectId: number;
   objectModel: VolunteerObjectModelType;
@@ -61,7 +61,7 @@ export const VolunteerComments = ({
         <ListItem containerStyle={styles.loadPreviousContainer}>
           <TouchableOpacity onPress={loadPreviousComments}>
             <RegularText small>
-              {`Zeige die vorherigen ${previousCommentsCount} Kommentare`}
+              {texts.volunteer.showPreviousComments(previousCommentsCount)}
             </RegularText>
           </TouchableOpacity>
         </ListItem>
