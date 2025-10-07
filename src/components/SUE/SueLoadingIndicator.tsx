@@ -1,17 +1,16 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { colors, normalize } from '../../config';
 import { Image } from '../Image';
 
 export const SueLoadingIndicator = () => {
   return (
-    <View style={styles.animationContainer}>
-      <Image
-        source={require('../../../assets/lottie/SUE/broom.gif')}
-        containerStyle={styles.image}
-      />
-    </View>
+    <Image
+      containerStyle={styles.animationContainer}
+      source={require('../../../assets/lottie/SUE/broom.gif')}
+      style={styles.image}
+    />
   );
 };
 
