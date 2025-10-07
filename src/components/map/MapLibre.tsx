@@ -551,6 +551,7 @@ const styles = StyleSheet.create({
   calloutContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: normalize(150),
     width: 'auto',
     zIndex: 9999999
   },
