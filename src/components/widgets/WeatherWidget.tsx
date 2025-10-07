@@ -3,8 +3,8 @@ import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { consts, device, normalize, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
+import { consts, normalize, texts } from '../../config';
+import { graphqlFetchPolicy, normalizeStyleValues } from '../../helpers';
 import { useHomeRefresh } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -12,7 +12,6 @@ import { WidgetProps } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
-import { normalizeStyleValues } from '../screens';
 
 const { POLL_INTERVALS } = consts;
 
@@ -37,15 +36,9 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
 
   const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
 
-  const normalizedFontStyle = normalizeStyleValues(
-    Object.keys(fontStyle).length ? fontStyle : fontStyle
-  );
-  const normalizedIconStyle = normalizeStyleValues(
-    Object.keys(iconStyle).length ? iconStyle : iconStyle
-  );
-  const normalizedWidgetStyle = normalizeStyleValues(
-    Object.keys(customWidgetStyle || {}).length ? customWidgetStyle : customWidgetStyle
-  );
+  const normalizedFontStyle = normalizeStyleValues(fontStyle);
+  const normalizedIconStyle = normalizeStyleValues(iconStyle);
+  const normalizedWidgetStyle = normalizeStyleValues(customWidgetStyle);
 
   useHomeRefresh(refetch);
 

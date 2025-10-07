@@ -191,7 +191,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
-  const { widget: widgetStyle } = appDesignSystem;
+  const { widgets: widgetStyle } = appDesignSystem;
 
   const interactionHandler = useCallback(
     (response) => {

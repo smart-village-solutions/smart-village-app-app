@@ -5,7 +5,7 @@ import { IconProps, normalize } from '../../config';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
-import { normalizeStyleValues } from '../screens';
+import { normalizeStyleValues } from '../../helpers';
 
 type Props = {
   count?: number | string;
@@ -27,15 +27,9 @@ type Props = {
 export const DefaultWidget = ({ Icon, count, onPress, text, image, widgetStyle }: Props) => {
   const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
 
-  const normalizedFontStyle = normalizeStyleValues(
-    Object.keys(fontStyle).length ? fontStyle : fontStyle
-  );
-  const normalizedIconStyle = normalizeStyleValues(
-    Object.keys(iconStyle).length ? iconStyle : iconStyle
-  );
-  const normalizedWidgetStyle = normalizeStyleValues(
-    Object.keys(customWidgetStyle).length ? customWidgetStyle : customWidgetStyle
-  );
+  const normalizedFontStyle = normalizeStyleValues(fontStyle);
+  const normalizedIconStyle = normalizeStyleValues(iconStyle);
+  const normalizedWidgetStyle = normalizeStyleValues(customWidgetStyle);
 
   return (
     <TouchableOpacity onPress={onPress} style={normalizedWidgetStyle}>

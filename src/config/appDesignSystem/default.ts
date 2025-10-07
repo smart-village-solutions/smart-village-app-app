@@ -69,7 +69,7 @@ export const defaultAppDesignSystemConfig = {
     statuses: [{ status: '', matchingStatuses: [], codesForFilter: '', iconName: '' }],
     textStyle: {}
   },
-  widget: {
+  widgets: {
     fontStyle: {},
     iconStyle: {},
     widgetStyle: {}
