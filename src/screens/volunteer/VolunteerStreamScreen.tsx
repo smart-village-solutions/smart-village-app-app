@@ -158,43 +158,21 @@ export const VolunteerStreamScreen = () => {
     // return keys and values are taken from `parseVolunteerData` in volunteerHelper
     return activeEntries?.map((volunteer) => {
       const objectModel = volunteer?.content?.metadata?.object_model;
-      let teaserTitle;
-
-      if (objectModel === VolunteerObjectModelType.CALENDAR) {
-        teaserTitle = volunteer.content?.topics?.map((topic) => topic.name).join(', ');
-      }
+      const isCalendar = objectModel === VolunteerObjectModelType.CALENDAR;
+      const queryType = isCalendar ? QUERY_TYPES.VOLUNTEER.CALENDAR : query;
 
       return {
         ...volunteer,
         title: volunteer.title || volunteer.name,
-        subtitle:
-          volunteer.subtitle ||
-          volunteerSubtitle(
-            volunteer,
-            objectModel === VolunteerObjectModelType.CALENDAR
-              ? QUERY_TYPES.VOLUNTEER.CALENDAR
-              : query,
-            true,
-            false
-          ),
-        badge: volunteer.badge,
-        statustitle: volunteer.statustitle,
-        statustitleIcon: volunteer.statustitleIcon,
-        teaserTitle,
-        picture: volunteer.picture,
+        subtitle: volunteer.subtitle || volunteerSubtitle(volunteer, queryType, true, false),
+        teaserTitle: isCalendar
+          ? volunteer.content?.topics?.map((topic) => topic.name).join(', ')
+          : undefined,
         routeName: ScreenName.VolunteerDetail,
-        onPress: volunteer.onPress,
         listDate: volunteer.listDate || volunteerListDate(volunteer),
-        status: volunteer.status,
         params: {
-          title: getTitleForQuery(
-            objectModel === VolunteerObjectModelType.CALENDAR ? QUERY_TYPES.VOLUNTEER.CALENDAR : '',
-            volunteer
-          ),
-          query:
-            objectModel === VolunteerObjectModelType.CALENDAR
-              ? QUERY_TYPES.VOLUNTEER.CALENDAR
-              : undefined,
+          title: getTitleForQuery(isCalendar ? QUERY_TYPES.VOLUNTEER.CALENDAR : '', volunteer),
+          query: isCalendar ? QUERY_TYPES.VOLUNTEER.CALENDAR : undefined,
           queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
           rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
           details: volunteer
