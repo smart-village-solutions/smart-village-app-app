@@ -24,8 +24,8 @@ export const usePushNotifications = (
 
   if (isActive === false) return;
 
-  const notificationListener = useRef<Notifications.EventSubscription>(null);
-  const responseListener = useRef<Notifications.EventSubscription>(null);
+  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
+  const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
   const [currentAppState, setCurrentAppState] = useState<AppStateStatus>();
 
