@@ -35,6 +35,7 @@ export type VolunteerGroup = {
   contentContainerId: number;
   description?: string;
   guid: string;
+  hideMembers: number;
   id: number;
   joinPolicy?: JOIN_POLICY_TYPES;
   name: string;
