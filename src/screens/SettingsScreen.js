@@ -16,7 +16,8 @@ import {
   ListSettings,
   LocationSettings,
   MowasRegionSettings,
-  PermanentFilterSettings
+  PermanentFilterSettings,
+  PersonalizedPushSettings
 } from '../components/settings';
 import { colors, consts, normalize, texts } from '../config';
 import {
@@ -50,7 +51,8 @@ export const SETTINGS_SCREENS = {
   LIST: 'listSettings',
   LOCATION: 'locationSettings',
   MOWAS_REGION: 'mowasRegionSettings',
-  PERMANENT_FILTER: 'permanentFilterSettings'
+  PERMANENT_FILTER: 'permanentFilterSettings',
+  PERSONALIZED_PUSH: 'personalizedPushSettings'
 };
 
 /* eslint-disable complexity */
@@ -124,8 +126,25 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
         navigation={navigation}
       />
     );
+  } else if (item === SETTINGS_SCREENS.PERSONALIZED_PUSH) {
+    component = (
+      <TextListItem
+        item={{
+          bottomDivider: false,
+          isHeadlineTitle: false,
+          params: {
+            setting: item,
+            title: title || texts.settingsContents.personalizedPush.setting
+          },
+          routeName: ScreenName.Settings,
+          title: title || texts.settingsContents.personalizedPush.setting
+        }}
+        listsWithoutArrows={listsWithoutArrows}
+        navigation={navigation}
+      />
+    );
   } else {
-    component = <SettingsToggle item={item} />;
+    component = <SettingsToggle needsConnection={false} item={item} />;
   }
 
   return component;
@@ -140,7 +159,7 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-const onActivatePushNotifications = (revert) => {
+export const onActivatePushNotifications = (revert) => {
   handleSystemPermissions(false)
     .then((hasPermission) => {
       if (!hasPermission) {
@@ -163,7 +182,7 @@ const onActivatePushNotifications = (revert) => {
     });
 };
 
-const onDeactivatePushNotifications = (revert) => {
+export const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false)
     .then((success) => !success && revert())
     .catch((error) => {
@@ -175,7 +194,11 @@ const onDeactivatePushNotifications = (revert) => {
 export const SettingsScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
-  const { listsWithoutArrows = false, settingsScreenListItemTitles = {} } = settings;
+  const {
+    listsWithoutArrows = false,
+    settingsScreenListItemTitles = {},
+    personalizedPush = {}
+  } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
 
@@ -190,19 +213,25 @@ export const SettingsScreen = ({ navigation, route }) => {
       if (settings.pushNotifications !== false) {
         const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-        settingsList.push({
-          data: [
-            {
-              title:
-                settingsScreenListItemTitles.pushNotifications ||
-                texts.settingsTitles.pushNotifications,
-              topDivider: false,
-              value: pushPermission,
-              onActivate: onActivatePushNotifications,
-              onDeactivate: onDeactivatePushNotifications
-            }
-          ]
-        });
+        if (personalizedPush.categories) {
+          settingsList.push({
+            data: [SETTINGS_SCREENS.PERSONALIZED_PUSH]
+          });
+        } else {
+          settingsList.push({
+            data: [
+              {
+                title:
+                  settingsScreenListItemTitles.pushNotifications ||
+                  texts.settingsTitles.pushNotifications,
+                topDivider: false,
+                value: pushPermission,
+                onActivate: onActivatePushNotifications,
+                onDeactivate: onDeactivatePushNotifications
+              }
+            ]
+          });
+        }
       }
 
       // settings should sometimes contain matomo analytics next, depending on server settings
@@ -398,6 +427,9 @@ export const SettingsScreen = ({ navigation, route }) => {
       break;
     case SETTINGS_SCREENS.AR:
       Component = <AugmentedReality id={settings.ar?.tourId} onSettingsScreen />;
+      break;
+    case SETTINGS_SCREENS.PERSONALIZED_PUSH:
+      Component = <PersonalizedPushSettings />;
       break;
     default:
       Component = (
