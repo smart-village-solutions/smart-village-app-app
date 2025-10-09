@@ -224,16 +224,40 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, rout
                 <RegularText>{payload.departureTime} Uhr</RegularText>
               </WrapperRow>
             )}
-            {!!payload?.departureAddress && (
+            {payload?.departureAddress ? (
               <WrapperRow>
                 <BoldText>{texts.noticeboard.inputDepartureAddress}: </BoldText>
                 <RegularText>{payload.departureAddress}</RegularText>
               </WrapperRow>
+            ) : (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputDepartureAddress}: </BoldText>
+                <RegularText>
+                  {[
+                    payload?.departureStreet,
+                    [payload?.departureZip, payload?.departureCity].filter(Boolean).join(' ')
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </RegularText>
+              </WrapperRow>
             )}
-            {!!payload?.destinationAddress && (
+            {payload?.destinationAddress ? (
               <WrapperRow>
                 <BoldText>{texts.noticeboard.inputDestinationAddress}: </BoldText>
                 <RegularText>{payload.destinationAddress}</RegularText>
+              </WrapperRow>
+            ) : (
+              <WrapperRow>
+                <BoldText>{texts.noticeboard.inputDestinationAddress}: </BoldText>
+                <RegularText>
+                  {[
+                    payload?.destinationStreet,
+                    [payload?.destinationZip, payload?.destinationCity].filter(Boolean).join(' ')
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </RegularText>
               </WrapperRow>
             )}
             {!!payload?.drivingFrequency && (

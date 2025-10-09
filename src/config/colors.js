@@ -12,7 +12,7 @@ export const colors = {
   darkerPrimary: 'rgb(15, 70, 24)',
   darkerPrimaryRgba: 'rgba(15, 70, 24, 0.6)', // darkerPrimary with 0.6 alpha
   secondary: 'rgb(9, 72, 60)',
-  accent: 'rgb(15, 70, 24)',
+  accent: 'rgb(15, 70, 24)', // darkerPrimary
   blue: '#5C7ADB',
 
   error: 'rgb(174, 0, 29)',
@@ -33,5 +33,5 @@ export const colors = {
   gray40,
   gray60,
 
-  refreshControl: 'rgb(15, 70, 24)'
+  refreshControl: 'rgb(15, 70, 24)' // darkerPrimary
 };

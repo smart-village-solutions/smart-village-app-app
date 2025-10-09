@@ -85,9 +85,15 @@ type TNoticeboardCreateData = {
   carColor?: string;
   comments?: string;
   departureAddress?: string;
+  departureStreet?: string;
+  departureZip?: string;
+  departureCity?: string;
   departureDate?: string;
   departureTime?: string;
   destinationAddress?: string;
+  destinationStreet?: string;
+  destinationZip?: string;
+  destinationCity?: string;
   drivingFrequency?: string;
   drivingFrequencyDays?: string | string[];
   licensePlate?: string;
@@ -214,6 +220,9 @@ export const ProfileNoticeboardCreateForm = ({
       carColor: data?.payload?.carColor ?? '',
       comments: data?.payload?.comments ?? '',
       departureAddress: data?.payload?.departureAddress ?? '',
+      departureStreet: data?.payload?.departureStreet ?? '',
+      departureZip: data?.payload?.departureZip ?? '',
+      departureCity: data?.payload?.departureCity ?? '',
       departureDate: data?.payload?.departureDate
         ? moment(data?.payload?.departureDate, 'DD.MM.YYYY').toDate()
         : moment().toDate(),
@@ -221,6 +230,9 @@ export const ProfileNoticeboardCreateForm = ({
         ? moment(data?.payload?.departureTime, 'HH:mm').toDate()
         : moment().toDate(),
       destinationAddress: data?.payload?.destinationAddress ?? '',
+      destinationStreet: data?.payload?.destinationStreet ?? '',
+      destinationZip: data?.payload?.destinationZip ?? '',
+      destinationCity: data?.payload?.destinationCity ?? '',
       drivingFrequency: data?.payload?.drivingFrequency ?? '',
       drivingFrequencyDays: data?.payload?.drivingFrequencyDays?.length
         ? JSON.stringify(data?.payload?.drivingFrequencyDays)
@@ -796,7 +808,7 @@ export const ProfileNoticeboardCreateForm = ({
             </Wrapper>
           )}
 
-          {carpoolInputConfig?.[selectedCategory]?.includes('departureAddress') && (
+          {carpoolInputConfig?.[selectedCategory]?.includes('departureAddress') ? (
             <Wrapper noPaddingTop>
               <Input
                 name="departureAddress"
@@ -810,9 +822,59 @@ export const ProfileNoticeboardCreateForm = ({
                 control={control}
               />
             </Wrapper>
+          ) : (
+            <WrapperHorizontal>
+              <Label bold>{texts.noticeboard.inputDepartureAddress}</Label>
+            </WrapperHorizontal>
           )}
 
-          {carpoolInputConfig?.[selectedCategory]?.includes('destinationAddress') && (
+          {carpoolInputConfig?.[selectedCategory]?.includes('departureStreet') && (
+            <Wrapper noPaddingTop noPaddingBottom>
+              <Input
+                name="departureStreet"
+                placeholder={texts.noticeboard.inputDepartureStreet}
+                validate
+                errorMessage={errors.departureStreet && errors.departureStreet.message}
+                control={control}
+              />
+            </Wrapper>
+          )}
+
+          {carpoolInputConfig?.[selectedCategory]?.includes('departureZip') && (
+            <Wrapper noPaddingTop noPaddingBottom>
+              <Input
+                name="departureZip"
+                placeholder={`${texts.noticeboard.inputDepartureZip} *`}
+                validate
+                maxLength={5}
+                keyboardType="numeric"
+                textContentType="postalCode"
+                rules={{
+                  required: `${texts.noticeboard.inputDepartureZip} ${texts.noticeboard.inputErrorText}`,
+                  pattern: {
+                    value: /^\d{5}$/,
+                    message: texts.noticeboard.inputDepartureZipError
+                  }
+                }}
+                errorMessage={errors.departureZip && errors.departureZip.message}
+                control={control}
+              />
+            </Wrapper>
+          )}
+
+          {carpoolInputConfig?.[selectedCategory]?.includes('departureCity') && (
+            <Wrapper noPaddingTop>
+              <Input
+                name="departureCity"
+                placeholder={texts.noticeboard.inputDepartureCity}
+                validate
+                errorMessage={errors.departureCity && errors.departureCity.message}
+                control={control}
+              />
+            </Wrapper>
+          )}
+
+          {carpoolInputConfig?.[selectedCategory]?.includes('destinationAddress') ? (
             <Wrapper noPaddingTop>
               <Input
                 name="destinationAddress"
@@ -826,7 +888,58 @@ export const ProfileNoticeboardCreateForm = ({
                 control={control}
               />
             </Wrapper>
+          ) : (
+            <WrapperHorizontal>
+              <Label bold>{texts.noticeboard.inputDestinationAddress}</Label>
+            </WrapperHorizontal>
           )}
+
+          {carpoolInputConfig?.[selectedCategory]?.includes('destinationStreet') && (
+            <Wrapper noPaddingTop noPaddingBottom>
+              <Input
+                name="destinationStreet"
+                placeholder={texts.noticeboard.inputDestinationStreet}
+                validate
+                errorMessage={errors.destinationStreet && errors.destinationStreet.message}
+                control={control}
+              />
+            </Wrapper>
+          )}
+
+          {carpoolInputConfig?.[selectedCategory]?.includes('destinationZip') && (
+            <Wrapper noPaddingTop noPaddingBottom>
+              <Input
+                name="destinationZip"
+                placeholder={`${texts.noticeboard.inputDestinationZip} *`}
+                validate
+                maxLength={5}
+                keyboardType="numeric"
+                textContentType="postalCode"
+                rules={{
+                  required: `${texts.noticeboard.inputDestinationZip} ${texts.noticeboard.inputErrorText}`,
+                  pattern: {
+                    value: /^\d{5}$/,
+                    message: texts.noticeboard.inputDestinationZipError
+                  }
+                }}
+                errorMessage={errors.destinationZip && errors.destinationZip.message}
+                control={control}
+              />
+            </Wrapper>
+          )}
+
+          {carpoolInputConfig?.[selectedCategory]?.includes('destinationCity') && (
+            <Wrapper noPaddingTop>
+              <Input
+                name="destinationCity"
+                placeholder={texts.noticeboard.inputDestinationCity}
+                validate
+                errorMessage={errors.destinationCity && errors.destinationCity.message}
+                control={control}
+              />
+            </Wrapper>
+          )}
+
           {carpoolInputConfig?.[selectedCategory]?.includes('drivingFrequency') && (
             <Wrapper noPaddingTop>
               <Label bold>{texts.noticeboard.drivingFrequency} *</Label>
