@@ -70,7 +70,7 @@ export const VolunteerComments = ({
       {comments?.map((comment, index) => {
         const {
           commentsCount: childCommentsCount = 0,
-          comments,
+          comments: childComments,
           files,
           id = 0,
           likes,
@@ -151,7 +151,7 @@ export const VolunteerComments = ({
                   commentsCount={childCommentsCount}
                   commentId={id}
                   isAnswer
-                  latestComments={comments || []}
+                  latestComments={childComments || []}
                   objectId={objectId}
                   objectModel={VolunteerObjectModelType.COMMENT}
                   onLinkPress={onLinkPress}
