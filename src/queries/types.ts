@@ -114,13 +114,14 @@ export const QUERY_TYPES = {
 export const getQueryType = (input: string) => {
   const camelCaseInput = _camelCase(input);
   const availableTypes = [
-    QUERY_TYPES.TOUR,
-    QUERY_TYPES.POINTS_OF_INTEREST,
-    QUERY_TYPES.NEWS_ITEM,
     QUERY_TYPES.EVENT_RECORD,
-    QUERY_TYPES.VOLUNTEER.HOME,
+    QUERY_TYPES.NEWS_ITEM,
+    QUERY_TYPES.POINTS_OF_INTEREST,
+    QUERY_TYPES.TOUR,
     QUERY_TYPES.VOLUNTEER.CONVERSATION,
-    QUERY_TYPES.VOLUNTEER.GROUP
+    QUERY_TYPES.VOLUNTEER.GROUP,
+    QUERY_TYPES.VOLUNTEER.HOME,
+    QUERY_TYPES.WASTE_ADDRESSES
   ];
 
   // special condition used for push notifications coming from messaging
