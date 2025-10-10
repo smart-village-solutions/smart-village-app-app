@@ -15,12 +15,14 @@ import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 
+import { VolunteerCommentModal } from './VolunteerCommentModal';
 import { VolunteerPostListItem } from './VolunteerPostListItem';
 import { VolunteerPostModal } from './VolunteerPostModal';
 import { VolunteerPostTextField } from './VolunteerPostTextField';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
+/* eslint-disable complexity */
 export const VolunteerPosts = ({
   contentContainerId,
   isGroupMember,
@@ -36,9 +38,11 @@ export const VolunteerPosts = ({
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   userGuid?: string | null;
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [postForModal, setPostForModal] = useState();
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [commentForModal, setCommentForModal] = useState();
+  const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
+  const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
     () => postsQuery({ contentContainerId }),
@@ -60,8 +64,8 @@ export const VolunteerPosts = ({
 
   useEffect(() => {
     // refetch posts when modal is closed
-    isCollapsed && refetch?.();
-  }, [isCollapsed]);
+    (isCommentModalCollapsed || isPostModalCollapsed) && refetch?.();
+  }, [isCommentModalCollapsed, isPostModalCollapsed]);
 
   useEffect(() => {
     const fetchAuthToken = async () => {
@@ -107,7 +111,7 @@ export const VolunteerPosts = ({
           <VolunteerPostTextField
             onPress={() => {
               setPostForModal(undefined);
-              setIsCollapsed(false);
+              setIsPostModalCollapsed(false);
             }}
           />
         </WrapperHorizontal>
@@ -133,7 +137,9 @@ export const VolunteerPosts = ({
                 bottomDivider={false}
                 openWebScreen={openWebScreen}
                 post={post}
-                setIsCollapsed={setIsCollapsed}
+                setCommentForModal={setCommentForModal}
+                setIsCommentModalCollapsed={setIsCommentModalCollapsed}
+                setIsPostModalCollapsed={setIsPostModalCollapsed}
                 setPostForModal={setPostForModal}
                 userGuid={userGuid}
               />
@@ -166,14 +172,26 @@ export const VolunteerPosts = ({
         <VolunteerPostModal
           authToken={authToken}
           contentContainerId={contentContainerId}
-          isCollapsed={isCollapsed}
-          setIsCollapsed={setIsCollapsed}
+          isCollapsed={isPostModalCollapsed}
           post={postForModal}
+          setIsCollapsed={setIsPostModalCollapsed}
+        />
+      )}
+
+      {!!commentForModal?.objectId && !!commentForModal?.objectModel && (
+        <VolunteerCommentModal
+          authToken={authToken}
+          comment={commentForModal}
+          isCollapsed={isCommentModalCollapsed}
+          objectId={commentForModal.objectId}
+          objectModel={commentForModal.objectModel}
+          setIsCollapsed={setIsCommentModalCollapsed}
         />
       )}
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   badge: {

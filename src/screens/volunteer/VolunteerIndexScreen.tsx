@@ -18,6 +18,7 @@ import {
   RegularText,
   SafeAreaViewFlex,
   Search,
+  VolunteerCommentModal,
   VolunteerPostModal,
   VolunteerPostTextField,
   Wrapper,
@@ -105,9 +106,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const [queryVariables] = useState(initialQueryVariables);
   const [filterVariables, setFilterVariables] = useState(initialQueryVariables);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [postForModal, setPostForModal] = useState();
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [commentForModal, setCommentForModal] = useState();
+  const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
+  const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
@@ -121,6 +124,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
   const isGroups =
     query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY;
+  const isConversations = query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS;
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
   const { data, isLoading, refetch, userGuid } = useVolunteerData({
@@ -141,7 +145,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-volunteerGroupsIntroText',
     name: 'volunteerGroupsIntroText',
-    type: 'html'
+    type: 'html',
+    skip: !isGroups
   });
 
   // action to open source urls
@@ -154,23 +159,18 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   useFocusEffect(
     useCallback(() => {
       refetch();
-      refetchGroupsIntroText();
+      isGroups && refetchGroupsIntroText();
     }, [])
   );
 
   useFocusEffect(
     useCallback(() => {
-      if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
+      if (isConversations) {
         // this is needed because the chat screen is locked to portrait mode
         ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
       }
     }, [])
   );
-
-  useEffect(() => {
-    // refetch posts when modal is closed
-    isCollapsed && refetch?.();
-  }, [isCollapsed]);
 
   useEffect(() => {
     const fetchAuthToken = async () => {
@@ -198,7 +198,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
             <VolunteerPostTextField
               onPress={() => {
                 setPostForModal(undefined);
-                setIsCollapsed(false);
+                setIsPostModalCollapsed(false);
               }}
             />
           </WrapperHorizontal>
@@ -271,7 +271,14 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={isCalendar && showCalendar ? [] : data}
           sectionByDate={isCalendar && !showCalendar}
           query={query}
-          queryVariables={{ authToken, setIsCollapsed, setPostForModal, userGuid }}
+          queryVariables={{
+            authToken,
+            setCommentForModal,
+            setIsCommentModalCollapsed,
+            setIsPostModalCollapsed,
+            setPostForModal,
+            userGuid
+          }}
           refetch={refetch}
           refreshControl={
             <RefreshControl
@@ -305,13 +312,26 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
             </Wrapper>
           )}
 
-        <VolunteerPostModal
-          authToken={authToken}
-          contentContainerId={queryVariables?.contentContainerId}
-          isCollapsed={isCollapsed}
-          setIsCollapsed={setIsCollapsed}
-          post={postForModal}
-        />
+        {isPosts && isGroupMember && (
+          <VolunteerPostModal
+            authToken={authToken}
+            contentContainerId={queryVariables?.contentContainerId}
+            isCollapsed={isPostModalCollapsed}
+            post={postForModal}
+            setIsCollapsed={setIsPostModalCollapsed}
+          />
+        )}
+
+        {isPosts && !!commentForModal?.objectId && !!commentForModal?.objectModel && (
+          <VolunteerCommentModal
+            authToken={authToken}
+            comment={commentForModal}
+            isCollapsed={isCommentModalCollapsed}
+            objectId={commentForModal.objectId}
+            objectModel={commentForModal.objectModel}
+            setIsCollapsed={setIsCommentModalCollapsed}
+          />
+        )}
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );

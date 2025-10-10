@@ -24,7 +24,8 @@ import {
 import {
   VOLUNTEER_GROUP_REFRESH_EVENT,
   useOpenWebScreen,
-  useVolunteerNavigation
+  useVolunteerNavigation,
+  useVolunteerRefresh
 } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import {
@@ -80,6 +81,7 @@ export const VolunteerGroup = ({
     contentcontainer_id: contentContainerId,
     description,
     guid,
+    hideMembers,
     id,
     join_policy: joinPolicy,
     modules,
@@ -139,9 +141,9 @@ export const VolunteerGroup = ({
     currentUserId && mutateLeave({ id, userId: currentUserId });
   }, [isGroupMember]);
 
-  const refreshGroup = useCallback(() => {
-    refetch();
+  useVolunteerRefresh(refetch, QUERY_TYPES.VOLUNTEER.GROUP);
 
+  const refreshGroup = useCallback(() => {
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
@@ -216,6 +218,7 @@ export const VolunteerGroup = ({
       <SectionHeader title={name} />
       <VolunteerGroupMembersAndApplicants
         groupId={id}
+        hideMembers={!!hideMembers}
         navigation={navigation}
         isGroupOwner={isGroupOwner}
         isGroupMember={isGroupMember}

@@ -20,7 +20,6 @@ export const calendarAll = async (queryVariables?: {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -41,7 +40,6 @@ export const calendar = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };

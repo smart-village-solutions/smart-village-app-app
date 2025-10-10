@@ -1,6 +1,7 @@
 import { QUERY_TYPES } from '../../queries';
 
 export * from './calendar';
+export * from './comment';
 export * from './conversation';
 export * from './countries';
 export * from './group';
@@ -14,5 +15,7 @@ export enum VolunteerModulesType {
 }
 
 export enum VolunteerObjectModelType {
-  Post = 'humhub\\modules\\post\\models\\Post'
+  CALENDAR = 'humhub\\modules\\calendar\\models\\CalendarEntry',
+  COMMENT = 'humhub\\modules\\comment\\models\\Comment',
+  POST = 'humhub\\modules\\post\\models\\Post'
 }

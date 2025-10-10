@@ -59,6 +59,7 @@ import {
   groupsMy,
   me,
   posts,
+  stream,
   user
 } from './volunteer';
 import {
@@ -151,6 +152,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
     [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
+    [QUERY_TYPES.VOLUNTEER.STREAM]: stream,
     [QUERY_TYPES.VOLUNTEER.USER]: user
   };
 

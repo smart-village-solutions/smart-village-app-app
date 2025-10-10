@@ -12,6 +12,7 @@ import {
   RegularText,
   SafeAreaViewFlex,
   Search,
+  VolunteerCommentModal,
   VolunteerPostListItem,
   VolunteerPostModal,
   WrapperVertical
@@ -59,9 +60,11 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
     spaces: [guid]
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [postForModal, setPostForModal] = useState();
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [commentForModal, setCommentForModal] = useState();
+  const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
+  const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
+  const [postForModal, setPostForModal] = useState();
   const [didAutoFetch, setDidAutoFetch] = useState(false);
   const { start_date, end_date, dateRange, ...restQueryVariables } = queryVariables;
   const adjustedQueryVariables = {
@@ -105,11 +108,6 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
       refetchGroupSearchIntroText();
     }, [])
   );
-
-  useEffect(() => {
-    // refetch posts when modal is closed
-    isCollapsed && refetch?.();
-  }, [isCollapsed]);
 
   useEffect(() => {
     const fetchAuthToken = async () => {
@@ -219,7 +217,9 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
                   metadata: { created_at: post.created_at, created_by: post.author }
                 }
               }}
-              setIsCollapsed={setIsCollapsed}
+              setCommentForModal={setCommentForModal}
+              setIsCommentModalCollapsed={setIsCommentModalCollapsed}
+              setIsPostModalCollapsed={setIsPostModalCollapsed}
               setPostForModal={setPostForModal}
               userGuid={userGuid}
             />
@@ -245,9 +245,20 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
           <VolunteerPostModal
             authToken={authToken}
             contentContainerId={contentContainerId}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed}
+            isCollapsed={isPostModalCollapsed}
             post={postForModal}
+            setIsCollapsed={setIsPostModalCollapsed}
+          />
+        )}
+
+        {!!commentForModal?.objectId && !!commentForModal?.objectModel && (
+          <VolunteerCommentModal
+            authToken={authToken}
+            comment={commentForModal}
+            isCollapsed={isCommentModalCollapsed}
+            objectId={commentForModal.objectId}
+            objectModel={commentForModal.objectModel}
+            setIsCollapsed={setIsCommentModalCollapsed}
           />
         )}
       </DefaultKeyboardAvoidingView>

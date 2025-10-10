@@ -8,7 +8,6 @@ export const posts = async ({ contentContainerId }: { contentContainerId: number
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -23,7 +22,6 @@ export const post = async (id: number) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -81,8 +79,6 @@ export const postDelete = async ({ id }: VolunteerPost) => {
   const fetchObj = {
     method: 'DELETE',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
