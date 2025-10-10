@@ -159,12 +159,12 @@ export const VolunteerCommentModal = ({
           {!!isEdit && <Input name="id" hidden control={control} />}
           <Input
             control={control}
+            errorMessage={errors.message && `${texts.volunteer.message} muss ausgefüllt werden`}
             label={texts.volunteer.commentLabel}
             minHeight={normalize(100)}
             multiline
             name="message"
             placeholder={texts.volunteer.commentLabel}
-            errorMessage={errors.message && `${texts.volunteer.message} muss ausgefüllt werden`}
             rules={{ required: true }}
             textAlignVertical="top"
             textContentType="none"
