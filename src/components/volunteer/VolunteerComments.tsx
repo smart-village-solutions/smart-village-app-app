@@ -67,7 +67,7 @@ export const VolunteerComments = ({
         </ListItem>
       )}
 
-      {comments?.map((comment, index) => {
+      {comments?.map((comment) => {
         const {
           commentsCount: childCommentsCount = 0,
           comments: childComments,
@@ -82,7 +82,7 @@ export const VolunteerComments = ({
         const isUserAuthor = userGuid === guid;
 
         return (
-          <Fragment key={`index${index}-comment${id}`}>
+          <Fragment key={`comment-${id}`}>
             <ListItem containerStyle={styles.commentsContainer}>
               <VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />
 
