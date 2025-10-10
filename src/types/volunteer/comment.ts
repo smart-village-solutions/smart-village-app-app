@@ -1,4 +1,4 @@
-type VolunteerFileObject = {
+export type VolunteerFileObject = {
   id: number;
   guid: string;
   mime_type: string;

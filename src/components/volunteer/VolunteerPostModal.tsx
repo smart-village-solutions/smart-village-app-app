@@ -15,7 +15,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { colors, consts, normalize, texts } from '../../config';
 import { VOLUNTEER_GROUP_REFRESH_EVENT, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
 import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
-import { VolunteerPost } from '../../types';
+import { VolunteerFileObject, VolunteerPost } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { MultiImageSelector } from '../selectors';
@@ -37,11 +37,7 @@ export const VolunteerPostModal = ({
   post?: {
     id: number;
     message: string;
-    files: {
-      id: number;
-      guid: string;
-      mime_type: string;
-    }[];
+    files: VolunteerFileObject[];
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {

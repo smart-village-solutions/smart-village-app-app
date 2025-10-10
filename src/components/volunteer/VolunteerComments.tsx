@@ -6,7 +6,7 @@ import Markdown from 'react-native-markdown-display';
 import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
 import { momentFormat, volunteerListDate } from '../../helpers';
 import { useInfiniteComments } from '../../hooks/volunteer/comment';
-import { VolunteerComment, VolunteerObjectModelType } from '../../types';
+import { VolunteerComment, VolunteerFileObject, VolunteerObjectModelType } from '../../types';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
@@ -35,11 +35,7 @@ export const VolunteerComments = ({
   objectModel: VolunteerObjectModelType;
   onLinkPress: (url: string) => void;
   setCommentForModal: (comment: {
-    files?: {
-      guid: string;
-      id: number;
-      mime_type: string;
-    }[];
+    files?: VolunteerFileObject[];
     message?: string;
     objectId: number;
     objectModel: VolunteerObjectModelType;

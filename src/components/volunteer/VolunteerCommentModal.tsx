@@ -19,7 +19,7 @@ import {
   VOLUNTEER_STREAM_REFRESH_EVENT
 } from '../../hooks';
 import { uploadFile } from '../../queries/volunteer';
-import { VolunteerComment, VolunteerObjectModelType } from '../../types';
+import { VolunteerComment, VolunteerFileObject, VolunteerObjectModelType } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { MultiImageSelector } from '../selectors';
@@ -39,11 +39,7 @@ export const VolunteerCommentModal = ({
   authToken: string | null;
   comment?: {
     message: string;
-    files: {
-      id: number;
-      guid: string;
-      mime_type: string;
-    }[];
+    files: VolunteerFileObject[];
   };
   isCollapsed: boolean;
   objectId: number;

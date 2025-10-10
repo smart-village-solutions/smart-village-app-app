@@ -13,7 +13,7 @@ import {
   volunteerListDate
 } from '../../helpers';
 import { useLike } from '../../hooks';
-import { VolunteerObjectModelType } from '../../types';
+import { VolunteerFileObject, VolunteerObjectModelType } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
@@ -43,11 +43,7 @@ export const VolunteerPostListItem = ({
         latest: {
           created_at: string;
           created_by: { guid: string; display_name: string };
-          files: {
-            guid: string;
-            id: number;
-            mime_type: string;
-          }[];
+          files: VolunteerFileObject[];
           id: number;
           likes: {
             total: number;
@@ -56,11 +52,7 @@ export const VolunteerPostListItem = ({
         }[];
         total: number;
       };
-      files: {
-        guid: string;
-        id: number;
-        mime_type: string;
-      }[];
+      files: VolunteerFileObject[];
       likes: {
         total: number;
       };
@@ -81,11 +73,7 @@ export const VolunteerPostListItem = ({
   setIsPostModalCollapsed: (isCollapsed: boolean) => void;
   setPostForModal: (post: {
     contentContainerId: number;
-    files: {
-      guid: string;
-      id: number;
-      mime_type: string;
-    }[];
+    files: VolunteerFileObject[];
     id: number;
     message: string;
   }) => void;

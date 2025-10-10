@@ -5,6 +5,7 @@ import Lightbox from 'react-native-lightbox-v2';
 
 import { colors, device, normalize } from '../../config';
 import { imageWidth, volunteerApiV1Url } from '../../helpers';
+import { VolunteerFileObject } from '../../types';
 import { Image } from '../Image';
 
 export const VolunteerCommentFiles = ({
@@ -13,11 +14,7 @@ export const VolunteerCommentFiles = ({
   isAnswer
 }: {
   authToken: string | null;
-  files: {
-    guid: string;
-    id: number;
-    mime_type: string;
-  }[];
+  files: VolunteerFileObject[];
   isAnswer: boolean;
 }) => {
   const [filesWithImages, setFilesWithImages] = useState([]);
