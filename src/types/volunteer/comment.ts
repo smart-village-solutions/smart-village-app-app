@@ -1,3 +1,9 @@
+type VolunteerFileObject = {
+  id: number;
+  guid: string;
+  mime_type: string;
+};
+
 export type VolunteerComment = {
   comments: VolunteerComment[];
   commentsCount: number;
@@ -6,7 +12,7 @@ export type VolunteerComment = {
     guid: string;
     display_name: string;
   };
-  files?: string;
+  files?: string | VolunteerFileObject[];
   id?: number;
   likes: {
     total: number;
