@@ -11,7 +11,7 @@ import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProps) => {
+export const ConstructionSiteNewsWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const refreshTime = useRefreshTime('news-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -48,6 +48,7 @@ export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProp
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
+      widgetStyle={widgetStyle}
     />
   );
 };

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
@@ -189,6 +190,8 @@ export const HomeScreen = ({ navigation, route }) => {
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
+  const { widgets: widgetStyle } = appDesignSystem;
 
   const interactionHandler = useCallback(
     (response) => {
@@ -309,7 +312,7 @@ export const HomeScreen = ({ navigation, route }) => {
               refreshTimeKey="publicJsonFile-homeCarousel"
             />
 
-            <Widgets widgetConfigs={widgetConfigs} />
+            <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />
 
             <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>

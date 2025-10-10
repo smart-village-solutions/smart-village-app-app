@@ -6,7 +6,7 @@ import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const CustomWidget = ({ text, additionalProps }: WidgetProps) => {
+export const CustomWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
 
   return (
@@ -15,6 +15,7 @@ export const CustomWidget = ({ text, additionalProps }: WidgetProps) => {
       image={additionalProps?.image}
       onPress={() => navigation.navigate(additionalProps.routeName, additionalProps.params)}
       text={text ?? texts.widgets.custom}
+      widgetStyle={widgetStyle}
     />
   );
 };

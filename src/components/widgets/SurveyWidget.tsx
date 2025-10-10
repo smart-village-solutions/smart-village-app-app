@@ -11,7 +11,7 @@ import { ScreenName, Survey, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const SurveyWidget = ({ text, additionalProps }: WidgetProps) => {
+export const SurveyWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('survey-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
@@ -42,6 +42,7 @@ export const SurveyWidget = ({ text, additionalProps }: WidgetProps) => {
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.surveys}
+      widgetStyle={widgetStyle}
     />
   );
 };

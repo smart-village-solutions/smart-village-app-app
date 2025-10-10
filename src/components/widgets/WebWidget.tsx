@@ -6,7 +6,7 @@ import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const WebWidget = ({ text = '', additionalProps }: WidgetProps) => {
+export const WebWidget = ({ text = '', additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
 
   const onPress = useCallback(() => {
@@ -24,6 +24,7 @@ export const WebWidget = ({ text = '', additionalProps }: WidgetProps) => {
       image={additionalProps?.image}
       onPress={onPress}
       text={text}
+      widgetStyle={widgetStyle}
     />
   );
 };

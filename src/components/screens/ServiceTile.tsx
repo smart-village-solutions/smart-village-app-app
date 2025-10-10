@@ -5,31 +5,12 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, consts, device, Icon, IconSet, IconUrl, normalize } from '../../config';
+import { normalizeStyleValues } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
-
-const normalizeStyleValues = (styleObj: any) => {
-  if (!Object.keys(styleObj).length) return styleObj;
-
-  const normalizedStyle = {};
-
-  for (const key in styleObj) {
-    const value = styleObj[key];
-
-    if (typeof value === 'number') {
-      normalizedStyle[key] = normalize(value);
-    } else if (typeof value === 'object' && value !== null) {
-      normalizedStyle[key] = normalizeStyleValues(value);
-    } else {
-      normalizedStyle[key] = value;
-    }
-  }
-
-  return normalizedStyle;
-};
 
 export type TServiceTile = {
   accessibilityLabel: string;

@@ -9,7 +9,7 @@ import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) => {
+export const WaterTemperatureWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const { temperature, refresh } = useWaterTemperature();
 
@@ -30,6 +30,7 @@ export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) =
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.water}
+      widgetStyle={widgetStyle}
     />
   );
 };

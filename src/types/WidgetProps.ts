@@ -26,4 +26,9 @@ export type WidgetProps = {
     webUrl?: string;
   };
   text?: string;
+  widgetStyle?: {
+    fontStyle?: any;
+    iconStyle?: any;
+    widgetStyle?: any;
+  };
 };
