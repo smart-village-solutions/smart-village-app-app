@@ -1,6 +1,7 @@
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
+import _uniqBy from 'lodash/uniqBy';
 
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
@@ -153,34 +154,40 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
 };
 
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
-  return data?.map((newsItem, index) => ({
-    id: newsItem.id,
-    overtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
-    title: newsItem.contentBlocks?.[0]?.title,
-    picture: {
-      url:
-        newsItem.contentBlocks?.[0]?.mediaContents?.length &&
-        _filter(
-          newsItem.contentBlocks[0].mediaContents,
-          (mediaContent) =>
-            mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-        )[0]?.sourceUrl?.url
-    },
-    routeName: ScreenName.Detail,
-    params: {
-      bookmarkable,
-      title: titleDetail,
-      suffix: newsItem.categories?.[0]?.id,
-      query: QUERY_TYPES.NEWS_ITEM,
-      queryVariables: { id: `${newsItem.id}` },
-      rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
-      shareContent: {
-        message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
+  return _uniqBy(
+    data?.map((newsItem, index) => ({
+      id: newsItem.id,
+      overtitle: subtitle(
+        momentFormatUtcToLocal(newsItem.publishedAt),
+        newsItem.dataProvider?.name
+      ),
+      title: newsItem.contentBlocks?.[0]?.title,
+      picture: {
+        url:
+          newsItem.contentBlocks?.[0]?.mediaContents?.length &&
+          _filter(
+            newsItem.contentBlocks[0].mediaContents,
+            (mediaContent) =>
+              mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+          )[0]?.sourceUrl?.url
       },
-      details: newsItem
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+      routeName: ScreenName.Detail,
+      params: {
+        bookmarkable,
+        title: titleDetail,
+        suffix: newsItem.categories?.[0]?.id,
+        query: QUERY_TYPES.NEWS_ITEM,
+        queryVariables: { id: `${newsItem.id}` },
+        rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
+        shareContent: {
+          message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
+        },
+        details: newsItem
+      },
+      bottomDivider: !skipLastDivider || index !== data.length - 1
+    })),
+    'id'
+  );
 };
 
 const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = undefined) => {
