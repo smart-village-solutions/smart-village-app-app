@@ -17,10 +17,11 @@ export const useNewsCategories = () => {
   } = sections;
 
   return categoriesNews as Array<{
+    categoryButton?: string;
+    categoryId?: string | number;
     categoryTitle?: string;
     categoryTitleDetail?: string;
-    categoryButton?: string;
-    categoryId?: string;
-    indexCategoryIds?: string[];
+    indexCategoryIds?: (string | number)[];
+    parentCategoryId?: string | number;
   }>;
 };

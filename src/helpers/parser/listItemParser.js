@@ -175,7 +175,7 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
       params: {
         bookmarkable,
         title: titleDetail,
-        suffix: newsItem.categories?.[0]?.id,
+        suffix: newsItem.categories?.[0]?.parent?.id || newsItem.categories?.[0]?.id,
         query: QUERY_TYPES.NEWS_ITEM,
         queryVariables: { id: `${newsItem.id}` },
         rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
