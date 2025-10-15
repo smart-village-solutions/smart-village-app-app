@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.1.4]
+
+This version adds new features to the Volunteer module and introduces more personalized push notifications
+
+### Added
+
+- added a customizable push notification feature for different news categories
+- added the ability to like and reply to comments for the volunteer module
+- added timeline feature for the volunteer module
+- added the ability to hide a group's calendar for the volunteer module
+- added the ability to add image comments to the volunteer module
+- added further developments on the noticeboard for carpool extensions especially zip filter additions
+- added a feature that automatically redirects within the app for notifications coming from the waste calendar
+- added a remotely updatable style feature for widgets
+- added a feature to reposition the copyright information in the image on the news details screen
+
+### Changed
+- adjusted querying and renderings for vouchers
+
+### Fixed
+
+- fixed an issue where news items were listed multiple times in some cases
+- fixed an issue where news items couldn't be added to favorites in some cases
+- enhanced switch disabled state handling for thumb and track colors
+
 ## [v4.1.3]
 
 This release includes a new Android target API level, important UI/UX improvements and several bug fixes for better stability
