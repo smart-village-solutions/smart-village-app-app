@@ -31,6 +31,7 @@ const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { refresh, isLoading, isLoggedIn, memberId } = useVoucher();
   const [loadingAccountCheck, setLoadingAccountCheck] = useState(true);
+  const [isAutoLoginLoading, setIsAutoLoginLoading] = useState(true);
 
   const imageUri = route?.params?.headerImage;
 
@@ -81,17 +82,8 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
     // accountCheck();
   }, []);
 
-  const isFirstMount = useRef(true);
-  const lastLoginTime = useRef<number>(Date.now());
-  const LOGIN_INTERVAL = 15 * 60 * 1000; // 15 minutes
-
   // this effect is temporary. it can be removed when the real login section is completed
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      return;
-    }
-
     const login = async () => {
       const key = await voucherAuthKey();
 
@@ -114,20 +106,18 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
           }
         }
       );
+
+      setIsAutoLoginLoading(false);
     };
 
-    const now = Date.now();
-    if (now - lastLoginTime.current >= LOGIN_INTERVAL) {
-      lastLoginTime.current = now;
-      login();
-    }
+    login();
   }, []);
 
   const refreshHome = useCallback(async () => {
     await refetchHomeText();
   }, []);
 
-  if (loadingHomeText || isLoading) {
+  if ((loadingHomeText || isLoading) && isAutoLoginLoading) {
     return <LoadingSpinner loading />;
   }
 
