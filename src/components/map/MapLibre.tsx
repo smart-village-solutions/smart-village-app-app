@@ -289,17 +289,58 @@ export const MapLibre = ({
     }
   };
 
+  const fitBoundsForCoords = (coordinates: [number, number][]) => {
+    if (!coordinates?.length || !cameraRef.current) return;
+
+    const longitudes = coordinates.map(([lng]) => lng);
+    const latitudes = coordinates.map(([, lat]) => lat);
+    const ne: [number, number] = [Math.max(...longitudes), Math.max(...latitudes)];
+    const sw: [number, number] = [Math.min(...longitudes), Math.min(...latitudes)];
+
+    if (ne[0] === sw[0] && ne[1] === sw[1]) {
+      cameraRef.current?.setCamera({
+        animationDuration: 800,
+        animationMode: 'flyTo',
+        centerCoordinate: ne,
+        zoomLevel: 18
+      });
+      return;
+    }
+
+    cameraRef.current?.fitBounds(ne, sw, 40, 1000);
+  };
+
+  const extractLeafFeatures = (leaves: any): GeoJSON.Feature[] => {
+    if (!leaves) return [];
+    if (Array.isArray(leaves)) return leaves;
+    if (Array.isArray(leaves?.features)) return leaves.features;
+    if (Array.isArray(leaves?.data?.features)) return leaves.data.features;
+    return [];
+  };
+
   const handleSourcePress = async (event: any) => {
-    const feature = event.features[0];
+    const feature = event.features?.[0];
+
     if (!feature) {
       onMapPress?.(event);
       return;
     }
 
     if (feature.properties?.cluster) {
+      const leaves = await shapeSourceRef.current?.getClusterLeaves(feature, 32, 0);
+      const coords = extractLeafFeatures(leaves)
+        .map((leaf) => leaf?.geometry?.coordinates)
+        .filter(Boolean) as [number, number][];
+
+      if (coords.length) {
+        fitBoundsForCoords(coords);
+        return;
+      }
+
       const currentZoomLevel = await mapRef.current?.getZoom();
       const zoomForCluster = await shapeSourceRef.current?.getClusterExpansionZoom(feature);
-      const newZoomLevel = Math.min((zoomForCluster ?? currentZoomLevel) + 1, 20);
+      const baseZoom = zoomForCluster ?? currentZoomLevel ?? initialZoomLevel ?? 0;
+      const newZoomLevel = Math.min(baseZoom + 2, 20);
 
       cameraRef.current?.setCamera({
         animationDuration: 1500,
@@ -307,12 +348,13 @@ export const MapLibre = ({
         centerCoordinate: feature.geometry.coordinates,
         zoomLevel: newZoomLevel
       });
-    } else {
-      cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
-      onMarkerPress?.(feature.properties?.id);
-      setIsMarkerSelected(true);
-      !!calloutTextEnabled && setSelectedFeature(feature);
+      return;
     }
+
+    cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
+    onMarkerPress?.(feature.properties?.id);
+    setIsMarkerSelected(true);
+    !!calloutTextEnabled && setSelectedFeature(feature);
   };
 
   if (loading) {
