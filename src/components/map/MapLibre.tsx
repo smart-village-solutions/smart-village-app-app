@@ -125,6 +125,7 @@ export const MapLibre = ({
     clusterCircleColor,
     clusterRadius = 50,
     clusterMaxZoom,
+    clusterMinPoints,
     clusterProperties,
     clusterTextColor,
     layerStyles = {},
@@ -370,6 +371,7 @@ export const MapLibre = ({
               cluster
               clusterRadius={clusterDistance || clusterRadius}
               clusterMaxZoomLevel={clusterMaxZoom}
+              clusterMinPoints={clusterMinPoints}
               clusterProperties={clusterProperties}
             >
               <CircleLayer
