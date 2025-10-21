@@ -108,6 +108,7 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
           theme={{
             todayTextColor: colors.primary,
             todayBackgroundColor: colors.lighterPrimaryRgba,
+            indicatorColor: colors.refreshControl,
             dotStyle: {
               borderRadius: DOT_SIZE / 2,
               height: DOT_SIZE,

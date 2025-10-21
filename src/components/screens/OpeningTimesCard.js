@@ -12,9 +12,7 @@ import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
 const TimeBox = styled.View`
   flex-direction: row;
-  flex-wrap: wrap;
   flex: 1;
-  margin-bottom: ${normalize(5)}px;
 `;
 
 const DateBox = styled(TimeBox)`
@@ -103,7 +101,7 @@ export const OpeningTimesCard = ({
               )}
 
               {!!description && (
-                <WrapperRow style={styles.marginBottom}>
+                <WrapperRow style={styles.margin}>
                   <HtmlView html={description} />
                 </WrapperRow>
               )}
@@ -127,8 +125,12 @@ export const OpeningTimesCard = ({
 
 const styles = StyleSheet.create({
   divider: {
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.gray60,
     borderBottomWidth: StyleSheet.hairlineWidth
+  },
+  margin: {
+    marginBottom: normalize(3),
+    marginTop: normalize(5)
   },
   marginBottom: {
     marginBottom: normalize(3)

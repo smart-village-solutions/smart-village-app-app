@@ -10,6 +10,7 @@ import { SettingsContext } from './SettingsProvider';
 
 export const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
 export const TERMS_AND_CONDITIONS_STORE_KEY = 'TERMS_AND_CONDITIONS_STORE_KEY';
+export const HAS_TERMS_AND_CONDITIONS_STORE_KEY = 'HAS_TERMS_AND_CONDITIONS_STORE_KEY';
 
 // this hook ensures that all settings will be properly initialized, even when onboarding
 // was completed before the settings where available, or an error occurred

@@ -159,18 +159,18 @@ export const Overviews = ({ navigation, route }) => {
     query === QUERY_TYPES.POINTS_OF_INTEREST &&
     locationServiceEnabled &&
     (locationService.sortByDistance ?? true);
-  const { loading: loadingPosition, position } = usePosition(
-    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
-  );
-  const { position: lastKnownPosition } = useLastKnownPosition(
-    !sortByDistance || systemPermission?.status !== Location.PermissionStatus.GRANTED
-  );
+  const radiusSearchByDistance = !!queryVariables?.radiusSearch?.distance;
+  const skipPosition =
+    systemPermission?.status !== Location.PermissionStatus.GRANTED ||
+    (!sortByDistance && !radiusSearchByDistance);
+  const { loading: loadingPosition, position } = usePosition(skipPosition);
+  const { position: lastKnownPosition } = useLastKnownPosition(skipPosition);
   const currentPosition = position || lastKnownPosition;
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories; // HINT: defined on a nested category list screen
-  const subQuery = route.params?.subQuery;
+  const subQuery = route.params?.subQuery ?? {};
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
@@ -220,11 +220,11 @@ export const Overviews = ({ navigation, route }) => {
       );
     }
 
-    if (sortByDistance && position && parsedListItems?.length) {
-      parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, position.coords);
+    if (sortByDistance && currentPosition && parsedListItems?.length) {
+      parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, currentPosition.coords);
     }
 
-    if (queryVariables?.radiusSearch?.distance) {
+    if (radiusSearchByDistance && currentPosition && parsedListItems?.length) {
       parsedListItems = geoLocationFilteredListItem({
         currentPosition,
         isLocationAlertShow,

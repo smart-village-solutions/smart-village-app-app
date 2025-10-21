@@ -25,6 +25,8 @@ export const logIn = async ({ username, password }: { username: string; password
 export const register = async ({
   username,
   email,
+  group,
+  firstname,
   password,
   passwordConfirmation,
   dataPrivacyCheck
@@ -34,10 +36,14 @@ export const register = async ({
       username,
       email
     },
+    profile: {
+      firstname
+    },
     password: {
       newPassword: password,
       newPasswordConfirm: passwordConfirmation
     },
+    group,
     legal: {
       dataPrivacyCheck
     }
@@ -82,7 +88,6 @@ export const me = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };

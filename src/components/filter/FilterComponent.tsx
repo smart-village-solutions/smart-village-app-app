@@ -8,6 +8,7 @@ import { DatesTypes, DropdownProps, FilterProps, FilterTypesProps, StatusProps }
 import { Label } from '../Label';
 import { Switch } from '../Switch';
 import { RegularText } from '../Text';
+import { Input } from '../form';
 
 import { WrapperVertical } from './../Wrapper';
 import { DateFilter } from './DateFilter';
@@ -20,11 +21,16 @@ const { FILTER_TYPES } = consts;
 type Props = {
   filters: FilterProps;
   filterTypes?: FilterTypesProps[];
-  isOverlayFilter: boolean;
+  isOverlayFilter?: boolean;
   setFilters: React.Dispatch<FilterProps>;
 };
 
-export const FilterComponent = ({ filters, filterTypes, isOverlayFilter, setFilters }: Props) => {
+export const FilterComponent = ({
+  filters,
+  filterTypes,
+  isOverlayFilter = false,
+  setFilters
+}: Props) => {
   const [sliderVisible, setSliderVisible] = useState(
     !filters?.radiusSearch?.currentPosition || false
   );
@@ -32,7 +38,12 @@ export const FilterComponent = ({ filters, filterTypes, isOverlayFilter, setFilt
   return (
     <>
       {filterTypes
-        ?.filter((item) => !!item.data?.length || item.type === FILTER_TYPES.CHECKBOX)
+        ?.filter(
+          (item) =>
+            !!item.data?.length ||
+            item.type === FILTER_TYPES.CHECKBOX ||
+            item.type === FILTER_TYPES.TEXT
+        )
         ?.map((item) => (
           <WrapperVertical key={item.name} style={styles.noPaddingBottom}>
             {item.type === FILTER_TYPES.DATE && (
@@ -132,6 +143,30 @@ export const FilterComponent = ({ filters, filterTypes, isOverlayFilter, setFilt
                     {...item}
                   />
                 </Collapsible>
+              </>
+            )}
+
+            {item.type === FILTER_TYPES.TEXT && (
+              <>
+                <Input
+                  name={item.name}
+                  label={item.label}
+                  placeholder={item.placeholder}
+                  value={item.value || filters[item.name]}
+                  maxLength={5}
+                  keyboardType="numeric"
+                  textContentType="postalCode"
+                  onChange={(value) => {
+                    setFilters(
+                      updateFilters({
+                        currentFilters: filters,
+                        name: item.name,
+                        value
+                      })
+                    );
+                  }}
+                  onBlur={() => {}}
+                />
               </>
             )}
           </WrapperVertical>

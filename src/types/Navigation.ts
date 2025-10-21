@@ -15,6 +15,7 @@ export enum ScreenName {
   BookmarkCategory = 'BookmarkCategory',
   Bookmarks = 'Bookmarks',
   Category = 'Category',
+  CitySelection = 'CitySelection',
   Company = 'Company',
   ConstructionSiteDetail = 'ConstructionSiteDetail',
   ConstructionSiteOverview = 'ConstructionSiteOverview',
@@ -48,6 +49,7 @@ export enum ScreenName {
   NestedInfo = 'NestedInfo',
   Noticeboard = 'Noticeboard',
   NoticeboardForm = 'NoticeboardForm',
+  NoticeboardMemberIndex = 'NoticeboardMemberIndex',
   NoticeboardSuccess = 'NoticeboardSuccess',
   OParlCalendar = 'OParlCalendar',
   OParlDetail = 'OParlDetail',
@@ -63,13 +65,11 @@ export enum ScreenName {
   ProfileEditPassword = 'ProfileEditPassword',
   ProfileLogin = 'ProfileLogin',
   ProfileMessaging = 'ProfileMessaging',
-  ProfileNoticeboard = 'ProfileNoticeboard',
-  ProfileNoticeboardForm = 'ProfileNoticeboardForm',
-  ProfileNoticeboardMemberIndex = 'ProfileNoticeboardMemberIndex',
   ProfileRegistration = 'ProfileRegistration',
   ProfileResetPassword = 'ProfileResetPassword',
   ProfileSignup = 'ProfileSignup',
   ProfileUpdate = 'ProfileUpdate',
+  Search = 'Search',
   Service = 'Service',
   Settings = 'Settings',
   SueHome = 'SueHome',
@@ -82,6 +82,7 @@ export enum ScreenName {
   TilesScreen = 'TilesScreen',
   VolunteerDetail = 'VolunteerDetail',
   VolunteerForm = 'VolunteerForm',
+  VolunteerGroupSearch = 'VolunteerGroupSearch',
   VolunteerHome = 'VolunteerHome',
   VolunteerIndex = 'VolunteerIndex',
   VolunteerLogin = 'VolunteerLogin',
@@ -90,7 +91,9 @@ export enum ScreenName {
   VolunteerPersonal = 'VolunteerPersonal',
   VolunteerRegistered = 'VolunteerRegistered',
   VolunteerRegistration = 'VolunteerRegistration',
+  VolunteerSettings = 'VolunteerSettings',
   VolunteerSignup = 'VolunteerSignup',
+  VolunteerStream = 'VolunteerStream',
   VoucherDetail = 'VoucherDetail',
   VoucherHome = 'VoucherHome',
   VoucherIndex = 'VoucherIndex',
@@ -138,6 +141,7 @@ export type StackConfig = {
 
 export type CustomTab = {
   accessibilityLabel: string;
+  activeIconName?: keyof typeof Icon;
   iconLandscapeStyle?: ViewStyle;
   iconName: keyof typeof Icon;
   iconSize?: number;

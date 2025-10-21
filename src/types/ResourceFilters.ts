@@ -8,6 +8,7 @@ export type ResourceFilters = {
       options?: string[];
       searchable?: boolean;
       type?: string;
+      where?: string;
     };
   };
   dataResourceType: string;
@@ -28,6 +29,7 @@ export type FilterTypesProps = {
   searchPlaceholder?: string;
   type?: string;
   value?: string;
+  where?: string;
 };
 
 export type FilterProps = {
@@ -44,14 +46,17 @@ export type FilterProps = {
   };
   date?: string;
   dateEnd?: string;
+  dateFrom?: string;
   dateRange?: string[];
   dateStart?: string;
+  dateTo?: string;
   end_date?: string;
   ids?: string;
   initial_start_date?: string;
   location?: string;
   locations?: string;
   onlyCurrentlyOpen?: string;
+  orderBy?: string;
   radiusSearch?: {
     currentPosition?: boolean;
     distance?: number;

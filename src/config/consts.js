@@ -15,6 +15,7 @@ export const consts = {
     bookmarkListHint: '(Zu der Lesezeichenliste hinzufügen)',
     bookmarksHint: 'Zu den Lesezeichen wechseln',
     bookmarksIcon: 'Lesezeichen (Taste)',
+    buildNumber: '(Build-Nummer)',
     button: '(Taste)',
     calendarHint: 'Einen neuen Termin erstellen',
     calendarIcon: 'Neuer Termin (Taste)',
@@ -52,6 +53,7 @@ export const consts = {
     informationHint: 'Zu den Informationen wechseln',
     openMenuHint: 'Navigiert zum Menü',
     openMenuIcon: 'Menü (Taste)',
+    otaVersion: '(Over-The-Air-Version)',
     password: 'Kennwort',
     phoneAppHint: '(Wechselt zur Telefon-App)',
     phoneNumber: '(Telefonnummer)',
@@ -59,6 +61,8 @@ export const consts = {
     price: '(Preis)',
     privacy: 'Datenschutz',
     required: '(Erforderlich)',
+    searchHint: 'Nach Inhalten suchen',
+    searchIcon: 'Suchen (Taste)',
     settingsHint: 'Anpassen des Layouts von',
     settingsIcon: 'Einstellungen (Taste)',
     settingsIconHint: 'Zu den Einstellungen wechseln',
@@ -69,6 +73,7 @@ export const consts = {
     username: 'Benutzername',
     verified: 'Verifiziert',
     verifiedInfo: 'Informationen zur Verifikation',
+    versionInfos: 'Versionshinweise',
     website: '(Webseite)',
     webViewHint: '(Öffnet Webseite in der aktuellen App)'
   },
@@ -121,7 +126,8 @@ export const consts = {
     SLIDER: 'slider',
     SUE: {
       STATUS: 'status'
-    }
+    },
+    TEXT: 'text'
   },
 
   DIMENSIONS: {
@@ -162,7 +168,8 @@ export const consts = {
 
   IMAGE_SELECTOR_TYPES: {
     NOTICEBOARD: 'Noticeboard',
-    SUE: 'Sue'
+    SUE: 'Sue',
+    VOLUNTEER: 'Volunteer'
   },
 
   IMAGE_FROM: {

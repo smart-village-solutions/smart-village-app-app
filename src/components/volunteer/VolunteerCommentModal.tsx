@@ -1,0 +1,256 @@
+import React, { useEffect, useMemo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import {
+  Alert,
+  DeviceEventEmitter,
+  Keyboard,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
+import { Divider, Header } from 'react-native-elements';
+import { useMutation } from 'react-query';
+
+import { colors, consts, normalize, texts } from '../../config';
+import {
+  useComments,
+  VOLUNTEER_GROUP_REFRESH_EVENT,
+  VOLUNTEER_STREAM_REFRESH_EVENT
+} from '../../hooks';
+import { uploadFile } from '../../queries/volunteer';
+import { VolunteerComment, VolunteerFileObject, VolunteerObjectModelType } from '../../types';
+import { Button } from '../Button';
+import { Input } from '../form';
+import { MultiImageSelector } from '../selectors';
+import { BoldText } from '../Text';
+import { Wrapper, WrapperRow } from '../Wrapper';
+
+const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
+
+export const VolunteerCommentModal = ({
+  authToken,
+  comment,
+  isCollapsed,
+  objectId,
+  objectModel,
+  setIsCollapsed
+}: {
+  authToken: string | null;
+  comment?: {
+    message: string;
+    files: VolunteerFileObject[];
+  };
+  isCollapsed: boolean;
+  objectId: number;
+  objectModel: VolunteerObjectModelType;
+  setIsCollapsed: (isCollapsed: boolean) => void;
+}) => {
+  const isEdit = !!comment?.message;
+  const { createComment, deleteComment, updateComment } = useComments({ objectId, objectModel });
+  const [isPublishing, setIsPublishing] = React.useState(false);
+
+  const defaultValues = useMemo(
+    () => ({
+      id: objectId,
+      message: comment?.message || '',
+      files: comment?.files ? JSON.stringify(comment.files) : '[]'
+    }),
+    [objectId, comment?.message, comment?.files]
+  );
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset: resetForm
+  } = useForm<VolunteerComment>({
+    defaultValues
+  });
+
+  useEffect(() => {
+    resetForm(defaultValues);
+  }, [defaultValues, resetForm]);
+
+  const handleModalClose = () => {
+    resetForm({
+      ...defaultValues,
+      files: '[]'
+    });
+    setIsCollapsed(true);
+  };
+
+  const { mutateAsync: mutateAsyncUpload } = useMutation(uploadFile);
+
+  const onPress = async (commentData: VolunteerComment) => {
+    if (!commentData.message) return;
+    if (isEdit && !commentData.id) return;
+
+    setIsPublishing(true);
+    Keyboard.dismiss();
+    (isEdit
+      ? updateComment(commentData.id as number, commentData.message)
+      : createComment(commentData.message)
+    ).then(async ({ id }: { id: number }) => {
+      if (id) {
+        const files = JSON.parse(commentData.files) || [];
+
+        await Promise.all(
+          files
+            .filter((file) => file.uri)
+            .map(
+              async ({ uri, mimeType }) =>
+                await mutateAsyncUpload({
+                  id,
+                  fileUri: uri,
+                  mimeType,
+                  objectModel: VolunteerObjectModelType.COMMENT
+                })
+            )
+        );
+      }
+
+      setIsPublishing(false);
+      handleModalClose();
+
+      // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+      // in other components.
+      DeviceEventEmitter.emit(VOLUNTEER_STREAM_REFRESH_EVENT);
+      DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
+    });
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      onRequestClose={handleModalClose}
+      presentationStyle="pageSheet"
+      visible={!isCollapsed}
+    >
+      <Header
+        backgroundColor={colors.transparent}
+        centerComponent={{
+          text: isEdit ? texts.volunteer.commentEdit : texts.volunteer.commentNew,
+          style: {
+            color: colors.darkText,
+            fontFamily: 'condbold',
+            fontSize: normalize(18),
+            lineHeight: normalize(23)
+          }
+        }}
+        rightComponent={{
+          color: colors.darkText,
+          icon: 'close',
+          onPress: handleModalClose,
+          type: 'ionicon'
+        }}
+        rightContainerStyle={styles.headerRightContainer}
+      />
+
+      <Divider />
+
+      <ScrollView>
+        <Wrapper>
+          {!isEdit && <Input name="contentContainerId" hidden control={control} />}
+          {!!isEdit && <Input name="id" hidden control={control} />}
+          <Input
+            control={control}
+            errorMessage={errors.message && `${texts.volunteer.message} muss ausgefüllt werden`}
+            label={texts.volunteer.commentLabel}
+            minHeight={normalize(100)}
+            multiline
+            name="message"
+            placeholder={texts.volunteer.commentLabel}
+            rules={{ required: true }}
+            textAlignVertical="top"
+            textContentType="none"
+          />
+        </Wrapper>
+
+        <Wrapper>
+          <Controller
+            name="files"
+            render={({ field }) => (
+              <MultiImageSelector
+                {...{
+                  authToken,
+                  control,
+                  errorType: IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER,
+                  field,
+                  item: {
+                    buttonTitle: texts.volunteer.addImage,
+                    name: 'files'
+                  },
+                  selectorType: IMAGE_SELECTOR_TYPES.VOLUNTEER
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      </ScrollView>
+
+      <Divider />
+
+      <Wrapper>
+        <WrapperRow spaceAround>
+          <Button
+            disabled={isPublishing}
+            invert
+            notFullWidth
+            onPress={handleModalClose}
+            title={texts.volunteer.abort}
+          />
+          <Button
+            disabled={isPublishing}
+            notFullWidth
+            onPress={handleSubmit(onPress)}
+            title={isEdit ? texts.volunteer.save : texts.volunteer.publish}
+          />
+        </WrapperRow>
+
+        {!!isEdit && (
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                texts.volunteer.commentDelete,
+                texts.volunteer.commentDeleteConfirm,
+                [
+                  {
+                    text: texts.volunteer.abort,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.volunteer.delete,
+                    onPress: async () => {
+                      Keyboard.dismiss();
+                      await deleteComment(objectId);
+                      handleModalClose();
+                    },
+                    style: 'destructive'
+                  }
+                ],
+                { cancelable: true }
+              );
+            }}
+            style={styles.button}
+          >
+            <BoldText small>{texts.volunteer.commentDelete}</BoldText>
+          </TouchableOpacity>
+        )}
+      </Wrapper>
+
+      <Wrapper></Wrapper>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    padding: 8
+  },
+  headerRightContainer: {
+    justifyContent: 'center'
+  }
+});

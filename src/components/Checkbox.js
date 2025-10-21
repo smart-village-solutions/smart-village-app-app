@@ -8,9 +8,40 @@ import { useOpenWebScreen } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
-import { WrapperHorizontal, WrapperRow } from './Wrapper';
+import { WrapperHorizontal } from './Wrapper';
 
 const { a11yLabel } = consts;
+
+const renderTitleContent = ({
+  boldTitle,
+  lightest,
+  link,
+  linkDescription,
+  navigate,
+  openWebScreen,
+  title
+}) => {
+  const TextComponent = boldTitle ? BoldText : RegularText;
+
+  return (
+    <WrapperHorizontal>
+      <TextComponent small lightest={lightest}>
+        {title}
+        {(!!link || !!navigate) && !!linkDescription && (
+          <RegularText
+            small
+            primary
+            underline
+            onPress={link ? openWebScreen : navigate}
+            style={{ flexShrink: 1 }}
+          >
+            {linkDescription}
+          </RegularText>
+        )}
+      </TextComponent>
+    </WrapperHorizontal>
+  );
+};
 
 // eslint-disable-next-line complexity
 export const Checkbox = ({
@@ -50,26 +81,15 @@ export const Checkbox = ({
       }
       size={normalize(21)}
       center={center}
-      title={
-        <WrapperHorizontal>
-          <WrapperRow>
-            {boldTitle ? (
-              <BoldText small lightest={lightest}>
-                {title}
-              </BoldText>
-            ) : (
-              <RegularText small lightest={lightest}>
-                {title}
-              </RegularText>
-            )}
-            {(!!link || !!navigate) && !!linkDescription && (
-              <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
-                {linkDescription}
-              </RegularText>
-            )}
-          </WrapperRow>
-        </WrapperHorizontal>
-      }
+      title={renderTitleContent({
+        boldTitle,
+        lightest,
+        link,
+        linkDescription,
+        navigate,
+        openWebScreen,
+        title
+      })}
       onPress={onPress}
       checkedIcon={checkedIcon}
       checked={checked}

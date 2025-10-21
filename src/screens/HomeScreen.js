@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
   About,
   ConnectedImagesCarousel,
   Disturber,
+  HomeButtons,
   HomeSection,
   HomeService,
+  LiveTicker,
   NewsSectionPlaceholder,
   SafeAreaViewFlex,
   Widgets
@@ -187,6 +190,8 @@ export const HomeScreen = ({ navigation, route }) => {
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
+  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
+  const { widgets: widgetStyle } = appDesignSystem;
 
   const interactionHandler = useCallback(
     (response) => {
@@ -299,23 +304,28 @@ export const HomeScreen = ({ navigation, route }) => {
         data={data}
         ListHeaderComponent={
           <>
+            <LiveTicker publicJsonFile="homeLiveTicker" />
+
             <ConnectedImagesCarousel
               navigation={navigation}
               publicJsonFile="homeCarousel"
               refreshTimeKey="publicJsonFile-homeCarousel"
             />
 
-            <Widgets widgetConfigs={widgetConfigs} />
+            <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />
 
             <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>
         }
         ListFooterComponent={
-          route.params?.isDrawer && (
+          route.params?.isDrawer ? (
             <>
               <HomeService publicJsonFile="homeService" />
+              <HomeButtons publicJsonFile="homeButtons" />
               <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
             </>
+          ) : (
+            <HomeButtons publicJsonFile="homeButtons" />
           )
         }
         refreshControl={

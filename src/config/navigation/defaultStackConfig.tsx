@@ -11,6 +11,7 @@ import {
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
+  CitySelectionScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
   ConsulDetailScreen,
@@ -40,6 +41,7 @@ import {
   NestedInfoScreen,
   NoticeboardFormScreen,
   NoticeboardIndexScreen,
+  NoticeboardMemberIndexScreen,
   OParlCalendarScreen,
   OParlDetailScreen,
   OParlOrganizationsScreen,
@@ -54,13 +56,11 @@ import {
   ProfileHomeScreen,
   ProfileLoginScreen,
   ProfileMessagingScreen,
-  ProfileNoticeboardFormScreen,
-  ProfileNoticeboardIndexScreen,
-  ProfileNoticeboardMemberIndexScreen,
   ProfileRegistrationScreen,
   ProfileResetPasswordScreen,
   ProfileSignupScreen,
   ProfileUpdateScreen,
+  SearchScreen,
   SettingsScreen,
   SueHomeScreen,
   SueListScreen,
@@ -71,6 +71,7 @@ import {
   TilesScreen,
   VolunteerDetailScreen,
   VolunteerFormScreen,
+  VolunteerGroupSearchScreen,
   VolunteerHomeScreen,
   VolunteerIndexScreen,
   VolunteerLoginScreen,
@@ -79,7 +80,9 @@ import {
   VolunteerPersonalScreen,
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
+  VolunteerSettingsScreen,
   VolunteerSignupScreen,
+  VolunteerStreamScreen,
   VoucherDetailScreen,
   VoucherHomeScreen,
   VoucherIndexScreen,
@@ -165,6 +168,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.Category,
       screenComponent: IndexScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.myCity },
+      routeName: ScreenName.CitySelection,
+      screenComponent: CitySelectionScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.consul.home },
@@ -358,6 +366,11 @@ export const defaultStackConfig = ({
     },
     {
       initialParams,
+      routeName: ScreenName.NoticeboardMemberIndex,
+      screenComponent: NoticeboardMemberIndexScreen
+    },
+    {
+      initialParams,
       routeName: ScreenName.OParlCalendar,
       screenComponent: OParlCalendarScreen
     },
@@ -435,22 +448,6 @@ export const defaultStackConfig = ({
       screenComponent: ProfileMessagingScreen
     },
     {
-      initialParams,
-      routeName: ScreenName.ProfileNoticeboard,
-      screenComponent: ProfileNoticeboardIndexScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
-    },
-    {
-      initialParams,
-      routeName: ScreenName.ProfileNoticeboardForm,
-      screenComponent: ProfileNoticeboardFormScreen
-    },
-    {
-      initialParams,
-      routeName: ScreenName.ProfileNoticeboardMemberIndex,
-      screenComponent: ProfileNoticeboardMemberIndexScreen
-    },
-    {
       initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileRegistration,
       screenComponent: ProfileRegistrationScreen
@@ -469,6 +466,11 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileUpdate,
       screenComponent: ProfileUpdateScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.search },
+      routeName: ScreenName.Search,
+      screenComponent: SearchScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.service },
@@ -551,6 +553,11 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerFormScreen
     },
     {
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.groupSearch },
+      routeName: ScreenName.VolunteerGroupSearch,
+      screenComponent: VolunteerGroupSearchScreen
+    },
+    {
       initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerHome,
       screenComponent: VolunteerHomeScreen
@@ -595,9 +602,19 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerRegistrationScreen
     },
     {
+      initialParams,
+      routeName: ScreenName.VolunteerSettings,
+      screenComponent: VolunteerSettingsScreen
+    },
+    {
       initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
       routeName: ScreenName.VolunteerSignup,
       screenComponent: VolunteerSignupScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.volunteer.home },
+      routeName: ScreenName.VolunteerStream,
+      screenComponent: VolunteerStreamScreen
     },
     {
       initialParams,

@@ -1,44 +1,55 @@
 import * as FileSystem from 'expo-file-system';
 
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import {
+  volunteerApiV1Url,
+  volunteerApiV2Url,
+  volunteerAuthToken
+} from '../../helpers/volunteerHelper';
+import { VolunteerObjectModelType } from '../../types';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
-export const uploadFile = async (uri: string, contentContainerId: number, folderId: number) => {
+export const uploadFile = async ({
+  id,
+  fileUri,
+  mimeType,
+  objectModel = VolunteerObjectModelType.POST
+}: {
+  id: number;
+  fileUri: string;
+  mimeType: string;
+  objectModel: VolunteerObjectModelType;
+}) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     },
     uploadType: FileSystem.FileSystemUploadType.MULTIPART,
     fieldName: 'files',
-    parameters: {
-      folder_id: folderId
-    },
-    mimeType: 'png'
+    mimeType
   };
 
+  const apiUrl =
+    objectModel === VolunteerObjectModelType.POST ? volunteerApiV1Url : volunteerApiV2Url;
+
   return await FileSystem.uploadAsync(
-    `${volunteerApiV1Url}cfiles/files/container/${contentContainerId}`,
-    uri,
+    `${apiUrl}${objectModel.split('\\').pop()?.toLowerCase()}/${id}/upload-files`,
+    fileUri,
     fetchObj
   );
 };
 
-export const deleteFile = async (id: number) => {
+export const deleteFile = async (guid: string) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
     method: 'DELETE',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
 
-  return await fetch(`${volunteerApiV1Url}/cfiles/file/${id}`, fetchObj);
+  return await fetch(`${volunteerApiV2Url}file/${guid}`, fetchObj);
 };

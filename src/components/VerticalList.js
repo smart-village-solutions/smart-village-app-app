@@ -39,7 +39,7 @@ export const VerticalList = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
-  const isPartOfIndexScreen = !!query && !!queryVariables;
+  const isPartOfIndexScreen = !!query && !!queryVariables?.isPartOfIndexScreen;
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
@@ -163,10 +163,10 @@ VerticalList.propTypes = {
   fetchMoreData: PropTypes.func,
   isIndexStartingAt1: PropTypes.bool,
   isLoading: PropTypes.bool,
-  ListEmptyComponent: PropTypes.object,
-  ListFooterComponent: PropTypes.object,
+  ListEmptyComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  ListFooterComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   ListFooterLoadingIndicator: PropTypes.func,
-  ListHeaderComponent: PropTypes.object,
+  ListHeaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   listType: PropTypes.string,
   navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,

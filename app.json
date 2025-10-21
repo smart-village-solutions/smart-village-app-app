@@ -6,8 +6,9 @@
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/smart-village-solutions/smart-village-app-app",
     "platforms": ["ios", "android"],
-    "version": "4.1.0",
+    "version": "4.1.4",
     "otaVersion": 1,
+    "searchVersion": "0.0.1-beta",
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -74,7 +75,11 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "blockedPermissions": ["READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO"],
+      "blockedPermissions": [
+        "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO"
+      ],
       "config": {
         "googleMaps": {
           "apiKey": "abcdef"
@@ -87,6 +92,12 @@
         "expo-document-picker",
         {
           "appleTeamId": ""
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Erlauben Sie $(PRODUCT_NAME) den Zugriff auf Ihren Kalender."
         }
       ],
       [
@@ -105,6 +116,7 @@
         "expo-build-properties",
         {
           "android": {
+            "targetSdkVersion": 35,
             "usesCleartextTraffic": true
           }
         }

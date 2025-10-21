@@ -29,6 +29,7 @@ import { Input } from '../../form';
 import { MapLibre } from '../../map';
 
 const { a11yLabel, INPUT_KEYS, MAP } = consts;
+export const SELECTED_MARKER_ID = 'selectedMarkerId';
 
 export const locationServiceEnabledAlert = ({
   currentPosition,
@@ -200,17 +201,28 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const locations: MapMarker[] = selectedPosition
-    ? [
-        ...mapMarkers,
-        {
-          iconName: MAP.DEFAULT_PIN,
-          activeIconName: MAP.DEFAULT_PIN + 'Active',
-          position: selectedPosition,
-          id: 'selectedMarkerId'
-        }
-      ]
-    : mapMarkers;
+  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
+
+  let locations = mapMarkers as MapMarker[];
+  let mapCenterPosition = {} as { latitude: number; longitude: number };
+
+  if (selectedPosition) {
+    locations = [
+      ...mapMarkers,
+      {
+        iconName: MAP.DEFAULT_PIN,
+        activeIconName: MAP.DEFAULT_PIN + 'Active',
+        position: selectedPosition,
+        id: SELECTED_MARKER_ID
+      }
+    ];
+  }
+
+  if (alternativePosition) {
+    mapCenterPosition = getLocationMarker(alternativePosition).position;
+  } else if (defaultAlternativePosition) {
+    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
+  }
 
   if (isLoading) {
     return <LoadingSpinner loading />;

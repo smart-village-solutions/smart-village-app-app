@@ -1,17 +1,8 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _isEmpty from 'lodash/isEmpty';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Modal,
   Platform,
@@ -29,8 +20,6 @@ import {
   BoldText,
   Button,
   Dot,
-  DrawerHeader,
-  HeaderLeft,
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
@@ -40,18 +29,8 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../components';
-import {
-  colors,
-  consts,
-  device,
-  Icon,
-  namespace,
-  normalize,
-  secrets,
-  staticRestSuffix,
-  texts
-} from '../config';
-import { formatTime, openLink, storageHelper } from '../helpers';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { formatTime, storageHelper } from '../helpers';
 import {
   useFilterStreets,
   useRenderSuggestions,
@@ -65,11 +44,12 @@ import { areValidReminderSettings } from '../jsonValidation';
 import {
   getInAppPermission,
   getReminderSettings,
+  handleSystemPermissions,
   showPermissionRequiredAlert,
   updateWasteReminderSettings
 } from '../pushNotifications';
 import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '../reducers';
-import { getLocationData } from '../screens';
+import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 import { WasteReminderSettingJson } from '../types';
 
@@ -92,7 +72,7 @@ export const WasteCollectionSettingsScreen = () => {
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
-  const { texts: wasteAddressesTexts = {}, hasExport = true } = wasteAddresses;
+  const { texts: wasteAddressesTexts = {} } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
   const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
@@ -113,7 +93,8 @@ export const WasteCollectionSettingsScreen = () => {
     reminderTime
   } = state;
   const isInitial = waste.streetId === undefined;
-  const { data, loading } = useWasteAddresses();
+  const { inputValue, renderSuggestion } = useRenderSuggestions(() => setIsStreetSelected(true));
+  const { data, loading } = useWasteAddresses({ search: inputValue });
   const addressesData = data?.wasteAddresses;
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
@@ -122,9 +103,6 @@ export const WasteCollectionSettingsScreen = () => {
   const locationData = getLocationData(streetData);
   const { getStreetString } = useStreetString();
   const streetName = locationData ? getStreetString(locationData) : undefined;
-  const { inputValue, setInputValue, renderSuggestion } = useRenderSuggestions(() =>
-    setIsStreetSelected(true)
-  );
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef(null);
 
@@ -149,6 +127,10 @@ export const WasteCollectionSettingsScreen = () => {
     } else {
       if (waste.streetId !== selectedStreetId) {
         dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+        // Activate notifications if the user has allowed system permissions
+        handleSystemPermissions().then((permission) => {
+          if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
+        });
       } else {
         dispatch({
           type: WasteSettingsActions.updateWasteSettings,
@@ -165,7 +147,14 @@ export const WasteCollectionSettingsScreen = () => {
     }
 
     setLoadingStoredSettings(false);
-  }, [getStreetString, state, streetName, waste, selectedStreetId, selectedTypeKeys]);
+  }, [
+    getStreetString,
+    waste.streetId,
+    waste.streetName,
+    waste.selectedTypeKeys,
+    selectedStreetId,
+    usedTypeKeys
+  ]);
 
   const updateSettings = useCallback(async () => {
     let errorOccurred = false;
@@ -220,45 +209,6 @@ export const WasteCollectionSettingsScreen = () => {
     loadStoredSettingsFromServer
   ]);
 
-  const triggerExport = useCallback(() => {
-    const { street, zip, city } = getLocationData(streetData);
-
-    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
-
-    let params = `street=${encodeURIComponent(street)}`;
-
-    if (zip) {
-      params += `&zip=${encodeURIComponent(zip)}`;
-    }
-
-    if (city) {
-      params += `&city=${encodeURIComponent(city)}`;
-    }
-
-    const combinedUrl = baseUrl + params;
-
-    if (device.platform === 'android') {
-      Alert.alert(
-        wasteTexts.exportAlertTitle,
-        wasteTexts.exportAlertBody,
-        [
-          {
-            onPress: () => {
-              openLink(combinedUrl);
-            }
-          }
-        ],
-        {
-          onDismiss: () => {
-            openLink(combinedUrl);
-          }
-        }
-      );
-    } else {
-      openLink(combinedUrl);
-    }
-  }, [streetData]);
-
   const saveSettings = useCallback(async () => {
     setIsSavingSettings(true);
 
@@ -302,29 +252,14 @@ export const WasteCollectionSettingsScreen = () => {
     navigation
   ]);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />,
-      headerRight: () =>
-        selectedStreetId ? (
-          <WrapperRow itemsCenter>
-            <HeaderLeft
-              onPress={isSavingSettings ? undefined : saveSettings}
-              text={wasteTexts.save}
-            />
-
-            {navigationType === 'drawer' && (
-              <DrawerHeader navigation={navigation} style={styles.icon} />
-            )}
-          </WrapperRow>
-        ) : null
-    });
-  }, [selectedStreetId, isSavingSettings, saveSettings]);
-
   // Set initial waste types used in the selected street
   useEffect(() => {
     if (usedTypes) {
       dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+      // Activate notifications if the user has allowed system permissions
+      handleSystemPermissions().then((permission) => {
+        if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
+      });
     }
   }, [usedTypes]);
 
@@ -347,20 +282,6 @@ export const WasteCollectionSettingsScreen = () => {
     asyncLoadStoredSettingsFromServer();
   }, [typeSettings]);
 
-  // Use this ref to prevent the useEffect from running multiple times
-  const hasStoredStreetSettings = useRef(false);
-
-  useEffect(() => {
-    if (
-      !hasStoredStreetSettings.current &&
-      loadedStoredSettingsInitially &&
-      waste?.streetId !== selectedStreetId
-    ) {
-      setSelectedStreetId(selectedStreetId);
-      hasStoredStreetSettings.current = true;
-    }
-  }, [loadedStoredSettingsInitially, waste.streetId, selectedStreetId]);
-
   useEffect(() => {
     if (!addressesData || !inputValue) {
       return;
@@ -373,7 +294,7 @@ export const WasteCollectionSettingsScreen = () => {
     if (!!item && selectedStreetId !== item.id) {
       setSelectedStreetId(item.id);
     }
-  }, [addressesData, getStreetString, inputValue, selectedStreetId]);
+  }, [addressesData, inputValue, getStreetString, selectedStreetId]);
 
   const onPressUpdateOnDayBefore = useCallback((value: boolean) => {
     tooltipRef?.current?.toggleTooltip();
@@ -657,14 +578,25 @@ export const WasteCollectionSettingsScreen = () => {
             )}
           </Collapsible>
 
-          {!!hasExport && (
-            <View style={styles.paddingTop}>
-              <Wrapper style={styles.noPaddingBottom}>
-                <Button title={wasteTexts.exportButton} onPress={triggerExport} />
-              </Wrapper>
-            </View>
-          )}
+          <View style={styles.spacer} />
         </ScrollView>
+
+        <View
+          style={[
+            styles.paddingTop,
+            styles.saveButtonContainer,
+            getPositionStyleByNavigation({ navigationType }).position
+          ]}
+        >
+          <Wrapper noPaddingBottom>
+            <Button
+              disabled={isSavingSettings}
+              notFullWidth
+              onPress={isSavingSettings ? undefined : saveSettings}
+              title={wasteTexts.save}
+            />
+          </Wrapper>
+        </View>
       </SafeAreaViewFlex>
     );
   }
@@ -696,9 +628,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.placeholder,
     marginVertical: normalize(4),
     width: normalize(140)
-  },
-  icon: {
-    paddingRight: normalize(10)
   },
   listItemContainer: {
     backgroundColor: colors.surface,
@@ -746,6 +675,14 @@ const styles = StyleSheet.create({
   },
   resultsList: {
     padding: normalize(14)
+  },
+  saveButtonContainer: {
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '100%'
+  },
+  spacer: {
+    height: normalize(70)
   },
   tooltipContainer: {
     borderColor: colors.shadowRgba,

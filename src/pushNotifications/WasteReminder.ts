@@ -1,9 +1,13 @@
 import * as SecureStore from 'expo-secure-store';
 
 import * as appJson from '../../app.json';
-import { device, secrets, staticRestSuffix } from '../config';
+import { device, secrets, staticRestSuffix, texts } from '../config';
 
-import { getPushTokenFromStorage, PushNotificationStorageKeys } from './TokenHandling';
+import {
+  getPushTokenFromStorage,
+  PushNotificationStorageKeys,
+  serverConnectionAlert
+} from './TokenHandling';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
@@ -95,6 +99,7 @@ const updateReminderSettings = async ({
 
       return json?.id as number | undefined;
     } catch {
+      serverConnectionAlert(false);
       return undefined;
     }
   }
@@ -118,14 +123,19 @@ const deleteReminderSetting = async (id: number | string) => {
   };
 
   if (accessToken && pushToken) {
-    return fetch(requestPath, fetchObj)
-      .then(() => {
-        return true;
-      })
-      .catch((error) => {
-        console.warn('An error occurred while deleting a reminder setting:', error);
-        return false;
-      });
+    try {
+      const response = await fetch(requestPath, fetchObj);
+      const isSuccess = response.ok;
+
+      if (!isSuccess) {
+        serverConnectionAlert(isSuccess);
+      }
+
+      return isSuccess;
+    } catch (error) {
+      console.warn('An error occurred while deleting a reminder setting:', error);
+      serverConnectionAlert(false, texts.errors.noData);
+    }
   }
 
   return false;

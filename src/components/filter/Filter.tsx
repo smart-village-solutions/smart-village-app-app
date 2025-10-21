@@ -67,26 +67,22 @@ export const Filter = ({
   useEffect(() => {
     if (!isOverlay) {
       setQueryVariables((prev) => {
-        const newFilters = { ...filters };
+        const newFilters = { search: prev.search || '', ...filters };
 
         if (newFilters.start_date === INITIAL_START_DATE) {
           delete newFilters.start_date;
 
-          return {
-            search: prev.search || '',
-            ...newFilters
-          };
+          return newFilters;
         }
 
         if (!newFilters.start_date) {
           return {
-            search: prev.search || '',
             start_date: INITIAL_START_DATE,
             ...newFilters
           };
         }
 
-        return { search: prev.search || '', ...newFilters };
+        return newFilters;
       });
     }
   }, [filters]);
@@ -104,17 +100,29 @@ export const Filter = ({
         });
       }, 500);
     } else {
-      setFilters(initialQueryVariables || {});
       setIsCollapsed(!isCollapsed);
-      setQueryVariables({ saveable: false, ...(initialQueryVariables || {}) });
+
+      const { dateRange, ...rest } = initialQueryVariables || {};
+
+      setFilters((prev) => ({
+        saveable: false,
+        search: prev.search || '',
+        ...(rest || {})
+      }));
+      setQueryVariables((prev) => ({
+        saveable: false,
+        search: prev.search || '',
+        ...(rest || {})
+      }));
     }
   };
 
   useEffect(() => {
-    if (!!isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
+    if (isOverlay && !_isEqual(filters, queryVariables) && isCollapsed) {
       setFilters(updatedQueryVariables);
+      setQueryVariables(updatedQueryVariables);
     }
-  }, [isCollapsed]);
+  }, [filters, queryVariables, isCollapsed, updatedQueryVariables]);
 
   useEffect(() => {
     if (isOverlay) {
@@ -123,13 +131,15 @@ export const Filter = ({
         'start_date',
         'end_date'
       ]);
+
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
-        if (key !== 'saveable' && activeFilters[key] !== false) {
+        if (key !== 'saveable' && key !== 'search' && activeFilters[key] !== false) {
           acc[key] = activeFilters[key];
         }
 
         return acc;
       }, {} as FilterProps);
+
       setFilterCount(Object.keys(filteredActiveFilters).length);
     }
   }, [filters, initialQueryVariables, isCollapsed]);
@@ -220,7 +230,6 @@ export const Filter = ({
                   disabled={!!isNoFilterSet}
                   notFullWidth
                   onPress={() => {
-                    setIsCollapsed(!isCollapsed);
                     let dateRange = filters.dateRange || null;
 
                     if (filters.start_date && filters.end_date) {
@@ -234,9 +243,12 @@ export const Filter = ({
                       dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
                     } else if (!filters.start_date && filters.end_date) {
                       // because of the requirement to specify the start and end date of the `dateRange`,
-                      // if only `endDate` is selected, `startDate` is set to today's date.
+                      // if only `endDate` is selected, `startDate` is set to today's date or if
+                      // `endDate` is in the past, it is set to the date of the `endDate`
                       dateRange = [
-                        moment().format('YYYY-MM-DD'),
+                        moment().isAfter(filters.end_date)
+                          ? momentFormat(filters.end_date, 'YYYY-MM-DD')
+                          : moment().format('YYYY-MM-DD'),
                         momentFormat(filters.end_date, 'YYYY-MM-DD')
                       ];
                     }
@@ -246,6 +258,8 @@ export const Filter = ({
                     } else {
                       setQueryVariables({ ...filters });
                     }
+
+                    setIsCollapsed(!isCollapsed);
                   }}
                   title={texts.filter.filter}
                 />
@@ -254,7 +268,7 @@ export const Filter = ({
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
-            <WrapperVertical style={styles.noPaddingTop}>
+            <WrapperVertical noPaddingTop>
               <FilterComponent
                 filters={filters}
                 filterTypes={filterTypes}
@@ -264,7 +278,7 @@ export const Filter = ({
 
             <Divider />
 
-            <WrapperVertical style={styles.noPaddingBottom}>
+            <WrapperVertical noPaddingBottom>
               <Button
                 disabled={!!isNoFilterSet}
                 invert
@@ -307,11 +321,5 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingLeft: normalize(8)
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });

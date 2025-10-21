@@ -58,11 +58,12 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_CATEGORIES_FILTER = gql`
-  query Categories($ids: [ID!]) {
-    categories(ids: $ids) {
+  query Categories($ids: [ID!], $tagList: [String!]) {
+    categories(ids: $ids, tagList: $tagList) {
       id
       iconName
       name
+      tagList
     }
   }
 `;

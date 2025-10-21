@@ -5,31 +5,12 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, consts, device, Icon, IconSet, IconUrl, normalize } from '../../config';
+import { normalizeStyleValues } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
-
-const normalizeStyleValues = (styleObj: any) => {
-  if (!Object.keys(styleObj).length) return styleObj;
-
-  const normalizedStyle = {};
-
-  for (const key in styleObj) {
-    const value = styleObj[key];
-
-    if (typeof value === 'number') {
-      normalizedStyle[key] = normalize(value);
-    } else if (typeof value === 'object' && value !== null) {
-      normalizedStyle[key] = normalizeStyleValues(value);
-    } else {
-      normalizedStyle[key] = value;
-    }
-  }
-
-  return normalizedStyle;
-};
 
 export type TServiceTile = {
   accessibilityLabel: string;
@@ -41,6 +22,12 @@ export type TServiceTile = {
   params?: any;
   query?: string;
   routeName: string;
+  style?: {
+    fontStyle?: any;
+    iconStyle?: any;
+    numberOfLines?: number;
+    tileStyle?: any;
+  };
   svg?: string;
   tile?: string;
   tileSizeFactor?: number;
@@ -52,14 +39,16 @@ export const ServiceTile = ({
   draggableId,
   hasDiagonalGradientBackground = false,
   isEditMode = false,
+  isLastRow = false,
   item,
   onToggleVisibility,
-  tileSizeFactor = 1,
-  serviceTiles
+  serviceTiles,
+  tileSizeFactor = 1
 }: {
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
   isEditMode?: boolean;
+  isLastRow?: boolean;
   item: TServiceTile;
   onToggleVisibility: (
     toggleableId: string,
@@ -78,16 +67,29 @@ export const ServiceTile = ({
       isEditMode
         ? onToggleVisibility(draggableId, isVisible, setIsVisible)
         : navigation.push(item.routeName, item.params),
-    [isEditMode, isVisible]
+    [isEditMode, onToggleVisibility, draggableId, isVisible, item]
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
   const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;
+  const { style: itemStyle } = item;
+  const {
+    fontStyle: itemFontStyle = {},
+    iconStyle: itemIconStyle = {},
+    numberOfLines: itemNumberOfLines,
+    tileStyle: itemTileStyle = {}
+  } = itemStyle || {};
 
-  const hasTileStyle = !!Object.keys(tileStyle).length;
+  const hasTileStyle = !!Object.keys(itemTileStyle).length || !!Object.keys(tileStyle).length;
 
-  const normalizedFontStyle = normalizeStyleValues(fontStyle);
-  const normalizedIconStyle = normalizeStyleValues(iconStyle);
-  const normalizedTileStyle = normalizeStyleValues(tileStyle);
+  const normalizedFontStyle = normalizeStyleValues(
+    Object.keys(itemFontStyle).length ? itemFontStyle : fontStyle
+  );
+  const normalizedIconStyle = normalizeStyleValues(
+    Object.keys(itemIconStyle).length ? itemIconStyle : iconStyle
+  );
+  const normalizedTileStyle = normalizeStyleValues(
+    Object.keys(itemTileStyle).length ? itemTileStyle : tileStyle
+  );
 
   return (
     <ServiceBox
@@ -95,7 +97,11 @@ export const ServiceTile = ({
       dimensions={dimensions}
       numberOfTiles={item?.numberOfTiles}
       orientation={orientation}
-      style={normalizedTileStyle}
+      style={[
+        normalizedTileStyle,
+        isEditMode && styles.editModeServiceBox,
+        isLastRow && styles.marginLeft
+      ]}
     >
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
@@ -173,7 +179,7 @@ export const ServiceTile = ({
               primary={!hasDiagonalGradientBackground}
               center
               accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
-              numberOfLines={numberOfLines}
+              numberOfLines={itemNumberOfLines || numberOfLines}
               style={normalizedFontStyle}
             >
               {item.title}
@@ -193,6 +199,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%'
   },
+  editModeServiceBox: {
+    flex: 1,
+    marginBottom: 0
+  },
+  marginLeft: {
+    marginLeft: normalize(8)
+  },
   serviceIcon: {
     alignSelf: 'center',
     paddingVertical: normalize(7.5)
@@ -205,8 +218,8 @@ const styles = StyleSheet.create({
   toggleVisibilityIcon: {
     backgroundColor: colors.surface,
     position: 'absolute',
-    right: 0,
-    top: normalize(-14),
+    right: normalize(-1),
+    top: normalize(-1),
     zIndex: 1
   },
   toggleVisibilityIconBigTile: {

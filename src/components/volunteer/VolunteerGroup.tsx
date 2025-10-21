@@ -1,6 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
@@ -17,7 +24,8 @@ import {
 import {
   VOLUNTEER_GROUP_REFRESH_EVENT,
   useOpenWebScreen,
-  useVolunteerNavigation
+  useVolunteerNavigation,
+  useVolunteerRefresh
 } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import {
@@ -31,6 +39,7 @@ import {
   ROLE_TYPES,
   ScreenName,
   VolunteerGroup as TVolunteerGroup,
+  VolunteerModulesType,
   VolunteerUser
 } from '../../types';
 import { Button } from '../Button';
@@ -43,10 +52,14 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
+import { VolunteerGroupSearch } from './VolunteerGroupSearch';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
 
 const { ROOT_ROUTE_NAMES } = consts;
+
+const limit = 99999; // NOTE: we want to receive all groups
+const page = 1;
 
 // eslint-disable-next-line complexity
 export const VolunteerGroup = ({
@@ -68,8 +81,10 @@ export const VolunteerGroup = ({
     contentcontainer_id: contentContainerId,
     description,
     guid,
+    hideMembers,
     id,
     join_policy: joinPolicy,
+    modules,
     name,
     owner,
     tags
@@ -87,6 +102,7 @@ export const VolunteerGroup = ({
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
+  const [userGuid, setUserGuid] = useState<string | null>();
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
   const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
@@ -125,6 +141,8 @@ export const VolunteerGroup = ({
     currentUserId && mutateLeave({ id, userId: currentUserId });
   }, [isGroupMember]);
 
+  useVolunteerRefresh(refetch, QUERY_TYPES.VOLUNTEER.GROUP);
+
   const refreshGroup = useCallback(() => {
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
@@ -132,8 +150,9 @@ export const VolunteerGroup = ({
   }, []);
 
   const checkIfOwner = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+    const { currentUserId, currentUserGuid } = await volunteerUserData();
 
+    setUserGuid(currentUserGuid);
     setIsGroupOwner(isOwner(currentUserId, owner));
   }, [owner]);
 
@@ -184,10 +203,9 @@ export const VolunteerGroup = ({
     getGroupAdmins();
   }, [getGroupAdmins]);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [])
+  const isCalendarModuleEnabled = useMemo(
+    () => !!modules?.find(({ id }) => id === VolunteerModulesType.CALENDAR)?.enabled,
+    [modules]
   );
 
   return (
@@ -200,6 +218,7 @@ export const VolunteerGroup = ({
       <SectionHeader title={name} />
       <VolunteerGroupMembersAndApplicants
         groupId={id}
+        hideMembers={!!hideMembers}
         navigation={navigation}
         isGroupOwner={isGroupOwner}
         isGroupMember={isGroupMember}
@@ -265,53 +284,68 @@ export const VolunteerGroup = ({
 
       {!!contentContainerId && (
         <>
-          <VolunteerHomeSection
-            linkTitle="Alle Termine anzeigen"
-            navigateLink={() =>
-              navigation.push(ScreenName.VolunteerIndex, {
-                title: texts.volunteer.events,
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: { contentContainerId },
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigate={() =>
-              navigation.push(ScreenName.VolunteerIndex, {
-                title: texts.volunteer.events,
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: { contentContainerId },
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-            queryVariables={{ contentContainerId }}
-            sectionTitle={texts.volunteer.events}
-            showLink
-          />
-
-          {(isGroupOwner || isGroupMember) && (
-            <Wrapper>
-              <Button
-                title="Termin eintragen"
-                onPress={() =>
-                  navigation.navigate(ScreenName.VolunteerForm, {
-                    title: 'Termin eintragen',
-                    query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                    groupId: contentContainerId,
+          {isCalendarModuleEnabled && (
+            <>
+              <VolunteerHomeSection
+                linkTitle="Alle Termine anzeigen"
+                navigateLink={() =>
+                  navigation.push(ScreenName.VolunteerIndex, {
+                    title: texts.volunteer.events,
+                    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                    queryVariables: { contentContainerId },
                     rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
                   })
                 }
+                navigate={() =>
+                  navigation.push(ScreenName.VolunteerIndex, {
+                    title: texts.volunteer.events,
+                    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                    queryVariables: { contentContainerId },
+                    rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                  })
+                }
+                navigation={navigation}
+                query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+                queryVariables={{ contentContainerId, limit, page }}
+                sectionTitle={texts.volunteer.events}
+                showLink
               />
-            </Wrapper>
+
+              {(isGroupOwner || isGroupMember) && (
+                <Wrapper>
+                  <Button
+                    title="Termin eintragen"
+                    onPress={() =>
+                      navigation.navigate(ScreenName.VolunteerForm, {
+                        title: 'Termin eintragen',
+                        query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                        groupId: contentContainerId,
+                        rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                      })
+                    }
+                  />
+                </Wrapper>
+              )}
+            </>
+          )}
+
+          {(isGroupOwner || isGroupMember) && (
+            <VolunteerGroupSearch
+              contentContainerId={contentContainerId}
+              guid={guid}
+              isGroupMember={isGroupMember}
+              navigation={navigation}
+              userGuid={userGuid}
+            />
           )}
 
           <VolunteerPosts
             contentContainerId={contentContainerId}
-            isRefetching={isRefetching}
-            openWebScreen={openWebScreen}
-            navigation={navigation}
             isGroupMember={isGroupMember}
+            isRefetching={isRefetching}
+            navigation={navigation}
+            openWebScreen={openWebScreen}
+            userGuid={userGuid}
           />
         </>
       )}

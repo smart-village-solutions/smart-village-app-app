@@ -47,6 +47,7 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
           childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
           containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
           key={keyExtractor(picture.url, index)}
+          placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
         />
       ),
@@ -253,6 +254,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginBottom: normalize(8)
+  },
+  placeholderStyle: {
+    backgroundColor: colors.surface,
+    flex: 1
   },
   sueContentContainer: {
     borderColor: colors.gray20,

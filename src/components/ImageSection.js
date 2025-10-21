@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 import { Image } from './Image';
 import { ImagesCarousel } from './ImagesCarousel';
 
-export const ImageSection = ({ mediaContents }) => {
+export const ImageSection = ({ imageRightsPosition, mediaContents }) => {
   const images = [];
 
   !!mediaContents?.length &&
@@ -34,7 +34,11 @@ export const ImageSection = ({ mediaContents }) => {
       {images.length > 1 && <ImagesCarousel data={images} />}
 
       {images.length === 1 && (
-        <Image source={images[0].picture} containerStyle={styles.imageContainer} />
+        <Image
+          containerStyle={styles.imageContainer}
+          imageRightsPosition={imageRightsPosition}
+          source={images[0].picture}
+        />
       )}
     </>
   );
@@ -47,5 +51,6 @@ const styles = StyleSheet.create({
 });
 
 ImageSection.propTypes = {
+  imageRightsPosition: PropTypes.string,
   mediaContents: PropTypes.array
 };

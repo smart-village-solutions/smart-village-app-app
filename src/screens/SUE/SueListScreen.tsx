@@ -210,7 +210,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   useLayoutEffect(() => {
     if (viewType === VIEW_TYPE.MAP) {
       navigation.setOptions({
-        headerTitle: texts.screenTitles.sue.mapView,
         headerLeft: () => (
           <HeaderLeft
             onPress={() => setViewType(VIEW_TYPE.LIST)}
@@ -310,7 +309,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                       label: texts.sue.filter.sortBy,
                       name: 'sortBy',
                       data: SORT_OPTIONS,
-                      placeholder: texts.sue.filter.alleSortingTypes
+                      placeholder: texts.sue.filter.allSortingTypes
                     }
                   ]}
                   queryVariables={initialQueryVariables}
@@ -321,7 +320,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
               {!!dataCount?.length && (
                 <RegularText small>
-                  {dataCount.length} {dataCount.length === 1 ? texts.sue.result : texts.sue.results}
+                  {dataCount.length}{' '}
+                  {dataCount.length === 1 ? texts.filter.result : texts.filter.results}
                 </RegularText>
               )}
             </>

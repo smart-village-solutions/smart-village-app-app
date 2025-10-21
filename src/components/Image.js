@@ -33,8 +33,10 @@ export const Image = ({
   button,
   childrenContainerStyle,
   containerStyle,
+  imageRightsPosition,
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
+  placeholderStyle = styles.placeholderStyle,
   refreshInterval,
   resizeMode = 'cover',
   source: sourceProp,
@@ -71,13 +73,6 @@ export const Image = ({
         break effect;
       }
 
-      // we needed this control to solve the problem of image not loading on android devices in development environment
-      if (__DEV__ && device.platform === 'android') {
-        setSource({ uri: sourceProp.uri });
-
-        break effect;
-      }
-
       if (refreshInterval !== undefined) {
         setSource({
           uri: addQueryParam(sourceProp.uri, `svaRefreshCount=${timestamp}`)
@@ -94,8 +89,15 @@ export const Image = ({
         break effect;
       }
 
+      const cacheOptions = {
+        headers: {
+          ...(sourceProp.headers || {}),
+          ...(apiKey ? { api_key: apiKey } : {})
+        }
+      };
+
       sourceProp.uri
-        ? CacheManager.get(sourceProp.uri, apiKey ? { headers: { api_key: apiKey } } : {})
+        ? CacheManager.get(sourceProp.uri, cacheOptions)
             .getPath()
             .then((path) => {
               mounted && setSource({ uri: path ?? NO_IMAGE.uri });
@@ -127,7 +129,7 @@ export const Image = ({
         containerStyle={containerStyle}
         style={style}
         PlaceholderContent={PlaceholderContent}
-        placeholderStyle={styles.placeholderStyle}
+        placeholderStyle={placeholderStyle}
         accessible={!!sourceProp?.captionText}
         accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
           device.platform === 'ios' ? consts.a11yLabel.image : ''
@@ -139,10 +141,15 @@ export const Image = ({
           <View style={styles.contentContainerStyle}>
             {!!message && <ImageMessage message={message} />}
             {!!button && <ImageButton button={button} />}
-            {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
+            {!imageRightsPosition && showImageRights && (
+              <ImageRights imageRights={sourceProp.copyright} />
+            )}
           </View>
         )}
       </RNEImage>
+      {!!imageRightsPosition && showImageRights && (
+        <ImageRights imageRights={sourceProp.copyright} imageRightsPosition={imageRightsPosition} />
+      )}
     </View>
   );
 };
@@ -182,8 +189,10 @@ Image.propTypes = {
   button: PropTypes.object,
   childrenContainerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  imageRightsPosition: PropTypes.string,
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
+  placeholderStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   refreshInterval: PropTypes.number,
   resizeMode: PropTypes.string,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,

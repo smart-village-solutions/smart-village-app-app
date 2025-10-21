@@ -1,19 +1,15 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery as RQuseQuery } from 'react-query';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { NetworkContext } from '../../NetworkProvider';
-import { consts, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useRefreshTime } from '../../hooks';
+import { ReactQueryClient } from '../../ReactQueryClient';
+import { texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 import { DataListSection } from '../DataListSection';
 import { WrapperVertical } from '../Wrapper';
-
-const { REFRESH_INTERVALS } = consts;
 
 type Props = {
   suffix?: number | string;
@@ -38,22 +34,23 @@ export const BookmarkSection = ({
   sectionTitle,
   setConnectionState
 }: Props) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { toggleBookmark } = useContext(BookmarkContext);
-  // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items
+  // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items,
+  // skip that for vouchers
   const variables = query === QUERY_TYPES.VOUCHERS ? { ids } : { ids: ids.slice(0, 3) };
 
   if (query === QUERY_TYPES.EVENT_RECORDS) {
     variables.onlyUniqEvents = true;
   }
 
-  const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
+  const {
+    data,
+    isLoading: loading,
+    refetch
+  } = RQuseQuery([query, variables], async () => {
+    const client = await ReactQueryClient();
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
-
-  const { loading, data, refetch } = useQuery(getQuery(query), {
-    fetchPolicy,
-    variables
+    return await client.request(getQuery(query), variables);
   });
 
   const onPressShowMore = useCallback(
@@ -77,7 +74,7 @@ export const BookmarkSection = ({
         return newState;
       });
 
-      if (!data?.[query]?.length) {
+      if (!data?.[query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query]?.length) {
         for (const id of ids) {
           toggleBookmark(query, id, suffix);
         }
@@ -91,7 +88,9 @@ export const BookmarkSection = ({
     }, [])
   );
 
-  if (!data?.[query]?.length) return null;
+  if (!data?.[query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query]?.length) {
+    return null;
+  }
 
   return (
     <WrapperVertical>
@@ -101,6 +100,7 @@ export const BookmarkSection = ({
         listType={listType}
         loading={loading}
         navigate={onPressShowMore}
+        navigateButton={onPressShowMore}
         navigation={navigation}
         query={query}
         queryVariables={variables}

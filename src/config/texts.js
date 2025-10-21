@@ -28,7 +28,8 @@ export const texts = {
     }
   },
   appIntro: {
-    continue: 'Weiter'
+    continue: 'Weiter',
+    skip: 'Überspringen'
   },
   augmentedReality: {
     arInfoScreen: {
@@ -106,6 +107,14 @@ export const texts = {
       'Es wurde noch nichts für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
+  calendarExport: {
+    abort: 'Abbrechen',
+    body: 'Um ein Event zu erstellen, müssen Sie den Kalenderzugriff erlauben.',
+    errorBody: 'Beim Exportieren des Kalendereintrags ist ein Fehler aufgetreten.',
+    errorTitle: 'Fehler',
+    settings: 'Einstellungen',
+    title: 'Hinweis'
+  },
   calendarToggle: {
     calendar: 'Kalender',
     list: 'Liste'
@@ -116,6 +125,16 @@ export const texts = {
   categoryTitles: {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
+  },
+  citySelection: {
+    alerts: {
+      cancel: 'Abbrechen',
+      ok: 'OK',
+      resetAlertMessage: 'Möchten Sie den ausgewählten Ort wirklich zurücksetzen?',
+      resetAlertTitle: 'Ort zurücksetzen'
+    },
+    emptyMessage: 'Orte nicht verfügbar',
+    next: 'Weiter'
   },
   close: 'Schließen',
   commercial: {
@@ -355,6 +374,7 @@ export const texts = {
   },
   dropdownFilter: {
     category: 'Kategorie',
+    city: 'Ort auswählen',
     dataProvider: 'Datenquellenauswahl',
     location: 'Ort'
   },
@@ -480,14 +500,21 @@ export const texts = {
     hideFilter: 'Filter ausblenden',
     filter: 'Filtern',
     resetFilter: 'Zurücksetzen',
+    result: 'Ergebnis',
+    results: 'Ergebnisse',
     showFilter: 'Filter anzeigen',
-    search: 'Was suchen Sie?',
+    search: 'Suche Gruppen anhand ihrer Beschreibung',
     settings: 'Filtereinstellungen',
     sorting: {
-      updatedDatetime: 'Änderungsdatum',
+      alphabetical: 'Alphabetisch',
+      createdAtLatestFirst: 'Neueste zuerst',
+      createdAtOldestFirst: 'Älteste zuerst',
+      date: 'Neueste',
       requestedDatetime: 'Erstelldatum',
+      score: 'Beste',
       status: 'Status',
-      title: 'Betreff'
+      title: 'Betreff',
+      updatedDatetime: 'Änderungsdatum'
     }
   },
   homeButtons: {
@@ -497,6 +524,7 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
+    buttons: 'Wichtig & Nützlich',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
     service: 'Service'
@@ -531,10 +559,14 @@ export const texts = {
     addDocuments: 'Dokumente hinzufügen',
     addImage: 'Bild hinzufügen',
     alerts: {
-      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
+      ageMax: 'Das Höchstalter beträgt 99 Jahre.',
+      ageMin: 'Das Mindestalter beträgt 18 Jahre.',
+      dateDifference: (requestedDateDifference) =>
+        `Bitte wählen Sie eine maximale Laufzeit von ${requestedDateDifference} Monaten.`,
       delete: 'Wollen Sie diesen Eintrag wirklich löschen?',
-      deleteConversation: 'Wollen Sie diese Unterhaltung wirklich löschen?',
       deleteButton: 'Löschen',
+      deleteConversation: 'Wollen Sie diese Unterhaltung wirklich löschen?',
+      departureDateAfterEndDate: 'Das Abfahrtsdatum kann nicht nach dem Ende der Laufzeit liegen.',
       documentHint: (count) => `ⓘ Es können bis zu ${count} Dokumente hochgeladen werden.`,
       documentSizeError: (size) => `Das ausgewählte Dokument darf maximal ${size} groß sein.`,
       documentsSizeError: (size) => `Die ausgewählten Dokumente dürfen maximal ${size} groß sein.`,
@@ -545,11 +577,20 @@ export const texts = {
       imageSizeError: (size) => `Das ausgewählte Bild darf maximal ${size} groß sein.`,
       imagesSizeError: (size) => `Die ausgewählten Bilder dürfen maximal ${size} groß sein.`,
       imageUploadError: 'Beim Hochladen des Bildes ist ein Fehler aufgetreten.',
+      carpoolType: 'Bitte wählen Sie die Art Ihres Inserats aus.',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
     all: 'Alles',
     backToConversation: 'Zurück zur Unterhaltung',
+    carpoolFrequency: {
+      oneTime: 'Einmalig',
+      regularly: 'Regelmäßig'
+    },
+    carpoolType: {
+      Biete: 'Ich biete eine Mitfahrgelegenheit an',
+      Suche: 'Ich suche eine Mitfahrgelegenheit'
+    },
     categoryNames: {
       neighbourlyHelp: 'Nachbarschaftshilfe',
       offer: 'Angebote',
@@ -558,21 +599,45 @@ export const texts = {
     chooseFromGallery: 'Galerie öffnen',
     close: 'Schließen',
     delete: 'Löschen',
+    departureAddress: 'Abfahrtsadresse',
+    departureDate: 'Abfahrtsdatum',
     description: 'Beschreibung',
     details: 'Details',
     documents: 'Dokumente',
     documentsInfo:
       'Du kannst maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
+    drivingDays: 'Fahrttage',
+    drivingFrequency: 'Fahrtenhäufigkeit',
     duration: 'Laufzeit',
     edit: 'Bearbeiten',
     editButton: 'Anzeige ändern',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
-    images: 'Aussagekäftiges Bild',
+    images: 'Aussagekräftiges Bild',
+    inputAge: 'Alter',
+    inputAgeError: 'Alter muss eine Zahl sein',
+    inputAvailablePlaces: 'Verfügbare Mitfahrplätze',
+    inputAvailablePlacesError: 'Verfügbare Mitfahrplätze müssen eine Zahl sein',
+    inputCarBrand: 'Automarke',
+    inputCarColor: 'Farbe des Fahrzeugs',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
+    inputComments: 'Kommentare / Besondere Infos',
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
+    inputDepartureAddress: 'Startadresse',
+    inputDepartureCity: 'Ort',
+    inputDepartureDate: 'Abfahrtsdatum',
+    inputDepartureStreet: 'Straße/Hausnummer',
+    inputDepartureTime: 'Abfahrtszeit',
+    inputDepartureZip: 'Postleitzahl',
+    inputDepartureZipError: 'Postleitzahl muss eine fünfstellige Zahl sein',
     inputDescription: 'Beschreibung',
+    inputDestinationAddress: 'Zieladresse',
+    inputDestinationCity: 'Ort',
+    inputDestinationStreet: 'Straße/Hausnummer',
+    inputDestinationZip: 'Postleitzahl',
+    inputDestinationZipError: 'Postleitzahl muss eine fünfstellige Zahl sein',
     inputErrorText: 'muss ausgefüllt werden',
+    inputLicensePlate: 'Kennzeichen',
     inputMail: 'E-Mail',
     inputMessage: 'Nachricht',
     inputName: 'Angezeigter Name',
@@ -580,23 +645,37 @@ export const texts = {
     inputPrice: 'Preis',
     inputPriceType: ' ',
     inputPriceTypePlaceholder: 'Währung oder Zusatz',
-    inputTitle: 'Titel',
+    inputTitle: 'Anzeigentitel',
     invalidMail: '-Adresse ist nicht gültig.',
     member: 'Anbieter',
     myNoticeboard: 'Meine Anzeige',
     noticeboard: 'Angebote & Gesuche',
     publicationDate: 'Erscheinungsdatum',
+    selectCarpoolType: 'Art des Inserats',
+    selectDrivingDays: 'Fahrttage auswählen',
+    selectNoticeboardType: 'Bitte wählen',
     send: 'Senden',
     sendButton: 'Anzeige erstellen',
+    sendCarpool: 'Fahrt anbieten',
     successScreen: {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
+      entryProfile: 'Ihre Anzeige wurde veröffentlicht.',
       header: 'Vielen Dank'
     },
     takePhoto: 'Bild aufnehmen',
     toConversation: 'Zur Unterhaltung',
     toRelated: 'Zu der zugehörigen Anzeige',
+    weekday: {
+      friday: 'Freitag',
+      monday: 'Montag',
+      saturday: 'Samstag',
+      sunday: 'Sonntag',
+      thursday: 'Donnerstag',
+      tuesday: 'Dienstag',
+      wednesday: 'Mittwoch'
+    },
     writeMessage: 'Unterhaltung starten'
   },
   oparl: {
@@ -884,7 +963,7 @@ export const texts = {
     deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
     deleteProfileConsent: 'Ich bin mit dem Löschen meiner Daten einverstanden.',
     deleteProfileConsentOptIn:
-      'Bitte bestätige, dass du mit dem Löschen deiner Daten einverstanden bist.',
+      'Bitte bestätigen Sie, dass Sie mit dem Löschen Ihrer Daten einverstanden sind.',
     deleteProfileSubject: 'Anfrage zur Löschung des Nutzerprofils',
     editMail: 'E-Mail-Adresse ändern',
     editPassword: 'Passwort ändern',
@@ -908,7 +987,7 @@ export const texts = {
     flagProfile: 'Anbieter melden',
     flagProfileAlertDoneTitle: 'Vielen Dank',
     flagProfileAlertDoneMessage: 'Anbieter wurde erfolgreich gemeldet.',
-    flagProfileAlertMessage: 'Bist du sicher, dass du diesen Anbieter jetzt melden möchtest?',
+    flagProfileAlertMessage: 'Sind Sie sicher, dass Sie diesen Anbieter jetzt melden möchten?',
     flagProfileSubject: 'Nutzerprofil melden',
     gender: 'Anrede',
     hint: 'Hinweis',
@@ -1003,11 +1082,13 @@ export const texts = {
     home: appJson.expo.name,
     map: 'Karte',
     mapView: 'Kartenansicht',
+    myCity: 'Mein Ort',
     profile: {
       home: 'Profil'
     },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
+    search: 'Suche',
     service: 'Service',
     settings: 'Einstellungen',
     sue: {
@@ -1023,6 +1104,7 @@ export const texts = {
       me: 'Persönliche Daten',
       groups: 'Meine Gruppen und Vereine',
       groupsFollowing: 'Gruppen und Vereine, denen ich folge',
+      groupSearch: 'Suche Inhalte',
       messages: 'Mein Postfach',
       personal: 'Mein Bereich',
       tasks: 'Meine Aufgaben'
@@ -1035,6 +1117,18 @@ export const texts = {
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
+  },
+  search: {
+    abort: 'Abbrechen',
+    noResults: 'Keine Ergebnisse gefunden.',
+    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren',
+    pleaseSearch: 'Bitte geben Sie einen Suchbegriff ein.',
+    recordTypes: {
+      eventRecord: 'Veranstaltungen',
+      newsItem: 'Nachrichten',
+      pointOfInterest: 'Orte',
+      tour: 'Touren'
+    }
   },
   serviceTiles: {
     done: 'Fertig',
@@ -1079,10 +1173,14 @@ export const texts = {
     onboarding: {
       onActivate: 'Beim nächsten Start wird die App-Einführung angezeigt.',
       onDeactivate: 'Die App-Einführung wird beim nächsten Start nicht angezeigt.',
-      ok: 'Ok'
+      ok: 'OK'
     },
     permanentFilter: {
       setting: 'Datenquellen'
+    },
+    personalizedPush: {
+      setting: 'Push-Benachrichtigungen',
+      sectionTitle: 'Push-Benachrichtigungen für Nachrichtenkategorien'
     },
     termsAndConditions: {
       abort: 'Abbrechen',
@@ -1140,7 +1238,7 @@ export const texts = {
     },
     filter: {
       allCategories: 'Alle Kategorien',
-      alleSortingTypes: 'Alle Sortierarten',
+      allSortingTypes: 'Alle Sortierarten',
       createdBy: 'Erstellt von',
       createdUntil: 'Erstellt bis',
       selectCategory: 'Kategorie auswählen',
@@ -1196,6 +1294,7 @@ export const texts = {
       back: 'Zurück',
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
+      descriptionPlaceholder: 'Weitere Hinweise',
       email: 'E-Mail-Adresse',
       emailHint:
         'ⓘ Bedenken Sie: Ohne Angabe einer E-Mail-Adresse können wir Ihnen leider keine Rückmeldung geben.',
@@ -1222,12 +1321,11 @@ export const texts = {
       termsOfService: 'Datenschutzbestimmung',
       termsOfUse: 'Nutzungsbedingungen',
       title: 'Kurze Beschreibung',
+      titlePlaceholder: 'Hier eingeben',
       postalCode: 'Postleitzahl'
     },
-    result: 'Ergebnis',
-    results: 'Ergebnisse',
     showListView: 'Liste',
-    showMapView: 'Karte',
+    showMapView: 'Karte öffnen',
     viewReports: 'Meldungen ansehen'
   },
   survey: {
@@ -1331,14 +1429,21 @@ export const texts = {
     birthday: 'Geburtstag',
     calendarMy: 'Mein Kalender',
     calendarNew: 'Termin erstellen',
+    calendarExport: 'In Kalender exportieren',
+    city: 'Ort',
+    commentAnswerNew: 'Antworten',
+    commentDelete: 'Kommentar löschen',
+    commentDeleteConfirm: 'Möchten Sie diesen Kommentar wirklich löschen?',
+    commentEdit: 'Kommentar bearbeiten',
+    commentLabel: 'Kommentar',
+    commentNew: 'Kommentieren',
     contactGroupOwner: 'Gruppenbesitzer kontaktieren',
     conversationAllStart: 'Unterhaltung mit allen beginnen',
     conversations: 'Mein Postfach',
     conversationStart: 'Unterhaltung beginnen',
     country: 'Land',
-    city: 'Ort',
-    description: 'Beschreibung',
     delete: 'Löschen',
+    description: 'Beschreibung',
     documentGreater10MBError: 'Das ausgewählte Dokument darf maximal 10 MB groß sein.',
     documents: 'Dokumente',
     edit: 'Daten bearbeiten',
@@ -1348,26 +1453,55 @@ export const texts = {
     endDate: 'Enddatum',
     endTime: 'Endzeit',
     enterCode: 'Code eingeben',
+    enterCodeInfo:
+      'Bitte klicken Sie hier, wenn Sie bereits einen Bestätigungs-Code von uns erhalten haben:\n',
+    enterCodeSentInfo:
+      'Wir haben gerade einen Bestätigungs-Code an die von Ihnen angegebene E-Mail-Adresse versandt. Bitte geben Sie diesen Code in das entsprechende Feld ein.',
     entranceFee: 'Eintrittspreis',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
+    errorLoadingUserNotificationSettings:
+      'Beim Laden deiner Einstellungen ist ein Fehler aufgetreten. Bitte erneut versuchen.',
     eventRecord: {
       appointments: 'Termine'
     },
     events: 'Veranstaltungen',
     facebook: 'Facebook',
     fax: 'Fax',
+    filter: {
+      allSortingTypes: 'Alle Sortierarten',
+      chooseSort: 'Sortierung wählen',
+      chooseStatus: 'Status wählen',
+      dateFrom: 'Von',
+      dateTo: 'Bis',
+      sort: 'Sortierung',
+      sortBy: 'Sortieren nach',
+      status: 'Status',
+      statuses: {
+        archived: 'Archiviert',
+        follow: 'Folgend',
+        member: 'Mitglied',
+        none: 'Weder..noch'
+      }
+    },
     firstname: 'Vorname',
     firstnameError: 'Vorname muss ausgefüllt werden',
     flickr: 'flickr',
     gender: 'Geschlecht',
     group: 'Gruppe/Verein',
+    groupFirstname: '(Vereins)Name',
+    groupFirstnameError: '(Vereins)Name muss ausgefüllt werden',
+    groupNew: 'Gruppe/Verein erstellen',
+    groupPlaceholder: 'Bitte wählen Sie',
+    groupRegister: 'Ich registriere mich als',
+    groupSearch: 'Suche Inhalte',
+    groupSearchNew: 'Stichwörter',
     groups: 'Gruppen und Vereine',
     groupsMy: 'Meine Gruppen und Vereine',
-    groupNew: 'Gruppe/Verein erstellen',
+    groupsSearchPlaceholder: 'z.B. Sportverein',
     imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
     images: 'Aussagekäftiges Bild',
-    invalidUrl: '-URL ist keine gültige URL',
     invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
+    invalidUrl: '-URL ist keine gültige URL',
     invite: 'Jemanden einladen',
     join: {
       1: 'Beitrittsanfrage stellen',
@@ -1376,6 +1510,8 @@ export const texts = {
     lastname: 'Nachname',
     lastnameError: 'Nachname muss ausgefüllt werden',
     leave: 'Verlassen',
+    likeDelete: 'Gefällt mir nicht mehr',
+    likeNew: 'Gefällt mir',
     linkedin: 'Linkedin',
     location: 'Ort',
     login: 'Anmelden',
@@ -1394,13 +1530,14 @@ export const texts = {
     name: 'Name',
     next: 'Weiter',
     noGroups: 'Dir gehören keine Gruppen oder Vereine, in denen du Termine eintragen könntest.',
-    noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
     notAttend: 'Nicht mehr interessiert',
+    notificationsTitle: 'Benachrichtigungen',
+    noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
     ok: 'OK',
     organizer: 'Veranstalter',
     owner: 'Inhaber',
-    participants: 'Interessierte',
     participantInfo: 'Informationen für Interessierte',
+    participants: 'Interessierte',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordDoNotMatch: 'Passwörter stimmen nicht überein',
@@ -1412,13 +1549,19 @@ export const texts = {
     phonePrivate: 'Privat Nummer',
     phoneWork: 'Arbeit Nummer',
     postalCode: 'Postleitzahl',
-    postNew: 'Neuen Beitrag verfassen',
+    postDelete: 'Beitrag löschen',
+    postDeleteConfirm:
+      'Möchten Sie diesen Beitrag wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.',
+    postEdit: 'Beitrag bearbeiten',
+    postLabel: 'Beitragstext',
+    postNew: 'Beitrag erstellen',
     posts: 'Beiträge',
     postsIndexLink: 'Alle Beiträge anzeigen',
-    privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
+    privacyChecked: 'Mit der Registrierung akzeptieren Sie die ',
     privacyCheckLink: 'Datenschutzbestimmungen',
     privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',
     privacyCheckRequireTitle: 'Hinweis',
+    publish: 'Veröffentlichen',
     recipient: 'Empfänger',
     register: 'Registrieren',
     registrationAllFieldsRequiredBody:
@@ -1436,6 +1579,7 @@ export const texts = {
     save: 'Speichern',
     search: 'Suche',
     send: 'Senden',
+    showPreviousComments: (commentsCount) => `Zeige die vorherigen ${commentsCount} Kommentare`,
     signupFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     signupFailedTitle: 'Fehler bei der Registrierung',
     skype: 'Skype',
@@ -1474,7 +1618,7 @@ export const texts = {
       desiredQuantity: 'Gewünschte Anzahl',
       emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
       frequency: (maxPerPerson, frequency) =>
-        `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
+        `${maxPerPerson || 1}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
       isNotAvailable: 'Gutschein derzeit nicht verfügbar',
       limit: (availableQuantity, maxQuantity) =>
         `Limitiert: ${availableQuantity}/${maxQuantity} verfügbar`,
@@ -1540,7 +1684,7 @@ export const texts = {
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',
     location: 'Ortschaft',
-    myLocation: 'Meine Straße:',
+    myLocation: 'Meine Straße',
     notifications: 'Benachrichtigungen',
     notificationsOn: 'Benachrichtigungen an',
     onDayBeforeCollection: 'Am Vortag',
@@ -1549,7 +1693,7 @@ export const texts = {
     reminder: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     sameDay: 'selber Tag',
-    save: 'Speichern',
+    save: 'Änderungen speichern',
     street: 'Straße',
     timeOfDay: 'Uhrzeit',
     unableToLoad:

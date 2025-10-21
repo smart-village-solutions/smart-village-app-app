@@ -3,9 +3,10 @@ import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useMutation } from 'react-query';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { jsonParser } from '../../helpers';
+import { jsonParser, volunteerApiV1Url } from '../../helpers';
 import { onDeleteImage, onImageSelect } from '../../helpers/selectors';
 import {
   useCaptureImage,
@@ -15,6 +16,7 @@ import {
   useSelectImage,
   useSystemPermission
 } from '../../hooks';
+import { deleteFile } from '../../queries/volunteer';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Image } from '../Image';
@@ -52,6 +54,7 @@ const deleteImageAlert = (onPress: () => void) =>
 
 /* eslint-disable complexity */
 export const MultiImageSelector = ({
+  authToken,
   configuration,
   control,
   coordinateCheck,
@@ -61,6 +64,7 @@ export const MultiImageSelector = ({
   item,
   selectorType
 }: {
+  authToken: string | null;
   configuration: any;
   control: any;
   coordinateCheck: any;
@@ -82,10 +86,11 @@ export const MultiImageSelector = ({
   const { name, onChange, value } = field;
   const { maxCount, maxFileSize } = configuration?.limitation || {};
 
-  const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
-  const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
+  const [infoAndErrorText, setInfoAndErrorText] = useState([]);
+  const [imagesAttributes, setImagesAttributes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
@@ -99,6 +104,18 @@ export const MultiImageSelector = ({
     exif: selectorType === IMAGE_SELECTOR_TYPES.SUE,
     saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
+
+  const { mutateAsync: mutateAsyncDeleteFile } = useMutation(deleteFile);
+
+  const values = jsonParser(value);
+
+  useEffect(() => {
+    if (!!values?.length && !hasInitialized) {
+      setImagesAttributes(values);
+      setInfoAndErrorText(values);
+      setHasInitialized(true);
+    }
+  }, [values]);
 
   useEffect(() => {
     onChange(JSON.stringify(imagesAttributes));
@@ -133,6 +150,9 @@ export const MultiImageSelector = ({
   const imageDelete = async (index: number) => {
     await onDeleteImage({
       coordinateCheck,
+      deleteImage:
+        selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER ? mutateAsyncDeleteFile : undefined,
+      imageId,
       imagesAttributes,
       index,
       infoAndErrorText,
@@ -143,15 +163,13 @@ export const MultiImageSelector = ({
     });
   };
 
-  const values = jsonParser(value);
-
   if (
     selectorType === IMAGE_SELECTOR_TYPES.SUE ||
     selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
   ) {
     return (
       <>
-        <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
+        <Input {...item} control={control} hidden name={name} value={values} />
 
         <Button
           disabled={!!maxCount && values?.length >= parseInt(maxCount)}
@@ -199,9 +217,6 @@ export const MultiImageSelector = ({
         </ScrollView>
 
         <Modal
-          isBackdropPress
-          isVisible={isModalVisible}
-          onModalVisible={() => setIsModalVisible(false)}
           closeButton={
             <TouchableOpacity
               disabled={loading}
@@ -216,6 +231,9 @@ export const MultiImageSelector = ({
               </>
             </TouchableOpacity>
           }
+          isBackdropPress
+          isVisible={isModalVisible}
+          onModalVisible={() => setIsModalVisible(false)}
           overlayStyle={styles.overlay}
         >
           <WrapperVertical style={styles.noPaddingTop}>
@@ -232,16 +250,16 @@ export const MultiImageSelector = ({
             ) : (
               <>
                 <Button
-                  icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
                   disabled={loading}
+                  icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
                   iconPosition="left"
                   invert
                   onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
                   title={texts.sue.report.alerts.imageSelectAlert.camera}
                 />
                 <Button
-                  icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
                   disabled={loading}
+                  icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
                   iconPosition="left"
                   invert
                   onPress={() => imageSelect(selectImage)}
@@ -262,35 +280,68 @@ export const MultiImageSelector = ({
         {infoText}
       </RegularText>
 
-      <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
+      {selectorType !== IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+        <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
+      )}
 
-      {values?.map((item: TValue, index: number) => (
-        <View key={`image-${index}`} style={styles.volunteerContainer}>
-          <View style={styles.volunteerUploadPreview}>
-            {!!infoAndErrorText[index]?.infoText && (
-              <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
-                {infoAndErrorText[index].infoText}
+      {values?.map((item: TValue, index: number) => {
+        const imageSource = item.uri?.startsWith('file:///')
+          ? { uri: item.uri }
+          : {
+              uri: `${volunteerApiV1Url}file/download/${item.id}`,
+              headers: { Authorization: `Bearer ${authToken}` }
+            };
+
+        return (
+          <View key={`image-${index}`} style={styles.volunteerContainer}>
+            <View style={styles.volunteerUploadPreview}>
+              {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+                <Image
+                  borderRadius={normalize(4)}
+                  childrenContainerStyle={styles.volunteerImage}
+                  source={imageSource}
+                />
+              )}
+
+              {(!!infoAndErrorText[index]?.infoText || !!values?.[index]?.file_name) && (
+                <RegularText
+                  numberOfLines={1}
+                  small
+                  style={[
+                    styles.infoText,
+                    selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && styles.volunteerInfoText
+                  ]}
+                >
+                  {infoAndErrorText?.[index]?.infoText || values?.[index]?.file_name}
+                </RegularText>
+              )}
+
+              <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(index))}>
+                <Icon.Trash color={colors.darkText} size={normalize(16)} />
+              </TouchableOpacity>
+            </View>
+
+            {!!infoAndErrorText[index]?.errorText && (
+              <RegularText smallest error>
+                {infoAndErrorText[index].errorText}
               </RegularText>
             )}
-
-            <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(index))}>
-              <Icon.Trash color={colors.darkText} size={normalize(16)} />
-            </TouchableOpacity>
           </View>
+        );
+      })}
 
-          {!!infoAndErrorText[index]?.errorText && (
-            <RegularText smallest error>
-              {infoAndErrorText[index].errorText}
-            </RegularText>
-          )}
-        </View>
-      ))}
+      {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
+        <Button title={buttonTitle} invert onPress={() => imageSelect(selectImage)} />
+      )}
     </>
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  infoText: {
+    width: '90%'
+  },
   noPaddingTop: {
     paddingTop: 0
   },
@@ -335,8 +386,12 @@ const styles = StyleSheet.create({
   volunteerContainer: {
     marginBottom: normalize(8)
   },
+  volunteerImage: {
+    height: normalize(55),
+    width: normalize(55)
+  },
   volunteerInfoText: {
-    width: '90%'
+    width: '65%'
   },
   volunteerUploadPreview: {
     alignItems: 'center',

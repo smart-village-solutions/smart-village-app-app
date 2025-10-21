@@ -4,6 +4,7 @@ import React from 'react';
 import { texts } from '../../../config';
 import { getFullName, momentFormat } from '../../../helpers';
 import { MembershipPreviewData } from '../../../types';
+import { WrapperHorizontal } from '../../Wrapper';
 import { getOrganizationNameString } from '../oParlHelpers';
 import { Row } from '../Row';
 
@@ -18,38 +19,26 @@ type Props = {
 // withPerson === false means the opposite, so we want to show the information of the organization
 export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
   const { id, type, onBehalfOf, organization, person, startDate, endDate } = data;
-
   const nameString = getFullName(texts.oparl.person.person, person);
-
   const titleWithPerson = onBehalfOf
     ? `${nameString} (${getOrganizationNameString(onBehalfOf)})`
     : nameString;
-
   const organizationName = getOrganizationNameString(organization);
-
   const startString = startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : '';
   const endString = endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : '          ';
   const dateString = startDate || endDate ? `${startString} - ${endString}` : undefined;
-
   const params = { id, type, title: texts.oparl.membership.membership };
 
-  return withPerson ? (
-    <Row
-      left={titleWithPerson}
-      right={dateString}
-      leftWidth={130}
-      fullText
-      smallLeft={false}
-      onPress={() => navigation.push('OParlDetail', params)}
-    />
-  ) : (
-    <Row
-      left={organizationName}
-      right={dateString}
-      leftWidth={130}
-      fullText
-      smallLeft={false}
-      onPress={() => navigation.push('OParlDetail', params)}
-    />
+  return (
+    <WrapperHorizontal>
+      <Row
+        left={withPerson ? titleWithPerson : organizationName}
+        right={dateString}
+        leftWidth={130}
+        fullText
+        smallLeft={false}
+        onPress={() => navigation.push('OParlDetail', params)}
+      />
+    </WrapperHorizontal>
   );
 };

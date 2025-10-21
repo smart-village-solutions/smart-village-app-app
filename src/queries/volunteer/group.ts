@@ -12,7 +12,6 @@ export const groups = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -27,7 +26,6 @@ export const groupsMy = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -42,7 +40,6 @@ export const group = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -129,7 +126,6 @@ export const groupMembership = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -174,11 +170,39 @@ export const groupLeave = async ({ id, userId }: { id: number; userId: string })
   const fetchObj = {
     method: 'DELETE',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
 
   return (await fetch(`${volunteerApiV2Url}space/${id}/membership/${userId}`, fetchObj)).json();
+};
+
+export const groupSearch = async ({
+  dateFrom,
+  dateTo,
+  orderBy,
+  page,
+  search,
+  spaces
+}: {
+  dateFrom: string;
+  dateTo: string;
+  orderBy: string;
+  page: number;
+  search: string;
+  spaces: string[];
+}) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify({ dateFrom, dateTo, orderBy, page, search, spaces })
+  };
+
+  return (await fetch(`${volunteerApiV2Url}content/search`, fetchObj)).json();
 };

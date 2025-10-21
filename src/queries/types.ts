@@ -58,8 +58,8 @@ export const QUERY_TYPES = {
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   RESOURCE_FILTERS: 'resourceFilters',
+  SEARCH: 'search',
   STATIC_CONTENT_LIST: 'staticContentList',
-  TOUR: 'tour',
   SUE: {
     AREA_SERVICE: 'areaService',
     CONFIGURATIONS: 'configurations',
@@ -71,6 +71,7 @@ export const QUERY_TYPES = {
     STATUSES: 'statuses'
   },
   TOUR_STOPS: 'tourStops',
+  TOUR: 'tour',
   TOURS: 'tours',
   VOLUNTEER: {
     APPLICANTS: 'applicants',
@@ -80,6 +81,7 @@ export const QUERY_TYPES = {
     CALENDAR: 'calendar',
     CONVERSATION: 'conversation',
     CONVERSATIONS: 'conversations',
+    GROUP_SEARCH: 'groupSearch',
     GROUP: 'group',
     GROUPS_MY: 'groupsMy',
     GROUPS: 'groups',
@@ -89,7 +91,10 @@ export const QUERY_TYPES = {
     PERSONAL: 'personal',
     POSTS: 'posts',
     PROFILE: 'profile',
+    STREAM: 'stream',
     TASKS: 'tasks',
+    USER_GROUPS: 'userGroups',
+    USER_NOTIFICATION_SETTINGS: 'userNotificationSettings',
     USER: 'volunteerUser',
     USERS: 'volunteerUsers'
   } as const,
@@ -110,10 +115,14 @@ export const QUERY_TYPES = {
 export const getQueryType = (input: string) => {
   const camelCaseInput = _camelCase(input);
   const availableTypes = [
-    QUERY_TYPES.TOUR,
-    QUERY_TYPES.POINTS_OF_INTEREST,
+    QUERY_TYPES.EVENT_RECORD,
     QUERY_TYPES.NEWS_ITEM,
-    QUERY_TYPES.EVENT_RECORD
+    QUERY_TYPES.POINTS_OF_INTEREST,
+    QUERY_TYPES.TOUR,
+    QUERY_TYPES.VOLUNTEER.CONVERSATION,
+    QUERY_TYPES.VOLUNTEER.GROUP,
+    QUERY_TYPES.VOLUNTEER.HOME,
+    QUERY_TYPES.WASTE_ADDRESSES
   ];
 
   // special condition used for push notifications coming from messaging

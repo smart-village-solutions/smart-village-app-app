@@ -5,6 +5,7 @@ import { IconProps, normalize } from '../../config';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { normalizeStyleValues } from '../../helpers';
 
 type Props = {
   count?: number | string;
@@ -16,11 +17,22 @@ type Props = {
   };
   onPress: () => void;
   text: string;
+  widgetStyle?: {
+    fontStyle?: any;
+    iconStyle?: any;
+    widgetStyle?: any;
+  };
 };
 
-export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
+export const DefaultWidget = ({ Icon, count, onPress, text, image, widgetStyle }: Props) => {
+  const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
+
+  const normalizedFontStyle = normalizeStyleValues(fontStyle);
+  const normalizedIconStyle = normalizeStyleValues(iconStyle);
+  const normalizedWidgetStyle = normalizeStyleValues(customWidgetStyle);
+
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={normalizedWidgetStyle}>
       <WrapperVertical style={styles.container}>
         <WrapperRow center>
           {image?.uri ? (
@@ -32,7 +44,7 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
               }}
             />
           ) : (
-            <Icon style={[!!count?.toString() && styles.iconWithCount]} />
+            <Icon style={[!!count?.toString() && styles.iconWithCount, normalizedIconStyle]} />
           )}
           {count !== undefined && (
             <BoldText primary big>
@@ -40,7 +52,7 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
             </BoldText>
           )}
         </WrapperRow>
-        <RegularText primary small>
+        <RegularText primary small style={normalizedFontStyle}>
           {text}
         </RegularText>
       </WrapperVertical>

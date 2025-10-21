@@ -14,7 +14,7 @@ import { DefaultWidget } from './DefaultWidget';
 
 const today = moment().format('YYYY-MM-DD');
 
-export const LunchWidget = ({ text, additionalProps }: WidgetProps) => {
+export const LunchWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
@@ -43,6 +43,7 @@ export const LunchWidget = ({ text, additionalProps }: WidgetProps) => {
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.lunch}
+      widgetStyle={widgetStyle}
     />
   );
 };

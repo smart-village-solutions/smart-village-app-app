@@ -1,5 +1,5 @@
 export * from './consul';
-export * from './profile/noticeboard';
+export * from './noticeboard';
 
 export * from './About';
 export * from './AvailableVehicles';

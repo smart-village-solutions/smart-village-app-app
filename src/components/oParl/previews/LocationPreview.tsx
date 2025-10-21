@@ -12,7 +12,17 @@ type Props = {
   navigation: StackNavigationProp<any>;
 };
 
+export const hasLocationData = (location?: LocationPreviewData) =>
+  !!(
+    location?.streetAddress?.trim()?.length ||
+    location?.postalCode?.length ||
+    location?.locality?.length ||
+    location?.room
+  );
+
 export const FormattedLocation = ({ location }: { location: LocationPreviewData }) => {
+  if (!hasLocationData(location)) return null;
+
   return (
     <>
       <RegularText>{location.streetAddress}</RegularText>

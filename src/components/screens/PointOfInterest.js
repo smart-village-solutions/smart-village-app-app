@@ -79,11 +79,11 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const voucherListItems = useMemo(() => {
     return parseListItemsFromQuery(
       QUERY_TYPES.VOUCHERS,
-      { [QUERY_TYPES.VOUCHERS]: vouchers },
+      { [QUERY_TYPES.GENERIC_ITEMS]: vouchers },
       undefined,
       {
         withDate: false,
-        queryKey: QUERY_TYPES.VOUCHERS
+        queryKey: QUERY_TYPES.GENERIC_ITEMS
       }
     );
   }, [vouchers]);
@@ -176,7 +176,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.description} />
           <WrapperHorizontal>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
+            <HtmlView html={description} openWebScreen={openWebScreen} selectable />
           </WrapperHorizontal>
         </WrapperVertical>
       )}

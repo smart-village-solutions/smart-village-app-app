@@ -53,7 +53,6 @@ const sectionData = (data: TVoucherItem[]) => {
 
 export const VoucherList = ({
   data,
-  fetchMoreData,
   ListEmptyComponent,
   ListHeaderComponent,
   navigation,
@@ -63,7 +62,6 @@ export const VoucherList = ({
   refreshControl
 }: {
   data: TVoucherItem[];
-  fetchMoreData: () => Promise<any>;
   ListEmptyComponent: React.ReactElement;
   ListHeaderComponent: React.ReactElement;
   navigation: StackScreenProps<any>;

@@ -1,0 +1,25 @@
+diff --git a/node_modules/react-native-gifted-chat/lib/Day/index.js b/node_modules/react-native-gifted-chat/lib/Day/index.js
+index 1ece45c..6de07e4 100644
+--- a/node_modules/react-native-gifted-chat/lib/Day/index.js
++++ b/node_modules/react-native-gifted-chat/lib/Day/index.js
+@@ -1,8 +1,8 @@
+-import * as React from 'react';
+-import { Text, View, } from 'react-native';
+ import dayjs from 'dayjs';
+-import relativeTime from 'dayjs/plugin/relativeTime';
+ import calendar from 'dayjs/plugin/calendar';
++import relativeTime from 'dayjs/plugin/relativeTime';
++import * as React from 'react';
++import { Text, View, } from 'react-native';
+ import { DATE_FORMAT } from '../Constant';
+ import { useChatContext } from '../GiftedChatContext';
+ import stylesCommon from '../styles';
+@@ -21,7 +21,7 @@ export function Day({ dateFormat = DATE_FORMAT, dateFormatCalendar, createdAt, c
+             return date.format('D MMMM YYYY');
+         if (now.diff(date, 'days') < 1)
+             return date.calendar(now, {
+-                sameDay: '[Today]',
++                sameDay: '[Heute]',
+                 ...dateFormatCalendar,
+             });
+         return date.format(dateFormat);

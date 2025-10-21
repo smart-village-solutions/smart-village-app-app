@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
 import { TServiceTile, umlautSwitcher } from '../components';
@@ -13,8 +13,8 @@ export const usePersonalizedTiles = (
   isEditMode = false,
   staticJsonName: string
 ) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [tiles, setTiles] = useState<any[]>(data || []);
+  const [isLoading, setIsLoading] = useState(isPersonalizable);
+  const [tiles, setTiles] = useState<any[]>(!isPersonalizable ? data : []);
 
   const getPersonalizedTiles = useCallback(async () => {
     setIsLoading(true);
@@ -22,7 +22,24 @@ export const usePersonalizedTiles = (
     const toggles = storedPersonalizedTilesSettings?.[staticJsonName]?.toggles;
     const sorter = storedPersonalizedTilesSettings?.[staticJsonName]?.sorter;
 
-    let personalizedTiles = [...tiles];
+    let personalizedTiles = [...data];
+
+    if (sorter) {
+      personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
+        const sortTitles = {
+          a: umlautSwitcher(a.title) || umlautSwitcher(a.accessibilityLabel),
+          b: umlautSwitcher(b.title) || umlautSwitcher(b.accessibilityLabel)
+        };
+        const sortA =
+          sorter?.[sortTitles.a] ??
+          personalizedTiles.findIndex((d: TServiceTile) => d.title === a.title);
+        const sortB =
+          sorter?.[sortTitles.b] ??
+          personalizedTiles.findIndex((d: TServiceTile) => d.title === b.title);
+
+        return sortA - sortB;
+      });
+    }
 
     if (toggles) {
       // in edit mode we want to show all tiles but with visual difference.
@@ -42,24 +59,9 @@ export const usePersonalizedTiles = (
       }
     }
 
-    if (sorter) {
-      personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
-        const sortTitles = {
-          a: umlautSwitcher(a.title) || umlautSwitcher(a.accessibilityLabel),
-          b: umlautSwitcher(b.title) || umlautSwitcher(b.accessibilityLabel)
-        };
-        const sortA =
-          sorter?.[sortTitles.a] ?? tiles.findIndex((d: TServiceTile) => d.title === a.title);
-        const sortB =
-          sorter?.[sortTitles.b] ?? tiles.findIndex((d: TServiceTile) => d.title === b.title);
-
-        return sortA - sortB;
-      });
-    }
-
     setTiles(personalizedTiles);
     setIsLoading(false);
-  }, [staticJsonName]);
+  }, [staticJsonName, data, isEditMode]);
 
   const storePersonalizedTilesSettings = useCallback(
     async ({
@@ -71,6 +73,19 @@ export const usePersonalizedTiles = (
     }) => {
       const storedPersonalizedTilesSettings = await readFromStore(PERSONALIZED_TILES_SETTINGS);
 
+      if (personalizedTilesSorter) {
+        await addToStore(PERSONALIZED_TILES_SETTINGS, {
+          ...storedPersonalizedTilesSettings,
+          [staticJsonName]: {
+            ...storedPersonalizedTilesSettings?.[staticJsonName],
+            sorter: {
+              ...storedPersonalizedTilesSettings?.[staticJsonName]?.sorter,
+              ...personalizedTilesSorter
+            }
+          }
+        });
+      }
+
       if (personalizedTilesToggle) {
         await addToStore(PERSONALIZED_TILES_SETTINGS, {
           ...storedPersonalizedTilesSettings,
@@ -80,16 +95,6 @@ export const usePersonalizedTiles = (
               ...storedPersonalizedTilesSettings?.[staticJsonName]?.toggles,
               ...personalizedTilesToggle
             }
-          }
-        });
-      }
-
-      if (personalizedTilesSorter) {
-        await addToStore(PERSONALIZED_TILES_SETTINGS, {
-          ...storedPersonalizedTilesSettings,
-          [staticJsonName]: {
-            ...storedPersonalizedTilesSettings?.[staticJsonName],
-            sorter: personalizedTilesSorter
           }
         });
       }
@@ -114,17 +119,17 @@ export const usePersonalizedTiles = (
     [staticJsonName]
   );
 
-  const isFocused = useIsFocused();
-
   const refreshTiles = useCallback(getPersonalizedTiles, [getPersonalizedTiles]);
 
-  useEffect(() => {
-    isPersonalizable && !isEditMode && refreshTiles();
-  }, [isFocused]);
+  useFocusEffect(
+    useCallback(() => {
+      isPersonalizable && !isEditMode && refreshTiles();
+    }, [isPersonalizable, isEditMode, refreshTiles])
+  );
 
   useEffect(() => {
     isPersonalizable && getPersonalizedTiles();
-  }, []);
+  }, [isPersonalizable, getPersonalizedTiles]);
 
   return { isLoading, tiles, onDragEnd, onToggleVisibility };
 };

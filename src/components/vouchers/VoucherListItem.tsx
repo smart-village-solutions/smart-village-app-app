@@ -9,7 +9,7 @@ import { QUERY_TYPES } from '../../queries';
 import { TVoucherItem } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
 import { Discount } from './Discount';
 
@@ -23,7 +23,17 @@ export const VoucherListItem = memo(
     horizontal: boolean;
     item: TVoucherItem;
   }) => {
-    const { discountType, id, picture, params, payload, routeName: name, subtitle, title } = item;
+    const {
+      discountType,
+      id,
+      picture,
+      params,
+      payload,
+      pointOfInterest,
+      routeName: name,
+      subtitle,
+      title
+    } = item;
 
     return (
       <TouchableOpacity
@@ -41,7 +51,7 @@ export const VoucherListItem = memo(
           )}
 
           {!!discountType && (
-            <WrapperVertical>
+            <WrapperVertical noPaddingTop>
               <Discount
                 discount={discountType}
                 id={id}
@@ -51,7 +61,7 @@ export const VoucherListItem = memo(
             </WrapperVertical>
           )}
 
-          <WrapperRow spaceBetween style={styles.centeredItems}>
+          <WrapperRow spaceBetween itemsCenter>
             <View style={styles.textContainer}>
               {!!title && (
                 <BoldText small numberOfLines={2}>
@@ -64,22 +74,27 @@ export const VoucherListItem = memo(
                   {subtitle}
                 </RegularText>
               )}
+
+              {!!pointOfInterest?.operatingCompany?.name && (
+                <RegularText small numberOfLines={1}>
+                  {pointOfInterest.operatingCompany.name}
+                </RegularText>
+              )}
             </View>
 
             <Icon.ArrowRight color={colors.darkText} />
           </WrapperRow>
         </Card>
 
-        <Divider />
+        <WrapperHorizontal>
+          <Divider />
+        </WrapperHorizontal>
       </TouchableOpacity>
     );
   }
 );
 
 const styles = StyleSheet.create({
-  centeredItems: {
-    alignItems: 'center'
-  },
   container: {
     backgroundColor: colors.transparent,
     borderWidth: 0,
@@ -95,7 +110,8 @@ const styles = StyleSheet.create({
     })
   },
   imageContainer: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginBottom: normalize(8)
   },
   textContainer: {
     width: '90%'

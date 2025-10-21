@@ -32,6 +32,9 @@ export const GET_NEWS_ITEMS = gql`
       publishedAt
       categories {
         id
+        parent {
+          id
+        }
       }
       contentBlocks {
         id

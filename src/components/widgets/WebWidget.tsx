@@ -6,11 +6,13 @@ import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const WebWidget = ({ text = '', additionalProps }: WidgetProps) => {
+export const WebWidget = ({ text = '', additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
 
   const onPress = useCallback(() => {
     navigation.navigate(ScreenName.Web, {
+      inModalBrowser: additionalProps?.inModalBrowser,
+      isExternal: additionalProps?.isExternal,
       title: additionalProps?.staticContentTitle,
       webUrl: additionalProps?.webUrl
     });
@@ -22,6 +24,7 @@ export const WebWidget = ({ text = '', additionalProps }: WidgetProps) => {
       image={additionalProps?.image}
       onPress={onPress}
       text={text}
+      widgetStyle={widgetStyle}
     />
   );
 };

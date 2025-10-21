@@ -5,6 +5,125 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.1.4]
+
+This version adds new features to the Volunteer module and introduces more personalized push notifications
+
+### Added
+
+- added a customizable push notification feature for different news categories
+- added the ability to like and reply to comments for the volunteer module
+- added timeline feature for the volunteer module
+- added the ability to hide a group's calendar for the volunteer module
+- added the ability to add image comments to the volunteer module
+- added further developments on the noticeboard for carpool extensions especially zip filter additions
+- added a feature that automatically redirects within the app for notifications coming from the waste calendar
+- added a remotely updatable style feature for widgets
+- added a feature to reposition the copyright information in the image on the news details screen
+
+### Changed
+- adjusted querying and renderings for vouchers
+
+### Fixed
+
+- fixed an issue where news items were listed multiple times in some cases
+- fixed an issue where news items couldn't be added to favorites in some cases
+- enhanced switch disabled state handling for thumb and track colors
+
+## [v4.1.3]
+
+This release includes a new Android target API level, important UI/UX improvements and several bug fixes for better stability
+
+### Added
+
+- upgraded Android targetSdkVersion to 35 to comply with new Play Store policies
+- added new module to show multiple buttons in a home section on the bottom of the screen
+- added Map/List view switcher in the sue module
+- added automatic login with device-specific ID for the coupon module to enable coupon redemption without repeated authentication
+- added ability to export volunteer events to the OS calendar via expo-calendar
+- added new inputs for the carpool module in the noticeboard
+- added noticeboard and profile components with adjustments fo carpool noticeboard integration
+- added `isExternal` and `inModalBrowser` parameters to web widget navigation
+- implemented group search functionality in the volunteer module
+
+### Changed
+
+- improved handling and presentation of all-day appointments in the Volunteer module, ensuring correct date alignment
+
+### Fixed
+
+- fixed errors causing tiles not to display correctly in the customizable tile edit page
+- fixed issue where Android screen reader could not recognize buttons on app intro slides
+- improved sorting and visibility toggling behavior for tiles
+- fixed invisibility of non-customizable tiles
+- fixed date filter reset issue and inability to select only an end date in the overlay filter
+- fixed waste module suggestion rendering and loading state behavior for more efficient performance
+
+## [v4.1.2]
+
+This version includes many improvements for the volunteer and waste calendar modules and the first beta version for the search module
+
+### Added
+
+- added the ability to upload images to entries in the volunteer module
+- added the ability to edit and delete entries in the volunteer module
+- added informative text to the registration screen of the volunteer module
+- added two new input options on the registration screen for the volunteer module
+- added push notifications for volunteer module
+- added search and filtering for volunteer module
+- implemented a first version of the search module (0.0.1-beta)
+- added options to customize each service tile within itself
+- added ability to export selected waste calendar types
+- added skip button to onboarding screen
+- added remote update feature for feedback form in sue module
+- added feature for copying the description text on detail screens of main resources
+- added new version information alert
+
+### Changed
+
+- optimized city and street inputs for waste calendar
+- updated design elements for the waste calendar
+- improved performance of the waste calendar
+- updated the position of service tiles in the last row closer to each other
+- enhanced oparl location handling and adjusted member rendering
+
+### Fixed
+
+- fixed the issue of not asking for permissions on the onboarding screen directly after slides
+- fixed wrong value of push settings toggle in some cases
+- fixed issues with geolocation when sorting after distance was disabled
+
+## [v4.1.1]
+
+This update includes visual improvements, bug fixes and performance enhancements
+
+### Added
+
+- added “live ticker” marquee text feature to `HomeScreen` which can be controlled via main server
+- added service tile feature whose style can be updated via main server
+- added notes feature for waste calendar
+- added the ability to give camera access permission again in voucher module
+- added active and inactive icon feature for tabbar that can be updated via main server
+
+### Changed
+
+- added new sorting logic for agenda items of oparl module
+- removed date header in calendar view on event screen
+- improved new app store update alert feature that can be controlled via main server
+- added MB to BYTES conversions to consts file for better control in different places
+- added more explicit check for opening time null values to catch edge cases
+
+### Fixed
+
+- fixed the problem of saving the picture taken from the camera twice in the SUE module for Android
+- fixed issue with matomo tracking not activating
+- fixed issue where the person list for oparl would not load
+- fixed voucher unavailability issue in voucher module
+- fixed the problem of images not fitting the design by adding `borderRadius` to the images in the text list item
+- fixed layout problem on the weather screen
+- fixed the problem of different background colour of tabbar and navigation bar
+- fixed issue with widget not centering the icon if there is no count number
+
 ## [v4.1.0] :whale:
 
 The new version integrates a brand new filter module, adds a new waste component, updates layouts and upgrades Expo to latest SDK version 52

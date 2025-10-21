@@ -8,7 +8,6 @@ export const posts = async ({ contentContainerId }: { contentContainerId: number
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -23,7 +22,6 @@ export const post = async (id: number) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -51,4 +49,39 @@ export const postNew = async ({ message, contentContainerId }: VolunteerPost) =>
   };
 
   return (await fetch(`${volunteerApiV1Url}post/container/${contentContainerId}`, fetchObj)).json();
+};
+
+export const postEdit = async ({ id, message }: VolunteerPost) => {
+  const authToken = await volunteerAuthToken();
+
+  const formData = {
+    data: {
+      message
+    }
+  };
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${volunteerApiV1Url}post/${id}`, fetchObj)).json();
+};
+
+export const postDelete = async ({ id }: VolunteerPost) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'DELETE',
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiV1Url}post/${id}`, fetchObj)).json();
 };

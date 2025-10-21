@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
 import { normalize } from '../../config';
@@ -16,11 +16,20 @@ type WasteListProps = {
 export const WasteList = ({ data, ListHeaderComponent, query, selectedTypes }: WasteListProps) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { wasteAddresses = {} } = settings;
-  const { hasHeaderSearchBarOption = false } = wasteAddresses;
+  const { feedbackFooter, wasteAddresses = {} } = settings;
+  const { hasExport = true, hasHeaderSearchBarOption = false } = wasteAddresses;
 
   const ListFooterComponent = !hasHeaderSearchBarOption ? (
-    <FeedbackFooter containerStyle={styles.feedbackContainer} />
+    !feedbackFooter ? (
+      <View style={styles.spacer} />
+    ) : (
+      <FeedbackFooter
+        containerStyle={[
+          styles.feedbackContainer,
+          hasExport && styles.feedbackContainerMarginBottom
+        ]}
+      />
+    )
   ) : undefined;
 
   return (
@@ -40,5 +49,11 @@ const styles = StyleSheet.create({
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
+  },
+  feedbackContainerMarginBottom: {
+    marginBottom: normalize(70)
+  },
+  spacer: {
+    height: normalize(80)
   }
 });

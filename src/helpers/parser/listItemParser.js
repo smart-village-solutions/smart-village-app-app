@@ -1,5 +1,7 @@
 import _filter from 'lodash/filter';
+import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
+import _uniqBy from 'lodash/uniqBy';
 
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
@@ -29,19 +31,50 @@ const GENERIC_TYPES_WITH_DATES = [
   GenericType.Noticeboard
 ];
 
-export const filterGenericItems = (item) => {
+/* eslint-disable complexity */
+export const filterGenericItems = (item, queryVariables, filterTypes) => {
+  // INIT ALL WITH TRUE AND FILTER OUT WITH COMING CONDITIONS
+  let hasNotEnded = true;
+  let isPublished = true;
+  let matchesZip = true;
+
+  // DATE FILTERS
   if (GENERIC_TYPES_WITH_DATES.includes(item?.genericType)) {
     const dateEnd = item?.dates?.[0]?.dateEnd;
-    const hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : true;
+    hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : hasNotEnded;
 
     const publicationDate = item?.publicationDate;
-    const isPublished = publicationDate ? isBeforeEndOfToday(publicationDate) : true;
-
-    return hasNotEnded && isPublished;
+    isPublished = publicationDate ? isBeforeEndOfToday(publicationDate) : isPublished;
   }
 
-  return true;
+  // ZIP CODE FILTERS
+  const zipStartFilter = filterTypes?.find(({ name }) => name === 'zipStart');
+  const zipEndFilter = filterTypes?.find(({ name }) => name === 'zipEnd');
+  const zipStart = queryVariables?.[zipStartFilter?.name];
+  const zipEnd = queryVariables?.[zipEndFilter?.name];
+  const doesZipMatch = (filter, zip) => {
+    const content = _get(item, filter.where);
+    if (!content || !zip) return false;
+
+    // Use regex to match only complete 5-digit postal codes to avoid partial matches at
+    // house numbers for example.
+    const zipRegex = new RegExp(`\\b${zip}\\d{${5 - zip.length}}\\b`);
+
+    return zipRegex.test(content);
+  };
+
+  if (zipStartFilter && zipEndFilter && zipStart && zipEnd) {
+    matchesZip = doesZipMatch(zipStartFilter, zipStart) && doesZipMatch(zipEndFilter, zipEnd);
+  } else if (zipStartFilter && zipStart) {
+    matchesZip = doesZipMatch(zipStartFilter, zipStart);
+  } else if (zipEndFilter && zipEnd) {
+    matchesZip = doesZipMatch(zipEndFilter, zipEnd);
+  }
+
+  // RETURN TRUE IF ALL CONDITIONS ARE MET
+  return hasNotEnded && isPublished && matchesZip;
 };
+/* eslint-enable complexity */
 
 const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   return data?.map((eventRecord, index) => ({
@@ -72,9 +105,12 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
+const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filterTypes) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
-  const filteredData = data?.filter(filterGenericItems);
+  const filteredData = data?.filter((item) =>
+    filterGenericItems(item, queryVariables, filterTypes)
+  );
+  const isCarpool = subQuery?.params?.isCarpool ?? false;
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
@@ -82,7 +118,8 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
     overtitle:
       genericItem.genericType !== GenericType.Deadline &&
       subtitle(
-        momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
+        (isCarpool && genericItem?.payload?.departureDate) ||
+          momentFormatUtcToLocal(genericItem.publicationDate || genericItem.createdAt),
         getGenericItemSubtitle(genericItem)
       ),
     title: genericItem.title,
@@ -117,34 +154,40 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
 };
 
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
-  return data?.map((newsItem, index) => ({
-    id: newsItem.id,
-    overtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
-    title: newsItem.contentBlocks?.[0]?.title,
-    picture: {
-      url:
-        newsItem.contentBlocks?.[0]?.mediaContents?.length &&
-        _filter(
-          newsItem.contentBlocks[0].mediaContents,
-          (mediaContent) =>
-            mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-        )[0]?.sourceUrl?.url
-    },
-    routeName: ScreenName.Detail,
-    params: {
-      bookmarkable,
-      title: titleDetail,
-      suffix: newsItem.categories?.[0]?.id,
-      query: QUERY_TYPES.NEWS_ITEM,
-      queryVariables: { id: `${newsItem.id}` },
-      rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
-      shareContent: {
-        message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
+  return _uniqBy(
+    data?.map((newsItem, index) => ({
+      id: newsItem.id,
+      overtitle: subtitle(
+        momentFormatUtcToLocal(newsItem.publishedAt),
+        newsItem.dataProvider?.name
+      ),
+      title: newsItem.contentBlocks?.[0]?.title,
+      picture: {
+        url:
+          newsItem.contentBlocks?.[0]?.mediaContents?.length &&
+          _filter(
+            newsItem.contentBlocks[0].mediaContents,
+            (mediaContent) =>
+              mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+          )[0]?.sourceUrl?.url
       },
-      details: newsItem
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+      routeName: ScreenName.Detail,
+      params: {
+        bookmarkable,
+        title: titleDetail,
+        suffix: newsItem.categories?.[0]?.parent?.id || newsItem.categories?.[0]?.id,
+        query: QUERY_TYPES.NEWS_ITEM,
+        queryVariables: { id: `${newsItem.id}` },
+        rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
+        shareContent: {
+          message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
+        },
+        details: newsItem
+      },
+      bottomDivider: !skipLastDivider || index !== data.length - 1
+    })),
+    'id'
+  );
 };
 
 const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = undefined) => {
@@ -314,6 +357,7 @@ const parseConversations = (data) =>
  * @param {{
  *     appDesignSystem?: any;
  *     bookmarkable?: boolean;
+ *     filterTypes?: any;
  *     isSectioned?: boolean;
  *     queryKey?: string;
  *     queryVariables?: any;
@@ -330,6 +374,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
   const {
     appDesignSystem,
     bookmarkable = true,
+    filterTypes,
     isSectioned = false,
     queryKey,
     queryVariables,
@@ -343,7 +388,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate, withTime);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery);
+      return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery, filterTypes);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINT_OF_INTEREST:

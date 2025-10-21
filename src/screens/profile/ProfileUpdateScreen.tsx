@@ -177,7 +177,6 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           <Wrapper noPaddingTop>
             <Input
-              autoCapitalize="none"
               control={control}
               label={texts.profile.firstName}
               name="firstName"
@@ -190,7 +189,6 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           <Wrapper noPaddingTop>
             <Input
-              autoCapitalize="none"
               control={control}
               label={texts.profile.lastName}
               name="lastName"
@@ -244,7 +242,6 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           <Wrapper noPaddingTop>
             <Input
-              autoCapitalize="none"
               control={control}
               label={texts.profile.streetAndHouseNumber}
               name="street"
@@ -259,7 +256,6 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           <Wrapper noPaddingTop>
             <Input
-              autoCapitalize="none"
               control={control}
               label={texts.profile.postcode}
               maxLength={5}
@@ -277,7 +273,6 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           <Wrapper noPaddingTop>
             <Input
-              autoCapitalize="none"
               control={control}
               label={texts.profile.city}
               name="city"

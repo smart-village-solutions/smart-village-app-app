@@ -22,8 +22,9 @@ import {
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
-  PROFILE_AUTH_TOKEN,
-  storageHelper
+  profileAuthToken,
+  storageHelper,
+  voucherAuthToken
 } from './helpers';
 import { Navigator } from './navigation/Navigator';
 import { NetworkContext, NetworkProvider } from './NetworkProvider';
@@ -57,7 +58,7 @@ const MainAppWithApolloProvider = () => {
     const authLink = setContext(async (_, { headers }) => {
       // get the authentication token from local SecureStore if it exists
       const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-      const authToken = await SecureStore.getItemAsync(PROFILE_AUTH_TOKEN);
+      const authToken = (await profileAuthToken()) || (await voucherAuthToken());
 
       // return the headers to the context so httpLink can read them
       return {
@@ -125,6 +126,7 @@ const MainAppWithApolloProvider = () => {
       [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST,
+      [QUERY_TYPES.SEARCH]: LIST_TYPES.GROUPED_LIST,
       [QUERY_TYPES.STATIC_CONTENT_LIST]: LIST_TYPES.CARD_LIST,
       [QUERY_TYPES.WASTE_STREET]: LIST_TYPES.GROUPED_LIST
     };

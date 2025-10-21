@@ -29,11 +29,13 @@ export const setInAppPermission = async (newValue: boolean) => {
       token = await registerForPushNotificationsAsync();
     }
 
-    addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
-
     // add token to store and notify server or
     // remove token from store and notify server
     const successfullyHandled = await handleIncomingToken(token);
+
+    if (successfullyHandled) {
+      addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
+    }
 
     return successfullyHandled;
   }
@@ -81,7 +83,7 @@ export const handleSystemPermissions = async (
 
   const isGranted = finalStatus === PermissionStatus.GRANTED;
 
-  if (shouldSetInAppPermission) {
+  if (shouldSetInAppPermission && inAppPermission == null) {
     try {
       const successfullyHandledInAppPermission = await setInAppPermission(isGranted);
 

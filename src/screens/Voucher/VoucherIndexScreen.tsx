@@ -2,8 +2,10 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl, StyleSheet } from 'react-native';
+import { useQuery as RQuseQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { ReactQueryClient } from '../../ReactQueryClient';
 import {
   BoldText,
   Button,
@@ -38,7 +40,7 @@ const hasFilterSelection = (queryVariables: any) => {
 
 /* eslint-disable complexity */
 export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { isLoggedIn, memberId } = useVoucher();
+  const { isLoggedIn, memberId, isLoading } = useVoucher();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
@@ -51,9 +53,14 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const showFilter = route.params?.showFilter ?? true;
   const imageUri = route?.params?.headerImage;
 
-  const { data, loading, refetch } = useQuery(getQuery(query), {
-    fetchPolicy,
-    variables: { memberId, ...queryVariables }
+  const {
+    data,
+    isLoading: loading,
+    refetch
+  } = RQuseQuery([query, { memberId, ...queryVariables }], async () => {
+    const client = await ReactQueryClient();
+
+    return await client.request(getQuery(query), { memberId, ...queryVariables });
   });
 
   const { data: vouchersCategories } = useQuery(getQuery(QUERY_TYPES.VOUCHERS_CATEGORIES), {
@@ -122,6 +129,10 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const count = vouchersCount?.[queryKey]?.filter(
     ({ categories }: { categories: { id: number; name: string }[] }) => !!categories?.length
   )?.length;
+
+  if (isLoading) {
+    return <LoadingSpinner loading />;
+  }
 
   return (
     <ListComponent

@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const WASTE_ADDRESSES = gql`
-  query {
-    wasteAddresses {
+  query WasteAddresses($search: String) {
+    wasteAddresses(search: $search) {
       id
       street
       city
@@ -22,11 +22,6 @@ export const WASTE_STREET = gql`
         wasteType
         id
         listPickUpDates
-        pickUpTimes {
-          id
-          note
-          pickupDate
-        }
       }
     }
   }

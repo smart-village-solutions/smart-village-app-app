@@ -13,7 +13,6 @@ export const users = async () => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -28,7 +27,6 @@ export const user = async ({ id }: { id: number }) => {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
@@ -117,4 +115,57 @@ export const userEdit = async ({
   };
 
   return (await fetch(`${volunteerApiV1Url}user/${id}`, fetchObj)).json();
+};
+
+export const userGroups = async () => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiV2Url}user/group`, fetchObj)).json();
+};
+
+export const userNotificationSettings = async () => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiV2Url}user/notification-settings`, fetchObj)).json();
+};
+export const userNotificationSettingsUpdate = async ({ category, isEnabled, target }) => {
+  const authToken = await volunteerAuthToken();
+
+  const formData = {
+    settings: [
+      {
+        category,
+        isEnabled,
+        target
+      }
+    ]
+  };
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${volunteerApiV2Url}user/notification-settings`, fetchObj)).json();
 };

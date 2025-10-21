@@ -60,15 +60,15 @@ export const BookmarkScreen = ({ navigation, route }) => {
   const query = route.params?.query || '';
 
   const getSection = useCallback(
-    (itemType, categoryTitle, suffix, categoryTitleDetail) => {
-      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, suffix);
+    (itemType, categoryTitle, suffix, categoryTitleDetail, parentCategoryId) => {
+      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, parentCategoryId || suffix);
 
       if (!bookmarks[bookmarkKey]?.length || (!!query && query !== bookmarkKey)) return null;
 
       return (
         <BookmarkSection
           bookmarkKey={bookmarkKey}
-          suffix={suffix}
+          suffix={parentCategoryId || suffix}
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
           key={bookmarkKey}
@@ -123,8 +123,15 @@ export const BookmarkScreen = ({ navigation, route }) => {
             <RegularText>{texts.errors.noData}</RegularText>
           </Wrapper>
         )}
-        {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) =>
-          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId, categoryTitleDetail)
+        {categoriesNews?.map(
+          ({ categoryId, categoryTitle, categoryTitleDetail, parentCategoryId }) =>
+            getSection(
+              QUERY_TYPES.NEWS_ITEMS,
+              categoryTitle,
+              categoryId,
+              categoryTitleDetail,
+              parentCategoryId
+            )
         )}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}

@@ -59,11 +59,12 @@ export const sortPOIsByDistanceFromPosition = (
 export const geoLocationToLocationObject = (geoLocation: LocationObjectCoords): LocationObject => {
   return {
     coords: {
-      ...geoLocation,
-      altitude: null,
       accuracy: null,
+      altitude: null,
       altitudeAccuracy: null,
       heading: null,
+      latitude: (geoLocation.latitude || geoLocation.lat) as number,
+      longitude: (geoLocation.longitude || geoLocation.lng) as number,
       speed: null
     },
     timestamp: new Date().valueOf()

@@ -1,20 +1,27 @@
-import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { Keyboard, TouchableOpacity } from 'react-native';
+import { Alert, Keyboard, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { RegularText, Wrapper } from '../components';
-import { graphqlFetchPolicy } from '../helpers';
+import { device, namespace, secrets, staticRestSuffix } from '../config';
+import { graphqlFetchPolicy, openLink } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { getLocationData } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 
 import { useStaticContent } from './staticContent';
 import { useRefreshTime } from './TimeHooks';
 
-export const useWasteAddresses = () => {
+export const useWasteAddresses = ({
+  minSearchLength = 0,
+  search = ''
+}: {
+  minSearchLength?: number;
+  search?: string;
+}) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const addressesRefreshTime = useRefreshTime('waste-addresses');
   const addressesFetchPolicy = graphqlFetchPolicy({
@@ -23,8 +30,9 @@ export const useWasteAddresses = () => {
     refreshTime: addressesRefreshTime
   });
   const { data, loading, error } = useQuery(getQuery(QUERY_TYPES.WASTE_ADDRESSES), {
+    variables: { search },
     fetchPolicy: addressesFetchPolicy,
-    skip: !addressesRefreshTime
+    skip: !addressesRefreshTime || search.length < minSearchLength
   });
 
   return {
@@ -100,11 +108,11 @@ export const useWasteMarkedDates = ({ streetData, selectedTypes }) =>
         }
 
         const { color, selected_color: selectedColor } = selectedTypes[wasteLocationType.wasteType];
-        wasteLocationType?.pickUpTimes?.forEach((date) => {
-          dates[date.pickupDate] = {
+        wasteLocationType?.listPickUpDates?.forEach((date) => {
+          dates[date] = {
             marked: true,
             note: date.note,
-            dots: [...(dates[date.pickupDate]?.dots ?? []), { color, selectedColor }]
+            dots: [...(dates[date]?.dots ?? []), { color, selectedColor }]
           };
         });
       });
@@ -142,21 +150,17 @@ export const useFilterCities = (isCityInputFocused: boolean) => {
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const { isInputAutoFocus, cityCount: wasteAddressesCityCount = 5 } = wasteAddresses;
-  const { getStreetString } = useStreetString();
 
-  // show cities that contain the string in it
-  // return empty list on an exact match (except for capitalization)
+  // filter cities that contain the string in it
   const filterCities = useCallback(
     (currentInputValue, addressesData) => {
       if (isInputAutoFocus && currentInputValue === '' && !isCityInputFocused) return [];
 
-      const cities = addressesData?.filter(
-        (address) =>
-          address.city !== currentInputValue &&
-          address.city?.toLowerCase().includes(currentInputValue.toLowerCase())
+      const cities = addressesData?.filter((address) =>
+        address.city?.toLowerCase().includes(currentInputValue?.toLowerCase())
       );
 
-      const sortedCities = _sortBy(_uniqBy(cities, 'city'), 'city');
+      const sortedCities = _uniqBy(cities, 'city');
 
       if (isInputAutoFocus) {
         return sortedCities;
@@ -164,7 +168,7 @@ export const useFilterCities = (isCityInputFocused: boolean) => {
 
       return sortedCities.slice(0, wasteAddressesCityCount);
     },
-    [getStreetString, isCityInputFocused]
+    [isCityInputFocused]
   );
 
   return {
@@ -183,9 +187,8 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
   } = wasteAddresses;
   const { getStreetString } = useStreetString();
 
-  // show streets that contain the string in it
+  // filter streets that contain the string in it
   // consider the city if it is set because of the two step process
-  // return empty list on an exact match (except for capitalization)
   const filterStreets = useCallback(
     (currentInputValue, addressesData) => {
       if (hasWasteAddressesTwoStep && inputValueCity === '') return [];
@@ -195,20 +198,15 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
         ?.filter((address) => {
           const street = getStreetString(address);
 
-          return (
-            street !== currentInputValue &&
-            street?.toLowerCase().includes(currentInputValue.toLowerCase())
-          );
+          return street?.toLowerCase().includes(currentInputValue.toLowerCase());
         })
         ?.filter((address) => (hasWasteAddressesTwoStep ? address.city === inputValueCity : true));
 
-      const sortedStreets = _sortBy(streets, 'street');
-
       if (isInputAutoFocus) {
-        return sortedStreets;
+        return streets || [];
       }
 
-      return sortedStreets.slice(0, wasteAddressesStreetCount);
+      return streets.slice(0, wasteAddressesStreetCount) || [];
     },
     [getStreetString, inputValueCity, isStreetInputFocused]
   );
@@ -218,7 +216,7 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
   };
 };
 
-export const useRenderSuggestions = (selectionCallback?: () => void) => {
+export const useRenderSuggestions = (selectionCallback?: (item: any) => void) => {
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -251,7 +249,7 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
         <TouchableOpacity
           onPress={() => {
             setInputValue(streetString);
-            selectionCallback?.();
+            selectionCallback?.(item);
             Keyboard.dismiss();
           }}
         >
@@ -262,7 +260,7 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
         </TouchableOpacity>
       );
     },
-    [setInputValue]
+    [getStreetString, selectionCallback, setInputValue]
   );
 
   return {
@@ -274,5 +272,57 @@ export const useRenderSuggestions = (selectionCallback?: () => void) => {
     setInputValueCitySelected,
     renderSuggestionCities,
     renderSuggestion
+  };
+};
+
+export const useTriggerExport = ({ streetData, wasteTexts }) => {
+  const triggerExport = useCallback(
+    ({ selectedTypes }: { selectedTypes: string[] }) => {
+      const { street, zip, city } = getLocationData(streetData);
+
+      const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
+
+      let params = `street=${encodeURIComponent(street)}`;
+
+      if (zip) {
+        params += `&zip=${encodeURIComponent(zip)}`;
+      }
+
+      if (city) {
+        params += `&city=${encodeURIComponent(city)}`;
+      }
+
+      if (selectedTypes?.length) {
+        params += `&waste_types=${selectedTypes.join(',')}`;
+      }
+
+      const combinedUrl = baseUrl + params;
+
+      if (device.platform === 'android') {
+        return Alert.alert(
+          wasteTexts.exportAlertTitle,
+          wasteTexts.exportAlertBody,
+          [
+            {
+              onPress: () => {
+                openLink(combinedUrl);
+              }
+            }
+          ],
+          {
+            onDismiss: () => {
+              openLink(combinedUrl);
+            }
+          }
+        );
+      } else {
+        openLink(combinedUrl);
+      }
+    },
+    [streetData]
+  );
+
+  return {
+    triggerExport
   };
 };

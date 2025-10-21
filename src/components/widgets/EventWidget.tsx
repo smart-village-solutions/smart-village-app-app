@@ -16,7 +16,7 @@ const { ROOT_ROUTE_NAMES } = consts;
 
 const today = moment().format('YYYY-MM-DD');
 
-export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
+export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const { globalSettings } = useContext(SettingsContext);
   const { hdvt = {} } = globalSettings;
@@ -75,6 +75,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.events}
+      widgetStyle={widgetStyle}
     />
   );
 };

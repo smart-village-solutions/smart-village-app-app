@@ -1,4 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
+import _isArray from 'lodash/isArray';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -10,13 +11,14 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
 import {
   BoldText,
   Button,
+  CalendarListToggle,
   DefaultKeyboardAvoidingView,
   DrawerHeader,
   HeaderLeft,
@@ -39,14 +41,12 @@ import { setupLocales } from '../helpers/calendarHelper';
 import {
   useKeyboardHeight,
   useRenderSuggestions,
-  useStreetString,
-  useWasteAddresses,
+  useTriggerExport,
   useWasteMarkedDates,
   useWasteStreet,
   useWasteTypes,
   useWasteUsedTypes
 } from '../hooks';
-import { OrientationContext } from '../OrientationProvider';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
@@ -76,42 +76,36 @@ export const getLocationData = (streetData) => {
  */
 /* eslint-disable complexity */
 export const WasteCollectionScreen = ({ navigation }) => {
-  const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
   const {
-    twoStep: hasWasteAddressesTwoStep = false,
     hasCalendar = true,
+    hasExport = true,
     hasHeaderSearchBarOption = false,
-    texts: wasteAddressesTexts = {}
+    texts: wasteAddressesTexts = {},
+    twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
+  const renderSuggestions = useRenderSuggestions((item) => {
+    if (item?.id) {
+      setSelectedStreetId(item.id);
+      setIsReset(false);
+      navigation.navigate(ScreenName.WasteCollectionSettings, { currentSelectedStreetId: item.id });
+    }
+  });
+  const { setInputValue, setInputValueCity, setInputValueCitySelected } = renderSuggestions;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [isRehydrating, setIsRehydrating] = useState(false);
-  const [isCityInputFocused, setIsCityInputFocused] = useState(false);
-  const [isStreetInputFocused, setIsStreetInputFocused] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
   const [showCalendar, setShowCalendar] = useState(false);
   const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState('');
-  const { data, loading } = useWasteAddresses();
-  const addressesData = data?.wasteAddresses;
   const { data: typesData, loading: typesLoading } = useWasteTypes();
-  const { data: streetData } = useWasteStreet({ selectedStreetId });
+  const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
   const locationData = getLocationData(streetData);
   const usedTypes = useWasteUsedTypes({ streetData, typesData });
+  const { triggerExport } = useTriggerExport({ streetData, wasteTexts });
   const [selectedTypes, setSelectedTypes] = useState();
-  const { getStreetString } = useStreetString();
-  const {
-    inputValue,
-    setInputValue,
-    inputValueCity,
-    setInputValueCity,
-    inputValueCitySelected,
-    setInputValueCitySelected,
-    renderSuggestionCities,
-    renderSuggestion
-  } = useRenderSuggestions();
   const markedDates = useWasteMarkedDates({
     streetData,
     selectedTypes: selectedTypes || typesData
@@ -138,54 +132,18 @@ export const WasteCollectionScreen = ({ navigation }) => {
     });
   }, [markedDates, selectedTypes]);
 
-  // Monitors changes to `addressesData` and `inputValueCity` when the two-step
-  // address selection (`hasWasteAddressesTwoStep`) is enabled. If only one city matches the input,
-  // it automatically sets the corresponding street value in the input field. This improves
-  // usability by reducing the need for additional user input when there is only one option.
-  useEffect(() => {
-    if (hasWasteAddressesTwoStep && addressesData?.length && inputValueCity) {
-      const cityData = addressesData?.filter(
-        (address) => address.city?.toLowerCase() === inputValueCity.toLowerCase()
-      );
-
-      if (cityData?.length == 1) {
-        setInputValue(getStreetString(cityData[0]));
-      }
-    }
-  }, [addressesData, inputValueCity]);
-
-  // Checks whether the user has completed the city and street input.
-  // If the input is incomplete, it resets the `selectedStreetId` to allow the user to start over.
-  // Otherwise, it searches for a matching address in `addressesData` based on the input values.
-  // If a match is found, it navigates to the waste settings screen with the selected street id.
   useEffect(() => {
     if (
-      !addressesData ||
-      (!hasHeaderSearchBarOption &&
-        !waste.streetId &&
-        (!inputValue || (hasWasteAddressesTwoStep && !inputValueCity)))
+      !!selectedStreetId &&
+      _isArray(streetData?.wasteAddresses) &&
+      !streetData.wasteAddresses.length
     ) {
       setSelectedStreetId(undefined);
-      return;
+      setInputValue('');
+      setInputValueCity('');
+      setInputValueCitySelected(false);
     }
-
-    const item = addressesData.find((address) => {
-      if (hasWasteAddressesTwoStep) {
-        return (
-          address.city === inputValueCity &&
-          getStreetString(address).toLowerCase() === inputValue.toLowerCase()
-        );
-      }
-
-      return getStreetString(address).toLowerCase() === inputValue.toLowerCase();
-    });
-
-    if (item?.id) {
-      setSelectedStreetId(waste.streetId);
-      setIsReset(false);
-      navigation.navigate(ScreenName.WasteCollectionSettings, { currentSelectedStreetId: item.id });
-    }
-  }, [addressesData, inputValue, inputValueCity, waste.streetId, getStreetString]);
+  }, [selectedStreetId, streetData?.wasteAddresses]);
 
   // Initializes the `selectedTypes` state based on the available waste types (`usedTypes`)
   // and the user's previously selected type keys (`waste.selectedTypeKeys`).
@@ -197,7 +155,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
     setSelectedTypes(
       Object.fromEntries(
-        (waste.selectedTypeKeys?.length ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
+        (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
           (typeKey) => [typeKey, usedTypes[typeKey]]
         )
       )
@@ -231,32 +189,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
-                <Icon.EditSetting
-                  color={tintColor}
-                  style={[styles.icon, !hasCalendar && styles.noPaddingRight]}
-                />
+                <Icon.EditSetting color={tintColor} style={styles.icon} />
               )}
             />
 
-            {hasCalendar && (
-              <HeaderLeft
-                onPress={() => setShowCalendar(!showCalendar)}
-                backImage={({ tintColor }) =>
-                  showCalendar ? (
-                    <Icon.List color={tintColor} style={[styles.icon, styles.noPaddingRight]} />
-                  ) : (
-                    <Icon.Calendar color={tintColor} style={[styles.icon, styles.noPaddingRight]} />
-                  )
-                }
-              />
-            )}
-
             {navigationType === 'drawer' && (
-              <DrawerHeader navigation={navigation} style={styles.icon} />
+              <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
             )}
           </WrapperRow>
         ) : navigationType === 'drawer' ? (
-          <DrawerHeader navigation={navigation} style={styles.icon} />
+          <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
         ) : null
     });
 
@@ -301,7 +243,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
     return (
       <WasteList
         data={selectedStreetId ? listItems : []}
-        ListHeaderComponent={wasteHeader()}
         query={query}
         selectedTypes={selectedTypes}
       />
@@ -313,7 +254,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setIsDayOverlayVisible(true);
   }, []);
 
-  if (isRehydrating || loading || typesLoading) {
+  if (isRehydrating || typesLoading || streetLoading) {
     return <LoadingSpinner loading />;
   }
 
@@ -328,101 +269,142 @@ export const WasteCollectionScreen = ({ navigation }) => {
               </RegularText>
             </Wrapper>
             <WasteInputForm
-              addressesData={addressesData}
-              dimensions={dimensions}
-              hasWasteAddressesTwoStep={hasWasteAddressesTwoStep}
-              inputValue={inputValue}
-              inputValueCity={inputValueCity}
-              inputValueCitySelected={inputValueCitySelected}
-              isCityInputFocused={isCityInputFocused}
-              isStreetInputFocused={isStreetInputFocused}
-              renderSuggestion={renderSuggestion}
-              renderSuggestionCities={renderSuggestionCities}
-              setInputValue={setInputValue}
-              setInputValueCity={setInputValueCity}
-              setInputValueCitySelected={setInputValueCitySelected}
-              setIsCityInputFocused={setIsCityInputFocused}
-              setIsStreetInputFocused={setIsStreetInputFocused}
+              renderSuggestions={renderSuggestions}
               setSelectedStreetId={setSelectedStreetId}
             />
           </DefaultKeyboardAvoidingView>
-        ) : showCalendar ? (
+        ) : (
           <>
             {wasteHeader()}
-            <Wrapper>
-              <RegularText small>{wasteTexts.calendarIntro}</RegularText>
-            </Wrapper>
-            <RNCalendar
-              dayComponent={DayComponent}
-              firstDay={1}
-              markedDates={markedDates}
-              markingType="multi-dot"
-              onDayPress={onDayPress}
-              renderArrow={renderArrow}
-              theme={{
-                todayTextColor: colors.primary,
-                todayBackgroundColor: colors.lighterPrimaryRgba,
-                indicatorColor: colors.refreshControl,
-                dotStyle: {
-                  borderRadius: DOT_SIZE / 2,
-                  height: DOT_SIZE,
-                  marginBottom: normalize(8),
-                  marginTop: normalize(8),
-                  width: DOT_SIZE
-                }
-              }}
-            />
-            <Overlay
-              animationType="fade"
-              isVisible={isDayOverlayVisible}
-              onBackdropPress={() => setIsDayOverlayVisible(false)}
-              windowBackgroundColor={colors.overlayRgba}
-              overlayStyle={[styles.overlay, styles.overlayWidth]}
-              supportedOrientations={['portrait', 'landscape']}
-            >
-              {!!selectedDay && (
-                <WrapperRow spaceBetween>
-                  <BoldText>{momentFormat(selectedDay, 'dddd, DD.MM.YYYY')}</BoldText>
+            {hasCalendar && (
+              <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+            )}
+            {showCalendar ? (
+              <>
+                <Wrapper>
+                  <RegularText small>{wasteTexts.calendarIntro}</RegularText>
+                </Wrapper>
+                <RNCalendar
+                  dayComponent={DayComponent}
+                  firstDay={1}
+                  markedDates={markedDates}
+                  markingType="multi-dot"
+                  onDayPress={onDayPress}
+                  renderArrow={renderArrow}
+                  theme={{
+                    todayTextColor: colors.primary,
+                    todayBackgroundColor: colors.lighterPrimaryRgba,
+                    indicatorColor: colors.refreshControl,
+                    dotStyle: {
+                      borderRadius: DOT_SIZE / 2,
+                      height: DOT_SIZE,
+                      marginBottom: normalize(8),
+                      marginTop: normalize(8),
+                      width: DOT_SIZE
+                    }
+                  }}
+                />
 
-                  <TouchableOpacity
-                    onPress={() => setIsDayOverlayVisible(false)}
-                    style={styles.overlayCloseButton}
-                  >
-                    <Icon.Close size={normalize(20)} color={colors.darkText} />
-                  </TouchableOpacity>
-                </WrapperRow>
-              )}
+                {!!hasExport && (
+                  <View style={styles.paddingTop}>
+                    <Wrapper style={styles.noPaddingBottom}>
+                      <Button
+                        title={wasteTexts.exportButton}
+                        notFullWidth
+                        onPress={() => triggerExport({ selectedTypes: waste.selectedTypeKeys })}
+                      />
+                    </Wrapper>
+                  </View>
+                )}
+                <Overlay
+                  animationType="fade"
+                  isVisible={isDayOverlayVisible}
+                  onBackdropPress={() => setIsDayOverlayVisible(false)}
+                  windowBackgroundColor={colors.overlayRgba}
+                  overlayStyle={[styles.overlay, styles.overlayWidth]}
+                  supportedOrientations={['portrait', 'landscape']}
+                >
+                  {!!selectedDay && (
+                    <WrapperRow spaceBetween>
+                      <BoldText>{momentFormat(selectedDay, 'dddd, DD.MM.YYYY')}</BoldText>
 
-              {!!usedTypes && (
-                <WasteCalendarLegend data={usedTypes} dots={markedDates?.[selectedDay]?.dots} />
-              )}
+                      <TouchableOpacity
+                        onPress={() => setIsDayOverlayVisible(false)}
+                        style={styles.overlayCloseButton}
+                      >
+                        <Icon.Close size={normalize(20)} color={colors.darkText} />
+                      </TouchableOpacity>
+                    </WrapperRow>
+                  )}
 
-              <Button title={texts.close} onPress={() => setIsDayOverlayVisible(false)} />
-            </Overlay>
-            <FeedbackFooter containerStyle={styles.feedbackContainer} />
+                  {!!usedTypes && (
+                    <WasteCalendarLegend data={usedTypes} dots={markedDates?.[selectedDay]?.dots} />
+                  )}
+
+                  <Button title={texts.close} onPress={() => setIsDayOverlayVisible(false)} />
+                </Overlay>
+                <FeedbackFooter containerStyle={styles.feedbackContainer} />
+              </>
+            ) : selectedTypes ? (
+              wasteList()
+            ) : (
+              <LoadingSpinner loading />
+            )}
           </>
-        ) : selectedTypes ? (
-          wasteList()
-        ) : null
+        )
       ) : selectedTypes && !showCalendar ? (
-        wasteList()
-      ) : null}
+        <>
+          {wasteHeader()}
+          {hasCalendar && (
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+          )}
+          {wasteList()}
+        </>
+      ) : (
+        <LoadingSpinner loading />
+      )}
       {!selectedStreetId &&
         (device.platform === 'ios' || (device.platform === 'android' && !keyboardHeight)) && (
           <FeedbackFooter containerStyle={styles.feedbackContainer} />
         )}
+
+      {!!hasExport && !showCalendar && !!selectedStreetId && (
+        <View
+          style={[
+            styles.paddingTop,
+            styles.exportButtonContainer,
+            getPositionStyleByNavigation({ navigationType }).position
+          ]}
+        >
+          <Wrapper noPaddingBottom>
+            <Button
+              title={wasteTexts.exportButton}
+              notFullWidth
+              onPress={() => triggerExport({ selectedTypes: waste.selectedTypeKeys })}
+            />
+          </Wrapper>
+        </View>
+      )}
     </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  exportButtonContainer: {
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '100%'
+  },
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
   },
   icon: {
-    paddingHorizontal: normalize(10)
+    paddingHorizontal: normalize(16)
+  },
+  noPaddingLeft: {
+    paddingLeft: 0
   },
   overlay: {
     borderRadius: normalize(8),
@@ -431,9 +413,24 @@ const styles = StyleSheet.create({
   },
   overlayWidth: {
     width: '80%'
+  },
+  paddingTop: {
+    paddingTop: normalize(14)
   }
 });
 
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+export const getPositionStyleByNavigation = ({ navigationType }) => {
+  return StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '5%' : 0
+    }
+  });
+};
+/* eslint-enable react-native/no-unused-styles */
+
 WasteCollectionScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

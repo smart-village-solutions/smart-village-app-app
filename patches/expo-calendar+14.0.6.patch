@@ -1,0 +1,13 @@
+diff --git a/node_modules/expo-calendar/ios/CalendarModule.swift b/node_modules/expo-calendar/ios/CalendarModule.swift
+index f437cdd..4e2260a 100644
+--- a/node_modules/expo-calendar/ios/CalendarModule.swift
++++ b/node_modules/expo-calendar/ios/CalendarModule.swift
+@@ -303,7 +303,7 @@ public class CalendarModule: Module {
+     }
+ 
+     AsyncFunction("createEventInCalendarAsync") { (event: Event, promise: Promise) in
+-      try checkCalendarPermissions()
++    //   try checkCalendarPermissions()
+       guard calendarDialogDelegate == nil else {
+         throw EventDialogInProgressException()
+       }

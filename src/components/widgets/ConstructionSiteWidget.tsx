@@ -7,7 +7,7 @@ import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const ConstructionSiteWidget = ({ text, additionalProps }: WidgetProps) => {
+export const ConstructionSiteWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const { constructionSites, loading, refresh } = useConstructionSites();
 
@@ -28,6 +28,7 @@ export const ConstructionSiteWidget = ({ text, additionalProps }: WidgetProps) =
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
+      widgetStyle={widgetStyle}
     />
   );
 };

@@ -4,7 +4,9 @@ import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
+import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { usePersonalizedTiles } from '../../hooks';
+import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
@@ -14,9 +16,10 @@ import { WrapperWrap } from '../Wrapper';
 
 import { DraggableGrid } from './DraggableGrid';
 import { ServiceTile, TServiceTile } from './ServiceTile';
-import { ConfigurationsContext } from '../../ConfigurationsProvider';
 
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
+const ITEMS_PER_ROW_PORTRAIT = 3;
+const ITEMS_PER_ROW_LANDSCAPE = 5;
 
 export const umlautSwitcher = (text: string) => {
   if (!text) return;
@@ -50,13 +53,14 @@ export const Service = ({
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { orientation } = useContext(OrientationContext);
   const { settings = {} } = globalSettings;
-  const { personalizedTiles = false, tileSizeFactor = 1 } = settings;
+  const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
   const { serviceTiles = {} } = appDesignSystem;
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
-    personalizedTiles,
+    isPersonalizable,
     data,
     isEditMode,
     staticJsonName
@@ -76,12 +80,13 @@ export const Service = ({
     [isEditMode, hasDiagonalGradientBackground]
   );
   const renderItem = useCallback(
-    (item: TServiceTile, index: number) => (
+    (item: TServiceTile, index: number, isLastRow?: boolean) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
+        isLastRow={isLastRow}
         item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
@@ -91,7 +96,7 @@ export const Service = ({
     ),
     [isEditMode, hasDiagonalGradientBackground]
   );
-  const toggler = personalizedTiles && (
+  const toggler = isPersonalizable && (
     <View style={styles.toggler}>
       <TouchableOpacity onPress={onPress}>
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>
@@ -103,6 +108,17 @@ export const Service = ({
 
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
+  const tilesCount = tiles?.length || 0;
+  const isPortrait = orientation === 'portrait';
+  const itemsPerRow = isPortrait ? ITEMS_PER_ROW_PORTRAIT : ITEMS_PER_ROW_LANDSCAPE;
+
+  // Split the tiles array into subarrays (rows), each containing up to itemsPerRow elements.
+  // This is done to render tiles row-by-row in a grid layout based on screen orientation.
+  const rows: TServiceTile[][] = [];
+  for (let i = 0; i < tilesCount; i += itemsPerRow) {
+    rows.push(tiles.slice(i, i + itemsPerRow));
+  }
+
   return isEditMode ? (
     <DiagonalGradient
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
@@ -113,7 +129,22 @@ export const Service = ({
     </DiagonalGradient>
   ) : (
     <>
-      <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
+      {rows.map((row) => {
+        const isLastRow = rows[rows.length - 1] === row;
+        const isIncompleteRow = row.length < itemsPerRow;
+        const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
+        const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
+
+        return (
+          <WrapperWrap
+            key={rowKey}
+            center={isLastAndIncompleteRow}
+            spaceBetween={!isLastAndIncompleteRow}
+          >
+            {row.map((item, index) => renderItem(item, index, isLastAndIncompleteRow))}
+          </WrapperWrap>
+        );
+      })}
       {!!tiles?.length && toggler}
     </>
   );

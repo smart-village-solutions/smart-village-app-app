@@ -69,67 +69,76 @@ const htmlConfig = {
   }
 };
 
-export const HtmlView = memo(({ html, tagsStyles = {}, openWebScreen, width }) => {
-  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+export const HtmlView = memo(
+  ({ big = true, html, openWebScreen, selectable = false, tagsStyles = {}, width }) => {
+    const { isBoldTextEnabled } = useContext(AccessibilityContext);
 
-  let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
+    let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
 
-  if (calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
-    // image width should be only 70% on wider screens, as there are 15% padding on each side
-    calculatedWidth = calculatedWidth * 0.7;
-  }
+    if (calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
+      // image width should be only 70% on wider screens, as there are 15% padding on each side
+      calculatedWidth = calculatedWidth * 0.7;
+    }
 
-  const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
+    const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
-  if (!html.match(HTML_REGEX)) {
-    return <RegularText big>{html}</RegularText>;
-  }
+    if (!html.match(HTML_REGEX)) {
+      return (
+        <RegularText big={big} selectable={selectable}>
+          {html}
+        </RegularText>
+      );
+    }
 
-  return (
-    <HTML
-      source={{ html }}
-      {...htmlConfig}
-      renderersProps={{
-        a: { onPress: (evt, href) => openLink(href, openWebScreen) },
-        iframe: {
-          scalesPageToFit: true,
-          webViewProps: {
-            // the opacity of the iframe was set to 0.99 to solve the crashing problem on Android
-            // thanks to : https://github.com/meliorence/react-native-render-html/issues/393#issuecomment-1277533605
-            style: { opacity: 0.99 }
+    return (
+      <HTML
+        source={{ html }}
+        {...htmlConfig}
+        renderersProps={{
+          a: { onPress: (evt, href) => openLink(href, openWebScreen) },
+          iframe: {
+            scalesPageToFit: true,
+            webViewProps: {
+              // the opacity of the iframe was set to 0.99 to solve the crashing problem on Android
+              // thanks to : https://github.com/meliorence/react-native-render-html/issues/393#issuecomment-1277533605
+              style: { opacity: 0.99 }
+            }
+          },
+          table: { cssRules }
+        }}
+        tagsStyles={{
+          ...styles.html,
+          ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
+          ...tagsStyles
+        }}
+        emSize={normalize(16)}
+        baseStyle={styles.baseFontStyle}
+        ignoredStyles={['width', 'height']}
+        contentWidth={maxWidth}
+        domVisitors={{
+          onElement: (node) => {
+            if (node.name === 'img' || node.name === 'iframe') {
+              delete node.attribs.width;
+              delete node.attribs.height;
+            }
+
+            return node.children;
           }
-        },
-        table: { cssRules }
-      }}
-      tagsStyles={{
-        ...styles.html,
-        ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
-        ...tagsStyles
-      }}
-      emSize={normalize(16)}
-      baseStyle={styles.baseFontStyle}
-      ignoredStyles={['width', 'height']}
-      contentWidth={maxWidth}
-      domVisitors={{
-        onElement: (node) => {
-          if (node.name === 'img' || node.name === 'iframe') {
-            delete node.attribs.width;
-            delete node.attribs.height;
-          }
-
-          return node.children;
-        }
-      }}
-      systemFonts={['regular', 'bold', 'condbold', 'italic', 'bold-italic', 'condbold-italic']}
-    />
-  );
-});
+        }}
+        systemFonts={['regular', 'bold', 'condbold', 'italic', 'bold-italic', 'condbold-italic']}
+        defaultTextProps={{ selectable }}
+      />
+    );
+  }
+);
 
 HtmlView.displayName = 'HtmlView';
 
 HtmlView.propTypes = {
+  big: PropTypes.bool,
   html: PropTypes.string,
-  tagsStyles: PropTypes.object,
   openWebScreen: PropTypes.func,
+  selectable: PropTypes.bool,
+  tagsStyles: PropTypes.object,
   width: PropTypes.number
 };

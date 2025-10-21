@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
+import { colors, normalize } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps } from '../../types';
 import { DropdownSelect } from '../DropdownSelect';
-import { colors, normalize } from '../../config';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   data: DropdownProps[];
   filters: FilterProps;
-  isOverlayFilter: boolean;
+  isOverlayFilter?: boolean;
   label?: string;
   multipleSelect?: boolean;
   name: keyof FilterProps;
@@ -24,7 +24,7 @@ export const DropdownFilter = ({
   containerStyle,
   data,
   filters,
-  isOverlayFilter,
+  isOverlayFilter = false,
   label,
   multipleSelect,
   name,
@@ -33,15 +33,24 @@ export const DropdownFilter = ({
   setFilters,
   showSearch
 }: Props) => {
-  const initiallySelectedItem = {
-    id: 0,
-    index: 0,
-    value: placeholder || '',
-    selected: filters[name] ? false : true
-  };
+  const initiallySelectedItem = !data.some((item) => item.selected)
+    ? {
+        id: 0,
+        index: 0,
+        value: placeholder || '',
+        selected: filters[name] ? false : true
+      }
+    : undefined;
+
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
-    initiallySelectedItem,
-    ...data
+    ...(initiallySelectedItem ? [initiallySelectedItem] : []),
+    ...data.map((item) => ({
+      ...item,
+      selected: multipleSelect
+        ? // TODO: test if this still works for multi select
+          Array.isArray(filters[name]) && filters[name]?.includes(item.id || item.value)
+        : item.filterValue === filters[name] || item.value === filters[name]
+    }))
   ]);
 
   useEffect(() => {
@@ -78,7 +87,7 @@ export const DropdownFilter = ({
   // added to make the placeholder data appear in the dropdown after resetting the filter
   useEffect(() => {
     if (!filters[name]?.length && !dropdownData[0].selected) {
-      setDropdownData([initiallySelectedItem, ...data]);
+      setDropdownData([...(initiallySelectedItem ? [initiallySelectedItem] : []), ...data]);
     }
   }, [filters]);
 

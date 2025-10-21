@@ -14,11 +14,12 @@ import {
   LoadingContainer,
   LoginModal,
   navigateWithSubQuery,
-  ProfileNoticeboardCategoryTabs,
+  NoticeboardCategoryTabs,
   SafeAreaViewFlex,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../../components';
-import { colors, Icon, normalize, texts } from '../../config';
+import { colors, Icon, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -51,7 +52,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const content = route.params?.content ?? '';
   const query = route.params?.query ?? '';
   const initialQueryVariables = route.params?.queryVariables ?? {};
-  const subQuery = route.params?.subQuery ?? '';
+  const subQuery = route.params?.subQuery ?? {};
   const rootRouteName = route.params?.rootRouteName ?? '';
   const categoryIds = initialQueryVariables?.categoryIds ?? [];
   const currentMember = initialQueryVariables?.currentMember ?? false;
@@ -79,30 +80,48 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
+    skip: isLoginRequired && !isProfileLoggedIn,
     variables: queryVariables
   });
 
+  const filterTypes = useMemo(() => {
+    return filterTypesHelper({
+      data,
+      query: GenericType.Noticeboard,
+      queryVariables,
+      resourceFilters
+    });
+  }, [data]);
+
   const listItems = parseListItemsFromQuery(query, data, '', {
     queryVariables,
-    subQuery
+    subQuery,
+    filterTypes
   });
 
   // create new object of list items filtered by selected category
-  const filteredListItems = listItems?.filter((item: { categories: { id: string }[] }) =>
-    item.categories.some((category: { id: string }) => category.id == selectedCategory)
-  );
+  const filteredListItems = useMemo(() => {
+    if (!selectedCategory) return listItems;
+
+    return listItems?.filter((item: { categories: { id: string }[] }) =>
+      item.categories.some((category: { id: string }) => category.id == selectedCategory)
+    );
+  }, [listItems, selectedCategory]);
 
   // get all category names from list items
-  const categoryNames = listItems?.reduce((acc, item) => {
-    if (item.categories.length) {
-      acc[item.categories[0].id] = item.categories[0].name;
-    }
-
-    return acc;
-  }, {});
+  const categoryNames = useMemo(() => {
+    return listItems?.reduce((acc, item) => {
+      if (item.categories.length) {
+        acc[item.categories[0].id] = item.categories[0].name;
+      }
+      return acc;
+    }, {});
+  }, [listItems]);
 
   // filter out the category ids
-  const categoryIdsTabs = categoryIds?.filter((categoryId: number) => !!categoryNames[categoryId]);
+  const categoryIdsTabs = useMemo(() => {
+    return categoryIds?.filter((categoryId: number) => !!categoryNames[categoryId]);
+  }, [categoryIds, categoryNames]);
 
   const {
     data: dataHtml,
@@ -123,15 +142,6 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  const filterTypes = useMemo(() => {
-    return filterTypesHelper({
-      data,
-      query: GenericType.Noticeboard,
-      queryVariables,
-      resourceFilters
-    });
-  }, [data]);
-
   useEffect(() => {
     updateResourceFiltersStateHelper({
       query: GenericType.Noticeboard,
@@ -144,7 +154,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   useFocusEffect(
     useCallback(() => {
       const getLoginStatus = async () => {
-        setIsLoginLoading(true);
+        setIsLoginLoading(!data);
         const storedProfileAuthToken = await profileAuthToken();
         const { currentUserData } = await profileUserData();
 
@@ -154,7 +164,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       };
 
       !isLoadingMember && getLoginStatus();
-    }, [])
+    }, [data])
   );
 
   useFocusEffect(
@@ -169,7 +179,8 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       if (
         !loading &&
         !filteredListItems?.filter((item: any) => !item.component)?.length &&
-        !!categoryIdsTabs?.length
+        !!categoryIdsTabs?.length &&
+        !!selectedCategory
       ) {
         setSelectedCategory(
           categoryIdsTabs.find((categoryId: number) => categoryId != selectedCategory)
@@ -180,23 +191,50 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   // add the section header component to the beginning of the list items, that will be at index 1,
   // that we want to stick to the top of the screen when scrolling
-  !!categoryIdsTabs?.length &&
-    filteredListItems?.unshift({
-      component: (
-        <ProfileNoticeboardCategoryTabs
-          categoryIdsTabs={categoryIdsTabs}
-          categoryNames={categoryNames}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-      )
-    });
+  const listData = useMemo(() => {
+    if (!categoryIdsTabs?.length) return filteredListItems;
 
-  if (userData && userData.member && !Object.keys(userData.member.preferences).length) {
+    return [
+      {
+        component: (
+          <NoticeboardCategoryTabs
+            categoryIdsTabs={categoryIdsTabs}
+            categoryNames={categoryNames}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        )
+      },
+      ...filteredListItems
+    ];
+  }, [categoryIdsTabs, filteredListItems, categoryNames, selectedCategory]);
+
+  const ResultListHeaderComponent = useMemo(() => {
+    return !currentMember ? (
+      <ListHeaderComponent
+        html={dataHtml}
+        loading={loadingHtml}
+        navigation={navigation}
+        navigationTitle=""
+        subQuery={subQuery}
+      />
+    ) : (
+      <View />
+    );
+  }, [dataHtml, loadingHtml, navigation, subQuery]);
+
+  if (
+    isLoginRequired &&
+    isProfileLoggedIn &&
+    !isLoadingMember &&
+    !isLoginLoading &&
+    !loading &&
+    !Object.keys(userData?.member?.preferences || {}).length
+  ) {
     return <ProfileUpdateScreen navigation={navigation} route={route} />;
   }
 
-  if (isLoginLoading || (loading && !filteredListItems?.length)) {
+  if (isLoginLoading || (loading && !filteredListItems?.length && !data)) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -207,13 +245,21 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   if (!categoryIdsTabs?.length && !queryVariables?.categoryId) {
     return (
       <SafeAreaViewFlex>
+        <Filter
+          filterTypes={filterTypes}
+          initialQueryVariables={initialQueryVariables}
+          isOverlay
+          queryVariables={queryVariables}
+          setQueryVariables={setQueryVariables}
+        />
+        <WrapperHorizontal>{ResultListHeaderComponent}</WrapperHorizontal>
         <EmptyMessage title={texts.noticeboard.emptyTitle} />
         {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
           <>
             <Divider style={styles.divider} />
-            <Wrapper style={styles.noPaddingBotton}>
+            <Wrapper noPaddingBottom>
               <Button
-                icon={<Icon.PencilPlus size={normalize(24)} />}
+                icon={<Icon.PencilPlus color={colors.lightestText} />}
                 iconPosition="left"
                 title={subQuery.buttonTitle}
                 onPress={() =>
@@ -246,7 +292,8 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
         setQueryVariables={setQueryVariables}
       />
       <ListComponent
-        data={listItems}
+        data={listData}
+        ListHeaderComponent={ResultListHeaderComponent}
         navigation={navigation}
         query={query}
         refreshControl={
@@ -257,27 +304,14 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
             tintColor={colors.refreshControl}
           />
         }
-        ListHeaderComponent={
-          !currentMember ? (
-            <ListHeaderComponent
-              html={dataHtml}
-              loading={loadingHtml}
-              navigation={navigation}
-              navigationTitle=""
-              subQuery={subQuery}
-            />
-          ) : (
-            <View />
-          )
-        }
         stickyHeaderIndices={[1]}
       />
       {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
         <>
           <Divider style={styles.divider} />
-          <Wrapper style={styles.noPaddingBotton}>
+          <Wrapper noPaddingBottom>
             <Button
-              icon={<Icon.PencilPlus />}
+              icon={<Icon.PencilPlus color={colors.lightestText} />}
               iconPosition="left"
               title={subQuery.buttonTitle}
               onPress={() =>
@@ -303,8 +337,5 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 const styles = StyleSheet.create({
   divider: {
     backgroundColor: colors.placeholder
-  },
-  noPaddingBotton: {
-    paddingBottom: 0
   }
 });

@@ -31,7 +31,7 @@ const { a11yLabel, EMAIL_REGEX } = consts;
 const showLoginFailAlert = () =>
   Alert.alert(texts.profile.loginFailedTitle, texts.profile.loginFailedBody);
 
-// eslint-disable-next-line complexity
+/* eslint-disable complexity */
 export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const email = route.params?.email ?? '';
@@ -60,7 +60,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
   } = useMutation(profileLogIn);
 
   const { isLoading: isLoadingMember } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
-    enabled: !!data?.member?.authentication_token, // the query will not execute until the auth token exists
+    enabled: !isLoading && !!data?.member?.authentication_token,
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member) {
         return;
@@ -69,16 +69,19 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       // save user data to global state
       storeProfileUserData(responseData);
 
-      if (!Object.keys(responseData.member?.preferences).length) {
-        return navigation.navigate(ScreenName.ProfileUpdate);
+      if (!Object.keys(responseData.member?.preferences || {}).length) {
+        navigation.navigate(ScreenName.ProfileUpdate);
+      } else if (from === LOGIN_MODAL) {
+        navigation.popToTop();
+        return;
+      } else if (
+        navigation.getState().routes[navigation.getState().index].name === ScreenName.ProfileLogin
+      ) {
+        // refreshUser param causes the home screen to update and no longer show the welcome component
+        navigation.navigate(ScreenName.Profile, {
+          refreshUser: data?.member?.authentication_token_created_at
+        });
       }
-
-      if (from === LOGIN_MODAL) {
-        return navigation.popToTop();
-      }
-
-      // refreshUser param causes the home screen to update and no longer show the welcome component
-      navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
     }
   });
 
@@ -191,6 +194,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   center: {

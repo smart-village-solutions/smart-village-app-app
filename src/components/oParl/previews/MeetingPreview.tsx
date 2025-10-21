@@ -1,11 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
 import { normalize, texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { MeetingPreviewData } from '../../../types';
 import { TextListItem } from '../../TextListItem';
-import { StyleSheet } from 'react-native';
 
 type Props = {
   data: MeetingPreviewData;

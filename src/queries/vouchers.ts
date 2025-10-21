@@ -1,8 +1,5 @@
 import gql from 'graphql-tag';
 
-import { namespace, secrets } from '../config';
-import { VoucherLogin } from '../types';
-
 export const GET_VOUCHERS = gql`
   query GenericItems(
     $ids: [ID]
@@ -27,7 +24,6 @@ export const GET_VOUCHERS = gql`
       createdAt
       publishedAt
       genericType
-      id
       title
       subtitle: teaser
       categories {
@@ -71,6 +67,11 @@ export const GET_VOUCHERS = gql`
         sourceUrl {
           id
           url
+        }
+      }
+      pointOfInterest {
+        operatingCompany {
+          name
         }
       }
       payload
@@ -278,15 +279,3 @@ export const REDEEM_QUOTA_OF_VOUCHER = gql`
     }
   }
 `;
-
-export const logIn = async ({ key, secret }: VoucherLogin) => {
-  const fetchObj = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ member: { key, secret } })
-  };
-
-  return (await fetch(`${secrets[namespace].serverUrl}/members/sign_in.json`, fetchObj)).json();
-};

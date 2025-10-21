@@ -1,4 +1,5 @@
 import { LocationObject } from 'expo-location';
+
 import { locationServiceEnabledAlert } from '../components';
 
 const deg2rad = (deg: number) => deg * (Math.PI / 180);
@@ -54,16 +55,9 @@ export const geoLocationFilteredListItem = ({
   setIsLocationAlertShow
 }: GeoLocationListItemProps) => {
   const { locationService: locationServiceEnabled } = locationSettings;
-  const { alternativePosition, defaultAlternativePosition } = locationSettings;
-
-  const lat =
-    currentPosition?.coords.latitude ||
-    alternativePosition?.coords.latitude ||
-    defaultAlternativePosition?.coords.latitude;
-  const lng =
-    currentPosition?.coords.longitude ||
-    alternativePosition?.coords.longitude ||
-    defaultAlternativePosition?.coords.latitude;
+  const { alternativePosition } = locationSettings;
+  const latitude = currentPosition?.coords.latitude || alternativePosition?.coords.latitude;
+  const longitude = currentPosition?.coords.longitude || alternativePosition?.coords.longitude;
 
   if (queryVariables.radiusSearch.currentPosition) {
     if (!locationServiceEnabled && !isLocationAlertShow) {
@@ -73,14 +67,19 @@ export const geoLocationFilteredListItem = ({
         navigation
       });
       setIsLocationAlertShow(true);
+
       return listItem;
     }
 
-    // only proceed if currentPosition is available
-    if (!currentPosition?.coords.latitude && !currentPosition?.coords.longitude) {
+    if (!latitude && !longitude) {
       return listItem;
     }
   }
 
-  return filterLocationsWithinRadius(listItem, lat, lng, queryVariables.radiusSearch.distance);
+  return filterLocationsWithinRadius(
+    listItem,
+    latitude,
+    longitude,
+    queryVariables.radiusSearch.distance
+  );
 };

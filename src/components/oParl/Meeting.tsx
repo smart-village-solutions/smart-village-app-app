@@ -1,5 +1,4 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import { isNumber } from 'lodash';
 import React from 'react';
 
 import { texts } from '../../config';
@@ -7,7 +6,8 @@ import { MeetingData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 
-import { FormattedLocation } from './previews';
+import { getSortedAgendaItems } from './oParlHelpers';
+import { FormattedLocation, hasLocationData } from './previews';
 import { Row, SimpleRow } from './Row';
 import {
   DateSection,
@@ -47,13 +47,7 @@ export const Meeting = ({ data, navigation }: Props) => {
     web
   } = data;
 
-  const sortedAgendaItems = agendaItem
-    ? [...agendaItem].sort((a, b) => {
-        if (isNumber(a.order) && isNumber(b.order)) return a.order - b.order;
-        return 0;
-      })
-    : undefined;
-
+  const sortedAgendaItems = getSortedAgendaItems(agendaItem);
   const formattedLocation = location && <FormattedLocation location={location} />;
 
   return (
@@ -71,13 +65,16 @@ export const Meeting = ({ data, navigation }: Props) => {
         <Row
           left={meetingTexts.location}
           right={formattedLocation}
-          onPress={() => {
-            navigation.push('OParlDetail', {
-              type: location?.type,
-              id: location?.id,
-              title: texts.oparl.location.location
-            });
-          }}
+          onPress={
+            hasLocationData(location)
+              ? () =>
+                  navigation.push('OParlDetail', {
+                    type: location?.type,
+                    id: location?.id,
+                    title: texts.oparl.location.location
+                  })
+              : undefined
+          }
         />
         <Row left={meetingTexts.meetingState} right={meetingState} />
       </WrapperHorizontal>

@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser';
 import { noop } from 'lodash';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
@@ -19,6 +20,7 @@ export const WebScreen = ({
   route: {
     params: {
       injectedJavaScript: string;
+      inModalBrowser?: boolean;
       isExternal?: boolean;
       webUrl: string;
     };
@@ -29,13 +31,21 @@ export const WebScreen = ({
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
   const injectedJavaScript = route.params?.injectedJavaScript ?? '';
-  const isExternal = route.params?.isExternal ?? '';
+  const inModalBrowser = route.params?.inModalBrowser ?? false;
+  const isExternal = route.params?.isExternal ?? false;
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `webUrl`
   //       dependency
   useEffect(() => {
     isConnected && webUrl && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.WEB} / ${webUrl}`);
   }, [webUrl]);
+
+  useEffect(() => {
+    if (inModalBrowser) {
+      openBrowserAsync(webUrl, { presentationStyle: WebBrowserPresentationStyle.PAGE_SHEET });
+      navigation.goBack();
+    }
+  }, []);
 
   useEffect(() => {
     if (isExternal) {

@@ -1,17 +1,19 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, TouchableOpacity } from 'react-native';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import * as appJson from '../../../app.json';
 import {
   Button,
   Checkbox,
   DefaultKeyboardAvoidingView,
+  DropdownInput,
   Input,
   InputSecureTextIcon,
   LoadingModal,
+  LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -19,7 +21,9 @@ import {
   WrapperHorizontal
 } from '../../components';
 import { Icon, colors, consts, secrets, texts } from '../../config';
-import { register } from '../../queries/volunteer';
+import { usePullToRefetch } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
+import { register, userGroups } from '../../queries/volunteer';
 import { ScreenName, VolunteerRegistration } from '../../types';
 
 const { EMAIL_REGEX } = consts;
@@ -37,6 +41,13 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
+  const {
+    isLoading: isLoadingUserGroups,
+    data: dataUserGroups,
+    refetch: refetchUserGroups
+  } = useQuery(QUERY_TYPES.VOLUNTEER.USER_GROUPS, userGroups);
+
+  const RefreshControl = usePullToRefetch(refetchUserGroups);
 
   const {
     control,
@@ -47,6 +58,8 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     defaultValues: {
       username: '',
       email: '',
+      group: '',
+      firstname: '',
       password: '',
       passwordConfirmation: '',
       dataPrivacyCheck: false
@@ -87,10 +100,23 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     reset();
   }
 
+  if (isLoadingUserGroups) {
+    return <LoadingSpinner loading />;
+  }
+
+  const dataUserGroupsForRegistration =
+    dataUserGroups?.results
+      ?.filter((group) => group.show_at_registration)
+      ?.sort((a, b) => a.sort_order - b.sort_order)
+      ?.map((group) => ({
+        id: group.id,
+        value: group.name
+      })) || [];
+
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView refreshControl={RefreshControl} keyboardShouldPersistTaps="handled">
           <SectionHeader title={texts.volunteer.registrationTitle} big center />
           <Wrapper noPaddingTop>
             <Input
@@ -127,6 +153,50 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               control={control}
             />
           </Wrapper>
+
+          {!!dataUserGroupsForRegistration?.length && (
+            <>
+              <Wrapper noPaddingTop>
+                <Controller
+                  name="group"
+                  render={({ field: { name, onChange, value } }) => (
+                    <DropdownInput
+                      {...{
+                        boldLabel: true,
+                        control,
+                        data: dataUserGroupsForRegistration,
+                        errors,
+                        label: texts.volunteer.groupRegister,
+                        name,
+                        onChange,
+                        placeholder: texts.volunteer.groupPlaceholder,
+                        required: true,
+                        showSearch: false,
+                        value
+                      }}
+                    />
+                  )}
+                  control={control}
+                />
+              </Wrapper>
+
+              <Wrapper noPaddingTop>
+                <Input
+                  name="firstname"
+                  label={texts.volunteer.groupFirstname}
+                  placeholder={texts.volunteer.groupFirstname}
+                  textContentType="username"
+                  autoCapitalize="none"
+                  validate
+                  rules={{
+                    required: texts.volunteer.groupFirstnameError
+                  }}
+                  errorMessage={errors.firstname && errors.firstname.message}
+                  control={control}
+                />
+              </Wrapper>
+            </>
+          )}
 
           <Wrapper noPaddingTop>
             <Input
@@ -198,6 +268,9 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               notFullWidth
             />
             <TouchableOpacity onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
+              <RegularText small center>
+                {texts.volunteer.enterCodeInfo}
+              </RegularText>
               <RegularText primary center>
                 {texts.volunteer.enterCode}
               </RegularText>

@@ -8,6 +8,7 @@ import {
   ConversationListItem,
   GroupedListItem,
   GroupedSectionHeader,
+  SearchResultSectionList,
   SectionHeader,
   VoucherListItem,
   WasteCollectionListItem
@@ -17,7 +18,7 @@ import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -194,6 +195,18 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return <GroupedSectionHeader item={item} />;
         }
 
+        if (query === QUERY_TYPES.SEARCH) {
+          return (
+            <SearchResultSectionList
+              data={item}
+              listsWithoutArrows={listsWithoutArrows}
+              navigation={navigation}
+              noOvertitle={options.noOvertitle}
+              noSubtitle={options.noSubtitle}
+            />
+          );
+        }
+
         if (query === QUERY_TYPES.WASTE_STREET) {
           return <WasteCollectionListItem item={item} options={options.queryVariables} />;
         }
@@ -234,8 +247,6 @@ export const useRenderItem = (query, navigation, options = {}) => {
     default: {
       /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
-        const bottomDivider = item.bottomDivider ? true : calculateBottomDivider(index, section);
-
         if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
           return (
             <ConversationListItem
@@ -251,9 +262,15 @@ export const useRenderItem = (query, navigation, options = {}) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
-              post={item}
-              bottomDivider={calculateBottomDivider(item, index, section)}
+              authToken={options.queryVariables?.authToken}
+              bottomDivider={false}
               openWebScreen={options.openWebScreen}
+              post={item}
+              setCommentForModal={options.queryVariables?.setCommentForModal}
+              setIsCommentModalCollapsed={options.queryVariables?.setIsCommentModalCollapsed}
+              setIsPostModalCollapsed={options.queryVariables?.setIsPostModalCollapsed}
+              setPostForModal={options.queryVariables?.setPostForModal}
+              userGuid={options.queryVariables?.userGuid}
             />
           );
         }
@@ -333,7 +350,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
  *
  * @param {string} query - String used to specify the method of grouping.
  * @param {Array} data - An array of objects to be grouped. Objects should contain a property with the date format "YYYY-MM-DD".
- * @param {Array} groupKey - The key used to group the data.
+ * @param {String} groupKey - The key used to group the data.
  * @returns {Array} The returned array contains grouped objects and their corresponding month. Each month is followed by objects published in it.
  *
  * @inner

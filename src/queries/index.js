@@ -34,6 +34,7 @@ import { GET_CONVERSATIONS, GET_MESSAGES, member } from './profile';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { GET_RESOURCE_FILTERS } from './resourceFilters';
+import { GET_SEARCH } from './search';
 import {
   areaService,
   configurations,
@@ -53,10 +54,12 @@ import {
   conversations,
   group,
   groupMembership,
+  groupSearch,
   groups,
   groupsMy,
   me,
   posts,
+  stream,
   user
 } from './volunteer';
 import {
@@ -97,6 +100,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.PUBLIC_HTML_FILE]: GET_PUBLIC_HTML_FILE,
     [QUERY_TYPES.PUBLIC_JSON_FILE]: GET_PUBLIC_JSON_FILE,
     [QUERY_TYPES.RESOURCE_FILTERS]: GET_RESOURCE_FILTERS,
+    [QUERY_TYPES.SEARCH]: GET_SEARCH,
     [QUERY_TYPES.TOUR_STOPS]: GET_TOUR_STOPS,
     [QUERY_TYPES.TOUR]: GET_TOUR,
     [QUERY_TYPES.TOURS]: GET_TOURS,
@@ -141,12 +145,14 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: calendar,
     [QUERY_TYPES.VOLUNTEER.CONVERSATION]: conversation,
     [QUERY_TYPES.VOLUNTEER.CONVERSATIONS]: conversations,
+    [QUERY_TYPES.VOLUNTEER.GROUP_SEARCH]: groupSearch,
     [QUERY_TYPES.VOLUNTEER.GROUP]: group,
     [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groupsMy,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
     [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
     [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
+    [QUERY_TYPES.VOLUNTEER.STREAM]: stream,
     [QUERY_TYPES.VOLUNTEER.USER]: user
   };
 
