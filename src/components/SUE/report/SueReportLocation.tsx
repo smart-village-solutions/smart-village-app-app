@@ -201,10 +201,7 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
-
   let locations = mapMarkers as MapMarker[];
-  let mapCenterPosition = {} as { latitude: number; longitude: number };
 
   if (selectedPosition) {
     locations = [
@@ -216,12 +213,6 @@ export const SueReportLocation = ({
         id: SELECTED_MARKER_ID
       }
     ];
-  }
-
-  if (alternativePosition) {
-    mapCenterPosition = getLocationMarker(alternativePosition).position;
-  } else if (defaultAlternativePosition) {
-    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
   }
 
   if (isLoading) {

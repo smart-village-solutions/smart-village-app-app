@@ -15,6 +15,7 @@ import {
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { featureCollection, point } from '@turf/helpers';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
+import _isEmpty from 'lodash/isEmpty';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Platform, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -349,128 +350,141 @@ export const MapLibre = ({
 
         <Images images={markerImages} />
 
-        <ShapeSource
-          id="pois"
-          ref={shapeSourceRef}
-          shape={featureCollection(
-            locations
-              ?.filter(
-                (location) => !!location?.position?.latitude && !!location?.position?.longitude
-              )
-              .map((location) =>
-                point([location.position.longitude, location.position.latitude], { ...location })
-              )
-          )}
-          onPress={handleSourcePress}
-          cluster
-          clusterRadius={clusterDistance || clusterRadius}
-          clusterMaxZoomLevel={clusterMaxZoom}
-          clusterProperties={clusterProperties}
-        >
-          <CircleLayer
-            id="cluster-shadow"
-            filter={['has', 'point_count']}
-            style={{ ...layerStyles.clusteredCircleShadow, circlePitchAlignment: 'map' }}
-          />
+        {!_isEmpty(layerStyles) && (
+          <>
+            <ShapeSource
+              id="pois"
+              ref={shapeSourceRef}
+              shape={featureCollection(
+                locations
+                  ?.filter(
+                    (location) => !!location?.position?.latitude && !!location?.position?.longitude
+                  )
+                  .map((location) =>
+                    point([location.position.longitude, location.position.latitude], {
+                      ...location
+                    })
+                  )
+              )}
+              onPress={handleSourcePress}
+              cluster
+              clusterRadius={clusterDistance || clusterRadius}
+              clusterMaxZoomLevel={clusterMaxZoom}
+              clusterProperties={clusterProperties}
+            >
+              <CircleLayer
+                id="cluster-shadow"
+                filter={['has', 'point_count']}
+                style={{
+                  ...layerStyles.clusteredCircleShadow,
+                  circlePitchAlignment: 'map' as const
+                }}
+              />
 
-          <SymbolLayer
-            id="single-icon"
-            filter={['!', ['has', 'point_count']]}
-            style={{
-              ...layerStyles.singleIcon,
-              iconImage: [
-                'case',
-                ['==', ['get', 'id'], selectedMarker],
-                ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
-                ['get', 'iconName']
-              ],
-              iconSize: [
-                'case',
-                ['==', ['get', 'id'], selectedMarker],
-                layerStyles.singleIcon.iconSize * 1.2,
-                layerStyles.singleIcon.iconSize
-              ],
-              iconAnchor: [
-                'case',
-                ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-                'center',
-                layerStyles.singleIcon.iconAnchor
-              ]
-            }}
-          />
+              <SymbolLayer
+                id="single-icon"
+                filter={['!', ['has', 'point_count']]}
+                style={{
+                  ...layerStyles.singleIcon,
+                  iconImage: [
+                    'case',
+                    ['==', ['get', 'id'], selectedMarker],
+                    ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
+                    ['get', 'iconName']
+                  ],
+                  iconSize: [
+                    'case',
+                    ['==', ['get', 'id'], selectedMarker],
+                    layerStyles.singleIcon.iconSize * 1.2,
+                    layerStyles.singleIcon.iconSize
+                  ],
+                  iconAnchor: [
+                    'case',
+                    ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
+                    'center',
+                    layerStyles.singleIcon.iconAnchor
+                  ]
+                }}
+              />
 
-          <CircleLayer
-            id="cluster"
-            filter={['has', 'point_count']}
-            style={{
-              ...layerStyles.clusteredCircle,
-              circleColor: clusterCircleColor,
-              circlePitchAlignment: 'map'
-            }}
-          />
+              {!!clusterCircleColor && (
+                <CircleLayer
+                  id="cluster"
+                  filter={['has', 'point_count']}
+                  style={{
+                    ...layerStyles.clusteredCircle,
+                    circleColor: clusterCircleColor,
+                    circlePitchAlignment: 'map' as const
+                  }}
+                />
+              )}
 
-          <SymbolLayer
-            id="cluster-count"
-            style={{
-              ...layerStyles.clusterCount,
-              textColor: clusterTextColor,
-              textFont: ['Noto Sans Bold', 'Open Sans Bold'],
-              textField: ['format', ['concat', ['get', 'point_count']]],
-              textPitchAlignment: 'map'
-            }}
-          />
-        </ShapeSource>
+              {!!clusterTextColor && (
+                <SymbolLayer
+                  id="cluster-count"
+                  style={{
+                    ...layerStyles.clusterCount,
+                    textColor: clusterTextColor,
+                    textFont: ['Noto Sans Bold', 'Open Sans Bold'],
+                    textField: ['format', ['concat', ['get', 'point_count']]],
+                    textPitchAlignment: 'map' as const
+                  }}
+                />
+              )}
+            </ShapeSource>
 
-        {!!geometryTourData?.length && (
-          <ShapeSource
-            id="polyline"
-            shape={{
-              type: 'Feature',
-              geometry: {
-                type: 'LineString',
-                coordinates: geometryTourData.map((point) => [point.longitude, point.latitude])
-              }
-            }}
-          >
-            <LineLayer
-              id="polyline-layer"
-              style={{
-                lineColor: colors.primary,
-                lineWidth: 4,
-                lineOpacity: 0.8
-              }}
-            />
-          </ShapeSource>
-        )}
+            {!!geometryTourData?.length && (
+              <ShapeSource
+                id="polyline"
+                shape={{
+                  type: 'Feature',
+                  geometry: {
+                    type: 'LineString',
+                    coordinates: geometryTourData.map((point) => [point.longitude, point.latitude])
+                  }
+                }}
+              >
+                <LineLayer
+                  id="polyline-layer"
+                  style={{
+                    lineColor: colors.primary,
+                    lineWidth: 4,
+                    lineOpacity: 0.8
+                  }}
+                />
+              </ShapeSource>
+            )}
 
-        <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
-          <SymbolLayer
-            id="pin-single-icon"
-            style={{
-              ...layerStyles.singleIcon,
-              iconImage: ['get', 'iconName'],
-              iconSize: layerStyles.singleIcon.iconSize,
-              iconAnchor: [
-                'case',
-                ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-                'center',
-                layerStyles.singleIcon.iconAnchor
-              ]
-            }}
-          />
-        </ShapeSource>
+            <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
+              <SymbolLayer
+                id="pin-single-icon"
+                style={{
+                  ...layerStyles.singleIcon,
+                  iconImage: ['get', 'iconName'],
+                  iconSize: layerStyles.singleIcon.iconSize,
+                  iconAnchor: [
+                    'case',
+                    ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
+                    'center',
+                    layerStyles.singleIcon.iconAnchor
+                  ]
+                }}
+              />
+            </ShapeSource>
 
-        {!!selectedFeature && (
-          <MarkerView
-            anchor={
-              layerStyles.singleIcon.iconAnchor == 'bottom'
-                ? { x: 0.5, y: selectedFeature ? 1.85 : 0.5 }
-                : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
-            }
-            coordinate={selectedFeature?.geometry?.coordinates}
-          >
-            <CustomCallout feature={selectedFeature} />
-          </MarkerView>
+            {!!selectedFeature && (
+              <MarkerView
+                anchor={
+                  layerStyles.singleIcon.iconAnchor == 'bottom'
+                    ? { x: 0.5, y: selectedFeature ? 1.85 : 0.5 }
+                    : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
+                }
+                coordinate={selectedFeature?.geometry?.coordinates}
+              >
+                <CustomCallout feature={selectedFeature} />
+              </MarkerView>
+            )}
+          </>
         )}
       </MapView>
 

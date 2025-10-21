@@ -33,23 +33,29 @@ const createCircleColorExpression = (
   markerImages: Record<string, { color: string }>,
   clusterSuperiorColor: string,
   clusterFallbackColor: string
-) => [
-  'case',
-  [
-    '>=',
+) => {
+  const definedTypes = (types ?? []).filter((type): type is string => !!type);
+  const colorCases = definedTypes.flatMap((type) => {
+    const color = markerImages?.[type]?.color;
+    if (!color) return [];
+    return [['>', ['coalesce', ['get', type], 0], 1], color];
+  });
+
+  return [
+    'case',
     [
-      '+',
-      ...(types?.map((type) => ['case', ['>', ['coalesce', ['get', type], 0], 1], 1, 0]) ?? [])
+      '>=',
+      [
+        '+',
+        ...definedTypes.map((type) => ['case', ['>', ['coalesce', ['get', type], 0], 1], 1, 0])
+      ],
+      2
     ],
-    2
-  ],
-  clusterSuperiorColor,
-  ...((types || [])?.flatMap((type) => [
-    ['>', ['coalesce', ['get', type], 0], 1],
-    markerImages?.[type]?.color
-  ]) ?? []),
-  clusterFallbackColor
-];
+    clusterSuperiorColor,
+    ...colorCases,
+    clusterFallbackColor
+  ];
+};
 
 /**
  * Creates a `clusterProperties` object for MapLibre's clustering, to apply a count for each feature type.
@@ -62,16 +68,18 @@ const createCircleColorExpression = (
  *
  * See: https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#accumulated
  */
-const createClusterProperties = (types: (string | undefined)[]) =>
-  Object.fromEntries(
-    types?.map((type) => [
+const createClusterProperties = (types: (string | undefined)[]) => {
+  const definedTypes = (types ?? []).filter((type): type is string => !!type);
+  return Object.fromEntries(
+    definedTypes.map((type) => [
       type,
       [
         ['+', ['accumulated'], ['coalesce', ['get', type], 0]],
         ['coalesce', ['get', type], 0]
       ]
-    ]) ?? []
+    ])
   );
+};
 
 /**
  * Generates a dynamic `textColor` expression for a cluster layer.
