@@ -28,8 +28,7 @@ import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
 import { MapLibre } from '../../map';
 
-const { a11yLabel, INPUT_KEYS, MAP } = consts;
-export const SELECTED_MARKER_ID = 'selectedMarkerId';
+const { a11yLabel, INPUT_KEYS } = consts;
 
 export const locationServiceEnabledAlert = ({
   currentPosition,
@@ -94,6 +93,7 @@ export const SueReportLocation = ({
   configuration: {
     geoMap: {
       clusterDistance: number;
+      clusterThreshold: number;
     };
   };
   control: any;
@@ -201,19 +201,7 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  let locations = mapMarkers as MapMarker[];
-
-  if (selectedPosition) {
-    locations = [
-      ...mapMarkers,
-      {
-        iconName: MAP.DEFAULT_PIN,
-        activeIconName: MAP.DEFAULT_PIN + 'Active',
-        position: selectedPosition,
-        id: SELECTED_MARKER_ID
-      }
-    ];
-  }
+  const locations = mapMarkers as MapMarker[];
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -284,6 +272,7 @@ export const SueReportLocation = ({
         <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
+          clusterThreshold={configuration.geoMap?.clusterThreshold}
           isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
@@ -301,6 +290,7 @@ export const SueReportLocation = ({
           selectedMarker={selectedPointOfInterest}
           selectedPosition={selectedPosition}
           setPinEnabled
+          preserveZoomOnSelectedPosition
         />
       </WrapperHorizontal>
 

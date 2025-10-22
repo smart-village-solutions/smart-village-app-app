@@ -16,8 +16,16 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { featureCollection, point } from '@turf/helpers';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _isEmpty from 'lodash/isEmpty';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Platform, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Platform,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -31,13 +39,21 @@ import { BoldText, RegularText } from '../Text';
 
 const { a11yLabel, MAP } = consts;
 
+const scaleCircleRadius = (radius: any, scale: number) => {
+  if (radius == null) return undefined;
+  if (typeof radius === 'number') return radius * scale;
+  if (Array.isArray(radius)) return ['*', radius, scale];
+
+  return radius;
+};
+
 const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
   const { properties = {} } = feature || {};
   const serviceName = truncateText(properties?.serviceName);
   const title = truncateText(properties?.title);
 
   return (
-    <Animated.View style={styles.calloutContainer}>
+    <Animated.View style={styles.calloutContainer} pointerEvents="none">
       <View style={styles.calloutContent}>
         {!!serviceName && (
           <BoldText smallest center>
@@ -58,6 +74,7 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
 type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
+  clusterThreshold?: number;
   currentPosition?: LocationObject;
   geometryTourData?: LocationObjectCoords[];
   interactivity?: {
@@ -87,6 +104,7 @@ type Props = {
   setPinEnabled?: boolean;
   setOwnLocation?: boolean;
   showsUserLocation?: boolean;
+  preserveZoomOnSelectedPosition?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -94,6 +112,7 @@ type Props = {
 export const MapLibre = ({
   calloutTextEnabled = false,
   clusterDistance,
+  clusterThreshold,
   geometryTourData,
   interactivity = {
     pitchEnabled: true,
@@ -115,6 +134,7 @@ export const MapLibre = ({
   selectedPosition,
   setPinEnabled,
   setOwnLocation,
+  preserveZoomOnSelectedPosition = false,
   style,
   ...otherProps
 }: Props) => {
@@ -125,7 +145,7 @@ export const MapLibre = ({
     clusterCircleColor,
     clusterRadius = 50,
     clusterMaxZoom,
-    clusterMinPoints,
+    clusterMinPoints = 2,
     clusterProperties,
     clusterTextColor,
     layerStyles = {},
@@ -142,12 +162,28 @@ export const MapLibre = ({
   const showsUserLocation =
     locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
-  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [selectedFeature, setSelectedFeature] = useState<GeoJSON.Feature | null>(null);
   const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
   const [isOwnLocation, setIsOwnLocation] = useState(setOwnLocation);
+  const suppressAutoFitRef = useRef(false);
+  const clearSelection = useCallback(
+    (notifyParent = false, reason?: string) => {
+      if (reason) {
+        suppressAutoFitRef.current = true;
+      }
+
+      setIsMarkerSelected(false);
+      setSelectedFeature(null);
+
+      if (notifyParent) {
+        onMarkerPress?.();
+      }
+    },
+    [onMarkerPress]
+  );
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
@@ -191,21 +227,30 @@ export const MapLibre = ({
   }
 
   useEffect(() => {
+    if (suppressAutoFitRef.current) {
+      return;
+    }
+
     if (
       !mapReady ||
       loading ||
       cameraRef.current === null ||
       !isMultipleMarkersMap ||
       !locations?.length ||
-      locations?.length < 2
+      locations?.length < 2 ||
+      !!selectedPosition
     ) {
       return;
     }
 
-    const { ne, sw } = getBounds(locations);
+    const { ne, sw } = getBounds(
+      locations?.filter(
+        (location) => !!location?.position?.latitude && !!location?.position?.longitude
+      )
+    );
 
     !selectedMarker && !isMarkerSelected && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
-  }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker]);
+  }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker, selectedPosition]);
 
   useEffect(() => {
     if (showsUserLocation) return;
@@ -235,14 +280,14 @@ export const MapLibre = ({
   }, [showsUserLocation, alternativePosition, defaultAlternativePosition]);
 
   useEffect(() => {
-    if (isOwnLocation === undefined || !selectedPosition) {
+    if (!selectedPosition) {
       setNewPins([]);
       return;
     }
 
     const { latitude, longitude } = selectedPosition;
 
-    if (!latitude || !longitude) {
+    if (latitude == null || longitude == null) {
       setNewPins([]);
       return;
     }
@@ -252,17 +297,66 @@ export const MapLibre = ({
       id: `new-pin-${Date.now()}`
     });
     setNewPins([newPin]);
-
-    cameraRef.current?.flyTo([longitude, latitude], 1500);
   }, [isOwnLocation, selectedPosition]);
+
+  useEffect(() => {
+    if (!selectedFeature?.properties?.id) return;
+
+    const isFeatureStillVisible = locations?.some(
+      (location) => location?.id === selectedFeature.properties?.id
+    );
+
+    if (!isFeatureStillVisible) {
+      setSelectedFeature(null);
+      setIsMarkerSelected(false);
+    }
+  }, [locations, selectedFeature]);
+
+  useEffect(() => {
+    if (selectedMarker) return;
+
+    setSelectedFeature(null);
+    setIsMarkerSelected(false);
+  }, [selectedMarker]);
+
+  useEffect(() => {
+    if (!mapReady || !selectedPosition || !cameraRef.current) {
+      return;
+    }
+
+    const { latitude, longitude } = selectedPosition;
+
+    if (latitude == null || longitude == null) {
+      return;
+    }
+
+    if (preserveZoomOnSelectedPosition) {
+      cameraRef.current?.flyTo([longitude, latitude], 800);
+      return;
+    }
+
+    const targetZoom = Math.max(zoomLevel?.singleMarker ?? 0, 16);
+    const zoomForSelection = Math.min(targetZoom, 20);
+
+    cameraRef.current?.setCamera({
+      animationDuration: 800,
+      animationMode: 'flyTo',
+      centerCoordinate: [longitude, latitude],
+      zoomLevel: zoomForSelection
+    });
+  }, [mapReady, preserveZoomOnSelectedPosition, selectedPosition, zoomLevel?.singleMarker]);
 
   const handleMapPressToSetNewPin = async (event: {
     geometry: {
       coordinates: [number, number];
     };
+    features?: unknown[];
   }) => {
+    if (event?.features && event.features.length > 0) return;
+
     const { geometry } = event;
     if (!geometry) return;
+    clearSelection(true, 'set-pin');
 
     const coordinates = geometry.coordinates as number[];
     if (!coordinates?.length) return;
@@ -282,76 +376,162 @@ export const MapLibre = ({
   };
 
   const handleMapPress = (event: any) => {
+    const tappedFeatures = event?.features ?? [];
+
+    const tappedSelectedFeature = tappedFeatures.some(
+      (feature: GeoJSON.Feature) =>
+        feature?.properties?.id &&
+        feature.properties.id === selectedMarkerId &&
+        !feature?.properties?.cluster
+    );
+
+    if (tappedSelectedFeature) {
+      clearSelection(true, 'map-press-selected-feature');
+      return;
+    }
+
+    // Fallback: if user tapped very close to the currently selected marker, treat as toggle off
+    if (selectedLocation?.position && event?.geometry?.coordinates?.length === 2) {
+      const [tapLng, tapLat] = event.geometry.coordinates as [number, number];
+      const { latitude: selLat, longitude: selLng } = selectedLocation.position;
+      const dLat = Math.abs(selLat - tapLat);
+      const dLng = Math.abs(selLng - tapLng);
+      if (dLat < 0.0008 && dLng < 0.0008) {
+        clearSelection(true, 'map-press-proximity');
+        return;
+      }
+    }
+
+    if (tappedFeatures.length > 0) {
+      return;
+    }
+
     if (setPinEnabled) {
       handleMapPressToSetNewPin(event);
     } else {
+      clearSelection(true, 'map-press-empty');
       onMapPress?.(event);
     }
   };
 
-  const fitBoundsForCoords = (coordinates: [number, number][]) => {
-    if (!coordinates?.length || !cameraRef.current) return;
+  const handleRegionDidChange = useCallback(
+    async (event?: { properties?: { isGesture?: boolean; isUserInteraction?: boolean } }) => {
+      const isUserGesture =
+        event?.properties?.isGesture || event?.properties?.isUserInteraction || false;
 
-    const longitudes = coordinates.map(([lng]) => lng);
-    const latitudes = coordinates.map(([, lat]) => lat);
-    const ne: [number, number] = [Math.max(...longitudes), Math.max(...latitudes)];
-    const sw: [number, number] = [Math.min(...longitudes), Math.min(...latitudes)];
+      if (!isUserGesture) return;
+      if (!selectedFeature?.properties?.id || !mapRef.current) return;
 
-    if (ne[0] === sw[0] && ne[1] === sw[1]) {
-      cameraRef.current?.setCamera({
-        animationDuration: 800,
-        animationMode: 'flyTo',
-        centerCoordinate: ne,
-        zoomLevel: 18
-      });
-      return;
-    }
+      const coordinates = selectedFeature.geometry?.coordinates as [number, number] | undefined;
 
-    cameraRef.current?.fitBounds(ne, sw, 40, 1000);
-  };
+      if (!coordinates || coordinates.length < 2) {
+        clearSelection(true, 'region-no-coordinates');
+        return;
+      }
 
-  const extractLeafFeatures = (leaves: any): GeoJSON.Feature[] => {
-    if (!leaves) return [];
-    if (Array.isArray(leaves)) return leaves;
-    if (Array.isArray(leaves?.features)) return leaves.features;
-    if (Array.isArray(leaves?.data?.features)) return leaves.data.features;
-    return [];
-  };
+      const mapInstance: any = mapRef.current;
+
+      if (!mapInstance?.getPointInView || !mapInstance?.queryRenderedFeaturesAtPoint) return;
+
+      try {
+        const pointInView = await mapInstance.getPointInView(coordinates);
+
+        if (!pointInView) {
+          clearSelection(true, 'region-point-not-in-view');
+          return;
+        }
+
+        const renderedFeatures =
+          (await mapInstance.queryRenderedFeaturesAtPoint(pointInView, undefined, [
+            'single-icon',
+            'pin-single-icon'
+          ])) ?? [];
+
+        const markerStillVisible = renderedFeatures.some(
+          (feature: GeoJSON.Feature) =>
+            feature?.properties?.id && feature.properties.id === selectedFeature.properties?.id
+        );
+
+        if (!markerStillVisible) {
+          clearSelection(true, 'region-marker-not-visible');
+        }
+      } catch (error) {
+        // NOTE: Ignore transient errors (e.g. view not ready); will re-evaluate on the next gesture
+      }
+    },
+    [selectedFeature, clearSelection]
+  );
+
+  const selectedMarkerId = useMemo(
+    () => selectedMarker || (selectedFeature?.properties?.id as string | undefined),
+    [selectedMarker, selectedFeature]
+  );
+
+  const clusteredLocations = useMemo(() => {
+    if (!selectedMarkerId) return locations;
+
+    return locations?.filter((location) => location?.id !== selectedMarkerId);
+  }, [locations, selectedMarkerId]);
+
+  const selectedLocation = useMemo(
+    () => locations?.find((location) => location?.id === selectedMarkerId),
+    [locations, selectedMarkerId]
+  );
+
+  const selectedLocationFeature = useMemo(() => {
+    const latitude = selectedLocation?.position?.latitude;
+    const longitude = selectedLocation?.position?.longitude;
+
+    if (latitude == null || longitude == null) return null;
+
+    return point([longitude, latitude], {
+      ...selectedLocation,
+      iconName: selectedLocation?.activeIconName ?? selectedLocation?.iconName,
+      activeIconName: selectedLocation?.activeIconName ?? selectedLocation?.iconName,
+      id: selectedLocation?.id
+    });
+  }, [selectedLocation]);
 
   const handleSourcePress = async (event: any) => {
-    const feature = event.features?.[0];
+    const features = ((event?.features as any[]) ?? []).filter(Boolean);
+    const feature = features.find((item) => item?.sourceID !== 'selected-poi') ?? features[0];
 
     if (!feature) {
+      clearSelection(true, 'shape-source-press-empty');
       onMapPress?.(event);
       return;
     }
 
     if (feature.properties?.cluster) {
-      const leaves = await shapeSourceRef.current?.getClusterLeaves(feature, 32, 0);
-      const coords = extractLeafFeatures(leaves)
-        .map((leaf) => leaf?.geometry?.coordinates)
-        .filter(Boolean) as [number, number][];
-
-      if (coords.length) {
-        fitBoundsForCoords(coords);
-        return;
-      }
-
+      clearSelection(true, 'cluster-pressed');
       const currentZoomLevel = await mapRef.current?.getZoom();
       const zoomForCluster = await shapeSourceRef.current?.getClusterExpansionZoom(feature);
-      const baseZoom = zoomForCluster ?? currentZoomLevel ?? initialZoomLevel ?? 0;
-      const newZoomLevel = Math.min(baseZoom + 2, 20);
+      const safeCurrentZoom = currentZoomLevel ?? initialZoomLevel ?? 0;
+      const baseZoom = zoomForCluster ?? safeCurrentZoom;
+      const newZoomLevel = Math.min(Math.max(baseZoom, safeCurrentZoom + 1), 20);
 
       cameraRef.current?.setCamera({
-        animationDuration: 1500,
-        animationMode: 'flyTo',
+        animationDuration: 800,
+        animationMode: 'easeTo',
         centerCoordinate: feature.geometry.coordinates,
         zoomLevel: newZoomLevel
       });
+      suppressAutoFitRef.current = false;
       return;
     }
 
-    cameraRef.current?.flyTo(feature.geometry.coordinates, 1500);
+    if (feature.properties?.id === selectedMarkerId) {
+      clearSelection(true, 'selected-marker-pressed');
+      return;
+    }
+
+    suppressAutoFitRef.current = false;
+
+    cameraRef.current?.setCamera({
+      animationDuration: 800,
+      animationMode: 'easeTo',
+      centerCoordinate: feature.geometry.coordinates
+    });
     onMarkerPress?.(feature.properties?.id);
     setIsMarkerSelected(true);
     !!calloutTextEnabled && setSelectedFeature(feature);
@@ -360,6 +540,11 @@ export const MapLibre = ({
   if (loading) {
     return <LoadingSpinner loading />;
   }
+
+  const clusterBaseRadius = layerStyles?.clusteredCircle?.circleRadius ?? 24;
+  const clusterRingInnerRadius = scaleCircleRadius(clusterBaseRadius, 1.4);
+  const clusterRingMidRadius = scaleCircleRadius(clusterBaseRadius, 1.8);
+  const clusterRingOuterRadius = scaleCircleRadius(clusterBaseRadius, 2.2);
 
   return (
     <View style={[styles.container, style]}>
@@ -370,6 +555,7 @@ export const MapLibre = ({
         ref={mapRef}
         style={[styles.map, mapStyle]}
         onDidFinishLoadingMap={() => setMapReady(true)}
+        onRegionDidChange={handleRegionDidChange}
         onPress={handleMapPress}
         {...interactivity}
       >
@@ -399,8 +585,8 @@ export const MapLibre = ({
               id="pois"
               ref={shapeSourceRef}
               shape={featureCollection(
-                locations
-                  ?.filter(
+                (clusteredLocations ?? [])
+                  .filter(
                     (location) => !!location?.position?.latitude && !!location?.position?.longitude
                   )
                   .map((location) =>
@@ -413,7 +599,7 @@ export const MapLibre = ({
               cluster
               clusterRadius={clusterDistance || clusterRadius}
               clusterMaxZoomLevel={clusterMaxZoom}
-              clusterMinPoints={clusterMinPoints}
+              clusterMinPoints={clusterThreshold || clusterMinPoints}
               clusterProperties={clusterProperties}
             >
               <CircleLayer
@@ -450,6 +636,45 @@ export const MapLibre = ({
                   ]
                 }}
               />
+
+              {!!clusterCircleColor && (
+                <CircleLayer
+                  id="cluster-ring-outer"
+                  filter={['has', 'point_count']}
+                  style={{
+                    circleColor: clusterCircleColor,
+                    circleRadius: clusterRingOuterRadius,
+                    circleOpacity: 0.2,
+                    circlePitchAlignment: 'map' as const
+                  }}
+                />
+              )}
+
+              {!!clusterCircleColor && (
+                <CircleLayer
+                  id="cluster-ring-mid"
+                  filter={['has', 'point_count']}
+                  style={{
+                    circleColor: clusterCircleColor,
+                    circleRadius: clusterRingMidRadius,
+                    circleOpacity: 0.3,
+                    circlePitchAlignment: 'map' as const
+                  }}
+                />
+              )}
+
+              {!!clusterCircleColor && (
+                <CircleLayer
+                  id="cluster-ring-inner"
+                  filter={['has', 'point_count']}
+                  style={{
+                    circleColor: clusterCircleColor,
+                    circleRadius: clusterRingInnerRadius,
+                    circleOpacity: 0.5,
+                    circlePitchAlignment: 'map' as const
+                  }}
+                />
+              )}
 
               {!!clusterCircleColor && (
                 <CircleLayer
@@ -516,6 +741,52 @@ export const MapLibre = ({
               />
             </ShapeSource>
 
+            {!!selectedLocationFeature && (
+              <ShapeSource
+                id="selected-poi"
+                shape={featureCollection([selectedLocationFeature])}
+                onPress={handleSourcePress}
+                cluster={false}
+              >
+                <SymbolLayer
+                  id="selected-single-icon"
+                  style={{
+                    ...layerStyles.singleIcon,
+                    iconImage: ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
+                    iconSize: layerStyles.singleIcon.iconSize * 1.2,
+                    iconAllowOverlap: true,
+                    iconIgnorePlacement: true,
+                    iconAnchor: [
+                      'case',
+                      ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
+                      'center',
+                      layerStyles.singleIcon.iconAnchor
+                    ]
+                  }}
+                />
+              </ShapeSource>
+            )}
+
+            {!!selectedFeature && !!selectedLocationFeature && (
+              <MarkerView
+                anchor={
+                  layerStyles.singleIcon.iconAnchor == 'bottom'
+                    ? { x: 0.5, y: 1 }
+                    : { x: 0.5, y: 0.5 }
+                }
+                coordinate={selectedLocationFeature?.geometry?.coordinates}
+                pointerEvents="box-none"
+              >
+                <Pressable
+                  onPress={() => {
+                    clearSelection(true, 'marker-view-press');
+                  }}
+                >
+                  <View style={styles.selectedTapTarget} />
+                </Pressable>
+              </MarkerView>
+            )}
+
             {!!selectedFeature && (
               <MarkerView
                 anchor={
@@ -524,6 +795,7 @@ export const MapLibre = ({
                     : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
                 }
                 coordinate={selectedFeature?.geometry?.coordinates}
+                pointerEvents="none"
               >
                 <CustomCallout feature={selectedFeature} />
               </MarkerView>

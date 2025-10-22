@@ -142,6 +142,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     <SafeAreaViewFlex>
       <MapLibre
         clusterDistance={geoMap?.clusterDistance}
+        clusterThreshold={geoMap?.clusterThreshold}
         isMultipleMarkersMap
         isMyLocationButtonVisible={!!locationService}
         locations={mapMarkers}

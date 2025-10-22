@@ -37,7 +37,9 @@ const createCircleColorExpression = (
   const definedTypes = (types ?? []).filter((type): type is string => !!type);
   const colorCases = definedTypes.flatMap((type) => {
     const color = markerImages?.[type]?.color;
+
     if (!color) return [];
+
     return [['>', ['coalesce', ['get', type], 0], 1], color];
   });
 
@@ -70,6 +72,7 @@ const createCircleColorExpression = (
  */
 const createClusterProperties = (types: (string | undefined)[]) => {
   const definedTypes = (types ?? []).filter((type): type is string => !!type);
+
   return Object.fromEntries(
     definedTypes.map((type) => [
       type,
@@ -84,7 +87,7 @@ const createClusterProperties = (types: (string | undefined)[]) => {
 /**
  * Generates a dynamic `textColor` expression for a cluster layer.
  *
- * - If two or more of the defined `types` have values >= 1 in a cluster, it uses `clusterSuperiorTextColor`.
+ * - If two or more of the defined `types` have values > 1 in a cluster, it uses `clusterSuperiorTextColor`.
  * - Otherwise, it gets the color from `clusterCountTextColor`.
  * - Falls back to `clusterFallbackTextColor` if none match.
  *
@@ -96,23 +99,28 @@ const createTextColorExpression = (
   clusterSuperiorTextColor: string,
   clusterCountTextColor: string,
   clusterFallbackTextColor: string
-) => [
-  'case',
-  [
-    '>=',
-    [
-      '+',
-      ...(types?.map((type) => ['case', ['>=', ['coalesce', ['get', type], 0], 1], 1, 0]) ?? [])
-    ],
-    2
-  ],
-  clusterSuperiorTextColor,
-  ...((types || [])?.flatMap((type) => [
-    ['>=', ['coalesce', ['get', type], 0], 1],
+) => {
+  const definedTypes = (types ?? []).filter((type): type is string => !!type);
+  const textColorCases = definedTypes.flatMap((type) => [
+    ['>', ['coalesce', ['get', type], 0], 1],
     clusterCountTextColor
-  ]) ?? []),
-  clusterFallbackTextColor
-];
+  ]);
+
+  return [
+    'case',
+    [
+      '>=',
+      [
+        '+',
+        ...definedTypes.map((type) => ['case', ['>', ['coalesce', ['get', type], 0], 1], 1, 0])
+      ],
+      2
+    ],
+    clusterSuperiorTextColor,
+    ...textColorCases,
+    clusterFallbackTextColor
+  ];
+};
 
 export const useMapFeatureConfig = (locations: MapMarker[]) => {
   const types = locations?.map((location) => location.iconName || MAP.DEFAULT_PIN) || [];

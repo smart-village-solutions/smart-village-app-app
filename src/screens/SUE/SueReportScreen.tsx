@@ -111,8 +111,8 @@ type TContent = {
     geoMap: {
       areas: any[];
       center: number[];
-      clisterTreshold: number;
       clusterDistance: number;
+      clusterThreshold: number;
       locationIsRequired: boolean;
       locationStreetIsRequired: boolean;
       minZoom: number;
