@@ -151,7 +151,7 @@ export const VolunteerPostListItem = ({
             <Lightbox
               renderContent={() => (
                 <Image
-                  childrenContainerStyle={stylesWithProps().imageLightbox}
+                  style={stylesWithProps().imageLightbox}
                   containerStyle={styles.imageContainer}
                   source={imageSource}
                   resizeMode="contain"
@@ -161,7 +161,7 @@ export const VolunteerPostListItem = ({
             >
               <Image
                 borderRadius={normalize(8)}
-                childrenContainerStyle={{
+                style={{
                   ...stylesWithProps().image,
                   aspectRatio: aspectRatios[file.guid] || undefined
                 }}

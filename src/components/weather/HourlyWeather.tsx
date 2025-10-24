@@ -35,7 +35,7 @@ export const HourlyWeather = ({
           uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
           captionText: description
         }}
-        childrenContainerStyle={styles.icon}
+        style={styles.icon}
         resizeMode="contain"
       />
       <RegularText lightest={isNow && isReduceTransparencyEnabled}>
