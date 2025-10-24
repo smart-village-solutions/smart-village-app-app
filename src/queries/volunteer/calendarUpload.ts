@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
 

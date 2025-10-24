@@ -1,4 +1,3 @@
-import { Subscription } from '@unimodules/react-native-adapter';
 import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
@@ -25,8 +24,8 @@ export const usePushNotifications = (
 
   if (isActive === false) return;
 
-  const notificationListener = useRef<Subscription>();
-  const responseListener = useRef<Subscription>();
+  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
+  const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
   const [currentAppState, setCurrentAppState] = useState<AppStateStatus>();
 
@@ -53,32 +52,32 @@ export const usePushNotifications = (
         behavior ?? {
           shouldShowAlert: true,
           shouldPlaySound: false,
-          shouldSetBadge: false
+          shouldSetBadge: false,
+          shouldShowBanner: false,
+          shouldShowList: false
         }
     });
 
     const subscription = AppState.addEventListener('change', onGetActive);
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current =
-      notificationHandler &&
-      Notifications.addNotificationReceivedListener((notification) => {
-        notificationHandler(notification);
-      });
+    notificationListener.current = notificationHandler
+      ? Notifications.addNotificationReceivedListener((notification) => {
+          notificationHandler(notification);
+        })
+      : null;
 
     // This listener is fired whenever a user taps on or interacts with a notification
     // (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current =
-      interactionHandler &&
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        interactionHandler(response);
-      });
+    responseListener.current = interactionHandler
+      ? Notifications.addNotificationResponseReceivedListener((response) => {
+          interactionHandler(response);
+        })
+      : null;
 
     return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
+      notificationListener.current && notificationListener.current.remove();
+      responseListener.current && responseListener.current.remove();
 
       subscription.remove();
     };
