@@ -55,13 +55,11 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
           </WrapperHorizontal>
         )}
       <MediaSection mediaContents={contentBlock.mediaContents} />
-      {!!settings?.displayOnlySummary &&
-        settings.displayOnlySummary === 'true' &&
-        !!settings?.onlySummaryLinkText && (
-          <WrapperHorizontal>
-            <Button invert title={settings.onlySummaryLinkText} onPress={openWebScreen} />
-          </WrapperHorizontal>
-        )}
+      {!!settings?.onlySummaryLinkText && (
+        <WrapperHorizontal>
+          <Button invert title={settings.onlySummaryLinkText} onPress={openWebScreen} />
+        </WrapperHorizontal>
+      )}
     </>
   );
 };
