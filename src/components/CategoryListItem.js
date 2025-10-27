@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { colors, consts, Icon, IconUrl, normalize } from '../config';
 
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
@@ -27,7 +27,8 @@ export class CategoryListItem extends React.PureComponent {
     const count =
       section.title === categoryTitlesPointsOfInterest ? pointsOfInterestTreeCount : toursTreeCount;
 
-    const SelectedIcon = iconName ? Icon[_upperFirst(iconName)] : undefined;
+    const IconKey = iconName ? _upperFirst(iconName) : undefined;
+    const SelectedIcon = IconKey && Icon[IconKey] ? Icon[IconKey] : null;
 
     return (
       <ListItem
@@ -45,7 +46,13 @@ export class CategoryListItem extends React.PureComponent {
         Component={Touchable}
         accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}
       >
-        {!!SelectedIcon && <SelectedIcon color={colors.darkText} />}
+        {iconName ? (
+          SelectedIcon ? (
+            <SelectedIcon color={colors.darkText} />
+          ) : (
+            <IconUrl iconName={iconName} />
+          )
+        ) : null}
 
         <ListItem.Content>
           {noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
