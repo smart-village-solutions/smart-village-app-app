@@ -1714,10 +1714,10 @@
   resolved "https://registry.yarnpkg.com/@jsamr/react-native-li/-/react-native-li-2.3.1.tgz#12a5b5f6e3971cec77b96bee58104eed0ae9314a"
   integrity sha512-Qbo4NEj48SQ4k8FZJHFE2fgZDKTWaUGmVxcIQh3msg5JezLdTMMHuRRDYctfdHI6L0FZGObmEv3haWbIvmol8w==
 
-"@maplibre/maplibre-react-native@^10.1.5":
-  version "10.1.5"
-  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-react-native/-/maplibre-react-native-10.1.5.tgz#d6bbb4213ec7343fa26ec52008f7f80a7c7ec699"
-  integrity sha512-1mGgB5e1PB5RBAEgJ6tlGmG9LMhK/hOXwcKx2UGYe4G6VDebjzKPxlsJqvfKQ8GlFHSlyR6hvKCC6MWSkRkdGg==
+"@maplibre/maplibre-react-native@^10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-react-native/-/maplibre-react-native-10.4.0.tgz#ebd8918d441b2df6a43ce73b5091e53ee158ff9a"
+  integrity sha512-ytcToYqRYtl02p44ffzOhiNs7omdPCOZqWOGTA+aom/Cp8q18rb2FxtIFHfUZdiIzUVXFoO2ruOiPznLbTzR+Q==
   dependencies:
     "@turf/distance" "^7.1.0"
     "@turf/helpers" "^7.1.0"
