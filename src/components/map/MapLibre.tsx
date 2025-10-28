@@ -414,54 +414,6 @@ export const MapLibre = ({
     }
   };
 
-  const handleRegionDidChange = useCallback(
-    async (event?: { properties?: { isGesture?: boolean; isUserInteraction?: boolean } }) => {
-      const isUserGesture =
-        event?.properties?.isGesture || event?.properties?.isUserInteraction || false;
-
-      if (!isUserGesture) return;
-      if (!selectedFeature?.properties?.id || !mapRef.current) return;
-
-      const coordinates = selectedFeature.geometry?.coordinates as [number, number] | undefined;
-
-      if (!coordinates || coordinates.length < 2) {
-        clearSelection(true, 'region-no-coordinates');
-        return;
-      }
-
-      const mapInstance: any = mapRef.current;
-
-      if (!mapInstance?.getPointInView || !mapInstance?.queryRenderedFeaturesAtPoint) return;
-
-      try {
-        const pointInView = await mapInstance.getPointInView(coordinates);
-
-        if (!pointInView) {
-          clearSelection(true, 'region-point-not-in-view');
-          return;
-        }
-
-        const renderedFeatures =
-          (await mapInstance.queryRenderedFeaturesAtPoint(pointInView, undefined, [
-            'single-icon',
-            'pin-single-icon'
-          ])) ?? [];
-
-        const markerStillVisible = renderedFeatures.some(
-          (feature: GeoJSON.Feature) =>
-            feature?.properties?.id && feature.properties.id === selectedFeature.properties?.id
-        );
-
-        if (!markerStillVisible) {
-          clearSelection(true, 'region-marker-not-visible');
-        }
-      } catch (error) {
-        // NOTE: Ignore transient errors (e.g. view not ready); will re-evaluate on the next gesture
-      }
-    },
-    [selectedFeature, clearSelection]
-  );
-
   const selectedMarkerId = useMemo(
     () => selectedMarker || (selectedFeature?.properties?.id as string | undefined),
     [selectedMarker, selectedFeature]
@@ -555,7 +507,6 @@ export const MapLibre = ({
         ref={mapRef}
         style={[styles.map, mapStyle]}
         onDidFinishLoadingMap={() => setMapReady(true)}
-        onRegionDidChange={handleRegionDidChange}
         onPress={handleMapPress}
         {...interactivity}
       >
