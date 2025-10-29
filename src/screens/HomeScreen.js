@@ -280,7 +280,7 @@ export const HomeScreen = ({ navigation, route }) => {
       navigate: 'CATEGORIES_INDEX',
       navigation,
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
-      queryVariables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND' },
+      queryVariables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND', onlyWithImage: true },
       showData: showPointsOfInterestAndTours,
       title: headlinePointsOfInterestAndTours
     },

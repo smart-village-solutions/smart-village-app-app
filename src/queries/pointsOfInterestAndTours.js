@@ -7,8 +7,9 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
     $limit: Int
     $orderPoi: PointsOfInterestOrder
     $orderTour: ToursOrder
+    $onlyWithImage: Boolean
   ) {
-    pointsOfInterest(ids: $idsPoi, limit: $limit, order: $orderPoi) {
+    pointsOfInterest(ids: $idsPoi, limit: $limit, order: $orderPoi, onlyWithImage: $onlyWithImage) {
       id
       name
       category {
@@ -53,7 +54,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
       }
     }
 
-    tours(ids: $idsTour, limit: $limit, order: $orderTour) {
+    tours(ids: $idsTour, limit: $limit, order: $orderTour, onlyWithImage: $onlyWithImage) {
       id
       name
       category {
