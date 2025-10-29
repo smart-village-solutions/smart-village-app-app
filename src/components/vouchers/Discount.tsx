@@ -41,19 +41,21 @@ export const Discount = ({
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        {!!discountedPrice && (
+        {!!discountedPrice?.toString() && (
           <View style={styles.discountedPriceContainer}>
             <BoldText lightest>{toLocaleString(discountedPrice)}</BoldText>
           </View>
         )}
 
-        {!!originalPrice && (
+        {!!originalPrice?.toString() && (
           <RegularText lineThrough lighter>
             {toLocaleString(originalPrice)}
           </RegularText>
         )}
 
-        {!!discountAmount && <RegularText primary> -{toLocaleString(discountAmount)}</RegularText>}
+        {!!discountAmount?.toString() && (
+          <RegularText primary> -{toLocaleString(discountAmount)}</RegularText>
+        )}
       </View>
 
       <TouchableOpacity
