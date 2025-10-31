@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
 import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../../config';
+import { colors, consts, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -25,10 +25,12 @@ import {
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { Image } from '../../../Image';
-import { Map } from '../../../map';
+import { MapLibre } from '../../../map';
 import { SectionHeader } from '../../../SectionHeader';
 import { BoldText, RegularText } from '../../../Text';
 import { Wrapper, WrapperRow } from '../../../Wrapper';
+
+const { MAP } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -168,12 +170,14 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
       {!!latitude && !!longitude && (
         <>
           <SectionHeader title={texts.consul.locationTitle} />
-          <Map
+          <MapLibre
             locations={[
               {
+                iconName: MAP.DEFAULT_PIN,
                 position: { latitude, longitude }
               }
             ]}
+            mapStyle={styles.mapStyle}
           />
         </>
       )}
@@ -242,6 +246,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.7,
     shadowRadius: 3,
     backgroundColor: colors.surface
+  },
+  mapStyle: {
+    height: normalize(300),
+    width: '100%'
   }
 });
 

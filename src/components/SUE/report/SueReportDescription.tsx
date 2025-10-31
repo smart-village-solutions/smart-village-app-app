@@ -123,7 +123,7 @@ export const SueReportDescription = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: normalize(14),
+    paddingTop: normalize(16),
     width: '100%'
   }
 });
