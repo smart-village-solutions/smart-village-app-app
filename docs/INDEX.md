@@ -17,6 +17,7 @@ The Smart Village App is an open source React Native application built with Expo
   - `components/` – reusable UI components
   - `screens/` – individual app screens
   - `hooks/` – custom React hooks
+  - `navigation/` – React Navigation setup
   - `queries/` – GraphQL queries
   - `config/` – colors, fonts, constants and secrets
   - various providers
