@@ -126,6 +126,14 @@
           "image": "./assets/icon.png"
         }
       ],
+      [
+        "@reactvision/react-viro",
+        {
+          "android": {
+            "xRMode": "AR"
+          }
+        }
+      ],
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
       "expo-asset",
