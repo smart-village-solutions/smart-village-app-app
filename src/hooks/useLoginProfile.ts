@@ -11,8 +11,10 @@ import { Alert } from 'react-native';
 
 import * as appJson from '../../app.json';
 import { device, texts } from '../config';
+import { addToStore, readFromStore, removeFromStore } from '../helpers';
 
-const PROFILE_ACCESS_TOKEN = 'profileAccessToken';
+const PROFILE_TOKEN = 'profileToken';
+const PROFILE_META = 'profileMeta';
 
 type TProfile = {
   clientId: string;
@@ -49,17 +51,6 @@ export const useLoginProfile = (profile: TProfile) => {
     keycloakDiscovery
   );
 
-  useEffect(() => {
-    const handleAuthResponse = async () => {
-      if (response?.type === 'success') {
-        const { code } = response.params;
-        await exchangeToken(code);
-      }
-    };
-
-    handleAuthResponse();
-  }, [response]);
-
   const exchangeToken = async (code: string) => {
     try {
       setLoading(true);
@@ -75,7 +66,14 @@ export const useLoginProfile = (profile: TProfile) => {
       );
 
       setIsLoggedIn(true);
-      SecureStore.setItemAsync(PROFILE_ACCESS_TOKEN, JSON.stringify(tokenResult));
+
+      const { expiresIn, accessToken, idToken, issuedAt, refreshToken } = tokenResult;
+
+      SecureStore.setItemAsync(
+        PROFILE_TOKEN,
+        JSON.stringify({ accessToken, idToken, refreshToken })
+      );
+      addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
     } catch (error) {
       console.error('Error exchanging code:', error);
     } finally {
@@ -83,27 +81,25 @@ export const useLoginProfile = (profile: TProfile) => {
     }
   };
 
-  useEffect(() => {
-    checkToken();
-  }, []);
-
   const checkToken = async () => {
-    const storedToken = await SecureStore.getItemAsync(PROFILE_ACCESS_TOKEN);
+    const storedToken = await SecureStore.getItemAsync(PROFILE_TOKEN);
+    const storedMeta = await readFromStore(PROFILE_META);
 
-    if (!storedToken) {
+    if (!storedToken || !storedMeta) {
       setIsLoggedIn(false);
       return null;
     }
 
     try {
       const parsedToken = JSON.parse(storedToken);
+      const parsedMeta = JSON.parse(storedMeta);
 
       const now = Math.floor(Date.now() / 1000);
-      const expiresAt = parsedToken.issuedAt + parsedToken.expiresIn;
+      const expiresAt = parsedMeta.issuedAt + parsedMeta.expiresIn;
 
       if (now >= expiresAt) {
         // Token expired, try refresh
-        const refreshedToken = await refreshToken(parsedToken.refreshToken);
+        const refreshedToken = await refreshToken(parsedToken?.refreshToken);
 
         if (refreshedToken) {
           setIsLoggedIn(true);
@@ -123,18 +119,24 @@ export const useLoginProfile = (profile: TProfile) => {
     }
   };
 
-  const refreshToken = async (refreshToken: string) => {
+  const refreshToken = async (token: string) => {
     try {
       const newToken = await refreshAsync(
         {
           clientId,
           clientSecret,
-          refreshToken
+          refreshToken: token
         },
         keycloakDiscovery
       );
 
-      SecureStore.setItemAsync(PROFILE_ACCESS_TOKEN, JSON.stringify(newToken));
+      const { expiresIn, accessToken, idToken, issuedAt, refreshToken } = newToken;
+
+      SecureStore.setItemAsync(
+        PROFILE_TOKEN,
+        JSON.stringify({ accessToken, idToken, refreshToken })
+      );
+      addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
       return newToken;
     } catch (err) {
       console.error('Failed to refresh token:', err);
@@ -173,7 +175,8 @@ export const useLoginProfile = (profile: TProfile) => {
             });
 
             device.platform === 'ios' && (await dismissAuthSession());
-            SecureStore.deleteItemAsync(PROFILE_ACCESS_TOKEN);
+            SecureStore.deleteItemAsync(PROFILE_TOKEN);
+            removeFromStore(PROFILE_META);
             setIsLoggedIn(false);
           } catch (err) {
             console.error('Logout error:', err);
@@ -182,6 +185,21 @@ export const useLoginProfile = (profile: TProfile) => {
       }
     ]);
   };
+
+  useEffect(() => {
+    const handleAuthResponse = async () => {
+      if (response?.type === 'success') {
+        const { code } = response.params;
+        await exchangeToken(code);
+      }
+    };
+
+    handleAuthResponse();
+  }, [response]);
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   return {
     checkToken,
