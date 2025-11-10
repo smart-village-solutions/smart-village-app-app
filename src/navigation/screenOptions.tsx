@@ -39,7 +39,7 @@ export const getScreenOptions =
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-      headerBackground: () => <DiagonalGradient />,
+      headerBackground: () => <DiagonalGradient colors={[colors.surface, colors.surface]} />,
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
       headerRight: () => (
@@ -69,7 +69,7 @@ export const getScreenOptions =
 
 const styles = StyleSheet.create({
   headerTitleStyle: {
-    color: colors.lightestText,
+    color: colors.darkText,
     fontFamily: 'condbold',
     fontSize: normalize(18),
     lineHeight: normalize(23)

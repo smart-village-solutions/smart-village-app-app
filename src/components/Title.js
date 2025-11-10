@@ -5,7 +5,7 @@ import { colors, device, normalize } from '../config';
 import { Text } from './Text';
 
 export const Title = styled(Text)`
-  color: ${colors.primary};
+  color: ${colors.darkText};
   font-family: condbold;
   font-size: ${normalize(20)};
   line-height: ${normalize(26)};
