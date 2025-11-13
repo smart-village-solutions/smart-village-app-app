@@ -168,7 +168,7 @@ export const ServiceTile = ({
           ) : (
             <Image
               source={{ uri: item.icon || item.tile }}
-              childrenContainerStyle={[
+              style={[
                 styles.serviceImage,
                 !!item.icon && {
                   height: normalizedIconStyle.size || normalize(30)

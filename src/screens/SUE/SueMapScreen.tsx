@@ -224,7 +224,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
               <>
                 <Image
                   source={{ uri: item.picture.url }}
-                  childrenContainerStyle={styles.image}
+                  style={styles.image}
                   containerStyle={styles.imageContainer}
                 />
                 <CloseButton onPress={() => setSelectedRequestId(undefined)} />
