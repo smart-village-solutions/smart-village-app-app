@@ -172,7 +172,9 @@ export const ServiceTile = ({
                 styles.serviceImage,
                 !!item.icon && {
                   height: normalizedIconStyle.size || normalize(30)
-                },
+                }
+              ]}
+              containerStyle={[
                 !!item.tile &&
                   stylesWithProps({
                     tileSizeFactor,
@@ -223,8 +225,8 @@ const styles = StyleSheet.create({
   },
   serviceImage: {
     alignSelf: 'center',
-    marginBottom: normalize(7),
-    width: '100%'
+    height: '100%',
+    width: '95%'
   },
   toggleVisibilityIcon: {
     backgroundColor: colors.surface,
