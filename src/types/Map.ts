@@ -1,18 +1,15 @@
-import { Point } from 'react-native-maps';
+import { LocationObjectCoords } from 'expo-location';
 
 export type MapMarker = {
-  iconAnchor?: Point;
   activeBackgroundColor?: string;
   activeIconColor?: string;
+  activeIconName?: string;
   iconBackgroundColor?: string;
   iconBorderColor?: string;
   iconColor?: string;
   iconName?: string;
   id?: string;
-  position: {
-    latitude: number;
-    longitude: number;
-  };
+  position: LocationObjectCoords;
   serviceName?: string;
   title?: string;
 };
