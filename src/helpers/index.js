@@ -2,6 +2,7 @@ export * from './augmentedReality';
 export * from './consul';
 export * from './parser';
 export * from './whistleblow';
+export * from './wallet';
 
 export * from './accessibilityListeners';
 export * from './addressHelper';
