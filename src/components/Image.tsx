@@ -1,5 +1,5 @@
 import { Image as ExpoImage } from 'expo-image';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
@@ -90,14 +90,18 @@ export const Image = ({
 
   const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
   const showChildren = !!message || !!button || showImageRights;
-
   const defaultImageStyle = stylesForImage(aspectRatio).defaultStyle;
+
+  const imageStyle = useMemo(
+    () => [style || defaultImageStyle, { borderRadius }],
+    [style, defaultImageStyle, borderRadius]
+  );
 
   return (
     <View style={[containerStyle, placeholderStyle]}>
       <ExpoImage
         source={source}
-        style={[style || defaultImageStyle, { borderRadius }]}
+        style={imageStyle}
         contentFit={resizeMode}
         accessible={!!sourceProp?.captionText}
         accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
