@@ -102,6 +102,7 @@ export const QUERY_TYPES = {
   VOUCHERS_CATEGORIES: 'vouchersCategories',
   VOUCHERS_REDEEMED: 'vouchersRedeemed',
   VOUCHERS: 'vouchers',
+  WALLET: 'wallet',
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WATER_TEMPERATURE: 'waterTemperature',
