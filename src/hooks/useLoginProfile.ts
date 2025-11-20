@@ -41,7 +41,7 @@ export const useLoginProfile = (profile: TProfile) => {
     scheme: appJson.expo.scheme
   });
 
-  const [request, response, promptAsync] = useAuthRequest(
+  const [, response, promptAsync] = useAuthRequest(
     {
       clientId,
       redirectUri,
@@ -130,11 +130,11 @@ export const useLoginProfile = (profile: TProfile) => {
         keycloakDiscovery
       );
 
-      const { expiresIn, accessToken, idToken, issuedAt, refreshToken } = newToken;
+      const { expiresIn, accessToken, idToken, issuedAt, refreshToken: newRefreshToken } = newToken;
 
       SecureStore.setItemAsync(
         PROFILE_TOKEN,
-        JSON.stringify({ accessToken, idToken, refreshToken })
+        JSON.stringify({ accessToken, idToken, refreshToken: newRefreshToken })
       );
       addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
       return newToken;
@@ -195,11 +195,11 @@ export const useLoginProfile = (profile: TProfile) => {
     };
 
     handleAuthResponse();
-  }, [response]);
+  }, [response, exchangeToken]);
 
   useEffect(() => {
     checkToken();
-  }, []);
+  }, [checkToken]);
 
   return {
     checkToken,

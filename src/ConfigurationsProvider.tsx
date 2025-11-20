@@ -58,8 +58,8 @@ export const ConfigurationsContext = createContext(defaultConfiguration);
 
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings, appDesignSystem = {} } = globalSettings;
-  const { sue = {} } = settings || {};
+  const { settings = {}, appDesignSystem = {} } = globalSettings;
+  const { sue = {} } = settings;
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
   const [isLoading, setIsLoading] = useState(true);

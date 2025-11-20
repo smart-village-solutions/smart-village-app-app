@@ -30,7 +30,7 @@ export const getLocationMarker = (locationObject) => ({
 
 export const LocationSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings || {};
+  const { settings = {} } = globalSettings;
   const { locationService: globalSettingsLocationService = {} } = settings;
   const { showAlternativeLocationButton = true } = globalSettingsLocationService;
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();

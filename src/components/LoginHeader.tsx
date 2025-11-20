@@ -7,8 +7,6 @@ import { SettingsContext } from '../SettingsProvider';
 import { Icon, colors, consts } from './../config';
 import { useLoginProfile } from './../hooks';
 
-export const LOGIN_MODAL = 'loginModal';
-
 const { a11yLabel } = consts;
 
 type Props = {
@@ -18,7 +16,7 @@ type Props = {
 
 export const LoginHeader = ({ route, style }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings } = globalSettings;
+  const { settings = {} } = globalSettings;
   const { profile } = settings;
 
   const { isLoggedIn, loading, login, logout } = useLoginProfile(profile);

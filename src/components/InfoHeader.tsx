@@ -7,8 +7,6 @@ import { useStaticContent } from './../hooks';
 import { HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
-export const LOGIN_MODAL = 'loginModal';
-
 const { a11yLabel } = consts;
 
 interface DataItem {
