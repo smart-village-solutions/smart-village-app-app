@@ -69,11 +69,11 @@ export const useLoginProfile = (profile: TProfile) => {
 
       const { expiresIn, accessToken, idToken, issuedAt, refreshToken } = tokenResult;
 
-      SecureStore.setItemAsync(
+      await SecureStore.setItemAsync(
         PROFILE_TOKEN,
         JSON.stringify({ accessToken, idToken, refreshToken })
       );
-      addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
+      await addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
     } catch (error) {
       console.error('Error exchanging code:', error);
     } finally {
@@ -132,11 +132,11 @@ export const useLoginProfile = (profile: TProfile) => {
 
       const { expiresIn, accessToken, idToken, issuedAt, refreshToken: newRefreshToken } = newToken;
 
-      SecureStore.setItemAsync(
+      await SecureStore.setItemAsync(
         PROFILE_TOKEN,
         JSON.stringify({ accessToken, idToken, refreshToken: newRefreshToken })
       );
-      addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
+      await addToStore(PROFILE_META, JSON.stringify({ expiresIn, issuedAt }));
       return newToken;
     } catch (err) {
       console.error('Failed to refresh token:', err);
@@ -175,7 +175,7 @@ export const useLoginProfile = (profile: TProfile) => {
             });
 
             device.platform === 'ios' && (await dismissAuthSession());
-            SecureStore.deleteItemAsync(PROFILE_TOKEN);
+            await SecureStore.deleteItemAsync(PROFILE_TOKEN);
             removeFromStore(PROFILE_META);
             setIsLoggedIn(false);
           } catch (err) {
