@@ -10,14 +10,14 @@ import { addToStore, readFromStore } from '../../helpers';
 import { VOUCHER_DEVICE_TOKEN, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
 import { useVoucher } from '../../hooks';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
-import { TQuota } from '../../types';
+import { TQuota, TVoucherDates } from '../../types';
 import { Button } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
-const defaultTime = 15 * 60; // 15 * 60 sec.
+const defaultTime = 15 * 60; // 15 minutes in seconds
 
 /* eslint-disable complexity */
 export const VoucherRedeem = ({
@@ -35,8 +35,8 @@ export const VoucherRedeem = ({
   const [isRedeemingVoucher, setIsRedeemingVoucher] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [quantity, setQuantity] = useState(1);
-
   const [isRedeemedVoucher, setIsRedeemedVoucher] = useState(false);
+  const [redeemStartTime, setRedeemStartTime] = useState<number | null>(null);
   const [isAvailableVoucher, setIsAvailableVoucher] = useState(false);
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
 
@@ -74,21 +74,27 @@ export const VoucherRedeem = ({
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
   useEffect(() => {
-    if (isRedeemingVoucher) {
+    if (isRedeemingVoucher && redeemStartTime) {
       const interval = setInterval(() => {
-        if (remainingTime > 0) {
-          setRemainingTime(remainingTime - 1);
+        const now = Date.now();
+        const elapsedSeconds = Math.floor((now - redeemStartTime) / 1000);
+        const newRemainingTime = defaultTime - elapsedSeconds;
+
+        if (newRemainingTime > 0) {
+          setRemainingTime(newRemainingTime);
         } else {
-          clearInterval(interval);
+          setRemainingTime(0);
           setIsExpiredVoucher(true);
+          clearInterval(interval);
         }
-      }, 1000);
+      }, 1000); // update every second
 
       return () => clearInterval(interval);
-    } else {
+    } else if (!isRedeemingVoucher) {
       setRemainingTime(defaultTime);
+      setRedeemStartTime(null);
     }
-  }, [remainingTime, isRedeemingVoucher]);
+  }, [isRedeemingVoucher, redeemStartTime]);
 
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
@@ -126,6 +132,7 @@ export const VoucherRedeem = ({
     } finally {
       setIsRedeemedVoucher(true);
       setIsRedeemingVoucher(true);
+      setRedeemStartTime(Date.now());
     }
   };
 
