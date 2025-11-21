@@ -64,7 +64,7 @@ export const InfoHeader = ({ route, style }: Props) => {
         accessibilityLabel={a11yLabel.informationIcon}
         accessibilityHint={a11yLabel.informationHint}
       >
-        <IconUrl iconName={iconName} color={colors.lightestText} style={style} />
+        <IconUrl iconName={iconName} color={colors.darkText} style={style} />
       </TouchableOpacity>
 
       <Overlay

@@ -37,13 +37,13 @@ export const HeaderLeft = ({
       accessibilityHint={consts.a11yLabel.backIconHint}
     >
       {backImage ? (
-        backImage({ tintColor: colors.lightestText })
+        backImage({ tintColor: colors.darkText })
       ) : text ? (
         <HeadlineText lightest smaller style={styles.text}>
           {text}
         </HeadlineText>
       ) : (
-        <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
+        <Icon.ArrowLeft color={colors.darkText} style={styles.icon} />
       )}
     </TouchableOpacity>
   );

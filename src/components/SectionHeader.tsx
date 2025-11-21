@@ -32,7 +32,7 @@ export const SectionHeader = ({
   if (!title) return null;
 
   const innerComponent = (
-    <WrapperRow>
+    <WrapperRow spaceBetween>
       <Title
         accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
           onPress ? consts.a11yLabel.button : ''
@@ -45,7 +45,7 @@ export const SectionHeader = ({
         {title}
       </Title>
       {!!onPress && (
-        <Icon.ArrowRight color={colors.surface} size={normalize(18)} style={styles.icon} />
+        <Icon.ArrowRight color={colors.darkText} size={normalize(18)} style={styles.icon} />
       )}
     </WrapperRow>
   );

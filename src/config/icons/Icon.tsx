@@ -147,7 +147,7 @@ const NamedIcon = ({
 };
 
 export const Icon = {
-  About: (props: IconProps) => <NamedIcon name="menu-2" {...props} />,
+  About: (props: IconProps) => <NamedIcon name="dots-vertical" {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   Albums: (props: IconProps) => <NamedIcon name="album" {...props} />,
   AlertHexagonFilled: (props: IconProps) => <NamedIcon name="alert-hexagon-filled" {...props} />,
@@ -158,7 +158,7 @@ export const Icon = {
   ArrowRight2: (props: IconProps) => <NamedIcon name="arrow-narrow-right" {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   At: (props: IconProps) => <NamedIcon name="at" {...props} />,
-  Calendar: (props: IconProps) => <NamedIcon name="calendar" {...props} />,
+  Calendar: (props: IconProps) => <NamedIcon name="calendar-event" {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
   Check: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
