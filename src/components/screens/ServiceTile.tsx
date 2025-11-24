@@ -112,8 +112,9 @@ export const ServiceTile = ({
 
   return (
     <ServiceBox
-      bigTile={!!item.tile || hasTileStyle}
+      bigTile={!!item.tile}
       dimensions={dimensions}
+      hasTileStyle={hasTileStyle}
       numberOfTiles={item?.numberOfTiles}
       orientation={orientation}
       style={[normalizedTileStyle, isLastRow && styles.marginLeft]}

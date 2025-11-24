@@ -3,26 +3,30 @@ import styled, { css } from 'styled-components/native';
 import { normalize } from '../config';
 
 const flexBasis = (props) => {
-  const { orientation, bigTile, numberOfTiles: tilesConfig = {} } = props;
+  const { orientation, bigTile, numberOfTiles: tilesConfig = {}, hasTileStyle } = props;
+
+  if (bigTile) {
+    return null;
+  }
+
   const { landscape = 5, portrait = 3 } = tilesConfig;
   const numberOfTiles = orientation === 'landscape' ? landscape : portrait;
+  const tileFactor = hasTileStyle ? (orientation === 'landscape' ? 1 : 0.09) : 1;
 
-  // For bigTile, use exact pixel-based calculation to match DraggableGrid
   // For normal tiles, use percentage-based flex layout
-  return bigTile ? null : 100 / numberOfTiles;
+  return 100 / (numberOfTiles + tileFactor);
 };
 
 export const ServiceBox = styled.View`
   margin: ${normalize(16)}px 0;
 
   ${(props) =>
-    !props.bigTile &&
     css`
       flex-basis: ${flexBasis(props)}%;
     `};
 
   ${(props) =>
-    props.bigTile &&
+    (props.bigTile || props.hasTileStyle) &&
     css`
       margin: 0 0 ${normalize(1)}px 0;
     `};
