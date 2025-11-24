@@ -584,7 +584,9 @@ export const MapLibre = ({
                     ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
                     'center',
                     layerStyles.singleIcon.iconAnchor
-                  ]
+                  ],
+                  iconAllowOverlap: true,
+                  iconIgnorePlacement: true
                 }}
               />
 
@@ -647,7 +649,9 @@ export const MapLibre = ({
                     textColor: clusterTextColor,
                     textFont: ['Noto Sans Bold', 'Open Sans Bold'],
                     textField: ['format', ['concat', ['get', 'point_count']]],
-                    textPitchAlignment: 'map' as const
+                    textPitchAlignment: 'map' as const,
+                    textAllowOverlap: true,
+                    textIgnorePlacement: true
                   }}
                 />
               )}
@@ -687,7 +691,9 @@ export const MapLibre = ({
                     ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
                     'center',
                     layerStyles.singleIcon.iconAnchor
-                  ]
+                  ],
+                  iconAllowOverlap: true,
+                  iconIgnorePlacement: true
                 }}
               />
             </ShapeSource>
@@ -705,14 +711,14 @@ export const MapLibre = ({
                     ...layerStyles.singleIcon,
                     iconImage: ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
                     iconSize: layerStyles.singleIcon.iconSize * 1.2,
-                    iconAllowOverlap: true,
-                    iconIgnorePlacement: true,
                     iconAnchor: [
                       'case',
                       ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
                       'center',
                       layerStyles.singleIcon.iconAnchor
-                    ]
+                    ],
+                    iconAllowOverlap: true,
+                    iconIgnorePlacement: true
                   }}
                 />
               </ShapeSource>
@@ -810,6 +816,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center'
+  },
+  selectedTapTarget: {
+    height: normalize(44),
+    width: normalize(44)
   },
   buttonsContainer: {
     alignItems: 'center',
