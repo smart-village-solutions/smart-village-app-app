@@ -3,6 +3,45 @@ import { Alert } from 'react-native';
 
 import { texts } from '../../config';
 
+/**
+ * SECURITY NOTICE - Encryption & Storage Recommendations
+ *
+ * IMPORTANT: Per PCI DSS Section 3.2, PIN codes should NEVER be stored locally.
+ * PIN verification must be performed server-side only. For production use:
+ * - Remove pinCode field from local storage entirely
+ * - Implement server-side PIN verification via secure API calls
+ * - Use tokenization services for card data
+ *
+ * If local encryption of non-PIN sensitive data is required, the recommended
+ * algorithm is **AES-256-GCM** (Galois/Counter Mode), which provides:
+ * - Authenticated encryption (confidentiality + integrity)
+ * - Protection against tampering via authentication tags
+ * - Industry standard for secure data encryption
+ *
+ * Implementation options for React Native/Expo:
+ * 1. `react-native-aes-gcm-crypto` - Native AES-GCM implementation
+ *    - Requires Expo bare workflow or prebuild
+ *    - Provides proper key management and IV generation
+ *
+ * 2. Server-side storage - Store sensitive data on a secure backend
+ *    - Recommended approach for production systems
+ *    - Use secure authentication flows
+ *
+ * Current implementation uses Expo SecureStore which provides:
+ * - iOS: Keychain Services (hardware-backed on supported devices)
+ * - Android: Shared Preferences with Android Keystore encryption
+ *
+ * For PCI DSS compliance:
+ * - Do NOT store PIN codes locally (required by PCI DSS 3.2)
+ * - Use tokenization for card numbers
+ * - Encrypt any locally stored sensitive data with AES-256-GCM
+ * - Regular security audits
+ *
+ * WARNING: This implementation stores pinCode for development/demo purposes only.
+ * Production deployments MUST remove local PIN storage and implement server-side
+ * PIN verification to comply with PCI DSS requirements.
+ */
+
 export type TCard = {
   backgroundColor: string;
   cardName?: string;
