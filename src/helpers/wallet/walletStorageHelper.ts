@@ -4,9 +4,15 @@ import { Alert } from 'react-native';
 import { texts } from '../../config';
 
 /**
- * SECURITY NOTICE - Encryption Recommendations
+ * SECURITY NOTICE - Encryption & Storage Recommendations
  *
- * For production use with sensitive data like PIN codes, the recommended encryption
+ * IMPORTANT: Per PCI DSS Section 3.2, PIN codes should NEVER be stored locally.
+ * PIN verification must be performed server-side only. For production use:
+ * - Remove pinCode field from local storage entirely
+ * - Implement server-side PIN verification via secure API calls
+ * - Use tokenization services for card data
+ *
+ * If local encryption of non-PIN sensitive data is required, the recommended
  * algorithm is **AES-256-GCM** (Galois/Counter Mode), which provides:
  * - Authenticated encryption (confidentiality + integrity)
  * - Protection against tampering via authentication tags
@@ -17,22 +23,23 @@ import { texts } from '../../config';
  *    - Requires Expo bare workflow or prebuild
  *    - Provides proper key management and IV generation
  *
- * 2. Server-side encryption - Store sensitive data on a secure backend
- *    - PIN codes should ideally not be stored on-device
- *    - Use secure authentication flows instead
+ * 2. Server-side storage - Store sensitive data on a secure backend
+ *    - Recommended approach for production systems
+ *    - Use secure authentication flows
  *
  * Current implementation uses Expo SecureStore which provides:
  * - iOS: Keychain Services (hardware-backed on supported devices)
  * - Android: Shared Preferences with Android Keystore encryption
  *
- * For PCI DSS compliance, consider:
- * - Not storing PIN codes at all (use tokenization)
- * - Additional encryption layer for sensitive fields
+ * For PCI DSS compliance:
+ * - Do NOT store PIN codes locally (required by PCI DSS 3.2)
+ * - Use tokenization for card numbers
+ * - Encrypt any locally stored sensitive data with AES-256-GCM
  * - Regular security audits
  *
- * WARNING: This implementation is for development/demo purposes.
- * Production deployments should implement AES-256-GCM encryption
- * for sensitive fields or use tokenization services.
+ * WARNING: This implementation stores pinCode for development/demo purposes only.
+ * Production deployments MUST remove local PIN storage and implement server-side
+ * PIN verification to comply with PCI DSS requirements.
  */
 
 export type TCard = {
