@@ -5,11 +5,10 @@ import { StyleSheet, View } from 'react-native';
 
 import {
   Button,
-  HeadlineText,
   HtmlView,
   LoadingSpinner,
-  RegularText,
   SafeAreaViewFlex,
+  WalletHeader,
   WalletList,
   Wrapper,
   WrapperRow,
@@ -110,20 +109,13 @@ export const WalletHomeScreen = () => {
     return (
       <SafeAreaViewFlex>
         <WrapperVertical>
-          <Wrapper
-            itemsCenter
-            style={[styles.iconContainer, { backgroundColor: homeIconBackgroundColor }]}
-          >
-            <Icon.NamedIcon name={homeIcon} size={normalize(50)} color={iconColor} />
-          </Wrapper>
-
-          <Wrapper itemsCenter>
-            <WrapperVertical>
-              <HeadlineText biggest>{title}</HeadlineText>
-            </WrapperVertical>
-
-            <RegularText center>{description}</RegularText>
-          </Wrapper>
+          <WalletHeader
+            description={description}
+            iconBackgroundColor={homeIconBackgroundColor}
+            iconColor={iconColor}
+            iconName={homeIcon}
+            type={title}
+          />
 
           <Wrapper>{footer({ buttonText, infoIcon, infoText, navigation })}</Wrapper>
         </WrapperVertical>
