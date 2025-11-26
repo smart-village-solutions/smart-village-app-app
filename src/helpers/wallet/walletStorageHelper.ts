@@ -3,6 +3,38 @@ import { Alert } from 'react-native';
 
 import { texts } from '../../config';
 
+/**
+ * SECURITY NOTICE - Encryption Recommendations
+ *
+ * For production use with sensitive data like PIN codes, the recommended encryption
+ * algorithm is **AES-256-GCM** (Galois/Counter Mode), which provides:
+ * - Authenticated encryption (confidentiality + integrity)
+ * - Protection against tampering via authentication tags
+ * - Industry standard for secure data encryption
+ *
+ * Implementation options for React Native/Expo:
+ * 1. `react-native-aes-gcm-crypto` - Native AES-GCM implementation
+ *    - Requires Expo bare workflow or prebuild
+ *    - Provides proper key management and IV generation
+ *
+ * 2. Server-side encryption - Store sensitive data on a secure backend
+ *    - PIN codes should ideally not be stored on-device
+ *    - Use secure authentication flows instead
+ *
+ * Current implementation uses Expo SecureStore which provides:
+ * - iOS: Keychain Services (hardware-backed on supported devices)
+ * - Android: Shared Preferences with Android Keystore encryption
+ *
+ * For PCI DSS compliance, consider:
+ * - Not storing PIN codes at all (use tokenization)
+ * - Additional encryption layer for sensitive fields
+ * - Regular security audits
+ *
+ * WARNING: This implementation is for development/demo purposes.
+ * Production deployments should implement AES-256-GCM encryption
+ * for sensitive fields or use tokenization services.
+ */
+
 export type TCard = {
   backgroundColor: string;
   cardName?: string;
