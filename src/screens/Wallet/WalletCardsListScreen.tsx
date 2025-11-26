@@ -25,19 +25,19 @@ export const WalletCardsListScreen = () => {
     type: 'json'
   });
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      await refetch();
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch]);
+  }, [isConnected, refetch]);
 
   if (loading) {
     return <LoadingSpinner loading />;
   }
 
-  const listItem = data?.map((card: TCard) => {
+  const listItem = (data || []).map((card: TCard) => {
     const {
       description = '',
       iconBackgroundColor = colors.lighterPrimaryRgba,

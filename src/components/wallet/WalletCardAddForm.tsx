@@ -1,14 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import { texts } from '../../config';
+import { saveCard } from '../../helpers';
+import { TCard } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Wrapper } from '../Wrapper';
-import { texts } from '../../config';
-import { TCard } from '../../types';
-import { saveCard } from '../../helpers';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 
 type TInputsInformation = {
   cardNameInputPlaceholder?: string;
@@ -22,6 +22,12 @@ type TInputsInformation = {
   maxPinLength?: number;
 };
 
+type CardFormData = {
+  cardName: string;
+  cardNumber: string;
+  pinCode: string;
+};
+
 export const WalletCardAddForm = ({
   apiEndpoint,
   cardInformation,
@@ -29,7 +35,7 @@ export const WalletCardAddForm = ({
 }: {
   apiEndpoint: string;
   cardInformation?: TCard;
-  inputsInformation: TInputsInformation;
+  inputsInformation?: TInputsInformation;
 }) => {
   const navigation = useNavigation<StackNavigationProp<Record<string, any>>>();
 
@@ -58,10 +64,10 @@ export const WalletCardAddForm = ({
     }
   });
 
-  const onSubmit = async (cardData: TCard) => {
+  const onSubmit = async (cardData: CardFormData) => {
     const cardInfo = {
       apiEndpoint: apiEndpoint,
-      backgroundColor: cardInformation?.iconBackgroundColor,
+      iconBackgroundColor: cardInformation?.iconBackgroundColor,
       cardName: cardData.cardName,
       cardNumber: cardData.cardNumber,
       description: cardInformation?.description,
@@ -69,7 +75,7 @@ export const WalletCardAddForm = ({
       iconName: cardInformation?.iconName,
       pinCode: cardData.pinCode,
       type: cardInformation?.type
-    };
+    } as TCard;
 
     try {
       const { saved, duplicate } = await saveCard(cardInfo);
@@ -94,8 +100,8 @@ export const WalletCardAddForm = ({
           name="cardNumber"
           placeholder={cardNumberInputPlaceholder}
           rules={{
-            pattern: {
-              value: new RegExp(`^[0-9]{${maxCardNumberLength}}$`),
+            minLength: {
+              value: maxCardNumberLength,
               message: texts.wallet.add.inputs.errors.maxLengthExceeded(maxCardNumberLength)
             },
             required: {
@@ -109,15 +115,15 @@ export const WalletCardAddForm = ({
       <Wrapper noPaddingTop>
         <Input
           control={control}
-          errorMessage={errors.pin && errors.pin.message}
+          errorMessage={errors.pinCode && errors.pinCode.message}
           keyboardType="number-pad"
           label={cardPinInputTitle}
           maxLength={maxPinLength}
           name="pinCode"
           placeholder={cardPinInputPlaceholder}
           rules={{
-            pattern: {
-              value: new RegExp(`^[0-9]{${maxPinLength}}$`),
+            minLength: {
+              value: maxPinLength,
               message: texts.wallet.add.inputs.errors.maxLengthExceeded(maxPinLength)
             },
             required: {
@@ -139,7 +145,7 @@ export const WalletCardAddForm = ({
       </Wrapper>
 
       <Wrapper noPaddingTop>
-        <Button title="Add Card" onPress={handleSubmit(onSubmit)} />
+        <Button title={texts.wallet.add.button} onPress={handleSubmit(onSubmit)} />
       </Wrapper>
     </>
   );

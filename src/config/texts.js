@@ -1674,6 +1674,7 @@ export const texts = {
   },
   wallet: {
     add: {
+      button: 'Karte hinzufügen',
       cardAddDescription: 'Geben Sie Ihre Kartendaten ein und speichern Sie sie.',
       cardAddTitle: 'Karte hinzufügen',
       noCardsAvailable: 'Keine Kartentypen verfügbar',

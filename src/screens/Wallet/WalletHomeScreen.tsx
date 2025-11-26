@@ -125,7 +125,7 @@ export const WalletHomeScreen = () => {
 
   const listItem = cards.map((card: TCard) => ({
     leftIcon: (
-      <Wrapper style={[styles.iconContainer, { backgroundColor: card.backgroundColor }]}>
+      <Wrapper style={[styles.iconContainer, { backgroundColor: card.iconBackgroundColor }]}>
         <Icon.NamedIcon name={card.iconName} color={card.iconColor} />
       </Wrapper>
     ),
