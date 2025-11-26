@@ -7,31 +7,21 @@ import {
   Button,
   HeadlineText,
   HtmlView,
-  ListComponent,
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
+  WalletList,
   Wrapper,
   WrapperRow,
   WrapperVertical
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
-import { deleteAllCards, getSavedCards, saveCard, TCard } from '../../helpers';
-import { QUERY_TYPES } from '../../queries';
+import { deleteAllCards, getSavedCards } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
+import { ScreenName, TCard } from '../../types';
 
 // TODO: Remove before production
 const isDevMode = true;
-const testCardInfo = {
-  backgroundColor: 'blue',
-  cardName: 'My Visa Card',
-  cardNumber: '1234567890123456',
-  description: 'Personal credit card',
-  iconColor: 'white',
-  iconName: 'credit-card',
-  pinCode: '123',
-  type: 'visa'
-};
 
 const footer = ({
   buttonText,
@@ -49,19 +39,8 @@ const footer = ({
     <>
       <Button
         title={buttonText}
-        onPress={async () => {
-          if (isDevMode) {
-            // TODO: Replace with actual card addition logic
-
-            try {
-              await saveCard(testCardInfo);
-            } catch (error) {
-              console.error('Error saving test card:', error);
-            }
-          }
-
-          // TODO: Navigate to card addition screen
-          // navigation.navigate('');
+        onPress={() => {
+          navigation.navigate(ScreenName.WalletCardsList);
         }}
       />
 
@@ -152,7 +131,7 @@ export const WalletHomeScreen = () => {
     );
   }
 
-  const listItem = cards.map((card) => ({
+  const listItem = cards.map((card: TCard) => ({
     leftIcon: (
       <Wrapper style={[styles.iconContainer, { backgroundColor: card.backgroundColor }]}>
         <Icon.NamedIcon name={card.iconName} color={card.iconColor} />
@@ -166,13 +145,11 @@ export const WalletHomeScreen = () => {
   }));
 
   return (
-    <ListComponent
-      data={listItem}
+    <WalletList
+      items={listItem}
       ListFooterComponent={() => (
         <WrapperVertical>{footer({ buttonText, infoIcon, infoText, navigation })}</WrapperVertical>
       )}
-      navigation={navigation}
-      query={QUERY_TYPES.WALLET}
     />
   );
 };

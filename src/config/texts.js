@@ -1115,6 +1115,7 @@ export const texts = {
       qr: 'Code scannen'
     },
     wallet: {
+      cardsList: 'Kartenliste',
       home: 'Wallet'
     },
     wasteCollection: 'Abfallkalender',
@@ -1671,6 +1672,10 @@ export const texts = {
     secret: 'Vertragskonto-Nr.'
   },
   wallet: {
+    add: {
+      selectCardType: 'Kartentyp auswählen',
+      noCardsAvailable: 'Keine Kartentypen verfügbar'
+    },
     alert: {
       duplicateCardMessage: 'Diese Karte wurde bereits hinzugefügt.',
       duplicateCardTitle: 'Karte existiert bereits',

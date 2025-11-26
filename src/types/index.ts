@@ -2,6 +2,7 @@ export * from './encounter';
 export * from './profile';
 export * from './volunteer';
 export * from './voucher';
+export * from './wallet';
 export * from './whistleblow';
 
 export * from './Accessibility';
