@@ -1115,6 +1115,7 @@ export const texts = {
       qr: 'Code scannen'
     },
     wallet: {
+      cardAdd: 'Karte hinzufügen',
       cardsList: 'Kartenliste',
       home: 'Wallet'
     },
@@ -1673,8 +1674,23 @@ export const texts = {
   },
   wallet: {
     add: {
+      cardAddDescription: 'Geben Sie Ihre Kartendaten ein und speichern Sie sie.',
+      cardAddTitle: 'Karte hinzufügen',
+      noCardsAvailable: 'Keine Kartentypen verfügbar',
       selectCardType: 'Kartentyp auswählen',
-      noCardsAvailable: 'Keine Kartentypen verfügbar'
+      inputs: {
+        cardNameInputPlaceholder: 'Kartenname eingeben',
+        cardNameInputTitle: 'Kartenname',
+        cardNumberInputPlaceholder: 'Kartennummer eingeben',
+        cardNumberInputTitle: 'Kartennummer',
+        cardPinInputPlaceholder: 'PIN eingeben',
+        cardPinInputTitle: 'PIN',
+        errors: {
+          cardNumberRequired: 'Kartennummer muss ausgefüllt werden',
+          cardPinRequired: 'PIN muss ausgefüllt werden',
+          maxLengthExceeded: (maxLength) => `Maximale Länge von ${maxLength} Zeichen überschritten`
+        }
+      }
     },
     alert: {
       duplicateCardMessage: 'Diese Karte wurde bereits hinzugefügt.',
