@@ -1,14 +1,16 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   RefreshControl,
+  Share,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import ViewShot from 'react-native-view-shot';
 
 import {
   BoldText,
@@ -30,6 +32,41 @@ import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
 import { TCard, TCardInfo } from '../../types';
 
+const ShareableCard = ({
+  apiConnection,
+  cardNumber,
+  pinCode
+}: {
+  apiConnection: { qrEndpoint: string };
+  cardNumber: string;
+  pinCode: string;
+}) => {
+  return (
+    <Wrapper itemsCenter>
+      <QRCode
+        size={normalize(device.width - 32)}
+        value={`${apiConnection.qrEndpoint}${cardNumber}`}
+      />
+
+      <Wrapper itemsCenter>
+        <WrapperRow>
+          <RegularText center small>
+            {texts.wallet.detail.couponNumber}:{' '}
+          </RegularText>
+          <BoldText small>{cardNumber}</BoldText>
+        </WrapperRow>
+
+        <WrapperRow>
+          <RegularText center small>
+            {texts.wallet.detail.pin}:{' '}
+          </RegularText>
+          <BoldText small>{pinCode}</BoldText>
+        </WrapperRow>
+      </Wrapper>
+    </Wrapper>
+  );
+};
+
 export const WalletCardDetailScreen = ({
   navigation,
   route
@@ -47,6 +84,8 @@ export const WalletCardDetailScreen = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFullScreenQR, setIsFullScreenQR] = useState(false);
 
+  const viewShotRef = useRef(null);
+
   const fetchCardDetails = useCallback(async () => {
     try {
       const cardInformation = (await fetchCardInfo({
@@ -62,6 +101,17 @@ export const WalletCardDetailScreen = ({
       console.error('Error fetching card details:', error);
     }
   }, [apiConnection, cardNumber, pinCode]);
+
+  const handleShare = async () => {
+    try {
+      const uri = await viewShotRef?.current.capture();
+      await Share.share({
+        url: uri
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     fetchCardDetails();
@@ -92,10 +142,7 @@ export const WalletCardDetailScreen = ({
               iconPosition="left"
               invert
               notFullWidth
-              onPress={() => {
-                // TODO: Implement backup functionality
-                console.log('test');
-              }}
+              onPress={handleShare}
               title={texts.wallet.detail.backup}
             />
             <Button
@@ -252,29 +299,14 @@ export const WalletCardDetailScreen = ({
         onModalVisible={() => setIsFullScreenQR(false)}
         overlayStyle={styles.qrOverlayContainer}
       >
-        <Wrapper itemsCenter>
-          <QRCode
-            size={normalize(device.width - 32)}
-            value={`${apiConnection.qrEndpoint}${cardNumber}`}
-          />
-
-          <Wrapper itemsCenter>
-            <WrapperRow>
-              <RegularText center small>
-                {texts.wallet.detail.couponNumber}:{' '}
-              </RegularText>
-              <BoldText small>{cardNumber}</BoldText>
-            </WrapperRow>
-
-            <WrapperRow>
-              <RegularText center small>
-                {texts.wallet.detail.pin}:{' '}
-              </RegularText>
-              <BoldText small>{pinCode}</BoldText>
-            </WrapperRow>
-          </Wrapper>
-        </Wrapper>
+        <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} pinCode={pinCode} />
       </Modal>
+
+      <View style={styles.shareContentContainer}>
+        <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }}>
+          <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} pinCode={pinCode} />
+        </ViewShot>
+      </View>
     </>
   );
 };
@@ -283,6 +315,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)
+  },
+  shareContentContainer: {
+    position: 'absolute',
+    opacity: 0
   },
   qrOverlayContainer: {
     alignItems: 'center',
