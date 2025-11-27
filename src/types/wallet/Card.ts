@@ -1,5 +1,5 @@
 export type TCard = {
-  apiEndpoint: string;
+  apiConnection: TApiConnection;
   cardName?: string;
   cardNumber: string;
   description?: string;
@@ -13,4 +13,11 @@ export type TCard = {
   subtitle: string;
   title: string;
   type: string;
+};
+
+export type TApiConnection = {
+  endpoint: string;
+  network: string;
+  origin: string;
+  referer: string;
 };
