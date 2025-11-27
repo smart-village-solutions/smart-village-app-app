@@ -1115,6 +1115,8 @@ export const texts = {
       qr: 'Code scannen'
     },
     wallet: {
+      cardAdd: 'Karte hinzufügen',
+      cardsList: 'Kartenliste',
       home: 'Wallet'
     },
     wasteCollection: 'Abfallkalender',
@@ -1671,6 +1673,26 @@ export const texts = {
     secret: 'Vertragskonto-Nr.'
   },
   wallet: {
+    add: {
+      button: 'Karte hinzufügen',
+      cardAddDescription: 'Geben Sie Ihre Kartendaten ein und speichern Sie sie.',
+      cardAddTitle: 'Karte hinzufügen',
+      noCardsAvailable: 'Keine Kartentypen verfügbar',
+      selectCardType: 'Kartentyp auswählen',
+      inputs: {
+        cardNameInputPlaceholder: 'Kartenname eingeben',
+        cardNameInputTitle: 'Kartenname',
+        cardNumberInputPlaceholder: 'Kartennummer eingeben',
+        cardNumberInputTitle: 'Kartennummer',
+        cardPinInputPlaceholder: 'PIN eingeben',
+        cardPinInputTitle: 'PIN',
+        errors: {
+          cardNumberRequired: 'Kartennummer muss ausgefüllt werden',
+          cardPinRequired: 'PIN muss ausgefüllt werden',
+          maxLengthExceeded: (maxLength) => `Maximale Länge von ${maxLength} Zeichen überschritten`
+        }
+      }
+    },
     alert: {
       duplicateCardMessage: 'Diese Karte wurde bereits hinzugefügt.',
       duplicateCardTitle: 'Karte existiert bereits',

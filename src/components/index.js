@@ -16,6 +16,7 @@ export * from './SUE';
 export * from './survey';
 export * from './volunteer';
 export * from './vouchers';
+export * from './wallet';
 export * from './waste';
 export * from './weather';
 export * from './whistleblow';
