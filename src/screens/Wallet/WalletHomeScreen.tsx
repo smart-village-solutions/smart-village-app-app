@@ -129,9 +129,8 @@ export const WalletHomeScreen = () => {
         <Icon.NamedIcon name={card.iconName} color={card.iconColor} />
       </Wrapper>
     ),
-    params: { cardNumber: card.cardNumber },
-    // TODO: Update routeName to actual screen name for card details
-    // routeName: '',
+    params: { card },
+    routeName: ScreenName.WalletCardDetail,
     subtitle: card.description,
     title: card.cardName || card.type
   }));

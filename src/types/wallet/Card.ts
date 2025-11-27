@@ -19,5 +19,6 @@ export type TApiConnection = {
   endpoint: string;
   network: string;
   origin: string;
+  qrEndpoint: string;
   referer: string;
 };
