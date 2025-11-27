@@ -47,7 +47,8 @@ export const Button = ({
     );
   }
 
-  const isDelete = title === texts.volunteer.delete;
+  const isDelete =
+    title === texts.volunteer.delete || title === texts.wallet.detail.deleteAnywayButton;
 
   return (
     <RNEButton

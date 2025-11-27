@@ -34,12 +34,13 @@ export const WalletTransactionList = ({
               <WrapperRow spaceBetween>
                 <BoldText>{dealerName}</BoldText>
                 <BoldText primary={type === 100} error={type === 200}>
-                  {type === 200 ? '-' : type === 100 ? '+' : ''} {valueAsEuro}
+                  {type === 200 ? '-' : type === 100 ? '+' : ''}
+                  {valueAsEuro}
                 </BoldText>
               </WrapperRow>
             </WrapperVertical>
 
-            {index < items.length - 1 && <Divider />}
+            {index !== items.length - 1 && <Divider />}
           </WrapperHorizontal>
         );
       }}

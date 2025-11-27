@@ -1703,8 +1703,17 @@ export const texts = {
     },
     detail: {
       backup: 'Backup',
+      balance: 'Guthaben',
+      cancel: 'Abbrechen',
+      code: 'Code',
+      deleteAnywayButton: 'Trotzdem löschen',
       deleteButton: 'Löschen',
+      deleteConfirmationMessage: (value) =>
+        `Es ist noch ein Restguthaben von ${value} € vorhanden.`,
+      deleteConfirmationTitle: ' Karte wirklich löschen?',
       lastTransactions: 'Ihre letzten 10 Buchungen',
+      noCardsAvailable: 'Keine Kartendaten verfügbar.',
+      pin: 'PIN',
       updateBalance: 'Guthaben aktualisieren'
     },
     home: {

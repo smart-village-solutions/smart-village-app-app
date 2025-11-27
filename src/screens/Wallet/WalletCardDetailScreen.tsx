@@ -1,14 +1,17 @@
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
-import { ActivityIndicator, RefreshControl } from 'react-native';
 import {
   BoldText,
   Button,
   EmptyMessage,
   HeadlineText,
   LoadingSpinner,
+  Modal,
+  RegularText,
   WalletTransactionList,
   Wrapper,
   WrapperRow,
@@ -16,6 +19,7 @@ import {
   WrapperWrap
 } from '../../components';
 import { colors, device, Icon, normalize, texts } from '../../config';
+import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
 import { TCard } from '../../types';
 
@@ -37,24 +41,26 @@ export type TTransaction = {
 };
 
 export const WalletCardDetailScreen = ({
+  navigation,
   route
 }: {
+  navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<{ params: { card: TCard } }>;
 }) => {
   const { card } = route.params;
-  const { apiConnection, cardName, cardNumber, description, iconColor, iconName, type, pinCode } =
-    card;
+  const { apiConnection, cardNumber, pinCode } = card;
 
   const [isFirstLoading, setFirstLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [cardData, setCardData] = useState<TCardInfo | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const fetchCardDetails = async () => {
+  const fetchCardDetails = useCallback(async () => {
     try {
       const cardInformation = (await fetchCardInfo({
         apiConnection,
-        cardNumber: cardNumber,
+        cardNumber,
         cardPin: pinCode
       })) as TCardInfo;
 
@@ -64,121 +70,163 @@ export const WalletCardDetailScreen = ({
       setFirstLoading(false);
       console.error('Error fetching card details:', error);
     }
-  };
+  }, [apiConnection, cardNumber, pinCode]);
 
   useEffect(() => {
     fetchCardDetails();
-  }, [apiConnection, cardNumber, pinCode]);
+  }, [fetchCardDetails]);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
     await fetchCardDetails();
     setRefreshing(false);
-  }, [apiConnection, cardNumber, pinCode]);
+  }, [fetchCardDetails]);
 
   if (isFirstLoading) {
     return <LoadingSpinner loading />;
   }
 
   if (!cardData) {
-    return <EmptyMessage title="No card details available." />;
+    return <EmptyMessage title={texts.wallet.detail.noCardsAvailable} />;
   }
 
+  const listItem = [...cardData.transactions];
+
   return (
-    <WalletTransactionList
-      items={cardData.transactions}
-      ListFooterComponent={
-        <WrapperWrap itemsCenter spaceAround center>
-          <Button
-            icon={<Icon.NamedIcon name="share" />}
-            iconPosition="left"
-            invert
-            notFullWidth
-            onPress={() => {
-              // TODO: Implement backup functionality
-              console.log('test');
-            }}
-            title={texts.wallet.detail.backup}
-          />
-          <Button
-            icon={<Icon.NamedIcon name="trash" color={colors.error} />}
-            iconPosition="left"
-            invert
-            notFullWidth
-            onPress={() => {
-              // TODO: Implement delete functionality
-              console.log('test');
-            }}
-            title={texts.wallet.detail.deleteButton}
-          />
-        </WrapperWrap>
-      }
-      ListHeaderComponent={
-        <>
-          <Wrapper itemsCenter>
-            <QRCode
-              size={normalize(device.width - 32)}
-              value={`${apiConnection.qrEndpoint}${cardData}`}
+    <>
+      <WalletTransactionList
+        items={listItem}
+        ListFooterComponent={
+          <WrapperWrap itemsCenter spaceAround center>
+            <Button
+              icon={<Icon.NamedIcon name="share" />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() => {
+                // TODO: Implement backup functionality
+                console.log('test');
+              }}
+              title={texts.wallet.detail.backup}
             />
-          </Wrapper>
-
-          <Wrapper>
-            <Wrapper style={{ backgroundColor: colors.shadowRgba, borderRadius: normalize(8) }}>
-              <WrapperRow spaceBetween itemsCenter>
-                <BoldText small>Code</BoldText>
-                <BoldText small>{cardNumber.match(/.{1,4}/g)?.join('-')}</BoldText>
-              </WrapperRow>
-
-              <WrapperVertical noPaddingBottom>
-                <WrapperRow spaceBetween itemsCenter>
-                  <BoldText small>Pin</BoldText>
-                  <BoldText small>{pinCode}</BoldText>
-                </WrapperRow>
-              </WrapperVertical>
-
-              <WrapperVertical noPaddingBottom>
-                <WrapperRow spaceBetween itemsCenter>
-                  <BoldText small>Guthaben</BoldText>
-                  <BoldText primary big>
-                    {cardData.balanceAsEuro} EUR
-                  </BoldText>
-                </WrapperRow>
-              </WrapperVertical>
-
-              <WrapperVertical noPaddingBottom>
-                <Button
-                  icon={
-                    isLoading ? (
-                      <ActivityIndicator />
-                    ) : (
-                      <Icon.NamedIcon name="refresh" color={colors.surface} />
-                    )
-                  }
-                  iconPosition="left"
-                  onPress={async () => {
-                    setIsLoading(true);
-                    await fetchCardDetails();
-                    setIsLoading(false);
-                  }}
-                  title={texts.wallet.detail.updateBalance}
-                />
-              </WrapperVertical>
+            <Button
+              icon={<Icon.NamedIcon name="trash" color={colors.error} />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() => setIsModalVisible(true)}
+              title={texts.wallet.detail.deleteButton}
+            />
+          </WrapperWrap>
+        }
+        ListHeaderComponent={
+          <>
+            <Wrapper itemsCenter>
+              <QRCode
+                size={normalize(device.width - 32)}
+                value={`${apiConnection.qrEndpoint}${cardNumber}`}
+              />
             </Wrapper>
 
-            <WrapperVertical noPaddingBottom>
-              <HeadlineText>Ihre letzten 10 Buchungen</HeadlineText>
-            </WrapperVertical>
-          </Wrapper>
-        </>
-      }
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={refresh}
-          colors={[colors.refreshControl]}
-          tintColor={colors.refreshControl}
+            <Wrapper>
+              <Wrapper style={{ backgroundColor: colors.shadowRgba, borderRadius: normalize(8) }}>
+                <WrapperRow spaceBetween itemsCenter>
+                  <BoldText small>{texts.wallet.detail.code}</BoldText>
+                  <BoldText small>{cardNumber.match(/.{1,4}/g)?.join('-')}</BoldText>
+                </WrapperRow>
+
+                <WrapperVertical noPaddingBottom>
+                  <WrapperRow spaceBetween itemsCenter>
+                    <BoldText small>{texts.wallet.detail.pin}</BoldText>
+                    <BoldText small>{pinCode}</BoldText>
+                  </WrapperRow>
+                </WrapperVertical>
+
+                <WrapperVertical noPaddingBottom>
+                  <WrapperRow spaceBetween itemsCenter>
+                    <BoldText small>{texts.wallet.detail.balance}</BoldText>
+                    <BoldText primary big>
+                      {cardData.balanceAsEuro} EUR
+                    </BoldText>
+                  </WrapperRow>
+                </WrapperVertical>
+
+                <WrapperVertical noPaddingBottom>
+                  <Button
+                    icon={
+                      isLoading ? (
+                        <ActivityIndicator />
+                      ) : (
+                        <Icon.NamedIcon name="refresh" color={colors.surface} />
+                      )
+                    }
+                    iconPosition="left"
+                    onPress={async () => {
+                      setIsLoading(true);
+                      await fetchCardDetails();
+                      setIsLoading(false);
+                    }}
+                    title={texts.wallet.detail.updateBalance}
+                  />
+                </WrapperVertical>
+              </Wrapper>
+
+              <WrapperVertical noPaddingBottom>
+                <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
+              </WrapperVertical>
+            </Wrapper>
+          </>
+        }
+        refreshControl={
+          <RefreshControl
+            colors={[colors.refreshControl]}
+            onRefresh={refresh}
+            refreshing={refreshing}
+            tintColor={colors.refreshControl}
+          />
+        }
+      />
+      <Modal
+        closeButton={
+          <Button
+            invert
+            onPress={() => setIsModalVisible(false)}
+            title={texts.wallet.detail.cancel}
+          />
+        }
+        isBackdropPress={false}
+        isListView={false}
+        isVisible={isModalVisible}
+        onModalVisible={() => setIsModalVisible(false)}
+      >
+        <Wrapper itemsCenter style={[styles.iconContainer, { backgroundColor: colors.errorRgba }]}>
+          <Icon.NamedIcon name="info-circle" size={normalize(30)} color={colors.error} />
+        </Wrapper>
+
+        <Wrapper itemsCenter>
+          <BoldText>{texts.wallet.detail.deleteConfirmationTitle}</BoldText>
+          <WrapperVertical>
+            <RegularText center>
+              {texts.wallet.detail.deleteConfirmationMessage(cardData.balanceAsEuro)}
+            </RegularText>
+          </WrapperVertical>
+        </Wrapper>
+
+        <Button
+          onPress={async () => {
+            await deleteCardByNumber(cardNumber);
+            navigation.pop();
+          }}
+          title={texts.wallet.detail.deleteAnywayButton}
         />
-      }
-    />
+      </Modal>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    alignSelf: 'center',
+    borderRadius: normalize(50)
+  }
+});
