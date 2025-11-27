@@ -1705,7 +1705,9 @@ export const texts = {
       backup: 'Backup',
       balance: 'Guthaben',
       cancel: 'Abbrechen',
+      close: 'Schließen',
       code: 'Code',
+      couponNumber: 'Gutschein-Nummer',
       deleteAnywayButton: 'Trotzdem löschen',
       deleteButton: 'Löschen',
       deleteConfirmationMessage: (value) =>

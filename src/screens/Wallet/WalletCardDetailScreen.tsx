@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import {
@@ -55,6 +55,7 @@ export const WalletCardDetailScreen = ({
   const [cardData, setCardData] = useState<TCardInfo | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFullScreenQR, setIsFullScreenQR] = useState(false);
 
   const fetchCardDetails = useCallback(async () => {
     try {
@@ -122,10 +123,12 @@ export const WalletCardDetailScreen = ({
         ListHeaderComponent={
           <>
             <Wrapper itemsCenter>
-              <QRCode
-                size={normalize(device.width - 32)}
-                value={`${apiConnection.qrEndpoint}${cardNumber}`}
-              />
+              <TouchableOpacity onPress={() => setIsFullScreenQR(true)}>
+                <QRCode
+                  size={normalize(device.width - 32)}
+                  value={`${apiConnection.qrEndpoint}${cardNumber}`}
+                />
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
@@ -186,6 +189,7 @@ export const WalletCardDetailScreen = ({
           />
         }
       />
+
       <Modal
         closeButton={
           <Button
@@ -220,6 +224,46 @@ export const WalletCardDetailScreen = ({
           title={texts.wallet.detail.deleteAnywayButton}
         />
       </Modal>
+
+      <Modal
+        closeButton={
+          <TouchableOpacity
+            onPress={() => setIsFullScreenQR(false)}
+            style={styles.qrOverlayCloseButton}
+          >
+            <Icon.Close />
+            <RegularText primary>{texts.wallet.detail.close}</RegularText>
+          </TouchableOpacity>
+        }
+        isBackdropPress={true}
+        isListView={false}
+        isVisible={isFullScreenQR}
+        onModalVisible={() => setIsFullScreenQR(false)}
+        overlayStyle={styles.qrOverlayContainer}
+      >
+        <Wrapper itemsCenter>
+          <QRCode
+            size={normalize(device.width - 32)}
+            value={`${apiConnection.qrEndpoint}${cardNumber}`}
+          />
+
+          <Wrapper itemsCenter>
+            <WrapperRow>
+              <RegularText center small>
+                {texts.wallet.detail.couponNumber}:{' '}
+              </RegularText>
+              <BoldText small>{cardNumber}</BoldText>
+            </WrapperRow>
+
+            <WrapperRow>
+              <RegularText center small>
+                {texts.wallet.detail.pin}:{' '}
+              </RegularText>
+              <BoldText small>{pinCode}</BoldText>
+            </WrapperRow>
+          </Wrapper>
+        </Wrapper>
+      </Modal>
     </>
   );
 };
@@ -228,5 +272,17 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)
+  },
+  qrOverlayContainer: {
+    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%'
+  },
+  qrOverlayCloseButton: {
+    flexDirection: 'row',
+    left: normalize(20),
+    position: 'absolute',
+    top: normalize(70)
   }
 });
