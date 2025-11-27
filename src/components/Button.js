@@ -60,7 +60,8 @@ export const Button = ({
         needLandscapeStyle && styles.titleLandscape,
         big && styles.bigTitle,
         small && styles.smallTitle,
-        smallest && styles.smallestTitle
+        smallest && styles.smallestTitle,
+        invert && isDelete && styles.titleInvertReject
       ]}
       disabledStyle={styles.buttonDisabled}
       disabledTitleStyle={styles.title}
@@ -69,6 +70,7 @@ export const Button = ({
         styles.buttonRadius,
         invert && styles.buttonInvert,
         !invert && isDelete && styles.rejectButton,
+        invert && isDelete && styles.invertRejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
         smallest && [styles.smallestButton, styles.smallestButtonRadius]
@@ -139,6 +141,11 @@ const styles = StyleSheet.create({
   iconRight: {
     paddingLeft: normalize(8)
   },
+  invertRejectButton: {
+    borderColor: colors.error,
+    borderStyle: 'solid',
+    borderWidth: normalize(1)
+  },
   landscapeIconLeft: {
     marginRight: normalize(-14),
     paddingLeft: normalize(14)
@@ -176,6 +183,9 @@ const styles = StyleSheet.create({
   },
   titleInvert: {
     color: colors.primary
+  },
+  titleInvertReject: {
+    color: colors.error
   },
   titleLandscape: {
     paddingHorizontal: normalize(14)

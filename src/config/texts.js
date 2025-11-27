@@ -1117,6 +1117,7 @@ export const texts = {
     wallet: {
       cardAdd: 'Karte hinzufügen',
       cardsList: 'Kartenliste',
+      detail: 'Kartendetails',
       home: 'Wallet'
     },
     wasteCollection: 'Abfallkalender',
@@ -1699,6 +1700,12 @@ export const texts = {
       invalidCardMessage:
         'Die eingegebenen Kartendaten sind ungültig. Bitte überprüfen und erneut versuchen.',
       invalidCardTitle: 'Ungültige Karte'
+    },
+    detail: {
+      backup: 'Backup',
+      deleteButton: 'Löschen',
+      lastTransactions: 'Ihre letzten 10 Buchungen',
+      updateBalance: 'Guthaben aktualisieren'
     },
     home: {
       buttonText: 'Karte Hinzufügen',
