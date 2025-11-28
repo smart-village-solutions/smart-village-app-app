@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { TTransaction } from '../../screens';
+import { TTransaction } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
@@ -22,7 +22,8 @@ export const WalletTransactionList = ({
 }: WalletListProps) => {
   return (
     <FlatList
-      data={items.splice(0, 10)}
+      data={items}
+      keyExtractor={(item, index) => `item${item.dealerName}-index${index}`}
       renderItem={({ item, index }) => {
         const { dealerName, timeNice, type, valueAsEuro } = item;
 

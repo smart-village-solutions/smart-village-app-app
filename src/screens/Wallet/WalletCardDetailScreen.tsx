@@ -1,12 +1,19 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import {
   BoldText,
   Button,
+  ButtonVariants,
   EmptyMessage,
   HeadlineText,
   LoadingSpinner,
@@ -21,24 +28,7 @@ import {
 import { colors, device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
-import { TCard } from '../../types';
-
-type TCardInfo = {
-  balanceAsCent: number;
-  balanceAsEuro: string;
-  code: string;
-  codeFormated: string;
-  expiringCreditAsEuro: string;
-  expiringCreditTimeNice: string;
-  transactions: TTransaction[];
-};
-
-export type TTransaction = {
-  dealerName: string;
-  timeNice: string;
-  type: number;
-  valueAsEuro: string;
-};
+import { TCard, TCardInfo } from '../../types';
 
 export const WalletCardDetailScreen = ({
   navigation,
@@ -87,16 +77,14 @@ export const WalletCardDetailScreen = ({
     return <LoadingSpinner loading />;
   }
 
-  if (!cardData) {
+  if (!Object.keys(cardData || {})?.length) {
     return <EmptyMessage title={texts.wallet.detail.noCardsAvailable} />;
   }
-
-  const listItem = [...cardData.transactions];
 
   return (
     <>
       <WalletTransactionList
-        items={listItem}
+        items={cardData.transactions.slice(0, 10)}
         ListFooterComponent={
           <WrapperWrap itemsCenter spaceAround center>
             <Button
@@ -122,37 +110,49 @@ export const WalletCardDetailScreen = ({
         }
         ListHeaderComponent={
           <>
-            <Wrapper itemsCenter>
-              <TouchableOpacity onPress={() => setIsFullScreenQR(true)}>
-                <QRCode
-                  size={normalize(device.width - 32)}
-                  value={`${apiConnection.qrEndpoint}${cardNumber}`}
-                />
-              </TouchableOpacity>
-            </Wrapper>
+            {!apiConnection.qrEndpoint && !cardNumber && (
+              <Wrapper itemsCenter>
+                <TouchableOpacity
+                  onPress={() => setIsFullScreenQR(true)}
+                  accessibilityLabel={texts.wallet.detail.expandQrCode}
+                  accessibilityRole="button"
+                >
+                  <QRCode
+                    size={normalize(device.width - 64)}
+                    value={`${apiConnection.qrEndpoint}${cardNumber}`}
+                  />
+                </TouchableOpacity>
+              </Wrapper>
+            )}
 
             <Wrapper>
               <Wrapper style={{ backgroundColor: colors.shadowRgba, borderRadius: normalize(8) }}>
-                <WrapperRow spaceBetween itemsCenter>
-                  <BoldText small>{texts.wallet.detail.code}</BoldText>
-                  <BoldText small>{cardNumber.match(/.{1,4}/g)?.join('-')}</BoldText>
-                </WrapperRow>
-
-                <WrapperVertical noPaddingBottom>
+                {!cardNumber && (
                   <WrapperRow spaceBetween itemsCenter>
-                    <BoldText small>{texts.wallet.detail.pin}</BoldText>
-                    <BoldText small>{pinCode}</BoldText>
+                    <BoldText small>{texts.wallet.detail.code}</BoldText>
+                    <BoldText small>{cardNumber.match(/.{1,4}/g)?.join('-')}</BoldText>
                   </WrapperRow>
-                </WrapperVertical>
+                )}
 
-                <WrapperVertical noPaddingBottom>
-                  <WrapperRow spaceBetween itemsCenter>
-                    <BoldText small>{texts.wallet.detail.balance}</BoldText>
-                    <BoldText primary big>
-                      {cardData.balanceAsEuro} EUR
-                    </BoldText>
-                  </WrapperRow>
-                </WrapperVertical>
+                {!pinCode && (
+                  <WrapperVertical noPaddingBottom>
+                    <WrapperRow spaceBetween itemsCenter>
+                      <BoldText small>{texts.wallet.detail.pin}</BoldText>
+                      <BoldText small>{pinCode}</BoldText>
+                    </WrapperRow>
+                  </WrapperVertical>
+                )}
+
+                {!cardData?.balanceAsEuro && (
+                  <WrapperVertical noPaddingBottom>
+                    <WrapperRow spaceBetween itemsCenter>
+                      <BoldText small>{texts.wallet.detail.balance}</BoldText>
+                      <BoldText primary big>
+                        {cardData.balanceAsEuro} EUR
+                      </BoldText>
+                    </WrapperRow>
+                  </WrapperVertical>
+                )}
 
                 <WrapperVertical noPaddingBottom>
                   <Button
@@ -218,10 +218,19 @@ export const WalletCardDetailScreen = ({
 
         <Button
           onPress={async () => {
-            await deleteCardByNumber(cardNumber);
-            navigation.pop();
+            try {
+              await deleteCardByNumber(cardNumber);
+              navigation.pop();
+            } catch (error) {
+              Alert.alert(
+                texts.wallet.detail.deleteErrorTitle,
+                texts.wallet.detail.deleteErrorMessage
+              );
+              console.error('Error deleting card:', error);
+            }
           }}
           title={texts.wallet.detail.deleteAnywayButton}
+          variants={ButtonVariants.DELETE}
         />
       </Modal>
 
@@ -230,6 +239,8 @@ export const WalletCardDetailScreen = ({
           <TouchableOpacity
             onPress={() => setIsFullScreenQR(false)}
             style={styles.qrOverlayCloseButton}
+            accessibilityLabel={texts.wallet.detail.close}
+            accessibilityRole="button"
           >
             <Icon.Close />
             <RegularText primary>{texts.wallet.detail.close}</RegularText>

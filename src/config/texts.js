@@ -1712,7 +1712,12 @@ export const texts = {
       deleteButton: 'Löschen',
       deleteConfirmationMessage: (value) =>
         `Es ist noch ein Restguthaben von ${value} € vorhanden.`,
-      deleteConfirmationTitle: ' Karte wirklich löschen?',
+      deleteConfirmationTitle: 'Karte wirklich löschen?',
+      deleteErrorMessage:
+        'Beim Löschen der Karte ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      deleteErrorTitle: 'Fehler',
+      deleteSuccessMessage: 'Die Karte wurde erfolgreich gelöscht.',
+      expandQrCode: 'QR-Code vergrößern',
       lastTransactions: 'Ihre letzten 10 Buchungen',
       noCardsAvailable: 'Keine Kartendaten verfügbar.',
       pin: 'PIN',
