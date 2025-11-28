@@ -1715,12 +1715,14 @@ export const texts = {
       deleteConfirmationTitle: 'Karte wirklich löschen?',
       deleteErrorMessage:
         'Beim Löschen der Karte ist ein Fehler aufgetreten. Bitte erneut versuchen.',
-      deleteErrorTitle: 'Fehler',
       deleteSuccessMessage: 'Die Karte wurde erfolgreich gelöscht.',
+      errorTitle: 'Fehler',
       expandQrCode: 'QR-Code vergrößern',
       lastTransactions: 'Ihre letzten 10 Buchungen',
       noCardsAvailable: 'Keine Kartendaten verfügbar.',
       pin: 'PIN',
+      shareErrorMessage:
+        'Beim Teilen der Kartendaten ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       updateBalance: 'Guthaben aktualisieren'
     },
     home: {

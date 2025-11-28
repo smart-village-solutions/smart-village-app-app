@@ -3,8 +3,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   RefreshControl,
-  Share,
   StyleSheet,
   TouchableOpacity,
   View
@@ -28,7 +28,7 @@ import {
   WrapperWrap
 } from '../../components';
 import { colors, device, Icon, normalize, texts } from '../../config';
-import { deleteCardByNumber } from '../../helpers';
+import { deleteCardByNumber, openShare } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
 import { TCard, TCardInfo } from '../../types';
 
@@ -83,8 +83,9 @@ export const WalletCardDetailScreen = ({
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFullScreenQR, setIsFullScreenQR] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
 
-  const viewShotRef = useRef(null);
+  const viewShotRef = useRef();
 
   const fetchCardDetails = useCallback(async () => {
     try {
@@ -104,12 +105,19 @@ export const WalletCardDetailScreen = ({
 
   const handleShare = async () => {
     try {
-      const uri = await viewShotRef?.current.capture();
-      await Share.share({
-        url: uri
-      });
+      setIsCapturing(true);
+
+      // Wait for ViewShot to mount
+      setTimeout(async () => {
+        const uri = await viewShotRef?.current?.capture();
+
+        await openShare({ url: uri });
+        setIsCapturing(false);
+      }, 50);
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      Alert.alert(texts.wallet.detail.errorTitle, texts.wallet.detail.shareErrorMessage);
+      setIsCapturing(false);
     }
   };
 
@@ -152,12 +160,13 @@ export const WalletCardDetailScreen = ({
               notFullWidth
               onPress={() => setIsModalVisible(true)}
               title={texts.wallet.detail.deleteButton}
+              variants={ButtonVariants.DELETE}
             />
           </WrapperWrap>
         }
         ListHeaderComponent={
           <>
-            {!apiConnection.qrEndpoint && !cardNumber && (
+            {!!apiConnection.qrEndpoint && !!cardNumber && (
               <Wrapper itemsCenter>
                 <TouchableOpacity
                   onPress={() => setIsFullScreenQR(true)}
@@ -174,14 +183,14 @@ export const WalletCardDetailScreen = ({
 
             <Wrapper>
               <Wrapper style={{ backgroundColor: colors.shadowRgba, borderRadius: normalize(8) }}>
-                {!cardNumber && (
+                {!!cardNumber && (
                   <WrapperRow spaceBetween itemsCenter>
                     <BoldText small>{texts.wallet.detail.code}</BoldText>
                     <BoldText small>{cardNumber.match(/.{1,4}/g)?.join('-')}</BoldText>
                   </WrapperRow>
                 )}
 
-                {!pinCode && (
+                {!!pinCode && (
                   <WrapperVertical noPaddingBottom>
                     <WrapperRow spaceBetween itemsCenter>
                       <BoldText small>{texts.wallet.detail.pin}</BoldText>
@@ -190,7 +199,7 @@ export const WalletCardDetailScreen = ({
                   </WrapperVertical>
                 )}
 
-                {!cardData?.balanceAsEuro && (
+                {!!cardData?.balanceAsEuro && (
                   <WrapperVertical noPaddingBottom>
                     <WrapperRow spaceBetween itemsCenter>
                       <BoldText small>{texts.wallet.detail.balance}</BoldText>
@@ -269,10 +278,7 @@ export const WalletCardDetailScreen = ({
               await deleteCardByNumber(cardNumber);
               navigation.pop();
             } catch (error) {
-              Alert.alert(
-                texts.wallet.detail.deleteErrorTitle,
-                texts.wallet.detail.deleteErrorMessage
-              );
+              Alert.alert(texts.wallet.detail.errorTitle, texts.wallet.detail.deleteErrorMessage);
               console.error('Error deleting card:', error);
             }
           }}
@@ -302,23 +308,31 @@ export const WalletCardDetailScreen = ({
         <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} pinCode={pinCode} />
       </Modal>
 
-      <View style={styles.shareContentContainer}>
-        <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }}>
-          <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} pinCode={pinCode} />
-        </ViewShot>
-      </View>
+      {isCapturing && (
+        <View style={styles.hiddenCaptureContainer}>
+          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }}>
+            <ShareableCard
+              apiConnection={apiConnection}
+              cardNumber={cardNumber}
+              pinCode={pinCode}
+            />
+          </ViewShot>
+        </View>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  hiddenCaptureContainer: {
+    position: 'absolute',
+    top: -9999,
+    left: -9999,
+    opacity: 0
+  },
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)
-  },
-  shareContentContainer: {
-    position: 'absolute',
-    opacity: 0
   },
   qrOverlayContainer: {
     alignItems: 'center',
