@@ -90,6 +90,7 @@ import {
   VoucherLoginScreen,
   VoucherScannerScreen,
   WalletCardAddScreen,
+  WalletCardDetailScreen,
   WalletCardsListScreen,
   WalletHomeScreen,
   WasteCollectionScreen,
@@ -644,6 +645,11 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.wallet.cardAdd },
       routeName: ScreenName.WalletCardAdd,
       screenComponent: WalletCardAddScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.wallet.detail },
+      routeName: ScreenName.WalletCardDetail,
+      screenComponent: WalletCardDetailScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.wallet.cardsList },

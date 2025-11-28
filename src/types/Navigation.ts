@@ -99,6 +99,7 @@ export enum ScreenName {
   VoucherLogin = 'VoucherLogin',
   VoucherScanner = 'VoucherScanner',
   WalletCardAdd = 'WalletCardAdd',
+  WalletCardDetail = 'WalletCardDetail',
   WalletCardsList = 'WalletCardsList',
   WalletHome = 'WalletHome',
   WasteCollection = 'WasteCollection',

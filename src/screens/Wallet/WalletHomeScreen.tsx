@@ -19,9 +19,6 @@ import { deleteAllCards, getSavedCards } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, TCard } from '../../types';
 
-// TODO: Remove before production
-const isDevMode = true;
-
 const footer = ({
   buttonText,
   infoIcon,
@@ -42,14 +39,6 @@ const footer = ({
           navigation.navigate(ScreenName.WalletCardsList);
         }}
       />
-
-      {isDevMode && (
-        // TODO: Remove dev mode delete button before production
-        <Button
-          title={'delete card'}
-          onPress={() => deleteAllCards().then(() => console.warn('All cards deleted'))}
-        />
-      )}
 
       <View style={styles.infoContainer}>
         <WrapperRow>
@@ -129,9 +118,8 @@ export const WalletHomeScreen = () => {
         <Icon.NamedIcon name={card.iconName} color={card.iconColor} />
       </Wrapper>
     ),
-    params: { cardNumber: card.cardNumber },
-    // TODO: Update routeName to actual screen name for card details
-    // routeName: '',
+    params: { card },
+    routeName: ScreenName.WalletCardDetail,
     subtitle: card.description,
     title: card.cardName || card.type
   }));

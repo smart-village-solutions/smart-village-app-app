@@ -1117,6 +1117,7 @@ export const texts = {
     wallet: {
       cardAdd: 'Karte hinzufügen',
       cardsList: 'Kartenliste',
+      detail: 'Kartendetails',
       home: 'Wallet'
     },
     wasteCollection: 'Abfallkalender',
@@ -1699,6 +1700,28 @@ export const texts = {
       invalidCardMessage:
         'Die eingegebenen Kartendaten sind ungültig. Bitte überprüfen und erneut versuchen.',
       invalidCardTitle: 'Ungültige Karte'
+    },
+    detail: {
+      backup: 'Backup',
+      balance: 'Guthaben',
+      cancel: 'Abbrechen',
+      close: 'Schließen',
+      code: 'Code',
+      couponNumber: 'Gutschein-Nummer',
+      deleteAnywayButton: 'Trotzdem löschen',
+      deleteButton: 'Löschen',
+      deleteConfirmationMessage: (value) =>
+        `Es ist noch ein Restguthaben von ${value} € vorhanden.`,
+      deleteConfirmationTitle: 'Karte wirklich löschen?',
+      deleteErrorMessage:
+        'Beim Löschen der Karte ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      deleteErrorTitle: 'Fehler',
+      deleteSuccessMessage: 'Die Karte wurde erfolgreich gelöscht.',
+      expandQrCode: 'QR-Code vergrößern',
+      lastTransactions: 'Ihre letzten 10 Buchungen',
+      noCardsAvailable: 'Keine Kartendaten verfügbar.',
+      pin: 'PIN',
+      updateBalance: 'Guthaben aktualisieren'
     },
     home: {
       buttonText: 'Karte Hinzufügen',
