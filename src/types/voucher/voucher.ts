@@ -37,7 +37,7 @@ export type TQuota = {
   maxQuantity: number;
 };
 
-type TVoucherDates = {
+export type TVoucherDates = {
   dateEnd: string;
   dateStart: string;
   timeEnd: string;
