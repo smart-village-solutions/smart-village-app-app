@@ -10,20 +10,20 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 971 |
-| [ISC](https://spdx.org/licenses/ISC.html) | 87 |
-| [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 28 |
-| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 27 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 878 |
+| [ISC](https://spdx.org/licenses/ISC.html) | 68 |
+| [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 26 |
+| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 22 |
-| [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 6 |
+| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 5 |
+| [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 5 |
 | [0BSD](https://spdx.org/licenses/0BSD.html) | 4 |
 | [Unlicense](https://spdx.org/licenses/Unlicense.html) | 4 |
-| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 3 |
 | [MPL-2.0](https://spdx.org/licenses/MPL-2.0.html) | 3 |
-| [BSD](https://en.wikipedia.org/wiki/BSD_licenses) | 2 |
 | [CC-BY-4.0](https://spdx.org/licenses/CC-BY-4.0.html) | 2 |
 | [GPL-2.0](https://spdx.org/licenses/GPL-2.0.html) | 2 |
 | [Beerware](https://spdx.org/licenses/Beerware.html) | 1 |
+| [BSD](https://en.wikipedia.org/wiki/BSD_licenses) | 1 |
 | [GPL-3.0](https://spdx.org/licenses/GPL-3.0.html) | 1 |
 | [Public-Domain](https://en.wikipedia.org/wiki/Public_domain) | 1 |
 | [Python-2.0](https://spdx.org/licenses/Python-2.0.html) | 1 |
@@ -277,6 +277,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.26.5",
     "description": "General utilities for plugins to use"
   },
+  "@babel/helper-plugin-utils@7.27.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "The Babel Team",
+    "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
+    "name": "@babel/helper-plugin-utils",
+    "version": "7.27.1",
+    "description": "General utilities for plugins to use"
+  },
   "@babel/helper-remap-async-to-generator@7.25.9": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
@@ -397,17 +407,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.27.0",
     "description": "A JavaScript parser"
   },
-  "@babel/parser@7.4.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/babel/babel.git#master",
-    "publisher": "Sebastian McKenzie",
-    "email": "sebmck@gmail.com",
-    "licenseText": "Copyright (C) 2012-2014 by various contributors (see AUTHORS)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (C) 2012-2014 by various contributors (see AUTHORS)",
-    "name": "@babel/parser",
-    "version": "7.4.4",
-    "description": "A JavaScript parser"
-  },
   "@babel/parser@7.9.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel.git#master",
@@ -418,16 +417,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@babel/parser",
     "version": "7.9.6",
     "description": "A JavaScript parser"
-  },
-  "@babel/plugin-proposal-class-properties@7.18.6": {
-    "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "publisher": "The Babel Team",
-    "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
-    "name": "@babel/plugin-proposal-class-properties",
-    "version": "7.18.6",
-    "description": "This plugin transforms static class properties as well as properties declared with the property initializer syntax"
   },
   "@babel/plugin-proposal-decorators@7.25.9": {
     "licenses": "MIT",
@@ -448,26 +437,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@babel/plugin-proposal-export-default-from",
     "version": "7.25.9",
     "description": "Compile export default to ES2015"
-  },
-  "@babel/plugin-proposal-nullish-coalescing-operator@7.18.6": {
-    "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "publisher": "The Babel Team",
-    "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
-    "name": "@babel/plugin-proposal-nullish-coalescing-operator",
-    "version": "7.18.6",
-    "description": "Remove nullish coalescing operator"
-  },
-  "@babel/plugin-proposal-optional-chaining@7.21.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "publisher": "The Babel Team",
-    "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
-    "name": "@babel/plugin-proposal-optional-chaining",
-    "version": "7.21.0",
-    "description": "Transform optional chaining operators into a series of nil checks"
   },
   "@babel/plugin-syntax-async-generators@7.8.4": {
     "licenses": "MIT",
@@ -759,14 +728,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.25.9",
     "description": "Compile ES2015 destructuring to ES5"
   },
-  "@babel/plugin-transform-export-namespace-from@7.25.9": {
+  "@babel/plugin-transform-export-namespace-from@7.27.1": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
     "publisher": "The Babel Team",
     "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
     "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
     "name": "@babel/plugin-transform-export-namespace-from",
-    "version": "7.25.9",
+    "version": "7.27.1",
     "description": "Compile export namespace to ES2015"
   },
   "@babel/plugin-transform-flow-strip-types@7.26.5": {
@@ -1059,16 +1028,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.25.9",
     "description": "Compile ES2015 Unicode regex to ES5"
   },
-  "@babel/preset-flow@7.25.9": {
-    "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "publisher": "The Babel Team",
-    "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
-    "name": "@babel/preset-flow",
-    "version": "7.25.9",
-    "description": "Babel preset for all Flow plugins."
-  },
   "@babel/preset-react@7.26.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel",
@@ -1088,16 +1047,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@babel/preset-typescript",
     "version": "7.26.0",
     "description": "Babel preset for TypeScript."
-  },
-  "@babel/register@7.25.9": {
-    "licenses": "MIT",
-    "repository": "https://github.com/babel/babel",
-    "publisher": "The Babel Team",
-    "licenseText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
-    "name": "@babel/register",
-    "version": "7.25.9",
-    "description": "babel require hook"
   },
   "@babel/runtime@7.10.5": {
     "licenses": "MIT",
@@ -1263,24 +1212,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "An object of css properties that don't accept values with units",
     "publisher": ""
   },
-  "@expo/bunyan@4.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/trentm/node-bunyan",
-    "publisher": "Trent Mick",
-    "email": "trentm@gmail.com",
-    "licenseText": "# This is the MIT license\n\nCopyright 2016 Trent Mick\nCopyright 2016 Joyent Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be included\nin all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\nOR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright 2016 Trent Mick. Copyright 2016 Joyent Inc.",
-    "name": "@expo/bunyan",
-    "version": "4.0.1",
-    "description": "a JSON logging library for node.js services"
-  },
-  "@expo/cli@0.22.26": {
+  "@expo/cli@0.24.22": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
-    "licenseText": "<!-- Title -->\n\n<p align=\"center\">\n  <a href=\"https://expo.dev/\">\n    <img alt=\"Expo CLI\" src=\"../../../.github/resources/cli-banner.svg\">\n  </a>\n</p>\n\n<p align=\"center\">The fastest way to build and run universal React Native apps for Android, iOS, and the web</p>\n\n<p align=\"center\">\n\n  <a aria-label=\"Join the Expo Discord\" href=\"https://discord.gg/4gtbPAdpaE\" target=\"_blank\">\n    <img alt=\"Discord\" src=\"https://img.shields.io/discord/695411232856997968.svg?style=flat-square&labelColor=000000&color=000000&logo=discord&logoColor=FFFFFF&label=\" />\n  </a>\n  <a aria-label=\"Browse the Expo forums\" href=\"https://forums.expo.dev\" target=\"_blank\">\n    <img alt=\"\" src=\"https://img.shields.io/badge/Ask%20Questions%20-000.svg?style=flat-square&logo=discourse&logoWidth=15&labelColor=000000&color=000000\">\n  </a>\n\n</p>\n\n<p align=\"center\">\n  <a aria-label=\"expo documentation\" href=\"https://docs.expo.dev/more/expo-cli/\">📚 Read the Documentation</a>\n  |\n  <a aria-label=\"Contribute to Expo CLI\" href=\"#contributing\"><b>Contribute to Expo CLI</b></a>\n</p>\n\n<p>\n  <a aria-label=\"Follow @expo on Twitter\" href=\"https://twitter.com/intent/follow?screen_name=expo\" target=\"_blank\">\n    <img  alt=\"Twitter: expo\" src=\"https://img.shields.io/twitter/follow/expo.svg?style=flat-square&label=Follow%20%40expo&logo=TWITTER&logoColor=FFFFFF&labelColor=00aced&logoWidth=15&color=lightgray\" target=\"_blank\" />\n  </a>\n  <a aria-label=\"Follow Expo on Medium\" href=\"https://blog.expo.dev\">\n    <img align=\"right\" alt=\"Medium: exposition\" src=\"https://img.shields.io/badge/Learn%20more%20on%20our%20blog-lightgray.svg?style=flat-square\" target=\"_blank\" />\n  </a>\n</p>\n\n---\n\nThe `@expo/cli` package is a CLI binary that should be used via the `expo` package, like `npx expo start` (or `npx expo` for short).\n\n```\nnpx expo\n```\n\n> ⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project!\n\n## Design\n\nThis CLI has the following purposes:\n\n- Be a minimal interface for starting a local development server that emulates a production EAS Updates server. The development server is the proxy between a native runtime (Expo Go, Dev Client) and a JS Bundler (Metro, Webpack).\n  - To accomplish secure manifest signing (think https/TSL/SSL for web (required for sandboxing AsyncStorage, Permissions, etc.)) we need an authenticated Expo user account. This is the only reason we include the authentication commands `login`, `logout`, `whoami`, `register`. Standard web CLIs don't have authentication commands because they either don't set up https or they use emulation via packages like `devcert`.\n- Orchestrating various native tools like Xcode, `Simulator.app`, Android Studio, ADB, etc. to make native builds as painless as possible. `run:ios`, `run:android` commands.\n- Implementing a versioned `prebuild` command that can reliably work with a project for long periods of time. Prebuild is like a bundler for native code, it generates the `ios`, `android` folders based on the project Expo config (`app.json`).\n  - `npx expo config` is auxiliary to `npx expo prebuild` and used for debugging/introspection.\n- Installing versioned libraries with `npx expo install` this is a minimal utility born out of pure necessity since versioning in React Native is hard to get right.\n\n# Contributing\n\nTo develop the CLI run (defaults to watch mode):\n\n```\nyarn build\n```\n\nWe highly recommend setting up an alias for the Expo CLI so you can try it in projects all around your computer. Open your `.zshrc` or other config file and add:\n\n```\nalias nexpo=\"/path/to/expo/packages/@expo/cli/build/bin/cli\"\n```\n\nThen use it with `nexpo` like `nexpo config`. You can also set up a debug version:\n\n```\nalias expo-inspect=\"node --inspect /path/to/expo/packages/@expo/cli/build/bin/cli\"\n```\n\nThen you can run it and visit `chrome://inspect/#devices` in Chrome, and press \"Open dedicated DevTools for Node\" to get a debugger attached to your process. When debugging the CLI, you'll want to disable workers whenever possible, this will make all code run on the same thread, this is mostly applicable to the `start` command, i.e. `expo-inspect start --max-workers 0`.\n\n## Format\n\n- Be sure to update the [`CHANGELOG.md`](./CHANGELOG.md) with changes for every PR. You only need to add the message, our GitHub bot will automatically suggest adding your name and PR number to the diff.\n- End `async` functions with `Async` like `runAsync`. This is just how we format functions at Expo.\n- When throwing errors, always opt for `CommandError` instead of `Error` -- this helps with debugging and making the experience feel more coherent.\n- Utilize the unified `Log` module instead of `console.log`.\n- When logging with variables, utilize the following format `Something happened (foo: bar, baz: foz)`.\n  - Avoid other formats like `Something happened: bar, foz` or `Something happened: foo=bar, baz=foz`.\n- Main UI components like command names (`expo start`), arguments (`--port`), and `--help` messages should be modified internally, by the Expo team to ensure the developer experience is unified across Expo tooling. External contributions modifying these core aspects may be rejected.\n- Use the `profile` utility method with the `EXPO_PROFILE=1` environment variable to measure execution time.\n- Avoid globals and singletons as these make testing harder and less predictable. The only global we have (at the time of writing this) is the `isOffline` boolean.\n\n## Environment\n\n- Always be cautious of the transitive size of dependencies. [packagephobia](https://packagephobia.now.sh/) is a great resource for determining if a package is lean. Try to minimize adding dependencies to the CLI.\n- We build the CLI using `taskr` + `swc`, this is partially inspired by Next.js' local CLI.\n- The build pipeline will inline the CLI version as an environment variable that is accessible anywhere in the CLI codebase. You can access it via `process.env.__EXPO_VERSION` instead of reading the local `package.json` at runtime.\n- Unlike the legacy global Expo CLI, this CLI is shipped with `expo` meaning the SDK Version is always present.\n  - Reduce SDK specific tasks since only one SDK should be accounted for in a single version of `@expo/cli`.\n  - The `@expo/config` method `getConfig` does not need the `skipSDKVersionRequirement` in any case since `expo` should always be installed. Ex: `getConfig('...', { skipSDKVersionRequirement: true });` shouldn't be used.\n- Also unlike the global Expo CLI we can assume that node modules are always installed since this CLI should be used via a project's local `node_modules` folder.\n  - This means we can't perform operations that upgrade the `expo` package as these may kill the running process. Features that need this pattern (like `expo upgrade`) should live in standalone global tools.\n\n## Testing\n\nThere are two testing scripts:\n\n- `yarn test`: Controlled unit and integration tests.\n- `yarn test:e2e`: End to end testing for CLI commands. This requires the files to be built with `yarn build`\n\n---\n\n- You can target a specific set of tests with the `--watch` flag. Example: `yarn test --watch config`.\n- We use backticks for `it` blocks. Example <code>it(`works`)</code>.\n- If a pull request is fully self-contained to the `packages/@expo/cli/` folder (i.e. no `yarn.lock` modifications, etc.) then most native CI tests will be skipped, making CI pass faster in PRs.\n\n### Unit Testing Guidelines\n\n- Use `nock` for network requests.\n- No top level `describe` blocks that wrap all the tests in a file.\n- When testing a function, pass the function to the `describe` block instead of a stringified function name:\n  - `describe(foobar, () => {})` instead of `describe('foobar', () => {})`\n- Use virtual `fs` via `memfs` whenever possible.\n- We have a lot of global module [**mocks**](./e2e/setup.ts) already in place, consider them when writing tests.\n- GitHub Copilot can make writing tests a little less tedious.\n\n### E2E Testing Guidelines\n\n- E2E tests should be resilient and reliable, be sure to give them plenty of time for network requests.\n- When testing locally you should attempt to reuse node modules for faster results. In the `npx expo prebuild` and `npx expo start` commands for instance, we utilize a helper method that will default to reusing a project + node_modules when run locally. This can be [toggled off](https://github.com/expo/expo/blob/11a5a4d27b7e1c8e4d6ddf0401397d789d89f52a/packages/%40expo/cli/e2e/__tests__/utils.ts#L174) to bootstrap a fresh project every time.\n- When bootstrapping test projects, utilize the temporary folder `os.tmpdir()` as this folder is automatically cleaned up when the computer restarts.\n\n## Coming from Expo CLI\n\n> TL;DR: `expo-cli` was 'make it work', whereas `@expo/cli` is 'make it right, make it fast'.\n\nThe legacy global `expo-cli` package was deprecated in favor of this versioned `@expo/cli` package for the following reasons:\n\n- `expo-cli` was too big and took way too long to install. This made CI frustrating to set up since you needed to also target global node modules for caching.\n- `expo-cli` worked for almost all versions of the `expo` package, meaning it was getting more complex with every release.\n- `expo-cli` combined service commands (like the legacy `build`, `submit`, `publish`) with project-level commands like `expo start`. We've since divided services into `eas-cli` and project commands into `npx expo` (`@expo/cli`). This structure is more optimal/faster for developers since they can install/update commands when they need them.\n- This CLI utilizes more Node.js standard features like `$EDITOR` instead of the custom `$EXPO_EDITOR` environment variable. Also transitioning away from `$EXPO_DEBUG` and more towards `$DEBUG=expo:*`. These types of changes make Expo CLI play nicer with existing tooling.\n- The DevTools UI has been deprecated to reduce the net install size, minimize complexity, and make room for future debugging UIs (Hermes/v8 Chrome debugger).\n- The `expo start:web` and `expo web` commands have been rolled into `npx expo start` as we now lazily load platforms until the device requests them.\n- Other missing or beta features from `expo-cli` may still be getting migrated over to this new CLI. For a more comprehensive breakdown see the [start command PR](https://github.com/expo/expo/pull/16160).",
+    "licenseText": "<!-- Title -->\n\n<p align=\"center\">\n  <a href=\"https://expo.dev/\">\n    <img alt=\"Expo CLI\" src=\"../../../.github/resources/cli-banner.svg\">\n  </a>\n</p>\n\n<p align=\"center\">The fastest way to build and run universal React Native apps for Android, iOS, and the web</p>\n\n<p align=\"center\">\n  <a aria-label=\"expo documentation\" href=\"https://docs.expo.dev/more/expo-cli/\">📚 Read the Documentation</a>\n  &ensp;•&ensp;\n  <a aria-label=\"expo documentation\" href=\"https://expo.dev/blog\">Learn more on our blog</a>\n  &ensp;•&ensp;\n  <a aria-label=\"Contribute to Expo CLI\" href=\"#contributing\">Contribute to Expo CLI</a>\n</p>\n\n<p align=\"center\">\n  <a aria-label=\"Join the Expo Discord\" href=\"https://discord.gg/4gtbPAdpaE\" target=\"_blank\">\n    <img alt=\"Discord\" src=\"https://img.shields.io/discord/695411232856997968.svg?style=for-the-badge&color=5865F2&logo=discord&logoColor=FFFFFF\" />\n  </a>\n</p>\n\n<p align=\"center\">\n  <a aria-label=\"Follow @expo on X\" href=\"https://x.com/intent/follow?screen_name=expo\" target=\"_blank\">\n    <img alt=\"Expo on X\" src=\"https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on GitHub\" href=\"https://github.com/expo\" target=\"_blank\">\n    <img alt=\"Expo on GitHub\" src=\"https://img.shields.io/badge/GitHub-222222?style=for-the-badge&logo=github&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on Reddit\" href=\"https://www.reddit.com/r/expo/\" target=\"_blank\">\n    <img alt=\"Expo on Reddit\" src=\"https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on Bluesky\" href=\"https://bsky.app/profile/expo.dev\" target=\"_blank\">\n    <img alt=\"Expo on LinkedIn\" src=\"https://img.shields.io/badge/Bluesky-1DA1F2?style=for-the-badge&logo=bluesky&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on LinkedIn\" href=\"https://www.linkedin.com/company/expo-dev\" target=\"_blank\">\n    <img alt=\"Expo on LinkedIn\" src=\"https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=LinkedIn&logoColor=white\" target=\"_blank\" />\n  </a>\n\n  <p align=\"center\">⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project! ⭐️</p>\n</p>\n\n---\n\nThe `@expo/cli` package is a CLI binary that should be used via the `expo` package, like `npx expo start` (or `npx expo` for short).\n\n```\nnpx expo\n```\n\n> ⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project!\n\n## Design\n\nThis CLI has the following purposes:\n\n- Be a minimal interface for starting a local development server that emulates a production EAS Updates server. The development server is the proxy between a native runtime (Expo Go, Dev Client) and a JS Bundler (Metro, Webpack).\n  - To accomplish secure manifest signing for the web, like AsyncStorage or Permissions where both require https/SSL, we need an authenticated Expo account. This is the only reason we include the authentication commands `login`, `logout`, `whoami`, `register`. Standard web CLIs don't have authentication commands because they either don't set up https or they use emulation via packages like `devcert`.\n- Orchestrating various native tools like Xcode, `Simulator.app`, Android Studio, ADB, etc. to make native builds as painless as possible. `run:ios`, `run:android` commands.\n- Implementing a versioned `prebuild` command that can reliably work with a project for long periods of time. Prebuild is like a bundler for native code, it generates the **android** and **ios** folders based on the project Expo config (**app.json**).\n  - `npx expo config` is auxiliary to `npx expo prebuild` and used for debugging/introspection.\n- Installing versioned libraries with `npx expo install` this is a minimal utility born out of pure necessity since versioning in React Native is hard to get right.\n\n# Contributing\n\nTo develop the CLI run (defaults to watch mode):\n\n```\nyarn build\n```\n\nWe highly recommend setting up an alias for the Expo CLI so you can try it in projects all around your computer. Open your **.zshrc** or other config file and add:\n\n```\nalias nexpo=\"/path/to/expo/packages/@expo/cli/build/bin/cli\"\n```\n\nThen use it with `nexpo` like `nexpo config`. You can also set up a debug version:\n\n```\nalias expo-inspect=\"node --inspect /path/to/expo/packages/@expo/cli/build/bin/cli\"\n```\n\nThen you can run it and visit `chrome://inspect/#devices` in Chrome, and press **\"Open dedicated DevTools for Node\"** to get a debugger attached to your process. When debugging the CLI, you'll want to disable workers whenever possible, this will make all code run on the same thread, this is mostly applicable to the `start` command, i.e. `expo-inspect start --max-workers 0`.\n\n## Format\n\n- Be sure to update the [`CHANGELOG.md`](./CHANGELOG.md) with changes for every PR. You only need to add the message, our GitHub bot will automatically suggest adding your name and PR number to the diff.\n- End `async` functions with `Async` like `runAsync`. This is just how we format functions at Expo.\n- When throwing errors, always opt for `CommandError` instead of `Error` -- this helps with debugging and making the experience feel more coherent.\n- Utilize the unified `Log` module instead of `console.log`.\n- When logging with variables, utilize the following format `Something happened (foo: bar, baz: foz)`.\n  - Avoid other formats like `Something happened: bar, foz` or `Something happened: foo=bar, baz=foz`.\n- Main UI components like command names (`expo start`), arguments (`--port`), and `--help` messages should be modified internally, by the Expo team to ensure the developer experience is unified across Expo tooling. External contributions modifying these core aspects may be rejected.\n- Use the `profile` utility method with the `EXPO_PROFILE=1` environment variable to measure execution time.\n- Avoid globals and singletons as these make testing harder and less predictable. The only global we have (at the time of writing this) is the `isOffline` boolean.\n\n## Environment\n\n- Always be cautious of the transitive size of dependencies. [packagephobia](https://packagephobia.now.sh/) is a great resource for determining if a package is lean. Try to minimize adding dependencies to the CLI.\n- We build the CLI using `taskr` + `swc`, this is partially inspired by Next.js' local CLI.\n- The build pipeline will inline the CLI version as an environment variable that is accessible anywhere in the CLI codebase. You can access it via `process.env.__EXPO_VERSION` instead of reading the local `package.json` at runtime.\n- Unlike the legacy global Expo CLI, this CLI is shipped with `expo` meaning the SDK Version is always present.\n  - Reduce SDK specific tasks since only one SDK should be accounted for in a single version of `@expo/cli`.\n  - The `@expo/config` method `getConfig` does not need the `skipSDKVersionRequirement` in any case since `expo` should always be installed. Ex: `getConfig('...', { skipSDKVersionRequirement: true });` shouldn't be used.\n- Also unlike the global Expo CLI we can assume that node modules are always installed since this CLI should be used via a project's local **node_modules** folder.\n  - This means we can't perform operations that upgrade the `expo` package as these may kill the running process. Features that need this pattern (like `expo upgrade`) should live in standalone global tools.\n\n## Testing\n\nThere are two testing scripts:\n\n- `yarn test`: Controlled unit and integration tests.\n- `yarn test:e2e`: End to end testing for CLI commands. This requires the files to be built with `yarn build`.\n\n---\n\n- You can target a specific set of tests with the `--watch` flag. Example: `yarn test --watch config`.\n- We use backticks for `it` blocks. Example <code>it(`works`)</code>.\n- If a pull request is fully self-contained to the `packages/@expo/cli/` folder (i.e. no `yarn.lock` modifications, etc.) then most native CI tests will be skipped, making CI pass faster in PRs.\n\n### Unit Testing Guidelines\n\n- Use `nock` for network requests.\n- No top level `describe` blocks that wrap all the tests in a file.\n- When testing a function, pass the function to the `describe` block instead of a stringified function name:\n  - `describe(foobar, () => {})` instead of `describe('foobar', () => {})`\n- Use virtual `fs` via `memfs` whenever possible.\n- We have a lot of global module [**mocks**](./e2e/setup.ts) already in place, consider them when writing tests.\n- GitHub Copilot can make writing tests a little less tedious.\n\n### E2E Testing Guidelines\n\n- E2E tests should be resilient and reliable, be sure to give them plenty of time for network requests.\n- When testing locally you had to have [Bun installed](https://bun.sh/docs/installation).\n- When testing locally you should attempt to reuse node modules for faster results. In the `npx expo prebuild` and `npx expo start` commands for instance, we utilize a helper method that will default to reusing a project + **node_modules** when run locally. This can be [toggled off](https://github.com/expo/expo/blob/11a5a4d27b7e1c8e4d6ddf0401397d789d89f52a/packages/%40expo/cli/e2e/__tests__/utils.ts#L174) to bootstrap a fresh project every time.\n- When bootstrapping test projects, utilize the temporary folder `os.tmpdir()` as this folder is automatically cleaned up when the computer restarts.\n\n## Coming from Expo CLI\n\n> TL;DR: `expo-cli` was 'make it work', whereas `@expo/cli` is 'make it right, make it fast'.\n\nThe legacy global `expo-cli` package was deprecated in favor of this versioned `@expo/cli` package for the following reasons:\n\n- `expo-cli` was too big and took way too long to install. This made CI frustrating to set up since you needed to also target global node modules for caching.\n- `expo-cli` worked for almost all versions of the `expo` package, meaning it was getting more complex with every release.\n- `expo-cli` combined service commands (like the legacy `build`, `submit`, `publish`) with project-level commands like `expo start`. We've since divided services into `eas-cli` and project commands into `npx expo` (`@expo/cli`). This structure is more optimal/faster for developers since they can install/update commands when they need them.\n- This CLI utilizes more Node.js standard features like `$EDITOR` instead of the custom `$EXPO_EDITOR` environment variable. Also transitioning away from `$EXPO_DEBUG` and more towards `$DEBUG=expo:*`. These types of changes make Expo CLI play nicer with existing tooling.\n- The DevTools UI has been deprecated to reduce the net installation size, minimize complexity, and make room for future debugging UIs (Hermes/v8 Chrome debugger).\n- The `expo start:web` and `expo web` commands have been rolled into `npx expo start` as we now lazily load platforms until the device requests them.\n- Other missing or beta features from `expo-cli` may still be getting migrated over to this new CLI. For a more comprehensive breakdown see the [start command PR](https://github.com/expo/expo/pull/16160).",
     "name": "@expo/cli",
-    "version": "0.22.26",
+    "version": "0.24.22",
     "description": "The Expo CLI",
     "copyright": ""
   },
@@ -1295,63 +1233,43 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.0.5",
     "description": "A library for working with expo-updates code signing certificates"
   },
-  "@expo/config-plugins@9.0.15": {
+  "@expo/config-plugins@10.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config-plugins",
-    "version": "9.0.15",
+    "version": "10.1.2",
     "description": "A library for Expo config plugins",
     "publisher": ""
   },
-  "@expo/config-plugins@9.0.17": {
+  "@expo/config-plugins@9.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config-plugins",
-    "version": "9.0.17",
+    "version": "9.1.7",
     "description": "A library for Expo config plugins",
     "publisher": ""
   },
-  "@expo/config-types@52.0.4": {
+  "@expo/config-types@53.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2020-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2020-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config-types",
-    "version": "52.0.4",
+    "version": "53.0.5",
     "description": "Types for the Expo config object app.config.ts",
     "publisher": ""
   },
-  "@expo/config-types@52.0.5": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2020-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2020-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/config-types",
-    "version": "52.0.5",
-    "description": "Types for the Expo config object app.config.ts",
-    "publisher": ""
-  },
-  "@expo/config@10.0.10": {
+  "@expo/config@11.0.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config",
-    "version": "10.0.10",
-    "description": "A library for interacting with the app.json",
-    "publisher": ""
-  },
-  "@expo/config@10.0.11": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/config",
-    "version": "10.0.11",
+    "version": "11.0.13",
     "description": "A library for interacting with the app.json",
     "publisher": ""
   },
@@ -1365,93 +1283,103 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Generate trusted local SSL/TLS certificates for local SSL development",
     "copyright": ""
   },
-  "@expo/env@0.4.2": {
+  "@expo/env@1.0.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2023-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2023-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/env",
-    "version": "0.4.2",
+    "version": "1.0.7",
     "description": "hydrate environment variables from .env files into process.env",
     "publisher": ""
   },
-  "@expo/fingerprint@0.11.11": {
+  "@expo/fingerprint@0.13.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/fingerprint",
-    "version": "0.11.11",
+    "version": "0.13.4",
     "description": "A library to generate a fingerprint from a React Native project"
   },
-  "@expo/image-utils@0.6.5": {
+  "@expo/image-utils@0.7.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/image-utils",
-    "version": "0.6.5",
+    "version": "0.7.6",
     "description": "A package used by Expo CLI for processing images",
     "publisher": ""
   },
-  "@expo/json-file@9.0.2": {
+  "@expo/json-file@9.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/json-file",
-    "version": "9.0.2",
+    "version": "9.1.5",
     "description": "A module for reading, writing, and manipulating JSON files",
     "publisher": ""
   },
-  "@expo/metro-config@0.19.12": {
+  "@expo/metro-config@0.20.17": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/metro-config",
-    "version": "0.19.12",
+    "version": "0.20.17",
     "description": "A Metro config for running React Native projects with the Metro bundler",
     "publisher": ""
   },
-  "@expo/osascript@2.1.6": {
+  "@expo/osascript@2.2.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/osascript",
-    "version": "2.1.6",
+    "version": "2.2.5",
     "description": "Tools for running an osascripts in Node",
     "publisher": ""
   },
-  "@expo/package-manager@1.7.2": {
+  "@expo/package-manager@1.8.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/package-manager",
-    "version": "1.7.2",
+    "version": "1.8.6",
     "description": "A library for installing and finding packages in a project",
     "publisher": ""
   },
-  "@expo/plist@0.2.2": {
+  "@expo/plist@0.3.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "<!-- Title -->\n<h1 align=\"center\">\n👋 Welcome to <br><code>@expo/plist</code>\n</h1>\n\n<p align=\"center\">A macOS Plist parser/builder for Node.js and browsers.</p>\n\nForked from this [repo](https://github.com/TooTallNate/plist.js).",
     "name": "@expo/plist",
-    "version": "0.2.2",
+    "version": "0.3.5",
     "description": "Mac OS X Plist parser/builder for Node.js and browsers",
     "copyright": "",
     "publisher": ""
   },
-  "@expo/prebuild-config@8.2.0": {
+  "@expo/prebuild-config@9.0.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/prebuild-config",
-    "version": "8.2.0",
+    "version": "9.0.11",
+    "description": "Get the prebuild config",
+    "publisher": ""
+  },
+  "@expo/prebuild-config@9.0.12": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
+    "name": "@expo/prebuild-config",
+    "version": "9.0.12",
     "description": "Get the prebuild config",
     "publisher": ""
   },
@@ -1466,15 +1394,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "4.1.0",
     "description": "A cross-platform ActionSheet for React Native"
   },
-  "@expo/rudder-sdk-node@1.1.1": {
+  "@expo/schema-utils@0.1.6": {
     "licenses": "MIT",
-    "repository": "https://github.com/expo/rudder-sdk-node",
-    "publisher": "Expo",
-    "licenseText": "MIT License\n\nCopyright (c) 2021 650 Industries, Inc. (Expo)\nCopyright (c) 2017 Segment, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2021 650 Industries, Inc. (Expo). Copyright (c) 2017 Segment, Inc.",
-    "name": "@expo/rudder-sdk-node",
-    "version": "1.1.1",
-    "description": "Compact fork of rudder-node-sdk"
+    "repository": "https://github.com/expo/expo",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2025-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2025-present 650 Industries, Inc. (aka Expo)",
+    "name": "@expo/schema-utils",
+    "version": "0.1.6",
+    "description": "Reusable JSON Schema (Draft 04) validation library for Expo",
+    "publisher": ""
   },
   "@expo/sdk-runtime-versions@1.0.0": {
     "licenses": "MIT",
@@ -1497,14 +1425,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.7.2",
     "description": "A Promise-based interface into processes created by child_process.spawn"
   },
-  "@expo/vector-icons@14.0.4": {
+  "@expo/vector-icons@14.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/vector-icons",
     "publisher": "Brent Vatne",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Joel Arvidsson\nCopyright (c) 2020 650 Industries\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015 Joel Arvidsson. Copyright (c) 2020 650 Industries",
     "name": "@expo/vector-icons",
-    "version": "14.0.4",
+    "version": "14.1.0",
     "description": "Built-in support for popular icon fonts and the tooling to create your own Icon components from your font and glyph map. This is a wrapper around react-native-vector-icons to make it compatible with Expo."
   },
   "@expo/ws-tunnel@1.0.5": {
@@ -1558,6 +1486,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@isaacs/cliui",
     "version": "8.0.2",
     "description": "easily create complex multi-column command-line-interfaces"
+  },
+  "@isaacs/fs-minipass@4.0.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/npm/fs-minipass",
+    "publisher": "Isaac Z. Schlueter",
+    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
+    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
+    "name": "@isaacs/fs-minipass",
+    "version": "4.0.1",
+    "description": "fs read and write streams based on minipass"
   },
   "@isaacs/ttlcache@1.4.1": {
     "licenses": "ISC",
@@ -1845,46 +1783,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "An engine which produces an intermediary structure from HTML to create a React Native render tree.",
     "copyright": ""
   },
-  "@nodelib/fs.scandir@2.1.5": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nodelib/nodelib.git#master",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Denis Malinochkin\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Denis Malinochkin",
-    "name": "@nodelib/fs.scandir",
-    "version": "2.1.5",
-    "description": "List files and directories inside the specified directory",
-    "publisher": ""
-  },
-  "@nodelib/fs.stat@2.0.5": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nodelib/nodelib.git#master",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Denis Malinochkin\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Denis Malinochkin",
-    "name": "@nodelib/fs.stat",
-    "version": "2.0.5",
-    "description": "Get the status of a file with some features",
-    "publisher": ""
-  },
-  "@nodelib/fs.walk@1.2.8": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nodelib/nodelib.git#master",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Denis Malinochkin\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Denis Malinochkin",
-    "name": "@nodelib/fs.walk",
-    "version": "1.2.8",
-    "description": "A library for efficiently walking a directory recursively",
-    "publisher": ""
-  },
-  "@npmcli/fs@3.1.1": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/fs",
-    "publisher": "GitHub Inc.",
-    "licenseText": "<!-- This file is automatically added by @npmcli/template-oss. Do not edit. -->\n\nISC License\n\nCopyright npm, Inc.\n\nPermission to use, copy, modify, and/or distribute this\nsoftware for any purpose with or without fee is hereby\ngranted, provided that the above copyright notice and this\npermission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND NPM DISCLAIMS ALL\nWARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO\nEVENT SHALL NPM BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,\nWHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE\nUSE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright npm, Inc.",
-    "name": "@npmcli/fs",
-    "version": "3.1.1",
-    "description": "filesystem utilities for the npm cli"
-  },
   "@pkgjs/parseargs@0.11.0": {
     "licenses": "MIT",
     "repository": "https://github.com/pkgjs/parseargs",
@@ -1895,18 +1793,18 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "@react-native-async-storage/async-storage@1.23.1": {
+  "@react-native-async-storage/async-storage@2.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-async-storage/async-storage",
     "publisher": "Krzysztof Borowy",
-    "email": "hello@krizzu.dev",
+    "email": "contact@kborowy.com",
     "licenseText": "MIT License\n\nCopyright (c) 2015-present, Facebook, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present, Facebook, Inc.",
     "name": "@react-native-async-storage/async-storage",
-    "version": "1.23.1",
+    "version": "2.1.2",
     "description": "Asynchronous, persistent, key-value storage system for React Native."
   },
-  "@react-native-community/datetimepicker@8.2.0": {
+  "@react-native-community/datetimepicker@8.4.1": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-community/datetimepicker",
     "publisher": "Martijn Swaagman",
@@ -1914,7 +1812,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "MIT License\n\nCopyright (c) 2019 React Native Community\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2019 React Native Community",
     "name": "@react-native-community/datetimepicker",
-    "version": "8.2.0",
+    "version": "8.4.1",
     "description": "DateTimePicker component for React Native"
   },
   "@react-native-community/netinfo@11.4.1": {
@@ -1939,102 +1837,93 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.3.2",
     "description": "React Native MaskedView component"
   },
-  "@react-native/assets-registry@0.76.9": {
+  "@react-native/assets-registry@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/assets-registry\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add --dev @react-native/assets-registry\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/assets-registry?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/assets-registry\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/assets`.",
     "name": "@react-native/assets-registry",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Asset support code for React Native.",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/babel-plugin-codegen@0.76.9": {
+  "@react-native/babel-plugin-codegen@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/babel-plugin-codegen\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add --dev @babel/core @react-native/babel-plugin-codegen\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/babel-plugin-codegen?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/babel-plugin-codegen\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/babel-plugin-codegen`.",
     "name": "@react-native/babel-plugin-codegen",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Babel plugin to generate native module and view manager code for React Native.",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/babel-preset@0.76.9": {
+  "@react-native/babel-preset@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/babel-preset\n\nBabel presets for [React Native](https://reactnative.dev) applications. React Native itself uses this Babel preset by default when transforming your app's source code.\n\nIf you wish to use a custom Babel configuration by writing a `babel.config.js` file in your project's root directory, you must specify all the plugins necessary to transform your code. React Native does not apply its default Babel configuration in this case. So, to make your life easier, you can use this preset to get the default configuration and then specify more plugins that run before it.\n\n## Usage\n\nAs mentioned above, you only need to use this preset if you are writing a custom `babel.config.js` file.\n\n### Installation\n\nInstall `@react-native/babel-preset` in your app:\n\nwith `npm`:\n\n```sh\nnpm i @react-native/babel-preset --save-dev\n```\n\nor with `yarn`:\n\n```sh\nyarn add -D @react-native/babel-preset\n```\n\n### Configuring Babel\n\nThen, create a file called `babel.config.js` in your project's root directory. The existence of this `babel.config.js` file will tell React Native to use your custom Babel configuration instead of its own. Then load this preset:\n\n```\n{\n  \"presets\": [\"module:@react-native/babel-preset\"]\n}\n```\n\nYou can further customize your Babel configuration by specifying plugins and other options. See [Babel's `babel.config.js` documentation](https://babeljs.io/docs/en/config-files/) to learn more.\n\n## Help and Support\n\nIf you get stuck configuring Babel, please ask a question on Stack Overflow or find a consultant for help. If you discover a bug, please open up an issue.",
     "name": "@react-native/babel-preset",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Babel preset for React Native applications",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/codegen@0.76.9": {
+  "@react-native/codegen@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/codegen\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add --dev @react-native/codegen\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/codegen?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/codegen\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/react-native-codegen`.",
     "name": "@react-native/codegen",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Code generation tools for React Native",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/community-cli-plugin@0.76.9": {
+  "@react-native/community-cli-plugin@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
-    "licenseText": "# @react-native/community-cli-plugin\n\n> This is an internal dependency of React Native. **Please don't depend on it directly.**\n\nCLI entry points supporting core React Native development features.\n\nFormerly [@react-native-community/cli-plugin-metro](https://www.npmjs.com/package/@react-native-community/cli-plugin-metro).\n\n## Commands\n\n### `start`\n\nStart the React Native development server.\n\n#### Usage\n\n```sh\nnpx react-native start [options]\n```\n\n#### Options\n\n| Option | Description |\n| - | - |\n| `--port <number>` | Set the server port. |\n| `--host <string>` | Set the server host. |\n| `--projectRoot <path>` | Set the path to the project root. |\n| `--watchFolders <list>` | Specify additional folders to be added to the watch list. |\n| `--assetPlugins <list>` | Specify additional asset plugins. |\n| `--sourceExts <list>` | Specify additional source extensions to bundle. |\n| `--max-workers <number>` | Set the maximum number of workers the worker-pool will spawn for transforming files. Defaults to the number of the cores available on your machine. |\n| `--transformer <string>` | Specify a custom transformer. |\n| `--reset-cache` | Remove cached files. |\n| `--custom-log-reporter-path <string>` | Specify a module path exporting a replacement for `TerminalReporter`. |\n| `--https` | Enable HTTPS connections. |\n| `--key <path>`| Specify path to a custom SSL key. |\n| `--cert <path>` | Specify path to a custom SSL cert. |\n| `--config <string>` | Path to the CLI configuration file. |\n| `--no-interactive` | Disable interactive mode. |\n\n### `bundle`\n\nBuild the bundle for the provided JavaScript entry file.\n\n#### Usage\n\n```sh\nnpx react-native bundle --entry-file <path> [options]\n```\n\n#### Options\n\n| Option | Description |\n| - | - |\n| `--entry-file <path>` | Set the path to the root JavaScript entry file. |\n| `--platform <string>` | Set the target platform (either `\"android\"` or `\"ios\"`). Defaults to `\"ios\"`. |\n| `--transformer <string>` | Specify a custom transformer. |\n| `--dev [boolean]` | If `false`, warnings are disabled and the bundle is minified. Defaults to `true`. |\n| `--minify [boolean]` | Allows overriding whether bundle is minified. Defaults to `false` if `--dev` is set. Disabling minification can be useful for speeding up production builds for testing purposes. |\n| `--bundle-output <string>` | Specify the path to store the resulting bundle. |\n| `--bundle-encoding <string>` | Specify the encoding for writing the bundle (<https://nodejs.org/api/buffer.html#buffer_buffer>). |\n| `--resolver-option <string...>` | Custom resolver options of the form key=value. URL-encoded. May be specified multiple times. |\n| `--sourcemap-output <string>` | Specify the path to store the source map file for the resulting bundle. |\n| `--sourcemap-sources-root <string>` | Set the root path for source map entries. |\n| `--sourcemap-use-absolute-path` | Report `SourceMapURL` using its full path. |\n| `--max-workers <number>` | Set the maximum number of workers the worker-pool will spawn for transforming files. Defaults to the number of the cores available on your machine. |\n| `--assets-dest <string>` | Specify the directory path for storing assets referenced in the bundle. |\n| `--reset-cache` | Remove cached files. |\n| `--read-global-cache` | Attempt to fetch transformed JS code from the global cache, if configured. Defaults to `false`. |\n| `--config <string>` | Path to the CLI configuration file. |\n\n## Contributing\n\nChanges to this package can be made locally and tested against the `rn-tester` app, per the [Contributing guide](https://reactnative.dev/contributing/overview#contributing-code). During development, this package is automatically run from source with no build step.",
+    "licenseText": "# @react-native/community-cli-plugin\n\n> This is an internal dependency of React Native. **Please don't depend on it directly.**\n\nCLI entry points supporting core React Native development features.\n\nFormerly [@react-native-community/cli-plugin-metro](https://www.npmjs.com/package/@react-native-community/cli-plugin-metro).\n\n## Commands\n\n### `start`\n\nStart the React Native development server.\n\n#### Usage\n\n```sh\nnpx @react-native-community/cli start [options]\n```\n\n#### Options\n\n| Option | Description |\n| - | - |\n| `--port <number>` | Set the server port. |\n| `--host <string>` | Set the server host. |\n| `--projectRoot <path>` | Set the path to the project root. |\n| `--watchFolders <list>` | Specify additional folders to be added to the watch list. |\n| `--assetPlugins <list>` | Specify additional asset plugins. |\n| `--sourceExts <list>` | Specify additional source extensions to bundle. |\n| `--max-workers <number>` | Set the maximum number of workers the worker-pool will spawn for transforming files. Defaults to the number of the cores available on your machine. |\n| `--transformer <string>` | Specify a custom transformer. |\n| `--reset-cache` | Remove cached files. |\n| `--custom-log-reporter-path <string>` | Specify a module path exporting a replacement for `TerminalReporter`. |\n| `--https` | Enable HTTPS connections. |\n| `--key <path>`| Specify path to a custom SSL key. |\n| `--cert <path>` | Specify path to a custom SSL cert. |\n| `--config <string>` | Path to the CLI configuration file. |\n| `--no-interactive` | Disable interactive mode. |\n| `--client-logs` | **[Deprecated]** Enable plain text JavaScript log streaming for all connected apps. |\n\n### `bundle`\n\nBuild the bundle for the provided JavaScript entry file.\n\n#### Usage\n\n```sh\nnpx @react-native-community/cli bundle --entry-file <path> [options]\n```\n\n#### Options\n\n| Option | Description |\n| - | - |\n| `--entry-file <path>` | Set the path to the root JavaScript entry file. |\n| `--platform <string>` | Set the target platform (either `\"android\"` or `\"ios\"`). Defaults to `\"ios\"`. |\n| `--transformer <string>` | Specify a custom transformer. |\n| `--dev [boolean]` | If `false`, warnings are disabled and the bundle is minified. Defaults to `true`. |\n| `--minify [boolean]` | Allows overriding whether bundle is minified. Defaults to `false` if `--dev` is set. Disabling minification can be useful for speeding up production builds for testing purposes. |\n| `--bundle-output <string>` | Specify the path to store the resulting bundle. |\n| `--bundle-encoding <string>` | Specify the encoding for writing the bundle (<https://nodejs.org/api/buffer.html#buffer_buffer>). |\n| `--resolver-option <string...>` | Custom resolver options of the form key=value. URL-encoded. May be specified multiple times. |\n| `--sourcemap-output <string>` | Specify the path to store the source map file for the resulting bundle. |\n| `--sourcemap-sources-root <string>` | Set the root path for source map entries. |\n| `--sourcemap-use-absolute-path` | Report `SourceMapURL` using its full path. |\n| `--max-workers <number>` | Set the maximum number of workers the worker-pool will spawn for transforming files. Defaults to the number of the cores available on your machine. |\n| `--assets-dest <string>` | Specify the directory path for storing assets referenced in the bundle. |\n| `--reset-cache` | Remove cached files. |\n| `--read-global-cache` | Attempt to fetch transformed JS code from the global cache, if configured. Defaults to `false`. |\n| `--config <string>` | Path to the CLI configuration file. |\n\n## Contributing\n\nChanges to this package can be made locally and tested against the `rn-tester` app, per the [Contributing guide](https://reactnative.dev/contributing/overview#contributing-code). During development, this package is automatically run from source with no build step.",
     "name": "@react-native/community-cli-plugin",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Core CLI commands for React Native",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/debugger-frontend@0.76.9": {
+  "@react-native/debugger-frontend@0.79.6": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/facebook/react-native",
-    "licenseText": "# @react-native/debugger-frontend\n\n![npm package](https://img.shields.io/npm/v/@react-native/debugger-frontend?color=brightgreen&label=npm%20package)\n\nDebugger frontend for React Native based on Chrome DevTools.\n\nThis package is internal to React Native and is intended to be used via [`@react-native/dev-middleware`](https://www.npmjs.com/package/@react-native/dev-middleware).\n\n## Usage\n\nThe package exports the absolute path to the directory containing the frontend assets.\n\n```js\nconst frontendPath = require('@react-native/debugger-frontend');\n\n// Pass frontendPath to a static server, etc\n```\n\n## Contributing\n\n### Source repo\n\nSource code for this package lives in the [facebookexperimental/rn-chrome-devtools-frontend](https://github.com/facebookexperimental/rn-chrome-devtools-frontend) repo. See below for how we build and check in changes.\n\n### Updating the frontend assets\n\nThe compiled assets for the debugger frontend are periodically checked into this package under the `dist/` folder. To update these, run `node scripts/debugger-frontend/sync-and-build` from the root of your `react-native` checkout.\n\n```sh\n# For main\nnode scripts/debugger-frontend/sync-and-build --branch main\n\n# For stable branches (e.g. '0.73-stable')\nnode scripts/debugger-frontend/sync-and-build --branch 0.73-stable\n```\n\nBy default, this will clone and build from [facebookexperimental/rn-chrome-devtools-frontend](https://github.com/facebookexperimental/rn-chrome-devtools-frontend).",
+    "licenseText": "# @react-native/debugger-frontend\n\n![npm package](https://img.shields.io/npm/v/@react-native/debugger-frontend?color=brightgreen&label=npm%20package)\n\nDebugger frontend for React Native based on Chrome DevTools.\n\nThis package is internal to React Native and is intended to be used via [`@react-native/dev-middleware`](https://www.npmjs.com/package/@react-native/dev-middleware).\n\n## Usage\n\nThe package exports the absolute path to the directory containing the frontend assets.\n\n```js\nconst frontendPath = require('@react-native/debugger-frontend');\n\n// Pass frontendPath to a static server, etc\n```\n\n## Contributing\n\n### Source repo\n\nSource code for this package lives in the [facebook/react-native-devtools-frontend](https://github.com/facebook/react-native-devtools-frontend) repo. See below for how we build and check in changes.\n\n### Updating the frontend assets\n\nThe compiled assets for the debugger frontend are periodically checked into this package under the `dist/` folder. To update these, run `node scripts/debugger-frontend/sync-and-build` from the root of your `react-native` checkout.\n\n```sh\n# For main\nnode scripts/debugger-frontend/sync-and-build --branch main\n\n# For stable branches (e.g. '0.73-stable')\nnode scripts/debugger-frontend/sync-and-build --branch 0.73-stable\n```\n\nBy default, this will clone and build from [facebook/react-native-devtools-frontend](https://github.com/facebook/react-native-devtools-frontend).",
     "name": "@react-native/debugger-frontend",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Debugger frontend for React Native based on Chrome DevTools",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/dev-middleware@0.76.9": {
+  "@react-native/dev-middleware@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
-    "licenseText": "# @react-native/dev-middleware\n\n![npm package](https://img.shields.io/npm/v/@react-native/dev-middleware?color=brightgreen&label=npm%20package)\n\nDev server middleware supporting core React Native development features. This package is preconfigured in all React Native projects.\n\n## Usage\n\nMiddleware can be attached to a dev server (e.g. [Metro](https://facebook.github.io/metro/docs/getting-started)) using the `createDevMiddleware` API.\n\n```js\nimport { createDevMiddleware } from '@react-native/dev-middleware';\n\nfunction myDevServerImpl(args) {\n  ...\n\n  const {middleware, websocketEndpoints} = createDevMiddleware({\n    projectRoot: metroConfig.projectRoot,\n    serverBaseUrl: `http://${args.host}:${args.port}`,\n    logger,\n  });\n\n  await Metro.runServer(metroConfig, {\n    host: args.host,\n    ...,\n    unstable_extraMiddleware: [\n      middleware,\n      // Optionally extend with additional HTTP middleware\n    ],\n    websocketEndpoints: {\n      ...websocketEndpoints,\n      // Optionally extend with additional WebSocket endpoints\n    },\n  });\n}\n```\n\n## Included middleware\n\n`@react-native/dev-middleware` is designed for integrators such as [`@expo/dev-server`](https://www.npmjs.com/package/@expo/dev-server) and [`@react-native/community-cli-plugin`](https://github.com/facebook/react-native/tree/main/packages/community-cli-plugin). It provides a common default implementation for core React Native dev server responsibilities.\n\nWe intend to keep this to a narrow set of functionality, based around:\n\n- **Debugging** — The [Chrome DevTools protocol (CDP)](https://chromedevtools.github.io/devtools-protocol/) endpoints supported by React Native, including the Inspector Proxy, which facilitates connections with multiple devices.\n- **Dev actions** — Endpoints implementing core [Dev Menu](https://reactnative.dev/docs/debugging#accessing-the-dev-menu) actions, e.g. reloading the app, opening the debugger frontend.\n\n### HTTP endpoints\n\n<small>`DevMiddlewareAPI.middleware`</small>\n\nThese are exposed as a [`connect`](https://www.npmjs.com/package/connect) middleware handler, assignable to `Metro.runServer` or other compatible HTTP servers.\n\n#### GET `/json/list`, `/json` ([CDP](https://chromedevtools.github.io/devtools-protocol/#endpoints))\n\nReturns the list of available WebSocket targets for all connected React Native app sessions.\n\n#### GET `/json/version` ([CDP](https://chromedevtools.github.io/devtools-protocol/#endpoints))\n\nReturns version metadata used by Chrome DevTools.\n\n#### GET `/debugger-frontend`\n\nSubpaths of this endpoint are reserved to serve the JavaScript debugger frontend.\n\n#### POST `/open-debugger`\n\nOpen the JavaScript debugger for a given CDP target (direct Hermes debugging).\n\n<details>\n<summary>Example</summary>\n\n    curl -X POST 'http://localhost:8081/open-debugger?appId=com.meta.RNTester'\n</details>\n\n### WebSocket endpoints\n\n<small>`DevMiddlewareAPI.websocketEndpoints`</small>\n\n#### `/inspector/device`\n\nWebSocket handler for registering device connections.\n\n#### `/inspector/debug`\n\nWebSocket handler that proxies CDP messages to/from the corresponding device.\n\n## Contributing\n\nChanges to this package can be made locally and tested against the `rn-tester` app, per the [Contributing guide](https://reactnative.dev/contributing/overview#contributing-code). During development, this package is automatically run from source with no build step.",
+    "licenseText": "# @react-native/dev-middleware\n\n![npm package](https://img.shields.io/npm/v/@react-native/dev-middleware?color=brightgreen&label=npm%20package)\n\nDev server middleware supporting core React Native development features. This package is preconfigured in all React Native projects.\n\n## Usage\n\nMiddleware can be attached to a dev server (e.g. [Metro](https://facebook.github.io/metro/docs/getting-started)) using the `createDevMiddleware` API.\n\n```js\nimport { createDevMiddleware } from '@react-native/dev-middleware';\n\nfunction myDevServerImpl(args) {\n  ...\n\n  const {middleware, websocketEndpoints} = createDevMiddleware({\n    projectRoot: metroConfig.projectRoot,\n    serverBaseUrl: `http://${args.host}:${args.port}`,\n    logger,\n  });\n\n  await Metro.runServer(metroConfig, {\n    host: args.host,\n    ...,\n    unstable_extraMiddleware: [\n      middleware,\n      // Optionally extend with additional HTTP middleware\n    ],\n    websocketEndpoints: {\n      ...websocketEndpoints,\n      // Optionally extend with additional WebSocket endpoints\n    },\n  });\n}\n```\n\n## Included middleware\n\n`@react-native/dev-middleware` is designed for integrators such as [`@expo/dev-server`](https://www.npmjs.com/package/@expo/dev-server) and [`@react-native/community-cli-plugin`](https://github.com/facebook/react-native/tree/main/packages/community-cli-plugin). It provides a common default implementation for core React Native dev server responsibilities.\n\nWe intend to keep this to a narrow set of functionality, based around:\n\n- **Debugging** — The [Chrome DevTools protocol (CDP)](https://chromedevtools.github.io/devtools-protocol/) endpoints supported by React Native, including the Inspector Proxy, which facilitates connections with multiple devices.\n- **Dev actions** — Endpoints implementing core [Dev Menu](https://reactnative.dev/docs/debugging#accessing-the-dev-menu) actions, e.g. reloading the app, opening the debugger frontend.\n\n### HTTP endpoints\n\n<small>`DevMiddlewareAPI.middleware`</small>\n\nThese are exposed as a [`connect`](https://www.npmjs.com/package/connect) middleware handler, assignable to `Metro.runServer` or other compatible HTTP servers.\n\n#### GET `/json/list`, `/json` ([CDP](https://chromedevtools.github.io/devtools-protocol/#endpoints))\n\nReturns the list of available WebSocket targets for all connected React Native app sessions.\n\n#### GET `/json/version` ([CDP](https://chromedevtools.github.io/devtools-protocol/#endpoints))\n\nReturns version metadata used by Chrome DevTools.\n\n#### GET `/debugger-frontend`\n\nSubpaths of this endpoint are reserved to serve the JavaScript debugger frontend.\n\n#### POST `/open-debugger`\n\nOpen the JavaScript debugger for a given CDP target. Must be provided with one of the following query params:\n\n- `device`‌ — An ID unique to a combination of device and app, stable across installs. Implemented by `getInspectorDeviceId` on each native platform.\n- `target` — The target page ID as returned by `/json/list` for the current dev server session.\n- `appId` (deprecated, legacy only) — The application bundle identifier to match (non-unique across multiple connected devices). This param will only match legacy Hermes debugger targets.\n\n<details>\n<summary>Example</summary>\n\n    curl -X POST 'http://localhost:8081/open-debugger?target=<targetId>'\n</details>\n\n### WebSocket endpoints\n\n<small>`DevMiddlewareAPI.websocketEndpoints`</small>\n\n#### `/inspector/device`\n\nWebSocket handler for registering device connections.\n\n#### `/inspector/debug`\n\nWebSocket handler that proxies CDP messages to/from the corresponding device.\n\n## Contributing\n\nChanges to this package can be made locally and tested against the `rn-tester` app, per the [Contributing guide](https://reactnative.dev/contributing/overview#contributing-code). During development, this package is automatically run from source with no build step.",
     "name": "@react-native/dev-middleware",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Dev server middleware for React Native",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/gradle-plugin@0.76.9": {
+  "@react-native/gradle-plugin@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/gradle-plugin\n\n[![Version][version-badge]][package]\n\nA Gradle Plugin used to support development of React Native applications for Android.\n\n## Installation\n\n```\nyarn add @react-native/gradle-plugin\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/gradle-plugin?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/gradle-plugin\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `./gradlew -p packages/gradle-plugin test`.",
     "name": "@react-native/gradle-plugin",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Gradle Plugin for React Native",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/js-polyfills@0.76.9": {
+  "@react-native/js-polyfills@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/js-polyfills\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add @react-native/js-polyfills\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/js-polyfills?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/js-polyfills\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/polyfills`.",
     "name": "@react-native/js-polyfills",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Polyfills for React Native.",
-    "copyright": "",
-    "publisher": ""
-  },
-  "@react-native/metro-babel-transformer@0.76.9": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/react-native",
-    "name": "@react-native/metro-babel-transformer",
-    "version": "0.76.9",
-    "description": "Babel transformer for React Native applications.",
     "copyright": "",
     "publisher": ""
   },
@@ -2057,22 +1946,32 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/normalize-colors@0.76.9": {
+  "@react-native/normalize-colors@0.79.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/normalize-colors\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add --dev @react-native/normalize-colors\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/normalize-colors?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/normalize-colors\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/normalize-color`.",
     "name": "@react-native/normalize-colors",
-    "version": "0.76.9",
+    "version": "0.79.5",
     "description": "Color normalization for React Native.",
     "copyright": "",
     "publisher": ""
   },
-  "@react-native/virtualized-lists@0.76.9": {
+  "@react-native/normalize-colors@0.79.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/react-native",
+    "licenseText": "# @react-native/normalize-colors\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add --dev @react-native/normalize-colors\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/normalize-colors?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/normalize-colors\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/normalize-color`.",
+    "name": "@react-native/normalize-colors",
+    "version": "0.79.6",
+    "description": "Color normalization for React Native.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "@react-native/virtualized-lists@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "# @react-native/virtualized-lists\n\n[![Version][version-badge]][package]\n\n## Installation\n\n```\nyarn add @react-native/virtualized-lists\n```\n\n*Note: We're using `yarn` to install deps. Feel free to change commands to use `npm` 3+ and `npx` if you like*\n\n[version-badge]: https://img.shields.io/npm/v/@react-native/virtualized-lists?style=flat-square\n[package]: https://www.npmjs.com/package/@react-native/virtualized-lists\n\n## Testing\n\nTo run the tests in this package, run the following commands from the React Native root folder:\n\n1. `yarn` to install the dependencies. You just need to run this once\n2. `yarn jest packages/virtualized-lists`.",
     "name": "@react-native/virtualized-lists",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "Virtualized lists for React Native.",
     "copyright": "",
     "publisher": ""
@@ -2147,24 +2046,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Stack navigator component for iOS and Android with animated transitions and gestures",
     "publisher": ""
   },
-  "@reactvision/react-viro@2.42.0": {
+  "@reactvision/react-viro@2.43.4": {
     "licenses": "MIT",
     "repository": "https://github.com/ReactVision/viro",
     "licenseText": "MIT License\n\nCopyright (c) 2019 Viro Media, Inc\nCopyright (c) 2021 Viro Community\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2019 Viro Media, Inc. Copyright (c) 2021 Viro Community",
     "name": "@reactvision/react-viro",
-    "version": "2.42.0",
-    "description": "Maintained version of react-viro",
-    "publisher": ""
-  },
-  "@segment/loosely-validate-event@2.0.0": {
-    "licenses": "MIT*",
-    "licenseText": "The MIT License\n\nCopyright (c) 2017 Segment.io friends@segment.com\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2017 Segment.io friends@segment.com",
-    "name": "@segment/loosely-validate-event",
-    "version": "2.0.0",
-    "description": "Loosely validate an event.",
-    "repository": "",
+    "version": "2.43.4",
+    "description": "Maintained version of react-viro - New Architecture (Fabric) required",
     "publisher": ""
   },
   "@sentry-internal/browser-utils@8.54.0": {
@@ -2207,14 +2096,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.54.0",
     "description": "User replays for Sentry"
   },
-  "@sentry/babel-plugin-component-annotate@3.2.2": {
+  "@sentry/babel-plugin-component-annotate@3.4.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-javascript-bundler-plugins",
     "publisher": "Sentry",
     "licenseText": "# MIT License\n\nCopyright (c) 2024, Sentry\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n- Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n- Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\n- Neither the name of the copyright holder nor the names of its\n  contributors may be used to endorse or promote products derived from\n  this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
     "copyright": "Copyright (c) 2024, Sentry. All rights reserved.",
     "name": "@sentry/babel-plugin-component-annotate",
-    "version": "3.2.2",
+    "version": "3.4.0",
     "description": "A Babel plugin that annotates frontend components with additional data to enrich the experience in Sentry"
   },
   "@sentry/browser@8.54.0": {
@@ -2227,24 +2116,24 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.54.0",
     "description": "Official Sentry SDK for browsers"
   },
-  "@sentry/cli-linux-x64@2.42.4": {
+  "@sentry/cli-linux-x64@2.45.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/getsentry/sentry-cli",
     "licenseText": "<p align=\"center\">\n  <a href=\"https://sentry.io/?utm_source=github&utm_medium=logo\" target=\"_blank\">\n    <img src=\"https://sentry-brand.storage.googleapis.com/sentry-wordmark-dark-280x84.png\" alt=\"Sentry\" width=\"280\" height=\"84\">\n  </a>\n</p>\n\n# Sentry CLI Linux x64 Binary\n\nThis package contains the Sentry CLI binary for Linux x64.\n\nSee https://github.com/getsentry/sentry-cli for more information.",
     "name": "@sentry/cli-linux-x64",
-    "version": "2.42.4",
+    "version": "2.45.0",
     "description": "The linux x64 distribution of the Sentry CLI binary.",
     "copyright": "",
     "publisher": ""
   },
-  "@sentry/cli@2.42.4": {
+  "@sentry/cli@2.45.0": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/getsentry/sentry-cli",
     "publisher": "Sentry",
     "licenseText": "Copyright (c) 2016-2025 Sentry (https://sentry.io/) and individual contributors.\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n    1. Redistributions of source code must retain the above copyright notice,\nthis list of conditions and the following disclaimer.\n\n    2. Redistributions in binary form must reproduce the above copyright\nnotice, this list of conditions and the following disclaimer in the\ndocumentation and/or other materials provided with the distribution.\n\n    3. Neither the name of the Sentry nor the names of its contributors may be\nused to endorse or promote products derived from this software without specific\nprior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
     "copyright": "Copyright (c) 2016-2025 Sentry (https://sentry.io/) and individual contributors.. All rights reserved.",
     "name": "@sentry/cli",
-    "version": "2.42.4",
+    "version": "2.45.0",
     "description": "A command line utility to work with Sentry. https://docs.sentry.io/hosted/learn/cli/"
   },
   "@sentry/core@8.54.0": {
@@ -2257,14 +2146,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.54.0",
     "description": "Base implementation for all Sentry JavaScript SDKs"
   },
-  "@sentry/react-native@6.10.0": {
+  "@sentry/react-native@6.14.0": {
     "licenses": "MIT",
     "repository": "https://github.com/getsentry/sentry-react-native",
     "publisher": "Sentry",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2017-2024 Sentry\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2017-2024 Sentry",
     "name": "@sentry/react-native",
-    "version": "6.10.0",
+    "version": "6.14.0",
     "description": "Official Sentry SDK for react-native"
   },
   "@sentry/react@8.54.0": {
@@ -2297,14 +2186,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.54.0",
     "description": "Utilities for all Sentry JavaScript SDKs"
   },
-  "@shopify/flash-list@1.7.3": {
+  "@shopify/flash-list@1.7.6": {
     "licenses": "MIT",
     "repository": "https://github.com/Shopify/flash-list",
     "publisher": "shopify",
     "licenseText": "Copyright 2022-present, Shopify Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
     "copyright": "Copyright 2022-present, Shopify Inc.",
     "name": "@shopify/flash-list",
-    "version": "1.7.3",
+    "version": "1.7.6",
     "description": "FlashList is a more performant FlatList replacement"
   },
   "@sinclair/typebox@0.27.8": {
@@ -2621,16 +2510,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "@types/node-forge@1.3.11": {
-    "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "licenseText": "MIT License\n\n    Copyright (c) Microsoft Corporation.\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in all\n    copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n    SOFTWARE",
-    "name": "@types/node-forge",
-    "version": "1.3.11",
-    "description": "TypeScript definitions for node-forge",
-    "copyright": "",
-    "publisher": ""
-  },
   "@types/node@22.13.5": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
@@ -2691,22 +2570,22 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "@types/react@18.3.18": {
-    "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "licenseText": "MIT License\n\n    Copyright (c) Microsoft Corporation.\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in all\n    copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n    SOFTWARE",
-    "name": "@types/react",
-    "version": "18.3.18",
-    "description": "TypeScript definitions for react",
-    "copyright": "",
-    "publisher": ""
-  },
   "@types/react@19.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
     "licenseText": "MIT License\n\n    Copyright (c) Microsoft Corporation.\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in all\n    copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n    SOFTWARE",
     "name": "@types/react",
     "version": "19.0.10",
+    "description": "TypeScript definitions for react",
+    "copyright": "",
+    "publisher": ""
+  },
+  "@types/react@19.0.14": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "licenseText": "MIT License\n\n    Copyright (c) Microsoft Corporation.\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in all\n    copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n    SOFTWARE",
+    "name": "@types/react",
+    "version": "19.0.14",
     "description": "TypeScript definitions for react",
     "copyright": "",
     "publisher": ""
@@ -2803,16 +2682,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.1.11",
     "description": "Structural equality checking for JavaScript values"
   },
-  "@xmldom/xmldom@0.7.13": {
-    "licenses": "MIT",
-    "repository": "https://github.com/xmldom/xmldom",
-    "licenseText": "Copyright 2019 - present Christopher J. Brody and other contributors, as listed in: https://github.com/xmldom/xmldom/graphs/contributors\nCopyright 2012 - 2017 @jindw <jindw@xidea.org> and other contributors, as listed in: https://github.com/jindw/xmldom/graphs/contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright 2019 - present Christopher J. Brody and other contributors, as listed in: https://github.com/xmldom/xmldom/graphs/contributors. Copyright 2012 - 2017 @jindw <jindw@xidea.org> and other contributors, as listed in: https://github.com/jindw/xmldom/graphs/contributors",
-    "name": "@xmldom/xmldom",
-    "version": "0.7.13",
-    "description": "A pure JavaScript W3C standard-based (XML DOM Level 2 Core) DOMParser and XMLSerializer module.",
-    "publisher": ""
-  },
   "@xmldom/xmldom@0.8.10": {
     "licenses": "MIT",
     "repository": "https://github.com/xmldom/xmldom",
@@ -2884,16 +2753,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "6.0.2",
     "description": "Turn a function into an `http.Agent` instance"
   },
-  "aggregate-error@3.1.0": {
+  "agent-base@7.1.4": {
     "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/aggregate-error",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "aggregate-error",
-    "version": "3.1.0",
-    "description": "Create an error from multiple errors"
+    "repository": "https://github.com/TooTallNate/proxy-agents",
+    "publisher": "Nathan Rajlich",
+    "email": "nathan@tootallnate.net",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>",
+    "name": "agent-base",
+    "version": "7.1.4",
+    "description": "Turn a function into an `http.Agent` instance"
   },
   "ajv@8.11.0": {
     "licenses": "MIT",
@@ -3195,17 +3064,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "CLI arguments parser. Native port of python's argparse.",
     "publisher": ""
   },
-  "array-union@2.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/array-union",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "array-union",
-    "version": "2.1.0",
-    "description": "Create an array of unique values, in order, from the input arrays"
-  },
   "asap@2.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/kriskowal/asap",
@@ -3225,17 +3083,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.1.0",
     "description": "The assert module from Node.js, for the browser.",
     "publisher": ""
-  },
-  "ast-types@0.15.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/benjamn/ast-types",
-    "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "licenseText": "Copyright (c) 2013 Ben Newman <bn@cs.stanford.edu>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2013 Ben Newman <bn@cs.stanford.edu>",
-    "name": "ast-types",
-    "version": "0.15.2",
-    "description": "Esprima-compatible implementation of the Mozilla JS Parser API"
   },
   "async-limiter@1.0.1": {
     "licenses": "MIT",
@@ -3279,17 +3126,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "available-typed-arrays",
     "version": "1.0.7",
     "description": "Returns an array of Typed Array names that are available in the current environment"
-  },
-  "babel-core@7.0.0-bridge.0": {
-    "licenses": "MIT",
-    "publisher": "Logan Smyth",
-    "email": "loganfsmyth@gmail.com",
-    "licenseText": "## babel-bridge\n\nThis repo holds what we're calling a \"bridge\" package that is meant to ease the\ntransition for libraries that use \"babel-core\" as a peer dependency for Babel 6.\n\nThe issue with Babel 7's transition to scopes is that if a package depends on\nBabel 6, they may want to add support for Babel 7 alongside. Because Babel 7\nwill be released as `@babel/core` instead of `babel-core`, maintainers have\nno way to do that transition without making a breaking change. e.g.\n\n```js\npeerDependencies: {\n  \"babel-core\": \"6.x\"\n}\n```\ncannot change to\n\n```js\npeerDependencies: {\n  \"@babel/core\": \"6.x\"\n}\n```\n\nwithout it being a breaking change.\n\n### Solution\n\nTo address this, we're releasing this bridge package, to allow users to do\n\n\n```js\npeerDependencies: {\n  \"babel-core\": \"6.x | ^7.0.0-bridge\"\n}\n```\n\nthen where users of this package would originally have done\n\n```sh\nnpm i some-package babel-core\n```\n\nto install Babel 6, they could now do\n\n\n```sh\nnpm i some-package babel-core@^7.0.0-bridge @babel/core\n```\n\nto install the bridge package, and install Babel 7's core.",
-    "name": "babel-core",
-    "version": "7.0.0-bridge.0",
-    "description": "A placeholder package that bridges babel-core to @babel/core.",
-    "copyright": "",
-    "repository": ""
   },
   "babel-jest@29.7.0": {
     "licenses": "MIT",
@@ -3371,16 +3207,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Improve the debugging experience and add server-side rendering support to styled-components",
     "publisher": ""
   },
-  "babel-plugin-syntax-hermes-parser@0.23.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
-    "name": "babel-plugin-syntax-hermes-parser",
-    "version": "0.23.1",
-    "description": "Babel plugin which switches Babel to use the Hermes parser.",
-    "publisher": ""
-  },
   "babel-plugin-syntax-hermes-parser@0.25.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/hermes",
@@ -3411,14 +3237,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "A Babel preset that enables parsing of proposals supported by the current Node.js version."
   },
-  "babel-preset-expo@12.0.11": {
+  "babel-preset-expo@13.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
     "email": "support@expo.dev",
-    "licenseText": "# babel-preset-expo\n\nThis preset extends the default React Native preset (`@react-native/babel-preset`) and adds support for decorators, tree-shaking web packages, and loading font icons with optional native dependencies if they're installed.\n\nYou can use this preset in any React Native project as a drop-in replacement for `@react-native/babel-preset`. If your project isn't using native font loading or web support then this preset will only add support for decorators with `@babel/plugin-proposal-decorators` - this is mostly used for supporting legacy community libraries.\n\nIf you start your **web** project with `@expo/webpack-config` or `npx expo start` and your project doesn't contain a `babel.config.js` or a `.babelrc` then it will default to using `babel-preset-expo` for loading.\n\nIf you have problems with the code in this repository, please file issues & bug reports\nat https://github.com/expo/expo. Thanks!\n\n## Expo Bundler Spec Compliance\n\nA bundler must follow these requirements if they are to be considered spec compliant for use with a **universal React** (Expo) project.\n\n### Babel Loader\n\nThe babel loading mechanism must include the following properties on its `caller`.\n\n#### platform\n\nA `platform` property denoting the target platform. If the `platform` is not defined, it will default to using `web` when the `bundler` is `webpack` -- this is temporary and will throw an error in the future.\n\n| Value     | Description             |\n| --------- | ----------------------- |\n| `ios`     | Runs on iOS devices     |\n| `android` | Runs on Android devices |\n| `web`     | Runs in web browsers    |\n\n#### bundler\n\nA `bundler` property denoting the name of the bundler that is being used to create the JavaScript bundle.\nIf the `bundler` is not defined, it will default to checking if a `babel-loader` is used, if so then `webpack` will be used, otherwise it will default to `metro`.\n\n| Value     | Description                      |\n| --------- | -------------------------------- |\n| `metro`   | Bundling with [Metro][metro]     |\n| `webpack` | Bundling with [Webpack][webpack] |\n\n[metro]: https://facebook.github.io/metro/\n[webpack]: https://webpack.js.org/\n\n## Options\n\n### `react-compiler`\n\nSettings to pass to `babel-plugin-react-compiler`. Set as `false` to disable the plugin. As of SDK 51, you must also enable `experiments.reactCompiler: true` in the `app.json`.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    'react-compiler': {\n      sources: (filename) => {\n        // Match file names to include in the React Compiler.\n        return filename.includes('src/path/to/dir');\n      },\n    },\n  },\n];\n```\n\n### `minifyTypeofWindow`\n\nSet `minifyTypeofWindow: false` to preserve the `typeof window` check in your code, e.g. `if (typeof window === 'undefined')` -> `if (true)` in servers. This is useful when you're using libraries that mock the window object on native or in the server.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    // If your native app doesn't polyfill `window` then setting this to `false` can reduce bundle size.\n    native: {\n      minifyTypeofWindow: true,\n    },\n  },\n];\n```\n\nDefaults to `false` for server environments and web, `true` for native platforms to support legacy browser polyfills.\n\n### `reanimated`\n\n`boolean`, defaults to `true`. Set `reanimated: false` to disable adding the `react-native-reanimated/plugin` when `react-native-reanimated` is installed.\n\n### [`jsxRuntime`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#runtime)\n\n`classic | automatic`, defaults to `automatic`\n\n- `automatic` automatically convert JSX to JS without the need to `import React from 'react'` in every file. Be sure to follow the rest of the [setup guide](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#how-to-upgrade-to-the-new-jsx-transform) after enabling this, otherwise ESLint and other tools will throw warnings.\n- `classic` does not automatically import anything, React must imported into every file that uses JSX syntax.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    jsxRuntime: 'classic',\n  },\n];\n```\n\nThis property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This flag does nothing when `useTransformReactJSXExperimental` is set to `true` because `@babel/plugin-transform-react-jsx` is omitted.\n\n### [`jsxImportSource`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#importsource)\n\n`string`, defaults to `react`\n\nThis option allows specifying a custom import source for importing functions.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    jsxRuntime: 'automatic',\n    jsxImportSource: 'react',\n  },\n];\n```\n\nThis property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This options does nothing when `jsxRuntime` is not set to `automatic`.\n\n### [`lazyImports`](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy)\n\nChanges Babel's compiled `import` statements to be lazily evaluated when their imported bindings are used for the first time.\n\n_Note:_ this option has an effect only when the `disableImportExportTransform` option is set to `false`. On Android and iOS, `disableImportExportTransform` defaults to `false`, and on web it defaults to `true` to allow for tree shaking.\n\nThis can improve the initial load time of your app because evaluating dependencies up front is sometimes entirely un-necessary, particularly when the dependencies have no side effects.\n\nThe value of `lazyImports` has a few possible effects:\n\n- `null` - [@react-native/babel-preset](https://github.com/facebook/react-native/tree/main/packages/react-native-babel-preset) will handle it. (Learn more about it here: https://github.com/facebook/metro/commit/23e3503dde5f914f3e642ef214f508d0a699851d)\n- `false` - No lazy initialization of any imported module.\n- `true` - Lazy-init all imported modules except local imports (e.g., `./foo`), certain Expo packages that have side effects, and the two cases mentioned [here](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy).\n- `Array<string>` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.\n- `(string) => boolean` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.\n\n  If you choose to do this, you can also access the list of Expo packages that have side effects by using `const lazyImportsBlacklist = require('babel-preset-expo/lazy-imports-blacklist');` which returns a `Set`.\n\n**default:** `null`\n\n```js\n[\n    'babel-preset-expo',\n    {\n        lazyImports: true\n    }\n],\n```\n\n### `disableImportExportTransform`\n\nPass `true` to disable the transform that converts import/export to `module.exports`. Avoid setting this property directly. If you're using Metro, set `experimentalImportSupport: true` instead to ensure the entire pipeline is configured correctly.\n\n```js\n// metro.config.js\n\nconfig.transformer.getTransformOptions = async () => ({\n  transform: {\n    // Setting this to `true` will automatically toggle `disableImportExportTransform` in `babel-preset-expo`.\n    experimentalImportSupport: true,\n  },\n});\n```\n\nIf `undefined` (default), this will be set automatically via `caller.supportsStaticESM` which is set by the bundler.\n\n```js\n[\n    'babel-preset-expo',\n    {\n        disableImportExportTransform: true\n    }\n],\n```\n\n### `unstable_transformProfile`\n\nChanges the engine preset in `@react-native/babel-preset` based on the JavaScript engine that is being targeted. In Expo SDK 50 and greater, this is automatically set based on the [`jsEngine`](https://docs.expo.dev/versions/latest/config/app/#jsengine) option in your `app.json`.\n\n### `enableBabelRuntime`\n\nPassed to `@react-native/babel-preset`.\n\n### `disableFlowStripTypesTransform`\n\nPassed to `@react-native/babel-preset`.\n\n## Platform-specific options\n\nAll options can be passed in the platform-specific objects `native` and `web` to provide different settings on different platforms. For example, if you'd like to only apply `disableImportExportTransform` on web, use the following:\n\n```js\n[\n  'babel-preset-expo',\n  {\n    // Default value:\n    disableImportExportTransform: false,\n\n    web: {\n      // Web-specific value:\n      disableImportExportTransform: true,\n    },\n  },\n];\n```\n\nPlatform-specific options have higher priority over top-level options.",
+    "licenseText": "# babel-preset-expo\n\nThis preset extends the default React Native preset (`@react-native/babel-preset`) and adds support for tree shaking, bundle splitting, React Server Components, Hermes compilation, advanced dead-code elimination, reanimated, Expo DOM components, server-side rendering, and more...\n\nYou can use this preset in any React Native project as a drop-in replacement for `@react-native/babel-preset`.\n\nIf you have problems with the code in this repository, please file issues & bug reports\nat https://github.com/expo/expo.\n\n## Expo Bundler Spec Compliance\n\nA bundler must follow these requirements if they are to be considered spec compliant for use with a **universal React** (Expo) project.\n\n## Options\n\n### `react-compiler`\n\nSettings to pass to `babel-plugin-react-compiler`. Set as `false` to disable the plugin. As of SDK 51, you must also enable `experiments.reactCompiler: true` in the `app.json`.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    'react-compiler': {\n      sources: (filename) => {\n        // Match file names to include in the React Compiler.\n        return filename.includes('src/path/to/dir');\n      },\n    },\n  },\n];\n```\n\n### `minifyTypeofWindow`\n\nSet `minifyTypeofWindow: true` to transform `typeof window` checks in your code, e.g. `if (typeof window === 'object')` -> `if (true)` in clients. This is useful when you're using libraries that mock the window object on native or in the server.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    // If your native app doesn't polyfill `window` then setting this to `false` can reduce bundle size.\n    native: {\n      minifyTypeofWindow: true,\n    },\n  },\n];\n```\n\nDefaults to `true` for server environments, and `false` for client environments to support legacy browser polyfills and web workers.\n\n### `reanimated`\n\n`boolean`, defaults to `true`. Set `reanimated: false` to disable adding the `react-native-reanimated/plugin` when `react-native-reanimated` is installed.\n\n### [`jsxRuntime`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#runtime)\n\n`classic | automatic`, defaults to `automatic`\n\n- `automatic` automatically convert JSX to JS without the need to `import React from 'react'` in every file. Be sure to follow the rest of the [setup guide](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#how-to-upgrade-to-the-new-jsx-transform) after enabling this, otherwise ESLint and other tools will throw warnings.\n- `classic` does not automatically import anything, React must imported into every file that uses JSX syntax.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    jsxRuntime: 'classic',\n  },\n];\n```\n\nThis property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This flag does nothing when `useTransformReactJSXExperimental` is set to `true` because `@babel/plugin-transform-react-jsx` is omitted.\n\n### [`jsxImportSource`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#importsource)\n\n`string`, defaults to `react`\n\nThis option allows specifying a custom import source for importing functions.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    jsxRuntime: 'automatic',\n    jsxImportSource: 'react',\n  },\n];\n```\n\nThis property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This options does nothing when `jsxRuntime` is not set to `automatic`.\n\n### [`lazyImports`](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy)\n\nChanges Babel's compiled `import` statements to be lazily evaluated when their imported bindings are used for the first time.\n\n_Note:_ this option has an effect only when the `disableImportExportTransform` option is set to `false`. On Android and iOS, `disableImportExportTransform` defaults to `false`, and on web it defaults to `true` to allow for tree shaking.\n\nThis can improve the initial load time of your app because evaluating dependencies up front is sometimes entirely un-necessary, particularly when the dependencies have no side effects.\n\nThe value of `lazyImports` has a few possible effects:\n\n- `null` - [@react-native/babel-preset](https://github.com/facebook/react-native/tree/main/packages/react-native-babel-preset) will handle it. (Learn more about it here: https://github.com/facebook/metro/commit/23e3503dde5f914f3e642ef214f508d0a699851d)\n- `false` - No lazy initialization of any imported module.\n- `true` - Lazy-init all imported modules except local imports (e.g., `./foo`), certain Expo packages that have side effects, and the two cases mentioned [here](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy).\n- `Array<string>` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.\n- `(string) => boolean` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.\n\n  If you choose to do this, you can also access the list of Expo packages that have side effects by using `const lazyImportsBlacklist = require('babel-preset-expo/lazy-imports-blacklist');` which returns a `Set`.\n\n**default:** `null`\n\n```js\n[\n    'babel-preset-expo',\n    {\n        lazyImports: true\n    }\n],\n```\n\n### `disableImportExportTransform`\n\nPass `true` to disable the transform that converts import/export to `module.exports`. Avoid setting this property directly. If you're using Metro, set `experimentalImportSupport: true` instead to ensure the entire pipeline is configured correctly.\n\n```js\n// metro.config.js\n\nconfig.transformer.getTransformOptions = async () => ({\n  transform: {\n    // Setting this to `true` will automatically toggle `disableImportExportTransform` in `babel-preset-expo`.\n    experimentalImportSupport: true,\n  },\n});\n```\n\nIf `undefined` (default), this will be set automatically via `caller.supportsStaticESM` which is set by the bundler.\n\n```js\n[\n    'babel-preset-expo',\n    {\n        disableImportExportTransform: true\n    }\n],\n```\n\n### `unstable_transformProfile`\n\nChanges the engine preset in `@react-native/babel-preset` based on the JavaScript engine that is being targeted. In Expo SDK 50 and greater, this is automatically set based on the [`jsEngine`](https://docs.expo.dev/versions/latest/config/app/#jsengine) option in your `app.json`.\n\n### `unstable_transformImportMeta`\n\nEnable that transform that converts `import.meta` to `globalThis.__ExpoImportMetaRegistry`, defaults to `false` in client bundles and `true` for server bundles.\n\n> **Note:** Use this option at your own risk. If the JavaScript engine supports `import.meta` natively, this transformation may interfere with the native implementation.\n\n### `enableBabelRuntime`\n\nPassed to `@react-native/babel-preset`.\n\n### `disableFlowStripTypesTransform`\n\nPassed to `@react-native/babel-preset`.\n\n## Platform-specific options\n\nAll options can be passed in the platform-specific objects `native` and `web` to provide different settings on different platforms. For example, if you'd like to only apply `disableImportExportTransform` on web, use the following:\n\n```js\n[\n  'babel-preset-expo',\n  {\n    // Default value:\n    disableImportExportTransform: false,\n\n    web: {\n      // Web-specific value:\n      disableImportExportTransform: true,\n    },\n  },\n];\n```\n\nPlatform-specific options have higher priority over top-level options.\n\n### Babel Loader\n\nThe Babel loading mechanism must include the following properties on its `caller`.\n\n#### platform\n\nA `platform` property denoting the target platform. If the `platform` is not defined, it will default to using `web` when the `bundler` is `webpack` -- this is temporary and will throw an error in the future.\n\n| Value     | Description             |\n| --------- | ----------------------- |\n| `ios`     | Runs on iOS devices     |\n| `android` | Runs on Android devices |\n| `web`     | Runs in web browsers    |\n\n#### bundler\n\nA `bundler` property denoting the name of the bundler that is being used to create the JavaScript bundle.\nIf the `bundler` is not defined, it will default to checking if a `babel-loader` is used, if so then `webpack` will be used, otherwise it will default to `metro`.\n\n| Value     | Description                      |\n| --------- | -------------------------------- |\n| `metro`   | Bundling with [Metro][metro]     |\n| `webpack` | Bundling with [Webpack][webpack] |\n\n[metro]: https://facebook.github.io/metro/\n[webpack]: https://webpack.js.org/",
     "name": "babel-preset-expo",
-    "version": "12.0.11",
+    "version": "13.2.4",
     "description": "The Babel preset for Expo projects",
     "copyright": ""
   },
@@ -3516,16 +3342,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.0",
     "description": "two functions: One that returns true, one that returns false",
     "copyright": ""
-  },
-  "bplist-creator@0.0.7": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nearinfinity/node-bplist-creator",
-    "publisher": "https://github.com/nearinfinity/node-bplist-parser.git",
-    "licenseText": "bplist-parser\n=============\n\nBinary Mac OS X Plist (property list) creator.\n\n## Installation\n\n```bash\n$ npm install bplist-creator\n```\n\n## Quick Examples\n\n```javascript\nvar bplist = require('bplist-creator');\n\nvar buffer = bplist({\n  key1: [1, 2, 3]\n});\n```\n\n## Real/Double/Float handling\n\nJavascript don't have different types for `1` and `1.0`. This package\nwill automatically store numbers as the appropriate type, but can't\ndetect floats that is also integers.\n\nIf you need to force a value to be written with the `real` type pass\nan instance of `Real`.\n\n```javascript\nvar buffer = bplist({\n  backgroundRed: new bplist.Real(1),\n  backgroundGreen: new bplist.Real(0),\n  backgroundBlue: new bplist.Real(0)\n});\n```\n\nIn `xml` the corresponding tags is `<integer>` and `<real>`.\n\n## License\n\n(The MIT License)\n\nCopyright (c) 2012 Near Infinity Corporation\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2012 Near Infinity Corporation",
-    "name": "bplist-creator",
-    "version": "0.0.7",
-    "description": "Binary Mac OS X Plist (property list) creator."
   },
   "bplist-creator@0.1.0": {
     "licenses": "MIT",
@@ -3634,36 +3450,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "JavaScript implementation of the BSER Binary Serialization",
     "copyright": ""
   },
-  "buffer-alloc-unsafe@1.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-alloc-unsafe",
-    "licenseText": "# Buffer Alloc Unsafe\n\nA [ponyfill](https://ponyfill.com) for `Buffer.allocUnsafe`.\n\nWorks as Node.js: `v7.0.0` <br>\nWorks on Node.js: `v0.10.0`\n\n## Installation\n\n```sh\nnpm install --save buffer-alloc-unsafe\n```\n\n## Usage\n\n```js\nconst allocUnsafe = require('buffer-alloc-unsafe')\n\nconsole.log(allocUnsafe(10))\n//=> <Buffer 78 0c 80 03 01 00 00 00 05 00>\n\nconsole.log(allocUnsafe(10))\n//=> <Buffer 58 ed bf 5f ff 7f 00 00 01 00>\n\nconsole.log(allocUnsafe(10))\n//=> <Buffer 50 0c 80 03 01 00 00 00 0a 00>\n\nallocUnsafe(-10)\n//=> RangeError: \"size\" argument must not be negative\n```\n\n## API\n\n### allocUnsafe(size)\n\n- `size` &lt;Integer&gt; The desired length of the new `Buffer`\n\nAllocates a new *non-zero-filled* `Buffer` of `size` bytes. The `size` must be\nless than or equal to the value of `buffer.kMaxLength` and greater than or equal\nto zero. Otherwise, a `RangeError` is thrown.\n\n## See also\n\n- [buffer-alloc](https://github.com/LinusU/buffer-alloc) A ponyfill for `Buffer.alloc`\n- [buffer-fill](https://github.com/LinusU/buffer-fill) A ponyfill for `Buffer.fill`\n- [buffer-from](https://github.com/LinusU/buffer-from) A ponyfill for `Buffer.from`",
-    "name": "buffer-alloc-unsafe",
-    "version": "1.1.0",
-    "description": "A [ponyfill](https://ponyfill.com) for `Buffer.allocUnsafe`.",
-    "copyright": "",
-    "publisher": ""
-  },
-  "buffer-alloc@1.2.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-alloc",
-    "licenseText": "# Buffer Alloc\n\nA [ponyfill](https://ponyfill.com) for `Buffer.alloc`.\n\nWorks as Node.js: `v7.0.0` <br>\nWorks on Node.js: `v0.10.0`\n\n## Installation\n\n```sh\nnpm install --save buffer-alloc\n```\n\n## Usage\n\n```js\nconst alloc = require('buffer-alloc')\n\nconsole.log(alloc(4))\n//=> <Buffer 00 00 00 00>\n\nconsole.log(alloc(6, 0x41))\n//=> <Buffer 41 41 41 41 41 41>\n\nconsole.log(alloc(10, 'linus', 'utf8'))\n//=> <Buffer 6c 69 6e 75 73 6c 69 6e 75 73>\n```\n\n## API\n\n### alloc(size[, fill[, encoding]])\n\n- `size` &lt;Integer&gt; The desired length of the new `Buffer`\n- `fill` &lt;String&gt; | &lt;Buffer&gt; | &lt;Integer&gt; A value to pre-fill the new `Buffer` with. **Default:** `0`\n- `encoding` &lt;String&gt; If `fill` is a string, this is its encoding. **Default:** `'utf8'`\n\nAllocates a new `Buffer` of `size` bytes. If `fill` is `undefined`, the `Buffer` will be zero-filled.\n\n## See also\n\n- [buffer-alloc-unsafe](https://github.com/LinusU/buffer-alloc-unsafe) A ponyfill for `Buffer.allocUnsafe`\n- [buffer-fill](https://github.com/LinusU/buffer-fill) A ponyfill for `Buffer.fill`\n- [buffer-from](https://github.com/LinusU/buffer-from) A ponyfill for `Buffer.from`",
-    "name": "buffer-alloc",
-    "version": "1.2.0",
-    "description": "A [ponyfill](https://ponyfill.com) for `Buffer.alloc`.",
-    "copyright": "",
-    "publisher": ""
-  },
-  "buffer-fill@1.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/LinusU/buffer-fill",
-    "licenseText": "# Buffer Fill\n\nA [ponyfill](https://ponyfill.com) for `Buffer.fill`.\n\nWorks as Node.js: `v6.4.0` <br>\nWorks on Node.js: `v0.10.0`\n\n## Installation\n\n```sh\nnpm install --save buffer-fill\n```\n\n## Usage\n\n```js\nconst fill = require('buffer-fill')\nconst buf = Buffer.allocUnsafe(5)\n\nconsole.log(buf.fill(8))\n//=> <Buffer 08 08 08 08 08>\n\nconsole.log(buf.fill(9, 2, 4))\n//=> <Buffer 08 08 09 09 08>\n\nconsole.log(buf.fill('linus', 'latin1'))\n//=> <Buffer 6c 69 6e 75 73>\n\nconsole.log(buf.fill('\\u0222'))\n//=> <Buffer c8 a2 c8 a2 c8>\n```\n\n## API\n\n### fill(buf, value[, offset[, end]][, encoding])\n\n- `value` &lt;String&gt; | &lt;Buffer&gt; | &lt;Integer&gt; The value to fill `buf` with\n- `offset` &lt;Integer&gt; Where to start filling `buf`. **Default:** `0`\n- `end` &lt;Integer&gt; Where to stop filling `buf` (not inclusive). **Default:** `buf.length`\n- `encoding` &lt;String&gt; If `value` is a string, this is its encoding. **Default:** `'utf8'`\n- Return: &lt;Buffer&gt; A reference to `buf`\n\nFills `buf` with the specified `value`. If the `offset` and `end` are not given,\nthe entire `buf` will be filled. This is meant to be a small simplification to\nallow the creation and filling of a `Buffer` to be done on a single line.\n\nIf the final write of a `fill()` operation falls on a multi-byte character, then\nonly the first bytes of that character that fit into `buf` are written.\n\n## See also\n\n- [buffer-alloc-unsafe](https://github.com/LinusU/buffer-alloc-unsafe) A ponyfill for `Buffer.allocUnsafe`\n- [buffer-alloc](https://github.com/LinusU/buffer-alloc) A ponyfill for `Buffer.alloc`\n- [buffer-from](https://github.com/LinusU/buffer-from) A ponyfill for `Buffer.from`",
-    "name": "buffer-fill",
-    "version": "1.0.0",
-    "description": "A [ponyfill](https://ponyfill.com) for `Buffer.fill`.",
-    "copyright": "",
-    "publisher": ""
-  },
   "buffer-from@1.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/LinusU/buffer-from",
@@ -3695,16 +3481,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "bytes",
     "version": "3.1.2",
     "description": "Utility to parse a string bytes to bytes and vice-versa"
-  },
-  "cacache@18.0.4": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/cacache",
-    "publisher": "GitHub Inc.",
-    "licenseText": "ISC License\n\nCopyright (c) npm, Inc.\n\nPermission to use, copy, modify, and/or distribute this software for\nany purpose with or without fee is hereby granted, provided that the\nabove copyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE COPYRIGHT HOLDER DISCLAIMS\nALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR\nCONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE\nOR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE\nUSE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) npm, Inc.",
-    "name": "cacache",
-    "version": "18.0.4",
-    "description": "Fast, fault-tolerant, cross-platform, disk-based, data-agnostic, content-addressable cache."
   },
   "call-bind-apply-helpers@1.0.2": {
     "licenses": "MIT",
@@ -3880,27 +3656,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.4",
     "description": "HTML legacy character entity information"
   },
-  "charenc@0.0.2": {
-    "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/pvorb/node-charenc",
-    "publisher": "Paul Vorbach",
-    "email": "paul@vorb.de",
-    "licenseText": "Copyright © 2011, Paul Vorbach. All rights reserved.\nCopyright © 2009, Jeff Mott. All rights reserved.\n\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification,\nare permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n* Redistributions in binary form must reproduce the above copyright notice, this\n  list of conditions and the following disclaimer in the documentation and/or\n  other materials provided with the distribution.\n* Neither the name Crypto-JS nor the names of its contributors may be used to\n  endorse or promote products derived from this software without specific prior\n  written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\nANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\nANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright © 2011, Paul Vorbach. All rights reserved.. Copyright © 2009, Jeff Mott. All rights reserved.",
-    "name": "charenc",
-    "version": "0.0.2",
-    "description": "character encoding utilities"
-  },
-  "chownr@2.0.0": {
-    "licenses": "ISC",
+  "chownr@3.0.0": {
+    "licenses": "BlueOak-1.0.0",
     "repository": "https://github.com/isaacs/chownr",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
+    "licenseText": "All packages under `src/` are licensed according to the terms in\ntheir respective `LICENSE` or `LICENSE.md` files.\n\nThe remainder of this project is licensed under the Blue Oak\nModel License, as follows:\n\n-----\n\n# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules.  The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice.  If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n***As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim.***",
     "name": "chownr",
-    "version": "2.0.0",
-    "description": "like `chown -R`"
+    "version": "3.0.0",
+    "description": "like `chown -R`",
+    "copyright": ""
   },
   "chrome-launcher@0.15.2": {
     "licenses": "Apache-2.0",
@@ -3943,17 +3708,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "ci-info",
     "version": "3.9.0",
     "description": "Get details about the current Continuous Integration environment"
-  },
-  "clean-stack@2.2.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/clean-stack",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "clean-stack",
-    "version": "2.2.0",
-    "description": "Clean up error stack traces"
   },
   "cli-cursor@2.1.0": {
     "licenses": "MIT",
@@ -3998,16 +3752,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "cliui",
     "version": "8.0.1",
     "description": "easily create complex multi-column command-line-interfaces"
-  },
-  "clone-deep@4.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonschlinkert/clone-deep",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2018, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-2018, Jon Schlinkert.",
-    "name": "clone-deep",
-    "version": "4.0.1",
-    "description": "Recursively (deep) clone JavaScript native types, like Object, Array, RegExp, Date as well as primitives."
   },
   "clone@1.0.4": {
     "licenses": "MIT",
@@ -4160,27 +3904,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.2.0",
     "description": "the complete solution for node.js command-line programs"
   },
-  "commondir@1.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/substack/node-commondir",
-    "publisher": "James Halliday",
-    "email": "mail@substack.net",
-    "licenseText": "The MIT License\n\nCopyright (c) 2013 James Halliday (mail@substack.net)\n\nPermission is hereby granted, free of charge, \nto any person obtaining a copy of this software and \nassociated documentation files (the \"Software\"), to \ndeal in the Software without restriction, including \nwithout limitation the rights to use, copy, modify, \nmerge, publish, distribute, sublicense, and/or sell \ncopies of the Software, and to permit persons to whom \nthe Software is furnished to do so, \nsubject to the following conditions:\n\nThe above copyright notice and this permission notice \nshall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, \nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES \nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. \nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR \nANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, \nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE \nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2013 James Halliday (mail@substack.net)",
-    "name": "commondir",
-    "version": "1.0.1",
-    "description": "compute the closest common parent for file paths"
-  },
-  "component-type@1.2.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/component-type",
-    "licenseText": "# type\n\n  Type assertions aka less-broken `typeof`.\n\n## Example\n\n```js\nvar type = require('type');\n\nvar obj = new Date;\nif (type(obj) == 'date') ...\n```\n\n## API\n\n```js\ntype(new Date) == 'date'\ntype({}) == 'object'\ntype(null) == 'null'\ntype(undefined) == 'undefined'\ntype(\"hey\") == 'string'\ntype(true) == 'boolean'\ntype(false) == 'boolean'\ntype(12) == 'number'\ntype(type) == 'function'\ntype(/asdf/) == 'regexp'\ntype((function(){ return arguments })()) == 'arguments'\ntype([]) == 'array'\ntype(document.createElement('div')) == 'element'\ntype(NaN) == 'nan'\ntype(new Error('Ups! Something wrong...')) == 'error'\ntype(new Buffer) == 'buffer'\n```\n\n## License\n\n  MIT",
-    "name": "component-type",
-    "version": "1.2.2",
-    "description": "Cross-browser type assertions (less broken typeof)",
-    "copyright": "",
-    "publisher": ""
-  },
   "compressible@2.0.18": {
     "licenses": "MIT",
     "repository": "https://github.com/jshttp/compressible",
@@ -4288,17 +4011,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.2.0",
     "description": "Universal WHATWG Fetch API for Node, Browsers and React Native"
   },
-  "cross-spawn@6.0.6": {
-    "licenses": "MIT",
-    "repository": "https://github.com/moxystudio/node-cross-spawn",
-    "publisher": "André Cruz",
-    "email": "andre@moxy.studio",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2018 Made With MOXY Lda <hello@moxy.studio>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2018 Made With MOXY Lda <hello@moxy.studio>",
-    "name": "cross-spawn",
-    "version": "6.0.6",
-    "description": "Cross platform child_process#spawn and child_process#spawnSync"
-  },
   "cross-spawn@7.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/moxystudio/node-cross-spawn",
@@ -4309,17 +4021,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "cross-spawn",
     "version": "7.0.6",
     "description": "Cross platform child_process#spawn and child_process#spawnSync"
-  },
-  "crypt@0.0.2": {
-    "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/pvorb/node-crypt",
-    "publisher": "Paul Vorbach",
-    "email": "paul@vorb.de",
-    "licenseText": "Copyright © 2011, Paul Vorbach. All rights reserved.\nCopyright © 2009, Jeff Mott. All rights reserved.\n\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification,\nare permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n* Redistributions in binary form must reproduce the above copyright notice, this\n  list of conditions and the following disclaimer in the documentation and/or\n  other materials provided with the distribution.\n* Neither the name Crypto-JS nor the names of its contributors may be used to\n  endorse or promote products derived from this software without specific prior\n  written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\nANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\nANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright © 2011, Paul Vorbach. All rights reserved.. Copyright © 2009, Jeff Mott. All rights reserved.",
-    "name": "crypt",
-    "version": "0.0.2",
-    "description": "utilities for encryption and hashing"
   },
   "crypto-js@3.3.0": {
     "licenses": "MIT",
@@ -4524,6 +4225,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "4.4.0",
     "description": "Lightweight debugging utility for Node.js and the browser"
   },
+  "debug@4.4.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/debug-js/debug",
+    "publisher": "Josh Junon",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>\nCopyright (c) 2018-2021 Josh Junon\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software\nand associated documentation files (the 'Software'), to deal in the Software without restriction,\nincluding without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,\nand/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial\nportions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT\nLIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>. Copyright (c) 2018-2021 Josh Junon",
+    "name": "debug",
+    "version": "4.4.1",
+    "description": "Lightweight debugging utility for Node.js and the browser"
+  },
   "debug@4.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/debug-js/debug",
@@ -4577,17 +4288,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A library for deep (recursive) merging of Javascript objects",
     "publisher": ""
   },
-  "default-gateway@4.2.0": {
-    "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/silverwind/default-gateway",
-    "publisher": "silverwind",
-    "email": "me@silverwind.io",
-    "licenseText": "Copyright (c) silverwind\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this\n   list of conditions and the following disclaimer.\n2. Redistributions in binary form must reproduce the above copyright notice,\n   this list of conditions and the following disclaimer in the documentation\n   and/or other materials provided with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR\nANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\nON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright (c) silverwind. All rights reserved.",
-    "name": "default-gateway",
-    "version": "4.2.0",
-    "description": "Get the default network gateway, cross-platform."
-  },
   "defaults@1.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/node-defaults",
@@ -4631,17 +4331,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "define-properties",
     "version": "1.2.1",
     "description": "Define multiple non-enumerable properties at once. Uses `Object.defineProperty` when available; falls back to standard assignment in older engines."
-  },
-  "del@6.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/del",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "del",
-    "version": "6.1.1",
-    "description": "Delete files and directories"
   },
   "delayed-stream@1.0.0": {
     "licenses": "MIT",
@@ -4716,17 +4405,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.3",
     "description": "A simple JavaScript implementation of Dijkstra's single-source shortest-paths algorithm.",
     "publisher": ""
-  },
-  "dir-glob@3.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/kevva/dir-glob",
-    "publisher": "Kevin Mårtensson",
-    "email": "kevinmartensson@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva)",
-    "name": "dir-glob",
-    "version": "3.0.1",
-    "description": "Convert directories to glob compatible strings"
   },
   "dom-serializer@1.4.1": {
     "licenses": "MIT",
@@ -4937,17 +4615,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "encoding",
     "version": "0.1.13",
     "description": "Convert encodings, uses iconv-lite"
-  },
-  "end-of-stream@1.4.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/mafintosh/end-of-stream",
-    "publisher": "Mathias Buus",
-    "email": "mathiasbuus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014 Mathias Buus\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014 Mathias Buus",
-    "name": "end-of-stream",
-    "version": "1.4.4",
-    "description": "Call a callback when a readable/writable/duplex stream has completed or failed."
   },
   "entities@2.0.3": {
     "licenses": "BSD-2-Clause",
@@ -5239,235 +4906,203 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.2.0",
     "description": "Returns a promise with the results of a shell command"
   },
-  "execa@1.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/execa",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "execa",
-    "version": "1.0.0",
-    "description": "A better `child_process`"
-  },
-  "execa@5.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/execa",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "execa",
-    "version": "5.1.1",
-    "description": "Process execution for humans"
-  },
-  "expo-application@6.0.2": {
+  "expo-application@6.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-application\n\nGets native application information such as its ID, app name, and build version at runtime.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/application/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/application/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#https://docs.expo.dev/versions/latest/sdk/application/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-application\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-application",
-    "version": "6.0.2",
+    "version": "6.1.5",
     "description": "A universal module that gets native application information such as its ID, app name, and build version at runtime",
     "copyright": ""
   },
-  "expo-asset@11.0.5": {
+  "expo-asset@11.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-asset\n\nAn Expo universal module to download assets and pass them into other APIs\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/asset/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/asset/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/asset/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-asset\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-asset",
-    "version": "11.0.5",
+    "version": "11.1.7",
     "description": "An Expo universal module to download assets and pass them into other APIs",
     "copyright": ""
   },
-  "expo-blur@14.0.3": {
+  "expo-blur@14.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/blur-view/\">\n    <img\n      src=\"../../.github/resources/expo-blur.svg\"\n      alt=\"expo-blur\"\n      height=\"64\" />\n  </a>\n</p>\n\nA component that renders a native blur view on iOS and falls back to a semi-transparent view on Android. A common usage of this is for navigation bars, tab bars, and modals.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/blur-view/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/blur-view/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/blur-view/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-blur\n```\n\n### Configure for Android\n\n> [!note]\n> This package only supports iOS. On Android, a plain `View` with a translucent background will be rendered.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-blur",
-    "version": "14.0.3",
+    "version": "14.1.5",
     "description": "A component that renders a native blur view on iOS and falls back to a semi-transparent view on Android. A common usage of this is for navigation bars, tab bars, and modals.",
     "copyright": ""
   },
-  "expo-build-properties@0.13.3": {
+  "expo-build-properties@0.14.8": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-build-properties\n\n**`expo-build-properties`** is a [config plugin](https://docs.expo.dev/config-plugins/introduction/) to customize native build properties when using [`npx expo prebuild`](https://docs.expo.dev/workflow/prebuild/).\n\n## API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/build-properties/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/build-properties/)\n\n### Installation\n\n```\nnpx expo install expo-build-properties\n```\n\nAdd plugin to `app.json`. For example:\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\n      [\n        \"expo-build-properties\",\n        {\n          \"android\": {\n            \"compileSdkVersion\": 31,\n            \"targetSdkVersion\": 31,\n            \"buildToolsVersion\": \"31.0.0\"\n          },\n          \"ios\": {\n            \"deploymentTarget\": \"13.0\"\n          }\n        }\n      ]\n    ]\n  }\n}\n```\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide][https://github.com/expo/expo#contributing].",
     "name": "expo-build-properties",
-    "version": "0.13.3",
+    "version": "0.14.8",
     "description": "Config plugin to customize native build properties on prebuild",
     "copyright": ""
   },
-  "expo-calendar@14.0.6": {
+  "expo-calendar@14.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/calendar/\">\n    <img\n      src=\"../../.github/resources/expo-calendar.svg\"\n      alt=\"expo-calendar\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an API for interacting with the device's system calendars, events, reminders, and associated records.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/calendar/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/calendar/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/calendar/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-calendar\n```\n\n### Configure for Android\n\nAdd `android.permission.READ_CALENDAR` and `android.permission.WRITE_CALENDAR` permissions to your manifest (`android/app/src/main/AndroidManifest.xml`):\n\n```xml\n<uses-permission android:name=\"android.permission.READ_CALENDAR\" />\n<uses-permission android:name=\"android.permission.WRITE_CALENDAR\" />\n```\n\n### Configure for iOS\n\nAdd `NSCalendarsUsageDescription`, and `NSRemindersUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSCalendarsUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to access your calendar</string>\n<key>NSRemindersUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to access your reminders</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-calendar",
-    "version": "14.0.6",
+    "version": "14.1.4",
     "description": "Provides an API for interacting with the device's system calendars, events, reminders, and associated records.",
     "copyright": ""
   },
-  "expo-camera@16.0.18": {
+  "expo-camera@16.1.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/camera/\">\n    <img\n      src=\"../../.github/resources/expo-camera.svg\"\n      alt=\"expo-camera\"\n      height=\"64\" />\n  </a>\n</p>\n\nA React component that renders a preview for the device's either front or back camera. Camera's parameters like zoom, auto focus, white balance and flash mode are adjustable. With expo-camera, one can also take photos and record videos that are saved to the app's cache. Morever, the component is also capable of detecting faces and bar codes appearing on the preview.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/camera/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/camera/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/camera/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-camera\n```\n\n### Configure for Android\n\nThis package automatically adds the `CAMERA` permission to your app. If you want to record videos with audio, you have to include the `RECORD_AUDIO`.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.CAMERA\" />\n\n<!-- Optional permissions -->\n<uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n```\n\nAdjust the `android/build.gradle` to add a new `maven` block after all other repositories as described below:\n\n```gradle\nallprojects {\n    repositories {\n\n        // * Your other repositories here *\n\n        // * Add a new maven block after other repositories / blocks *\n        maven {\n            // expo-camera bundles a custom com.google.android:cameraview\n            url \"$rootDir/../node_modules/expo-camera/android/maven\"\n        }\n    }\n}\n```\n\nThe sourcecode for `cameraview` can be found at [`expo/cameraview`](https://github.com/expo/cameraview).\n\n### Configure for iOS\n\nAdd `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSCameraUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to use the camera</string>\n<key>NSMicrophoneUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to use the microphone</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-camera",
-    "version": "16.0.18",
+    "version": "16.1.11",
     "description": "A React component that renders a preview for the device's either front or back camera. Camera's parameters like zoom, auto focus, white balance and flash mode are adjustable. With expo-camera, one can also take photos and record videos that are saved to the app's cache. Morever, the component is also capable of detecting faces and bar codes appearing on the preview.",
     "copyright": ""
   },
-  "expo-clipboard@7.0.1": {
+  "expo-clipboard@7.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/clipboard/\">\n    <img\n      src=\"../../.github/resources/expo-clipboard.svg\"\n      alt=\"expo-clipboard\"\n      height=\"64\" />\n  </a>\n</p>\n\n`expo-clipboard` provides an interface for getting and setting Clipboard content on Android, iOS, and Web.\n\n## API documentation\n\nPlease refer to the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/clipboard/).\n\n\n## Installation in bare React Native projects\n\nFor bare React Native projects, ensure you've [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/).\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-clipboard\n```\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the library.\n\n### Configure for Android\n\nNo additional set up necessary.\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-clipboard",
-    "version": "7.0.1",
+    "version": "7.1.5",
     "description": "Provides an interface for getting and setting Clipboard content on Android, iOS and Web.",
     "copyright": ""
   },
-  "expo-constants@17.0.7": {
+  "expo-constants@17.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-constants\n\nProvides system information that remains constant throughout the lifetime of your app.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/constants/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-constants\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-constants",
-    "version": "17.0.7",
+    "version": "17.1.7",
     "description": "Provides system information that remains constant throughout the lifetime of your app.",
     "copyright": ""
   },
-  "expo-constants@17.0.8": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "licenseText": "# expo-constants\n\nProvides system information that remains constant throughout the lifetime of your app.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/constants/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-constants\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
-    "name": "expo-constants",
-    "version": "17.0.8",
-    "description": "Provides system information that remains constant throughout the lifetime of your app.",
-    "copyright": ""
-  },
-  "expo-crypto@14.0.2": {
+  "expo-crypto@14.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/crypto/\">\n    <img\n      src=\"../../.github/resources/expo-crypto.svg\"\n      alt=\"expo-crypto\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides cryptography primitives.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/crypto/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/crypto/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/crypto/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-crypto\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-crypto",
-    "version": "14.0.2",
+    "version": "14.1.5",
     "description": "Provides cryptography primitives for Android, iOS and web.",
     "copyright": ""
   },
-  "expo-dev-client@5.0.20": {
+  "expo-dev-client@5.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/dev-client/\">\n    <img\n      src=\"../../.github/resources/expo-dev-client.svg\"\n      alt=\"expo-dev-client\"\n      height=\"64\" />\n  </a>\n</p>\n\n`expo-dev-client` adds various useful development tools to your debug builds:\n\n- A configurable launcher UI, so you can launch updates (such as from [PR previews](https://docs.expo.dev/develop/development-builds/development-workflows#pr-previews)) and switch between development servers without needing to recompile the native app\n- Improved debugging tools (such as support for [inspecting network requests](https://docs.expo.dev/debugging/tools/#inspecting-network-requests))\n- [A powerful and extensible developer menu UI](https://docs.expo.dev/debugging/tools#developer-menu)\n\nExpo documentation refers to debug builds that include `expo-dev-client` as [development builds](https://docs.expo.dev/develop/development-builds/introduction/).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/versions/latest/sdk/dev-client).\n\n## Issues\n\nIf you encounter any issues using this package in your project, please [report your issue here](https://github.com/expo/expo/issues/new?template=dev_client_bug_report.yml).\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-dev-client",
-    "version": "5.0.20",
+    "version": "5.2.4",
     "description": "Expo Development Client",
     "copyright": ""
   },
-  "expo-dev-launcher@5.0.35": {
+  "expo-dev-launcher@5.1.16": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-dev-launcher\n\n`expo-dev-launcher` is an npm package installable in any Expo or React Native project. Once installed, any Debug builds of your application will gain the ability to load projects from Expo CLI. Release builds of your application will not change other than the addition of a few header files. This package is intended to be included in your project through [`expo-dev-client`](https://docs.expo.dev/versions/latest/sdk/dev-client/).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/develop/development-builds/introduction).\n\n## Contributing\n\nThe `expo-dev-launcher` repository consists of two different parts, the exported package, which includes the native functions, located in the `android`, `ios` and `src` folders and the Dev Launcher interface, located under the `bundle` folder.\n\nLocal development is usually done through `bare-expo`.\n\n### Making JavaScript changes inside the `bundle` folder\n\nTo update the JavaScript code inside the `bundle` folder, you need to run the `dev-launcher` bundler locally.\n\n1. Navigate to the `dev-launcher` package: `cd packages/expo-dev-launcher`\n2. Start the Metro bundler: `yarn start`\n3. Adjust the dev-launcher URL to point to your local bundler\n\n<details>\n\n#### On Android\n\nOpen [DevLauncherController.kt](/packages/expo-dev-launcher/android/src/debug/java/expo/modules/devlauncher/DevLauncherController.kt) and update the `DEV_LAUNCHER_HOST` value to your bundler URL.\n\nE.g.\n\n```diff\n- private val DEV_LAUNCHER_HOST: String? = null\n+ private val DEV_LAUNCHER_HOST: String? = \"10.0.2.2:8090\";\n```\n\n#### On iOS\n\n3.1. Open another terminal window and navigate to the `ios` folder inside `bare-expo`\n\n3.2. Export the `EX_DEV_LAUNCHER_URL` variable in your shell before running `pod install`.\n\nE.g.\n\n```\nexport EX_DEV_LAUNCHER_URL=http://localhost:8090\n```\n\nThis will cause the controller to see if the `expo-launcher` packager is running, and if so, use that instead of the prebuilt bundle.\n\n3.3. Run `pod install`\n\n</details>\n\n4. Recompile `bare-expo`\n5. Play with your changes on a simulator or device\n6. Once you've made all the necessary changes run `yarn bundle` to update the embedded bundle",
     "name": "expo-dev-launcher",
-    "version": "5.0.35",
+    "version": "5.1.16",
     "description": "Pre-release version of the Expo development launcher package for testing.",
     "copyright": ""
   },
-  "expo-dev-menu-interface@1.9.3": {
+  "expo-dev-menu-interface@1.10.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-dev-menu-interface\n\nInterface for `expo-dev-menu`.\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-dev-menu-interface\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-dev-menu-interface",
-    "version": "1.9.3",
+    "version": "1.10.0",
     "description": "Interface for expo-dev-menu",
     "copyright": ""
   },
-  "expo-dev-menu@6.0.25": {
+  "expo-dev-menu@6.1.14": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
-    "licenseText": "# 📦 expo-dev-menu\n\nExpo/React Native module to add developer menu to Debug builds of your application. This package is intended to be included in your project through [`expo-dev-client`](https://docs.expo.dev/develop/development-builds/introduction/#what-is-an-expo-dev-client).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/develop/development-builds/introduction).\n\n## Contributing\n\nThe `expo-dev-menu` repository consists of two different parts, the exported package, which includes the native functions, located in the `android`, `ios` and `src` folders and the Dev Menu interface, located under the `app` folder.\n\nLocal development is usually done through [`bare-expo`](/apps/bare-expo).\n\nFirst, make sure to `yarn` and `yarn start` in `expo-dev-menu` which will add the port for the dev menu packager to [`dev-menu-packager-host`](./assets/dev-menu-packager-host`). This is bundled into the native code in `bare-expo` so need to be done first. When done with local development, you need to reset the contents of `dev-menu-packager-host`!\n\n### Making JavaScript changes inside the `app` folder\n\nTo update the JavaScript code inside the `app` folder, you need to run the `dev-menu` bundler locally.\n\n1. Navigate to the `dev-menu` package: `cd packages/expo-dev-menu`\n2. Start the Metro bundler: `yarn start`\n3. To use your local bundler on Android, open [DevMenuManager.kt](/packages/expo-dev-menu/android/src/debug/java/expo/modules/devmenu/DevMenuManager.kt) and set `useDeveloperSupport` to `true`.\n\n```diff\n- val useDeveloperSupport = false\n+ val useDeveloperSupport = true\n```\n\n4. Play with your changes on a simulator or device through `bare-expo`\n5. Once you've made all the necessary changes run `yarn bundle:prod:ios && yarn bundle:prod:android` to update the embedded bundle",
+    "licenseText": "# 📦 expo-dev-menu\n\nExpo/React Native module to add developer menu to Debug builds of your application. This package is intended to be included in your project through [`expo-dev-client`](https://docs.expo.dev/develop/development-builds/introduction/#what-is-an-expo-dev-client).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/develop/development-builds/introduction).\n\n## Contributing\n\nThe `expo-dev-menu` repository consists of two different parts, the exported package, which includes the native functions, located in the `android`, `ios` and `src` folders and the Dev Menu interface, located under the `app` folder.\n\nLocal development is usually done through [`bare-expo`](/apps/bare-expo).\n\nFirst, make sure to `yarn` and `yarn start` in `expo-dev-menu` which will add the port for the dev menu packager to [`dev-menu-packager-host`](./assets/dev-menu-packager-host). This is bundled into the native code in `bare-expo` so it needs to be done first. When done with local development, you need to reset the contents of `dev-menu-packager-host`!\n\n### Making JavaScript changes inside the `app` folder\n\nTo update the JavaScript code inside the `app` folder, you need to run the `dev-menu` bundler locally.\n\n1. Navigate to the `dev-menu` package: `cd packages/expo-dev-menu`\n2. Start the Metro bundler: `yarn start`\n3. To use your local bundler on Android, open [DevMenuManager.kt](/packages/expo-dev-menu/android/src/debug/java/expo/modules/devmenu/DevMenuManager.kt) and set `useDeveloperSupport` to `true`.\n\n```diff\n- val useDeveloperSupport = false\n+ val useDeveloperSupport = true\n```\n\n4. Play with your changes on a simulator or device through `bare-expo`\n5. Once you've made all the necessary changes run `yarn bundle:prod:ios && yarn bundle:prod:android` to update the embedded bundle",
     "name": "expo-dev-menu",
-    "version": "6.0.25",
+    "version": "6.1.14",
     "description": "Expo/React Native module with the developer menu.",
     "copyright": ""
   },
-  "expo-device@7.0.3": {
+  "expo-device@7.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/device/\">\n    <img\n      src=\"../../.github/resources/expo-device.svg\"\n      alt=\"expo-device\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides specific information about the device running the application.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/device/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/device/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/device/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-device\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-device",
-    "version": "7.0.3",
+    "version": "7.1.4",
     "description": "A universal module that gets physical information about the device running the application",
     "copyright": ""
   },
-  "expo-document-picker@13.0.3": {
+  "expo-document-picker@13.1.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/document-picker/\">\n    <img\n      src=\"../../.github/resources/expo-document-picker.svg\"\n      alt=\"expo-document-picker\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the system's UI for selecting documents from the available providers on the user's device.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/document-picker/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/document-picker/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/document-picker/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```bash\nnpx expo install expo-document-picker\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n### Plugin\n\nYou can change the `com.apple.developer.icloud-container-environment` entitlement using the `iCloudContainerEnvironment` property.\n\n`app.json`\n\n```json\n{\n  \"ios\": {\n    \"usesIcloudStorage\": true,\n    \"bundleIdentifier\": \"com.yourname.yourapp\"\n  },\n  \"plugins\": [\"expo-document-picker\"]\n}\n```\n\n> Running `npx expo prebuild` will generate the [native project locally](https://docs.expo.dev/workflow/customizing/) with the applied changes in your iOS Entitlements file.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-document-picker",
-    "version": "13.0.3",
+    "version": "13.1.6",
     "description": "Provides access to the system's UI for selecting documents from the available providers on the user's device.",
     "copyright": ""
   },
-  "expo-eas-client@0.13.3": {
+  "expo-eas-client@0.14.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-eas-client\n\nInformation related to EAS.\n\n## Client ID Discussion\n\nStable client identifier for EAS services.\n\nOn iOS, this is stored in NSUserDefaults which is persisted and backed up. Upon restore (set up new iOS device for example), the identifier should be the same.\n\nOn Android, this is stored in SharedPreferences. By default since Android 6, SharedPreferences are backed up automatically via Auto Backup, though some devices or apps may not (for example, if `android:allowBackup=\"true\"` is not specified in AndroidManifest.xml).\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-eas-client",
-    "version": "0.13.3",
+    "version": "0.14.4",
     "description": "Stable client identifier for EAS services",
     "copyright": ""
   },
-  "expo-file-system@18.0.12": {
+  "expo-file-system@18.1.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/filesystem/\">\n    <img\n      src=\"../../.github/resources/expo-file-system.svg\"\n      alt=\"expo-file-system\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the local file system on the device.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/filesystem/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/filesystem/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/filesystem/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n## Installation in bare Android React Native project\n\nThis module requires permissions to interact with the filesystem and create resumable downloads. The `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE` and `INTERNET` permissions are automatically added.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.INTERNET\" />\n```\n\n## Installation in bare iOS React Native project\n\nNo additional set up necessary.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-file-system",
-    "version": "18.0.12",
+    "version": "18.1.11",
     "description": "Provides access to the local file system on the device.",
     "copyright": ""
   },
-  "expo-font@13.0.4": {
+  "expo-font@13.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/font/\">\n    <img\n      src=\"../../.github/resources/expo-font.svg\"\n      alt=\"expo-font\"\n      height=\"64\" />\n  </a>\n</p>\n\nLoad fonts at runtime and use them in React Native components.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/font/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/font/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/font/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-font\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-font",
-    "version": "13.0.4",
+    "version": "13.3.2",
     "description": "Load fonts at runtime and use them in React Native components.",
     "copyright": ""
   },
-  "expo-image-loader@5.0.0": {
+  "expo-image-loader@5.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-image-loader\n\nProvides image loader\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-image-loader\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-image-loader",
-    "version": "5.0.0",
+    "version": "5.1.0",
     "description": "Image loader",
     "copyright": ""
   },
-  "expo-image-picker@16.0.6": {
+  "expo-image-picker@16.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/imagepicker/\">\n    <img\n      src=\"../../.github/resources/expo-image-picker.svg\"\n      alt=\"expo-image-picker\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/imagepicker/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/imagepicker/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/imagepicker/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-image-picker\n```\n\n### Configure for Android\n\n> This is only required for usage in bare React Native apps.\n\nThis package automatically adds the `CAMERA`, `READ_EXTERNAL_STORAGE`, and `WRITE_EXTERNAL_STORAGE` permissions. They are used when picking images from the camera directly, or from the camera roll.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.CAMERA\" />\n<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\n```\n\n### Configure for iOS\n\n> This is only required for usage in bare React Native apps.\n\nAdd `NSPhotoLibraryUsageDescription`, `NSCameraUsageDescription`, and `NSMicrophoneUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSPhotoLibraryUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to save photos</string>\n<key>NSCameraUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to access your camera</string>\n<key>NSMicrophoneUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to use your microphone</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n## Config Plugin\n\n> This plugin is applied automatically in EAS Build, only add the config plugin if you want to pass in extra properties.\n\nAfter installing this npm package, add the [config plugin](https://docs.expo.dev/config-plugins/introduction) to the [`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins) array of your `app.json` or `app.config.js`:\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\"expo-image-picker\"]\n  }\n}\n```\n\nNext, rebuild your app as described in the [\"Adding custom native code\"](https://docs.expo.dev/workflow/customizing/) guide.\n\n### API\n\nThe plugin provides props for extra customization. Every time you change the props or plugins, you'll need to rebuild (and `prebuild`) the native app. If no extra properties are added, defaults will be used.\n\n- `photosPermission` (_string | false_): Sets the iOS `NSPhotoLibraryUsageDescription` permission message to the `Info.plist`. Setting `false` will skip adding the permission on iOS and **does not** skip the permission on Android. Defaults to `Allow $(PRODUCT_NAME) to access your photos`.\n- `cameraPermission` (_string | false_): Sets the iOS `NSCameraUsageDescription` permission message to the `Info.plist`. Setting `false` will skip adding the permission on iOS and **does not** skip the permission on Android. Defaults to `Allow $(PRODUCT_NAME) to access your camera`.\n- `microphonePermission` (_string | false_): Sets the iOS `NSCameraUsageDescription` permission message to the `Info.plist`. Setting `false` will skip adding the permission on iOS and skips adding the `android.permission.RECORD_AUDIO` Android permission. Defaults to `Allow $(PRODUCT_NAME) to access your photos`.\n\n### Example\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\n      [\n        \"expo-image-picker\",\n        {\n          \"photosPermission\": \"custom photos permission\",\n          \"cameraPermission\": \"Allow $(PRODUCT_NAME) to open the camera\",\n\n          \"//\": \"Disables the microphone permission\",\n          \"microphonePermission\": false\n        }\n      ]\n    ]\n  }\n}\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-image-picker",
-    "version": "16.0.6",
+    "version": "16.1.4",
     "description": "Provides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.",
     "copyright": ""
   },
@@ -5482,223 +5117,213 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Native in-app updates for Android and iOS",
     "copyright": ""
   },
-  "expo-json-utils@0.14.0": {
+  "expo-json-utils@0.15.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-json-utils\n\nUtilities for reading JSONObjects (Android) and NSDictionaries (iOS) for React Native and Expo apps.\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-json-utils",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "description": "Utilities for reading JSONObjects (Android) and NSDictionaries (iOS).",
     "copyright": ""
   },
-  "expo-keep-awake@14.0.3": {
+  "expo-keep-awake@14.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/keep-awake/\">\n    <img\n      src=\"../../.github/resources/expo-keep-awake.svg\"\n      alt=\"expo-keep-awake\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides a React component that prevents the screen sleeping when rendered. It also exposes static methods to control the behavior imperatively.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/keep-awake/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/keep-awake/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/keep-awake/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-keep-awake\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-keep-awake",
-    "version": "14.0.3",
+    "version": "14.1.4",
     "description": "Provides a React component that prevents the screen sleeping when rendered. It also exposes static methods to control the behavior imperatively.",
     "copyright": ""
   },
-  "expo-linear-gradient@14.0.2": {
+  "expo-linear-gradient@14.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/linear-gradient/\">\n    <img\n      src=\"../../.github/resources/expo-linear-gradient.svg\"\n      alt=\"expo-linear-gradient\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides a React component that renders a gradient view.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/linear-gradient/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/linear-gradient/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/linear-gradient/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-linear-gradient\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-linear-gradient",
-    "version": "14.0.2",
+    "version": "14.1.5",
     "description": "Provides a React component that renders a gradient view.",
     "copyright": ""
   },
-  "expo-linking@7.0.5": {
+  "expo-linking@7.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-linking\n\nCreate and open deep links universally.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/linking/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/linking/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/linking/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-linking\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-linking",
-    "version": "7.0.5",
+    "version": "7.1.7",
     "description": "Create and open deep links universally",
     "copyright": ""
   },
-  "expo-localization@16.0.1": {
+  "expo-localization@16.1.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/localization/\">\n    <img\n      src=\"../../.github/resources/expo-localization.svg\"\n      alt=\"expo-localization\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an interface for native user localization information.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/localization/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/localization/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/localization/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-localization\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-localization",
-    "version": "16.0.1",
+    "version": "16.1.6",
     "description": "Provides an interface for native user localization information.",
     "copyright": ""
   },
-  "expo-location@18.0.10": {
+  "expo-location@18.1.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/location/\">\n    <img\n      src=\"../../.github/resources/expo-location.svg\"\n      alt=\"expo-location\"\n      height=\"64\" />\n  </a>\n</p>\n\nAllows reading geolocation information from the device. Your app can poll for the current location or subscribe to location update events.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/location/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/location/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/location/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-location\n```\n\n### Configure for Android\n\nThis module requires the permissions for approximate and exact device location. It also needs the foreground service permission to subscribe to location updates, while the app is in use. These permissions are automatically added.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />\n<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\n\n<!-- Optional permissions -->\n<uses-permission android:name=\"android.permission.FOREGROUND_SERVICE\" />\n<uses-permission android:name=\"android.permission.FOREGROUND_SERVICE_LOCATION\" />\n<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\" />\n```\n\n> [!note]\n> On Android, you have to [submit your app for review and request access to use the background location permission](https://support.google.com/googleplay/android-developer/answer/9799150?hl=en) or [foreground location permissions](https://support.google.com/googleplay/android-developer/answer/13392821?hl=en).\n\n### Configure for iOS\n\nAdd `NSLocationAlwaysAndWhenInUseUsageDescription`, `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to use your location</string>\n<key>NSLocationAlwaysUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to use your location</string>\n<key>NSLocationWhenInUseUsageDescription</key>\n<string>Allow $(PRODUCT_NAME) to use your location</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-location",
-    "version": "18.0.10",
+    "version": "18.1.6",
     "description": "Allows reading geolocation information from the device. Your app can poll for the current location or subscribe to location update events.",
     "copyright": ""
   },
-  "expo-manifests@0.15.7": {
+  "expo-manifests@0.16.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-manifests\n\nCode to parse and use Expo and Expo Updates manifests.\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-manifests",
-    "version": "0.15.7",
+    "version": "0.16.6",
     "description": "Code to parse and use Expo and Expo Updates manifests.",
     "copyright": ""
   },
-  "expo-manifests@0.15.8": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "licenseText": "# expo-manifests\n\nCode to parse and use Expo and Expo Updates manifests.\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
-    "name": "expo-manifests",
-    "version": "0.15.8",
-    "description": "Code to parse and use Expo and Expo Updates manifests.",
-    "copyright": ""
-  },
-  "expo-media-library@17.0.6": {
+  "expo-media-library@17.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/media-library/\">\n    <img\n      src=\"../../.github/resources/expo-media-library.svg\"\n      alt=\"expo-media-library\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to user's media library.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/media-library/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/media-library/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/media-library/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-media-library\n```\n\n### Configure for Android\n\nThis package automatically adds the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. They are used when accessing the user's images or videos.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\n```\n\nIf you'd like to access asset location (latitude and longitude EXIF tags), you have to add `ACCESS_MEDIA_LOCATION` permission to the `AndroidManifest.xml`:\n\n```xml\n<!-- Add this to AndroidManifest.xml -->\n<uses-permission android:name=\"android.permission.ACCESS_MEDIA_LOCATION\" />\n```\n\nStarting with Android 10, the concept of [scoped storage](https://developer.android.com/training/data-storage#scoped-storage) is introduced. Currently, to make `expo-media-library` working with that change, you have to add `android:requestLegacyExternalStorage=\"true\"` to `AndroidManifest.xml`:\n\n```xml\n<manifest ... >\n  <application android:requestLegacyExternalStorage=\"true\" ... >\n    ...\n  </application>\n</manifest>\n```\n\n### Configure for iOS\n\nAdd `NSPhotoLibraryUsageDescription`, and `NSPhotoLibraryAddUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSPhotoLibraryUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to access your photos</string>\n<key>NSPhotoLibraryAddUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to save photos</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-media-library",
-    "version": "17.0.6",
+    "version": "17.1.7",
     "description": "Provides access to user's media library.",
     "copyright": ""
   },
-  "expo-modules-autolinking@2.0.8": {
+  "expo-modules-autolinking@2.1.14": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/modules/autolinking/\">\n    <img\n      src=\"../../.github/resources/expo-modules-autolinking.svg\"\n      alt=\"expo-modules-autolinking\"\n      height=\"64\" />\n  </a>\n</p>\n\nScripts that autolink Expo modules.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/modules/autolinking/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-modules-autolinking\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-modules-autolinking",
-    "version": "2.0.8",
+    "version": "2.1.14",
     "description": "Scripts that autolink Expo modules.",
     "copyright": ""
   },
-  "expo-modules-core@2.2.3": {
+  "expo-modules-core@2.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/modules/\">\n    <img\n      src=\"../../.github/resources/expo-modules-core.svg\"\n      alt=\"expo-modules-core\"\n      height=\"64\" />\n  </a>\n</p>\n\nThe core of Expo Modules architecture.\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-modules-core\n```\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n### Configure for Android\n\nNo additional set up necessary.\n\n# Importing native dependencies - autolinking\n\nMany React Native libraries come with platform-specific (native) code. This native code has to be linked into the project and, in some cases, configured further. These actions require some modifications to the native project files. One of the steps that has to be done with the native configuration is to enable the autolinking mechanism that takes care of including any supported module's native code into the project. The following configuration is required:\n\n### iOS\n\n> Caution! After you have made the following changes you will need to run `pod install` again.\n\n```ruby\n# Podfile\n\nrequire File.join(File.dirname(`node --print \"require.resolve('react-native/package.json')\"`), \"scripts/react_native_pods\")\nrequire File.join(File.dirname(`node --print \"require.resolve('expo-modules-core/package.json')\"`), \"cocoapods.rb\")\nrequire File.join(File.dirname(`node --print \"require.resolve('expo-modules-core/package.json')\"`), \"scripts/autolinking\")\n\n#  ...\n\ntarget \"TargetName\" do\n  use_unimodules!\n  config = use_native_modules!\n  use_react_native!(:path => config[\"reactNativePath\"])\n\n  # ...\nend\n```\n\n### Android\n\n```groovy\n// app/build.gradle\n\napply from: new File([\"node\", \"--print\", \"require.resolve('expo-modules-core/package.json')\"].execute(null, rootDir).text.trim(), \"../gradle.groovy\")\napply from: new File([\"node\", \"--print\", \"require.resolve('react-native/package.json')\"].execute(null, rootDir).text.trim(), \"../react.gradle\")\napply from: new File([\"node\", \"--print\", \"require.resolve('expo-updates/package.json')\"].execute(null, rootDir).text.trim(), \"../scripts/create-manifest-android.gradle\")\n\n// ...\n\napply from: new File([\"node\", \"--print\", \"require.resolve('@react-native-community/cli-platform-android/package.json')\"].execute(null, rootDir).text.trim(), \"../native_modules.gradle\");\napplyNativeModulesAppBuildGradle(project)\n```\n\n```groovy\n// settings.gradle\n\napply from: new File([\"node\", \"--print\", \"require.resolve('expo-modules-core/package.json')\"].execute(null, rootDir).text.trim(), \"../gradle.groovy\");\nincludeUnimodulesProjects()\n\napply from: new File([\"node\", \"--print\", \"require.resolve('@react-native-community/cli-platform-android/package.json')\"].execute(null, rootDir).text.trim(), \"../native_modules.gradle\");\napplyNativeModulesSettingsGradle(settings)\n```\n\n### Explanation\n\nThe scripts that are referenced in Gradle and Cocoapods are usually found the related package inside the project's `node_modules` directory. In the case of monorepos (such as Yarn workspaces) the project directory may not contain `node_modules` at all; instead, the modules are likely to be located at the root of the repository. In order to ensure that both cases are supported, we take advantage of the Node dependency resolution strategy. We invoke a subprocess that spawns the simple JavaScript snippet that tries to locate the desired npm package containing the script we need.\n\n- On iOS, we use [`` ` ` `` (backtick)](https://stackoverflow.com/questions/3159945/running-command-line-commands-within-ruby-script) ([alternative reference](https://ruby-doc.org/core-3.0.2/Kernel.html#method-i-60)).\n- On Android, we use [String[]#execute](<http://docs.groovy-lang.org/latest/html/groovy-jdk/java/lang/String[].html#execute()>) to obtain the results from the subprocess' stdout.\n\nThe Node process that is spawned runs [`require.resolve`](https://nodejs.org/dist/latest-v14.x/docs/api/modules.html#modules_require_resolve_request_options) to obtain the path to a module's `package.json`(if you look for the module location using solely module name, you'll be given the path to the file pointed by the `main` attribute from the `package.json` and we need to know the location of the module's root directory). We then assemble the path to the desired script and execute it.\n\nYou can read more about the scripts and libraries used in the examples above in their official READMEs.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-modules-core",
-    "version": "2.2.3",
+    "version": "2.5.0",
     "description": "The core of Expo Modules architecture",
     "copyright": ""
   },
-  "expo-notifications@0.29.14": {
+  "expo-notifications@0.31.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
-    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/notifications/\">\n    <img\n      src=\"../../.github/resources/expo-notifications.svg\"\n      alt=\"expo-notifications\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an API to fetch push notification tokens and to present, schedule, receive and respond to notifications.\n\n## Features\n\n- 📣 schedule a one-off notification for a specific date, or some time from now,\n- 🔁 schedule a notification repeating in some time interval (or a calendar date match on iOS),\n- 1️⃣ get and set application badge icon number,\n- 📲 fetch a native device push token so you can send push notifications with FCM and APNS,\n- 😎 fetch an Expo push token so you can send push notifications with Expo,\n- 📬 listen to incoming notifications in the foreground and background,\n- 👆 listen to interactions with notifications (tapping or dismissing),\n- 🎛 handle notifications when the app is in foreground,\n- 🔕 imperatively dismiss notifications from Notification Center/tray,\n- 🗂 create, update, delete Android notification channels,\n- 🎨 set custom icon and color for notifications on Android.\n\n# Installation in managed Expo projects\n\nPlease refer to the [installation instructions in the Expo documentation](https://docs.expo.dev/versions/latest/sdk/notifications/#installation).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-notifications\n```\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\nIn order to be able to receive push notifications on the device:\n\n- open Xcode workspace from your `ios` folder\n- select your project from the _Navigator_ pane\n- switch to _Signing & Capabilities_ tab\n- ensure that the _Push notifications_ capability is present (if it's not, click the \"+ Capability\" button and add the capability to the project).\n\n### Configure for Android\n\nIn order to be able to receive push notifications on the device ensure that your project is set up for Firebase. For more information on how to do it, see [this guide](https://docs.expo.dev/guides/using-firebase/#install-and-initialize-react-native-firebase).\n\nThis module requires permission to subscribe to device boot. It's used to setup the scheduled notifications right after the device (re)starts. The `RECEIVE_BOOT_COMPLETED` permission is added automatically.\n\n**Note:** Starting from Android 12 (API level 31), to schedule the notification that triggers at the exact time, you need to add `<uses-permission android:name=\"android.permission.SCHEDULE_EXACT_ALARM\"/>` to **AndroidManifest.xml**. You can read more about the exact alarm permission [here](https://developer.android.com/about/versions/12/behavior-changes-12#exact-alarm-permission).\n\n<details><summary><strong>Expand to view how the notification icon and the default color can be customized in a plain React Native app</strong></summary> <p>\n\n- **To customize the icon**:\n\n  You can customize two icons: the default and the large one. See [the Android documentation](https://developer.android.com/guide/topics/ui/notifiers/notifications#Templates) for more details. The steps for them are very similar. The only difference is the tag in the second step.\n\n  1. You will need to ensure that the icon is properly set up and added the project. To read more on how to create a notification icon and add it to the project check out the [“Create notification icon” section](https://developer.android.com/studio/write/image-asset-studio#create-notification) at the official Android guide. Remember the name you use for the icon asset, you will need it later!\n  2. Then head over to `android/app/src/main/AndroidManifest.xml` and add a `<meta-data>` tag of `android:name=\"expo.modules.notifications.default_notification_icon\"` (or `android:name=\"expo.modules.notifications.large_notification_icon\"` if you are changing the large icon) inside the `<application>` node referencing the custom icon with `@drawable/<notification_icon_name_you_used_in_step_1>`, like [here](https://github.com/expo/expo/blob/335e67a1a3a91598c02061f3318a881541d0d57a/apps/bare-expo/android/app/src/main/AndroidManifest.xml#L44-L46).\n  3. In the end your `AndroidManifest.xml` should look more or less like this:\n\n  ```xml\n  <manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" ...>\n    ...\n    <application ...>\n      ...\n      <meta-data\n        android:name=\"expo.modules.notifications.default_notification_icon\"\n        android:resource=\"@drawable/ic_stat_notifications\" /> <!-- @drawable/<insert_notification_icon_name> -->\n      ...\n    </application>\n  </manifest>\n  ```\n\n- **To customize the default color of the notification**:\n  1. you will need a color resource added to the native project's resources. Some information on how to do this can be found in [the official Android guide](https://developer.android.com/guide/topics/resources/more-resources#Color). The most simple and fail-safe instructions would be to:\n     1. ensure that there is a file under `android/app/src/main/res/values/colors.xml` (if there is none, create it)\n     2. ensure that it's a valid resources XML file (it should start with a `<?xml version=\"1.0\" encoding=\"utf-8\"?>` declaration and have a root node of `<resources>`)\n     3. inside the `<resources>` node add a `<color>` node with an arbitrary name (like `notification_icon_color`) containing the color in HEX format inside, like [here](https://github.com/expo/expo/blob/335e67a1a3a91598c02061f3318a881541d0d57a/apps/bare-expo/android/app/src/main/res/values/colors.xml#L3).\n     4. in the end your `colors.xml` should look more or less like this:\n        ```java\n        <?xml version=\"1.0\" encoding=\"utf-8\"?>\n        <resources>\n          <color name=\"notification_icon_color\">#4630EB</color>\n        </resources>\n        ```\n  2. now, when the color is added to the project, we need to configure `expo-notifications` to use it when it displays a notification — head over to `android/app/src/main/AndroidManifest.xml` and add a `<meta-data>` tag of `android:name=\"expo.modules.notifications.default_notification_color\"` inside the `<application>` node referencing the custom icon with `@color/<notification_icon_color_name>`, like [here](https://github.com/expo/expo/blob/335e67a1a3a91598c02061f3318a881541d0d57a/apps/bare-expo/android/app/src/main/AndroidManifest.xml#L47-L49).\n  3. In the end your `AndroidManifest.xml` should look more or less like this:\n  ```xml\n  <manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" ...>\n    ...\n    <application ...>\n      ...\n      <meta-data\n        android:name=\"expo.modules.notifications.default_notification_color\"\n        android:resource=\"@color/notification_icon_color\" /> <!-- @color/<insert_notification_icon_color_name> -->\n      ...\n    </application>\n  </manifest>\n  ```\n- An `AndroidManifest.xml` with both color (of name `notification_icon_color`) and an icon (of name `ic_stat_notifications`) name would look like this:\n  ```xml\n  <manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" ...>\n    <application ...>\n      ...\n      <meta-data\n        android:name=\"expo.modules.notifications.default_notification_icon\"\n        android:resource=\"@drawable/ic_stat_notifications\" />\n      <meta-data\n        android:name=\"expo.modules.notifications.default_notification_color\"\n        android:resource=\"@color/notification_icon_color\" />\n      ...\n    </application>\n  </manifest>\n  ```\n\n</p>\n</details>\n\n### Config plugin setup (optional)\n\nIf you're using EAS Build, you can set your Android notification icon and color tint, add custom push notification sounds, and set your iOS notification environment using the expo-notifications config plugin ([what's a config plugin?](https://docs.expo.dev/config-plugins/introduction)). To setup, just add the config plugin to the plugins array of your `app.json` or `app.config.js` as shown below, then rebuild the app.\n\n```json\n{\n  \"expo\": {\n    ...\n    \"plugins\": [\n      [\n        \"expo-notifications\",\n        {\n          \"icon\": \"./local/path/to/myNotificationIcon.png\",\n          \"color\": \"#ffffff\",\n          \"sounds\": [\"./local/path/to/mySound.wav\", \"./local/path/to/myOtherSound.wav\"],\n          \"mode\": \"production\"\n        }\n      ]\n    ],\n  }\n}\n```\n\n<details><summary><strong>Expand to view property descriptions and default values</strong></summary> <p>\n\n- **icon**: Android only. Local path to an image to use as the icon for push notifications. 96x96 all-white png with transparency.\n- **color**: Android only. Tint color for the push notification image when it appears in the notification tray. Default: \"#ffffff\".\n- **sounds**: Array of local paths to sound files (.wav recommended) that can be used as custom notification sounds.\n- **mode**: iOS only. Environment of the app: either 'development' or 'production'. Default: 'development'.\n\n</p>\n</details>\n\n### Add your project's credentials to Expo server (optional)\n\nIf you would like to send notifications with Expo servers, the servers will need to have a way to authenticate with APNS/FCM that they are authorized to send notifications on your behalf. To do this:\n\n- for Firebase Cloud Messaging, check out this guide: _[Uploading Server Credentials](https://docs.expo.dev/push-notifications/using-fcm/#uploading-server-credentials)_,\n- for APNS:\n  - run `expo credentials:manager` in the root of your application,\n  - if you've already uploaded a Push Notifications Key in another project and would like to reuse it in the current project, select _Use existing Push Notifications Key in current project_ (you may need to set `slug` and `ios.bundleIdentifier` fields in `app.json` so that the server knows to which `experienceId` and `bundleIdentifier` the key should be attributed),\n  - if you've never uploaded a Push Notifications Key or would like to add a new one\n    - select _Add new Push Notifications Key_\n    - if you'd like to let Expo handle the process, select _Let Expo handle the process_\n    - if you can't let Expo handle the process or you want to upload your own key, select _I want to upload my own file_\n      - provide a path to the P8 file you have downloaded from [developer.apple.com](https://developer.apple.com/) website.\n\n# Common gotchas / known issues\n\n### Fetching a push token takes a long time on iOS\n\n`getDevicePushTokenAsync` and `getExpoPushTokenAsync` can sometimes take a long time to resolve on iOS. This is outside of `expo-notifications`'s control, as stated in Apple's [“Troubleshooting Push Notifications” technical note](https://developer.apple.com/library/archive/technotes/tn2265/_index.html):\n\n> This is not necessarily an error condition. The system may not have Internet connectivity at all because it is out of range of any cell towers or Wi-Fi access points, or it may be in airplane mode. Instead of treating this as an error, your app should continue normally, disabling only that functionality that relies on push notifications.\n\nAs mentioned, the most common reasons for this this are either an invalid Internet connection (fetching a push token requires an Internet connection to register the device with the service provider) or an invalid configuration of your App ID or Provisioning Profile.\n\nHere are a few ways people claim to have solved this problem, maybe one of these will help you solve it, too!\n\n<details><summary><strong>Read the Apple's <a href=\"https://developer.apple.com/library/archive/technotes/tn2265/_index.html\">Technical Note on troubleshooting push notifications</a></strong></summary> <p>\n\nGo read the Apple's [Technical Note on troubleshooting push notifications](https://developer.apple.com/library/archive/technotes/tn2265/_index.html)! This the single most reliable source of information on this problem. To help you grasp what they're suggesting:\n\n- Make sure the device has a reliable connection to the Internet (try turning off Wi-Fi or switching to another network, and disabling firewall block on port 5223, as suggested in [this SO answer](https://stackoverflow.com/a/34332047/1123156)).\n- Make sure your app configuration is set properly for registering for push notifications (for bare workflow check out [this guide](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html), for managed workflow this is done automatically for you by `expo-cli`) as also suggested by [this StackOverflow answer](https://stackoverflow.com/a/10791240/1123156).\n- If you're in bare workflow you may want to try to debug this even further by logging persistent connection debug information as outlined by [this StackOverflow answer](https://stackoverflow.com/a/8036052/1123156).\n\n</p>\n</details>\n\n<details><summary><strong>Try again in a little while</strong></summary> <p>\n\n- APNS servers near the device may be down as indicated by [this forum thread](https://developer.apple.com/forums/thread/52224). Take a walk and try again later!\n- Try again in a few days time as suggested by [this GitHub comment](https://github.com/expo/expo/issues/10369#issuecomment-717872956).\n\n</p>\n</details>\n\n<details><summary><strong>Disable network sharing on your device</strong></summary> <p>\n\nYou may need to disable network sharing as this may impact the registration as suggested by [this StackOverflow answer](https://stackoverflow.com/a/59156989/1123156).\n\n</p>\n</details>\n\n<details><summary><strong>Restart your device</strong></summary> <p>\n\nIf you just changed the APNS servers where the app should be registering (by installing a TestFlight build over an Xcode build on the same device) you may need to restart your device as suggested by [this StackOverflow answer](https://stackoverflow.com/a/59864028/1123156).\n\n</p>\n</details>\n\n<details><summary><strong>Setup your device with a SIM card</strong></summary> <p>\n\nIf the device you're experiencing this on hasn't been setup with a SIM card it looks like configuring it may help mitigate this bug as suggested by [this StackOverflow answer](https://stackoverflow.com/a/19432504/1123156).\n\n</p>\n</details>\n\n### Setting custom notification sounds\n\nCustom notification sounds are only supported when using [EAS Build](https://docs.expo.dev/build/introduction/), or in the bare workflow.\n\nTo add custom push notification sounds to your app, add the `expo-notifications` plugin to your `app.json` file:\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\n      [\n        \"expo-notifications\",\n        {\n          \"sounds\": [\"local/path/to/mySoundFile.wav\"]\n        }\n      ]\n    ]\n  }\n}\n```\n\nAfter building your app, the array of files will be available for use in both [`NotificationContentInput`](#notificationcontentinput) and [`NotificationChannelInput`](#notificationchannelinput). You _only_ need to provide the base filename- here's an example using the config above:\n\n```ts\nawait Notifications.setNotificationChannelAsync('new-emails', {\n  name: 'E-mail notifications',\n  sound: 'mySoundFile.wav', // Provide ONLY the base filename\n});\n\nawait Notifications.scheduleNotificationAsync({\n  content: {\n    title: \"You've got mail! 📬\",\n    sound: 'mySoundFile.wav', // Provide ONLY the base filename\n  },\n  trigger: {\n    seconds: 2,\n    channelId: 'new-emails',\n  },\n});\n```\n\nYou can also manually add notification files to your Android and iOS projects if you prefer:\n\n<details><summary><strong>Manually adding notification sounds on Android</strong></summary> <p>\n\nOn Androids 8.0+, playing a custom sound for a notification requires more than setting the `sound` property on the `NotificationContentInput`. You will _also_ need to configure the `NotificationChannel` with the appropriate `sound`, and use it when sending/scheduling the notification.\n\nFor the example below to work, you would place your `email-sound.wav` file in `android/app/src/main/res/raw/`.\n\n```ts\n// Prepare the notification channel\nawait Notifications.setNotificationChannelAsync('new-emails', {\n  name: 'E-mail notifications',\n  importance: Notifications.AndroidImportance.HIGH,\n  sound: 'email-sound.wav', // <- for Android 8.0+, see channelId property below\n});\n\n// Eg. schedule the notification\nawait Notifications.scheduleNotificationAsync({\n  content: {\n    title: \"You've got mail! 📬\",\n    body: 'Open the notification to read them all',\n    sound: 'email-sound.wav', // <- for Android below 8.0\n  },\n  trigger: {\n    seconds: 2,\n    channelId: 'new-emails', // <- for Android 8.0+, see definition above\n  },\n});\n```\n\n</p>\n</details>\n\n<details><summary><strong>Manually adding notification sounds on iOS</strong></summary> <p>\n\nOn iOS, all that's needed is to place your sound file in your Xcode project, and then specify the sound file in your `NotificationContentInput`, like this:\n\n```ts\nawait Notifications.scheduleNotificationAsync({\n  content: {\n    title: \"You've got mail! 📬\",\n    body: 'Open the notification to read them all',\n    sound: 'notification.wav',\n  },\n  trigger: {\n    // ...\n  },\n});\n```\n\n</p>\n</details>\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).\n\n---\n\n# API\n\nThe following methods are exported by the `expo-notifications` module:\n\n- **fetching token for sending push notifications**\n  - [`getExpoPushTokenAsync`](#getexpopushtokenasyncoptions-expotokenoptions-expopushtoken) -- resolves with an Expo push token\n  - [`getDevicePushTokenAsync`](#getdevicepushtokenasync-devicepushtoken) -- resolves with a device push token\n  - [`addPushTokenListener`](#addpushtokenlistenerlistener-pushtokenlistener-subscription) -- adds a listener called when a new push token is issued\n  - [`removePushTokenSubscription`](#removepushtokensubscriptionsubscription-subscription-void) -- removes the listener registered with `addPushTokenListener`\n- **listening to notification events**\n  - [`useLastNotificationResponse`](#uselastnotificationresponse-undefined--notificationresponse--null) -- a React hook returning the most recently received notification response\n  - [`addNotificationReceivedListener`](#addnotificationreceivedlistenerlistener-event-notification--void-void) -- adds a listener called whenever a new notification is received\n  - [`addNotificationsDroppedListener`](#addnotificationsdroppedlistenerlistener---void-void) -- adds a listener called whenever some notifications have been dropped\n  - [`addNotificationResponseReceivedListener`](#addnotificationresponsereceivedlistenerlistener-event-notificationresponse--void-void) -- adds a listener called whenever user interacts with a notification\n  - [`removeNotificationSubscription`](#removenotificationsubscriptionsubscription-subscription-void) -- removes the listener registered with `addNotification*Listener()`\n- **handling incoming notifications when the app is in foreground**\n  - [`setNotificationHandler`](#setnotificationhandlerhandler-notificationhandler--null-void) -- sets the handler function responsible for deciding what to do with a notification that is received when the app is in foreground\n- **fetching permissions information**\n  - [`getPermissionsAsync`](#getpermissionsasync-promisenotificationpermissionsstatus) -- fetches current permission settings related to notifications\n  - [`requestPermissionsAsync`](#requestpermissionsasyncrequest-notificationpermissionsrequest-promisenotificationpermissionsstatus) -- requests permissions related to notifications\n- **managing application badge icon**\n  - [`getBadgeCountAsync`](#getbadgecountasync-promisenumber) -- fetches the application badge number value\n  - [`setBadgeCountAsync`](#setbadgecountasyncbadgecount-number-options-setbadgecountoptions-promiseboolean) -- sets the application badge number value\n- **scheduling notifications**\n  - [`getAllScheduledNotificationsAsync`](#getallschedulednotificationsasync-promisenotification) -- fetches information about all scheduled notifications\n  - [`presentNotificationAsync`](#presentnotificationasynccontent-notificationcontentinput-identifier-string-promisestring) -- schedules a notification for immediate trigger\n  - [`scheduleNotificationAsync`](#schedulenotificationasyncnotificationrequest-notificationrequestinput-promisestring) -- schedules a notification to be triggered in the future\n  - [`cancelScheduledNotificationAsync`](#cancelschedulednotificationasyncidentifier-string-promisevoid) -- removes a specific scheduled notification\n  - [`cancelAllScheduledNotificationsAsync`](#cancelallschedulednotificationsasync-promisevoid) -- removes all scheduled notifications\n  - [`getNextTriggerDateAsync`](#getnexttriggerdateasynctrigger-schedulablenotificationtriggerinput-promisenumber--null) -- calculates next trigger date for a notification trigger\n- **dismissing notifications**\n  - [`getPresentedNotificationsAsync`](#getpresentednotificationsasync-promisenotification) -- fetches information about all notifications present in the notification tray (Notification Center)\n  - [`dismissNotificationAsync`](#dismissnotificationasyncidentifier-string-promisevoid) -- removes a specific notification from the notification tray\n  - [`dismissAllNotificationsAsync`](#dismissallnotificationsasync-promisevoid) -- removes all notifications from the notification tray\n- **managing notification channels (Android-specific)**\n  - [`getNotificationChannelsAsync`](#getnotificationchannelsasync-promisenotificationchannel) -- fetches information about all known notification channels\n  - [`getNotificationChannelAsync`](#getnotificationchannelasyncidentifier-string-promisenotificationchannel--null) -- fetches information about a specific notification channel\n  - [`setNotificationChannelAsync`](#setnotificationchannelasyncidentifier-string-channel-notificationchannelinput-promisenotificationchannel--null) -- saves a notification channel configuration\n  - [`deleteNotificationChannelAsync`](#deletenotificationchannelasyncidentifier-string-promisevoid) -- deletes a notification channel\n  - [`getNotificationChannelGroupsAsync`](#getnotificationchannelgroupsasync-promisenotificationchannelgroup) -- fetches information about all known notification channel groups\n  - [`getNotificationChannelGroupAsync`](#getnotificationchannelgroupasyncidentifier-string-promisenotificationchannelgroup--null) -- fetches information about a specific notification channel group\n  - [`setNotificationChannelGroupAsync`](#setnotificationchannelgroupasyncidentifier-string-channel-notificationchannelgroupinput-promisenotificationchannelgroup--null) -- saves a notification channel group configuration\n  - [`deleteNotificationChannelGroupAsync`](#deletenotificationchannelgroupasyncidentifier-string-promisevoid) -- deletes a notification channel group\n  - **managing notification categories (interactive notifications)**\n  - [`setNotificationCategoryAsync`](#setnotificationcategoryasyncidentifier-string-actions-notificationaction-options-categoryoptions-promisenotificationcategory--null) -- creates a new notification category for interactive notifications\n  - [`getNotificationCategoriesAsync`](#getnotificationcategoriesasync-promisenotificationcategory) -- fetches information about all active notification categories\n  - [`deleteNotificationCategoryAsync`](#deletenotificationcategoryasyncidentifier-string-promiseboolean) -- deletes a notification category\n\n## Custom notification icon and colors (Android only)\n\nSetting a default icon and color for all of your app's notifications is almost too easy. In the managed workflow, just set your [`notification.icon`](https://docs.expo.dev/versions/latest/config/app/#notification) and [`notification.color`](https://docs.expo.dev/versions/latest/config/app/#notification) keys in `app.json`, and rebuild your app! In the bare workflow, you'll need to follow [these instructions](https://github.com/expo/expo/tree/main/packages/expo-notifications#configure-for-android).\n\nFor your notification icon, make sure you follow [Google's design guidelines](https://material.io/design/iconography/product-icons.html#design-principles) (the icon must be all white with a transparent background) or else it may not be displayed as intended.\n\nIn both the managed and bare workflow, you can also set a custom notification color _per-notification_ directly in your [`NotificationContentInput`](#notificationcontentinput) under the `color` attribute.\n\n## Android push notification payload specification\n\nWhen sending a push notification, put an object conforming to the following type as `data` of the notification:\n\n```ts\nexport interface FirebaseData {\n  title?: string;\n  message?: string;\n  subtitle?: string;\n  sound?: boolean | string;\n  vibrate?: boolean | number[];\n  priority?: AndroidNotificationPriority;\n  badge?: number;\n}\n```\n\n## Fetching tokens for push notifications\n\n### `getExpoPushTokenAsync(options: ExpoTokenOptions): ExpoPushToken`\n\nReturns an Expo token that can be used to send a push notification to this device using Expo push notifications service. [Read more in the Push Notifications guide](https://docs.expo.dev/guides/push-notifications/).\n\n> **Note:** For Expo's backend to be able to send notifications to your app, you will need to provide it with push notification keys. This can be done using `expo-cli` (`expo credentials:manager`). [Read more in the “Upload notifications credentials” guide](https://docs.expo.dev/push-notifications/push-notifications-setup/#credentials).\n\n> **Note:** Especially on iOS, `Promise`s returned by this method may take longer periods of time to fulfill. For more information see [Fetching a push token takes a long time on iOS](#fetching-a-push-token-takes-a-long-time-on-ios).\n\n#### Arguments\n\nThis function accepts an optional object allowing you to pass in configuration, consisting of fields (all are optional, but some may have to be defined if configuration cannot be inferred):\n\n- **experienceId (_string_)** -- The ID of the experience to which the token should be attributed. Defaults to [`Constants.manifest.id`](https://docs.expo.dev/versions/latest/sdk/constants/#constantsmanifest) exposed by `expo-constants`. In the bare workflow, you must provide a value which takes the shape `@username/projectSlug`, where `username` is the Expo account that the project is associated with, and `projectSlug` is your [`slug` from `app.json`](https://docs.expo.dev/versions/latest/config/app/#slug).\n- **devicePushToken ([_DevicePushToken_](#devicepushtoken))** -- The device push token with which to register at the backend. Defaults to a token fetched with [`getDevicePushTokenAsync()`](#getdevicepushtokenasync-devicepushtoken).\n- **applicationId (_string_)** -- The ID of the application to which the token should be attributed. Defaults to [`Application.applicationId`](https://docs.expo.dev/versions/latest/sdk/application/#applicationapplicationid) exposed by `expo-application`.\n- **development (_boolean_)** -- Makes sense only on iOS, where there are two push notification services: sandbox and production. This defines whether the push token is supposed to be used with the sandbox platform notification service. Defaults to [`Application.getIosPushNotificationServiceEnvironmentAsync()`](https://docs.expo.dev/versions/latest/sdk/application/#applicationgetiospushnotificationserviceenvironmentasync) exposed by `expo-application` or `false`. Most probably you won't need to customize that. You may want to customize that if you don't want to install `expo-application` and still use the sandbox APNS.\n\n#### Returns\n\nReturns a `Promise` that resolves to an object with the following fields:\n\n- **type (_string_)** -- Always `expo`.\n- **data (_string_)** -- The push token as a string.\n\n#### Examples\n\n##### Fetching the Expo push token and uploading it to a server\n\n```ts\nimport Constants from 'expo-constants';\nimport * as Notifications from 'expo-notifications';\n\nexport async function registerForPushNotificationsAsync(userId: string) {\n  let experienceId = undefined;\n  if (!Constants.manifest) {\n    // Absence of the manifest means we're in bare workflow\n    experienceId = '@username/example';\n  }\n  const expoPushToken = await Notifications.getExpoPushTokenAsync({\n    experienceId,\n  });\n  await fetch('https://example.com/', {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n    },\n    body: JSON.stringify({\n      userId,\n      expoPushToken,\n    }),\n  });\n}\n```\n\n### `getDevicePushTokenAsync(): DevicePushToken`\n\nReturns a native APNS, FCM token or a [`PushSubscription` data](https://developer.mozilla.org/en-US/docs/Web/API/PushSubscription) that can be used with another push notification service.\n\n> **Note:** Especially on iOS, `Promise`s returned by this method may take longer periods of time to fulfill. For more information see [Fetching a push token takes a long time on iOS](#fetching-a-push-token-takes-a-long-time-on-ios) section of the documentation.\n\n#### Returns\n\nA `Promise` that resolves to an object with the following fields:\n\n- **type (_string_)** -- Either `ios`, `android` or `web`.\n- **data (_string_ or _object_)** -- Either the push token as a string (for `type == \"ios\" | \"android\"`) or an object conforming to the type below (for `type == \"web\"`):\n  ```ts\n  {\n    endpoint: string;\n    keys: {\n      p256dh: string;\n      auth: string;\n    }\n  }\n  ```\n\n### `addPushTokenListener(listener: PushTokenListener): Subscription`\n\nIn rare situations a push token may be changed by the push notification service while the app is running. When a token is rolled, the old one becomes invalid and sending notifications to it will fail. A push token listener will let you handle this situation gracefully by registering the new token with your backend right away.\n\n#### Arguments\n\nA single and required argument is a function accepting a push token as an argument. It will be called whenever the push token changes.\n\n#### Returns\n\nA [`Subscription`](#subscription) object representing the subscription of the provided listener.\n\n#### Examples\n\nRegistering a push token listener using a React hook\n\n```tsx\nimport React from 'react';\nimport * as Notifications from 'expo-notifications';\n\nimport { registerDevicePushTokenAsync } from '../api';\n\nexport default function App() {\n  React.useEffect(() => {\n    const subscription = Notifications.addPushTokenListener(registerDevicePushTokenAsync);\n    return () => subscription.remove();\n  }, []);\n\n  return (\n    // Your app content\n  );\n}\n```\n\n### `removePushTokenSubscription(subscription: Subscription): void`\n\nRemoves a push token subscription returned by a `addPushTokenListener` call.\n\n#### Arguments\n\nA single and required argument is a subscription returned by `addPushTokenListener`.\n\n## Listening to notification events\n\nNotification events include incoming notifications, interactions your users perform with notifications (this can be tapping on a notification, or interacting with it via [notification categories](#manage-notification-categories-interactive-notifications)), and rare occasions when your notifications may be dropped.\n\nA few different listeners are exposed, so we've provided a chart below which will hopefully help you understand when you can expect each one to be triggered:\n\n| User interacted with notification? | App state  | Listener(s) triggered                                                   |\n| :--------------------------------- | :--------: | ----------------------------------------------------------------------- |\n| false                              | Foreground | `NotificationReceivedListener`                                          |\n| false                              | Background | `BackgroundNotificationTask`                                            |\n| false                              |   Killed   | none                                                                    |\n| true                               | Foreground | `NotificationReceivedListener` & `NotificationResponseReceivedListener` |\n| true                               | Background | `NotificationResponseReceivedListener`                                  |\n| true                               |   Killed   | `NotificationResponseReceivedListener`                                  |\n\n> In the chart above, whenever `NotificationResponseReceivedListener` is triggered, the same would apply to the `useLastNotificationResponse` hook.\n\n### `useLastNotificationResponse(): undefined | NotificationResponse | null`\n\nA React hook always returning the notification response that was received most recently (a notification response designates an interaction with a notification, such as tapping on it).\n\n> If you don't want to use a hook, you can use `Notifications.getLastNotificationResponseAsync()` instead.\n\n#### Returns\n\nThe hook may return one of these three types/values:\n\n- `undefined` -- until we're sure of what to return\n- `null` -- if no notification response has been received yet\n- a [`NotificationResponse`](#notificationresponse) object -- if a notification response was received\n\n#### Examples\n\nResponding to a notification tap by opening a URL that could be put into the notification's `data` (opening the URL is your responsibility and is not a part of the `expo-notifications` API):\n\n```ts\nimport * as Notifications from 'expo-notifications';\nimport { Linking } from 'react-native';\n\nexport default function App() {\n  const lastNotificationResponse = Notifications.useLastNotificationResponse();\n  React.useEffect(() => {\n    if (\n      lastNotificationResponse &&\n      lastNotificationResponse.notification.request.content.data.url &&\n      lastNotificationResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER\n    ) {\n      Linking.openURL(lastNotificationResponse.notification.request.content.data.url);\n    }\n  }, [lastNotificationResponse]);\n\n  return (\n    /*\n     * your app\n     */\n  );\n}\n```\n\n### `addNotificationReceivedListener(listener: (event: Notification) => void): void`\n\nListeners registered by this method will be called whenever a notification is received while the app is running.\n\n#### Arguments\n\nA single and required argument is a function accepting a notification ([`Notification`](#notification)) as an argument.\n\n#### Returns\n\nA [`Subscription`](#subscription) object representing the subscription of the provided listener.\n\n#### Examples\n\nRegistering a notification listener using a React hook\n\n```tsx\nimport React from 'react';\nimport * as Notifications from 'expo-notifications';\n\nexport default function App() {\n  React.useEffect(() => {\n    const subscription = Notifications.addNotificationReceivedListener(notification => {\n      console.log(notification);\n    });\n    return () => subscription.remove();\n  }, []);\n\n  return (\n    // Your app content\n  );\n}\n```\n\n### `addNotificationsDroppedListener(listener: () => void): void`\n\nListeners registered by this method will be called whenever some notifications have been dropped by the server. Applicable only to Firebase Cloud Messaging which we use as notifications service on Android. It corresponds to `onDeletedMessages()` callback. [More information can be found in Firebase docs](https://firebase.google.com/docs/cloud-messaging/android/receive#override-ondeletedmessages).\n\n#### Arguments\n\nA single and required argument is a function–callback.\n\n#### Returns\n\nA [`Subscription`](#subscription) object representing the subscription of the provided listener.\n\n### `addNotificationResponseReceivedListener(listener: (event: NotificationResponse) => void): void`\n\nListeners registered by this method will be called whenever a user interacts with a notification (eg. taps on it).\n\n#### Arguments\n\nA single and required argument is a function accepting notification response ([`NotificationResponse`](#notificationresponse)) as an argument.\n\n#### Returns\n\nA [`Subscription`](#subscription) object representing the subscription of the provided listener.\n\n#### Examples\n\n##### Registering a notification listener using a React hook\n\n```tsx\nimport React from 'react';\nimport { Linking } from 'react-native';\nimport * as Notifications from 'expo-notifications';\n\nexport default function Container() {\n  React.useEffect(() => {\n    const subscription = Notifications.addNotificationResponseReceivedListener(response => {\n      const url = response.notification.request.content.data.url;\n      Linking.openUrl(url);\n    });\n    return () => subscription.remove();\n  }, []);\n\n  return (\n    // Your app content\n  );\n}\n```\n\n##### Handling push notifications with React Navigation\n\nIf you'd like to deep link to a specific screen in your app when you receive a push notification, you can configure React Navigation's [linking](https://reactnavigation.org/docs/navigation-container#linking) prop to do that:\n\n```tsx\nimport React from 'react';\nimport { Linking } from 'react-native';\nimport * as Notifications from 'expo-notifications';\nimport { NavigationContainer } from '@react-navigation/native';\n\nexport default function App() {\n  return (\n    <NavigationContainer\n      linking={{\n        config: {\n          // Configuration for linking\n        },\n        subscribe(listener) {\n          const onReceiveURL = ({ url }: { url: string }) => listener(url);\n\n          // Listen to incoming links from deep linking\n          Linking.addEventListener('url', onReceiveURL);\n\n          // Listen to expo push notifications\n          const subscription = Notifications.addNotificationResponseReceivedListener((response) => {\n            const url = response.notification.request.content.data.url;\n\n            // Any custom logic to see whether the URL needs to be handled\n            //...\n\n            // Let React Navigation handle the URL\n            listener(url);\n          });\n\n          return () => {\n            // Clean up the event listeners\n            Linking.removeEventListener('url', onReceiveURL);\n            subscription.remove();\n          };\n        },\n      }}>\n      {/* Your app content */}\n    </NavigationContainer>\n  );\n}\n```\n\nSee more details on [React Navigation documentation](https://reactnavigation.org/docs/deep-linking/#third-party-integrations).\n\n### `removeNotificationSubscription(subscription: Subscription): void`\n\nRemoves a notification subscription returned by a `addNotification*Listener` call.\n\n#### Arguments\n\nA single and required argument is a subscription returned by `addNotification*Listener`.\n\n## Handling incoming notifications when the app is in foreground\n\n### `setNotificationHandler(handler: NotificationHandler | null): void`\n\nWhen a notification is received while the app is running, using this function you can set a callback that will decide whether the notification should be shown to the user or not.\n\nWhen a notification is received, `handleNotification` is called with the incoming notification as an argument. The function should respond with a behavior object within 3 seconds, otherwise the notification will be discarded. If the notification is handled successfully, `handleSuccess` is called with the identifier of the notification, otherwise (or on timeout) `handleError` will be called.\n\nThe default behavior when the handler is not set or does not respond in time is not to show the notification.\n\n#### Arguments\n\nThe function receives a single argument which should be either `null` (if you want to clear the handler) or an object of fields:\n\n- **handleNotification (_(Notification) => Promise<NotificationBehavior>_**) -- (required) a function accepting an incoming notification returning a `Promise` resolving to a behavior ([`NotificationBehavior`](#notificationbehavior)) applicable to the notification\n- **handleSuccess (_(notificationId: string) => void_)** -- (optional) a function called whenever an incoming notification is handled successfully\n- **handleError (_(error: Error) => void_)** -- (optional) a function called whenever handling of an incoming notification fails\n\n#### Examples\n\nImplementing a notification handler that always shows the notification when it is received\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nNotifications.setNotificationHandler({\n  handleNotification: async () => ({\n    shouldShowAlert: true,\n    shouldPlaySound: false,\n    shouldSetBadge: false,\n  }),\n});\n```\n\n## Handling incoming notifications when the app is not in the foreground (not supported in Expo Go)\n\n> **Please note:** In order to handle notifications while the app is backgrounded on iOS, you _must_ add `remote-notification` to the `ios.infoPlist.UIBackgroundModes` key in your app.json, **and** add `\"content-available\": 1` to your push notification payload. Under normal circumstances, the “content-available” flag should launch your app if it isn’t running and wasn’t killed by the user, _however_, this is ultimately decided by the OS so it might not always happen.\n\n### `registerTaskAsync(taskName: string): void`\n\nWhen a notification is received while the app is backgrounded, using this function you can set a callback that will be run in response to that notification. Under the hood, this function is run using `expo-task-manager`. You **must** define the task _first_, with [`TaskManager.defineTask`](https://docs.expo.dev/versions/latest/sdk/task-manager/#taskmanagerdefinetasktaskname-task). Make sure you define it in the global scope.\n\nThe `taskName` argument is the string you passed to `TaskManager.defineTask` as the \"taskName\". The callback function you define with `TaskManager.defineTask` will receive the following arguments:\n\n- **data**: The remote payload delivered by either FCM (Android) or APNs (iOS). [See here for details](#pushnotificationtrigger).\n- **error**: The error (if any) that occurred during execution of the task.\n- **executionInfo**: JSON object of additional info related to the task, including the `taskName`.\n\n#### Examples\n\n```ts\nimport * as TaskManager from 'expo-task-manager';\nimport * as Notifications from 'expo-notifications';\n\nconst BACKGROUND_NOTIFICATION_TASK = 'BACKGROUND-NOTIFICATION-TASK';\n\nTaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, ({ data, error, executionInfo }) => {\n  console.log('Received a notification in the background!');\n  // Do something with the notification data\n});\n\nNotifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);\n```\n\n### `unregisterTaskAsync(taskName: string): void`\n\nUsed to unregister tasks registered with `registerTaskAsync`.\n\n## Fetching information about notifications-related permissions\n\n### `getPermissionsAsync(): Promise<NotificationPermissionsStatus>`\n\nCalling this function checks current permissions settings related to notifications. It lets you verify whether the app is currently allowed to display alerts, play sounds, etc. There is no user-facing effect of calling this.\n\n#### Returns\n\nIt returns a `Promise` resolving to an object representing permission settings (`NotificationPermissionsStatus`).\n\n#### Examples\n\nCheck if the app is allowed to send any type of notifications (interrupting and non-interrupting–provisional on iOS)\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nexport async function allowsNotificationsAsync() {\n  const settings = await Notifications.getPermissionsAsync();\n  return (\n    settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL\n  );\n}\n```\n\n### `requestPermissionsAsync(request?: NotificationPermissionsRequest): Promise<NotificationPermissionsStatus>`\n\nPrompts the user for notification permissions according to request. **Request defaults to asking the user to allow displaying alerts, setting badge count and playing sounds**.\n\n#### Arguments\n\nAn optional object of conforming to the following interface:\n\n```ts\n{\n  android?: {};\n  ios?: {\n    allowAlert?: boolean;\n    allowBadge?: boolean;\n    allowSound?: boolean;\n    allowDisplayInCarPlay?: boolean;\n    allowCriticalAlerts?: boolean;\n    provideAppNotificationSettings?: boolean;\n    allowProvisional?: boolean;\n  }\n}\n```\n\nEach option corresponds to a different native platform authorization option (a list of iOS options is available [here](https://developer.apple.com/documentation/usernotifications/unauthorizationoptions), on Android all available permissions are granted by default and if a user declines any permission an app can't prompt the user to change).\n\n#### Returns\n\nIt returns a `Promise` resolving to an object representing permission settings (`NotificationPermissionsStatus`).\n\n#### Examples\n\nPrompts the user to allow the app to show alerts, play sounds, set badge count and let Siri read out messages through AirPods\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nexport function requestPermissionsAsync() {\n  return await Notifications.requestPermissionsAsync({\n    ios: {\n      allowAlert: true,\n      allowBadge: true,\n      allowSound: true,\n    },\n  });\n}\n```\n\n## Managing application badge icon\n\n### `getBadgeCountAsync(): Promise<number>`\n\nFetches the number currently set as the badge of the app icon on device's home screen. A `0` value means that the badge is not displayed.\n\n> **Note:** Not all Android launchers support application badges. If the launcher does not support icon badges, the method will always resolve to `0`.\n\n#### Returns\n\nIt returns a `Promise` resolving to a number representing current badge of the app icon.\n\n### `setBadgeCountAsync(badgeCount: number, options?: SetBadgeCountOptions): Promise<boolean>`\n\nSets the badge of the app's icon to the specified number. Setting to `0` clears the badge.\n\n> **Note:** Not all Android launchers support application badges. If the launcher does not support icon badges, the method will resolve to `false`.\n\n#### Arguments\n\nThe function accepts a number as the first argument. A value of `0` will clear the badge.\n\nAs a second, optional argument you can pass in an object of options configuring behavior applied in Web environment. The object should be of format:\n\n```ts\n{\n  web?: badgin.Options\n}\n```\n\nwhere the type `badgin.Options` is an object described [in the `badgin`'s documentation](https://github.com/jaulz/badgin#options).\n\n#### Returns\n\nIt returns a `Promise` resolving to a boolean representing whether setting of the badge succeeded.\n\n## Scheduling notifications\n\n### `getAllScheduledNotificationsAsync(): Promise<Notification[]>`\n\nFetches information about all scheduled notifications.\n\n#### Returns\n\nIt returns a `Promise` resolving to an array of objects conforming to the [`Notification`](#notification) interface.\n\n### `presentNotificationAsync(content: NotificationContentInput, identifier?: string): Promise<string>`\n\nSchedules a notification for immediate trigger.\n\n> **Note:** This method has been deprecated in favor of using an explicit `NotificationHandler` and the `scheduleNotificationAsync` method. More info may be found at https://expo.fyi/presenting-notifications-deprecated.\n\n#### Arguments\n\nThe only argument to this function is a [`NotificationContentInput`](#notificationcontentinput).\n\n#### Returns\n\nIt returns a `Promise` resolving with the notification's identifier once the notification is successfully scheduled for immediate display.\n\n#### Examples\n\n##### Presenting the notification to the user (deprecated way)\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nNotifications.presentNotificationAsync({\n  title: 'Look at that notification',\n  body: \"I'm so proud of myself!\",\n});\n```\n\n##### Presenting the notification to the user (recommended way)\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\n// First, set the handler that will cause the notification\n// to show the alert\n\nNotifications.setNotificationHandler({\n  handleNotification: async () => ({\n    shouldShowAlert: true,\n    shouldPlaySound: false,\n    shouldSetBadge: false,\n  }),\n});\n\n// Second, call the method\n\nNotifications.scheduleNotificationAsync({\n  content: {\n    title: 'Look at that notification',\n    body: \"I'm so proud of myself!\",\n  },\n  trigger: null,\n});\n```\n\n### `scheduleNotificationAsync(notificationRequest: NotificationRequestInput): Promise<string>`\n\nSchedules a notification to be triggered in the future.\n\n> **Note:** Please note that this does not mean that the notification will be presented when it is triggered. For the notification to be presented you have to set a notification handler with [`setNotificationHandler`](#setnotificationhandlerhandler-notificationhandler--null-void) that will return an appropriate notification behavior. For more information see the example below.\n\n#### Arguments\n\nThe one and only argument to this method is a [`NotificationRequestInput`](#notificationrequestinput) describing the notification to be triggered.\n\n#### Returns\n\nIt returns a `Promise` resolving to a string --- a notification identifier you can later use to cancel the notification or to identify an incoming notification.\n\n#### Examples\n\n##### Scheduling the notification that will trigger once, in one minute from now\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nNotifications.scheduleNotificationAsync({\n  content: {\n    title: \"Time's up!\",\n    body: 'Change sides!',\n  },\n  trigger: {\n    seconds: 60,\n  },\n});\n```\n\n##### Scheduling the notification that will trigger repeatedly, every 20 minutes\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nNotifications.scheduleNotificationAsync({\n  content: {\n    title: 'Remember to drink water!,\n  },\n  trigger: {\n    seconds: 60 * 20,\n    repeats: true\n  },\n});\n```\n\n##### Scheduling the notification that will trigger once, at the beginning of next hour\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nconst trigger = new Date(Date.now() + 60 * 60 * 1000);\ntrigger.setMinutes(0);\ntrigger.setSeconds(0);\n\nNotifications.scheduleNotificationAsync({\n  content: {\n    title: 'Happy new hour!',\n  },\n  trigger,\n});\n```\n\n### `cancelScheduledNotificationAsync(identifier: string): Promise<void>`\n\nCancels a single scheduled notification. The scheduled notification of given ID will not trigger.\n\n#### Arguments\n\nThe notification identifier with which `scheduleNotificationAsync` resolved when the notification has been scheduled.\n\n#### Returns\n\nA `Promise` resolving once the scheduled notification is successfully cancelled or if there is no scheduled notification for given identifier.\n\n#### Examples\n\n##### Scheduling and then canceling the notification\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nasync function scheduleAndCancel() {\n  const identifier = await Notifications.scheduleNotificationAsync({\n    content: {\n      title: 'Hey!',\n    },\n    trigger: { seconds: 5, repeats: true },\n  });\n  await Notifications.cancelScheduledNotificationAsync(identifier);\n}\n```\n\n### `cancelAllScheduledNotificationsAsync(): Promise<void>`\n\nCancels all scheduled notifications.\n\n#### Returns\n\nA `Promise` resolving once all the scheduled notifications are successfully cancelled or if there are no scheduled notifications.\n\n### `getNextTriggerDateAsync(trigger: SchedulableNotificationTriggerInput): Promise<number | null>`\n\nAllows you to check what will be the next trigger date for given notification trigger input.\n\n#### Arguments\n\nThe schedulable notification trigger you would like to check next trigger date for (of type [`SchedulableNotificationTriggerInput`](#schedulablenotificationtriggerinput)).\n\n#### Returns\n\nIf the return value is `null`, the notification won't be triggered. Otherwise, the return value is the Unix timestamp in milliseconds at which the notification will be triggered.\n\n#### Examples\n\n##### Calculating next trigger date for a notification trigger\n\n```ts\nimport * as Notifications from 'expo-notifications';\n\nasync function logNextTriggerDate() {\n  try {\n    const nextTriggerDate = await Notifications.getNextTriggerDateAsync({\n      hour: 9,\n      minute: 0,\n    });\n    console.log(nextTriggerDate === null ? 'No next trigger date' : new Date(nextTriggerDate));\n  } catch (e) {\n    console.warn(`Couldn't have calculated next trigger date: ${e}`);\n  }\n}\n```\n\n## Dismissing notifications\n\n### `getPresentedNotificationsAsync(): Promise<Notification[]>`\n\nFetches information about all notifications present in the notification tray (Notification Center).\n\n> **Note:** This method is not supported on Android below 6.0 (API level 23) – on these devices it will resolve to an empty array.\n\n#### Returns\n\nA `Promise` resolving with a list of notifications ([`Notification`](#notification)) currently present in the notification tray (Notification Center).\n\n### `dismissNotificationAsync(identifier: string): Promise<void>`\n\nRemoves notification displayed in the notification tray (Notification Center).\n\n#### Arguments\n\nThe first and only argument to the function is the notification identifier, obtained either in `setNotificationHandler` or in the listener added with `addNotificationReceivedListener`.\n\n#### Returns\n\nResolves once the request to dismiss the notification is successfully dispatched to the notifications manager.\n\n### `dismissAllNotificationsAsync(): Promise<void>`\n\nRemoves all application's notifications displayed in the notification tray (Notification Center).\n\n#### Returns\n\nResolves once the request to dismiss the notifications is successfully dispatched to the notifications manager.\n\n## Managing notification channels (Android-specific)\n\n> Starting in Android 8.0 (API level 26), all notifications must be assigned to a channel. For each channel, you can set the visual and auditory behavior that is applied to all notifications in that channel. Then, users can change these settings and decide which notification channels from your app should be intrusive or visible at all. [(source: developer.android.com)](https://developer.android.com/training/notify-user/channels)\n\nIf you do not specify a notification channel, `expo-notifications` will create a fallback channel for you, named _Miscellaneous_. We encourage you to always ensure appropriate channels with informative names are set up for the application and to always send notifications to these channels.\n\nCalling these methods is a no-op for platforms that do not support this feature (iOS, Web and Android below version 8.0 (26)).\n\n### `getNotificationChannelsAsync(): Promise<NotificationChannel[]>`\n\nFetches information about all known notification channels.\n\n#### Returns\n\nA `Promise` resolving to an array of channels. On platforms that do not support notification channels, it will always resolve to an empty array.\n\n### `getNotificationChannelAsync(identifier: string): Promise<NotificationChannel | null>`\n\nFetches information about a single notification channel.\n\n#### Arguments\n\nThe only argument to this method is the channel's identifier.\n\n#### Returns\n\nA `Promise` resolving to the channel object (of type [`NotificationChannel`](#notificationchannel)) or to `null` if there was no channel found for this identifier. On platforms that do not support notification channels, it will always resolve to `null`.\n\n### `setNotificationChannelAsync(identifier: string, channel: NotificationChannelInput): Promise<NotificationChannel | null>`\n\nAssigns the channel configuration to a channel of a specified name (creating it if need be). This method lets you assign given notification channel to a notification channel group.\n\n> **Note:** For some settings to be applied on all Android versions, it may be necessary to duplicate the configuration across both a single notification _and_ it's respective notification channel. For example, for a notification to play a custom sound on Android versions **below** 8.0, the custom notification sound has to be set on the notification (through the [`NotificationContentInput`](#notificationcontentinput)), and for the custom sound to play on Android versions **above** 8.0, the relevant notification channel must have the custom sound configured (through the [`NotificationChannelInput`](#notificationchannelinput)). For more information, see [\"Setting custom notification sounds on Android\"](#setting-custom-notification-sounds-on-android).\n\n#### Arguments\n\nFirst argument to the method is the channel identifier.\n\nSecond argument is the channel's configuration of type [`NotificationChannelInput`](#notificationchannelinput)\n\n#### Returns\n\nA `Promise` resolving to the object (of type [`NotificationChannel`](#notificationchannel)) describing the modified channel or to `null` if the platform does not support notification channels.\n\n### `deleteNotificationChannelAsync(identifier: string): Promise<void>`\n\nRemoves the notification channel.\n\n#### Arguments\n\nFirst and only argument to the method is the channel identifier.\n\n#### Returns\n\nA `Promise` resolving once the channel is removed (or if there was no channel for given identifier).\n\n### `getNotificationChannelGroupsAsync(): Promise<NotificationChannelGroup[]>`\n\nFetches information about all known notification channel groups.\n\n#### Returns\n\nA `Promise` resolving to an array of channel groups. On platforms that do not support notification channel groups, it will always resolve to an empty array.\n\n### `getNotificationChannelGroupAsync(identifier: string): Promise<NotificationChannelGroup | null>`\n\nFetches information about a single notification channel group.\n\n#### Arguments\n\nThe only argument to this method is the channel group's identifier.\n\n#### Returns\n\nA `Promise` resolving to the channel group object (of type [`NotificationChannelGroup`](#notificationchannelgroup)) or to `null` if there was no channel group found for this identifier. On platforms that do not support notification channels, it will always resolve to `null`.\n\n### `setNotificationChannelGroupAsync(identifier: string, channel: NotificationChannelGroupInput): Promise<NotificationChannelGroup | null>`\n\nAssigns the channel group configuration to a channel group of a specified name (creating it if need be).\n\n#### Arguments\n\nFirst argument to the method is the channel group identifier.\n\nSecond argument is the channel group's configuration of type [`NotificationChannelGroupInput`](#notificationchannelgroupinput)\n\n#### Returns\n\nA `Promise` resolving to the object (of type [`NotificationChannelGroup`](#notificationchannelgroup)) describing the modified channel group or to `null` if the platform does not support notification channels.\n\n### `deleteNotificationChannelGroupAsync(identifier: string): Promise<void>`\n\nRemoves the notification channel group and all notification channels that belong to it.\n\n#### Arguments\n\nFirst and only argument to the method is the channel group identifier.\n\n#### Returns\n\nA `Promise` resolving once the channel group is removed (or if there was no channel group for given identifier).\n\n## Managing notification categories (interactive notifications)\n\nNotification categories allow you to create interactive push notifications, so that a user can respond directly to the incoming notification either via buttons or a text response. A category defines the set of actions a user can take, and then those actions are applied to a notification by specifying the `categoryIdentifier` in the [`NotificationContent`](#notificationcontent).\n\nOn iOS, notification categories also allow you to customize your notifications further. With each category, not only can you set interactive actions a user can take, but you can also configure things like the placeholder text to display when the user disables notification previews for your app.\n\nCalling one of the following methods is a no-op on Web.\n\n### `setNotificationCategoryAsync(identifier: string, actions: NotificationAction[], options: CategoryOptions): Promise<NotificationCategory | null>`\n\n#### Arguments\n\n- `identifier`: A string to associate as the ID of this category. You will pass this string in as the `categoryIdentifier` in your [`NotificationContent`](#notificationcontent) to associate a notification with this category.\n- `actions`: An array of [`NotificationAction`s](#notificationaction), which describe the actions associated with this category. Each of these actions takes the shape:\n  - `identifier`: A unique string that identifies this action. If a user takes this action (i.e. selects this button in the system's Notification UI), your app will receive this `actionIdentifier` via the [`NotificationResponseReceivedListener`](#addnotificationresponsereceivedlistenerlistener-event-notificationresponse--void-void).\n  - `buttonTitle`: The title of the button triggering this action.\n  - `textInput`: **Optional** object which, if provided, will result in a button that prompts the user for a text response.\n    - `submitButtonTitle`: (**iOS only**) A string which will be used as the title for the button used for submitting the text response.\n    - `placeholder`: A string that serves as a placeholder until the user begins typing. Defaults to no placeholder string.\n  - `options`: **Optional** object of additional configuration options.\n    - `opensAppToForeground`: Boolean indicating whether triggering this action foregrounds the app (defaults to `true`). If `false` and your app is killed (not just backgrounded), [`NotificationResponseReceived` listeners](#addnotificationresponsereceivedlistenerlistener-event-notificationresponse--void-void) will not be triggered when a user selects this action.\n    - `isAuthenticationRequired`: (**iOS only**) Boolean indicating whether triggering the action will require authentication from the user.\n    - `isDestructive`: (**iOS only**) Boolean indicating whether the button title will be highlighted a different color (usually red). This usually signifies a destructive action such as deleting data.\n- `options`: An optional object of additional configuration options for your category (**these are all iOS only**):\n  - `previewPlaceholder`: Customizable placeholder for the notification preview text. This is shown if the user has disabled notification previews for the app. Defaults to the localized iOS system default placeholder (`Notification`).\n  - `intentIdentifiers`: Array of [Intent Class Identifiers](https://developer.apple.com/documentation/sirikit/intent_class_identifiers). When a notification is delivered, the presence of an intent identifier lets the system know that the notification is potentially related to the handling of a request made through Siri. Defaults to an empty array.\n  - `categorySummaryFormat`: A format string for the summary description used when the system groups the category’s notifications.\n  - `customDismissAction`: A boolean indicating whether to send actions for handling when the notification is dismissed (the user must explicitly dismiss the notification interface- ignoring a notification or flicking away a notification banner does not trigger this action). Defaults to `false`.\n  - `allowInCarPlay`: A boolean indicating whether to allow CarPlay to display notifications of this type. **Apps must be approved for CarPlay to make use of this feature.** Defaults to `false`.\n  - `showTitle`: A boolean indicating whether to show the notification's title, even if the user has disabled notification previews for the app. Defaults to `false`.\n  - `showSubtitle`: A boolean indicating whether to show the notification's subtitle, even if the user has disabled notification previews for the app. Defaults to `false`.\n  - `allowAnnouncement`: A boolean indicating whether to allow notifications to be automatically read by Siri when the user is using AirPods. Defaults to `false`.\n\n#### Returns\n\nA `Promise` resolving to the category you just created.\n\n### `getNotificationCategoriesAsync(): Promise<NotificationCategory[]>`\n\nFetches information about all known notification categories.\n\n#### Returns\n\nA `Promise` resolving to an array of `NotificationCategory`s. On platforms that do not support notification channels, it will always resolve to an empty array.\n\n### `deleteNotificationCategoryAsync(identifier: string): Promise<boolean>`\n\nDeletes the category associated with the provided identifier.\n\n#### Arguments\n\nIdentifier initially provided to `setNotificationCategoryAsync` when creating the category.\n\n#### Returns\n\nA `Promise` resolving to `true` if the category was successfully deleted, or `false` if it was not. An example of when this method would return `false` is if you try to delete a category that doesn't exist.\n\n## Types\n\n### `DevicePushToken`\n\nIn simple terms, an object of `type: Platform.OS` and `data: any`. The `data` type depends on the environment -- on a native device it will be a string, which you can then use to send notifications via Firebase Cloud Messaging (Android) or APNS (iOS); on web it will be a registration object (VAPID).\n\n```ts\nexport interface NativeDevicePushToken {\n  type: 'ios' | 'android';\n  data: string;\n}\n\nexport interface WebDevicePushToken {\n  type: 'web';\n  data: {\n    endpoint: string;\n    keys: {\n      p256dh: string;\n      auth: string;\n    };\n  };\n}\n\nexport type DevicePushToken = NativeDevicePushToken | WebDevicePushToken;\n```\n\n### `PushTokenListener`\n\nA function accepting a device push token ([`DevicePushToken`](#devicepushtoken)) as an argument.\n\n> **Note:** You should not call `getDevicePushTokenAsync` inside this function, as it triggers the listener and may lead to an infinite loop.\n\n### `ExpoPushToken`\n\nBorrowing from `DevicePushToken` a little bit, it's an object of `type: 'expo'` and `data: string`. You can use the `data` value to send notifications via Expo Notifications service.\n\n```ts\nexport interface ExpoPushToken {\n  type: 'expo';\n  data: string;\n}\n```\n\n### `Subscription`\n\nA common-in-React-Native type to abstract an active subscription. Call `.remove()` to remove the subscription. You can then discard the object.\n\n```ts\nexport type Subscription = {\n  remove: () => void;\n};\n```\n\n### `Notification`\n\nAn object representing a single notification that has been triggered by some request ([`NotificationRequest`](#notificationrequest)) at some point in time.\n\n```ts\nexport interface Notification {\n  date: number;\n  request: NotificationRequest;\n}\n```\n\n### `NotificationRequest`\n\nAn object representing a request to present a notification. It has content — how it's being represented — and a trigger — what triggers the notification. Many notifications ([`Notification`](#notification)) may be triggered with the same request (eg. a repeating notification).\n\n```ts\nexport interface NotificationRequest {\n  identifier: string;\n  content: NotificationContent;\n  trigger: NotificationTrigger;\n}\n```\n\n### `NotificationContent`\n\nAn object representing notification's content.\n\n```ts\nexport type NotificationContent = {\n  // Notification title - the bold text displayed above the rest of the content\n  title: string | null;\n  // On iOS - subtitle - the bold text displayed between title and the rest of the content\n  // On Android - subText - the display depends on the platform\n  subtitle: string | null;\n  // Notification body - the main content of the notification\n  body: string | null;\n  // Data associated with the notification, not displayed\n  data: { [key: string]: unknown };\n  // Application badge number associated with the notification\n  badge: number | null;\n  sound: 'default' | 'defaultCritical' | 'custom' | null;\n} & (\n  | {\n      // iOS-specific additions\n      // See https://developer.apple.com/documentation/usernotifications/unnotificationcontent?language=objc\n      // for more information on specific fields.\n      launchImageName: string | null;\n      attachments: {\n        identifier: string | null;\n        url: string | null;\n        type: string | null;\n      }[];\n      summaryArgument?: string | null;\n      summaryArgumentCount?: number;\n      categoryIdentifier: string | null;\n      threadIdentifier: string | null;\n      targetContentIdentifier?: string;\n    }\n  | {\n      // Android-specific additions\n      // See https://developer.android.com/reference/android/app/Notification.html#fields\n      // for more information on specific fields.\n      priority?: AndroidNotificationPriority;\n      vibrationPattern?: number[];\n      // Format: '#AARRGGBB'\n      color?: string;\n    }\n);\n```\n\n### `NotificationContentInput`\n\nAn object representing notification content that you pass in to `presentNotificationAsync` or as a part of `NotificationRequestInput`.\n\n```ts\nexport interface NotificationContentInput {\n  // Fields corresponding to NotificationContent\n  title?: string;\n  subtitle?: string;\n  body?: string;\n  data?: { [key: string]: unknown };\n  badge?: number;\n  sound?: boolean | string;\n  // Android-specific fields\n  // See https://developer.android.com/reference/android/app/Notification.html#fields\n  // for more information on specific fields.\n  vibrate?: boolean | number[];\n  priority?: AndroidNotificationPriority;\n  // Format: '#AARRGGBB', '#RRGGBB' or one of the named colors,\n  // see https://developer.android.com/reference/kotlin/android/graphics/Color?hl=en\n  color?: string;\n  // If set to false, the notification will not be automatically dismissed when clicked.\n  // The setting used when the value is not provided or is invalid is true (the notification\n  // will be dismissed automatically). Corresponds directly to Android's `setAutoCancel`\n  // behavior. In Firebase terms this property of a notification is called `sticky`.\n  // See:\n  // - https://developer.android.com/reference/android/app/Notification.Builder#setAutoCancel(boolean),\n  // - https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#AndroidNotification.FIELDS.sticky\n  autoDismiss?: boolean;\n  // iOS-specific fields\n  // See https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent?language=objc\n  // for more information on specific fields.\n  launchImageName?: string;\n  attachments?: {\n    url: string;\n    identifier?: string;\n\n    typeHint?: string;\n    hideThumbnail?: boolean;\n    thumbnailClipArea?: { x: number; y: number; width: number; height: number };\n    thumbnailTime?: number;\n  }[];\n}\n```\n\n### `NotificationRequestInput`\n\nAn object representing a notification request you can pass into `scheduleNotificationAsync`.\n\n```ts\nexport interface NotificationRequestInput {\n  identifier?: string;\n  content: NotificationContentInput;\n  trigger: NotificationTriggerInput;\n}\n```\n\n### `AndroidNotificationPriority`\n\nAn enum corresponding to values appropriate for Android's [`Notification#priority`](https://developer.android.com/reference/android/app/Notification#priority) field.\n\n```ts\nexport enum AndroidNotificationPriority {\n  MIN = 'min',\n  LOW = 'low',\n  DEFAULT = 'default',\n  HIGH = 'high',\n  MAX = 'max',\n}\n```\n\n### `NotificationTrigger`\n\nA union type containing different triggers which may cause the notification to be delivered to the application.\n\n```ts\nexport type NotificationTrigger =\n  | PushNotificationTrigger\n  | CalendarNotificationTrigger\n  | LocationNotificationTrigger\n  | TimeIntervalNotificationTrigger\n  | DailyNotificationTrigger\n  | WeeklyNotificationTrigger\n  | YearlyNotificationTrigger\n  | UnknownNotificationTrigger;\n```\n\n### `PushNotificationTrigger`\n\nAn object representing a notification delivered by a push notification system.\n\nOn Android under `remoteMessage` field a JS version of the Firebase `RemoteMessage` may be accessed. On iOS under `payload` you may find full contents of [`UNNotificationContent`'s](https://developer.apple.com/documentation/usernotifications/unnotificationcontent?language=objc) [`userInfo`](https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649869-userinfo?language=objc), i.e. [remote notification payload](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CreatingtheNotificationPayload.html)\n\n```ts\nexport type PushNotificationTrigger = { type: 'push' } & (\n  | { payload: Record<string, unknown> } // iOS\n  | { remoteMessage: FirebaseRemoteMessage } // Android\n  | {}\n);\n```\n\n### `FirebaseRemoteMessage`\n\nA Firebase `RemoteMessage` that caused the notification to be delivered to the app.\n\n```ts\nexport interface FirebaseRemoteMessage {\n  collapseKey: string | null;\n  data: { [key: string]: string };\n  from: string | null;\n  messageId: string | null;\n  messageType: string | null;\n  originalPriority: number;\n  priority: number;\n  sentTime: number;\n  to: string | null;\n  ttl: number;\n  notification: null | {\n    body: string | null;\n    bodyLocalizationArgs: string[] | null;\n    bodyLocalizationKey: string | null;\n    channelId: string | null;\n    clickAction: string | null;\n    color: string | null;\n    usesDefaultLightSettings: boolean;\n    usesDefaultSound: boolean;\n    usesDefaultVibrateSettings: boolean;\n    eventTime: number | null;\n    icon: string | null;\n    imageUrl: string | null;\n    lightSettings: number[] | null;\n    link: string | null;\n    localOnly: boolean;\n    notificationCount: number | null;\n    notificationPriority: number | null;\n    sound: string | null;\n    sticky: boolean;\n    tag: string | null;\n    ticker: string | null;\n    title: string | null;\n    titleLocalizationArgs: string[] | null;\n    titleLocalizationKey: string | null;\n    vibrateTimings: number[] | null;\n    visibility: number | null;\n  };\n}\n```\n\n### `TimeIntervalNotificationTrigger`\n\nA trigger related to an elapsed time interval. May be repeating (see `repeats` field).\n\n```ts\nexport interface TimeIntervalNotificationTrigger {\n  type: 'timeInterval';\n  repeats: boolean;\n  seconds: number;\n}\n```\n\n### `DailyNotificationTrigger`\n\nA trigger related to a daily notification. This is an Android-only type, the same functionality will be achieved on iOS with a `CalendarNotificationTrigger`.\n\n```ts\nexport interface DailyNotificationTrigger {\n  type: 'daily';\n  hour: number;\n  minute: number;\n}\n```\n\n### `WeeklyNotificationTrigger`\n\nA trigger related to a weekly notification. This is an Android-only type, the same functionality will be achieved on iOS with a `CalendarNotificationTrigger`.\n\n```ts\nexport interface WeeklyNotificationTrigger {\n  type: 'weekly';\n  weekday: number;\n  hour: number;\n  minute: number;\n}\n```\n\n### `YearlyNotificationTrigger`\n\nA trigger related to a yearly notification. This is an Android-only type, the same functionality will be achieved on iOS with a `CalendarNotificationTrigger`.\n\n```ts\nexport interface YearlyNotificationTrigger {\n  type: 'yearly';\n  day: number;\n  month: number;\n  hour: number;\n  minute: number;\n}\n```\n\n### `CalendarNotificationTrigger`\n\nA trigger related to a [`UNCalendarNotificationTrigger`](https://developer.apple.com/documentation/usernotifications/uncalendarnotificationtrigger?language=objc), available only on iOS.\n\n```ts\nexport interface CalendarNotificationTrigger {\n  type: 'calendar';\n  repeats: boolean;\n  dateComponents: {\n    era?: number;\n    year?: number;\n    month?: number;\n    day?: number;\n    hour?: number;\n    minute?: number;\n    second?: number;\n    weekday?: number;\n    weekdayOrdinal?: number;\n    quarter?: number;\n    weekOfMonth?: number;\n    weekOfYear?: number;\n    yearForWeekOfYear?: number;\n    nanosecond?: number;\n    isLeapMonth: boolean;\n    timeZone?: string;\n    calendar?: string;\n  };\n}\n```\n\n### `LocationNotificationTrigger`\n\nA trigger related to a [`UNLocationNotificationTrigger`](https://developer.apple.com/documentation/usernotifications/unlocationnotificationtrigger?language=objc), available only on iOS.\n\n```ts\nexport interface LocationNotificationTrigger {\n  type: 'location';\n  repeats: boolean;\n  region: CircularRegion | BeaconRegion;\n}\n\ninterface Region {\n  type: string;\n  identifier: string;\n  notifyOnEntry: boolean;\n  notifyOnExit: boolean;\n}\n\nexport interface CircularRegion extends Region {\n  type: 'circular';\n  radius: number;\n  center: {\n    latitude: number;\n    longitude: number;\n  };\n}\n\nexport interface BeaconRegion extends Region {\n  type: 'beacon';\n  notifyEntryStateOnDisplay: boolean;\n  major: number | null;\n  minor: number | null;\n  uuid?: string;\n  beaconIdentityConstraint?: {\n    uuid: string;\n    major: number | null;\n    minor: number | null;\n  };\n}\n```\n\n### `UnknownNotificationTrigger`\n\nRepresents a notification trigger that is unknown to `expo-notifications` and that it didn't know how to serialize for JS.\n\n```ts\nexport interface UnknownNotificationTrigger {\n  type: 'unknown';\n}\n```\n\n### `NotificationTriggerInput`\n\nA type representing possible triggers with which you can schedule notifications. A `null` trigger means that the notification should be scheduled for delivery immediately.\n\n```ts\nexport type NotificationTriggerInput =\n  | null\n  | ChannelAwareTriggerInput\n  | SchedulableNotificationTriggerInput;\n```\n\n### `SchedulableNotificationTriggerInput`\n\nA type representing time-based, schedulable triggers. For these triggers you can check the next trigger date with [`getNextTriggerDateAsync`](#getnexttriggerdateasynctrigger-schedulablenotificationtriggerinput-promisenumber--null).\n\n```ts\nexport type SchedulableNotificationTriggerInput =\n  | DateTriggerInput\n  | TimeIntervalTriggerInput\n  | DailyTriggerInput\n  | WeeklyTriggerInput\n  | YearlyTriggerInput\n  | CalendarTriggerInput;\n```\n\n### `ChannelAwareTriggerInput`\n\nA trigger that will cause the notification to be delivered immediately.\n\n```ts\nexport type ChannelAwareTriggerInput = {\n  channelId: string;\n};\n```\n\n### `DateTriggerInput`\n\nA trigger that will cause the notification to be delivered once at the specified `Date`. If you pass in a `number` it will be interpreted as a UNIX timestamp.\n\n```ts\nexport type DateTriggerInput = Date | number | { channelId?: string; date: Date | number };\n```\n\n### `TimeIntervalTriggerInput`\n\nA trigger that will cause the notification to be delivered once or many times (depends on the `repeats` field) after `seconds` time elapse.\n\n```ts\nexport interface TimeIntervalTriggerInput {\n  channelId?: string;\n  repeats?: boolean;\n  seconds: number;\n}\n```\n\n### `DailyTriggerInput`\n\nA trigger that will cause the notification to be delivered once per day.\n\n```ts\nexport interface DailyTriggerInput {\n  channelId?: string;\n  hour: number;\n  minute: number;\n  repeats: true;\n}\n```\n\n### `WeeklyTriggerInput`\n\nA trigger that will cause the notification to be delivered once every week.\n\n> **Note:** Weekdays are specified with a number from 1 through 7, with 1 indicating Sunday.\n\n```ts\nexport interface WeeklyTriggerInput {\n  channelId?: string;\n  weekday: number;\n  hour: number;\n  minute: number;\n  repeats: true;\n}\n```\n\n### `YearlyTriggerInput`\n\nA trigger that will cause the notification to be delivered once every year.\n\n> **Note:** all properties are specified in JavaScript Date's ranges.\n\n```ts\nexport interface YearlyTriggerInput {\n  channelId?: string;\n  day: number;\n  month: number;\n  hour: number;\n  minute: number;\n  repeats: true;\n}\n```\n\n### `CalendarTriggerInput`\n\nA trigger that will cause the notification to be delivered once or many times when the date components match the specified values. Corresponds to native [`UNCalendarNotificationTrigger`](https://developer.apple.com/documentation/usernotifications/uncalendarnotificationtrigger?language=objc).\n\n> **Note:** This type of trigger is only available on iOS.\n\n```ts\nexport interface CalendarTriggerInput {\n  channelId?: string;\n  repeats?: boolean;\n  timezone?: string;\n\n  year?: number;\n  month?: number;\n  weekday?: number;\n  weekOfMonth?: number;\n  weekOfYear?: number;\n  weekdayOrdinal?: number;\n  day?: number;\n\n  hour?: number;\n  minute?: number;\n  second?: number;\n}\n```\n\n### `NotificationResponse`\n\nAn object representing user's interaction with the notification.\n\n> **Note:** If the user taps on a notification `actionIdentifier` will be equal to `Notifications.DEFAULT_ACTION_IDENTIFIER`.\n\n```ts\nexport interface NotificationResponse {\n  notification: Notification;\n  actionIdentifier: string;\n  userText?: string;\n}\n```\n\n### `NotificationBehavior`\n\nAn object representing behavior that should be applied to the incoming notification.\n\n```ts\nexport interface NotificationBehavior {\n  shouldShowAlert: boolean;\n  shouldPlaySound: boolean;\n  shouldSetBadge: boolean;\n  priority?: AndroidNotificationPriority;\n}\n```\n\n> On Android, setting `shouldPlaySound: false` will result in the drop-down notification alert **not** showing, no matter what the priority is. This setting will also override any channel-specific sounds you may have configured.\n\n### `NotificationChannel`\n\nAn object representing a notification channel (feature available only on Android).\n\n```ts\nexport enum AndroidNotificationVisibility {\n  UNKNOWN,\n  PUBLIC,\n  PRIVATE,\n  SECRET,\n}\n\nexport enum AndroidAudioContentType {\n  UNKNOWN,\n  SPEECH,\n  MUSIC,\n  MOVIE,\n  SONIFICATION,\n}\n\nexport enum AndroidImportance {\n  UNKNOWN,\n  UNSPECIFIED,\n  NONE,\n  MIN,\n  LOW,\n  DEFAULT,\n  HIGH,\n  MAX,\n}\n\nexport enum AndroidAudioUsage {\n  UNKNOWN,\n  MEDIA,\n  VOICE_COMMUNICATION,\n  VOICE_COMMUNICATION_SIGNALLING,\n  ALARM,\n  NOTIFICATION,\n  NOTIFICATION_RINGTONE,\n  NOTIFICATION_COMMUNICATION_REQUEST,\n  NOTIFICATION_COMMUNICATION_INSTANT,\n  NOTIFICATION_COMMUNICATION_DELAYED,\n  NOTIFICATION_EVENT,\n  ASSISTANCE_ACCESSIBILITY,\n  ASSISTANCE_NAVIGATION_GUIDANCE,\n  ASSISTANCE_SONIFICATION,\n  GAME,\n}\n\nexport interface AudioAttributes {\n  usage: AndroidAudioUsage;\n  contentType: AndroidAudioContentType;\n  flags: {\n    enforceAudibility: boolean;\n    requestHardwareAudioVideoSynchronization: boolean;\n  };\n}\n\nexport interface NotificationChannel {\n  id: string;\n  name: string | null;\n  importance: AndroidImportance;\n  bypassDnd: boolean;\n  description: string | null;\n  groupId?: string | null;\n  lightColor: string;\n  lockscreenVisibility: AndroidNotificationVisibility;\n  showBadge: boolean;\n  sound: 'default' | 'custom' | null;\n  audioAttributes: AudioAttributes;\n  vibrationPattern: number[] | null;\n  enableLights: boolean;\n  enableVibrate: boolean;\n}\n```\n\n### `NotificationChannelInput`\n\nAn object representing a notification channel to be set.\n\n```ts\nexport interface NotificationChannelInput {\n  name: string | null;\n  importance: AndroidImportance;\n  // Optional attributes\n  bypassDnd?: boolean;\n  description?: string | null;\n  groupId?: string | null;\n  lightColor?: string;\n  lockscreenVisibility?: AndroidNotificationVisibility;\n  showBadge?: boolean;\n  sound?: string | null;\n  audioAttributes?: Partial<AudioAttributes>;\n  vibrationPattern?: number[] | null;\n  enableLights?: boolean;\n  enableVibrate?: boolean;\n}\n```\n\n### `NotificationChannelGroup`\n\nAn object representing a notification channel group (feature available only on Android).\n\n```ts\nexport interface NotificationChannelGroup {\n  id: string;\n  name: string | null;\n  description?: string | null;\n  isBlocked?: boolean;\n  channels: NotificationChannel[];\n}\n```\n\n### `NotificationChannelGroupInput`\n\nAn object representing a notification channel group to be set.\n\n```ts\nexport interface NotificationChannelGroupInput {\n  name: string | null;\n  description?: string | null;\n}\n```\n\n### `NotificationCategory`\n\n```ts\nexport interface NotificationCategory {\n  identifier: string;\n  actions: NotificationAction[];\n  options: {\n    // These options are ALL iOS-only\n    previewPlaceholder?: string;\n    intentIdentifiers?: string[];\n    categorySummaryFormat?: string;\n    customDismissAction?: boolean;\n    allowInCarPlay?: boolean;\n    showTitle?: boolean;\n    showSubtitle?: boolean;\n    allowAnnouncement?: boolean;\n  };\n}\n```\n\n### `NotificationAction`\n\n```ts\nexport interface NotificationAction {\n  identifier: string;\n  buttonTitle: string;\n  textInput?: {\n    submitButtonTitle: string;\n    placeholder: string;\n  };\n  options: {\n    isDestructive?: boolean;\n    isAuthenticationRequired?: boolean;\n    opensAppToForeground?: boolean;\n  };\n}\n```",
+    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/notifications/\">\n    <img\n      src=\"../../.github/resources/expo-notifications.svg\"\n      alt=\"expo-notifications\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an API to fetch push notification tokens and to present, schedule, receive and respond to notifications.\n\n## Features\n\n- 📣 schedule a one-off notification for a specific date, or some time from now,\n- 🔁 schedule a notification repeating in some time interval (or a calendar date match on iOS),\n- 1️⃣ get and set application badge icon number,\n- 📲 fetch a native device push token so you can send push notifications with FCM and APNS,\n- 😎 fetch an Expo push token so you can send push notifications with Expo,\n- 📬 listen to incoming notifications in the foreground and background,\n- 👆 listen to interactions with notifications (tapping or dismissing),\n- 🎛 handle notifications when the app is in foreground,\n- 🔕 imperatively dismiss notifications from Notification Center/tray,\n- 🗂 create, update, delete Android notification channels,\n- 🎨 set custom icon and color for notifications on Android.\n\n# Guides\n\nPlease refer to our [notification guides](https://docs.expo.dev/push-notifications/overview/).\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/notifications/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/notifications/)",
     "name": "expo-notifications",
-    "version": "0.29.14",
+    "version": "0.31.4",
     "description": "Provides an API to fetch push notification tokens and to present, schedule, receive, and respond to notifications.",
     "copyright": ""
   },
-  "expo-screen-orientation@8.0.4": {
+  "expo-screen-orientation@8.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/screen-orientation/\">\n    <img\n      src=\"../../.github/resources/expo-screen-orientation.svg\"\n      alt=\"expo-screen-orientation\"\n      height=\"64\" />\n  </a>\n</p>\n\nAllows you to manage the orientation of your app's interface.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/screen-orientation/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/screen-orientation/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/screen-orientation/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-screen-orientation\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\nThe default [UIInterfaceOrientationMask](https://developer.apple.com/documentation/uikit/uiinterfaceorientationmask?language=objc) mask is `UIInterfaceOrientationMaskPortrait`. You can optionally add `EXDefaultScreenOrientationMask` key in your `Info.plist` to change the default orientation mask, e.g.\n\n```xml\n<key>EXDefaultScreenOrientationMask</key>\n<string>UIInterfaceOrientationMaskAllButUpsideDown</string>\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-screen-orientation",
-    "version": "8.0.4",
+    "version": "8.1.7",
     "description": "Expo universal module for managing device's screen orientation",
     "copyright": ""
   },
-  "expo-secure-store@14.0.1": {
+  "expo-secure-store@14.2.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/securestore/\">\n    <img\n      src=\"../../.github/resources/expo-secure-store.svg\"\n      alt=\"expo-secure-store\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides a way to encrypt and securely store key–value pairs locally on the device.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/securestore/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/securestore/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/securestore/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-secure-store\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-secure-store",
-    "version": "14.0.1",
+    "version": "14.2.4",
     "description": "Provides a way to encrypt and securely store key-value pairs locally on the device.",
     "copyright": ""
   },
-  "expo-splash-screen@0.29.24": {
+  "expo-splash-screen@0.30.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
-    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/splash-screen/\">\n    <img\n      src=\"../../.github/resources/expo-splash-screen.svg\"\n      alt=\"expo-splash-screen\"\n      height=\"64\" />\n  </a>\n</p>\n\n`expo-splash-screen` allows you to customize your app's splash screen, which is the initial screen users see when the app is launched, before it has loaded. Splash screens (sometimes called launch screens) provide a user's first experience with your application.\n\n- [📜 CHANGELOG](./CHANGELOG.md)\n- [🚀 Features](#-features)\n- [📚 API](#-api)\n- [🗒 Examples](#-examples)\n- [💻 Installation in managed Expo projects](#-installation-in-managed-expo-projects)\n- [🖥 Installation in bare React Native projects](#-installation-in-bare-react-native-projects)\n  - [📱 Configure iOS](#-configure-ios)\n  - [🤖 Configure Android](#-configure-android)\n- [👏 Contributing](#-contributing)\n- [❓ Known issues](#-known-issues)\n- [⬆️ Migrate from old versions](#%EF%B8%8F-migrate-from-old-versions)\n- [🏅 Hall of fame](#-hall-of-fame)\n\n## 🚀 Features\n\n### Built-in splash screen image resize modes\n\n`expo-splash-screen` contains a built-in feature for taking care of properly displaying your splash screen image. You can use the following resize modes to obtain behavior as if you were using the React Native `<Image>` component's `resizeMode` style.\n\n#### `CONTAIN` resize mode\n\nScale the image uniformly (maintaining the image's aspect ratio) so that both dimensions the width and height of the image will be equal to or less than the corresponding dimension of the device's screen.\n\n<table>\n  <thead><tr><td>Android</td><td>iOS</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575867-aeeb3580-c3d6-11eb-825d-19a847fe30f5.mp4\n\n</td>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575885-b6124380-c3d6-11eb-8485-75a11832962c.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n#### `COVER` resize mode\n\nScale the image uniformly (maintaining the image's aspect ratio) so that both the width and height of the image will be equal to or larger than the corresponding dimension of the device's screen.\n\n<table>\n  <thead><tr><td>Android</td><td>iOS</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575871-b1e62600-c3d6-11eb-9435-5dee19791294.mp4\n\n</td>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575890-b7437080-c3d6-11eb-9c0a-3c563d1ee02a.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n#### `NATIVE` resize mode\n\n> **Android only.**\n\nBy using this resize mode your app will will leverage Android's ability to present a static bitmap while the application is starting up.\nAndroid (unlike iOS) does not support stretching of the provided image during launch, so the application will present the given image centered on the screen at its original dimensions.\n\n<table>\n  <thead><tr><td>Android</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575878-b3afe980-c3d6-11eb-80c1-72441c22e8be.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n> Animation above presents one of our [known issues](#native-mode-pushes-splash-image-up-a-little-bit)\n\nSelecting this resize mode requires some more work to be done in native configuration.\nPlease take a look at the [`res/drawable/splashscreen.xml`](#resdrawablesplashscreenxml) and [`res/drawable/splashscreen_background.png`](#resdrawablesplashscreen_backgroundpng) sections.\n\n### Per-appearance (a.k.a. dark-mode) splash screen\n\n`expo-splash-screen` supports per-appearance splash screens that respond to system appearance changes on iOS 13+ and dark-mode changes on Android 10+.\n\n### StatusBar customization\n\n`expo-splash-screen` allows customization of the StatusBar according to the [ReactNative StatusBar API](https://reactnative.dev/docs/statusbar).\n\n## 📚 API\n\n```tsx\nimport * as SplashScreen from 'expo-splash-screen';\n```\n\nThe native splash screen that is controlled via this module autohides once the ReactNative-controlled view hierarchy is mounted. This means that when your app first `render`s view component, the native splash screen will hide. This default behavior can be prevented by calling [`SplashScreen.preventAutoHideAsync()`](#splashscreenpreventautohideasync) and later on [`SplashScreen.hideAsync()`](#splashscreenhideasync).\n\n### `SplashScreen.preventAutoHideAsync()`\n\nThis method makes the native splash screen stay visible until [`SplashScreen.hideAsync()`](#splashscreenhideasync) is called. This must be called before any ReactNative-controlled view hierarchy is rendered (either in the global scope of your main component, or when the component renders `null` at the beginning - see [Examples section](#-examples)).\n\nPreventing default autohiding might come in handy if your application needs to prepare/download some resources and/or make some API calls before first rendering some actual view hierarchy.\n\n#### Returns\n\nA `Promise` that resolves to `true` when preventing autohiding succeeded and to `false` if the native splash screen is already prevented from autohiding (for instance, if you've already called this method).\n`Promise` rejection most likely means that native splash screen cannot be prevented from autohiding (it's already hidden when this method was executed).\n\n### `SplashScreen.hideAsync()`\n\nHides the native splash screen. Only works if the native splash screen has been previously prevented from autohiding by calling [`SplashScreen.preventAutoHideAsync()`](#splashscreenpreventautohideasync) method.\n\n#### Returns\n\nA `Promise` that resolves to `true` once the splash screen becomes hidden and to `false` if the splash screen is already hidden.\n\n## 🗒 Examples\n\n### `SplashScreen.preventAutoHideAsync()` in global scope\n\n`App.tsx`\n\n```tsx\nimport React from 'react';\nimport { StyleSheet, Text, View } from 'react-native';\nimport * as SplashScreen from 'expo-splash-screen';\n\n// Prevent native splash screen from autohiding before App component declaration\nSplashScreen.preventAutoHideAsync()\n  .then((result) => console.log(`SplashScreen.preventAutoHideAsync() succeeded: ${result}`))\n  .catch(console.warn); // it's good to explicitly catch and inspect any error\n\nexport default class App extends React.Component {\n  componentDidMount() {\n    // Hides native splash screen after 2s\n    setTimeout(async () => {\n      await SplashScreen.hideAsync();\n    }, 2000);\n  }\n\n  render() {\n    return (\n      <View style={styles.container}>\n        <Text style={styles.text}>SplashScreen Demo! 👋</Text>\n      </View>\n    );\n  }\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    alignItems: 'center',\n    justifyContent: 'center',\n    backgroundColor: '#aabbcc',\n  },\n  text: {\n    color: 'white',\n    fontWeight: 'bold',\n  },\n});\n```\n\n### `SplashScreen.preventAutoHideAsync()` in component that initially renders `null`\n\n`App.tsx`\n\n```tsx\nimport React from 'react';\nimport { StyleSheet, Text, View } from 'react-native';\nimport * as SplashScreen from 'expo-splash-screen';\n\nexport default class App extends React.Component {\n  state = {\n    appIsReady: false,\n  };\n\n  async componentDidMount() {\n    // Prevent native splash screen from autohiding\n    try {\n      await SplashScreen.preventAutoHideAsync();\n    } catch (e) {\n      console.warn(e);\n    }\n    this.prepareResources();\n  }\n\n  /**\n   * Method that serves to load resources and make API calls\n   */\n  prepareResources = async () => {\n    await performAPICalls(...);\n    await downloadAssets(...);\n\n    this.setState({ appIsReady: true }, async () => {\n      await SplashScreen.hideAsync();\n    });\n  }\n\n  render() {\n    if (!this.state.appIsReady) {\n      return null;\n    }\n\n    return (\n      <View style={styles.container}>\n        <Text style={styles.text}>SplashScreen Demo! 👋</Text>\n      </View>\n    )\n  }\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    alignItems: 'center',\n    justifyContent: 'center',\n    backgroundColor: '#aabbcc',\n  },\n  text: {\n    color: 'white',\n    fontWeight: 'bold',\n  },\n});\n```\n\n## 💻 Installation in managed Expo projects\n\nRefer to [the SplashScreen section of the Expo documentation](https://docs.expo.dev/versions/latest/sdk/splash-screen/).\n\n## 🖥 Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n## Add the package to your dependencies\n\n```\nnpx expo install expo-splash-screen\n```\n\n## 📱 Configure iOS\n\nRun `npx pod-install` after installing the package.\n\n### Manual Configuration\n\nTo achieve native splash screen (in iOS ecosystem it's called `LaunchScreen`) behavior, you have to provide either a `SplashScreen.storyboard` file or a `SplashScreen.xib` file, and configure your Xcode project accordingly.\n\nThe guide below shows how to configure your Xcode project to use a single image file as a splash screen using a `.storyboard` file (configuration for `.xib` filetype is analogous).\n\n1. [Add an image to `Images.xcassets`](#-add-an-image-to-imagesxcassets)\n2. [Create `SplashScreen.storyboard`](#-create-splashscreenstoryboard)\n3. [Select `Content Mode` for the `ImageView` in `SplashScreen.storyboard`](#-select-content-mode-for-the-imageview-in-splashscreenstoryboard)\n4. [Mark `SplashScreen.storyboard` as the LaunchScreen](#-mark-splashscreenstoryboard-as-the-launchscreen)\n5. [(<em>optional</em>) Enable dark mode](#-optional-enable-dark-mode)\n6. [(<em>optional</em>) Customize StatusBar](#-customize-statusbar)\n\n#### 🛠 Add an image to `Images.xcassets`\n\nFirst you need to add the image file that would serve as a splash screen to your native project's resources.\n\n1. In your Xcode project open the `.xcassets` (often named `Images.xcassets` or `Assets.xcassets`) file.\n2. In the content panel add `New image set` and name it `SplashScreen`.\n3. Provide the splash screen image you've prepared (you have to provide it in three different scales).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addImagesXcassets.png\" height=\"350\" />\n</details>\n\n#### 🛠 Create `SplashScreen.storyboard`\n\nThis is the actual splash screen definition and will be used by the system to render your splash screen.\n\n1. Create a `SplashScreen.storyboard` file.\n2. Add a `View Controller` to the newly created `.storyboard` file:\n   - open `Library` (`+` button on the top-right),\n   - find `View Controller` element,\n   - drag-and-drop it to the `.storyboard` file.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addViewControllerToStoryboard.png\" height=\"350\" />\n</details>\n\n3. Add an `Image View` to the `View Controller`:\n   - first remove other `View` element from `View Controller`,\n   - open `Library` (`+` button on the top-right),\n   - find `Image View` element,\n   - drag-and-drop it as a `View Controller` child in view hierarchy inspector.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addImageViewToStoryboard.png\" height=\"350\" />\n</details>\n\n4. Set `Storyboard ID` to `SplashScreenViewController`:\n   - select `View Controller` in view hierarchy inspector,\n   - navigate to `Identity Inspector` in the right panel,\n   - and set `Storyboard ID` to `SplashScreenViewController`.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addStoryboardID.png\" height=\"350\" />\n</details>\n\n5. Tick `Is Initial View Controller` in `SplashScreenViewController`:\n   - select `View Controller` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - and tick `Is Initial View Controller` in View Controller section.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-tickIsInitialViewController.png\" height=\"350\" />\n</details>\n\n6. Configure `Image View` source:\n   - select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - select `SplashScreen` in `Image` parameter).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-configureImageView.png\" height=\"350\" />\n</details>\n\n7. Configure `Background` of the `Image View`:\n   - select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - configure `Background` parameter:\n     - To enter a `#RRGGBB` value you need to select `Custom` option and in the `Colors Popup` that appeared you need to navigate to the second tab and choose `RGB Sliders` from dropdown select.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectBackgroundColor.png\" height=\"350\" />\n</details>\n\n#### 🛠 Select `Content Mode` for the `ImageView` in `SplashScreen.storyboard`\n\nThis is how your image will be displayed on the screen.\n\n1. Open `SplashScreen.storyboard` and select `Image View` from `View Controller`.\n2. Navigate to `Attributes Inspector` in the right panel and locate `Content Mode`.\n3. Select one of the following:\n   - `Aspect Fit` to obtain [CONTAIN resize mode](#contain-resize-mode),\n   - `Aspect Fill` to obtain [COVER resize mode](#cover-resize-mode).\n4. You can always choose other options to achieve different image positioning and scaling.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectImageViewContentMode.png\" height=\"350\" />\n</details>\n\n#### 🛠 Mark `SplashScreen.storyboard` as the LaunchScreen\n\nThe newly created `SplashScreen.storyboard` needs to be marked as the `Launch Screen File` in your Xcode project in order to be presented from the very beginning of your application launch.\n\n1. Select your project in `Project Navigator`\n2. Select your project name from `TARGETS` panel and navigate to `General` tab.\n3. Locate `App Icons and Launch Images` section and `Launch Screen File` option.\n4. Select or enter `SplashScreen` as the value for located option.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectLaunchScreen.png\" height=\"350\" />\n</details>\n\n#### 🛠 (<em>optional</em>) Enable dark mode\n\n##### Provide different background colors\n\nDepending on what iOS version your application is targeting, you have to adjust your native project differently to a obtain working per-appearance splash screen view.\n\n##### I'm targeting iOS 11+\n\nYou can take advantage of [`named colors`](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/WhatsNewXcode/xcode_9/xcode_9.html) in your Xcode project.\n\n1. Create a new `Color Set` and customize its values for different color modes:\n   - in your `.xcassets` directory (either create a new `.xcassets` for colors, or reuse an existing one e.g. with images) create `New Color Set` and name it `SplashScreenBackground`,\n   - navigate to `Attributes Inspector` in the right panel and change `Appearance` to `Any, Dark`,\n   - select desired color in `Attributes Inspector` in the right panel for each mode.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-createNamedColor.png\" height=\"350\" />\n</details>\n\n2. Select created `named color` as the `Background` for the `Image View` in `SplashScreen.storyboard`:\n   - open `SplashScreen.storyboard` and select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - configure `Background` parameter by selecting your created `named color` (that should be listed as `SplashScreenBackground`).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectNamedColor.png\" height=\"350\" />\n</details>\n\n##### I'm targeting iOS version < 11\n\nYou cannot use [`named colors`](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/WhatsNewXcode/xcode_9/xcode_9.html) feature in your Xcode project.\nInstead you have to create an additional image set that contains small 1x1px images, each with the desired background color. Then, you'll use this additional image resource as a background in the splash screen view.\n\nYou can use this online generator to obtain 1x1px `.png` images with desired colors: http://www.1x1px.me.\n\n1. Create `SplashScreenBackground` `Image Set` with desired background colors for each mode in your `Images.xcassets` directory:\n   - open your `.xcassets` directory with images,\n   - in the content panel add `New image set` and name it `SplashScreenBackground`,\n   - convert this `Image set` to support `Dark Appearance` by navigating to `Attributes Inspector` in the right panel and changing `Appearance` to `Any, Dark`,\n   - provide images with colors for every mode (you can generate color 1x1px images using http://www.1x1px.me).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addSplashScreenBackgroundImages.png\" height=\"250\" />\n</details>\n\n2. Update `SplashScreen.storyboard` to consist of a single top-level `View` with two `Image View` subviews (solid-colored image in the background and actual splash screen image in the foreground):\n\n   - open `SplashScreen.storyboard` and replace `Image View` with a plain `View` (search `Library` for it and drag&drop it in place of current `Image View`),\n   - add two\n\n3. Configure first `Image View` (background color):\n   - configure attributes in `Attributes Inspector`:\n     - set `Image` to `SplashScreenBackground` (prepared in previous step),\n     - set `Content Mode` to `Scale To Fill` (color needs to take all available space),\n   - make this subview take all available space in parent view:\n     - open `Add new constraints` bottom menu,\n     - make sure `Constrain to margin` is not checked,\n     - for every input, open the dropdown and select `View` (parent view reference) and set `0` as the value,\n     - once every side is covered (`0` value and parent view reference selected in dropdown) hit `Add 4 Constraints`,\n     - observe that in `View Hierarchy Inspector` constraints are added and `Image View` resized to take whole place of parent view.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-createBackgroundImageView.png\" height=\"350\" />\n</details>\n\n4. Configure second `Image View` (actual splash screen image):\n   - select second `Image View` and select correct `Image` in `Attributes Inspector` alongside with desired `Content Mode`,\n   - make this subview take all available space in parent view (see previous step).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addConstraintsToImageViews.png\" height=\"350\" />\n</details>\n\n##### Provide different splash screen image\n\nYou might want to add a separate image for `dark` mode. If the system is switched to `dark` mode, it would pick this different image instead of the normal one and present it in the splash screen view.\n\n1. In your Xcode project open `SplashScreen` (created in previous section).\n2. Convert this asset to support `Dark Appearance`:\n\n- navigate to `Attributes Inspector` in the right panel,\n- locate `Appearances` section and select `Any, Dark`,\n- provide image for `dark mode` by dropping it to the correct box.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addDarkImagesXcassets.png\" height=\"280\" />\n</details>\n\n###### Background color when you want to support iOS < 11\n\nIf you're targeting a version of iOS < 11 then you cannot use `named color` feature and instead you need to generate images with desired background colors that are going to be used as the background for splash screen view.\nThere is this awesome 1x1px png online generator: http://www.1x1px.me (use it to generate two 1x1px images with desired background colors for different color modes).\n\n#### 🛠 (<em>optional</em>) Customize StatusBar\n\nYou might want to customize the StatusBar appearance during the time the SplashScreen is being shown.\n\n1. Customize `StatusBar hiding` flag:\n\n- open main project view, select your project name from `TARGETS` panel and navigate to `Info` tab,\n- add or modify `Status bar initially hidden` attribute with desired value.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-statusBar-hidden.png\" height=\"350\" />\n</details>\n\n2. Customize `StatusBar style` option:\n\n- open main project view, select your project name from `TARGETS` panel and navigate to `Info` tab,\n- add or modify `Status bar style` attribute with desired value.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-statusBar-style.png\" height=\"350\" />\n</details>\n\n## 🤖 Configure Android\n\nTo achieve fully-native splash screen behavior, `expo-splash-screen` needs to be hooked into the native view hierarchy and consume some resources that have to be placed under `/android/app/src/res` directory.\n\n### Manual Configuration\n\n1. [Configure `res/drawable/splashscreen_image.png`](#-configure-resdrawablesplashscreen_imagepng)\n2. [Configure `res/values/colors.xml`](#-configure-resvaluescolorsxml)\n3. [Configure `res/drawable/splashscreen.xml`](#-configure-resdrawablesplashscreenxml)\n4. [Configure `res/values/styles.xml`](#-configure-resvaluesstylesxml)\n5. [Configure `AndroidManifest.xml`](#-configure-androidmanifestxml)\n6. [(<em>optional</em>) Customzine `resizeMode`](#-optional-customize-resizemode)\n7. [(<em>optional</em>) Enable dark mode](#-optional-enable-dark-mode-1)\n8. [(<em>optional</em>) Customize StatusBar](#-customize-statusbar-1)\n\n#### 🛠 Configure `res/drawable/splashscreen_image.png`\n\nYou have to provide your splash screen image and place it under the `res/drawable` directory.\nThis image will be loaded as soon as Android mounts your application's native view hierarchy.\n\n##### `NATIVE` mode adjustments\n\nIf you've overridden `<string name=\"expo_splash_screen_resize_mode\">native</string>` mode in [`res/values/strings.xml`](#-optional-customize-resizemode), you need to do a few additional steps.\n\nIn your application's `res` directory you might want to have a number of `drawable-X` sub-directories (where `X` is the different DPI for different devices). They store different versions of images that are picked based on the device's DPI (for more information please see [this official Android docs](https://developer.android.com/training/multiscreen/screendensities#TaskProvideAltBmp)).\n\nTo achieve proper scaling of your splash screen image on every device you should have following directories:\n\n- `res/drawable-mdpi` - scale 1x - resources for medium-density (mdpi) screens (~160dpi). (This is the baseline density.)\n- `res/drawable-hdpi` - scale 1.5x - resources for high-density (hdpi) screens (~240dpi).\n- `res/drawable-xhdpi` - scale 2x - resources for extra-high-density (xhdpi) screens (~320dpi).\n- `res/drawable-xxhdpi` - scale 3x - resources for extra-extra-high-density (xxhdpi) screens (~480dpi).\n- `res/drawable-xxxhdpi` - scale 4x - resources for extra-extra-extra-high-density (xxxhdpi) uses (~640dpi).\n\nEach of directories mentioned above should contain the same `splashscreen_image.png` file, but with a different resolution (pay attention to scale factors).\n\n#### 🛠 Configure `res/values/colors.xml`\n\nThis file contains colors that are reused across your application at the native level.\nUpdate the file with the following content or create one if missing:\n\n```diff\n<resources>\n+ <color name=\"splashscreen_background\">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->\n  <!-- Other colors defined for your application -->\n</resources>\n```\n\n#### 🛠 Configure `res/drawable/splashscreen.xml`\n\nThis file contains the description of how the splash screen view should be drawn by the Android system.\nCreate the file with the following content:\n\n```diff\n+ <layer-list xmlns:android=\"http://schemas.android.com/apk/res/android\">\n+   <item android:drawable=\"@color/splashscreen_background\"/>\n+ </layer-list>\n```\n\n#### `NATIVE` mode adjustments\n\nIf you've overridden `<string name=\"expo_splash_screen_resize_mode\">native</string>` mode in [`res/values/strings.xml`](#-optional-customize-resizemode), you shoulw add:\n\n```diff\n<layer-list xmlns:android=\"http://schemas.android.com/apk/res/android\">\n  <item android:drawable=\"@color/splashscreen_background\"/>\n+ <item>\n+   <bitmap android:gravity=\"center\" android:src=\"@drawable/splashscreen_image\"/>\n+ </item>\n</layer-list>\n```\n\n#### 🛠 Configure `res/values/styles.xml`\n\nLocate your main activity theme in `/android/app/src/res/values/styles.xml` or create one if missing.\n\n```diff\n  <!-- Main activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n+   <item name=\"android:windowBackground\">@drawable/splashscreen</item> <!-- this line instructs the system to use 'splashscreen.xml' as a background of the whole application -->\n    <!-- Other style properties -->\n  </style>\n```\n\n#### 🛠 Configure `AndroidManifest.xml`\n\nAdjust your application's main `AndroidManifest.xml` to contain an `android:theme` property pointing to the style that contains your splash screen configuration:\n\n```diff\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.example.myapp\">\n\n  ...\n\n  <application ...>\n\n+   <!-- Ensure that 'android:theme' property is pointing to the style containing native splash screen reference - see 'styles.xml' -->\n    <activity\n      android:name=\".MainActivity\"\n+     android:theme=\"@style/AppTheme\"\n      ...\n    >\n      ...\n    </activity>\n  </application>\n\n</manifest>\n```\n\n#### 🛠 (<em>optional</em>) Customize `resizeMode`\n\nThe default image [`resizeMode`](https://github.com/expo/expo/tree/%40kudo/modularize-expo-splash-screen/packages/expo-splash-screen#built-in-splash-screen-image-resize-modes) is [`CONTAIN`](https://github.com/expo/expo/tree/%40kudo/modularize-expo-splash-screen/packages/expo-splash-screen#contain-resize-mode). If you want to have different `resizeMode`, you need to override in `res/values/strings.xml`.\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_resize_mode\">contain|cover|native</string>\n</resources>\n```\n\n#### 🛠 (<em>optional</em>) Enable dark mode\n\n##### Provide different background colors - `res/values-night/colors.png`\n\nIf you want to have different background colors in your splash screen depending on the system color mode, you need to create a similar file to `colors.xml`, but in the directory `res/values-night`.\nValues in this file are going to picked by the system when it is switched to `dark` mode.\n\n```diff\n<resources>\n+ <color name=\"splashscreen_background\">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->\n</resources>\n```\n\n##### Provide different splash screen image - `res/drawable-night/splashscreen_image.png`\n\nYou might want to provide a separate splash screen image for dark mode usage, and place it under the `res/drawable-night` directory with exactly the same name as the normal one.\nThis step is optional, because you might want to have the same image in both `light` and `dark` modes (e.g. you have just a light-themed logo and you want to have different background colors in different modes).\n\n#### 🛠 (<em>optional</em>) Customize StatusBar\n\nYou might want to customize the StatusBar appearance during the time the SplashScreen is being shown.\n\n1. Customize `StatusBar hiding` flag\n\nTo have the StatusBar completely hidden you need to update your `res/values/styles.xml` file with the following entry (to prevent StatusBar from hiding either remove this entry or enter `false` as the value):\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:windowFullscreen\">true</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night`, `res/values-night-v23`, etc.), be sure to update these files accordingly.\n\nRead more about `android:windowFullscreen` flag in [official Android documentation](https://developer.android.com/reference/android/R.attr#windowFullscreen).\n\n2. Customize `StatusBar style` option\n\nThis option is only available for Android devices running Android 6.0 or greater.\nTo enforce `light` or `dark` StatusBar style for given system color mode, you have to prepare or update your `res/values-v23/styles.xml` file with the following entry (as of this option being supported since API 23, you have to configure specifically named directory containing separate configuration files):\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:windowLightStatusBar\">true|false</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nAvailable values:\n\n- `true` for having dark-colored icons,\n- `false` for having light-colored icons.\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night-v23` (for dark color mode), etc.), be sure to update these files accordingly.\n\nRead more about `android:windowLightStatusBar` flag in [official Android documentation](https://developer.android.com/reference/android/R.attr#windowLightStatusBar).\n\nTo read more about Android multi-API-level support see [this official documentation](https://developer.android.com/guide/topics/resources/providing-resources).\n\n3. Customize `StatusBar color` option (a.k.a. `background color` of the StatusBar component)\n\nTo achieve custom background color you need to create a new color resource and provide it to the SplashScreen `style` description.\n\nCreate new color resource in your `res/values/colors.xml` (if your application supports dark mode, consider adding different color in `res/values-night/colors.xml` file):\n\n```diff\n  <resources>\n    <color name=\"splashscreen_background\">#D0D0C0</color>\n+   <color name=\"splashscreen_statusbar_color\">#(AA)RRGGBB</color> <!-- #AARRGGBB or #RRGGBB format -->\n  </resources>\n```\n\nUpdate your `res/values/styles.xml` file with the following entry:\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:statusBarColor\">@color/splashscreen_statusbar_color</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night`, `res/values-night-v23`, etc.), be sure to update these files accordingly.\n\nRead more about `android:statusBarColor` option in [official Android documentation](https://developer.android.com/reference/android/R.attr#statusBarColor).\n\n4. Customize `StatusBar translucent` flag\n\nWhen the StatusBar is translucent, the app will be able to draw under the StatusBar component area.\n\nTo make the StatusBar translucent update your `res/values/strings.xml` file with the following content:\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_status_bar_translucent\">true</string>\n</resources>\n```\n\n## 👏 Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).\n\n## ❓ Known issues\n\n### iOS caching\n\nSplash Screens on iOS apps can sometimes encounter a caching issue where the previous image will flash before showing the new, intended image. When this occurs, we recommend you try power cycling your device and uninstalling and re-installing the application. However, the caching sometimes can persist for a day or two so be patient if the aforementioned steps were unable to resolve the issue.\n\n### `NATIVE` mode pushes splash image up a little bit\n\nSee [`NATIVE`](#native-resize-mode) mode preview above.\n\n> We are aware of this issue and unfortunately haven't been able to provide a solution as of yet. This is on our immediate roadmap...\n\n## ⬆️ Migrate from old versions\n\n### Migrate from expo-splash-screen < 0.12.0\n\nWe try to keep changes backward compatible, the code for `expo-splash-screen` will still work as it used to be. However, if you are going to migrate as new style API, here are the steps:\n\n1. Migrate your project from react-native-unimodules to expo-modules-core\n2. Remove expo-splash-screen code from MainActivity\n\n```diff\n--- a/android/app/src/main/java/com/helloworld/MainActivity.java\n+++ b/android/app/src/main/java/com/helloworld/MainActivity.java\n import com.facebook.react.ReactRootView;\n import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;\n\n-import host.exp.exponent.experience.splashscreen.legacy.singletons.SplashScreen;\n-import host.exp.exponent.experience.splashscreen.legacy.SplashScreenImageResizeMode;\n-\n public class MainActivity extends ReactActivity {\n   @Override\n   protected void onCreate(Bundle savedInstanceState) {\n     // This is required for expo-splash-screen.\n     setTheme(R.style.AppTheme);\n     super.onCreate(null);\n-    // SplashScreen.show(...) has to be called after super.onCreate(...)\n-    SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, ReactRootView.class, false);\n   }\n```\n\n3. Override default `resizeMode` and `statusBarTranslucent` in stings.xml\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_resize_mode\">contain</string>\n+  <string name=\"expo_splash_screen_status_bar_translucent\">false</string>\n</resources>\n```\n\n## 🏅 Hall Of Fame\n\nThis module is based on a solid work from (many thanks for that 👏):\n\n- [react-native-splash-screen](https://github.com/crazycodeboy/react-native-splash-screen)\n- [react-native-bootsplash](https://github.com/zoontek/react-native-bootsplash)\n- [react-native-make](https://github.com/bamlab/react-native-make)",
+    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/splash-screen/\">\n    <img\n      src=\"../../.github/resources/expo-splash-screen.svg\"\n      alt=\"expo-splash-screen\"\n      height=\"64\" />\n  </a>\n</p>\n\n`expo-splash-screen` allows you to customize your app's splash screen, which is the initial screen users see when the app is launched, before it has loaded. Splash screens (sometimes called launch screens) provide a user's first experience with your application.\n\n- [📜 CHANGELOG](./CHANGELOG.md)\n- [🚀 Features](#-features)\n- [📚 API](#-api)\n- [🗒 Examples](#-examples)\n- [💻 Installation in managed Expo projects](#-installation-in-managed-expo-projects)\n- [🖥 Installation in bare React Native projects](#-installation-in-bare-react-native-projects)\n  - [📱 Configure iOS](#-configure-ios)\n  - [🤖 Configure Android](#-configure-android)\n- [👏 Contributing](#-contributing)\n- [❓ Known issues](#-known-issues)\n- [⬆️ Migrate from old versions](#%EF%B8%8F-migrate-from-old-versions)\n- [🏅 Hall of fame](#-hall-of-fame)\n\n## 🚀 Features\n\n### Built-in splash screen image resize modes\n\n`expo-splash-screen` contains a built-in feature for taking care of properly displaying your splash screen image. You can use the following resize modes to obtain behavior as if you were using the React Native `<Image>` component's `resizeMode` style.\n\n#### `CONTAIN` resize mode\n\nScale the image uniformly (maintaining the image's aspect ratio) so that both dimensions the width and height of the image will be equal to or less than the corresponding dimension of the device's screen.\n\n<table>\n  <thead><tr><td>Android</td><td>iOS</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575867-aeeb3580-c3d6-11eb-825d-19a847fe30f5.mp4\n\n</td>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575885-b6124380-c3d6-11eb-8485-75a11832962c.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n#### `COVER` resize mode\n\nScale the image uniformly (maintaining the image's aspect ratio) so that both the width and height of the image will be equal to or larger than the corresponding dimension of the device's screen.\n\n<table>\n  <thead><tr><td>Android</td><td>iOS</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575871-b1e62600-c3d6-11eb-9435-5dee19791294.mp4\n\n</td>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575890-b7437080-c3d6-11eb-9c0a-3c563d1ee02a.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n#### `NATIVE` resize mode\n\n> **Android only.**\n\nBy using this resize mode your app will will leverage Android's ability to present a static bitmap while the application is starting up.\nAndroid (unlike iOS) does not support stretching of the provided image during launch, so the application will present the given image centered on the screen at its original dimensions.\n\n<table>\n  <thead><tr><td>Android</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575878-b3afe980-c3d6-11eb-80c1-72441c22e8be.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n> Animation above presents one of our [known issues](#native-mode-pushes-splash-image-up-a-little-bit)\n\nSelecting this resize mode requires some more work to be done in native configuration.\nPlease take a look at the [`res/drawable/splashscreen.xml`](#resdrawablesplashscreenxml) and [`res/drawable/splashscreen_background.png`](#resdrawablesplashscreen_backgroundpng) sections.\n\n### Per-appearance (a.k.a. dark-mode) splash screen\n\n`expo-splash-screen` supports per-appearance splash screens that respond to system appearance changes on iOS 13+ and dark-mode changes on Android 10+.\n\n### StatusBar customization\n\n`expo-splash-screen` allows customization of the StatusBar according to the [ReactNative StatusBar API](https://reactnative.dev/docs/statusbar).\n\n## 📚 API\n\n```tsx\nimport * as SplashScreen from 'expo-splash-screen';\n```\n\nThe native splash screen that is controlled via this module autohides once the ReactNative-controlled view hierarchy is mounted. This means that when your app first `render`s view component, the native splash screen will hide. This default behavior can be prevented by calling [`SplashScreen.preventAutoHideAsync()`](#splashscreenpreventautohideasync) and later on [`SplashScreen.hideAsync()`](#splashscreenhideasync).\n\n### `SplashScreen.preventAutoHideAsync()`\n\nThis method makes the native splash screen stay visible until [`SplashScreen.hideAsync()`](#splashscreenhideasync) is called. This must be called before any ReactNative-controlled view hierarchy is rendered (either in the global scope of your main component, or when the component renders `null` at the beginning - see [Examples section](#-examples)).\n\nPreventing default autohiding might come in handy if your application needs to prepare/download some resources and/or make some API calls before first rendering some actual view hierarchy.\n\n#### Returns\n\nA `Promise` that resolves to `true` when preventing autohiding succeeded and to `false` if the native splash screen is already prevented from autohiding (for instance, if you've already called this method).\n`Promise` rejection most likely means that native splash screen cannot be prevented from autohiding (it's already hidden when this method was executed).\n\n### `SplashScreen.hideAsync()`\n\nHides the native splash screen. Only works if the native splash screen has been previously prevented from autohiding by calling [`SplashScreen.preventAutoHideAsync()`](#splashscreenpreventautohideasync) method.\n\n#### Returns\n\nA `Promise` that resolves to `true` once the splash screen becomes hidden and to `false` if the splash screen is already hidden.\n\n## 🗒 Examples\n\n### `SplashScreen.preventAutoHideAsync()` in global scope\n\n`App.tsx`\n\n```tsx\nimport React from 'react';\nimport { StyleSheet, Text, View } from 'react-native';\nimport * as SplashScreen from 'expo-splash-screen';\n\n// Prevent native splash screen from autohiding before App component declaration\nSplashScreen.preventAutoHideAsync()\n  .then((result) => console.log(`SplashScreen.preventAutoHideAsync() succeeded: ${result}`))\n  .catch(console.warn); // it's good to explicitly catch and inspect any error\n\nexport default class App extends React.Component {\n  componentDidMount() {\n    // Hides native splash screen after 2s\n    setTimeout(async () => {\n      await SplashScreen.hideAsync();\n    }, 2000);\n  }\n\n  render() {\n    return (\n      <View style={styles.container}>\n        <Text style={styles.text}>SplashScreen Demo! 👋</Text>\n      </View>\n    );\n  }\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    alignItems: 'center',\n    justifyContent: 'center',\n    backgroundColor: '#aabbcc',\n  },\n  text: {\n    color: 'white',\n    fontWeight: 'bold',\n  },\n});\n```\n\n### `SplashScreen.preventAutoHideAsync()` in component that initially renders `null`\n\n`App.tsx`\n\n```tsx\nimport React from 'react';\nimport { StyleSheet, Text, View } from 'react-native';\nimport * as SplashScreen from 'expo-splash-screen';\n\nexport default class App extends React.Component {\n  state = {\n    appIsReady: false,\n  };\n\n  async componentDidMount() {\n    // Prevent native splash screen from autohiding\n    try {\n      await SplashScreen.preventAutoHideAsync();\n    } catch (e) {\n      console.warn(e);\n    }\n    this.prepareResources();\n  }\n\n  /**\n   * Method that serves to load resources and make API calls\n   */\n  prepareResources = async () => {\n    await performAPICalls(...);\n    await downloadAssets(...);\n\n    this.setState({ appIsReady: true }, async () => {\n      await SplashScreen.hideAsync();\n    });\n  }\n\n  render() {\n    if (!this.state.appIsReady) {\n      return null;\n    }\n\n    return (\n      <View style={styles.container}>\n        <Text style={styles.text}>SplashScreen Demo! 👋</Text>\n      </View>\n    )\n  }\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    alignItems: 'center',\n    justifyContent: 'center',\n    backgroundColor: '#aabbcc',\n  },\n  text: {\n    color: 'white',\n    fontWeight: 'bold',\n  },\n});\n```\n\n## 💻 Installation in managed Expo projects\n\nRefer to [the SplashScreen section of the Expo documentation](https://docs.expo.dev/versions/latest/sdk/splash-screen/).\n\n## 🖥 Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n## Add the package to your dependencies\n\n```\nnpx expo install expo-splash-screen\n```\n\n## 📱 Configure iOS\n\nRun `npx pod-install` after installing the package.\n\n### Manual Configuration\n\nTo achieve native splash screen (in iOS ecosystem it's called `LaunchScreen`) behavior, you have to provide either a `SplashScreen.storyboard` file or a `SplashScreen.xib` file, and configure your Xcode project accordingly.\n\nThe guide below shows how to configure your Xcode project to use a single image file as a splash screen using a `.storyboard` file (configuration for `.xib` filetype is analogous).\n\n1. [Add an image to `Images.xcassets`](#-add-an-image-to-imagesxcassets)\n2. [Create `SplashScreen.storyboard`](#-create-splashscreenstoryboard)\n3. [Select `Content Mode` for the `ImageView` in `SplashScreen.storyboard`](#-select-content-mode-for-the-imageview-in-splashscreenstoryboard)\n4. [Mark `SplashScreen.storyboard` as the LaunchScreen](#-mark-splashscreenstoryboard-as-the-launchscreen)\n5. [(<em>optional</em>) Enable dark mode](#-optional-enable-dark-mode)\n6. [(<em>optional</em>) Customize StatusBar](#-customize-statusbar)\n\n#### 🛠 Add an image to `Images.xcassets`\n\nFirst you need to add the image file that would serve as a splash screen to your native project's resources.\n\n1. In your Xcode project open the `.xcassets` (often named `Images.xcassets` or `Assets.xcassets`) file.\n2. In the content panel add `New image set` and name it `SplashScreen`.\n3. Provide the splash screen image you've prepared (you have to provide it in three different scales).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addImagesXcassets.png\" height=\"350\" />\n</details>\n\n#### 🛠 Create `SplashScreen.storyboard`\n\nThis is the actual splash screen definition and will be used by the system to render your splash screen.\n\n1. Create a `SplashScreen.storyboard` file.\n2. Add a `View Controller` to the newly created `.storyboard` file:\n   - open `Library` (`+` button on the top-right),\n   - find `View Controller` element,\n   - drag-and-drop it to the `.storyboard` file.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addViewControllerToStoryboard.png\" height=\"350\" />\n</details>\n\n3. Add an `Image View` to the `View Controller`:\n   - first remove other `View` element from `View Controller`,\n   - open `Library` (`+` button on the top-right),\n   - find `Image View` element,\n   - drag-and-drop it as a `View Controller` child in view hierarchy inspector.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addImageViewToStoryboard.png\" height=\"350\" />\n</details>\n\n4. Set `Storyboard ID` to `SplashScreenViewController`:\n   - select `View Controller` in view hierarchy inspector,\n   - navigate to `Identity Inspector` in the right panel,\n   - and set `Storyboard ID` to `SplashScreenViewController`.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addStoryboardID.png\" height=\"350\" />\n</details>\n\n5. Tick `Is Initial View Controller` in `SplashScreenViewController`:\n   - select `View Controller` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - and tick `Is Initial View Controller` in View Controller section.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-tickIsInitialViewController.png\" height=\"350\" />\n</details>\n\n6. Configure `Image View` source:\n   - select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - select `SplashScreen` in `Image` parameter).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-configureImageView.png\" height=\"350\" />\n</details>\n\n7. Configure `Background` of the `Image View`:\n   - select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - configure `Background` parameter:\n     - To enter a `#RRGGBB` value you need to select `Custom` option and in the `Colors Popup` that appeared you need to navigate to the second tab and choose `RGB Sliders` from dropdown select.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectBackgroundColor.png\" height=\"350\" />\n</details>\n\n#### 🛠 Select `Content Mode` for the `ImageView` in `SplashScreen.storyboard`\n\nThis is how your image will be displayed on the screen.\n\n1. Open `SplashScreen.storyboard` and select `Image View` from `View Controller`.\n2. Navigate to `Attributes Inspector` in the right panel and locate `Content Mode`.\n3. Select one of the following:\n   - `Aspect Fit` to obtain [CONTAIN resize mode](#contain-resize-mode),\n   - `Aspect Fill` to obtain [COVER resize mode](#cover-resize-mode).\n4. You can always choose other options to achieve different image positioning and scaling.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectImageViewContentMode.png\" height=\"350\" />\n</details>\n\n#### 🛠 Mark `SplashScreen.storyboard` as the LaunchScreen\n\nThe newly created `SplashScreen.storyboard` needs to be marked as the `Launch Screen File` in your Xcode project in order to be presented from the very beginning of your application launch.\n\n1. Select your project in `Project Navigator`\n2. Select your project name from `TARGETS` panel and navigate to `General` tab.\n3. Locate `App Icons and Launch Images` section and `Launch Screen File` option.\n4. Select or enter `SplashScreen` as the value for located option.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectLaunchScreen.png\" height=\"350\" />\n</details>\n\n#### 🛠 (<em>optional</em>) Enable dark mode\n\n##### Provide different background colors\n\nDepending on what iOS version your application is targeting, you have to adjust your native project differently to a obtain working per-appearance splash screen view.\n\n##### I'm targeting iOS 11+\n\nYou can take advantage of [`named colors`](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/WhatsNewXcode/xcode_9/xcode_9.html) in your Xcode project.\n\n1. Create a new `Color Set` and customize its values for different color modes:\n   - in your `.xcassets` directory (either create a new `.xcassets` for colors, or reuse an existing one e.g. with images) create `New Color Set` and name it `SplashScreenBackground`,\n   - navigate to `Attributes Inspector` in the right panel and change `Appearance` to `Any, Dark`,\n   - select desired color in `Attributes Inspector` in the right panel for each mode.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-createNamedColor.png\" height=\"350\" />\n</details>\n\n2. Select created `named color` as the `Background` for the `Image View` in `SplashScreen.storyboard`:\n   - open `SplashScreen.storyboard` and select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - configure `Background` parameter by selecting your created `named color` (that should be listed as `SplashScreenBackground`).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectNamedColor.png\" height=\"350\" />\n</details>\n\n##### I'm targeting iOS version < 11\n\nYou cannot use [`named colors`](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/WhatsNewXcode/xcode_9/xcode_9.html) feature in your Xcode project.\nInstead you have to create an additional image set that contains small 1x1px images, each with the desired background color. Then, you'll use this additional image resource as a background in the splash screen view.\n\nYou can use this online generator to obtain 1x1px `.png` images with desired colors: http://www.1x1px.me.\n\n1. Create `SplashScreenBackground` `Image Set` with desired background colors for each mode in your `Images.xcassets` directory:\n   - open your `.xcassets` directory with images,\n   - in the content panel add `New image set` and name it `SplashScreenBackground`,\n   - convert this `Image set` to support `Dark Appearance` by navigating to `Attributes Inspector` in the right panel and changing `Appearance` to `Any, Dark`,\n   - provide images with colors for every mode (you can generate color 1x1px images using http://www.1x1px.me).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addSplashScreenBackgroundImages.png\" height=\"250\" />\n</details>\n\n2. Update `SplashScreen.storyboard` to consist of a single top-level `View` with two `Image View` subviews (solid-colored image in the background and actual splash screen image in the foreground):\n\n   - open `SplashScreen.storyboard` and replace `Image View` with a plain `View` (search `Library` for it and drag&drop it in place of current `Image View`),\n   - add two\n\n3. Configure first `Image View` (background color):\n   - configure attributes in `Attributes Inspector`:\n     - set `Image` to `SplashScreenBackground` (prepared in previous step),\n     - set `Content Mode` to `Scale To Fill` (color needs to take all available space),\n   - make this subview take all available space in parent view:\n     - open `Add new constraints` bottom menu,\n     - make sure `Constrain to margin` is not checked,\n     - for every input, open the dropdown and select `View` (parent view reference) and set `0` as the value,\n     - once every side is covered (`0` value and parent view reference selected in dropdown) hit `Add 4 Constraints`,\n     - observe that in `View Hierarchy Inspector` constraints are added and `Image View` resized to take whole place of parent view.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-createBackgroundImageView.png\" height=\"350\" />\n</details>\n\n4. Configure second `Image View` (actual splash screen image):\n   - select second `Image View` and select correct `Image` in `Attributes Inspector` alongside with desired `Content Mode`,\n   - make this subview take all available space in parent view (see previous step).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addConstraintsToImageViews.png\" height=\"350\" />\n</details>\n\n##### Provide different splash screen image\n\nYou might want to add a separate image for `dark` mode. If the system is switched to `dark` mode, it would pick this different image instead of the normal one and present it in the splash screen view.\n\n1. In your Xcode project open `SplashScreen` (created in previous section).\n2. Convert this asset to support `Dark Appearance`:\n\n- navigate to `Attributes Inspector` in the right panel,\n- locate `Appearances` section and select `Any, Dark`,\n- provide image for `dark mode` by dropping it to the correct box.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addDarkImagesXcassets.png\" height=\"280\" />\n</details>\n\n###### Background color when you want to support iOS < 11\n\nIf you're targeting a version of iOS < 11 then you cannot use `named color` feature and instead you need to generate images with desired background colors that are going to be used as the background for splash screen view.\nThere is this awesome 1x1px png online generator: http://www.1x1px.me (use it to generate two 1x1px images with desired background colors for different color modes).\n\n#### 🛠 (<em>optional</em>) Customize StatusBar\n\nYou might want to customize the StatusBar appearance during the time the SplashScreen is being shown.\n\n1. Customize `StatusBar hiding` flag:\n\n- open main project view, select your project name from `TARGETS` panel and navigate to `Info` tab,\n- add or modify `Status bar initially hidden` attribute with desired value.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-statusBar-hidden.png\" height=\"350\" />\n</details>\n\n2. Customize `StatusBar style` option:\n\n- open main project view, select your project name from `TARGETS` panel and navigate to `Info` tab,\n- add or modify `Status bar style` attribute with desired value.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-statusBar-style.png\" height=\"350\" />\n</details>\n\n## 🤖 Configure Android\n\nTo achieve fully-native splash screen behavior, `expo-splash-screen` needs to be hooked into the native view hierarchy and consume some resources that have to be placed under `/android/app/src/res` directory.\n\n### Manual Configuration\n\n1. [Configure `res/drawable/splashscreen_image.png`](#-configure-resdrawablesplashscreen_imagepng)\n2. [Configure `res/values/colors.xml`](#-configure-resvaluescolorsxml)\n3. [Configure `res/drawable/splashscreen.xml`](#-configure-resdrawablesplashscreenxml)\n4. [Configure `res/values/styles.xml`](#-configure-resvaluesstylesxml)\n5. [Configure `AndroidManifest.xml`](#-configure-androidmanifestxml)\n6. [(<em>optional</em>) Customzine `resizeMode`](#-optional-customize-resizemode)\n7. [(<em>optional</em>) Enable dark mode](#-optional-enable-dark-mode-1)\n8. [(<em>optional</em>) Customize StatusBar](#-customize-statusbar-1)\n\n#### 🛠 Configure `res/drawable/splashscreen_image.png`\n\nYou have to provide your splash screen image and place it under the `res/drawable` directory.\nThis image will be loaded as soon as Android mounts your application's native view hierarchy.\n\n##### `NATIVE` mode adjustments\n\nIf you've overridden `<string name=\"expo_splash_screen_resize_mode\">native</string>` mode in [`res/values/strings.xml`](#-optional-customize-resizemode), you need to do a few additional steps.\n\nIn your application's `res` directory you might want to have a number of `drawable-X` sub-directories (where `X` is the different DPI for different devices). They store different versions of images that are picked based on the device's DPI (for more information please see [this official Android docs](https://developer.android.com/training/multiscreen/screendensities#TaskProvideAltBmp)).\n\nTo achieve proper scaling of your splash screen image on every device you should have following directories:\n\n- `res/drawable-mdpi` - scale 1x - resources for medium-density (mdpi) screens (~160dpi). (This is the baseline density.)\n- `res/drawable-hdpi` - scale 1.5x - resources for high-density (hdpi) screens (~240dpi).\n- `res/drawable-xhdpi` - scale 2x - resources for extra-high-density (xhdpi) screens (~320dpi).\n- `res/drawable-xxhdpi` - scale 3x - resources for extra-extra-high-density (xxhdpi) screens (~480dpi).\n- `res/drawable-xxxhdpi` - scale 4x - resources for extra-extra-extra-high-density (xxxhdpi) uses (~640dpi).\n\nEach of directories mentioned above should contain the same `splashscreen_image.png` file, but with a different resolution (pay attention to scale factors).\n\n#### 🛠 Configure `res/values/colors.xml`\n\nThis file contains colors that are reused across your application at the native level.\nUpdate the file with the following content or create one if missing:\n\n```diff\n<resources>\n+ <color name=\"splashscreen_background\">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->\n  <!-- Other colors defined for your application -->\n</resources>\n```\n\n#### 🛠 Configure `res/drawable/splashscreen.xml`\n\nThis file contains the description of how the splash screen view should be drawn by the Android system.\nCreate the file with the following content:\n\n```diff\n+ <layer-list xmlns:android=\"http://schemas.android.com/apk/res/android\">\n+   <item android:drawable=\"@color/splashscreen_background\"/>\n+ </layer-list>\n```\n\n#### `NATIVE` mode adjustments\n\nIf you've overridden `<string name=\"expo_splash_screen_resize_mode\">native</string>` mode in [`res/values/strings.xml`](#-optional-customize-resizemode), you should add:\n\n```diff\n<layer-list xmlns:android=\"http://schemas.android.com/apk/res/android\">\n  <item android:drawable=\"@color/splashscreen_background\"/>\n+ <item>\n+   <bitmap android:gravity=\"center\" android:src=\"@drawable/splashscreen_image\"/>\n+ </item>\n</layer-list>\n```\n\n#### 🛠 Configure `res/values/styles.xml`\n\nLocate your main activity theme in `/android/app/src/res/values/styles.xml` or create one if missing.\n\n```diff\n  <!-- Main activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n+   <item name=\"android:windowBackground\">@drawable/splashscreen</item> <!-- this line instructs the system to use 'splashscreen.xml' as a background of the whole application -->\n    <!-- Other style properties -->\n  </style>\n```\n\n#### 🛠 Configure `AndroidManifest.xml`\n\nAdjust your application's main `AndroidManifest.xml` to contain an `android:theme` property pointing to the style that contains your splash screen configuration:\n\n```diff\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.example.myapp\">\n\n  ...\n\n  <application ...>\n\n+   <!-- Ensure that 'android:theme' property is pointing to the style containing native splash screen reference - see 'styles.xml' -->\n    <activity\n      android:name=\".MainActivity\"\n+     android:theme=\"@style/AppTheme\"\n      ...\n    >\n      ...\n    </activity>\n  </application>\n\n</manifest>\n```\n\n#### 🛠 (<em>optional</em>) Customize `resizeMode`\n\nThe default image [`resizeMode`](https://github.com/expo/expo/tree/%40kudo/modularize-expo-splash-screen/packages/expo-splash-screen#built-in-splash-screen-image-resize-modes) is [`CONTAIN`](https://github.com/expo/expo/tree/%40kudo/modularize-expo-splash-screen/packages/expo-splash-screen#contain-resize-mode). If you want to have different `resizeMode`, you need to override in `res/values/strings.xml`.\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_resize_mode\">contain|cover|native</string>\n</resources>\n```\n\n#### 🛠 (<em>optional</em>) Enable dark mode\n\n##### Provide different background colors - `res/values-night/colors.png`\n\nIf you want to have different background colors in your splash screen depending on the system color mode, you need to create a similar file to `colors.xml`, but in the directory `res/values-night`.\nValues in this file are going to picked by the system when it is switched to `dark` mode.\n\n```diff\n<resources>\n+ <color name=\"splashscreen_background\">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->\n</resources>\n```\n\n##### Provide different splash screen image - `res/drawable-night/splashscreen_image.png`\n\nYou might want to provide a separate splash screen image for dark mode usage, and place it under the `res/drawable-night` directory with exactly the same name as the normal one.\nThis step is optional, because you might want to have the same image in both `light` and `dark` modes (e.g. you have just a light-themed logo and you want to have different background colors in different modes).\n\n#### 🛠 (<em>optional</em>) Customize StatusBar\n\nYou might want to customize the StatusBar appearance during the time the SplashScreen is being shown.\n\n1. Customize `StatusBar hiding` flag\n\nTo have the StatusBar completely hidden you need to update your `res/values/styles.xml` file with the following entry (to prevent StatusBar from hiding either remove this entry or enter `false` as the value):\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:windowFullscreen\">true</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night`, `res/values-night-v23`, etc.), be sure to update these files accordingly.\n\nRead more about `android:windowFullscreen` flag in [official Android documentation](https://developer.android.com/reference/android/R.attr#windowFullscreen).\n\n2. Customize `StatusBar style` option\n\nThis option is only available for Android devices running Android 6.0 or greater.\nTo enforce `light` or `dark` StatusBar style for given system color mode, you have to prepare or update your `res/values-v23/styles.xml` file with the following entry (as of this option being supported since API 23, you have to configure specifically named directory containing separate configuration files):\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:windowLightStatusBar\">true|false</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nAvailable values:\n\n- `true` for having dark-colored icons,\n- `false` for having light-colored icons.\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night-v23` (for dark color mode), etc.), be sure to update these files accordingly.\n\nRead more about `android:windowLightStatusBar` flag in [official Android documentation](https://developer.android.com/reference/android/R.attr#windowLightStatusBar).\n\nTo read more about Android multi-API-level support see [this official documentation](https://developer.android.com/guide/topics/resources/providing-resources).\n\n3. Customize `StatusBar color` option (a.k.a. `background color` of the StatusBar component)\n\nTo achieve custom background color you need to create a new color resource and provide it to the SplashScreen `style` description.\n\nCreate new color resource in your `res/values/colors.xml` (if your application supports dark mode, consider adding different color in `res/values-night/colors.xml` file):\n\n```diff\n  <resources>\n    <color name=\"splashscreen_background\">#D0D0C0</color>\n+   <color name=\"splashscreen_statusbar_color\">#(AA)RRGGBB</color> <!-- #AARRGGBB or #RRGGBB format -->\n  </resources>\n```\n\nUpdate your `res/values/styles.xml` file with the following entry:\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:statusBarColor\">@color/splashscreen_statusbar_color</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night`, `res/values-night-v23`, etc.), be sure to update these files accordingly.\n\nRead more about `android:statusBarColor` option in [official Android documentation](https://developer.android.com/reference/android/R.attr#statusBarColor).\n\n4. Customize `StatusBar translucent` flag\n\nWhen the StatusBar is translucent, the app will be able to draw under the StatusBar component area.\n\nTo make the StatusBar translucent update your `res/values/strings.xml` file with the following content:\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_status_bar_translucent\">true</string>\n</resources>\n```\n\n## 👏 Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).\n\n## ❓ Known issues\n\n### iOS caching\n\nSplash Screens on iOS apps can sometimes encounter a caching issue where the previous image will flash before showing the new, intended image. When this occurs, we recommend you try power cycling your device and uninstalling and re-installing the application. However, the caching sometimes can persist for a day or two so be patient if the aforementioned steps were unable to resolve the issue.\n\n### `NATIVE` mode pushes splash image up a little bit\n\nSee [`NATIVE`](#native-resize-mode) mode preview above.\n\n> We are aware of this issue and unfortunately haven't been able to provide a solution as of yet. This is on our immediate roadmap...\n\n## ⬆️ Migrate from old versions\n\n### Migrate from expo-splash-screen < 0.12.0\n\nWe try to keep changes backward compatible, the code for `expo-splash-screen` will still work as it used to be. However, if you are going to migrate as new style API, here are the steps:\n\n1. Migrate your project from react-native-unimodules to expo-modules-core\n2. Remove expo-splash-screen code from MainActivity\n\n```diff\n--- a/android/app/src/main/java/com/helloworld/MainActivity.java\n+++ b/android/app/src/main/java/com/helloworld/MainActivity.java\n import com.facebook.react.ReactRootView;\n import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;\n\n-import host.exp.exponent.experience.splashscreen.legacy.singletons.SplashScreen;\n-import host.exp.exponent.experience.splashscreen.legacy.SplashScreenImageResizeMode;\n-\n public class MainActivity extends ReactActivity {\n   @Override\n   protected void onCreate(Bundle savedInstanceState) {\n     // This is required for expo-splash-screen.\n     setTheme(R.style.AppTheme);\n     super.onCreate(null);\n-    // SplashScreen.show(...) has to be called after super.onCreate(...)\n-    SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, ReactRootView.class, false);\n   }\n```\n\n3. Override default `resizeMode` and `statusBarTranslucent` in stings.xml\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_resize_mode\">contain</string>\n+  <string name=\"expo_splash_screen_status_bar_translucent\">false</string>\n</resources>\n```\n\n## 🏅 Hall Of Fame\n\nThis module is based on a solid work from (many thanks for that 👏):\n\n- [react-native-splash-screen](https://github.com/crazycodeboy/react-native-splash-screen)\n- [react-native-bootsplash](https://github.com/zoontek/react-native-bootsplash)\n- [react-native-make](https://github.com/bamlab/react-native-make)",
     "name": "expo-splash-screen",
-    "version": "0.29.24",
+    "version": "0.30.10",
     "description": "Provides a module to allow keeping the native Splash Screen visible until you choose to hide it.",
     "copyright": ""
   },
-  "expo-status-bar@2.0.1": {
+  "expo-status-bar@2.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/status-bar/\">\n    <img\n      src=\"../../.github/resources/expo-status-bar.svg\"\n      alt=\"expo-status-bar\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides the same interface as the React Native [StatusBar API](https://reactnative.dev/docs/statusbar), but with slightly different defaults to work great in Expo environments.\n\n- Default to `translucent={true}` on Android.\n- The `style=\"auto\"` maps to a dark status bar when in light mode and a light status bar when in dark moded. `style=\"inverted\"` inverts this behavior.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/status-bar/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/status-bar/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/status-bar/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\nPlease refer to the [React Native StatusBar API documentation](https://reactnative.dev/docs/statusbar).\n\n# Installation in bare React Native projects\n\n```\nnpm install expo-status-bar\n```\n\n### Configure for Android\n\nNo additional setup necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-status-bar",
-    "version": "2.0.1",
+    "version": "2.2.3",
     "description": "Provides the same interface as the React Native StatusBar API, but with slightly different defaults to work great in Expo environments.",
     "copyright": ""
   },
-  "expo-structured-headers@4.0.0": {
+  "expo-structured-headers@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-structured-headers\n\nJava and Objective-C (partial) implementations of https://httpwg.org/specs/rfc8941.html.\n\nThe Objective-C implementation only includes the parsing component and does not include serialization. It also ignores ordering of dictionaries.\n\nThe Java implementation is a derivative of https://github.com/reschke/structured-fields, modified for Android API level 21 compatibility and with the package name in each source file changed.\n\n## API documentation\n\n## Installation in managed Expo projects\n\n## Installation in bare React Native projects\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-structured-headers",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "description": "Expo module implementation of a parser based on https://httpwg.org/specs/rfc8941.html",
     "copyright": ""
   },
-  "expo-updates-interface@1.0.0": {
+  "expo-updates-interface@1.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-updates-interface\n\nNative interface for modules that optionally depend on expo-updates, e.g. expo-dev-launcher.\n\n## API documentation\n\n## Installation in managed Expo projects\n\n## Installation in bare React Native projects\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-updates-interface",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Native interface for modules that optionally depend on expo-updates, e.g. expo-dev-launcher.",
     "copyright": ""
   },
-  "expo-updates@0.27.4": {
+  "expo-updates@0.28.17": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/updates/\">\n    <img\n      src=\"../../.github/resources/expo-updates.svg\"\n      alt=\"expo-updates\"\n      height=\"64\" />\n  </a>\n</p>\n\nThe `expo-updates` module enables your app to manage remote updates to your application code.\n\nThis module works with a server that implements the [Expo Update protocol](https://docs.expo.dev/technical-specs/expo-updates-1/).\n\nThe [EAS Update](https://docs.expo.dev/eas-update/introduction/) hosted service implements this protocol.\n\nTo build a custom server that implements the protocol, see the example server source code [here](https://github.com/expo/custom-expo-updates-server).\n\n## Important documentation links\n\n- [Getting started](https://docs.expo.dev/eas-update/getting-started/)\n- [How EAS Update works](https://docs.expo.dev/eas-update/how-it-works/)\n- [Debugging](https://docs.expo.dev/eas-update/debug/)\n- [Migration from Classic Updates](https://docs.expo.dev/eas-update/migrate-from-classic-updates/)\n- [Updates JS API](https://docs.expo.dev/versions/latest/sdk/updates/)\n\n# Installation in bare React Native projects\n\nLearn how to install expo-updates in your project in the [Installing expo-updates documentation page](https://docs.expo.dev/bare/installing-updates/).",
     "name": "expo-updates",
-    "version": "0.27.4",
+    "version": "0.28.17",
     "description": "Fetches and manages remotely-hosted assets and updates to your app's JS bundle.",
     "copyright": ""
   },
-  "expo-video@2.0.6": {
+  "expo-video@2.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/unversioned/sdk/video/\">\n    <img\n      src=\"../../.github/resources/expo-video.svg\"\n      alt=\"expo-video\"\n      height=\"64\" />\n  </a>\n</p>\n\nA cross-platform, performant video component for React Native and Expo with Web support\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/video/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/video/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-video\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-video",
-    "version": "2.0.6",
+    "version": "2.2.2",
     "description": "A cross-platform, performant video component for React Native and Expo with Web support",
     "copyright": ""
   },
-  "expo-web-browser@14.0.2": {
+  "expo-web-browser@14.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/webbrowser/\">\n    <img\n      src=\"../../.github/resources/expo-web-browser.svg\"\n      alt=\"expo-web-browser\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/webbrowser/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/webbrowser/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/webbrowser/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-web-browser\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-web-browser",
-    "version": "14.0.2",
+    "version": "14.2.0",
     "description": "Provides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.",
     "copyright": ""
   },
-  "expo@52.0.47": {
+  "expo@53.0.24": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
     "licenseText": "# expo\n\nThe `expo` package is a single package you can install in any React Native app to begin using Expo modules. [API Reference](https://docs.expo.dev/versions/latest/sdk/expo/).\n\n- includes core infrastructure for Expo modules: `expo-modules-core` and `expo-modules-autolinking`.\n- bundles a minimal set of Expo modules that are required by nearly every app, such as `expo-asset`.\n- provides [`@expo/cli`](https://github.com/expo/expo/blob/main/packages/%40expo/cli/README.md), a small CLI that provides a clean interface around both bundlers (such as Metro and Webpack) and native build tools (Xcode, Simulator.app, Android Studio, ADB, etc.), can generate native projects with `npx expo prebuild`, and aligns compatible package versions with `npx expo install`.\n- exposes a JavaScript module that configures an app at runtime as needed to use `expo-font` and to function in Expo Go (optional, only if applicable).\n\n\nSee [CONTRIBUTING](./CONTRIBUTING.md) for instructions on working on this package.",
     "name": "expo",
-    "version": "52.0.47",
+    "version": "53.0.24",
     "description": "The Expo SDK",
     "copyright": ""
   },
@@ -5754,16 +5379,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.1.3",
     "description": "Fast deep equal"
   },
-  "fast-glob@3.3.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/mrmlnc/fast-glob",
-    "publisher": "Denis Malinochkin",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Denis Malinochkin\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Denis Malinochkin",
-    "name": "fast-glob",
-    "version": "3.3.3",
-    "description": "It's a very fast and efficient glob library for Node.js"
-  },
   "fast-json-stable-stringify@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/epoberezkin/fast-json-stable-stringify",
@@ -5774,17 +5389,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "fast-json-stable-stringify",
     "version": "2.1.0",
     "description": "deterministic `JSON.stringify()` - a faster version of substack's json-stable-strigify without jsonify"
-  },
-  "fast-loops@1.1.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/robinweser/fast-loops",
-    "publisher": "robinweser",
-    "email": "contact@weser.io",
-    "licenseText": "MIT License\n\nCopyright (c) 2017 Robin Frischmann\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2017 Robin Frischmann",
-    "name": "fast-loops",
-    "version": "1.1.4",
-    "description": "Small, performant & immutable iteration utilities for Arrays and Objects"
   },
   "fast-uri@3.0.6": {
     "licenses": "BSD-3-Clause",
@@ -5797,17 +5401,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.0.6",
     "description": "Dependency-free RFC 3986 URI toolbox"
   },
-  "fastq@1.19.0": {
-    "licenses": "ISC",
-    "repository": "https://github.com/mcollina/fastq",
-    "publisher": "Matteo Collina",
-    "email": "hello@matteocollina.com",
-    "licenseText": "Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\nOR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>",
-    "name": "fastq",
-    "version": "1.19.0",
-    "description": "Fast, in memory work queue"
-  },
   "fb-watchman@2.0.2": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/facebook/watchman",
@@ -5818,16 +5411,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.0.2",
     "description": "Bindings for the Watchman file watching service",
     "copyright": ""
-  },
-  "fbemitter@3.0.0": {
-    "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/facebook/emitter",
-    "licenseText": "BSD License\r\n\r\nFor emitter software\r\n\r\nCopyright (c) 2013-present, Facebook, Inc.\r\nAll rights reserved.\r\n\r\nRedistribution and use in source and binary forms, with or without modification,\r\nare permitted provided that the following conditions are met:\r\n\r\n * Redistributions of source code must retain the above copyright notice, this\r\n   list of conditions and the following disclaimer.\r\n\r\n * Redistributions in binary form must reproduce the above copyright notice,\r\n   this list of conditions and the following disclaimer in the documentation\r\n   and/or other materials provided with the distribution.\r\n\r\n * Neither the name Facebook nor the names of its contributors may be used to\r\n   endorse or promote products derived from this software without specific\r\n   prior written permission.\r\n\r\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\r\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\r\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\r\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\r\nANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\r\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\r\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\r\nANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\r\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\r\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright (c) 2013-present, Facebook, Inc.. All rights reserved.",
-    "name": "fbemitter",
-    "version": "3.0.0",
-    "description": "Facebook's EventEmitter is a simple emitter implementation that prioritizes speed and simplicity. It is conceptually similar to other emitters like Node's EventEmitter, but the precise APIs differ. More complex abstractions like the event systems used on facebook.com and m.facebook.com can be built on top of EventEmitter as well DOM event systems.",
-    "publisher": ""
   },
   "fbjs-css-vars@1.0.2": {
     "licenses": "MIT",
@@ -5858,16 +5441,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.0.5",
     "description": "A collection of utility libraries used by other Facebook JS projects",
     "publisher": ""
-  },
-  "fetch-retry@4.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonbern/fetch-retry",
-    "publisher": "Jon K. Bernhardsen",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2016 Jon K. Bernhardsen\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2016 Jon K. Bernhardsen",
-    "name": "fetch-retry",
-    "version": "4.1.1",
-    "description": "Extend any fetch library with retry functionality"
   },
   "fill-range@7.1.1": {
     "licenses": "MIT",
@@ -5900,27 +5473,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "finalhandler",
     "version": "1.1.2",
     "description": "Node.js final http responder"
-  },
-  "find-cache-dir@2.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/avajs/find-cache-dir",
-    "licenseText": "MIT License\n\nCopyright (c) James Talmage <james@talmage.io> (github.com/jamestalmage)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) James Talmage <james@talmage.io> (github.com/jamestalmage)",
-    "name": "find-cache-dir",
-    "version": "2.1.0",
-    "description": "Finds the common standard cache directory",
-    "publisher": ""
-  },
-  "find-up@3.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/find-up",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "find-up",
-    "version": "3.0.0",
-    "description": "Find a file or directory by walking up parent directories"
   },
   "find-up@4.1.0": {
     "licenses": "MIT",
@@ -5963,17 +5515,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.0.6",
     "description": "Runtime to be use with the Flow Enums transform.",
     "publisher": ""
-  },
-  "flow-parser@0.261.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/flow",
-    "publisher": "Flow Team",
-    "email": "flow@fb.com",
-    "licenseText": "# The flow-parser package\n\nThis package contains the Flow parser in its compiled-to-JavaScript form.\n\n# What is Flow\n\nSee [flow.org](https://flow.org/). The code for the Flow parser [lives on GitHub](https://github.com/facebook/flow/tree/master/src/parser).\n\n# What is the Flow Parser\n\nThe Flow Parser is a JavaScript parser written in OCaml. It produces an AST that conforms to the [ESTree spec](https://github.com/estree/estree) and that mostly matches what [esprima](http://esprima.org/) produces. The Flow Parser can be compiled to native code or can be compiled to JavaScript using [js_of_ocaml](http://ocsigen.org/js_of_ocaml/). This npm package contains the Flow parser compiled to JavaScript.\n\n# Usage\n\nYou can use the Flow parser in your browser or in node. To use in node you can just do\n\n```JavaScript\nrequire('flow-parser').parse('1+1', {});\n```\n\nTo use in the browser, you can add\n\n```HTML\n<script src=\"flow_parser.js\"></script>\n```\n\nwhich will make the `flow` object available to use like so:\n\n```JavaScript\nflow.parse('1+1', {});\n```\n\n## Options\n\nThe second argument to `flow.parse` is the options object. Currently supported options:\n\n* `all_comments` (boolean, default `true`) - include a list of all comments from the whole program\n* `comments` (boolean, default `true`) - attach comments to AST nodes (`leadingComments` and `trailingComments`)\n* `enums` (boolean, default `false`) - enable parsing of Flow enums\n* `esproposal_decorators` (boolean, default `false`) - enable parsing of decorators\n* `esproposal_export_star_as` (boolean, default `false`) - enable parsing of `export * as` syntax\n* `tokens` (boolean, default `false`) - include a list of all parsed tokens in a top-level `tokens` property\n* `types` (boolean, default `true`) - enable parsing of Flow types\n* `use_strict` (boolean, default `false`) - treat the file as strict, without needing a \"use strict\" directive",
-    "name": "flow-parser",
-    "version": "0.261.2",
-    "description": "JavaScript parser written in OCaml. Produces ESTree AST",
-    "copyright": ""
   },
   "fontfaceobserver@2.3.0": {
     "licenses": "BSD-2-Clause",
@@ -6040,28 +5581,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.5.2",
     "description": "HTTP response freshness testing"
   },
-  "fs-extra@8.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jprichardson/node-fs-extra",
-    "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "licenseText": "(The MIT License)\n\nCopyright (c) 2011-2017 JP Richardson\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files\n(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,\n merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is\n furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE\nWARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS\nOR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\n ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2011-2017 JP Richardson",
-    "name": "fs-extra",
-    "version": "8.1.0",
-    "description": "fs-extra contains methods that aren't included in the vanilla Node.js fs package. Such as mkdir -p, cp -r, and rm -rf."
-  },
-  "fs-extra@9.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jprichardson/node-fs-extra",
-    "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "licenseText": "(The MIT License)\n\nCopyright (c) 2011-2017 JP Richardson\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files\n(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,\n merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is\n furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE\nWARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS\nOR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\n ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2011-2017 JP Richardson",
-    "name": "fs-extra",
-    "version": "9.0.0",
-    "description": "fs-extra contains methods that aren't included in the vanilla Node.js fs package. Such as mkdir -p, cp -r, and rm -rf."
-  },
   "fs-extra@9.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-fs-extra",
@@ -6072,27 +5591,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "fs-extra",
     "version": "9.1.0",
     "description": "fs-extra contains methods that aren't included in the vanilla Node.js fs package. Such as recursive mkdir, copy, and remove."
-  },
-  "fs-minipass@2.1.0": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/fs-minipass",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "fs-minipass",
-    "version": "2.1.0",
-    "description": "fs read and write streams based on minipass"
-  },
-  "fs-minipass@3.0.3": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/fs-minipass",
-    "publisher": "GitHub Inc.",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "fs-minipass",
-    "version": "3.0.3",
-    "description": "fs read and write streams based on minipass"
   },
   "fs.realpath@1.0.0": {
     "licenses": "ISC",
@@ -6180,28 +5678,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.1",
     "description": "Robustly get the [[Prototype]] of an object"
   },
-  "get-stream@4.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/get-stream",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "get-stream",
-    "version": "4.1.0",
-    "description": "Get a stream as a string, buffer, or array"
-  },
-  "get-stream@6.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/get-stream",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "get-stream",
-    "version": "6.0.1",
-    "description": "Get a stream as a string, buffer, or array"
-  },
   "getenv@1.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ctavan/node-getenv",
@@ -6213,16 +5689,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Get and typecast environment variables.",
     "copyright": ""
   },
-  "glob-parent@5.1.2": {
-    "licenses": "ISC",
-    "repository": "https://github.com/gulpjs/glob-parent",
-    "publisher": "Gulp Team",
-    "email": "team@gulpjs.com",
-    "licenseText": "The ISC License\n\nCopyright (c) 2015, 2019 Elan Shanker\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) 2015, 2019 Elan Shanker",
-    "name": "glob-parent",
-    "version": "5.1.2",
-    "description": "Extract the non-magic parent path from a glob string."
+  "getenv@2.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/ctavan/node-getenv",
+    "publisher": "Christoph Tavan",
+    "email": "dev@tavan.de",
+    "licenseText": "The MIT License (MIT)\nCopyright (c) 2012-2019 Christoph Tavan <dev@tavan.de>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "name": "getenv",
+    "version": "2.0.0",
+    "description": "Get and typecast environment variables.",
+    "copyright": ""
   },
   "glob@10.4.5": {
     "licenses": "ISC",
@@ -6256,17 +5732,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "globals",
     "version": "11.12.0",
     "description": "Global identifiers from different JavaScript environments"
-  },
-  "globby@11.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/globby",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "globby",
-    "version": "11.1.0",
-    "description": "User-friendly glob matching"
   },
   "gopd@1.2.0": {
     "licenses": "MIT",
@@ -6396,16 +5861,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.0.2",
     "description": "A robust, ES3 compatible, \"has own property\" predicate."
   },
-  "hermes-estree@0.23.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/hermes",
-    "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
-    "name": "hermes-estree",
-    "version": "0.23.1",
-    "description": "Flow types for the Flow-ESTree spec produced by the hermes parser",
-    "publisher": ""
-  },
   "hermes-estree@0.25.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/hermes",
@@ -6416,14 +5871,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Flow types for the Flow-ESTree spec produced by the hermes parser",
     "publisher": ""
   },
-  "hermes-parser@0.23.1": {
+  "hermes-estree@0.29.1": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/hermes",
     "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
-    "name": "hermes-parser",
-    "version": "0.23.1",
-    "description": "A JavaScript parser built from the Hermes engine",
+    "name": "hermes-estree",
+    "version": "0.29.1",
+    "description": "Flow types for the Flow-ESTree spec produced by the hermes parser",
     "publisher": ""
   },
   "hermes-parser@0.25.1": {
@@ -6433,6 +5888,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
     "name": "hermes-parser",
     "version": "0.25.1",
+    "description": "A JavaScript parser built from the Hermes engine",
+    "publisher": ""
+  },
+  "hermes-parser@0.29.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/hermes",
+    "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
+    "name": "hermes-parser",
+    "version": "0.29.1",
     "description": "A JavaScript parser built from the Hermes engine",
     "publisher": ""
   },
@@ -6490,16 +5955,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "5.0.1",
     "description": "An HTTP(s) proxy `http.Agent` implementation for HTTPS"
   },
-  "human-signals@2.1.0": {
-    "licenses": "Apache-2.0",
-    "repository": "https://github.com/ehmicky/human-signals",
-    "publisher": "ehmicky",
-    "email": "ehmicky@gmail.com",
-    "licenseText": "Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \"License\" shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \"Licensor\" shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \"Legal Entity\" shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \"control\" means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \"Source\" form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \"Object\" form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \"Work\" shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \"Derivative Works\" shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \"Contribution\" shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \"submitted\"\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \"Not a Contribution.\"\n\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \"NOTICE\" text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n\n   APPENDIX: How to apply the Apache License to your work.\n\n      To apply the Apache License to your work, attach the following\n      boilerplate notice, with the fields enclosed by brackets \"[]\"\n      replaced with your own identifying information. (Don't include\n      the brackets!)  The text should be enclosed in the appropriate\n      comment syntax for the file format. We also recommend that a\n      file or class name and description of purpose be included on the\n      same \"printed page\" as the copyright notice for easier\n      identification within third-party archives.\n\n   Copyright 2019 ehmicky <ehmicky@gmail.com>\n\n   Licensed under the Apache License, Version 2.0 (the \"License\");\n   you may not use this file except in compliance with the License.\n   You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.",
-    "name": "human-signals",
-    "version": "2.1.0",
-    "description": "Human-friendly process signals",
-    "copyright": ""
+  "https-proxy-agent@7.0.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/TooTallNate/proxy-agents",
+    "publisher": "Nathan Rajlich",
+    "email": "nathan@tootallnate.net",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>",
+    "name": "https-proxy-agent",
+    "version": "7.0.6",
+    "description": "An HTTP(s) proxy `http.Agent` implementation for HTTPS"
   },
   "hyphenate-style-name@1.1.0": {
     "licenses": "BSD-3-Clause",
@@ -6588,17 +6053,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "An incremental implementation of MurmurHash3",
     "copyright": ""
   },
-  "indent-string@4.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/indent-string",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "indent-string",
-    "version": "4.0.0",
-    "description": "Indent each line in a string"
-  },
   "inflight@1.0.6": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/inflight",
@@ -6631,26 +6085,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.3.8",
     "description": "An ini encoder/decoder for node"
   },
-  "inline-style-prefixer@6.0.4": {
+  "inline-style-prefixer@7.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/robinweser/inline-style-prefixer",
     "publisher": "Robin Weser",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Robin Frischmann\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015 Robin Frischmann",
     "name": "inline-style-prefixer",
-    "version": "6.0.4",
+    "version": "7.0.1",
     "description": "Run-time Autoprefixer for JavaScript style objects"
-  },
-  "internal-ip@4.3.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/internal-ip",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "internal-ip",
-    "version": "4.3.0",
-    "description": "Get your internal IP address"
   },
   "invariant@2.2.4": {
     "licenses": "MIT",
@@ -6662,28 +6105,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "invariant",
     "version": "2.2.4",
     "description": "invariant"
-  },
-  "ip-regex@2.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/ip-regex",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "ip-regex",
-    "version": "2.1.0",
-    "description": "Regular expression for matching IP addresses (IPv4 & IPv6)"
-  },
-  "ipaddr.js@1.9.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/whitequark/ipaddr.js",
-    "publisher": "whitequark",
-    "email": "whitequark@whitequark.org",
-    "licenseText": "Copyright (C) 2011-2017 whitequark <whitequark@whitequark.org>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (C) 2011-2017 whitequark <whitequark@whitequark.org>",
-    "name": "ipaddr.js",
-    "version": "1.9.1",
-    "description": "A library for manipulating IPv4 and IPv6 addresses in JavaScript."
   },
   "is-arguments@1.2.0": {
     "licenses": "MIT",
@@ -6715,17 +6136,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "is-arrayish",
     "version": "0.3.2",
     "description": "Determines if an object can be used as an array"
-  },
-  "is-buffer@1.1.6": {
-    "licenses": "MIT",
-    "repository": "https://github.com/feross/is-buffer",
-    "publisher": "Feross Aboukhadijeh",
-    "email": "feross@feross.org",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Feross Aboukhadijeh\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Feross Aboukhadijeh",
-    "name": "is-buffer",
-    "version": "1.1.6",
-    "description": "Determine if an object is a Buffer"
   },
   "is-callable@1.2.7": {
     "licenses": "MIT",
@@ -6770,16 +6180,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.2.1",
     "description": "Check if the process is running inside a Docker container"
   },
-  "is-extglob@2.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonschlinkert/is-extglob",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2016, Jon Schlinkert\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-2016, Jon Schlinkert",
-    "name": "is-extglob",
-    "version": "2.1.1",
-    "description": "Returns true if a string has an extglob."
-  },
   "is-fullwidth-code-point@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-fullwidth-code-point",
@@ -6802,16 +6202,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "Determine if a function is a native generator function."
   },
-  "is-glob@4.0.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/micromatch/is-glob",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2017, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
-    "name": "is-glob",
-    "version": "4.0.3",
-    "description": "Returns `true` if the given string looks like a glob pattern or an extglob pattern. This makes it easy to create code that only uses external modules like node-glob when necessary, resulting in much faster code execution and initialization time, and a better user experience."
-  },
   "is-nan@1.3.2": {
     "licenses": "MIT",
     "repository": "https://github.com/es-shims/is-nan",
@@ -6832,28 +6222,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.0.0",
     "description": "Returns true if a number or string value is a finite number. Useful for regex matches, parsing, user input, etc."
   },
-  "is-path-cwd@2.2.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/is-path-cwd",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "is-path-cwd",
-    "version": "2.2.0",
-    "description": "Check if a path is the current working directory"
-  },
-  "is-path-inside@3.0.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/is-path-inside",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "is-path-inside",
-    "version": "3.0.3",
-    "description": "Check if a path is inside another path"
-  },
   "is-plain-obj@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/is-plain-obj",
@@ -6864,16 +6232,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "is-plain-obj",
     "version": "2.1.0",
     "description": "Check if a value is a plain object"
-  },
-  "is-plain-object@2.0.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonschlinkert/is-plain-object",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2017, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
-    "name": "is-plain-object",
-    "version": "2.0.4",
-    "description": "Returns true if an object was created by the `Object` constructor."
   },
   "is-regex@1.2.1": {
     "licenses": "MIT",
@@ -6895,17 +6253,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
     "name": "is-stream",
     "version": "1.1.0",
-    "description": "Check if something is a Node.js stream"
-  },
-  "is-stream@2.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/is-stream",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "is-stream",
-    "version": "2.0.1",
     "description": "Check if something is a Node.js stream"
   },
   "is-typed-array@1.1.15": {
@@ -6961,16 +6308,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "isexe",
     "version": "2.0.0",
     "description": "Minimal module to check if a file is executable."
-  },
-  "isobject@3.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonschlinkert/isobject",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2017, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
-    "name": "isobject",
-    "version": "3.0.1",
-    "description": "Returns true if the value is an object and not an array or null."
   },
   "isomorphic-fetch@2.2.1": {
     "licenses": "MIT",
@@ -7127,16 +6464,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "join-component@1.1.0": {
-    "licenses": "MIT",
-    "licenseText": "# join\n\n  Join a list in a nice human friendly way.\n\n## Installation\n\n    $ component install component/join\n\n## API\n\n   - [join(arr)](#joinarr)\n   - [join(arr, str)](#joinarr-str)\n   - [join(arr, str) with Oxford comma](#joinarr-str-with-oxford-comma)\n<a name=\"\"></a>\n\n<a name=\"joinarr\"></a>\n# join(arr)\nshould default to \"and\".\n\n```js\njoin(['foo', 'bar']).should.equal('foo and bar');\n```\n\n<a name=\"joinarr-str\"></a>\n# join(arr, str)\nshould join.\n\n```js\njoin([], 'and').should.equal('');\njoin(['foo'], 'and').should.equal('foo');\njoin(['foo', 'bar'], 'and').should.equal('foo and bar');\njoin(['foo', 'bar', 'baz'], 'or').should.equal('foo, bar or baz');\n```\n\n<a name=\"joinarr-str-with-oxford-comma\"></a>\n# join(arr, str) with Oxford comma\nshould remove comma with less than 3 items.\n\n```js\njoin([], ', or').should.equal('');\njoin(['foo'], ', or').should.equal('foo');\njoin(['foo', 'bar'], ', or').should.equal('foo or bar');\n```\n\nshould join with 3 or more items.\n\n```js\njoin(['foo', 'bar', 'baz'], ', and').should.equal('foo, bar, and baz');\n```\n\n## License\n\n  MIT",
-    "name": "join-component",
-    "version": "1.1.0",
-    "description": "Join a list",
-    "copyright": "",
-    "repository": "",
-    "publisher": ""
-  },
   "js-sha3@0.8.0": {
     "licenses": "MIT",
     "repository": "https://github.com/emn178/js-sha3",
@@ -7180,16 +6507,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "4.1.0",
     "description": "YAML 1.2 parser and serializer"
   },
-  "jsc-android@250231.0.0": {
-    "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/react-native-community/jsc-android-buildscripts",
-    "licenseText": "BSD 2-Clause License\n\nCopyright (c) 2017, Software Mansion Sp. z o. o. Sp. k. AND 650 Industries, Inc.\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright (c) 2017, Software Mansion Sp. z o. o. Sp. k. AND 650 Industries, Inc.. All rights reserved.",
-    "name": "jsc-android",
-    "version": "250231.0.0",
-    "description": "Pre-build version of JavaScriptCore to be used by React Native apps",
-    "publisher": ""
-  },
   "jsc-safe-url@0.2.4": {
     "licenses": "0BSD",
     "repository": "https://github.com/robhogan/jsc-safe-url",
@@ -7200,16 +6517,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.2.4",
     "description": "Utility functions for converting to and from URLs that encode query string data into URL paths",
     "copyright": ""
-  },
-  "jscodeshift@0.14.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/jscodeshift",
-    "publisher": "Felix Kling",
-    "licenseText": "MIT License\r\n\r\nCopyright (c) Facebook, Inc. and its affiliates.\r\n\r\nPermission is hereby granted, free of charge, to any person obtaining a copy\r\nof this software and associated documentation files (the \"Software\"), to deal\r\nin the Software without restriction, including without limitation the rights\r\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\ncopies of the Software, and to permit persons to whom the Software is\r\nfurnished to do so, subject to the following conditions:\r\n\r\nThe above copyright notice and this permission notice shall be included in all\r\ncopies or substantial portions of the Software.\r\n\r\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\nSOFTWARE.",
-    "copyright": "Copyright (c) Facebook, Inc. and its affiliates.",
-    "name": "jscodeshift",
-    "version": "0.14.0",
-    "description": "A toolkit for JavaScript codemods"
   },
   "jsesc@3.0.2": {
     "licenses": "MIT",
@@ -7285,17 +6592,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.2.3",
     "description": "JSON for Humans"
   },
-  "jsonfile@4.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jprichardson/node-jsonfile",
-    "publisher": "JP Richardson",
-    "email": "jprichardson@gmail.com",
-    "licenseText": "(The MIT License)\n\nCopyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files\n(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,\n merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is\n furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE\nWARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS\nOR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\n ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>",
-    "name": "jsonfile",
-    "version": "4.0.0",
-    "description": "Easily read/write JSON files."
-  },
   "jsonfile@6.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/jprichardson/node-jsonfile",
@@ -7317,25 +6613,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "JSON without touching any globals",
     "copyright": ""
   },
-  "kdbush@3.0.0": {
+  "kdbush@4.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/mourner/kdbush",
     "publisher": "Vladimir Agafonkin",
     "licenseText": "ISC License\n\nCopyright (c) 2018, Vladimir Agafonkin\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.",
     "copyright": "Copyright (c) 2018, Vladimir Agafonkin",
     "name": "kdbush",
-    "version": "3.0.0",
+    "version": "4.0.2",
     "description": "A very fast static 2D index for points based on kd-tree."
-  },
-  "kind-of@6.0.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonschlinkert/kind-of",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2017, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
-    "name": "kind-of",
-    "version": "6.0.3",
-    "description": "Get the native type of a value."
   },
   "klaw-sync@6.0.0": {
     "licenses": "MIT",
@@ -7357,6 +6643,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "kleur",
     "version": "3.0.3",
     "description": "The fastest Node.js library for formatting terminal text with ANSI colors~!"
+  },
+  "lan-network@0.1.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/kitten/lan-network",
+    "publisher": "Phil Pluckthun",
+    "email": "phil@kitten.sh",
+    "licenseText": "MIT License\n\nCopyright (c) Phil Pluckthun,\nCopyright (c) 2016 - 2020 Node Fetch Team,\nCopyright (c) Remix Software Inc. 2020-2021,\nCopyright (c) Shopify Inc. 2022-2024\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) Phil Pluckthun,. Copyright (c) 2016 - 2020 Node Fetch Team,. Copyright (c) Remix Software Inc. 2020-2021,. Copyright (c) Shopify Inc. 2022-2024",
+    "name": "lan-network",
+    "version": "0.1.7",
+    "description": "Best-effort discovery of the machine's default gateway and local network IP exclusively with UDP sockets."
   },
   "leven@3.1.0": {
     "licenses": "MIT",
@@ -7450,17 +6747,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "4.0.1",
     "description": "Links recognition library with FULL unicode support",
     "publisher": ""
-  },
-  "locate-path@3.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/locate-path",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "locate-path",
-    "version": "3.0.0",
-    "description": "Get the first path that exists on disk of multiple paths"
   },
   "locate-path@5.0.0": {
     "licenses": "MIT",
@@ -7583,17 +6869,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "5.1.1",
     "description": "A cache object that deletes the least-recently-used items."
   },
-  "make-dir@2.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/make-dir",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "make-dir",
-    "version": "2.1.0",
-    "description": "Make a directory and its parents if needed - Think `mkdir -p`"
-  },
   "makeerror@1.0.12": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/daaku/nodejs-makeerror",
@@ -7668,28 +6943,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "matomo-tracker-react-native",
     "version": "0.3.2",
     "description": "Stand alone library for using Matomo tracking in React Native and Expo projects."
-  },
-  "md5-file@3.2.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/roryrjb/md5-file",
-    "publisher": "Rory Bradford",
-    "email": "rory@dysfunctionalprogramming.com",
-    "licenseText": "# License\n\nThe MIT License (MIT)\n\nCopyright (c) 2015 - 2017 Rory Bradford and contributors.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2015 - 2017 Rory Bradford and contributors.",
-    "name": "md5-file",
-    "version": "3.2.3",
-    "description": "return an md5sum of a given file"
-  },
-  "md5@2.3.0": {
-    "licenses": "BSD-3-Clause",
-    "repository": "https://github.com/pvorb/node-md5",
-    "publisher": "Paul Vorbach",
-    "email": "paul@vorba.ch",
-    "licenseText": "Copyright © 2011-2012, Paul Vorbach.\nCopyright © 2009, Jeff Mott.\n\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification,\nare permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n* Redistributions in binary form must reproduce the above copyright notice, this\n  list of conditions and the following disclaimer in the documentation and/or\n  other materials provided with the distribution.\n* Neither the name Crypto-JS nor the names of its contributors may be used to\n  endorse or promote products derived from this software without specific prior\n  written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\nANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\nANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright © 2011-2012, Paul Vorbach.. Copyright © 2009, Jeff Mott.",
-    "name": "md5",
-    "version": "2.3.0",
-    "description": "js function for hashing messages with MD5"
   },
   "mdn-data@2.0.14": {
     "licenses": "CC0-1.0",
@@ -7785,144 +7038,134 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.0.0",
     "description": "Create a stream that emits events from multiple other streams"
   },
-  "merge2@1.4.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/teambition/merge2",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-2020 Teambition\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2014-2020 Teambition",
-    "name": "merge2",
-    "version": "1.4.1",
-    "description": "Merge multiple streams into one stream in sequence or parallel.",
-    "publisher": ""
-  },
-  "metro-babel-transformer@0.81.1": {
+  "metro-babel-transformer@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-babel-transformer",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Base Babel transformer for Metro.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-cache-key@0.81.1": {
+  "metro-cache-key@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-cache-key",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Cache key utility.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-cache@0.81.1": {
+  "metro-cache@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-cache",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Cache layers for Metro.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-config@0.81.1": {
+  "metro-config@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# Metro Config\n\n🚇 Config resolver and transformer for [Metro](https://metrobundler.dev/).",
     "name": "metro-config",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Config parser for Metro.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-core@0.81.1": {
+  "metro-core@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# Metro\n\n🚇 This package contains core files for [Metro](https://metrobundler.dev/).\n\n(TODO)",
     "name": "metro-core",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Metro's core package.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-file-map@0.81.1": {
+  "metro-file-map@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# \\[Experimental\\] Metro File Map\n\n🚇 File system crawling, watching and mapping for [Metro](https://metrobundler.dev/).\n\nOriginally a fork of [`jest-haste-map`](https://github.com/facebook/jest/tree/main/packages/jest-haste-map).\n\nThis entire package should be considered \"experimental\" for the time being -\nthe API is considered internal and changes will not be semver-breaking.\n\nIf you need to rely on `metro-file-map` APIs directly please\n[raise an issue](https://github.com/facebook/metro/issues/new) to discuss your\nuse case.",
     "name": "metro-file-map",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "[Experimental] - 🚇 File crawling, watching and mapping for Metro",
     "copyright": "",
     "publisher": ""
   },
-  "metro-minify-terser@0.81.1": {
+  "metro-minify-terser@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-minify-terser",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Minifier for Metro based on Terser.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-resolver@0.81.1": {
+  "metro-resolver@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# metro-resolver\n\n🚇 [Metro](https://metrobundler.dev/) resolution logic",
     "name": "metro-resolver",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Implementation of Metro's resolution logic.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-runtime@0.81.1": {
+  "metro-runtime@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-runtime",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Module required for evaluating Metro bundles.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-source-map@0.81.1": {
+  "metro-source-map@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# Metro\n\n🚇 The source map generator for [Metro](https://metrobundler.dev/).\n\n(TODO)",
     "name": "metro-source-map",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Source map generator for Metro.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-symbolicate@0.81.1": {
+  "metro-symbolicate@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-symbolicate",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 A tool to find the source location from JS bundles and stack traces.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-transform-plugins@0.81.1": {
+  "metro-transform-plugins@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-transform-plugins",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Transform plugins for Metro.",
     "copyright": "",
     "publisher": ""
   },
-  "metro-transform-worker@0.81.1": {
+  "metro-transform-worker@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "name": "metro-transform-worker",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 Transform worker for Metro.",
     "copyright": "",
     "publisher": ""
   },
-  "metro@0.81.1": {
+  "metro@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# Metro\n\n🚇 The JavaScript bundler for React Native.\n\n- **🚅 Fast**: We aim for sub-second reload cycles, fast startup and quick bundling speeds.\n- **⚖️ Scalable**: Works with thousands of modules in a single application.\n- **⚛️ Integrated**: Supports every React Native project out of the box.\n\nThis project was previously part of the [react-native](https://github.com/facebook/react-native) repository. In this smaller repository it is easier for the team working on Metro to respond to both issues and pull requests. See [react-native#13976](https://github.com/facebook/react-native/issues/13976) for the initial announcement.",
     "name": "metro",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "🚇 The JavaScript bundler for React Native.",
     "copyright": "",
     "publisher": ""
@@ -8000,17 +7243,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.2.0",
     "description": "Make a function mimic another one"
   },
-  "mimic-fn@2.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/mimic-fn",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "mimic-fn",
-    "version": "2.1.0",
-    "description": "Make a function mimic another one"
-  },
   "minimatch@3.1.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minimatch",
@@ -8044,61 +7276,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "parse argument options",
     "copyright": ""
   },
-  "minipass-collect@2.0.1": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/minipass-collect",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) 2019-2023 Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) 2019-2023 Isaac Z. Schlueter and Contributors",
-    "name": "minipass-collect",
-    "version": "2.0.1",
-    "description": "A Minipass stream that collects all the data into a single chunk"
-  },
-  "minipass-flush@1.0.5": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/minipass-flush",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "minipass-flush",
-    "version": "1.0.5",
-    "description": "A Minipass stream that calls a flush function before emitting 'end'"
-  },
-  "minipass-pipeline@1.2.4": {
-    "licenses": "ISC",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "minipass-pipeline",
-    "version": "1.2.4",
-    "description": "create a pipeline of streams using Minipass",
-    "repository": ""
-  },
-  "minipass@3.3.6": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/minipass",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) 2017-2022 npm, Inc., Isaac Z. Schlueter, and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) 2017-2022 npm, Inc., Isaac Z. Schlueter, and Contributors",
-    "name": "minipass",
-    "version": "3.3.6",
-    "description": "minimal implementation of a PassThrough stream"
-  },
-  "minipass@5.0.0": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/minipass",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors",
-    "name": "minipass",
-    "version": "5.0.0",
-    "description": "minimal implementation of a PassThrough stream"
-  },
   "minipass@7.1.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/minipass",
@@ -8110,14 +7287,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.1.2",
     "description": "minimal implementation of a PassThrough stream"
   },
-  "minizlib@2.1.2": {
+  "minizlib@3.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/isaacs/minizlib",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "licenseText": "Minizlib was created by Isaac Z. Schlueter.\nIt is a derivative work of the Node.js project.\n\n\"\"\"\nCopyright Isaac Z. Schlueter and Contributors\nCopyright Node.js contributors. All rights reserved.\nCopyright Joyent, Inc. and other Node contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the \"Software\"),\nto deal in the Software without restriction, including without limitation\nthe rights to use, copy, modify, merge, publish, distribute, sublicense,\nand/or sell copies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\nOR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\"\"\"",
+    "licenseText": "Minizlib was created by Isaac Z. Schlueter.\nIt is a derivative work of the Node.js project.\n\n\"\"\"\nCopyright (c) 2017-2023 Isaac Z. Schlueter and Contributors\nCopyright (c) 2017-2023 Node.js contributors. All rights reserved.\nCopyright (c) 2017-2023 Joyent, Inc. and other Node contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the \"Software\"),\nto deal in the Software without restriction, including without limitation\nthe rights to use, copy, modify, merge, publish, distribute, sublicense,\nand/or sell copies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\nOR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\"\"\"",
     "name": "minizlib",
-    "version": "2.1.2",
+    "version": "3.0.2",
     "description": "A small fast zlib stream built on [minipass](http://npm.im/minipass) and Node.js's zlib binding.",
     "copyright": ""
   },
@@ -8139,6 +7316,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)",
     "name": "mkdirp",
     "version": "1.0.4",
+    "description": "Recursively mkdir, like `mkdir -p`",
+    "publisher": ""
+  },
+  "mkdirp@3.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/isaacs/node-mkdirp",
+    "licenseText": "Copyright (c) 2011-2023 James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)\n\nThis project is free software released under the MIT license:\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
+    "copyright": "Copyright (c) 2011-2023 James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)",
+    "name": "mkdirp",
+    "version": "3.0.1",
     "description": "Recursively mkdir, like `mkdir -p`",
     "publisher": ""
   },
@@ -8248,16 +7435,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "HTTP content negotiation",
     "publisher": ""
   },
-  "neo-async@2.6.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/suguru03/neo-async",
-    "licenseText": "MIT License\n\nCopyright (c) 2014-2018 Suguru Motegi\nBased on Async.js, Copyright Caolan McMahon\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2014-2018 Suguru Motegi. Based on Async.js, Copyright Caolan McMahon",
-    "name": "neo-async",
-    "version": "2.6.2",
-    "description": "Neo-Async is a drop-in replacement for Async, it almost fully covers its functionality and runs faster ",
-    "publisher": ""
-  },
   "nested-error-stacks@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mdlavin/nested-error-stacks",
@@ -8280,16 +7457,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "Environment agnostic nextTick polyfill"
   },
-  "nice-try@1.0.5": {
-    "licenses": "MIT",
-    "repository": "https://github.com/electerious/nice-try",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2018 Tobias Reich\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2018 Tobias Reich",
-    "name": "nice-try",
-    "version": "1.0.5",
-    "description": "Tries to execute a function and discards any error that occurs",
-    "publisher": ""
-  },
   "no-case@3.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/blakeembrey/change-case",
@@ -8300,17 +7467,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "no-case",
     "version": "3.0.4",
     "description": "Transform into a lower cased string with spaces between words"
-  },
-  "node-dir@0.1.17": {
-    "licenses": "MIT",
-    "repository": "https://github.com/fshost/node-dir",
-    "publisher": "Nathan Cartwright",
-    "email": "fshost@yahoo.com",
-    "licenseText": "(The MIT License)\n\nCopyright (c) 2012 Nathan Cartwright <fshost@yahoo.com>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2012 Nathan Cartwright <fshost@yahoo.com>",
-    "name": "node-dir",
-    "version": "0.1.17",
-    "description": "asynchronous file and directory operations for Node.js"
   },
   "node-fetch@1.7.3": {
     "licenses": "MIT",
@@ -8406,28 +7562,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "11.0.3",
     "description": "Parse the things that can be arguments to `npm install`"
   },
-  "npm-run-path@2.0.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/npm-run-path",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "npm-run-path",
-    "version": "2.0.2",
-    "description": "Get your PATH prepended with locally installed binaries"
-  },
-  "npm-run-path@4.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/npm-run-path",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "npm-run-path",
-    "version": "4.0.1",
-    "description": "Get your PATH prepended with locally installed binaries"
-  },
   "nth-check@2.1.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/nth-check",
@@ -8450,12 +7584,12 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "flow typed nullthrows",
     "copyright": ""
   },
-  "ob1@0.81.1": {
+  "ob1@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
     "licenseText": "# ob1\n\nA small library for working with 0- and 1-based offsets in a type-checked way.",
     "name": "ob1",
-    "version": "0.81.1",
+    "version": "0.82.5",
     "description": "A small library for working with 0- and 1-based offsets in a type-checked way.",
     "copyright": "",
     "publisher": ""
@@ -8576,17 +7710,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.0.1",
     "description": "Ensure a function is only called once"
   },
-  "onetime@5.1.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/onetime",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "onetime",
-    "version": "5.1.2",
-    "description": "Ensure a function is only called once"
-  },
   "open@7.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/open",
@@ -8652,17 +7775,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.2",
     "description": "Node.js os.tmpdir() ponyfill"
   },
-  "p-finally@1.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/p-finally",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "p-finally",
-    "version": "1.0.0",
-    "description": "`Promise#finally()` ponyfill - Invoked when the promise is settled regardless of outcome"
-  },
   "p-limit@2.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-limit",
@@ -8685,17 +7797,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.1.0",
     "description": "Run multiple promise-returning & async functions with limited concurrency"
   },
-  "p-locate@3.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/p-locate",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "p-locate",
-    "version": "3.0.0",
-    "description": "Get the first fulfilled promise that satisfies the provided testing function"
-  },
   "p-locate@4.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/p-locate",
@@ -8717,17 +7818,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "p-locate",
     "version": "5.0.0",
     "description": "Get the first fulfilled promise that satisfies the provided testing function"
-  },
-  "p-map@4.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/p-map",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "p-map",
-    "version": "4.0.0",
-    "description": "Map over promises concurrently"
   },
   "p-try@2.2.0": {
     "licenses": "MIT",
@@ -8845,17 +7935,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.2",
     "description": "Node.js path.dirname() ponyfill"
   },
-  "path-exists@3.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/path-exists",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "path-exists",
-    "version": "3.0.0",
-    "description": "Check if a path exists"
-  },
   "path-exists@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/path-exists",
@@ -8877,17 +7956,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "path-is-absolute",
     "version": "1.0.1",
     "description": "Node.js 0.12 path.isAbsolute() ponyfill"
-  },
-  "path-key@2.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/path-key",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "path-key",
-    "version": "2.0.1",
-    "description": "Get the PATH environment variable key cross-platform"
   },
   "path-key@3.1.1": {
     "licenses": "MIT",
@@ -8973,17 +8041,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.0.1",
     "description": "Blazing fast and accurate glob matcher written in JavaScript, with no dependencies and full support for standard and extended Bash glob features, including braces, extglobs, POSIX brackets, and regular expressions."
   },
-  "pify@4.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/pify",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "pify",
-    "version": "4.0.1",
-    "description": "Promisify a callback-style function"
-  },
   "pirates@4.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/danez/pirates",
@@ -8994,17 +8051,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "pirates",
     "version": "4.0.6",
     "description": "Properly hijack require, i.e., properly define require hooks and customizations"
-  },
-  "pkg-dir@3.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/pkg-dir",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "pkg-dir",
-    "version": "3.0.0",
-    "description": "Find the root directory of a Node.js project or npm package"
   },
   "plist@3.1.0": {
     "licenses": "MIT",
@@ -9186,17 +8232,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "Offers getProxyForUrl to get the proxy URL for a URL, respecting the *_PROXY (e.g. HTTP_PROXY) and NO_PROXY environment variables."
   },
-  "pump@3.0.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/mafintosh/pump",
-    "publisher": "Mathias Buus Madsen",
-    "email": "mathiasbuus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014 Mathias Buus\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2014 Mathias Buus",
-    "name": "pump",
-    "version": "3.0.2",
-    "description": "pipe streams together and close all of them if one of them closes"
-  },
   "punycode@2.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/punycode.js",
@@ -9248,17 +8283,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "query-string",
     "version": "7.1.3",
     "description": "Parse and stringify URL query strings"
-  },
-  "queue-microtask@1.2.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/feross/queue-microtask",
-    "publisher": "Feross Aboukhadijeh",
-    "email": "feross@feross.org",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Feross Aboukhadijeh\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Feross Aboukhadijeh",
-    "name": "queue-microtask",
-    "version": "1.2.3",
-    "description": "fast, tiny `queueMicrotask` shim for modern engines"
   },
   "queue@6.0.2": {
     "licenses": "MIT",
@@ -9324,23 +8348,23 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.1.5",
     "description": "React Apollo Hooks, Components, and HOC."
   },
-  "react-devtools-core@5.3.2": {
+  "react-devtools-core@6.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react",
-    "licenseText": "# `react-devtools-core`\n\nThis package provides low-level APIs to support renderers like [React Native](https://github.com/facebook/react-native). If you're looking for the standalone React DevTools UI, **we suggest using [`react-devtools`](https://github.com/facebook/react/tree/main/packages/react-devtools) instead of using this package directly**.\n\nThis package provides two entrypoints: labeled \"backend\" and \"standalone\" (frontend). Both APIs are described below.\n\n# Backend API\n\nBackend APIs are embedded in _development_ builds of renderers like [React Native](https://github.com/facebook/react-native) in order to connect to the React DevTools UI.\n\n### Example\n\nIf you are building a non-browser-based React renderer, you can use the backend API like so:\n\n```js\nif (process.env.NODE_ENV !== 'production') {\n  const { connectToDevTools } = require(\"react-devtools-core\");\n\n  // Must be called before packages like react or react-native are imported\n  connectToDevTools({\n    ...config\n  });\n}\n```\n\n> **NOTE** that this API (`connectToDevTools`) must be (1) run in the same context as React and (2) must be called before React packages are imported (e.g. `react`, `react-dom`, `react-native`).\n\n### `connectToDevTools` options\n| Prop | Default | Description |\n|---|---|---|\n| `host` | `\"localhost\"` | Socket connection to frontend should use this host. |\n| `isAppActive` |  | (Optional) function that returns true/false, telling DevTools when it's ready to connect to React. |\n| `port` | `8097` | Socket connection to frontend should use this port. |\n| `resolveRNStyle` |  | (Optional) function that accepts a key (number) and returns a style (object); used by React Native. |\n| `retryConnectionDelay` | `200` | Delay (ms) to wait between retrying a failed Websocket connection |\n| `useHttps` | `false` | Socket connection to frontend should use secure protocol (wss). |\n| `websocket` |  | Custom `WebSocket` connection to frontend; overrides `host` and `port` settings. |\n\n\n### `connectWithCustomMessagingProtocol` options\n| Prop            | Description                                                                                                                                                    |\n|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| `onSubscribe`   | Function, which receives listener (function, with a single argument) as an argument. Called when backend subscribes to messages from the other end (frontend). |\n| `onUnsubscribe` | Function, which receives listener (function) as an argument. Called when backend unsubscribes to messages from the other end (frontend).                       |\n| `onMessage`     | Function, which receives 2 arguments: event (string) and payload (any). Called when backend emits a message, which should be sent to the frontend.             |\n\nUnlike `connectToDevTools`, `connectWithCustomMessagingProtocol` returns a callback, which can be used for unsubscribing the backend from the global DevTools hook.\n\n# Frontend API\n\nFrontend APIs can be used to render the DevTools UI into a DOM node. One example of this is [`react-devtools`](https://github.com/facebook/react/tree/main/packages/react-devtools) which wraps DevTools in an Electron app.\n\n### Example\n```js\nimport DevtoolsUI from \"react-devtools-core/standalone\";\n\n// See the full list of API methods in documentation below.\nconst { setContentDOMNode, startServer } = DevtoolsUI;\n\n// Render DevTools UI into a DOM element.\nsetContentDOMNode(document.getElementById(\"container\"));\n\n// Start socket server used to communicate between backend and frontend.\nstartServer(\n  // Port defaults to 8097\n  1234,\n\n  // Host defaults to \"localhost\"\n  \"example.devserver.com\",\n\n  // Optional config for secure socket (WSS).\n  {\n    key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),\n    cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')\n  }\n);\n```\n\n### Exported methods\nThe `default` export is an object defining the methods described below.\n\nThese methods support chaining for convenience. For example:\n```js\nconst DevtoolsUI = require(\"react-devtools-core/standalone\");\nDevtoolsUI.setContentDOMNode(element).startServer();\n```\n\n#### `connectToSocket(socket: WebSocket)`\n> This is an advanced config function that is typically not used.\n\nCustom `WebSocket` connection to use for communication between DevTools frontend and backend. Calling this method automatically initializes the DevTools UI (similar to calling `startServer()`).\n\n#### `openProfiler()`\nAutomatically select the \"Profiler\" tab in the DevTools UI.\n\n#### `setContentDOMNode(element: HTMLElement)`\nSet the DOM element DevTools UI should be rendered into on initialization.\n\n#### `setDisconnectedCallback(callback: Function)`\n_Optional_ callback to be notified when DevTools `WebSocket` closes (or errors).\n\n#### `setProjectRoots(roots: Array<string>)`\n_Optional_ set of root directories for source files. These roots can be used to open an inspected component's source code using an IDE.\n\n#### `setStatusListener(callback: Function)`\n_Optional_ callback to be notified of socket server events (e.g. initialized, errored, connected).\n\nThis callback receives two parameters:\n```js\nfunction onStatus(\n  message: string,\n  status: 'server-connected' | 'devtools-connected' | 'error'\n): void {\n  // ...\n}\n```\n\n#### `startServer(port?: number, host?: string, httpsOptions?: Object, loggerOptions?: Object)`\nStart a socket server (used to communicate between backend and frontend) and renders the DevTools UI.\n\nThis method accepts the following parameters:\n| Name | Default | Description |\n|---|---|---|\n| `port` | `8097` | Socket connection to backend should use this port. |\n| `host` | `\"localhost\"` | Socket connection to backend should use this host. |\n| `httpsOptions` | | _Optional_ object defining `key` and `cert` strings. |\n| `loggerOptions` | | _Optional_ object defining a `surface` string (to be included with DevTools logging events). |\n\n# Development\n\nWatch for changes made to the backend entry point and rebuild:\n```sh\nyarn start:backend\n```\n\nWatch for changes made to the standalone UI entry point and rebuild:\n```sh\nyarn start:standalone\n```\n\nRun the standalone UI using `yarn start` in the [`react-devtools`](https://github.com/facebook/react/tree/main/packages/react-devtools).",
+    "licenseText": "# `react-devtools-core`\n\nThis package provides low-level APIs to support renderers like [React Native](https://github.com/facebook/react-native). If you're looking for the standalone React DevTools UI, **we suggest using [`react-devtools`](https://github.com/facebook/react/tree/main/packages/react-devtools) instead of using this package directly**.\n\nThis package provides two entrypoints: labeled \"backend\" and \"standalone\" (frontend). Both APIs are described below.\n\n# Backend API\n\nBackend APIs are embedded in _development_ builds of renderers like [React Native](https://github.com/facebook/react-native) in order to connect to the React DevTools UI.\n\n### Example\n\nIf you are building a non-browser-based React renderer, you can use the backend API like so:\n\n```js\nif (process.env.NODE_ENV !== 'production') {\n  const { initialize, connectToDevTools } = require(\"react-devtools-core\");\n\n  initialize(settings);\n  // Must be called before packages like react or react-native are imported\n  connectToDevTools({...config});\n}\n```\n\n> **NOTE** that this API (`connectToDevTools`) must be (1) run in the same context as React and (2) must be called before React packages are imported (e.g. `react`, `react-dom`, `react-native`).\n\n### `initialize` arguments\n| Argument   | Description                                                                                                                                                                                                                                                                                   |\n|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| `settings` | Optional. If not specified, or received as null, then default settings are used. Can be plain object or a Promise that resolves with the [plain settings object](#Settings). If Promise rejects, the console will not be patched and some console features from React DevTools will not work. |\n\n#### `Settings`\n| Spec                                                                                                                                                                           | Default value                                                                                                                                                        |\n|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| <pre>{<br>  appendComponentStack: boolean,<br>  breakOnConsoleErrors: boolean,<br>  showInlineWarningsAndErrors: boolean,<br>  hideConsoleLogsInStrictMode: boolean<br>}</pre> | <pre>{<br>  appendComponentStack: true,<br>  breakOnConsoleErrors: false,<br>  showInlineWarningsAndErrors: true,<br>  hideConsoleLogsInStrictMode: false<br>}</pre> |\n\n### `connectToDevTools` options\n| Prop                   | Default       | Description                                                                                                               |\n|------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------|\n| `host`                 | `\"localhost\"` | Socket connection to frontend should use this host.                                                                       |\n| `isAppActive`          |               | (Optional) function that returns true/false, telling DevTools when it's ready to connect to React.                        |\n| `port`                 | `8097`        | Socket connection to frontend should use this port.                                                                       |\n| `resolveRNStyle`       |               | (Optional) function that accepts a key (number) and returns a style (object); used by React Native.                       |\n| `retryConnectionDelay` | `200`         | Delay (ms) to wait between retrying a failed Websocket connection                                                         |\n| `useHttps`             | `false`       | Socket connection to frontend should use secure protocol (wss).                                                           |\n| `websocket`            |               | Custom `WebSocket` connection to frontend; overrides `host` and `port` settings.                                          |\n| `onSettingsUpdated`    |               | A callback that will be called when the user updates the settings in the UI. You can use it for persisting user settings. |                                                                                         |\n\n\n### `connectWithCustomMessagingProtocol` options\n| Prop                | Description                                                                                                                                                    |\n|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| `onSubscribe`       | Function, which receives listener (function, with a single argument) as an argument. Called when backend subscribes to messages from the other end (frontend). |\n| `onUnsubscribe`     | Function, which receives listener (function) as an argument. Called when backend unsubscribes to messages from the other end (frontend).                       |\n| `onMessage`         | Function, which receives 2 arguments: event (string) and payload (any). Called when backend emits a message, which should be sent to the frontend.             |\n| `onSettingsUpdated` | A callback that will be called when the user updates the settings in the UI. You can use it for persisting user settings.                                      |       \n\nUnlike `connectToDevTools`, `connectWithCustomMessagingProtocol` returns a callback, which can be used for unsubscribing the backend from the global DevTools hook.\n\n# Frontend API\n\nFrontend APIs can be used to render the DevTools UI into a DOM node. One example of this is [`react-devtools`](https://github.com/facebook/react/tree/main/packages/react-devtools) which wraps DevTools in an Electron app.\n\n### Example\n```js\nimport DevtoolsUI from \"react-devtools-core/standalone\";\n\n// See the full list of API methods in documentation below.\nconst { setContentDOMNode, startServer } = DevtoolsUI;\n\n// Render DevTools UI into a DOM element.\nsetContentDOMNode(document.getElementById(\"container\"));\n\n// Start socket server used to communicate between backend and frontend.\nstartServer(\n  // Port defaults to 8097\n  1234,\n\n  // Host defaults to \"localhost\"\n  \"example.devserver.com\",\n\n  // Optional config for secure socket (WSS).\n  {\n    key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),\n    cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')\n  }\n);\n```\n\n### Exported methods\nThe `default` export is an object defining the methods described below.\n\nThese methods support chaining for convenience. For example:\n```js\nconst DevtoolsUI = require(\"react-devtools-core/standalone\");\nDevtoolsUI.setContentDOMNode(element).startServer();\n```\n\n#### `connectToSocket(socket: WebSocket)`\n> This is an advanced config function that is typically not used.\n\nCustom `WebSocket` connection to use for communication between DevTools frontend and backend. Calling this method automatically initializes the DevTools UI (similar to calling `startServer()`).\n\n#### `openProfiler()`\nAutomatically select the \"Profiler\" tab in the DevTools UI.\n\n#### `setContentDOMNode(element: HTMLElement)`\nSet the DOM element DevTools UI should be rendered into on initialization.\n\n#### `setDisconnectedCallback(callback: Function)`\n_Optional_ callback to be notified when DevTools `WebSocket` closes (or errors).\n\n#### `setProjectRoots(roots: Array<string>)`\n_Optional_ set of root directories for source files. These roots can be used to open an inspected component's source code using an IDE.\n\n#### `setStatusListener(callback: Function)`\n_Optional_ callback to be notified of socket server events (e.g. initialized, errored, connected).\n\nThis callback receives two parameters:\n```js\nfunction onStatus(\n  message: string,\n  status: 'server-connected' | 'devtools-connected' | 'error'\n): void {\n  // ...\n}\n```\n\n#### `startServer(port?: number, host?: string, httpsOptions?: Object, loggerOptions?: Object)`\nStart a socket server (used to communicate between backend and frontend) and renders the DevTools UI.\n\nThis method accepts the following parameters:\n| Name | Default | Description |\n|---|---|---|\n| `port` | `8097` | Socket connection to backend should use this port. |\n| `host` | `\"localhost\"` | Socket connection to backend should use this host. |\n| `httpsOptions` | | _Optional_ object defining `key` and `cert` strings. |\n| `loggerOptions` | | _Optional_ object defining a `surface` string (to be included with DevTools logging events). |\n\n# Development\n\nWatch for changes made to the backend entry point and rebuild:\n```sh\nyarn start:backend\n```\n\nWatch for changes made to the standalone UI entry point and rebuild:\n```sh\nyarn start:standalone\n```\n\nRun the standalone UI using `yarn start` in the [`react-devtools`](https://github.com/facebook/react/tree/main/packages/react-devtools).",
     "name": "react-devtools-core",
-    "version": "5.3.2",
+    "version": "6.1.5",
     "description": "Use react-devtools outside of the browser",
     "copyright": "",
     "publisher": ""
   },
-  "react-dom@18.3.1": {
+  "react-dom@19.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react",
-    "licenseText": "MIT License\n\nCopyright (c) Facebook, Inc. and its affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Facebook, Inc. and its affiliates.",
+    "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
     "name": "react-dom",
-    "version": "18.3.1",
+    "version": "19.0.0",
     "description": "React package for working with the DOM.",
     "publisher": ""
   },
@@ -9416,14 +8440,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.19.11",
     "description": "A module provides upload, download, and files access API. Supports file stream read/write for process large files."
   },
-  "react-native-calendars@1.1309.1": {
+  "react-native-calendars@1.1313.0": {
     "licenses": "MIT",
     "repository": "https://github.com/wix/react-native-calendars",
     "publisher": "Wix.com",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2017 Wix.com\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
     "copyright": "Copyright (c) 2017 Wix.com",
     "name": "react-native-calendars",
-    "version": "1.1309.1",
+    "version": "1.1313.0",
     "description": "React Native Calendar Components"
   },
   "react-native-circular-progress-indicator@4.4.2": {
@@ -9469,6 +8493,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Drawer component for React Native",
     "publisher": ""
   },
+  "react-native-edge-to-edge@1.6.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/zoontek/react-native-edge-to-edge",
+    "publisher": "Mathieu Acthernoene",
+    "email": "zoontek@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2024 Mathieu Acthernoene\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2024 Mathieu Acthernoene",
+    "name": "react-native-edge-to-edge",
+    "version": "1.6.0",
+    "description": "Effortlessly enable edge-to-edge display in React Native"
+  },
   "react-native-elements@3.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-elements/react-native-elements",
@@ -9501,7 +8536,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Responsive image component to fit perfectly itself.",
     "copyright": ""
   },
-  "react-native-gesture-handler@2.20.2": {
+  "react-native-gesture-handler@2.24.0": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-gesture-handler",
     "publisher": "Krzysztof Magiera",
@@ -9509,8 +8544,8 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2016 Software Mansion <swmansion.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2016 Software Mansion <swmansion.com>",
     "name": "react-native-gesture-handler",
-    "version": "2.20.2",
-    "description": "Experimental implementation of a new declarative API for gesture handling in react-native"
+    "version": "2.24.0",
+    "description": "Declarative API exposing native platform touch and gesture system to React Native"
   },
   "react-native-get-random-values@1.11.0": {
     "licenses": "MIT",
@@ -9563,6 +8598,28 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Detect react-native-edge-to-edge package install",
     "copyright": ""
   },
+  "react-native-is-edge-to-edge@1.1.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/zoontek/react-native-edge-to-edge",
+    "publisher": "Mathieu Acthernoene",
+    "email": "zoontek@gmail.com",
+    "licenseText": "# react-native-is-edge-to-edge\n\nMany libraries provide options to account for the transparency of status and navigation bars. For example, the [`useHideAnimation`](https://github.com/zoontek/react-native-bootsplash?tab=readme-ov-file#usehideanimation) hook in `react-native-bootsplash` includes `statusBarTranslucent` and `navigationBarTranslucent` options, while the [`useAnimatedKeyboard`](https://docs.swmansion.com/react-native-reanimated/docs/device/useAnimatedKeyboard) hook in `react-native-reanimated` offers an `isStatusBarTranslucentAndroid` option, among others.\n\n> [!IMPORTANT]  \n> Until third-party libraries officially add support for `react-native-edge-to-edge` to set these options automatically, you may need to adjust them manually to prevent interference with the library.\n\nTo support library authors, we provide this lightweight package called `react-native-is-edge-to-edge` (note the `-is-`!), which checks whether `react-native-edge-to-edge` is installed, making it easier to update your library accordingly:\n\n```tsx\nimport {\n  controlEdgeToEdgeValues,\n  isEdgeToEdge,\n} from \"react-native-is-edge-to-edge\";\n\nconst EDGE_TO_EDGE = isEdgeToEdge();\n\nfunction MyAwesomeLibraryComponent({\n  statusBarTranslucent,\n  navigationBarTranslucent,\n}) {\n  if (__DEV__) {\n    // warn the user once about unnecessary defined values\n    controlEdgeToEdgeValues({\n      statusBarTranslucent,\n      navigationBarTranslucent,\n    });\n  }\n\n  return (\n    <MyAwesomeLibraryNativeComponent\n      statusBarTranslucent={EDGE_TO_EDGE || statusBarTranslucent}\n      navigationBarTranslucent={EDGE_TO_EDGE || navigationBarTranslucent}\n      // …\n    />\n  );\n}\n```\n\nIf you want to check for the library's presence on the native side to bypass certain parts of your code, consider using this small utility:\n\n```kotlin\nobject EdgeToEdge {\n  // we cannot detect edge-to-edge, but we can detect react-native-edge-to-edge install\n  val ENABLED: Boolean = try {\n      Class.forName(\"com.zoontek.rnedgetoedge.EdgeToEdgePackage\")\n      true\n    } catch (exception: ClassNotFoundException) {\n      false\n    }\n}\n```",
+    "name": "react-native-is-edge-to-edge",
+    "version": "1.1.7",
+    "description": "Detect react-native-edge-to-edge package install",
+    "copyright": ""
+  },
+  "react-native-is-edge-to-edge@1.2.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/zoontek/react-native-edge-to-edge",
+    "publisher": "Mathieu Acthernoene",
+    "email": "zoontek@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2024 Mathieu Acthernoene\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2024 Mathieu Acthernoene",
+    "name": "react-native-is-edge-to-edge",
+    "version": "1.2.1",
+    "description": "Detect react-native-edge-to-edge package install"
+  },
   "react-native-keyboard-controller@1.16.5": {
     "licenses": "MIT",
     "repository": "https://github.com/kirillzyusko/react-native-keyboard-controller",
@@ -9585,17 +8642,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.9.2",
     "description": "Images etc in Full Screen Lightbox Popovers for React Native"
   },
-  "react-native-map-clustering@3.4.2": {
+  "react-native-map-clustering@4.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/venits/react-native-map-clustering",
     "publisher": "Venits",
-    "licenseText": "# React Native Map Clustering\n\nReact Native module that handles map clustering for you.\n\nWorks with **Expo** and **react-native-cli** 🚀\n\nThis repo is proudly sponsored by:\n\n<a href=\"https://reactnativemarket.com/\" rel=\"nofollow\" target=\"_blank\">\n  <img src=\"https://raw.githubusercontent.com/venits/react-native-market/master/assets/banner.png\" width=\"280\"><br />\n  React Native Templates & Starter Kits and Apps for easier start.\n</a>\n\n## Demo\n\n![Demo](https://raw.githubusercontent.com/venits/react-native-map-clustering/assets/assets/demo.gif)\n\n## Installation\n\n```js\nnpm install react-native-map-clustering react-native-maps --save\n// yarn add react-native-map-clustering react-native-maps\n```\n\n### Full example\n\n```js\nimport React from \"react\";\nimport MapView from \"react-native-map-clustering\";\nimport { Marker } from \"react-native-maps\";\n\nconst INITIAL_REGION = {\n  latitude: 52.5,\n  longitude: 19.2,\n  latitudeDelta: 8.5,\n  longitudeDelta: 8.5,\n};\n\nconst App = () => (\n  <MapView initialRegion={INITIAL_REGION} style={{ flex: 1 }}>\n    <Marker coordinate={{ latitude: 52.4, longitude: 18.7 }} />\n    <Marker coordinate={{ latitude: 52.1, longitude: 18.4 }} />\n    <Marker coordinate={{ latitude: 52.6, longitude: 18.3 }} />\n    <Marker coordinate={{ latitude: 51.6, longitude: 18.0 }} />\n    <Marker coordinate={{ latitude: 53.1, longitude: 18.8 }} />\n    <Marker coordinate={{ latitude: 52.9, longitude: 19.4 }} />\n    <Marker coordinate={{ latitude: 52.2, longitude: 21 }} />\n    <Marker coordinate={{ latitude: 52.4, longitude: 21 }} />\n    <Marker coordinate={{ latitude: 51.8, longitude: 20 }} />\n  </MapView>\n);\n\nexport default App;\n```\n\n## Props\n\n| Name                                        | Type                  | Default                                      | Note                                                                                                                                                                                                                            |\n| ------------------------------------------- | --------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| **clusterColor**                            | String                | #00B386                                      | Background color of cluster.                                                                                                                                                                                                    |\n| **clusterTextColor**                        | String                | #FFFFFF                                      | Color of text in cluster.                                                                                                                                                                                                       |\n| **clusterFontFamily**                       | String                | undefined                                    | Font family of text in cluster.                                                                                                                                                                                                 |\n| **onClusterPress(cluster, markers)**        | Function              | () => {}                                     | Allows you to control cluster on click event. Function returns information about cluster and its markers.                                                                                                                       |\n| **tracksViewChanges**                       | Bool                  | false                                        | Sets whether the cluster markers should track view changes. It's turned off by default to improve cluster markers performance.                                                                                                  |\n| **width**                                   | Number                | window width                                 | map's width.                                                                                                                                                                                                                    |\n| **height**                                  | Number                | window height                                | map's height.                                                                                                                                                                                                                   |\n| **radius**                                  | Number                | window.width \\* 6%                           | [SuperCluster radius](https://github.com/mapbox/supercluster#options).                                                                                                                                                          |\n| **extent**                                  | Number                | 512                                          | [SuperCluster extent](https://github.com/mapbox/supercluster#options).                                                                                                                                                          |\n| **minZoom**                                 | Number                | 1                                            | [SuperCluster minZoom](https://github.com/mapbox/supercluster#options).                                                                                                                                                         |\n| **maxZoom**                                 | Number                | 20                                           | [SuperCluster maxZoom](https://github.com/mapbox/supercluster#options).                                                                                                                                                         |\n| **minPoints**                               | Number                | 2                                            | [SuperCluster minPoints](https://github.com/mapbox/supercluster#options).                                                                                                                                                       |\n| **preserveClusterPressBehavior**            | Bool                  | false                                        | If set to true, after clicking on cluster it will not be zoomed.                                                                                                                                                                |\n| **edgePadding**                             | Object                | { top: 50, left: 50, bottom: 50, right: 50 } | Edge padding for [react-native-maps's](https://github.com/react-community/react-native-maps/blob/master/docs/mapview.md#methods) `fitToCoordinates` method, called in `onClusterPress` for fitting to pressed cluster children. |\n| **animationEnabled**                        | Bool                  | true                                         | Animate imploding/exploding of clusters' markers and clusters size change. **Works only on iOS**.                                                                                                                               |\n| **layoutAnimationConf**                     | LayoutAnimationConfig | LayoutAnimation.Presets.spring               | `LayoutAnimation.Presets.spring`                                                                                                                                                                                                | Custom Layout animation configuration object for clusters animation during implode / explode **Works only on iOS**. |\n| **onRegionChangeComplete(region, markers)** | Function              | () => {}                                     | Called when map's region changes. In return you get current region and markers data.                                                                                                                                            |\n| **onMarkersChange(markers)**                | Function              | () => {}                                     | Called when markers change. In return you get markers data.                                                                                                                                                                     |\n| **superClusterRef**                         | MutableRefObject      | {}                                           | Return reference to `supercluster` library. You can read more about options it has [here.](https://github.com/mapbox/supercluster)                                                                                              |\n| **clusteringEnabled**                       | Bool                  | true                                         | Set true to enable and false to disable clustering.                                                                                                                                                                             |\n| **spiralEnabled**                           | Bool                  | true                                         | Set true to enable and false to disable spiral view.                                                                                                                                                                            |\n| **renderCluster**                           | Function              | undefined                                    | Enables you to render custom cluster with custom styles and logic.                                                                                                                                                              |\n| **spiderLineColor**                         | String                | #FF0000                                      | Enables you to set color of spider line which joins spiral location with center location.                                                                                                                                       |\n\n## How to animate to region?\n\nFull example of how to use `animateToRegion()`.\n\n```js\nimport React, { useRef } from \"react\";\nimport { Button } from \"react-native\";\nimport MapView from \"react-native-map-clustering\";\nimport { Marker } from \"react-native-maps\";\n\nconst INITIAL_REGION = {\n  latitude: 52.5,\n  longitude: 19.2,\n  latitudeDelta: 8.5,\n  longitudeDelta: 8.5,\n};\n\nconst App = () => {\n  const mapRef = useRef();\n\n  const animateToRegion = () => {\n    let region = {\n      latitude: 42.5,\n      longitude: 15.2,\n      latitudeDelta: 7.5,\n      longitudeDelta: 7.5,\n    };\n\n    mapRef.current.animateToRegion(region, 2000);\n  };\n\n  return (\n    <>\n      <MapView\n        ref={mapRef}\n        initialRegion={INITIAL_REGION}\n        style={{ flex: 1 }}\n      />\n      <Button onPress={animateToRegion} title=\"Animate\" />\n    </>\n  );\n};\n\nexport default App;\n```\n\n### Support\n\nFeel free to create issues and pull requests. I will try to provide as much support as possible over GitHub. In case of questions or problems, contact me at:\n[tony@venits.com](tony@venits.com)\n\n### Happy Coding 💖🚀",
+    "licenseText": "MIT License\n\nCopyright (c) 2022 Tony Arrived\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2022 Tony Arrived",
     "name": "react-native-map-clustering",
-    "version": "3.4.2",
-    "description": "React Native Map Clustering both for Android and iOS",
-    "copyright": ""
+    "version": "4.0.0",
+    "description": "React Native Map Clustering both for Android and iOS"
   },
-  "react-native-maps@1.23.5": {
+  "react-native-maps@1.24.5": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-maps/react-native-maps",
     "publisher": "Leland Richardson",
@@ -9603,7 +8660,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Airbnb\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015 Airbnb",
     "name": "react-native-maps",
-    "version": "1.23.5",
+    "version": "1.24.5",
     "description": "React Native Mapview component for iOS + Android"
   },
   "react-native-markdown-display@7.0.2": {
@@ -9678,7 +8735,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.0.4",
     "description": "The standard Ratings component for React Native"
   },
-  "react-native-reanimated@3.16.7": {
+  "react-native-reanimated@3.17.5": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-reanimated",
     "publisher": "Krzysztof Magiera",
@@ -9686,7 +8743,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2016 Software Mansion <swmansion.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2016 Software Mansion <swmansion.com>",
     "name": "react-native-reanimated",
-    "version": "3.16.7",
+    "version": "3.17.5",
     "description": "More powerful alternative to Animated library for React Native."
   },
   "react-native-redash@18.1.3": {
@@ -9710,7 +8767,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "The hackable, full-featured Open Source HTML rendering solution for React Native.",
     "copyright": ""
   },
-  "react-native-safe-area-context@4.12.0": {
+  "react-native-safe-area-context@4.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
     "publisher": "Janic Duplessis",
@@ -9718,10 +8775,21 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "MIT License\n\nCopyright (c) 2019 Th3rd Wave\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2019 Th3rd Wave",
     "name": "react-native-safe-area-context",
-    "version": "4.12.0",
+    "version": "4.5.0",
     "description": "A flexible way to handle safe area, also works on Android and web."
   },
-  "react-native-screens@4.4.0": {
+  "react-native-safe-area-context@5.4.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
+    "publisher": "Janic Duplessis",
+    "email": "janicduplessis@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2019 Th3rd Wave\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2019 Th3rd Wave",
+    "name": "react-native-safe-area-context",
+    "version": "5.4.0",
+    "description": "A flexible way to handle safe area, also works on Android and web."
+  },
+  "react-native-screens@4.11.1": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-screens",
     "publisher": "Krzysztof Magiera",
@@ -9729,7 +8797,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2018 Software Mansion <swmansion.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2018 Software Mansion <swmansion.com>",
     "name": "react-native-screens",
-    "version": "4.4.0",
+    "version": "4.11.1",
     "description": "Native navigation primitives for your React Native app."
   },
   "react-native-size-matters@0.3.1": {
@@ -9764,23 +8832,23 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Get status bar height for React Native App",
     "copyright": ""
   },
-  "react-native-svg-transformer@1.5.0": {
+  "react-native-svg-transformer@1.5.1": {
     "licenses": "MIT",
     "repository": "https://github.com/kristerkari/react-native-svg-transformer",
     "publisher": "Krister Kari",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2018 Krister Kari\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2018 Krister Kari",
     "name": "react-native-svg-transformer",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "description": "SVG transformer for react-native"
   },
-  "react-native-svg@15.8.0": {
+  "react-native-svg@15.11.2": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-community/react-native-svg",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) [2015-2016] [Horcrux]\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) [2015-2016] [Horcrux]",
     "name": "react-native-svg",
-    "version": "15.8.0",
+    "version": "15.11.2",
     "description": "SVG library for react-native",
     "publisher": ""
   },
@@ -9805,17 +8873,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Tab view component for React Native",
     "publisher": ""
   },
-  "react-native-web@0.19.13": {
+  "react-native-web@0.20.0": {
     "licenses": "MIT",
     "repository": "https://github.com/necolas/react-native-web",
     "publisher": "Nicolas Gallagher",
     "licenseText": "MIT License\n\nCopyright (c) Nicolas Gallagher.\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) Nicolas Gallagher.. Copyright (c) Meta Platforms, Inc. and affiliates.",
     "name": "react-native-web",
-    "version": "0.19.13",
+    "version": "0.20.0",
     "description": "React Native for Web"
   },
-  "react-native-webview@13.12.5": {
+  "react-native-webview@13.13.5": {
     "licenses": "MIT",
     "repository": "https://github.com/react-native-webview/react-native-webview",
     "publisher": "Jamon Holmgren",
@@ -9823,16 +8891,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "MIT License\n\nCopyright (c) 2015-present, Facebook, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present, Facebook, Inc.",
     "name": "react-native-webview",
-    "version": "13.12.5",
+    "version": "13.13.5",
     "description": "React Native WebView component for iOS, Android, macOS, and Windows"
   },
-  "react-native@0.76.9": {
+  "react-native@0.79.6": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react-native",
     "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
     "name": "react-native",
-    "version": "0.76.9",
+    "version": "0.79.6",
     "description": "A framework for building native apps using React",
     "publisher": ""
   },
@@ -9856,36 +8924,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "React is a JavaScript library for building user interfaces.",
     "publisher": ""
   },
-  "react@18.3.1": {
+  "react@19.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react",
-    "licenseText": "MIT License\n\nCopyright (c) Facebook, Inc. and its affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Facebook, Inc. and its affiliates.",
+    "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
     "name": "react",
-    "version": "18.3.1",
+    "version": "19.0.0",
     "description": "React is a JavaScript library for building user interfaces.",
     "publisher": ""
-  },
-  "readline@1.3.0": {
-    "licenses": "BSD*",
-    "repository": "https://github.com/maleck13/readline",
-    "publisher": "craig brookes",
-    "licenseText": "## _readline_\n> Read a file line by line.\n\n## Install\n\n## Important. In node 10 there is a core module named readline. Please use linebyline instead, it is the same module just renamed:\n[Npm linebyline](https://www.npmjs.com/package/linebyline)\n\n```sh\nnpm install linebyline\n```\n\n## Test\n```sh\nnpm install .\nnpm test\n\n```\n\n\n## What's this?\n\nSimple streaming readline module for NodeJS. Reads a file and buffers new lines emitting a _line_ event for each line.\n\n## Usage\n### Simple\n```js\n  var readline = require('linebyline'),\n      rl = readline('./somefile.txt');\n  rl.on('line', function(line, lineCount, byteCount) {\n    // do something with the line of text\n  })\n  .on('error', function(e) {\n    // something went wrong\n  });\n```\n\n### ASCII file decoding\nAs the underlying `fs.createReadStream` doesn't care about the specific ASCII encoding of the file, an alternative way to decode the file is by telling the `readline` library to retain buffer and then decoding it using a converter (e.g. [`iconv-lite`](https://www.npmjs.com/package/iconv-lite)).\n```js\n  var readline = require('linebyline'),\n      rl = readline('./file-in-win1251.txt', {\n    retainBuffer: true //tell readline to retain buffer \n  });\n  rl.on(\"line\", function (data,linecount){\n    var line = iconv.decode(data, 'win1251');\n    // do something with the line of converted text\n  });\n```\n##API\n## readLine(readingObject[, options])\n### Params:\n\n* `readingObject` - file path or stream object\n* `options` can include:\n  * `maxLineLength` - override the default 4K buffer size (lines longer than this will not be read)\n  * `retainBuffer` - avoid converting to String prior to emitting 'line' event; will pass raw buffer with encoded data to the callback\n\n### Return:\n\n* **EventEmitter** \n\n\n## License\n\nBSD © [Craig Brookes](http://craigbrookes.com/)",
-    "name": "readline",
-    "version": "1.3.0",
-    "description": "Simple streaming readline module.",
-    "copyright": ""
-  },
-  "recast@0.21.5": {
-    "licenses": "MIT",
-    "repository": "https://github.com/benjamn/recast",
-    "publisher": "Ben Newman",
-    "email": "bn@cs.stanford.edu",
-    "licenseText": "Copyright (c) 2012 Ben Newman <bn@cs.stanford.edu>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2012 Ben Newman <bn@cs.stanford.edu>",
-    "name": "recast",
-    "version": "0.21.5",
-    "description": "JavaScript syntax tree transformer, nondestructive pretty-printer, and automatic source map generator"
   },
   "recyclerlistview@4.2.1": {
     "licenses": "Apache-2.0",
@@ -9895,6 +8942,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \"License\" shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \"Licensor\" shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \"Legal Entity\" shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \"control\" means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \"Source\" form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \"Object\" form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \"Work\" shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \"Derivative Works\" shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \"Contribution\" shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \"submitted\"\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \"Not a Contribution.\"\n\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \"NOTICE\" text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n\n   APPENDIX: How to apply the Apache License to your work.\n\n      To apply the Apache License to your work, attach the following\n      boilerplate notice, with the fields enclosed by brackets \"{}\"\n      replaced with your own identifying information. (Don't include\n      the brackets!)  The text should be enclosed in the appropriate\n      comment syntax for the file format. We also recommend that a\n      file or class name and description of purpose be included on the\n      same \"printed page\" as the copyright notice for easier\n      identification within third-party archives.\n\n   Copyright {yyyy} {name of copyright owner}\n\n   Licensed under the Apache License, Version 2.0 (the \"License\");\n   you may not use this file except in compliance with the License.\n   You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.",
     "name": "recyclerlistview",
     "version": "4.2.1",
+    "description": "The listview that you need and deserve. It was built for performance, uses cell recycling to achieve smooth scrolling.",
+    "copyright": ""
+  },
+  "recyclerlistview@4.2.3": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/Flipkart/recyclerlistview",
+    "publisher": "naqvitalha",
+    "email": "naqvitalha@gmail.com",
+    "licenseText": "Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \"License\" shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \"Licensor\" shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \"Legal Entity\" shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \"control\" means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \"Source\" form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \"Object\" form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \"Work\" shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \"Derivative Works\" shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \"Contribution\" shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \"submitted\"\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \"Not a Contribution.\"\n\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \"NOTICE\" text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n\n   APPENDIX: How to apply the Apache License to your work.\n\n      To apply the Apache License to your work, attach the following\n      boilerplate notice, with the fields enclosed by brackets \"{}\"\n      replaced with your own identifying information. (Don't include\n      the brackets!)  The text should be enclosed in the appropriate\n      comment syntax for the file format. We also recommend that a\n      file or class name and description of purpose be included on the\n      same \"printed page\" as the copyright notice for easier\n      identification within third-party archives.\n\n   Copyright {yyyy} {name of copyright owner}\n\n   Licensed under the Apache License, Version 2.0 (the \"License\");\n   you may not use this file except in compliance with the License.\n   You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.",
+    "name": "recyclerlistview",
+    "version": "4.2.3",
     "description": "The listview that you need and deserve. It was built for performance, uses cell recycling to achieve smooth scrolling.",
     "copyright": ""
   },
@@ -9992,17 +9050,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "remove-accents",
     "version": "0.5.0",
     "description": "Converting the accented characters to their corresponding non-accented ASCII characters."
-  },
-  "remove-trailing-slash@0.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/stephenmathieson/remove-trailing-slash",
-    "publisher": "Stephen Mathieson",
-    "email": "me@stephenmathieson.com",
-    "licenseText": "# remove-trailing-slash\n\nremoves trailing slashes\n\n## Installation\n\nwith [component(1)](http://component.io):\n\n    $ component install stephenmathieson/remove-trailing-slash\n\nwith [npm](https://npmjs.org/):\n\n    $ npm install remove-trailing-slash\n\n## API\n\n### `removeTrailingSlash(str)`\n\nRemoves trailing slashes from the given `str`\n\n## Example\n\n```js\nvar slashes = require('remove-trailing-slash')\n\nslashes('http://google.com/').should.be.equal('http://google.com');\n```\n\n## License\n\nMIT",
-    "name": "remove-trailing-slash",
-    "version": "0.1.1",
-    "description": "removes trailing slashes",
-    "copyright": ""
   },
   "require-directory@2.1.1": {
     "licenses": "MIT",
@@ -10135,28 +9182,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.0.0",
     "description": "Gracefully restore the CLI cursor on exit"
   },
-  "reusify@1.0.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/mcollina/reusify",
-    "publisher": "Matteo Collina",
-    "email": "hello@matteocollina.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Matteo Collina\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015 Matteo Collina",
-    "name": "reusify",
-    "version": "1.0.4",
-    "description": "Reuse objects and functions with style"
-  },
-  "rimraf@2.6.3": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/rimraf",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "rimraf",
-    "version": "2.6.3",
-    "description": "A deep deletion module for node (like `rm -rf`)"
-  },
   "rimraf@2.7.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/rimraf",
@@ -10189,17 +9214,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "rtl-detect",
     "version": "1.1.2",
     "description": "Library will help you to detect if the locale is right-to-left language."
-  },
-  "run-parallel@1.2.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/feross/run-parallel",
-    "publisher": "Feross Aboukhadijeh",
-    "email": "feross@feross.org",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Feross Aboukhadijeh\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Feross Aboukhadijeh",
-    "name": "run-parallel",
-    "version": "1.2.0",
-    "description": "Run an array of functions in parallel"
   },
   "safe-buffer@5.2.1": {
     "licenses": "MIT",
@@ -10245,46 +9259,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.4.1",
     "description": "An evented streaming XML parser in JavaScript"
   },
-  "scheduler@0.23.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "licenseText": "MIT License\n\nCopyright (c) Facebook, Inc. and its affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Facebook, Inc. and its affiliates.",
-    "name": "scheduler",
-    "version": "0.23.2",
-    "description": "Cooperative scheduler for the browser environment.",
-    "publisher": ""
-  },
-  "scheduler@0.24.0-canary-efb381bbf-20230505": {
+  "scheduler@0.25.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react",
     "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
     "name": "scheduler",
-    "version": "0.24.0-canary-efb381bbf-20230505",
+    "version": "0.25.0",
     "description": "Cooperative scheduler for the browser environment.",
     "publisher": ""
-  },
-  "selfsigned@2.4.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jfromaniello/selfsigned",
-    "publisher": "José F. Romaniello",
-    "email": "jfromaniello@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) 2013 José F. Romaniello\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2013 José F. Romaniello",
-    "name": "selfsigned",
-    "version": "2.4.1",
-    "description": "Generate self signed certificates private and public keys"
-  },
-  "semver@5.7.2": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/node-semver",
-    "publisher": "GitHub Inc.",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "semver",
-    "version": "5.7.2",
-    "description": "The semantic version parser used by npm."
   },
   "semver@6.3.1": {
     "licenses": "ISC",
@@ -10392,27 +9375,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.2.0",
     "description": "A small polyfill for Object.setprototypeof"
   },
-  "shallow-clone@3.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jonschlinkert/shallow-clone",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2015-present, Jon Schlinkert.",
-    "name": "shallow-clone",
-    "version": "3.0.1",
-    "description": "Creates a shallow clone of any JavaScript value."
-  },
-  "shebang-command@1.2.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/kevva/shebang-command",
-    "publisher": "Kevin Martensson",
-    "email": "kevinmartensson@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Kevin Martensson <kevinmartensson@gmail.com> (github.com/kevva)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Kevin Martensson <kevinmartensson@gmail.com> (github.com/kevva)",
-    "name": "shebang-command",
-    "version": "1.2.0",
-    "description": "Get the command from a shebang"
-  },
   "shebang-command@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/kevva/shebang-command",
@@ -10423,17 +9385,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "shebang-command",
     "version": "2.0.0",
     "description": "Get the command from a shebang"
-  },
-  "shebang-regex@1.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/shebang-regex",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "shebang-regex",
-    "version": "1.0.0",
-    "description": "Regular expression for matching a shebang"
   },
   "shebang-regex@3.0.0": {
     "licenses": "MIT",
@@ -10662,17 +9613,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "Split a string on the first occurance of a given separator"
   },
-  "split@1.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/dominictarr/split",
-    "publisher": "Dominic Tarr",
-    "email": "dominic.tarr@gmail.com",
-    "licenseText": "Copyright (c) 2011 Dominic Tarr\n\nPermission is hereby granted, free of charge, \nto any person obtaining a copy of this software and \nassociated documentation files (the \"Software\"), to \ndeal in the Software without restriction, including \nwithout limitation the rights to use, copy, modify, \nmerge, publish, distribute, sublicense, and/or sell \ncopies of the Software, and to permit persons to whom \nthe Software is furnished to do so, \nsubject to the following conditions:\n\nThe above copyright notice and this permission notice \nshall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, \nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES \nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. \nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR \nANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, \nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE \nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2011 Dominic Tarr",
-    "name": "split",
-    "version": "1.0.1",
-    "description": "split a Text Stream into a Line Stream"
-  },
   "sprintf-js@1.0.3": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/alexei/sprintf.js",
@@ -10683,16 +9623,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "sprintf-js",
     "version": "1.0.3",
     "description": "JavaScript sprintf implementation"
-  },
-  "ssri@10.0.6": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/ssri",
-    "publisher": "GitHub Inc.",
-    "licenseText": "ISC License\n\nCopyright 2021 (c) npm, Inc.\n\nPermission to use, copy, modify, and/or distribute this software for\nany purpose with or without fee is hereby granted, provided that the\nabove copyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE COPYRIGHT HOLDER DISCLAIMS\nALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR\nCONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE\nOR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE\nUSE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright 2021 (c) npm, Inc.",
-    "name": "ssri",
-    "version": "10.0.6",
-    "description": "Standard Subresource Integrity library -- parses, serializes, generates, and verifies integrity metadata according to the SRI spec."
   },
   "stack-utils@2.0.6": {
     "licenses": "MIT",
@@ -10834,28 +9764,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "7.1.0",
     "description": "Strip ANSI escape codes from a string"
   },
-  "strip-eof@1.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/strip-eof",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "strip-eof",
-    "version": "1.0.0",
-    "description": "Strip the End-Of-File (EOF) character from a string/buffer"
-  },
-  "strip-final-newline@2.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/strip-final-newline",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "strip-final-newline",
-    "version": "2.0.0",
-    "description": "Strip the final newline character from a string/buffer"
-  },
   "strip-json-comments@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/strip-json-comments",
@@ -10941,24 +9849,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.2.5",
     "description": "Run a command using sudo, prompting the user with an OS dialog if necessary"
   },
-  "sudo-prompt@9.1.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/jorangreef/sudo-prompt",
-    "publisher": "Joran Dirk Greef",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Joran Dirk Greef\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015 Joran Dirk Greef",
-    "name": "sudo-prompt",
-    "version": "9.1.1",
-    "description": "Run a command using sudo, prompting the user with an OS dialog if necessary"
-  },
-  "supercluster@7.1.5": {
+  "supercluster@8.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/mapbox/supercluster",
     "publisher": "Vladimir Agafonkin",
     "licenseText": "ISC License\n\nCopyright (c) 2021, Mapbox\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.",
     "copyright": "Copyright (c) 2021, Mapbox",
     "name": "supercluster",
-    "version": "7.1.5",
+    "version": "8.0.1",
     "description": "A very fast geospatial point clustering library."
   },
   "supports-color@5.5.0": {
@@ -11069,14 +9967,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.1.0",
     "description": "Tabler icons"
   },
-  "tar@6.2.1": {
+  "tar@7.4.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-tar",
-    "publisher": "GitHub Inc.",
+    "publisher": "Isaac Z. Schlueter",
     "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
     "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
     "name": "tar",
-    "version": "6.2.1",
+    "version": "7.4.3",
     "description": "tar for node"
   },
   "temp-dir@2.0.0": {
@@ -11089,28 +9987,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "temp-dir",
     "version": "2.0.0",
     "description": "Get the real path of the system temp directory"
-  },
-  "temp@0.8.4": {
-    "licenses": "MIT",
-    "repository": "https://github.com/bruce/node-temp",
-    "publisher": "Bruce Williams",
-    "email": "brwcodes@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2010-2014 Bruce Williams\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2010-2014 Bruce Williams",
-    "name": "temp",
-    "version": "0.8.4",
-    "description": "Temporary files and directories"
-  },
-  "tempy@0.7.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/tempy",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-    "name": "tempy",
-    "version": "0.7.1",
-    "description": "Get a random temporary file or directory path"
   },
   "terminal-link@2.1.1": {
     "licenses": "MIT",
@@ -11187,17 +10063,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "throat",
     "version": "5.0.0",
     "description": "Throttle the parallelism of an asynchronous (promise returning) function / functions"
-  },
-  "through@2.3.8": {
-    "licenses": "MIT",
-    "repository": "https://github.com/dominictarr/through",
-    "publisher": "Dominic Tarr",
-    "email": "dominic.tarr@gmail.com",
-    "licenseText": "Apache License, Version 2.0\n\nCopyright (c) 2011 Dominic Tarr\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.",
-    "copyright": "Copyright (c) 2011 Dominic Tarr",
-    "name": "through",
-    "version": "2.3.8",
-    "description": "simplified stream construction"
   },
   "tmp@0.0.33": {
     "licenses": "MIT",
@@ -11347,17 +10212,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "4.0.8",
     "description": "Improved typeof detection for node.js and the browser."
   },
-  "type-fest@0.16.0": {
-    "licenses": "(MIT OR CC0-1.0)",
-    "repository": "https://github.com/sindresorhus/type-fest",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com)",
-    "name": "type-fest",
-    "version": "0.16.0",
-    "description": "A collection of essential TypeScript types"
-  },
   "type-fest@0.21.3": {
     "licenses": "(MIT OR CC0-1.0)",
     "repository": "https://github.com/sindresorhus/type-fest",
@@ -11391,13 +10245,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.7.3",
     "description": "Runtime validation and processing of JavaScript types"
   },
-  "typescript@5.3.3": {
+  "typescript@5.8.3": {
     "licenses": "Apache-2.0",
-    "repository": "https://github.com/Microsoft/TypeScript",
+    "repository": "https://github.com/microsoft/TypeScript",
     "publisher": "Microsoft Corp.",
     "licenseText": "Apache License\r\n\r\nVersion 2.0, January 2004\r\n\r\nhttp://www.apache.org/licenses/ \r\n\r\nTERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\r\n\r\n1. Definitions.\r\n\r\n\"License\" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.\r\n\r\n\"Licensor\" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.\r\n\r\n\"Legal Entity\" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, \"control\" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.\r\n\r\n\"You\" (or \"Your\") shall mean an individual or Legal Entity exercising permissions granted by this License.\r\n\r\n\"Source\" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.\r\n\r\n\"Object\" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.\r\n\r\n\"Work\" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).\r\n\r\n\"Derivative Works\" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.\r\n\r\n\"Contribution\" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, \"submitted\" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as \"Not a Contribution.\"\r\n\r\n\"Contributor\" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.\r\n\r\n2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.\r\n\r\n3. Grant of Patent License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.\r\n\r\n4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:\r\n\r\nYou must give any other recipients of the Work or Derivative Works a copy of this License; and\r\n\r\nYou must cause any modified files to carry prominent notices stating that You changed the files; and\r\n\r\nYou must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and\r\n\r\nIf the Work includes a \"NOTICE\" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License. You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.\r\n\r\n5. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.\r\n\r\n6. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.\r\n\r\n7. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.\r\n\r\n8. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.\r\n\r\n9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.\r\n\r\nEND OF TERMS AND CONDITIONS",
     "name": "typescript",
-    "version": "5.3.3",
+    "version": "5.8.3",
     "description": "TypeScript is a language for application scale JavaScript development",
     "copyright": ""
   },
@@ -11493,26 +10347,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.1.0",
     "description": "Unicode property alias mappings in JavaScript format for property names that are supported in ECMAScript RegExp property escapes."
   },
-  "unique-filename@3.0.0": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/unique-filename",
-    "publisher": "GitHub Inc.",
-    "licenseText": "Copyright npm, Inc\n\nPermission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright npm, Inc",
-    "name": "unique-filename",
-    "version": "3.0.0",
-    "description": "Generate a unique filename for use in temporary directories or caches."
-  },
-  "unique-slug@4.0.0": {
-    "licenses": "ISC",
-    "repository": "https://github.com/npm/unique-slug",
-    "publisher": "GitHub Inc.",
-    "licenseText": "The ISC License\n\nCopyright npm, Inc\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright npm, Inc",
-    "name": "unique-slug",
-    "version": "4.0.0",
-    "description": "Generate a unique character string suitible for use in files and URLs."
-  },
   "unique-string@2.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/unique-string",
@@ -11523,28 +10357,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "unique-string",
     "version": "2.0.0",
     "description": "Generate a unique random string"
-  },
-  "universalify@0.1.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/RyanZim/universalify",
-    "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "licenseText": "(The MIT License)\n\nCopyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the 'Software'), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>",
-    "name": "universalify",
-    "version": "0.1.2",
-    "description": "Make a callback- or promise-based function support both promises and callbacks."
-  },
-  "universalify@1.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/RyanZim/universalify",
-    "publisher": "Ryan Zimmerman",
-    "email": "opensrc@ryanzim.com",
-    "licenseText": "(The MIT License)\n\nCopyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the 'Software'), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>",
-    "name": "universalify",
-    "version": "1.0.0",
-    "description": "Make a callback- or promise-based function support both promises and callbacks."
   },
   "universalify@2.0.1": {
     "licenses": "MIT",
@@ -11684,16 +10496,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "RFC4122 (v1, v4, and v5) UUIDs",
     "publisher": ""
   },
-  "uuid@8.3.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/uuidjs/uuid",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2010-2020 Robert Kieffer and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2010-2020 Robert Kieffer and other contributors",
-    "name": "uuid",
-    "version": "8.3.2",
-    "description": "RFC4122 (v1, v4, and v5) UUIDs",
-    "publisher": ""
-  },
   "validate-npm-package-name@5.0.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/validate-npm-package-name",
@@ -11756,17 +10558,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "wcwidth",
     "version": "1.0.1",
     "description": "Port of C's wcwidth() and wcswidth()"
-  },
-  "web-streams-polyfill@3.3.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/MattiasBuelens/web-streams-polyfill",
-    "publisher": "Mattias Buelens",
-    "email": "mattias@buelens.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2024 Mattias Buelens\nCopyright (c) 2016 Diwank Singh Tomer\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2024 Mattias Buelens. Copyright (c) 2016 Diwank Singh Tomer",
-    "name": "web-streams-polyfill",
-    "version": "3.3.3",
-    "description": "Web Streams, based on the WHATWG spec reference implementation"
   },
   "webidl-conversions@3.0.1": {
     "licenses": "BSD-2-Clause",
@@ -11843,17 +10634,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.18",
     "description": "Which kind of Typed Array is this JavaScript value? Works cross-realm, without `instanceof`, and despite Symbol.toStringTag."
   },
-  "which@1.3.1": {
-    "licenses": "ISC",
-    "repository": "https://github.com/isaacs/node-which",
-    "publisher": "Isaac Z. Schlueter",
-    "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-    "name": "which",
-    "version": "1.3.1",
-    "description": "Like which(1) unix command. Find the first instance of an executable in the PATH."
-  },
   "which@2.0.2": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-which",
@@ -11919,17 +10699,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "wrappy",
     "version": "1.0.2",
     "description": "Callback wrapping utility"
-  },
-  "write-file-atomic@2.4.3": {
-    "licenses": "ISC",
-    "repository": "https://github.com/iarna/write-file-atomic",
-    "publisher": "Rebecca Turner",
-    "email": "me@re-becca.org",
-    "licenseText": "Copyright (c) 2015, Rebecca Turner\n\nPermission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) 2015, Rebecca Turner",
-    "name": "write-file-atomic",
-    "version": "2.4.3",
-    "description": "Write files in an atomic fashion w/configurable ownership"
   },
   "write-file-atomic@4.0.2": {
     "licenses": "ISC",
@@ -12017,17 +10786,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "11.0.1",
     "description": "An XML builder for node.js"
   },
-  "xmlbuilder@14.0.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/oozcitak/xmlbuilder-js",
-    "publisher": "Ozgur Ozcitak",
-    "email": "oozcitak@gmail.com",
-    "licenseText": "The MIT License (MIT)\r\n\r\nCopyright (c) 2013 Ozgur Ozcitak\r\n\r\nPermission is hereby granted, free of charge, to any person obtaining a copy\r\nof this software and associated documentation files (the \"Software\"), to deal\r\nin the Software without restriction, including without limitation the rights\r\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\ncopies of the Software, and to permit persons to whom the Software is\r\nfurnished to do so, subject to the following conditions:\r\n\r\nThe above copyright notice and this permission notice shall be included in\r\nall copies or substantial portions of the Software.\r\n\r\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\r\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2013 Ozgur Ozcitak",
-    "name": "xmlbuilder",
-    "version": "14.0.0",
-    "description": "An XML builder for node.js"
-  },
   "xmlbuilder@15.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/oozcitak/xmlbuilder-js",
@@ -12083,16 +10841,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.1.1",
     "description": "Yet Another Linked List"
   },
-  "yallist@4.0.0": {
-    "licenses": "ISC",
+  "yallist@5.0.0": {
+    "licenses": "BlueOak-1.0.0",
     "repository": "https://github.com/isaacs/yallist",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "licenseText": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.",
-    "copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
+    "licenseText": "All packages under `src/` are licensed according to the terms in\ntheir respective `LICENSE` or `LICENSE.md` files.\n\nThe remainder of this project is licensed under the Blue Oak\nModel License, as follows:\n\n-----\n\n# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules.  The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice.  If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n***As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim.***",
     "name": "yallist",
-    "version": "4.0.0",
-    "description": "Yet Another Linked List"
+    "version": "5.0.0",
+    "description": "Yet Another Linked List",
+    "copyright": ""
   },
   "yaml@2.7.0": {
     "licenses": "ISC",
