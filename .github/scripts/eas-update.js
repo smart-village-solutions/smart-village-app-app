@@ -6,9 +6,9 @@ const appJsonPath = path.resolve(__dirname, '../../app.json');
 // Read the file
 const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'));
 
-// Ensure that expo.otaVersion exists and is a number
-if (!appJson.expo || typeof appJson.expo.otaVersion !== 'number') {
-  console.error('❌ Error: expo.otaVersion is missing or is not a number.');
+// Ensure that expo.extra.otaVersion exists and is a number
+if (!appJson.expo || typeof appJson.expo.extra.otaVersion !== 'number') {
+  console.error('❌ Error: expo.extra.otaVersion is missing or is not a number.');
   process.exit(1);
 }
 
@@ -20,13 +20,13 @@ if (!updateMessage) {
 }
 
 // Increment the over-the-air version
-appJson.expo.otaVersion += 1;
+appJson.expo.extra.otaVersion += 1;
 
 // Save and lint the file
 fs.writeFileSync(appJsonPath, JSON.stringify(appJson, null, 2) + '\n', 'utf8');
-execSync(`yarn prettier --write ${appJsonPath}`, { stdio: "inherit" });
+execSync(`yarn prettier --write ${appJsonPath}`, { stdio: 'inherit' });
 
-console.log(`✅ expo.otaVersion has been incremented to ${appJson.expo.otaVersion}.`);
+console.log(`✅ expo.extra.otaVersion has been incremented to ${appJson.expo.extra.otaVersion}.`);
 
 execSync(`eas update --channel production --message "${updateMessage}"`, { stdio: 'inherit' });
 
