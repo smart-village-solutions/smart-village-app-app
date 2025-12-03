@@ -1,4 +1,4 @@
-import { documentDirectory } from 'expo-file-system';
+import { documentDirectory } from 'expo-file-system/legacy';
 
 import { consts } from '../../config';
 

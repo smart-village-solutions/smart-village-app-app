@@ -38,7 +38,7 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image, widgetStyle }
           {image?.uri ? (
             <Image
               source={image}
-              childrenContainerStyle={{
+              style={{
                 height: normalize(image?.height ?? 24),
                 width: normalize(image?.width ?? 30)
               }}

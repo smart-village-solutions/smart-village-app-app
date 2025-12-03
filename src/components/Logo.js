@@ -6,18 +6,18 @@ import { Image } from './Image';
 export const Logo = (props) => {
   const {
     containerStyle,
-    source,
-    childrenContainerStyle = { height: 80, width: 'auto' },
     resizeMode = 'contain',
+    source,
+    style = { height: 80, width: 'auto' },
     ...rest
   } = props;
 
   return (
     <Image
       containerStyle={containerStyle}
-      source={source}
-      childrenContainerStyle={childrenContainerStyle}
       resizeMode={resizeMode}
+      source={source}
+      style={style}
       {...rest}
     />
   );
@@ -25,7 +25,7 @@ export const Logo = (props) => {
 
 Logo.propTypes = {
   containerStyle: PropTypes.object,
+  resizeMode: PropTypes.string,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
-  childrenContainerStyle: PropTypes.object,
-  resizeMode: PropTypes.string
+  style: PropTypes.object
 };

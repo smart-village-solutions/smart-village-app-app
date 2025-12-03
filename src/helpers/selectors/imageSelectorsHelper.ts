@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { Alert } from 'react-native';
 

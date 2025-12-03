@@ -6,15 +6,17 @@ const flexBasis = (props) => {
   const { orientation, bigTile, numberOfTiles: tilesConfig = {} } = props;
   const { landscape = 5, portrait = 3 } = tilesConfig;
   const numberOfTiles = orientation === 'landscape' ? landscape : portrait;
-  const tileFactor = bigTile ? (orientation === 'landscape' ? 1 : 0.3) : 1;
 
-  return 100 / (numberOfTiles + 0.3 * tileFactor);
+  // For bigTile, use exact pixel-based calculation to match DraggableGrid
+  // For normal tiles, use percentage-based flex layout
+  return bigTile ? null : 100 / numberOfTiles;
 };
 
 export const ServiceBox = styled.View`
   margin: ${normalize(16)}px 0;
 
   ${(props) =>
+    !props.bigTile &&
     css`
       flex-basis: ${flexBasis(props)}%;
     `};

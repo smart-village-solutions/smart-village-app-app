@@ -1,11 +1,10 @@
 import React, { ReactNode, RefObject, useCallback, useContext } from 'react';
 import { StyleSheet } from 'react-native';
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   runOnJS,
   scrollTo,
-  useAnimatedGestureHandler,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
@@ -100,20 +99,21 @@ export const DraggableItem = ({
     }
   );
 
-  const onGestureEvent = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    { x: number; y: number }
-  >({
-    onStart: (_, ctx) => {
-      ctx.x = translateX.value;
-      ctx.y = translateY.value;
-    },
-    onActive: ({ translationX, translationY }, ctx) => {
+  const offsetX = useSharedValue(0);
+  const offsetY = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onStart((_e) => {
+      offsetX.value = translateX.value;
+      offsetY.value = translateY.value;
+    })
+    .onUpdate((e) => {
       isGestureActive.value = true;
-      translateX.value = ctx.x + translationX;
-      translateY.value = ctx.y + translationY;
 
       // 1. We calculate where the tile should be
+      translateX.value = offsetX.value + e.translationX;
+      translateY.value = offsetY.value + e.translationY;
+
       const newOrder = getOrder(
         translateX.value,
         translateY.value,
@@ -121,9 +121,9 @@ export const DraggableItem = ({
       );
 
       // 2. We swap the positions
-      const oldOlder = positions.value[id];
+      const oldOrder = positions.value[id];
 
-      if (newOrder !== oldOlder) {
+      if (newOrder !== oldOrder) {
         const idToSwap = Object.keys(positions.value).find(
           (key) => positions.value[key] === newOrder
         );
@@ -133,7 +133,7 @@ export const DraggableItem = ({
           // And Object.assign doesn't seem to be working on alpha.6
           const newPositions = JSON.parse(JSON.stringify(positions.value));
           newPositions[id] = newOrder;
-          newPositions[idToSwap] = oldOlder;
+          newPositions[idToSwap] = oldOrder;
           positions.value = newPositions;
         }
       }
@@ -148,28 +148,26 @@ export const DraggableItem = ({
         const diff = Math.min(lowerBound - translateY.value, lowerBound);
         scrollY.value -= diff;
         scrollTo(scrollView, 0, scrollY.value, false);
-        ctx.y -= diff;
-        translateY.value = ctx.y + translationY;
+        offsetY.value -= diff;
+        translateY.value = offsetY.value + e.translationY;
       }
 
       if (translateY.value > upperBound) {
         const diff = Math.min(translateY.value - upperBound, leftToScrollDown);
         scrollY.value += diff;
         scrollTo(scrollView, 0, scrollY.value, false);
-        ctx.y += diff;
-        translateY.value = ctx.y + translationY;
+        offsetY.value += diff;
+        translateY.value = offsetY.value + e.translationY;
       }
-    },
-    onEnd: () => {
+    })
+    .onEnd(() => {
       const newPosition = getPosition(positions.value[id]);
-
       translateX.value = withTiming(newPosition.x, animationConfig, () => {
         isGestureActive.value = false;
         runOnJS(onDragEnd)(positions.value);
       });
       translateY.value = withTiming(newPosition.y, animationConfig);
-    }
-  });
+    });
 
   const animatedStyle = useAnimatedStyle(() => {
     const zIndex = isGestureActive.value ? 100 : 0;
@@ -185,7 +183,7 @@ export const DraggableItem = ({
 
   return (
     <Animated.View style={[StyleSheet.absoluteFillObject, animatedStyle]}>
-      <PanGestureHandler enabled onGestureEvent={onGestureEvent}>
+      <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[
             StyleSheet.absoluteFillObject,
@@ -195,7 +193,7 @@ export const DraggableItem = ({
         >
           {children}
         </Animated.View>
-      </PanGestureHandler>
+      </GestureDetector>
     </Animated.View>
   );
 };

@@ -153,7 +153,7 @@ export const ServiceTile = ({
           ) : (
             <Image
               source={{ uri: item.icon || item.tile }}
-              childrenContainerStyle={[
+              style={[
                 styles.serviceImage,
                 !!item.icon && {
                   height: normalizedIconStyle.size || normalize(30)
@@ -245,7 +245,7 @@ const stylesWithProps = ({
   const numberOfTiles = orientation === 'landscape' ? 5 : 3;
   const deviceHeight = device.height - safeAreaInsets.left - safeAreaInsets.right;
 
-  // calculate tile sizes based on device orientation, safe are insets and padding
+  // calculate tile sizes based on device orientation, safe area insets and padding
   const tileSize =
     ((orientation === 'landscape' ? deviceHeight : device.width) - 2 * containerPadding) /
     numberOfTiles;
@@ -254,7 +254,7 @@ const stylesWithProps = ({
     bigTile: {
       height: tileSize * tileSizeFactor,
       marginBottom: 0,
-      width: tileSize
+      width: tileSize - containerPadding / 2
     }
   });
 };
