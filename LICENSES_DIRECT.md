@@ -918,9 +918,9 @@
     - publisher: sohobloo
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-modal-dropdown
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-modal-dropdown/LICENSE
-- **[react-native-pdf@6.7.7](https://github.com/wonday/react-native-pdf)**
+- **[react-native-pdf@7.0.3](https://github.com/wonday/react-native-pdf)**
     - name: react-native-pdf
-    - version: 6.7.7
+    - version: 7.0.3
     - description: A react native PDF view component, support ios and android platform
     - copyright: Copyright (c) 2017 Wonday (@wonday.org)
     - licenses: MIT

@@ -8694,14 +8694,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.0.22",
     "description": "Parse text and make them into multiple React Native Text elements"
   },
-  "react-native-pdf@6.7.7": {
+  "react-native-pdf@7.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/wonday/react-native-pdf",
     "publisher": "Wonday",
     "licenseText": "MIT License\n\nCopyright (c) 2017 Wonday (@wonday.org)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2017 Wonday (@wonday.org)",
     "name": "react-native-pdf",
-    "version": "6.7.7",
+    "version": "7.0.3",
     "description": "A react native PDF view component, support ios and android platform"
   },
   "react-native-progress@5.0.1": {
