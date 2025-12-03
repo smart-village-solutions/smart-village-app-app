@@ -38,9 +38,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@config-plugins/react-native-pdf
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@config-plugins/react-native-pdf/README.md
-- **[@expo/config-plugins@10.1.2](https://github.com/expo/expo)**
+- **[@expo/config-plugins@54.0.1](https://github.com/expo/expo)**
     - name: @expo/config-plugins
-    - version: 10.1.2
+    - version: 54.0.1
     - description: A library for Expo config plugins
     - copyright: Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
     - licenses: MIT
@@ -48,9 +48,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/config-plugins/LICENSE
-- **[@expo/metro-config@0.20.17](https://github.com/expo/expo)**
+- **[@expo/metro-config@54.0.5](https://github.com/expo/expo)**
     - name: @expo/metro-config
-    - version: 0.20.17
+    - version: 54.0.5
     - description: A Metro config for running React Native projects with the Metro bundler
     - copyright: Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
     - licenses: MIT
@@ -58,9 +58,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/metro-config
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/metro-config/LICENSE
-- **[@expo/vector-icons@14.1.0](https://github.com/expo/vector-icons)**
+- **[@expo/vector-icons@15.0.3](https://github.com/expo/vector-icons)**
     - name: @expo/vector-icons
-    - version: 14.1.0
+    - version: 15.0.3
     - description: Built-in support for popular icon fonts and the tooling to create your own Icon components from your font and glyph map. This is a wrapper around react-native-vector-icons to make it compatible with Expo.
     - copyright: Copyright (c) 2015 Joel Arvidsson. Copyright (c) 2020 650 Industries
     - licenses: MIT
@@ -88,9 +88,9 @@
     - publisher: Jules Sam. Randolph
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/table-plugin
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@native-html/table-plugin/README.md
-- **[@react-native-async-storage/async-storage@2.1.2](https://github.com/react-native-async-storage/async-storage)**
+- **[@react-native-async-storage/async-storage@2.2.0](https://github.com/react-native-async-storage/async-storage)**
     - name: @react-native-async-storage/async-storage
-    - version: 2.1.2
+    - version: 2.2.0
     - description: Asynchronous, persistent, key-value storage system for React Native.
     - copyright: Copyright (c) 2015-present, Facebook, Inc.
     - licenses: MIT
@@ -98,9 +98,9 @@
     - publisher: Krzysztof Borowy
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-async-storage/async-storage
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@react-native-async-storage/async-storage/LICENSE
-- **[@react-native-community/datetimepicker@8.4.1](https://github.com/react-native-community/datetimepicker)**
+- **[@react-native-community/datetimepicker@8.4.4](https://github.com/react-native-community/datetimepicker)**
     - name: @react-native-community/datetimepicker
-    - version: 8.4.1
+    - version: 8.4.4
     - description: DateTimePicker component for React Native
     - copyright: Copyright (c) 2019 React Native Community
     - licenses: MIT
@@ -188,9 +188,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/LICENSE
-- **[@sentry/react-native@6.14.0](https://github.com/getsentry/sentry-react-native)**
+- **[@sentry/react-native@7.2.0](https://github.com/getsentry/sentry-react-native)**
     - name: @sentry/react-native
-    - version: 6.14.0
+    - version: 7.2.0
     - description: Official Sentry SDK for react-native
     - copyright: Copyright (c) 2017-2024 Sentry
     - licenses: MIT
@@ -198,9 +198,9 @@
     - publisher: Sentry
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/react-native
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@sentry/react-native/LICENSE.md
-- **[@shopify/flash-list@1.7.6](https://github.com/Shopify/flash-list)**
+- **[@shopify/flash-list@2.0.2](https://github.com/Shopify/flash-list)**
     - name: @shopify/flash-list
-    - version: 1.7.6
+    - version: 2.0.2
     - description: FlashList is a more performant FlatList replacement
     - copyright: Copyright 2022-present, Shopify Inc.
     - licenses: MIT
@@ -278,9 +278,9 @@
     - publisher: Evans Hauser
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/apollo-link/LICENSE
-- **[expo-application@6.1.5](https://github.com/expo/expo)**
+- **[expo-application@7.0.7](https://github.com/expo/expo)**
     - name: expo-application
-    - version: 6.1.5
+    - version: 7.0.7
     - description: A universal module that gets native application information such as its ID, app name, and build version at runtime
     - copyright: 
     - licenses: MIT
@@ -288,9 +288,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-application
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-application/README.md
-- **[expo-asset@11.1.7](https://github.com/expo/expo)**
+- **[expo-asset@12.0.10](https://github.com/expo/expo)**
     - name: expo-asset
-    - version: 11.1.7
+    - version: 12.0.10
     - description: An Expo universal module to download assets and pass them into other APIs
     - copyright: 
     - licenses: MIT
@@ -298,9 +298,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-asset
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-asset/README.md
-- **[expo-blur@14.1.5](https://github.com/expo/expo)**
+- **[expo-blur@15.0.7](https://github.com/expo/expo)**
     - name: expo-blur
-    - version: 14.1.5
+    - version: 15.0.7
     - description: A component that renders a native blur view on iOS and falls back to a semi-transparent view on Android. A common usage of this is for navigation bars, tab bars, and modals.
     - copyright: 
     - licenses: MIT
@@ -308,9 +308,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-blur
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-blur/README.md
-- **[expo-build-properties@0.14.8](https://github.com/expo/expo)**
+- **[expo-build-properties@1.0.9](https://github.com/expo/expo)**
     - name: expo-build-properties
-    - version: 0.14.8
+    - version: 1.0.9
     - description: Config plugin to customize native build properties on prebuild
     - copyright: 
     - licenses: MIT
@@ -318,9 +318,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-build-properties
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-build-properties/README.md
-- **[expo-calendar@14.1.4](https://github.com/expo/expo)**
+- **[expo-calendar@15.0.7](https://github.com/expo/expo)**
     - name: expo-calendar
-    - version: 14.1.4
+    - version: 15.0.7
     - description: Provides an API for interacting with the device's system calendars, events, reminders, and associated records.
     - copyright: 
     - licenses: MIT
@@ -328,9 +328,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-calendar
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-calendar/README.md
-- **[expo-camera@16.1.11](https://github.com/expo/expo)**
+- **[expo-camera@17.0.9](https://github.com/expo/expo)**
     - name: expo-camera
-    - version: 16.1.11
+    - version: 17.0.9
     - description: A React component that renders a preview for the device's either front or back camera. Camera's parameters like zoom, auto focus, white balance and flash mode are adjustable. With expo-camera, one can also take photos and record videos that are saved to the app's cache. Morever, the component is also capable of detecting faces and bar codes appearing on the preview.
     - copyright: 
     - licenses: MIT
@@ -338,9 +338,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-camera
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-camera/README.md
-- **[expo-clipboard@7.1.5](https://github.com/expo/expo)**
+- **[expo-clipboard@8.0.7](https://github.com/expo/expo)**
     - name: expo-clipboard
-    - version: 7.1.5
+    - version: 8.0.7
     - description: Provides an interface for getting and setting Clipboard content on Android, iOS and Web.
     - copyright: 
     - licenses: MIT
@@ -348,9 +348,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-clipboard
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-clipboard/README.md
-- **[expo-constants@17.1.7](https://github.com/expo/expo)**
+- **[expo-constants@18.0.10](https://github.com/expo/expo)**
     - name: expo-constants
-    - version: 17.1.7
+    - version: 18.0.10
     - description: Provides system information that remains constant throughout the lifetime of your app.
     - copyright: 
     - licenses: MIT
@@ -358,9 +358,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-constants
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-constants/README.md
-- **[expo-crypto@14.1.5](https://github.com/expo/expo)**
+- **[expo-crypto@15.0.7](https://github.com/expo/expo)**
     - name: expo-crypto
-    - version: 14.1.5
+    - version: 15.0.7
     - description: Provides cryptography primitives for Android, iOS and web.
     - copyright: 
     - licenses: MIT
@@ -368,9 +368,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-crypto
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-crypto/README.md
-- **[expo-dev-client@5.2.4](https://github.com/expo/expo)**
+- **[expo-dev-client@6.0.18](https://github.com/expo/expo)**
     - name: expo-dev-client
-    - version: 5.2.4
+    - version: 6.0.18
     - description: Expo Development Client
     - copyright: 
     - licenses: MIT
@@ -378,9 +378,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-client
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-dev-client/README.md
-- **[expo-device@7.1.4](https://github.com/expo/expo)**
+- **[expo-device@8.0.9](https://github.com/expo/expo)**
     - name: expo-device
-    - version: 7.1.4
+    - version: 8.0.9
     - description: A universal module that gets physical information about the device running the application
     - copyright: 
     - licenses: MIT
@@ -388,9 +388,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-device
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-device/README.md
-- **[expo-document-picker@13.1.6](https://github.com/expo/expo)**
+- **[expo-document-picker@14.0.7](https://github.com/expo/expo)**
     - name: expo-document-picker
-    - version: 13.1.6
+    - version: 14.0.7
     - description: Provides access to the system's UI for selecting documents from the available providers on the user's device.
     - copyright: 
     - licenses: MIT
@@ -398,9 +398,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-document-picker
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-document-picker/README.md
-- **[expo-font@13.3.2](https://github.com/expo/expo)**
+- **[expo-font@14.0.9](https://github.com/expo/expo)**
     - name: expo-font
-    - version: 13.3.2
+    - version: 14.0.9
     - description: Load fonts at runtime and use them in React Native components.
     - copyright: 
     - licenses: MIT
@@ -408,9 +408,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-font
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-font/README.md
-- **[expo-image-picker@16.1.4](https://github.com/expo/expo)**
+- **[expo-image-picker@17.0.8](https://github.com/expo/expo)**
     - name: expo-image-picker
-    - version: 16.1.4
+    - version: 17.0.8
     - description: Provides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.
     - copyright: 
     - licenses: MIT
@@ -418,6 +418,16 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-picker
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image-picker/README.md
+- **[expo-image@3.0.10](https://github.com/expo/expo)**
+    - name: expo-image
+    - version: 3.0.10
+    - description: A cross-platform, performant image component for React Native and Expo with Web support
+    - copyright: 
+    - licenses: MIT
+    - repository: https://github.com/expo/expo
+    - publisher: 650 Industries, Inc.
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-image/README.md
 - **[expo-in-app-updates@0.9.0](https://github.com/SohelIslamImran/expo-in-app-updates)**
     - name: expo-in-app-updates
     - version: 0.9.0
@@ -428,9 +438,9 @@
     - publisher: SohelIslamImran
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-in-app-updates
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-in-app-updates/README.md
-- **[expo-linear-gradient@14.1.5](https://github.com/expo/expo)**
+- **[expo-linear-gradient@15.0.7](https://github.com/expo/expo)**
     - name: expo-linear-gradient
-    - version: 14.1.5
+    - version: 15.0.7
     - description: Provides a React component that renders a gradient view.
     - copyright: 
     - licenses: MIT
@@ -438,9 +448,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linear-gradient
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linear-gradient/README.md
-- **[expo-linking@7.1.7](https://github.com/expo/expo)**
+- **[expo-linking@8.0.9](https://github.com/expo/expo)**
     - name: expo-linking
-    - version: 7.1.7
+    - version: 8.0.9
     - description: Create and open deep links universally
     - copyright: 
     - licenses: MIT
@@ -448,9 +458,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linking
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-linking/README.md
-- **[expo-localization@16.1.6](https://github.com/expo/expo)**
+- **[expo-localization@17.0.7](https://github.com/expo/expo)**
     - name: expo-localization
-    - version: 16.1.6
+    - version: 17.0.7
     - description: Provides an interface for native user localization information.
     - copyright: 
     - licenses: MIT
@@ -458,9 +468,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-localization
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-localization/README.md
-- **[expo-location@18.1.6](https://github.com/expo/expo)**
+- **[expo-location@19.0.7](https://github.com/expo/expo)**
     - name: expo-location
-    - version: 18.1.6
+    - version: 19.0.7
     - description: Allows reading geolocation information from the device. Your app can poll for the current location or subscribe to location update events.
     - copyright: 
     - licenses: MIT
@@ -468,9 +478,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-location
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-location/README.md
-- **[expo-media-library@17.1.7](https://github.com/expo/expo)**
+- **[expo-media-library@18.2.0](https://github.com/expo/expo)**
     - name: expo-media-library
-    - version: 17.1.7
+    - version: 18.2.0
     - description: Provides access to user's media library.
     - copyright: 
     - licenses: MIT
@@ -478,9 +488,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-media-library
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-media-library/README.md
-- **[expo-notifications@0.31.4](https://github.com/expo/expo)**
+- **[expo-notifications@0.32.13](https://github.com/expo/expo)**
     - name: expo-notifications
-    - version: 0.31.4
+    - version: 0.32.13
     - description: Provides an API to fetch push notification tokens and to present, schedule, receive, and respond to notifications.
     - copyright: 
     - licenses: MIT
@@ -488,9 +498,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-notifications
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-notifications/README.md
-- **[expo-screen-orientation@8.1.7](https://github.com/expo/expo)**
+- **[expo-screen-orientation@9.0.7](https://github.com/expo/expo)**
     - name: expo-screen-orientation
-    - version: 8.1.7
+    - version: 9.0.7
     - description: Expo universal module for managing device's screen orientation
     - copyright: 
     - licenses: MIT
@@ -498,9 +508,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-screen-orientation
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-screen-orientation/README.md
-- **[expo-secure-store@14.2.4](https://github.com/expo/expo)**
+- **[expo-secure-store@15.0.7](https://github.com/expo/expo)**
     - name: expo-secure-store
-    - version: 14.2.4
+    - version: 15.0.7
     - description: Provides a way to encrypt and securely store key-value pairs locally on the device.
     - copyright: 
     - licenses: MIT
@@ -508,9 +518,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-secure-store
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-secure-store/README.md
-- **[expo-splash-screen@0.30.10](https://github.com/expo/expo)**
+- **[expo-splash-screen@31.0.11](https://github.com/expo/expo)**
     - name: expo-splash-screen
-    - version: 0.30.10
+    - version: 31.0.11
     - description: Provides a module to allow keeping the native Splash Screen visible until you choose to hide it.
     - copyright: 
     - licenses: MIT
@@ -518,9 +528,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-splash-screen
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-splash-screen/README.md
-- **[expo-status-bar@2.2.3](https://github.com/expo/expo)**
+- **[expo-status-bar@3.0.8](https://github.com/expo/expo)**
     - name: expo-status-bar
-    - version: 2.2.3
+    - version: 3.0.8
     - description: Provides the same interface as the React Native StatusBar API, but with slightly different defaults to work great in Expo environments.
     - copyright: 
     - licenses: MIT
@@ -528,9 +538,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-status-bar
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-status-bar/README.md
-- **[expo-updates@0.28.17](https://github.com/expo/expo)**
+- **[expo-updates@29.0.13](https://github.com/expo/expo)**
     - name: expo-updates
-    - version: 0.28.17
+    - version: 29.0.13
     - description: Fetches and manages remotely-hosted assets and updates to your app's JS bundle.
     - copyright: 
     - licenses: MIT
@@ -538,9 +548,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-updates/README.md
-- **[expo-video@2.2.2](https://github.com/expo/expo)**
+- **[expo-video@3.0.14](https://github.com/expo/expo)**
     - name: expo-video
-    - version: 2.2.2
+    - version: 3.0.14
     - description: A cross-platform, performant video component for React Native and Expo with Web support
     - copyright: 
     - licenses: MIT
@@ -548,9 +558,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-video
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-video/README.md
-- **[expo-web-browser@14.2.0](https://github.com/expo/expo)**
+- **[expo-web-browser@15.0.9](https://github.com/expo/expo)**
     - name: expo-web-browser
-    - version: 14.2.0
+    - version: 15.0.9
     - description: Provides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.
     - copyright: 
     - licenses: MIT
@@ -558,9 +568,9 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-web-browser
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-web-browser/README.md
-- **[expo@53.0.24](https://github.com/expo/expo)**
+- **[expo@54.0.25](https://github.com/expo/expo)**
     - name: expo
-    - version: 53.0.24
+    - version: 54.0.25
     - description: The Expo SDK
     - copyright: 
     - licenses: MIT
@@ -728,9 +738,9 @@
     - publisher: opensource@apollographql.com
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-apollo
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-apollo/LICENSE
-- **[react-dom@19.0.0](https://github.com/facebook/react)**
+- **[react-dom@19.1.0](https://github.com/facebook/react)**
     - name: react-dom
-    - version: 19.0.0
+    - version: 19.1.0
     - description: React package for working with the DOM.
     - copyright: Copyright (c) Meta Platforms, Inc. and affiliates.
     - licenses: MIT
@@ -828,9 +838,9 @@
     - publisher: William Candillon
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-expo-image-cache
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-expo-image-cache/LICENSE
-- **[react-native-gesture-handler@2.24.0](https://github.com/software-mansion/react-native-gesture-handler)**
+- **[react-native-gesture-handler@2.28.0](https://github.com/software-mansion/react-native-gesture-handler)**
     - name: react-native-gesture-handler
-    - version: 2.24.0
+    - version: 2.28.0
     - description: Declarative API exposing native platform touch and gesture system to React Native
     - copyright: Copyright (c) 2016 Software Mansion <swmansion.com>
     - licenses: MIT
@@ -858,9 +868,9 @@
     - publisher: Farid Safi
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gifted-chat
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-gifted-chat/LICENSE
-- **[react-native-keyboard-controller@1.16.5](https://github.com/kirillzyusko/react-native-keyboard-controller)**
+- **[react-native-keyboard-controller@1.18.5](https://github.com/kirillzyusko/react-native-keyboard-controller)**
     - name: react-native-keyboard-controller
-    - version: 1.16.5
+    - version: 1.18.5
     - description: Keyboard manager which works in identical way on both iOS and Android
     - copyright: Copyright (c) 2021 Kiryl Ziusko
     - licenses: MIT
@@ -888,9 +898,9 @@
     - publisher: Venits
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-map-clustering
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-map-clustering/LICENSE
-- **[react-native-maps@1.24.5](https://github.com/react-native-maps/react-native-maps)**
+- **[react-native-maps@1.20.1](https://github.com/react-native-maps/react-native-maps)**
     - name: react-native-maps
-    - version: 1.24.5
+    - version: 1.20.1
     - description: React Native Mapview component for iOS + Android
     - copyright: Copyright (c) 2015 Airbnb
     - licenses: MIT
@@ -948,9 +958,9 @@
     - publisher: Expensify
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-qrcode-svg
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-qrcode-svg/LICENSE
-- **[react-native-reanimated@3.17.5](https://github.com/software-mansion/react-native-reanimated)**
+- **[react-native-reanimated@4.1.2](https://github.com/software-mansion/react-native-reanimated)**
     - name: react-native-reanimated
-    - version: 3.17.5
+    - version: 4.1.2
     - description: More powerful alternative to Animated library for React Native.
     - copyright: Copyright (c) 2016 Software Mansion <swmansion.com>
     - licenses: MIT
@@ -968,9 +978,9 @@
     - publisher: Meliorence
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-render-html
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-render-html/README.md
-- **[react-native-safe-area-context@5.4.0](https://github.com/th3rdwave/react-native-safe-area-context)**
+- **[react-native-safe-area-context@5.6.1](https://github.com/th3rdwave/react-native-safe-area-context)**
     - name: react-native-safe-area-context
-    - version: 5.4.0
+    - version: 5.6.1
     - description: A flexible way to handle safe area, also works on Android and web.
     - copyright: Copyright (c) 2019 Th3rd Wave
     - licenses: MIT
@@ -978,9 +988,9 @@
     - publisher: Janic Duplessis
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-safe-area-context
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-safe-area-context/LICENSE
-- **[react-native-screens@4.11.1](https://github.com/software-mansion/react-native-screens)**
+- **[react-native-screens@4.16.0](https://github.com/software-mansion/react-native-screens)**
     - name: react-native-screens
-    - version: 4.11.1
+    - version: 4.16.0
     - description: Native navigation primitives for your React Native app.
     - copyright: Copyright (c) 2018 Software Mansion <swmansion.com>
     - licenses: MIT
@@ -1018,9 +1028,9 @@
     - publisher: Krister Kari
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-svg-transformer
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-svg-transformer/LICENSE
-- **[react-native-svg@15.11.2](https://github.com/react-native-community/react-native-svg)**
+- **[react-native-svg@15.12.1](https://github.com/react-native-community/react-native-svg)**
     - name: react-native-svg
-    - version: 15.11.2
+    - version: 15.12.1
     - description: SVG library for react-native
     - copyright: Copyright (c) [2015-2016] [Horcrux]
     - licenses: MIT
@@ -1038,9 +1048,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-tab-view
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-tab-view/LICENSE
-- **[react-native-web@0.20.0](https://github.com/necolas/react-native-web)**
+- **[react-native-web@0.21.1](https://github.com/necolas/react-native-web)**
     - name: react-native-web
-    - version: 0.20.0
+    - version: 0.21.1
     - description: React Native for Web
     - copyright: Copyright (c) Nicolas Gallagher.. Copyright (c) Meta Platforms, Inc. and affiliates.
     - licenses: MIT
@@ -1048,9 +1058,9 @@
     - publisher: Nicolas Gallagher
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-web/LICENSE
-- **[react-native-webview@13.13.5](https://github.com/react-native-webview/react-native-webview)**
+- **[react-native-webview@13.15.0](https://github.com/react-native-webview/react-native-webview)**
     - name: react-native-webview
-    - version: 13.13.5
+    - version: 13.15.0
     - description: React Native WebView component for iOS, Android, macOS, and Windows
     - copyright: Copyright (c) 2015-present, Facebook, Inc.
     - licenses: MIT
@@ -1058,9 +1068,19 @@
     - publisher: Jamon Holmgren
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-webview
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-webview/LICENSE
-- **[react-native@0.79.6](https://github.com/facebook/react-native)**
+- **[react-native-worklets@0.5.1](https://github.com/software-mansion/react-native-reanimated)**
+    - name: react-native-worklets
+    - version: 0.5.1
+    - description: The React Native multithreading library
+    - copyright: Copyright (c) 2024 nobody. Permission is hereby granted, free of charge, to any person obtaining a copy. of this software and associated documentation files (the "Software"), to deal. in the Software without restriction, including without limitation the rights. to use, copy, modify, merge, publish, distribute, sublicense, and/or sell. copies of the Software, and to permit persons to whom the Software is. furnished to do so, subject to the following conditions:
+    - licenses: MIT
+    - repository: https://github.com/software-mansion/react-native-reanimated
+    - publisher: 
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-worklets
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-worklets/LICENSE
+- **[react-native@0.81.5](https://github.com/facebook/react-native)**
     - name: react-native
-    - version: 0.79.6
+    - version: 0.81.5
     - description: A framework for building native apps using React
     - copyright: Copyright (c) Meta Platforms, Inc. and affiliates.
     - licenses: MIT
@@ -1078,9 +1098,9 @@
     - publisher: tannerlinsley
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-query
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-query/LICENSE
-- **[react@19.0.0](https://github.com/facebook/react)**
+- **[react@19.1.0](https://github.com/facebook/react)**
     - name: react
-    - version: 19.0.0
+    - version: 19.1.0
     - description: React is a JavaScript library for building user interfaces.
     - copyright: Copyright (c) Meta Platforms, Inc. and affiliates.
     - licenses: MIT
