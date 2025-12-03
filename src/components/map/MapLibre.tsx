@@ -187,6 +187,8 @@ export const MapLibre = ({
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
   const shapeSourceRef = useRef<ShapeSourceRef>(null);
+  const mapPressTimeoutRef = useRef<any>(null);
+  const hasInitialFitRef = useRef(false);
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
 
@@ -194,6 +196,14 @@ export const MapLibre = ({
     latitude: 51.1657,
     longitude: 10.4515
   };
+
+  if (defaultAlternativePosition) {
+    initialRegion = {
+      ...initialRegion,
+      latitude: defaultAlternativePosition.coords?.latitude,
+      longitude: defaultAlternativePosition.coords?.longitude
+    };
+  }
 
   if (mapCenterPosition) {
     initialRegion = {
@@ -227,7 +237,7 @@ export const MapLibre = ({
   }
 
   useEffect(() => {
-    if (suppressAutoFitRef.current) {
+    if (suppressAutoFitRef.current || hasInitialFitRef.current) {
       return;
     }
 
@@ -249,7 +259,10 @@ export const MapLibre = ({
       )
     );
 
-    !selectedMarker && !isMarkerSelected && cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+    if (!selectedMarker && !isMarkerSelected) {
+      cameraRef.current?.fitBounds(ne, sw, 50, 1000);
+      hasInitialFitRef.current = true;
+    }
   }, [mapReady, loading, isMultipleMarkersMap, locations, selectedMarker, selectedPosition]);
 
   useEffect(() => {
@@ -331,7 +344,7 @@ export const MapLibre = ({
     }
 
     if (preserveZoomOnSelectedPosition) {
-      cameraRef.current?.flyTo([longitude, latitude], 800);
+      cameraRef.current?.flyTo([longitude, latitude], 1500);
       return;
     }
 
@@ -339,8 +352,8 @@ export const MapLibre = ({
     const zoomForSelection = Math.min(targetZoom, 20);
 
     cameraRef.current?.setCamera({
-      animationDuration: 800,
-      animationMode: 'flyTo',
+      animationDuration: 1500,
+      animationMode: 'easeTo',
       centerCoordinate: [longitude, latitude],
       zoomLevel: zoomForSelection
     });
@@ -386,7 +399,7 @@ export const MapLibre = ({
     );
 
     if (tappedSelectedFeature) {
-      clearSelection(true, 'map-press-selected-feature');
+      clearSelection(false, 'map-press-selected-feature');
       return;
     }
 
@@ -397,7 +410,7 @@ export const MapLibre = ({
       const dLat = Math.abs(selLat - tapLat);
       const dLng = Math.abs(selLng - tapLng);
       if (dLat < 0.0008 && dLng < 0.0008) {
-        clearSelection(true, 'map-press-proximity');
+        clearSelection(false, 'map-press-proximity');
         return;
       }
     }
@@ -406,12 +419,17 @@ export const MapLibre = ({
       return;
     }
 
-    if (setPinEnabled) {
-      handleMapPressToSetNewPin(event);
-    } else {
-      clearSelection(true, 'map-press-empty');
-      onMapPress?.(event);
-    }
+    if (mapPressTimeoutRef.current) clearTimeout(mapPressTimeoutRef.current);
+
+    mapPressTimeoutRef.current = setTimeout(() => {
+      if (setPinEnabled) {
+        handleMapPressToSetNewPin(event);
+      } else {
+        clearSelection(true, 'map-press-empty');
+        onMapPress?.(event);
+      }
+      mapPressTimeoutRef.current = null;
+    }, 50);
   };
 
   const selectedMarkerId = useMemo(
@@ -445,7 +463,21 @@ export const MapLibre = ({
   }, [selectedLocation]);
 
   const handleSourcePress = async (event: any) => {
+    if (mapPressTimeoutRef.current) {
+      clearTimeout(mapPressTimeoutRef.current);
+      mapPressTimeoutRef.current = null;
+    }
+
     const features = ((event?.features as any[]) ?? []).filter(Boolean);
+
+    // Check if the click was on the selected POI source
+    const selectedPoiFeature = features.find((item) => item?.sourceID === 'selected-poi');
+    if (selectedPoiFeature) {
+      // Clicking on already selected marker - deselect it
+      clearSelection(false, 'selected-poi-pressed');
+      return;
+    }
+
     const feature = features.find((item) => item?.sourceID !== 'selected-poi') ?? features[0];
 
     if (!feature) {
@@ -455,15 +487,16 @@ export const MapLibre = ({
     }
 
     if (feature.properties?.cluster) {
-      clearSelection(true, 'cluster-pressed');
+      clearSelection(false, 'cluster-pressed');
       const currentZoomLevel = await mapRef.current?.getZoom();
       const zoomForCluster = await shapeSourceRef.current?.getClusterExpansionZoom(feature);
       const safeCurrentZoom = currentZoomLevel ?? initialZoomLevel ?? 0;
       const baseZoom = zoomForCluster ?? safeCurrentZoom;
       const newZoomLevel = Math.min(Math.max(baseZoom, safeCurrentZoom + 1), 20);
 
+      onMarkerPress?.();
       cameraRef.current?.setCamera({
-        animationDuration: 800,
+        animationDuration: 1500,
         animationMode: 'easeTo',
         centerCoordinate: feature.geometry.coordinates,
         zoomLevel: newZoomLevel
@@ -473,14 +506,14 @@ export const MapLibre = ({
     }
 
     if (feature.properties?.id === selectedMarkerId) {
-      clearSelection(true, 'selected-marker-pressed');
+      clearSelection(false, 'selected-marker-pressed');
       return;
     }
 
     suppressAutoFitRef.current = false;
 
     cameraRef.current?.setCamera({
-      animationDuration: 800,
+      animationDuration: 1500,
       animationMode: 'easeTo',
       centerCoordinate: feature.geometry.coordinates
     });
@@ -497,6 +530,16 @@ export const MapLibre = ({
   const clusterRingInnerRadius = scaleCircleRadius(clusterBaseRadius, 1.4);
   const clusterRingMidRadius = scaleCircleRadius(clusterBaseRadius, 1.8);
   const clusterRingOuterRadius = scaleCircleRadius(clusterBaseRadius, 2.2);
+
+  const shape = featureCollection(
+    (clusteredLocations ?? [])
+      .filter((location) => !!location?.position?.latitude && !!location?.position?.longitude)
+      .map((location) =>
+        point([location.position.longitude, location.position.latitude], {
+          ...location
+        })
+      )
+  );
 
   return (
     <View style={[styles.container, style]}>
@@ -530,22 +573,12 @@ export const MapLibre = ({
 
         <Images images={markerImages} />
 
-        {!_isEmpty(layerStyles) && (
+        {!!shape && !_isEmpty(layerStyles) && (
           <>
             <ShapeSource
               id="pois"
               ref={shapeSourceRef}
-              shape={featureCollection(
-                (clusteredLocations ?? [])
-                  .filter(
-                    (location) => !!location?.position?.latitude && !!location?.position?.longitude
-                  )
-                  .map((location) =>
-                    point([location.position.longitude, location.position.latitude], {
-                      ...location
-                    })
-                  )
-              )}
+              shape={shape}
               onPress={handleSourcePress}
               cluster
               clusterRadius={clusterDistance || clusterRadius}
@@ -564,7 +597,7 @@ export const MapLibre = ({
 
               <SymbolLayer
                 id="single-icon"
-                filter={['!', ['has', 'point_count']]}
+                filter={['all', ['!', ['has', 'point_count']]]}
                 style={{
                   ...layerStyles.singleIcon,
                   iconImage: [
@@ -842,7 +875,7 @@ const styles = StyleSheet.create({
   calloutContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: normalize(150),
+    marginBottom: normalize(106),
     width: 'auto',
     zIndex: 9999999,
     ...Platform.select({

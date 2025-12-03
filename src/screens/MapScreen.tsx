@@ -16,7 +16,7 @@ export const MapScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
-  const { loading } = useMapSettings();
+  const { data: mapSettings = {}, loading } = useMapSettings();
 
   /* the next lines has been added for augmented reality feature */
   const { data } = route?.params?.augmentedRealityData ?? [];
@@ -41,7 +41,9 @@ export const MapScreen = () => {
         {...{
           geometryTourData,
           locations,
+          mapCenterPosition: mapSettings?.mapCenterPosition,
           mapStyle: styles.map,
+          minZoom: mapSettings?.zoomLevel?.minZoom,
           onMarkerPress: isAugmentedReality
             ? setModelId
             : onMarkerPress || setSelectedPointOfInterest,

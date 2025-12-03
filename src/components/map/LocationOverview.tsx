@@ -108,12 +108,12 @@ export const LocationOverview = ({
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
 
   const updateSelectedPosition = useCallback(() => {
-    if (alternativePosition) {
+    if (alternativePosition?.coords?.latitude && alternativePosition?.coords?.longitude) {
       setSelectedPosition({
         latitude: alternativePosition.coords.latitude,
         longitude: alternativePosition.coords.longitude
       });
-    } else if (defaultAlternativePosition) {
+    } else if (defaultAlternativePosition?.coords?.lat && defaultAlternativePosition?.coords?.lng) {
       setSelectedPosition({
         latitude: defaultAlternativePosition.coords.lat,
         longitude: defaultAlternativePosition.coords.lng
@@ -232,7 +232,7 @@ export const LocationOverview = ({
         />
       )}
 
-      {!!selectedPointOfInterest && !detailsLoading && (
+      {!!selectedPointOfInterest && !detailsLoading && !!item && (
         <View
           style={[
             styles.listItemContainer,
