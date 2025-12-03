@@ -208,7 +208,7 @@ export const MultiImageSelector = ({
 
                 <Image
                   source={{ uri: item.uri }}
-                  childrenContainerStyle={styles.sueImage}
+                  style={styles.sueImage}
                   borderRadius={normalize(4)}
                 />
               </View>
@@ -298,7 +298,7 @@ export const MultiImageSelector = ({
               {selectorType === IMAGE_SELECTOR_TYPES.VOLUNTEER && (
                 <Image
                   borderRadius={normalize(4)}
-                  childrenContainerStyle={styles.volunteerImage}
+                  style={styles.volunteerImage}
                   source={imageSource}
                 />
               )}
