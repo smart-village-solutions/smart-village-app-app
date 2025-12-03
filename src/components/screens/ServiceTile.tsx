@@ -39,24 +39,24 @@ export const ServiceTile = ({
   draggableId,
   hasDiagonalGradientBackground = false,
   isEditMode = false,
-  isLastRow = false,
   item,
   onToggleVisibility,
   serviceTiles,
+  shouldAddMargin = false,
   tileSizeFactor = 1
 }: {
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
   isEditMode?: boolean;
-  isLastRow?: boolean;
   item: TServiceTile;
   onToggleVisibility: (
     toggleableId: string,
     isVisible: boolean,
     setIsVisible: (isVisible: boolean) => void
   ) => void;
-  tileSizeFactor?: number;
   serviceTiles?: any;
+  shouldAddMargin?: boolean;
+  tileSizeFactor?: number;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -100,7 +100,7 @@ export const ServiceTile = ({
       style={[
         normalizedTileStyle,
         isEditMode && styles.editModeServiceBox,
-        isLastRow && styles.marginLeft
+        shouldAddMargin && styles.marginLeft
       ]}
     >
       <TouchableOpacity

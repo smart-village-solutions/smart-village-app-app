@@ -80,21 +80,21 @@ export const Service = ({
     [isEditMode, hasDiagonalGradientBackground]
   );
   const renderItem = useCallback(
-    (item: TServiceTile, index: number, isLastRow?: boolean) => (
+    (item: TServiceTile, index: number, shouldAddMargin?: boolean) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
-        isLastRow={isLastRow}
         item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
+        shouldAddMargin={shouldAddMargin}
         tileSizeFactor={tileSizeFactor}
       />
     ),
-    [isEditMode, hasDiagonalGradientBackground]
+    [isEditMode, hasDiagonalGradientBackground, onToggleVisibility, serviceTiles, tileSizeFactor]
   );
   const toggler = isPersonalizable && (
     <View style={styles.toggler}>
@@ -134,6 +134,8 @@ export const Service = ({
         const isIncompleteRow = row.length < itemsPerRow;
         const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
         const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
+        // marginLeft add only if it's the last row and there is more than one item
+        const shouldAddMargin = isLastAndIncompleteRow && row.length > 1;
 
         return (
           <WrapperWrap
@@ -141,7 +143,7 @@ export const Service = ({
             center={isLastAndIncompleteRow}
             spaceBetween={!isLastAndIncompleteRow}
           >
-            {row.map((item, index) => renderItem(item, index, isLastAndIncompleteRow))}
+            {row.map((item, index) => renderItem(item, index, shouldAddMargin))}
           </WrapperWrap>
         );
       })}
