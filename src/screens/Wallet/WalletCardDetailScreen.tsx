@@ -23,6 +23,7 @@ import {
   LoadingSpinner,
   Modal,
   RegularText,
+  Touchable,
   WalletTransactionList,
   Wrapper,
   WrapperRow,
@@ -41,7 +42,7 @@ const ShareableCard = ({
 }: {
   apiConnection: { qrEndpoint: string };
   cardNumber: string;
-  pinCode: string;
+  pinCode?: string;
 }) => {
   return (
     <Wrapper itemsCenter>
@@ -58,17 +59,20 @@ const ShareableCard = ({
           <BoldText small>{cardNumber}</BoldText>
         </WrapperRow>
 
-        <WrapperRow>
-          <RegularText center small>
-            {texts.wallet.detail.pin}:{' '}
-          </RegularText>
-          <BoldText small>{pinCode}</BoldText>
-        </WrapperRow>
+        {!!pinCode && (
+          <WrapperRow>
+            <RegularText center small>
+              {texts.wallet.detail.pin}:{' '}
+            </RegularText>
+            <BoldText small>{pinCode}</BoldText>
+          </WrapperRow>
+        )}
       </Wrapper>
     </Wrapper>
   );
 };
 
+/* eslint-disable complexity */
 export const WalletCardDetailScreen = ({
   navigation,
   route
@@ -86,6 +90,7 @@ export const WalletCardDetailScreen = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFullScreenQR, setIsFullScreenQR] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isPinVisible, setIsPinVisible] = useState(false);
 
   const viewShotRef = useRef();
 
@@ -202,7 +207,19 @@ export const WalletCardDetailScreen = ({
                   <WrapperVertical noPaddingBottom>
                     <WrapperRow spaceBetween itemsCenter>
                       <BoldText small>{texts.wallet.detail.pin}</BoldText>
-                      <BoldText small>{pinCode}</BoldText>
+
+                      <WrapperRow itemsCenter>
+                        <BoldText small>{isPinVisible ? pinCode : '***'}</BoldText>
+                        <Touchable
+                          onPress={() => setIsPinVisible(!isPinVisible)}
+                          style={{ paddingLeft: normalize(8) }}
+                        >
+                          <Icon.NamedIcon
+                            name={isPinVisible ? 'eye-off' : 'eye'}
+                            color={colors.darkText}
+                          />
+                        </Touchable>
+                      </WrapperRow>
                     </WrapperRow>
                   </WrapperVertical>
                 )}
@@ -313,7 +330,9 @@ export const WalletCardDetailScreen = ({
         onModalVisible={() => setIsFullScreenQR(false)}
         overlayStyle={styles.qrOverlayContainer}
       >
-        <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} pinCode={pinCode} />
+        <Wrapper>
+          <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} />
+        </Wrapper>
       </Modal>
 
       {isCapturing && (
@@ -330,6 +349,7 @@ export const WalletCardDetailScreen = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   hiddenCaptureContainer: {

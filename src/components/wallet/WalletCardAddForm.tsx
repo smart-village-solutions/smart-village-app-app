@@ -19,7 +19,6 @@ type TInputsInformation = {
   cardNumberInputTitle?: string;
   cardPinInputPlaceholder?: string;
   cardPinInputTitle?: string;
-  isPinVisible?: boolean;
   maxCardNumberLength?: number;
   maxPinLength?: number;
 };
@@ -48,7 +47,6 @@ export const WalletCardAddForm = ({
     cardNumberInputTitle = texts.wallet.add.inputs.cardNumberInputTitle,
     cardPinInputPlaceholder = texts.wallet.add.inputs.cardPinInputPlaceholder,
     cardPinInputTitle = texts.wallet.add.inputs.cardPinInputTitle,
-    isPinVisible = false,
     maxCardNumberLength = 12,
     maxPinLength = 3
   } = inputsInformation || {};
@@ -69,10 +67,10 @@ export const WalletCardAddForm = ({
   const onSubmit = async (cardData: CardFormData) => {
     const cardInfo = {
       apiConnection,
-      iconBackgroundColor: cardInformation?.iconBackgroundColor,
       cardName: cardData.cardName,
       cardNumber: cardData.cardNumber,
       description: cardInformation?.description,
+      iconBackgroundColor: cardInformation?.iconBackgroundColor,
       iconColor: cardInformation?.iconColor,
       iconName: cardInformation?.iconName,
       pinCode: cardData.pinCode,
@@ -151,7 +149,7 @@ export const WalletCardAddForm = ({
               message: texts.wallet.add.inputs.errors.cardPinRequired(cardPinInputTitle)
             }
           }}
-          secureTextEntry={!isPinVisible}
+          secureTextEntry
         />
       </Wrapper>
 
