@@ -1,10 +1,13 @@
 import * as SecureStore from 'expo-secure-store';
-import { Alert } from 'react-native';
 
-import { texts } from '../../config';
 import { TCard } from '../../types';
 
 const WALLET_STORAGE_KEY = 'WALLET_STORAGE_KEY';
+
+export enum ErrorSavingCard {
+  DUPLICATE_CARD = 'DUPLICATE_CARD',
+  IS_NOT_VALID = 'CARD_IS_NOT_VALID'
+}
 
 export const getSavedCards = async (): Promise<TCard[]> => {
   let stored = null;
@@ -31,7 +34,7 @@ export const saveCard = async (card: TCard): Promise<void> => {
     const isDuplicate = existingCards.some((c) => c.cardNumber === card.cardNumber);
 
     if (isDuplicate) {
-      throw new Error('Duplicate card');
+      throw new Error(ErrorSavingCard.DUPLICATE_CARD);
     }
 
     const updatedCards = [...existingCards, card];

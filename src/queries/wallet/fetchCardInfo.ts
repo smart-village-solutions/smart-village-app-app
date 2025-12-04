@@ -1,3 +1,4 @@
+import { ErrorSavingCard } from '../../helpers';
 import { TApiConnection } from '../../types';
 
 export const fetchCardInfo = async ({
@@ -30,7 +31,7 @@ export const fetchCardInfo = async ({
 
   if (!response.ok) {
     // Throw an error with status info for upstream error handling
-    throw new Error(`Failed to fetch card info: ${response.status} ${response.statusText}`);
+    throw new Error(ErrorSavingCard.IS_NOT_VALID);
   }
 
   return response.json();
