@@ -15,7 +15,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
-import { deleteAllCards, getSavedCards } from '../../helpers';
+import { getSavedCards } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, TCard } from '../../types';
 
@@ -31,7 +31,6 @@ const footer = ({
   navigation: StackNavigationProp<Record<string, any>>;
 }) => {
   return (
-    // TODO: Replace console.warn with actual functionality
     <>
       <Button
         title={buttonText}
@@ -121,7 +120,7 @@ export const WalletHomeScreen = () => {
     params: { card },
     routeName: ScreenName.WalletCardDetail,
     subtitle: card.description,
-    title: card.cardName || card.type
+    title: card.cardName || card.title
   }));
 
   return (

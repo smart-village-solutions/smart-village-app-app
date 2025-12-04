@@ -12,8 +12,13 @@ export type TCard = {
   routeName?: string;
   subtitle: string;
   title: string;
-  type: string;
+  type: ECardType;
 };
+
+export enum ECardType {
+  BONUS = 'bonus',
+  COUPON = 'coupon'
+}
 
 export type TApiConnection = {
   endpoint: string;
