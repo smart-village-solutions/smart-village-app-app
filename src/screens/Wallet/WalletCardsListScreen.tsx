@@ -43,6 +43,7 @@ export const WalletCardsListScreen = () => {
       iconBackgroundColor = colors.lighterPrimaryRgba,
       iconColor = colors.primary,
       iconName = 'credit-card',
+      title = '',
       type = ''
     } = card;
 
@@ -55,7 +56,8 @@ export const WalletCardsListScreen = () => {
       params: { card },
       routeName: ScreenName.WalletCardAdd,
       subtitle: description,
-      title: type
+      title,
+      type
     };
   });
 
