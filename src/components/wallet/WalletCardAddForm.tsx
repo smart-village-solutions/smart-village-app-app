@@ -116,11 +116,14 @@ export const WalletCardAddForm = ({
           rules={{
             minLength: {
               value: maxCardNumberLength,
-              message: texts.wallet.add.inputs.errors.maxLengthExceeded(maxCardNumberLength)
+              message: texts.wallet.add.inputs.errors.maxLengthExceeded(
+                cardNumberInputTitle,
+                maxCardNumberLength
+              )
             },
             required: {
               value: true,
-              message: texts.wallet.add.inputs.errors.cardNumberRequired
+              message: texts.wallet.add.inputs.errors.cardNumberRequired(cardNumberInputTitle)
             }
           }}
         />
@@ -138,11 +141,14 @@ export const WalletCardAddForm = ({
           rules={{
             minLength: {
               value: maxPinLength,
-              message: texts.wallet.add.inputs.errors.maxLengthExceeded(maxPinLength)
+              message: texts.wallet.add.inputs.errors.maxLengthExceeded(
+                cardPinInputTitle,
+                maxPinLength
+              )
             },
             required: {
               value: true,
-              message: texts.wallet.add.inputs.errors.cardPinRequired
+              message: texts.wallet.add.inputs.errors.cardPinRequired(cardPinInputTitle)
             }
           }}
           secureTextEntry={!isPinVisible}
