@@ -1723,6 +1723,8 @@ export const texts = {
       pin: 'PIN',
       shareErrorMessage:
         'Beim Teilen der Kartendaten ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      togglePinShow: 'PIN anzeigen',
+      togglePinHide: 'PIN verbergen',
       updateBalance: 'Guthaben aktualisieren'
     },
     home: {
