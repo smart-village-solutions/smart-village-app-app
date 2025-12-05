@@ -19,7 +19,6 @@ import {
   storeVoucherAuthToken,
   storeVoucherMemberId,
   storeVoucherMemberLoginInfo,
-  voucherAuthKey,
   voucherMemberLoginInfo
 } from '../../helpers/voucherHelper';
 import { useStaticContent, useVoucher } from '../../hooks';
@@ -72,35 +71,6 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
 
     // NOTE: at the moment we don't need account check as we log in with a specific profile key
     // accountCheck();
-  }, []);
-
-  // this effect is temporary. it can be removed when the real login section is completed
-  useEffect(() => {
-    const login = async () => {
-      const key = await voucherAuthKey();
-
-      await mutateLogIn(
-        { key, secret: '-' },
-        {
-          onSuccess: (responseData) => {
-            if (!responseData?.member) {
-              storeVoucherAuthToken();
-              storeVoucherMemberId();
-              storeVoucherMemberLoginInfo();
-              refresh();
-              return;
-            }
-
-            storeVoucherAuthToken(responseData.member.authentication_token);
-            storeVoucherMemberId(responseData.member.id);
-            storeVoucherMemberLoginInfo(JSON.stringify({ key, secret: '-' }));
-            refresh();
-          }
-        }
-      );
-    };
-
-    login();
   }, []);
 
   const refreshHome = useCallback(async () => {
