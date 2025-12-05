@@ -135,6 +135,7 @@
       ],
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
+      "@rnrepo/expo-config-plugin",
       "expo-asset",
       "expo-font",
       "expo-image-picker",
