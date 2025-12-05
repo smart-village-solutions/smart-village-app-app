@@ -1080,6 +1080,7 @@ export const texts = {
     favorites: 'Favoriten',
     feedback: 'Feedback',
     home: appJson.expo.name,
+    map: 'Karte',
     mapView: 'Kartenansicht',
     myCity: 'Mein Ort',
     profile: {

@@ -43,6 +43,7 @@ export enum ScreenName {
   Html = 'Html',
   Index = 'Index',
   Lunch = 'Lunch',
+  Map = 'Map',
   MapView = 'MapView',
   MultiButton = 'MultiButton',
   NestedInfo = 'NestedInfo',

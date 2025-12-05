@@ -13,7 +13,7 @@ import {
   BoldText,
   Image,
   LoadingContainer,
-  Map,
+  MapLibre,
   RegularText,
   SafeAreaViewFlex,
   SueImageFallback,
@@ -52,29 +52,18 @@ type ItemProps = {
   title: string;
 };
 
-export const mapToMapMarkers = (
-  items: ItemProps[],
-  activeBackgroundColors: Record<string, string | undefined>,
-  activeIconColors: Record<string, string | undefined>,
-  backgroundColors: Record<string, string | undefined>,
-  iconColors: Record<string, string | undefined>
-): MapMarker[] | undefined =>
+export const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
   items
     ?.filter((item) => item.lat && item.long)
     ?.map((item: ItemProps) => ({
       ...item,
-      activeBackgroundColor: activeBackgroundColors?.[item.status],
-      iconBackgroundColor: backgroundColors?.[item.status],
-      activeIconColor: activeIconColors?.[item.status],
-      iconColor: iconColors?.[item.status],
-      iconBorderColor: iconColors?.[item.status],
       iconName: `Sue${_upperFirst(item.iconName)}`,
+      activeIconName: `Sue${_upperFirst(item.iconName)}Active`,
       id: item.serviceRequestId,
       position: {
         latitude: item.lat,
         longitude: item.long
-      },
-      title: item.title
+      }
     }));
 
 type Props = {
@@ -90,8 +79,6 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
   const { locationService } = settings;
-  const { sueStatus = {} } = appDesignSystem;
-  const { mapPinColors = {} } = sueStatus;
   const { geoMap = {} } = sueConfig;
   const systemPermission = useSystemPermission();
   const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
@@ -99,22 +86,10 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
 
-  const {
-    activeBackgroundColors = {},
-    activeIconColors = {},
-    backgroundColors = {},
-    iconColors = {}
-  } = mapPinColors;
-
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
   };
   const [selectedRequestId, setSelectedRequestId] = useState<string>();
-
-  const [currentPosition, setCurrentPosition] = useState<
-    Location.LocationObjectCoords | undefined
-  >();
-  const [updateRegion, setUpdatedRegion] = useState<boolean>(false);
 
   const { data, isLoading } = useQuery([QUERY_TYPES.SUE.LOCATION, queryVariables], () =>
     getQuery(QUERY_TYPES.SUE.LOCATION)(queryVariables)
@@ -125,11 +100,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
       mapToMapMarkers(
         parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
           appDesignSystem
-        }),
-        activeBackgroundColors,
-        activeIconColors,
-        backgroundColors,
-        iconColors
+        })
       ),
     [data]
   );
@@ -169,21 +140,14 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <Map
+      <MapLibre
         clusterDistance={geoMap?.clusterDistance}
-        clusteringEnabled
+        clusterThreshold={geoMap?.clusterThreshold}
         isMultipleMarkersMap
         isMyLocationButtonVisible={!!locationService}
         locations={mapMarkers}
         mapStyle={styles.map}
-        onMarkerPress={(id) => {
-          // reset selected request id to undefined to avoid rendering bug with images in overlay
-          setSelectedRequestId(undefined);
-
-          setTimeout(() => {
-            setSelectedRequestId(id);
-          }, 100);
-        }}
+        onMarkerPress={setSelectedRequestId}
         onMyLocationButtonPress={() => {
           const location = position || lastKnownPosition;
 
@@ -192,24 +156,8 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
             locationServiceEnabled,
             navigation
           });
-
-          setUpdatedRegion(true);
-          setCurrentPosition(location?.coords);
-
-          setTimeout(() => {
-            setUpdatedRegion(false);
-          }, 100);
         }}
         selectedMarker={selectedRequestId}
-        updatedRegion={
-          !!currentPosition && updateRegion
-            ? {
-                ...currentPosition,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-              }
-            : undefined
-        }
       />
       {!detailsLoading && !!selectedRequestId && !!item && (
         <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
