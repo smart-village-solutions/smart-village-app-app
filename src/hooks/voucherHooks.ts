@@ -1,12 +1,23 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
+import { useMutation as RQuseMutation } from 'react-query';
 
 import { NetworkContext } from '../NetworkProvider';
 import { addToStore, readFromStore } from '../helpers';
-import { VOUCHER_TRANSACTIONS, voucherAuthToken, voucherMemberId } from '../helpers/voucherHelper';
+import {
+  storeVoucherAuthToken,
+  storeVoucherMemberId,
+  storeVoucherMemberLoginInfo,
+  VOUCHER_TRANSACTIONS,
+  voucherAuthKey,
+  voucherAuthToken,
+  voucherMemberId
+} from '../helpers/voucherHelper';
+import { profileLogIn } from '../queries/profile';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../queries/vouchers';
 
 export const useVoucher = (): {
+  autoLogin: () => Promise<void>;
   refresh: () => Promise<void>;
   isLoading: boolean;
   isError: boolean;
@@ -18,6 +29,8 @@ export const useVoucher = (): {
   const [isError, setIsError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [memberId, setMemberId] = useState<string>();
+
+  const { mutateAsync: mutateLogIn } = RQuseMutation(profileLogIn);
 
   const logInCallback = useCallback(async () => {
     setIsError(false);
@@ -36,11 +49,30 @@ export const useVoucher = (): {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
+  const autoLogin = useCallback(async () => {
+    const key = await voucherAuthKey();
+    const result = await mutateLogIn({ key, secret: '-' });
+
+    if (!result?.member) {
+      storeVoucherAuthToken();
+      storeVoucherMemberId();
+      storeVoucherMemberLoginInfo();
+      logInCallback();
+      return;
+    }
+
+    storeVoucherAuthToken(result.member.authentication_token);
+    storeVoucherMemberId(result.member.id);
+    storeVoucherMemberLoginInfo(JSON.stringify({ key, secret: '-' }));
     logInCallback();
-  }, [isConnected, logInCallback]);
+  }, [mutateLogIn]);
+
+  useEffect(() => {
+    isConnected && autoLogin();
+  }, [isConnected, autoLogin]);
 
   return {
+    autoLogin,
     refresh: logInCallback,
     isLoading,
     isError,
@@ -85,7 +117,7 @@ export const useRedeemLocalVouchers = () => {
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [redeemQuotaOfVoucher]);
 
   useEffect(() => {
     if (isConnected) {

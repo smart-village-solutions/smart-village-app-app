@@ -5,7 +5,7 @@ import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
-import { Icon, colors, normalize, texts } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import { VOUCHER_DEVICE_TOKEN, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
 import { useVoucher } from '../../hooks';
@@ -29,7 +29,7 @@ export const VoucherRedeem = ({
   quota: TQuota;
   voucherId: string;
 }) => {
-  const { isLoggedIn, memberId } = useVoucher();
+  const { autoLogin, isLoggedIn, memberId } = useVoucher();
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
   const [isRedeemingVoucher, setIsRedeemingVoucher] = useState(false);
@@ -108,6 +108,7 @@ export const VoucherRedeem = ({
     }
 
     try {
+      await autoLogin();
       await redeemQuotaOfVoucher({
         variables: {
           deviceToken,
