@@ -1,9 +1,11 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
@@ -24,11 +26,9 @@ import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
-import { Map } from '../../map';
-import { getLocationMarker } from '../../settings';
+import { MapLibre } from '../../map';
 
 const { a11yLabel, INPUT_KEYS } = consts;
-export const SELECTED_MARKER_ID = 'selectedMarkerId';
 
 export const locationServiceEnabledAlert = ({
   currentPosition,
@@ -81,24 +81,28 @@ export const SueReportLocation = ({
   configuration,
   control,
   errorMessage,
+  isFullscreenMap,
   requiredInputs,
   selectedPosition,
+  setIsFullscreenMap,
   setSelectedPosition,
   setUpdateRegionFromImage,
-  setValue,
-  updateRegionFromImage
+  setValue
 }: {
   areaServiceData?: { postalCodes?: string[] };
   configuration: {
     geoMap: {
       clusterDistance: number;
+      clusterThreshold: number;
     };
   };
   control: any;
   errorMessage: string;
   getValues: UseFormGetValues<TValues>;
+  isFullscreenMap: boolean;
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
+  setIsFullscreenMap: (value: boolean) => void;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
@@ -124,6 +128,7 @@ export const SueReportLocation = ({
   const [address, setAddress] = useState(
     {} as { street: string; houseNumber: string; postalCode: string; city: string }
   );
+  const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
   const { position } = usePosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled
@@ -133,18 +138,13 @@ export const SueReportLocation = ({
   );
   const currentPosition = position || lastKnownPosition;
 
-  const [updatedRegion, setUpdatedRegion] = useState(false);
-
-  useEffect(() => {
-    if (updateRegionFromImage) {
-      setUpdatedRegion(true);
-    }
-  }, [selectedPosition, updateRegionFromImage]);
-
   const streetInputRef = useRef();
   const houseNumberInputRef = useRef();
   const postalCodeInputRef = useRef();
   const cityInputRef = useRef();
+
+  const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   const queryVariables = {
     start_date: '1900-01-01T00:00:00+01:00',
@@ -186,7 +186,6 @@ export const SueReportLocation = ({
       const longitude = data?.[0]?.lon;
 
       if (latitude && longitude) {
-        setUpdatedRegion(true);
         setSelectedPosition({ latitude: Number(latitude), longitude: Number(longitude) });
       }
     } catch (error) {
@@ -198,64 +197,42 @@ export const SueReportLocation = ({
     geocode();
   }, [address]);
 
-  const handleGeocode = async (position: { latitude: number; longitude: number }) =>
-    await reverseGeocode({
-      areaServiceData,
-      errorMessage,
-      position,
-      setValue
-    });
-
   if (!systemPermission) {
     return <LoadingSpinner loading />;
   }
 
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
-  const baseLocationMarker = {
-    iconName: 'location'
-  };
-
-  let locations = mapMarkers as MapMarker[];
-  let mapCenterPosition = {} as { latitude: number; longitude: number };
-
-  if (selectedPosition) {
-    locations = [
-      ...mapMarkers,
-      { ...baseLocationMarker, position: selectedPosition, id: SELECTED_MARKER_ID }
-    ];
-  }
-
-  if (alternativePosition) {
-    mapCenterPosition = getLocationMarker(alternativePosition).position;
-  } else if (defaultAlternativePosition) {
-    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
-  }
+  const locations = mapMarkers as MapMarker[];
 
   if (isLoading) {
     return <LoadingSpinner loading />;
   }
 
-  const onMapPress = async ({
-    nativeEvent
-  }: {
-    nativeEvent: { action: string; coordinate: Location.LocationObjectCoords };
-  }) => {
-    if (nativeEvent.action !== 'marker-press' && nativeEvent.action !== 'callout-inside-press') {
-      setSelectedPosition(nativeEvent.coordinate);
-      setUpdatedRegion(false);
-      setUpdateRegionFromImage(false);
+  const onMapPress = ({ geometry }: { geometry: { coordinates: number[] } }) => {
+    const position = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
+    setSelectedPosition(position);
+    setUpdateRegionFromImage(false);
 
-      try {
-        await handleGeocode(nativeEvent.coordinate);
-      } catch (error) {
+    return reverseGeocode({
+      areaServiceData,
+      errorMessage,
+      position,
+      setValue
+    })
+      .then(() => {
+        return { isLocationSelectable: true };
+      })
+      .catch((error) => {
         setSelectedPosition(undefined);
-        Alert.alert(texts.sue.report.alerts.hint, error.message);
-        return { error: error.message };
-      }
-    }
+        Alert.alert(texts.sue.report.alerts.hint, error?.message);
+        return { isLocationSelectable: false };
+      });
   };
 
-  const onMyLocationButtonPress = async ({ isFullScreenMap = false }) => {
+  const onMyLocationButtonPress = async ({
+    isFullScreenMap = false
+  }: {
+    isFullScreenMap?: boolean;
+  }) => {
     if (!isFullScreenMap) {
       Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
         {
@@ -270,80 +247,58 @@ export const SueReportLocation = ({
               navigation
             });
 
-            if (currentPosition) {
-              setSelectedPosition(currentPosition.coords);
-              setUpdatedRegion(true);
-              setUpdateRegionFromImage(false);
-
-              try {
-                await handleGeocode(currentPosition.coords);
-              } catch (error) {
-                setSelectedPosition(undefined);
-                Alert.alert(texts.sue.report.alerts.hint, error.message);
-              }
-            }
+            !!currentPosition &&
+              onMapPress({
+                geometry: {
+                  coordinates: [currentPosition.coords.longitude, currentPosition.coords.latitude]
+                }
+              });
           }
         }
       ]);
     } else {
-      if (currentPosition) {
-        setSelectedPosition(currentPosition.coords);
-        setUpdatedRegion(true);
-        setUpdateRegionFromImage(false);
-
-        try {
-          await handleGeocode(currentPosition.coords);
-        } catch (error) {
-          setSelectedPosition(undefined);
-          Alert.alert(texts.sue.report.alerts.hint, error.message);
-        }
-      }
+      !!currentPosition &&
+        onMapPress({
+          geometry: {
+            coordinates: [currentPosition.coords.longitude, currentPosition.coords.latitude]
+          }
+        });
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isFullscreenMap && styles.noPaddingTop]}>
       <WrapperHorizontal>
-        <Map
+        <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
-          clusteringEnabled
-          isMaximizeButtonVisible
+          clusterThreshold={configuration.geoMap?.clusterThreshold}
+          isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
-          mapCenterPosition={mapCenterPosition}
-          mapStyle={styles.map}
-          onMyLocationButtonPress={onMyLocationButtonPress}
+          mapStyle={[
+            styles.map,
+            isFullscreenMap && styles.fullscreenMap,
+            isFullscreenMap && {
+              height: device.height - safeAreaBottom - safeAreaTop - bottomTabBarHeight
+            }
+          ]}
           onMapPress={onMapPress}
-          onMaximizeButtonPress={() =>
-            navigation.navigate(ScreenName.SueReportMapView, {
-              calloutTextEnabled: true,
-              clusteringEnabled: true,
-              selectedMarker: selectedPosition ? SELECTED_MARKER_ID : undefined,
-              currentPosition,
-              isMyLocationButtonVisible: !!locationService,
-              locations,
-              mapCenterPosition: selectedPosition || mapCenterPosition,
-              onMapPress,
-              onMyLocationButtonPress,
-              selectedPosition,
-              showsUserLocation: true
-            })
-          }
-          selectedMarker={selectedPosition ? SELECTED_MARKER_ID : undefined}
-          updatedRegion={
-            !!selectedPosition && (updatedRegion || updateRegionFromImage)
-              ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-              : undefined
-          }
+          onMarkerPress={setSelectedPointOfInterest}
+          onMyLocationButtonPress={onMyLocationButtonPress}
+          onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}
+          selectedMarker={selectedPointOfInterest}
+          selectedPosition={selectedPosition}
+          setPinEnabled
+          preserveZoomOnSelectedPosition
         />
       </WrapperHorizontal>
 
-      <Wrapper>
+      <Wrapper style={[isFullscreenMap && styles.wrapperHidden]}>
         <RegularText small>{texts.sue.report.mapHint}</RegularText>
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.STREET} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.STREET) ? a11yLabel.required : ''
@@ -363,7 +318,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.houseNumber} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.HOUSE_NUMBER) ? a11yLabel.required : ''
@@ -383,7 +338,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.postalCode} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.POSTAL_CODE) ? a11yLabel.required : ''
@@ -405,7 +360,7 @@ export const SueReportLocation = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
         <Input
           accessibilityLabel={`${texts.sue.report.city} ${
             requiredInputs?.includes(INPUT_KEYS.SUE.CITY) ? a11yLabel.required : ''
@@ -430,10 +385,21 @@ export const SueReportLocation = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: normalize(14),
+    paddingTop: normalize(16),
     width: '100%'
   },
+  fullscreenMap: {
+    marginLeft: 0,
+    width: device.width
+  },
   map: {
-    width: device.width - 2 * normalize(14)
+    height: normalize(300),
+    width: device.width - 2 * normalize(16)
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  wrapperHidden: {
+    display: 'none'
   }
 });

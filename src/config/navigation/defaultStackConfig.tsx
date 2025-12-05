@@ -36,7 +36,7 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
-  MapViewScreen,
+  MapScreen,
   MultiButtonScreen,
   NestedInfoScreen,
   NoticeboardFormScreen,
@@ -65,7 +65,6 @@ import {
   SueHomeScreen,
   SueListScreen,
   SueMapScreen,
-  SueMapViewScreen,
   SueReportScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -333,9 +332,15 @@ export const defaultStackConfig = ({
       screenComponent: LunchScreen
     },
     {
+      initialParams: initialParams || { title: texts.screenTitles.map },
+      routeName: ScreenName.Map,
+      screenComponent: MapScreen
+    },
+    {
+      // NOTE: fallback, if the route is given in some static content
       initialParams: initialParams || { title: texts.screenTitles.mapView },
       routeName: ScreenName.MapView,
-      screenComponent: MapViewScreen
+      screenComponent: MapScreen
     },
     {
       initialParams,
@@ -518,7 +523,7 @@ export const defaultStackConfig = ({
     {
       initialParams: initialParams || { title: texts.screenTitles.sue.mapView },
       routeName: ScreenName.SueReportMapView,
-      screenComponent: SueMapViewScreen
+      screenComponent: SueMapScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.survey },

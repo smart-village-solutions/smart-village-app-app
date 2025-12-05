@@ -1,8 +1,9 @@
+import { LocationObjectCoords } from 'expo-location';
 import { useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
-import { TValues } from '../screens';
 import appJson from '../../app.json';
+import { TValues } from '../screens';
 
 export const useReverseGeocode = () => {
   return useCallback(
@@ -14,7 +15,7 @@ export const useReverseGeocode = () => {
     }: {
       areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
-      position: { latitude: number; longitude: number };
+      position: LocationObjectCoords;
       setValue: UseFormSetValue<TValues>;
     }) => {
       const { latitude, longitude } = position;
