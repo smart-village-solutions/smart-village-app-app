@@ -53,14 +53,24 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const showFilter = route.params?.showFilter ?? true;
   const imageUri = route?.params?.headerImage;
 
+  const requestVariables = useMemo(() => {
+    const variables = { ...queryVariables };
+
+    if (query === QUERY_TYPES.VOUCHERS) {
+      variables.memberId = memberId;
+    }
+
+    return variables;
+  }, [query, memberId, queryVariables]);
+
   const {
     data,
     isLoading: loading,
     refetch
-  } = RQuseQuery([query, { memberId, ...queryVariables }], async () => {
+  } = RQuseQuery([query, requestVariables], async () => {
     const client = await ReactQueryClient();
 
-    return await client.request(getQuery(query), { memberId, ...queryVariables });
+    return await client.request(getQuery(query), requestVariables);
   });
 
   const { data: vouchersCategories } = useQuery(getQuery(QUERY_TYPES.VOUCHERS_CATEGORIES), {
