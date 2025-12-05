@@ -20,7 +20,6 @@ export const useVoucher = (): {
   const [memberId, setMemberId] = useState<string>();
 
   const logInCallback = useCallback(async () => {
-    setIsLoading(true);
     setIsError(false);
 
     try {
