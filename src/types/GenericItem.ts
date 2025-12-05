@@ -1,3 +1,5 @@
+import { LocationObjectCoords } from 'expo-location';
+
 import { ContentBlock } from './ContentBlock';
 import { DataProvider } from './DataProvider';
 import { SVA_Date } from './Date';
@@ -17,10 +19,7 @@ export type GenericItem<T = unknown> = {
   id: string;
   locations?: Array<{
     name?: string;
-    geoLocation?: {
-      latitude: number;
-      longitude: number;
-    };
+    geoLocation?: LocationObjectCoords;
   }>;
   mediaContents: MediaContent[];
   payload: T;

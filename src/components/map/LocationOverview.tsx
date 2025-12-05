@@ -1,16 +1,16 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { LocationObject } from 'expo-location';
+import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, colors, device, normalize } from '../../config';
+import { Icon, colors, consts, device, normalize, texts } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
@@ -20,12 +20,15 @@ import {
 import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
-import { getLocationMarker } from '../settings';
+import { Wrapper } from '../Wrapper';
 
 import { ChipFilter } from './ChipFilter';
-import { Map } from './Map';
+import { MapLibre } from './MapLibre';
+
+const { MAP } = consts;
 
 type Props = {
   currentPosition?: LocationObject;
@@ -47,13 +50,18 @@ type Props = {
   route: RouteProp<Record<string, any>, string>;
 };
 
-// FIXME: with our current setup the data that we receive from a query is not typed
-// if we change that then we can fix this place
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapToMapMarkers = (
-  pointsOfInterest: any,
-  alternativePosition: any
-): MapMarker[] | undefined => {
+const getLocationMarker = (locationObject) => ({
+  [locationObject?.iconName || MAP.DEFAULT_PIN]: 1,
+  iconName: locationObject?.iconName || MAP.DEFAULT_PIN,
+  activeIconName: `${locationObject?.iconName || MAP.DEFAULT_PIN}Active`,
+  position: {
+    ...locationObject.coords,
+    latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
+    longitude: locationObject?.coords?.longitude || locationObject?.coords?.lng
+  }
+});
+
+const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
   const markers = pointsOfInterest
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ?.map((item: any) => {
@@ -63,7 +71,9 @@ const mapToMapMarkers = (
       if (!latitude || !longitude) return undefined;
 
       return {
-        iconName: item.category?.iconName?.length ? item.category.iconName : undefined,
+        [item.category?.iconName || MAP.DEFAULT_PIN]: 1,
+        iconName: item.category?.iconName || MAP.DEFAULT_PIN,
+        activeIconName: `${item.category?.iconName || MAP.DEFAULT_PIN}Active`,
         id: item.id,
         position: {
           latitude,
@@ -71,12 +81,7 @@ const mapToMapMarkers = (
         }
       };
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .filter((item: any) => item !== undefined);
-
-  if (alternativePosition) {
-    markers.push(getLocationMarker(alternativePosition));
-  }
 
   return markers;
 };
@@ -95,11 +100,28 @@ export const LocationOverview = ({
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const { locationSettings } = useLocationSettings();
-  const { alternativePosition } = locationSettings || {};
+  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState();
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
+
+  const updateSelectedPosition = useCallback(() => {
+    if (alternativePosition?.coords?.latitude && alternativePosition?.coords?.longitude) {
+      setSelectedPosition({
+        latitude: alternativePosition.coords.latitude,
+        longitude: alternativePosition.coords.longitude
+      });
+    } else if (defaultAlternativePosition?.coords?.lat && defaultAlternativePosition?.coords?.lng) {
+      setSelectedPosition({
+        latitude: defaultAlternativePosition.coords.lat,
+        longitude: defaultAlternativePosition.coords.lng
+      });
+    }
+  }, [alternativePosition, defaultAlternativePosition]);
+
+  useEffect(() => updateSelectedPosition(), [updateSelectedPosition]);
 
   const {
     data: overviewData,
@@ -142,14 +164,20 @@ export const LocationOverview = ({
   );
 
   if (loading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
-  const mapMarkers = mapToMapMarkers(pointsOfInterest, alternativePosition);
+  const mapMarkers = mapToMapMarkers(pointsOfInterest);
+
+  if (!mapMarkers?.length) {
+    return (
+      <Wrapper>
+        <RegularText placeholder small center>
+          {texts.map.noGeoLocations}
+        </RegularText>
+      </Wrapper>
+    );
+  }
 
   const item = detailsData
     ? parseListItemsFromQuery(
@@ -177,22 +205,34 @@ export const LocationOverview = ({
     );
   }
 
+  let mapCenterPosition = {} as LocationObjectCoords;
+
+  if (alternativePosition) {
+    mapCenterPosition = getLocationMarker(alternativePosition).position;
+  } else if (defaultAlternativePosition) {
+    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
+  }
+
   return (
     <>
       {(queryVariables?.categoryIds?.length || 0) > 1 && (
         <ChipFilter queryVariables={queryVariables} refetch={refetch} />
       )}
 
-      <Map
-        clusteringEnabled
-        currentPosition={currentPosition}
-        isMultipleMarkersMap
-        locations={mapMarkers}
-        mapStyle={styles.map}
-        onMarkerPress={setSelectedPointOfInterest}
-        selectedMarker={selectedPointOfInterest}
-      />
-      {selectedPointOfInterest && !detailsLoading && (
+      {!!mapMarkers?.length && (
+        <MapLibre
+          currentPosition={currentPosition}
+          isMultipleMarkersMap
+          locations={mapMarkers}
+          mapCenterPosition={mapCenterPosition}
+          mapStyle={styles.map}
+          onMarkerPress={setSelectedPointOfInterest}
+          selectedMarker={selectedPointOfInterest}
+          selectedPosition={selectedPosition}
+        />
+      )}
+
+      {!!selectedPointOfInterest && !detailsLoading && !!item && (
         <View
           style={[
             styles.listItemContainer,
