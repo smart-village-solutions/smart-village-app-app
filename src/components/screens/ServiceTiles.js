@@ -56,7 +56,9 @@ export const ServiceTiles = ({
   }
 
   const contentForAbove = html || htmlContent?.forAbove;
+  const contentForAboveFullWidth = htmlContent?.forAboveFullWidth ?? false;
   const contentForBelow = htmlContent?.forBelow;
+  const contentForBelowFullWidth = htmlContent?.forBelowFullWidth ?? false;
 
   return (
     <SafeAreaViewFlex>
@@ -86,7 +88,7 @@ export const ServiceTiles = ({
 
             {!!contentForAbove && (
               <Wrapper>
-                <HtmlView html={contentForAbove} />
+                <HtmlView html={contentForAbove} isImageFullWidth={contentForAboveFullWidth} />
               </Wrapper>
             )}
 
@@ -96,7 +98,7 @@ export const ServiceTiles = ({
 
             {!!contentForBelow && (
               <Wrapper>
-                <HtmlView html={contentForBelow} />
+                <HtmlView html={contentForBelow} isImageFullWidth={contentForBelowFullWidth} />
               </Wrapper>
             )}
           </ScrollView>
