@@ -70,12 +70,23 @@ const htmlConfig = {
 };
 
 export const HtmlView = memo(
-  ({ big = true, html, openWebScreen, selectable = false, tagsStyles = {}, width }) => {
+  ({
+    big = true,
+    html,
+    isImageFullWidth = false,
+    openWebScreen,
+    selectable = false,
+    tagsStyles = {},
+    width
+  }) => {
     const { isBoldTextEnabled } = useContext(AccessibilityContext);
 
-    let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
+    let calculatedWidth =
+      width !== undefined
+        ? Math.min(imageWidth(isImageFullWidth), width)
+        : imageWidth(isImageFullWidth);
 
-    if (calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
+    if (!isImageFullWidth && calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
       // image width should be only 70% on wider screens, as there are 15% padding on each side
       calculatedWidth = calculatedWidth * 0.7;
     }
@@ -137,6 +148,7 @@ HtmlView.displayName = 'HtmlView';
 HtmlView.propTypes = {
   big: PropTypes.bool,
   html: PropTypes.string,
+  isImageFullWidth: PropTypes.bool,
   openWebScreen: PropTypes.func,
   selectable: PropTypes.bool,
   tagsStyles: PropTypes.object,

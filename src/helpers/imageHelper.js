@@ -5,13 +5,22 @@ import _isString from 'lodash/isString';
 import { Dimensions } from 'react-native';
 
 import { consts } from '../config/consts';
+import { device } from '../config/device';
 
-export const imageWidth = () => {
+export const imageWidth = (isImageFullWidth) => {
   // image width should be smaller than full width on landscape, so take the device height,
   // which is the same as the device width in portrait.
   // this can be done implicitly with using the lower value of dimensions height and width.
   const { height, width } = Dimensions.get('window');
+  const isLandscape = width > height;
 
+  // On tablets or in landscape mode, use the full width for images
+  if (isImageFullWidth && (device.isTablet || isLandscape)) {
+    return width;
+  }
+
+  // For phones or portrait orientation, use the smaller dimension to prevent too wide images
+  // in landscape mode on phones
   return Math.min(height, width);
 };
 
