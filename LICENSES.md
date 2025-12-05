@@ -10,12 +10,12 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 964 |
-| [ISC](https://spdx.org/licenses/ISC.html) | 73 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 968 |
+| [ISC](https://spdx.org/licenses/ISC.html) | 74 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 24 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 22 |
-| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 5 |
+| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 9 |
 | [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 5 |
 | [0BSD](https://spdx.org/licenses/0BSD.html) | 4 |
 | [Unlicense](https://spdx.org/licenses/Unlicense.html) | 4 |
@@ -1652,6 +1652,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A library for Expo config plugins",
     "publisher": ""
   },
+  "@expo/config-plugins@54.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
+    "name": "@expo/config-plugins",
+    "version": "54.0.3",
+    "description": "A library for Expo config plugins",
+    "publisher": ""
+  },
   "@expo/config-plugins@9.1.7": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -1679,6 +1689,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) 2020-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config-types",
     "version": "54.0.8",
+    "description": "Types for the Expo config object app.config.ts",
+    "publisher": ""
+  },
+  "@expo/config-types@54.0.9": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2020-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2020-present 650 Industries, Inc. (aka Expo)",
+    "name": "@expo/config-types",
+    "version": "54.0.9",
     "description": "Types for the Expo config object app.config.ts",
     "publisher": ""
   },
@@ -1963,6 +1983,26 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@ide/backoff",
     "version": "1.0.0",
     "description": "Computes truncated exponential backoff intervals with jitter"
+  },
+  "@isaacs/balanced-match@4.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/isaacs/balanced-match",
+    "licenseText": "(MIT)\n\nOriginal code Copyright Julian Gruber <julian@juliangruber.com>\n\nPort to TypeScript Copyright Isaac Z. Schlueter <i@izs.me>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\nof the Software, and to permit persons to whom the Software is furnished to do\nso, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "name": "@isaacs/balanced-match",
+    "version": "4.0.1",
+    "description": "Match balanced character pairs, like \"{\" and \"}\"",
+    "copyright": "",
+    "publisher": ""
+  },
+  "@isaacs/brace-expansion@5.0.0": {
+    "licenses": "MIT",
+    "licenseText": "MIT License\n\nCopyright Julian Gruber <julian@juliangruber.com>\n\nTypeScript port Copyright Isaac Z. Schlueter <i@izs.me>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright Julian Gruber <julian@juliangruber.com>",
+    "name": "@isaacs/brace-expansion",
+    "version": "5.0.0",
+    "description": "Brace expansion as known from sh/bash",
+    "repository": "",
+    "publisher": ""
   },
   "@isaacs/cliui@8.0.2": {
     "licenses": "ISC",
@@ -2544,6 +2584,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.43.4",
     "description": "Maintained version of react-viro - New Architecture (Fabric) required",
     "publisher": ""
+  },
+  "@rnrepo/expo-config-plugin@0.1.0-beta.0": {
+    "licenses": "ISC",
+    "repository": "https://github.com/software-mansion/rnrepo",
+    "publisher": "Software Mansion",
+    "licenseText": "# @rnrepo/expo-config-plugin\n\nExpo Config Plugin for automatically configuring RNRepo prebuilds in your React Native project.\n\n## Installation\n\n```bash\nnpx expo install @rnrepo/expo-config-plugin\n# or\nnpm install @rnrepo/expo-config-plugin\n# or\nyarn add @rnrepo/expo-config-plugin\n# or\nbun add @rnrepo/expo-config-plugin\n```\n\nThen add the plugin to your Expo configuration in `app.json` or `app.config.js`.\n```diff\n{\n    \"expo\" {\n        ...\n        plugins: [\n+           \"@rnrepo/expo-config-plugin\"\n        ]\n    }\n}\n```\n\nThen run:\n\n```bash\nnpx expo prebuild --clean\n```\n\nIt will modify your Android Gradle configuration to use RNRepo prebuilds.\n\n## What It Does\n\nThis plugin automatically modifies your Android Gradle configuration to:\n\n1. **Add RNRepo Plugin Classpath** - Adds the prebuilds plugin to your project dependencies\n2. **Configure Maven Repository** - Adds RNRepo Maven repository to buildscript and allprojects\n3. **Apply Plugin** - Applies the prebuilds plugin to your app's build.gradle\n\n### Disabling the plugin\n\nTo temporarily disable RNRepo without removing the plugin, set the environment variable `DISABLE_RNREPO` to any value when running Expo commands:\n\n```bash\nDISABLE_RNREPO=true npx expo run:android\n```\n\n## License\n\nISC License\n\n## Development Guide\n\nhttps://www.npmjs.com/package/expo-module-scripts?activeTab=readme\n\n- Building: `bun run build plugin`",
+    "name": "@rnrepo/expo-config-plugin",
+    "version": "0.1.0-beta.0",
+    "description": "Plugin for configuring RNRepo prebuilt packages in Expo projects",
+    "copyright": ""
   },
   "@sentry-internal/browser-utils@10.12.0": {
     "licenses": "MIT",
@@ -6252,6 +6302,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "10.4.5",
     "description": "the most correct and second fastest glob implementation in JavaScript"
   },
+  "glob@13.0.0": {
+    "licenses": "BlueOak-1.0.0",
+    "repository": "https://github.com/isaacs/node-glob",
+    "publisher": "Isaac Z. Schlueter",
+    "email": "i@izs.me",
+    "licenseText": "All packages under `src/` are licensed according to the terms in\ntheir respective `LICENSE` or `LICENSE.md` files.\n\nThe remainder of this project is licensed under the Blue Oak\nModel License, as follows:\n\n-----\n\n# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules.  The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice.  If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n***As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim.***",
+    "name": "glob",
+    "version": "13.0.0",
+    "description": "the most correct and second fastest glob implementation in JavaScript",
+    "copyright": ""
+  },
   "glob@7.2.3": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-glob",
@@ -7410,6 +7471,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "10.4.3",
     "description": "A cache object that deletes the least-recently-used items."
   },
+  "lru-cache@11.2.4": {
+    "licenses": "BlueOak-1.0.0",
+    "repository": "https://github.com/isaacs/node-lru-cache",
+    "publisher": "Isaac Z. Schlueter",
+    "email": "i@izs.me",
+    "licenseText": "# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules.  The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice.  If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n***As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim.***",
+    "name": "lru-cache",
+    "version": "11.2.4",
+    "description": "A cache object that deletes the least-recently-used items.",
+    "copyright": ""
+  },
   "lru-cache@5.1.1": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/node-lru-cache",
@@ -8058,6 +8130,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "mimic-fn",
     "version": "1.2.0",
     "description": "Make a function mimic another one"
+  },
+  "minimatch@10.1.1": {
+    "licenses": "BlueOak-1.0.0",
+    "repository": "https://github.com/isaacs/minimatch",
+    "publisher": "Isaac Z. Schlueter",
+    "email": "i@izs.me",
+    "licenseText": "# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules. The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice. If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n**_As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim._**",
+    "name": "minimatch",
+    "version": "10.1.1",
+    "description": "a glob matcher in javascript",
+    "copyright": ""
   },
   "minimatch@3.1.2": {
     "licenses": "ISC",
@@ -8834,6 +8917,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules.  The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice.  If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n***As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim.***",
     "name": "path-scurry",
     "version": "1.11.1",
+    "description": "walk paths fast and efficiently",
+    "copyright": ""
+  },
+  "path-scurry@2.0.1": {
+    "licenses": "BlueOak-1.0.0",
+    "repository": "https://github.com/isaacs/path-scurry",
+    "publisher": "Isaac Z. Schlueter",
+    "email": "i@izs.me",
+    "licenseText": "# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules.  The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice.  If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n***As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim.***",
+    "name": "path-scurry",
+    "version": "2.0.1",
     "description": "walk paths fast and efficiently",
     "copyright": ""
   },

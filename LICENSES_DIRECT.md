@@ -188,6 +188,16 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@reactvision/react-viro/LICENSE
+- **[@rnrepo/expo-config-plugin@0.1.0-beta.0](https://github.com/software-mansion/rnrepo)**
+    - name: @rnrepo/expo-config-plugin
+    - version: 0.1.0-beta.0
+    - description: Plugin for configuring RNRepo prebuilt packages in Expo projects
+    - copyright: 
+    - licenses: ISC
+    - repository: https://github.com/software-mansion/rnrepo
+    - publisher: Software Mansion
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@rnrepo/expo-config-plugin
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@rnrepo/expo-config-plugin/README.md
 - **[@sentry/react-native@7.2.0](https://github.com/getsentry/sentry-react-native)**
     - name: @sentry/react-native
     - version: 7.2.0
