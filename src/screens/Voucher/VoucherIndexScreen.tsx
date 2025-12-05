@@ -185,7 +185,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               )}
 
               {count > 0 && (
-                <Wrapper style={!queryVariables.category && showFilter && styles.noPaddingTop}>
+                <Wrapper style={showFilter && styles.noPaddingTop}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
                   </BoldText>
