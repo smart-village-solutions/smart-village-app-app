@@ -1114,6 +1114,9 @@ export const texts = {
       partner: 'Kooperationspartner',
       qr: 'Code scannen'
     },
+    wallet: {
+      home: 'Wallet'
+    },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -1666,6 +1669,22 @@ export const texts = {
       scannerTitle: 'QR-Code scannen'
     },
     secret: 'Vertragskonto-Nr.'
+  },
+  wallet: {
+    alert: {
+      duplicateCardMessage: 'Diese Karte wurde bereits hinzugefügt.',
+      duplicateCardTitle: 'Karte existiert bereits',
+      invalidCardMessage:
+        'Die eingegebenen Kartendaten sind ungültig. Bitte überprüfen und erneut versuchen.',
+      invalidCardTitle: 'Ungültige Karte'
+    },
+    home: {
+      buttonText: 'Karte Hinzufügen',
+      description: 'Füge deine erste Karte hinzu und habe alle wichtigen Dokumente immer dabei',
+      infoText:
+        '<h2 style="color: #008000;">Wichtiger Hinweis zum Datenschutz</h2><p>Deine Karten werden sicher auf dem lokalen Gerät gespeichert. Es findet keine Übertragung an den Appbetreiber statt.</p><p><strong>Achtung: Wenn du die App löschst, werden auch deine Kartenunwiderruflich entfernt.</strong></p>',
+      title: 'Deine digitalen Karten'
+    }
   },
   wasteCalendar: {
     calendarIntro:

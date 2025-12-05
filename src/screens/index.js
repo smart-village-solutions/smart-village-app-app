@@ -8,6 +8,7 @@ export * from './profile';
 export * from './SUE';
 export * from './volunteer';
 export * from './Voucher';
+export * from './Wallet';
 export * from './whistleblow';
 
 export * from './AboutScreen';
