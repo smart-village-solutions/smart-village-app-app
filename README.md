@@ -28,7 +28,7 @@ https://coolors.co/08743c-bbbe64-222222-26798e-ffffff
 
 ## Documentation
 
-For detailed documentation see the [docs](./docs/INDEX.md).
+For detailed documentation see the [docs](./docs/INDEX.md). For API details generated via TypeDoc check the [developer reference](./docs/typedoc/index.html).
 
 ## Changelog
 
