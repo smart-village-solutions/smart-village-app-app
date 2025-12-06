@@ -5,13 +5,23 @@
 - [x] 1.1 Install TypeDoc as a development dependency.
 - [x] 1.2 Create a `typedoc.json` configuration file that scopes output to `src/`.
 - [x] 1.3 Update `generate-docs` to call `typedoc` with `--skipErrorChecking` (due to current TS issues) and ignore `docs/typedoc/` in git.
-- [ ] 1.4 Document the current workaround (skip error checking) so future TypeScript fixes can remove it.
+- [x] 1.4 Document the current workaround (skip error checking) so future TypeScript fixes can remove it.
 
 ## 2. Document Existing Code
 
 - [x] 2.1 Add TypeDoc-friendly comments to key files in the `src/` directory as examples.
 - [ ] 2.2 Ensure all functions, classes, and modules have thorough TypeDoc-friendly annotations.
+  - [x] 2.2.1 Document helper-heavy files such as `src/helpers/openingHoursHelper.ts`.
+  - [ ] 2.2.2 Layer documentation onto additional helpers/providers (react hooks, contexts, etc.) in future passes.
+  - [ ] 2.2.3 Maintain a per-directory checklist (helpers, providers, navigation, screens, etc.) so we can track coverage and ensure every export gains a description.
+    - [x] Helpers (`src/helpers/*`) – `openingHoursHelper.ts`, `bookmarkHelper.ts`, `storageHelper.js`, `dateTimeHelper.ts`, `createCalendarEvent.ts`
+    - [ ] Providers (`src/*Provider.tsx`)
+    - [ ] Hooks (`src/hooks/*`)
+    - [ ] Navigation (`src/navigation/*`)
+    - [ ] Screens (`src/screens/*`)
 - [ ] 2.3 Review and refine the documentation for consistency.
+  - [ ] 2.3.1 Preview the generated docs at `docs/typedoc/index.html` to pick up missing descriptions.
+  - [ ] 2.3.2 Align the structure/tags with existing copy (texts/README) and add missing links.
 
 ## 3. Automate Documentation
 
