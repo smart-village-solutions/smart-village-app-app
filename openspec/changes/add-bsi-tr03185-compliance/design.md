@@ -718,7 +718,7 @@ Release Created
 - **GitHub Actions**: Primary automation platform
 - **Workflows as Code**: All workflows version-controlled in `.github/workflows/`
 
-### Security Tools
+### Technology Stack
 
 | Tool | Purpose | Cost | Integration |
 |------|---------|------|-------------|
@@ -727,6 +727,22 @@ Release Created
 | Dependabot | Dependency updates | Free (GitHub native) | Native GitHub |
 | ESLint Security Plugin | Linting | Free | npm package |
 | CycloneDX | SBOM generation | Free | npm package |
+
+**Recommended Primary Stack:**
+
+1. **Start with (Phase 1-2):**
+   - CodeQL (free, native, excellent JavaScript/TypeScript support)
+   - Dependabot (free, native, handles security updates)
+   - ESLint security-plugin (free, catches common issues)
+
+2. **Add if budget allows (Phase 3-4):**
+   - Snyk (better vulnerability database, $0-129/month)
+   - Trivy (container scanning, free)
+
+3. **Monitor & decide:**
+   - After 3 months, evaluate false positive rates
+   - Compare vulnerability detection overlap
+   - Consider consolidating if maintenance overhead too high
 
 ### Testing Tools
 

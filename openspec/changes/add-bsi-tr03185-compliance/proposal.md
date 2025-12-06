@@ -4,13 +4,61 @@
 
 `add-bsi-tr03185-compliance`
 
-## Overview
+## Why
 
-Implement BSI TR-03185-2 (Secure Software Lifecycle for Open Source Software) compliance measures at the code and automation level to meet requirements for the Cyber Resilience Act (CRA) and BSI IT-Grundschutz.
+The Smart Village App needs to comply with BSI TR-03185-2 (Secure Software Lifecycle for Open Source Software) to meet EU Cyber Resilience Act requirements. While basic documentation exists, automated security scanning, SBOM generation, vulnerability management, and enforced code review processes are missing.
+
+## What Changes
+
+- Add automated security scanning with CodeQL and Snyk
+- Implement SBOM generation for every release using CycloneDX
+- Set up Dependabot for automated dependency updates
+- Enhance CONTRIBUTING.md with security standards and review requirements
+- Configure branch protection rules requiring PR reviews and passing CI checks
+- Create comprehensive security vulnerability reporting and disclosure workflow
+- Add checksum generation for release artifacts
+- Implement automated testing enforcement with coverage thresholds
+- Document reproducible build process
+- **BREAKING**: Require all merges to master go through PR review (no direct pushes)
+- **BREAKING**: Fail CI builds on high/critical security vulnerabilities
+
+## Impact
+
+### Affected specs
+
+- New capability: `bsi-compliance`
+
+### Affected code
+
+- `.github/workflows/` - New workflows for CodeQL, Snyk, SBOM generation, release checksums
+- `.github/dependabot.yml` - Automated dependency management
+- `.github/ISSUE_TEMPLATE/` - Enhanced bug report templates
+- `.github/pull_request_template.md` - Security and quality checklists
+- `CONTRIBUTING.md` - Enhanced with security standards
+- `SECURITY.md` - Enhanced with response timelines and disclosure policy
+- `docs/BUILD.md` - New reproducible build documentation
+- `docs/COMPLIANCE.md` - New BSI TR-03185-2 compliance documentation
+- `docs/REPOSITORY_SETUP.md` - New repository configuration guide
+- `.eslintrc.yml` - Security plugin rules
+- `package.json` - New scripts for SBOM generation
+
+### Repository settings (manual configuration)
+
+- Branch protection for `master` and `release/*` branches
+- 2FA requirement for maintainers
+- GitHub Private Vulnerability Reporting enabled
 
 ## Status
 
 🟡 Proposed
+
+**Branch:** `feat/bsi-compatibility`
+
+**Related Changes:**
+
+- Works alongside `add-jsdoc-integration` (TypeDoc contributes to documentation requirements BR.01)
+- Extends existing `licenses-report.yml` workflow (satisfies LE.02)
+- Complements existing `generate-docs.yml` workflow
 
 ## Problem Statement
 
@@ -166,6 +214,9 @@ The Smart Village App is developed as an open-source project for municipalities 
 
 ## Implementation Phases
 
+**Estimated Effort:** 12-16 weeks (2-3 person-months)
+**Team Size:** 1-2 developers + 1 security reviewer
+
 ### Phase 1: Foundation (Week 1-2)
 
 - [ ] Update CONTRIBUTING.md with security standards
@@ -239,11 +290,47 @@ The Smart Village App is developed as an open-source project for municipalities 
 
 ## Open Questions
 
-1. Which security scanning tool should be primary? (CodeQL, Snyk, Trivy, Semgrep)
-2. Should we enforce GPG signing for all commits or just releases?
-3. What's the budget for third-party security tools?
-4. Should we implement automated security patching or manual approval only?
-5. Do we need a separate security review board?
+1. **Security Scanning Tool:** Which should be primary? (CodeQL, Snyk, Trivy, Semgrep)
+   - *Recommendation:* CodeQL (free for public repos) + Dependabot (GitHub native) as baseline, add Snyk if budget allows
+2. **GPG Signing:** Enforce for all commits or just releases?
+   - *Recommendation:* Start with release signing only, expand to commits if team adopts GPG widely
+3. **Budget:** What's available for third-party security tools?
+   - *Note:* Most tools have free tiers for open-source projects
+4. **Automated Patching:** Implement automatic security patching or manual approval only?
+   - *Recommendation:* Manual approval initially, enable auto-merge for low-risk updates after 3 months
+5. **Security Review Board:** Do we need a separate board?
+   - *Recommendation:* Start with designated security contacts among maintainers, formalize if needed
+
+## Roll-out Strategy
+
+### Communication Plan
+
+1. **Week -2 (before implementation):**
+   - Announce upcoming changes in team meeting
+   - Share proposal for feedback
+   - Answer questions in dedicated discussion thread
+
+2. **Week 0 (start of Phase 1):**
+   - Document breaking changes in CHANGELOG.md
+   - Send email to all contributors about new requirements
+   - Update README with compliance badges
+
+3. **Phase 1-2 (weeks 1-4):**
+   - Soft enforcement: warn but don't block on violations
+   - Weekly updates on implementation progress
+   - Office hours for contributor questions
+
+4. **Phase 3-4 (weeks 5-8):**
+   - Full enforcement: block merges on violations
+   - Monthly compliance reports
+   - Celebrate milestones (first SBOM, zero critical CVEs, etc.)
+
+### Training Materials
+
+- [ ] Video walkthrough of new contribution workflow
+- [ ] FAQ document for common security questions
+- [ ] Cheat sheet for running security checks locally
+- [ ] Template responses for Dependabot PRs
 
 ## References
 
