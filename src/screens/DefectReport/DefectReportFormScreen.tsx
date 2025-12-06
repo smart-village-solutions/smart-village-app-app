@@ -20,6 +20,10 @@ import { GET_CATEGORIES } from '../../queries/categories';
 import { SettingsContext } from '../../SettingsProvider';
 
 /* eslint-disable complexity */
+/**
+ * Guides users through the defect report workflow, toggling between map/location selection and
+ * the form while reloading HTML content and categories on demand.
+ */
 export const DefectReportFormScreen = ({
   navigation,
   route
@@ -55,6 +59,9 @@ export const DefectReportFormScreen = ({
     skip: !categoryId
   });
 
+  /**
+   * Refetches static HTML and category data when the user performs a pull-to-refresh gesture.
+   */
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {

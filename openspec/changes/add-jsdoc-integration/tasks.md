@@ -15,6 +15,7 @@
   - [ ] 2.2.2 Layer documentation onto additional helpers/providers (react hooks, contexts, etc.) in future passes.
   - [ ] 2.2.3 Maintain a per-directory checklist (helpers, providers, navigation, screens, etc.) so we can track coverage and ensure every export gains a description.
     - [x] Helpers (`src/helpers/*`) – `openingHoursHelper.ts`, `bookmarkHelper.ts`, `storageHelper.js`, `dateTimeHelper.ts`, `createCalendarEvent.ts`
+    - [ ] Full file checklist captured in `openspec/changes/add-jsdoc-integration/typedoc-file-checklist.md`.
     - [ ] Providers (`src/*Provider.tsx`)
     - [ ] Hooks (`src/hooks/*`)
     - [ ] Navigation (`src/navigation/*`)

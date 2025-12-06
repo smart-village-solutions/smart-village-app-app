@@ -20,6 +20,10 @@ import { useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
 import { DropdownProps } from '../types';
 
+/**
+ * Allows users to pick a municipality, persists their choice locally and loads an associated
+ * ServiceTiles collection once a city is stored.
+ */
 export const CitySelectionScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -71,6 +75,9 @@ export const CitySelectionScreen = () => {
     );
   }, [dropdownData]);
 
+  /**
+   * Rebuilds the dropdown entries so the stored city remains preselected after changes.
+   */
   const updateDropdownData = useCallback(() => {
     const items =
       citiesData?.map((city, index) => ({
@@ -84,6 +91,9 @@ export const CitySelectionScreen = () => {
     setDropdownData(items);
   }, [citiesData, storedCity]);
 
+  /**
+   * Removes the stored city and resets the dropdown back to its initial default selection.
+   */
   const onResetPress = useCallback(() => {
     Alert.alert(
       texts.citySelection.alerts.resetAlertTitle,

@@ -42,6 +42,9 @@ const TEXT_BLOCKS_SORTER = {
   'Zuständige Stelle': 15
 };
 
+/**
+ * Button helper that opens a linked form either in-app or via fallback browser handling.
+ */
 const FormButton = ({ headerTitle, link, name, rootRouteName }) => {
   const { url } = link;
   const openWebScreen = useOpenWebScreen(headerTitle, url, rootRouteName);
@@ -56,6 +59,9 @@ FormButton.propTypes = {
   rootRouteName: PropTypes.string
 };
 
+/**
+ * Renders every link belonging to a single form definition as individual buttons.
+ */
 const renderForm = (headerTitle, form, rootRouteName) => {
   const { links, name } = form;
 
@@ -72,6 +78,10 @@ const renderForm = (headerTitle, form, rootRouteName) => {
   });
 };
 
+/**
+ * Splits text blocks into the sections shown in the header area and the remainder while
+ * filtering unsupported blocks and keeping the server-defined ordering.
+ */
 const parseTextBlocks = (service) => {
   const { textBlocks } = service;
   let firstTextBlocks;
@@ -104,6 +114,10 @@ const parseTextBlocks = (service) => {
 };
 
 // eslint-disable-next-line complexity
+/**
+ * Displays the BB-BUS detail view including forms, authorities, people and additional sections,
+ * reloading data on pull-to-refresh while honouring Matomo tracking.
+ */
 export const DetailScreen = ({ route }) => {
   const scrollViewRef = useRef();
   const { isConnected } = useContext(NetworkContext);

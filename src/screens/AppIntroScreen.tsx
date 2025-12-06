@@ -58,6 +58,9 @@ type ButtonProps = {
   texts: { appIntro: { continue: string; skip: string } };
 };
 
+/**
+ * Reusable CTA rendered inside the onboarding slider footer.
+ */
 const SliderButton = ({
   label,
   onPress,
@@ -74,6 +77,9 @@ const SliderButton = ({
   );
 };
 
+/**
+ * Advances to the next slide while ensuring the terms slide cannot be left without consent.
+ */
 const NextButton = ({
   hasAcceptedTerms,
   sliderRef,
@@ -111,6 +117,9 @@ const NextButton = ({
   );
 };
 
+/**
+ * Skips the onboarding flow and, if required, jumps to the terms slide before finishing.
+ */
 const SkipButton = ({
   hasAcceptedTerms,
   setOnboardingComplete,
@@ -139,6 +148,9 @@ const SkipButton = ({
   );
 };
 
+/**
+ * Completes onboarding after validating the current slide and optional legal consent.
+ */
 const DoneButton = ({
   hasAcceptedTerms,
   setOnboardingComplete,
@@ -173,6 +185,9 @@ const DoneButton = ({
 
 export default NextButton;
 
+/**
+ * Renders the checkbox and modal used for handling privacy / terms consent on the dedicated slide.
+ */
 const TermsAndConditionsSection = ({
   backgroundColor,
   contentName,
@@ -234,6 +249,9 @@ const TermsAndConditionsSection = ({
   );
 };
 
+/**
+ * Alerts users that they must accept the terms before continuing.
+ */
 const termsAndConditionsAlert = () =>
   Alert.alert(
     texts.profile.termsAndConditionsAlertTitle,
@@ -247,6 +265,9 @@ type Props = {
   setOnboardingComplete: () => void;
 };
 
+/**
+ * Displays the currently active onboarding slide with dynamic ordering and optional consent UI.
+ */
 const renderSlide: ListRenderItem<AppIntroSlide> = ({
   backgroundColor,
   item,
@@ -307,6 +328,10 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
   );
 };
 
+/**
+ * Onboarding experience that fetches remote slide definitions, presents them inside a slider and
+ * persists the "terms viewed" flag. Also supports a mode that shows only the terms slide.
+ */
 export const AppIntroScreen = ({
   setOnboardingComplete,
   onlyTermsAndConditions,

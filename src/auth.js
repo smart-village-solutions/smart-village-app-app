@@ -2,6 +2,9 @@ import * as SecureStore from 'expo-secure-store';
 
 import { namespace, secrets } from './config';
 
+/**
+ * SecureStore key holding the epoch second at which the current access token expires.
+ */
 const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
 
 /**
@@ -35,6 +38,9 @@ const isTokenValid = async () => {
  *
  * @param {requestCallback} callback the callback that needs authentication
  * @param {boolean} forceNewToken trigger to force request for new token, default `false`
+ */
+/**
+ * Ensures an access token exists before invoking the optional callback.
  */
 export const auth = async (callback, forceNewToken = false) => {
   // if the token is still valid, just run the callback, if one exist, and quit

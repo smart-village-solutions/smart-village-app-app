@@ -8,12 +8,25 @@ import { addToStore, readFromStore } from './helpers/storageHelper';
 import { AppIntroScreen } from './screens/AppIntroScreen';
 import { SettingsContext } from './SettingsProvider';
 
+/**
+ * AsyncStorage key that marks whether the onboarding carousel finished successfully.
+ */
 export const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
+/**
+ * AsyncStorage key that notes if the user already accepted the terms and conditions.
+ */
 export const TERMS_AND_CONDITIONS_STORE_KEY = 'TERMS_AND_CONDITIONS_STORE_KEY';
+/**
+ * Legacy flag indicating whether any terms and conditions were ever stored for the device.
+ */
 export const HAS_TERMS_AND_CONDITIONS_STORE_KEY = 'HAS_TERMS_AND_CONDITIONS_STORE_KEY';
 
-// this hook ensures that all settings will be properly initialized, even when onboarding
-// was completed before the settings where available, or an error occurred
+/**
+ * Initializes system services that normally start during onboarding but might have been skipped
+ * when onboarding ran without the necessary settings in place.
+ *
+ * @param onboardingComplete Whether onboarding has been marked as completed on this device.
+ */
 const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
   const {
     globalSettings: {
@@ -48,6 +61,10 @@ const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
   }, [onboardingComplete]);
 };
 
+/**
+ * Wraps the app in onboarding and terms-and-conditions gating so that the main UI only renders
+ * after the correct onboarding flow (full onboarding or just T&C confirmation) has finished.
+ */
 export const OnboardingManager = ({ children }: { children: React.ReactNode }) => {
   const [onboardingStatus, setOnboardingStatus] = useState<'loading' | 'complete' | 'incomplete'>(
     'loading'
