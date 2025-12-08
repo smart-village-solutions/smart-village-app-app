@@ -1,5 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -28,7 +30,7 @@ import {
   WrapperWrap
 } from '../../components';
 import { colors, device, Icon, normalize, texts } from '../../config';
-import { deleteCardByNumber, openShare } from '../../helpers';
+import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
 import { TCard, TCardInfo } from '../../types';
 
@@ -109,9 +111,15 @@ export const WalletCardDetailScreen = ({
 
       // Wait for ViewShot to mount
       setTimeout(async () => {
-        const uri = await viewShotRef?.current?.capture();
+        const base64 = await viewShotRef?.current?.capture();
+        const fileUri = `${FileSystem.cacheDirectory}wallet-card-${cardNumber}.png`;
 
-        await openShare({ url: uri });
+        // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
+        await FileSystem.writeAsStringAsync(fileUri, base64, {
+          encoding: FileSystem.EncodingType.Base64
+        });
+
+        await Sharing.shareAsync(fileUri);
         setIsCapturing(false);
       }, 50);
     } catch (e) {
@@ -310,7 +318,7 @@ export const WalletCardDetailScreen = ({
 
       {isCapturing && (
         <View style={styles.hiddenCaptureContainer}>
-          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }}>
+          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9, result: 'base64' }}>
             <ShareableCard
               apiConnection={apiConnection}
               cardNumber={cardNumber}
