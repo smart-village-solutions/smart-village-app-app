@@ -19,7 +19,6 @@ import {
   Button,
   ButtonVariants,
   EmptyMessage,
-  HeadlineText,
   LoadingSpinner,
   Modal,
   RegularText,
@@ -33,7 +32,7 @@ import {
 import { colors, device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
-import { TCard, TCardInfo } from '../../types';
+import { ECardType, TCard, TCardInfo } from '../../types';
 
 const ShareableCard = ({
   apiConnection,
@@ -81,11 +80,10 @@ export const WalletCardDetailScreen = ({
   route: RouteProp<{ params: { card: TCard } }>;
 }) => {
   const { card } = route.params;
-  const { apiConnection, cardNumber, pinCode } = card;
-
+  const { apiConnection, cardNumber, pinCode, type: cardType } = card;
   const [isFirstLoading, setFirstLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [cardData, setCardData] = useState<TCardInfo | null>(null);
+  const [cardData, setCardData] = useState<TCard | TCardInfo>(card);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFullScreenQR, setIsFullScreenQR] = useState(false);
@@ -135,8 +133,12 @@ export const WalletCardDetailScreen = ({
   };
 
   useEffect(() => {
-    fetchCardDetails();
-  }, [fetchCardDetails]);
+    if (cardType === ECardType.COUPON) {
+      fetchCardDetails();
+    } else {
+      setFirstLoading(false);
+    }
+  }, [cardType, fetchCardDetails]);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
@@ -155,7 +157,11 @@ export const WalletCardDetailScreen = ({
   return (
     <>
       <WalletTransactionList
-        items={cardData.transactions.slice(0, 10)}
+        items={
+          cardType === ECardType.COUPON && !!cardData?.transactions?.length
+            ? cardData.transactions.slice(0, 10)
+            : []
+        }
         ListFooterComponent={
           <WrapperWrap itemsCenter spaceAround center>
             <Button
@@ -241,29 +247,33 @@ export const WalletCardDetailScreen = ({
                   </WrapperVertical>
                 )}
 
-                <WrapperVertical noPaddingBottom>
-                  <Button
-                    icon={
-                      isLoading ? (
-                        <ActivityIndicator />
-                      ) : (
-                        <Icon.NamedIcon name="refresh" color={colors.surface} />
-                      )
-                    }
-                    iconPosition="left"
-                    onPress={async () => {
-                      setIsLoading(true);
-                      await fetchCardDetails();
-                      setIsLoading(false);
-                    }}
-                    title={texts.wallet.detail.updateBalance}
-                  />
-                </WrapperVertical>
+                {cardType === ECardType.COUPON && (
+                  <WrapperVertical noPaddingBottom>
+                    <Button
+                      icon={
+                        isLoading ? (
+                          <ActivityIndicator />
+                        ) : (
+                          <Icon.NamedIcon name="refresh" color={colors.surface} />
+                        )
+                      }
+                      iconPosition="left"
+                      onPress={async () => {
+                        setIsLoading(true);
+                        await fetchCardDetails();
+                        setIsLoading(false);
+                      }}
+                      title={texts.wallet.detail.updateBalance}
+                    />
+                  </WrapperVertical>
+                )}
               </Wrapper>
 
-              <WrapperVertical noPaddingBottom>
-                <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
-              </WrapperVertical>
+              {cardType === ECardType.COUPON && (
+                <WrapperVertical noPaddingBottom>
+                  <BoldText>{texts.wallet.detail.lastTransactions}</BoldText>
+                </WrapperVertical>
+              )}
             </Wrapper>
           </>
         }
@@ -296,11 +306,13 @@ export const WalletCardDetailScreen = ({
 
         <Wrapper itemsCenter>
           <BoldText>{texts.wallet.detail.deleteConfirmationTitle}</BoldText>
-          <WrapperVertical>
-            <RegularText center>
-              {texts.wallet.detail.deleteConfirmationMessage(cardData.balanceAsEuro)}
-            </RegularText>
-          </WrapperVertical>
+          {cardType === ECardType.COUPON && cardData?.balanceAsEuro && (
+            <WrapperVertical>
+              <RegularText center>
+                {texts.wallet.detail.deleteConfirmationMessage(cardData?.balanceAsEuro)}
+              </RegularText>
+            </WrapperVertical>
+          )}
         </Wrapper>
 
         <Button

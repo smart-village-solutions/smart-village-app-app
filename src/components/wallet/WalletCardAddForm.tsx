@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import { Alert } from 'react-native';
 
 import { texts } from '../../config';
-import { saveCard } from '../../helpers';
+import { ErrorSavingCard, saveCard } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
-import { TApiConnection, TCard } from '../../types';
+import { ECardType, TApiConnection, TCard } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Wrapper } from '../Wrapper';
@@ -50,6 +50,14 @@ export const WalletCardAddForm = ({
     cardNumberLength = 12,
     pinLength = 3
   } = inputsInformation || {};
+  const {
+    description,
+    iconBackgroundColor,
+    iconColor,
+    iconName,
+    title,
+    type: cardType
+  } = cardInformation || {};
 
   const {
     control,
@@ -69,26 +77,29 @@ export const WalletCardAddForm = ({
       apiConnection,
       cardName: cardData.cardName,
       cardNumber: cardData.cardNumber,
-      description: cardInformation?.description,
-      iconBackgroundColor: cardInformation?.iconBackgroundColor,
-      iconColor: cardInformation?.iconColor,
-      iconName: cardInformation?.iconName,
+      description,
+      iconBackgroundColor,
+      iconColor,
+      iconName,
       pinCode: cardData.pinCode,
-      type: cardInformation?.type
+      title,
+      type: cardType
     } as TCard;
 
     try {
-      await fetchCardInfo({
-        apiConnection,
-        cardNumber: cardData.cardNumber,
-        cardPin: cardData.pinCode
-      });
+      if (cardType === ECardType.COUPON) {
+        await fetchCardInfo({
+          apiConnection,
+          cardNumber: cardData.cardNumber,
+          cardPin: cardData.pinCode
+        });
+      }
 
       await saveCard(cardInfo);
 
       navigation.pop(2);
     } catch (error) {
-      if (error?.message === 'Duplicate card') {
+      if (error?.message === ErrorSavingCard.DUPLICATE_CARD) {
         return Alert.alert(
           texts.wallet.alert.duplicateCardTitle,
           texts.wallet.alert.duplicateCardMessage
@@ -106,7 +117,7 @@ export const WalletCardAddForm = ({
         <Input
           control={control}
           errorMessage={errors.cardNumber && errors.cardNumber.message}
-          keyboardType="number-pad"
+          keyboardType={cardType === ECardType.COUPON ? 'number-pad' : 'default'}
           label={cardNumberInputTitle}
           maxLength={cardNumberLength}
           name="cardNumber"
@@ -127,28 +138,30 @@ export const WalletCardAddForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
-        <Input
-          control={control}
-          errorMessage={errors.pinCode && errors.pinCode.message}
-          keyboardType="number-pad"
-          label={cardPinInputTitle}
-          maxLength={pinLength}
-          name="pinCode"
-          placeholder={cardPinInputPlaceholder}
-          rules={{
-            minLength: {
-              value: pinLength,
-              message: texts.wallet.add.inputs.errors.lengthExceeded(cardPinInputTitle, pinLength)
-            },
-            required: {
-              value: true,
-              message: texts.wallet.add.inputs.errors.cardPinRequired(cardPinInputTitle)
-            }
-          }}
-          secureTextEntry
-        />
-      </Wrapper>
+      {cardType === ECardType.COUPON && (
+        <Wrapper noPaddingTop>
+          <Input
+            control={control}
+            errorMessage={errors.pinCode && errors.pinCode.message}
+            keyboardType="number-pad"
+            label={cardPinInputTitle}
+            maxLength={pinLength}
+            name="pinCode"
+            placeholder={cardPinInputPlaceholder}
+            rules={{
+              minLength: {
+                value: pinLength,
+                message: texts.wallet.add.inputs.errors.lengthExceeded(cardPinInputTitle, pinLength)
+              },
+              required: {
+                value: true,
+                message: texts.wallet.add.inputs.errors.cardPinRequired(cardPinInputTitle)
+              }
+            }}
+            secureTextEntry
+          />
+        </Wrapper>
+      )}
 
       <Wrapper noPaddingTop>
         <Input
