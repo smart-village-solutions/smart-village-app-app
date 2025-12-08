@@ -20,8 +20,8 @@ type TInputsInformation = {
   cardPinInputPlaceholder?: string;
   cardPinInputTitle?: string;
   isPinVisible?: boolean;
-  maxCardNumberLength?: number;
-  maxPinLength?: number;
+  cardNumberLength?: number;
+  pinLength?: number;
 };
 
 type CardFormData = {
@@ -49,8 +49,8 @@ export const WalletCardAddForm = ({
     cardPinInputPlaceholder = texts.wallet.add.inputs.cardPinInputPlaceholder,
     cardPinInputTitle = texts.wallet.add.inputs.cardPinInputTitle,
     isPinVisible = false,
-    maxCardNumberLength = 12,
-    maxPinLength = 3
+    cardNumberLength = 12,
+    pinLength = 3
   } = inputsInformation || {};
 
   const {
@@ -110,17 +110,20 @@ export const WalletCardAddForm = ({
           errorMessage={errors.cardNumber && errors.cardNumber.message}
           keyboardType="number-pad"
           label={cardNumberInputTitle}
-          maxLength={maxCardNumberLength}
+          maxLength={cardNumberLength}
           name="cardNumber"
           placeholder={cardNumberInputPlaceholder}
           rules={{
             minLength: {
-              value: maxCardNumberLength,
-              message: texts.wallet.add.inputs.errors.maxLengthExceeded(maxCardNumberLength)
+              value: cardNumberLength,
+              message: texts.wallet.add.inputs.errors.lengthExceeded(
+                cardNumberInputTitle,
+                cardNumberLength
+              )
             },
             required: {
               value: true,
-              message: texts.wallet.add.inputs.errors.cardNumberRequired
+              message: texts.wallet.add.inputs.errors.cardNumberRequired(cardNumberInputTitle)
             }
           }}
         />
@@ -132,17 +135,17 @@ export const WalletCardAddForm = ({
           errorMessage={errors.pinCode && errors.pinCode.message}
           keyboardType="number-pad"
           label={cardPinInputTitle}
-          maxLength={maxPinLength}
+          maxLength={pinLength}
           name="pinCode"
           placeholder={cardPinInputPlaceholder}
           rules={{
             minLength: {
-              value: maxPinLength,
-              message: texts.wallet.add.inputs.errors.maxLengthExceeded(maxPinLength)
+              value: pinLength,
+              message: texts.wallet.add.inputs.errors.lengthExceeded(cardPinInputTitle, pinLength)
             },
             required: {
               value: true,
-              message: texts.wallet.add.inputs.errors.cardPinRequired
+              message: texts.wallet.add.inputs.errors.cardPinRequired(cardPinInputTitle)
             }
           }}
           secureTextEntry={!isPinVisible}

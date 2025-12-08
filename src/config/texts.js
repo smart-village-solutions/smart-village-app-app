@@ -1688,9 +1688,9 @@ export const texts = {
         cardPinInputPlaceholder: 'PIN eingeben',
         cardPinInputTitle: 'PIN',
         errors: {
-          cardNumberRequired: 'Kartennummer muss ausgefüllt werden',
-          cardPinRequired: 'PIN muss ausgefüllt werden',
-          maxLengthExceeded: (maxLength) => `Maximale Länge von ${maxLength} Zeichen überschritten`
+          cardNumberRequired: (cardType) => `${cardType} muss ausgefüllt werden`,
+          cardPinRequired: (cardType) => `${cardType} muss ausgefüllt werden`,
+          lengthExceeded: (cardType, maxLength) => `${cardType} muss ${maxLength}-stellig sein`
         }
       }
     },
