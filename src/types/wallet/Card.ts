@@ -8,7 +8,7 @@ export type TCard = {
   iconName: string;
   leftIcon: React.ReactNode;
   params?: Record<string, any>;
-  pinCode: string;
+  pinCode?: string;
   routeName?: string;
   subtitle: string;
   title: string;
