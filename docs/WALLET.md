@@ -20,15 +20,17 @@ The Wallet module provides a secure way to store digital payment cards locally o
 
 ## Features
 
-- **Add Digital Cards**: Users can add multiple cards by entering card numbers and PIN codes
+- **Add Digital Cards**: Users can add multiple types of cards (coupons, bonus cards) by entering card numbers and PIN codes
+- **Barcode Scanner**: Scan barcodes to automatically fill card number field
 - **QR Code Generation**: Each card generates a QR code for in-store payments
 - **Share Cards**: Users can share their card QR code with others
-- **Balance Checking**: Real-time balance updates via API
-- **Transaction History**: View the last 10 transactions
+- **Balance Checking**: Real-time balance updates via API (for coupon type cards)
+- **Transaction History**: View the last 10 transactions (for coupon type cards)
 - **Card Management**: Delete individual cards or all cards
 - **Duplicate Prevention**: The same card cannot be added multiple times
 - **Custom Card Names**: Users can assign custom names to their cards
 - **Local Storage**: All data is stored securely on the device
+- **Multiple Card Types**: Support for different card types (coupon, bonus) with different validation flows
 
 ## Configuration
 
@@ -70,34 +72,61 @@ Add a `wallet` object to the `settings` object within `globalSettings`:
 
 Create a static content with the name `walletCardTypes` in JSON format. This defines the available card types and their configurations.
 
+The module supports two card types:
+
+- **`coupon`**: Requires API validation, supports balance checking and transactions
+- **`bonus`**: No API validation, simpler workflow without PIN
+
 ```json
 [
   {
-    "type": "Stadtgutschein",
-    "description": "Gutschein mit nummer hinzufügen",
-    "iconName": "gift",
-    "iconColor": "#025200",
-    "iconBackgroundColor": "#4DEA4B20",
+    "type": "bonus",
+    "title": "Bonus Card Title",
+    "description": "Description for bonus card",
+    "iconName": "credit-card",
+    "iconColor": "#000000",
+    "iconBackgroundColor": "#00000020",
     "apiConnection": {
-      "endpoint": "https://api.stadtguthaben.de/widget/codeinfo/v1",
-      "network": "138c3a5c-e304-49bf-8e5c-234137198089",
-      "origin": "https://partner.stadtguthaben.de",
-      "referer": "https://partner.stadtguthaben.de/",
-      "qrEndpoint": "https://qr.stadtguthaben.de/sgh-"
+      "qrEndpoint": ""
     },
     "addCardScreenSettings": {
-      "title": "Stadtgutschein hinzufügen",
-      "description": "Gib die Daten deines Gutscheines ein",
+      "title": "Add Bonus Card",
+      "description": "Enter your bonus card details",
       "inputsInformation": {
-        "maxCardNumberLenght": 12,
-        "maxPinLength": 3,
-        "isPinVisible": true,
-        "cardNumberInputTitle": "Gutscheinummer",
+        "cardNumberLenght": 12,
+        "cardNumberInputTitle": "Card Number",
+        "cardNameInputTitle": "Card Name (optional)",
+        "cardNumberInputPlaceholder": "Card Number",
+        "cardNameInputPlaceholder": "e.g. My Bonus Card"
+      }
+    }
+  },
+  {
+    "type": "coupon",
+    "title": "Coupon Card Title",
+    "description": "Description for coupon card",
+    "iconName": "gift",
+    "iconColor": "#000000",
+    "iconBackgroundColor": "#00000020",
+    "apiConnection": {
+      "endpoint": "https://api.example.com/validate",
+      "network": "your-network-id",
+      "origin": "https://example.com",
+      "referer": "https://example.com/",
+      "qrEndpoint": "https://qr.example.com/"
+    },
+    "addCardScreenSettings": {
+      "title": "Add Coupon Card",
+      "description": "Enter your coupon card details",
+      "inputsInformation": {
+        "cardNumberLenght": 12,
+        "pinLength": 3,
+        "cardNumberInputTitle": "Card Number",
         "cardPinInputTitle": "PIN",
-        "cardNameInputTitle": "Name der Karte (optional)",
-        "cardNumberInputPlaceholder": "Gutscheinummer",
+        "cardNameInputTitle": "Card Name (optional)",
+        "cardNumberInputPlaceholder": "Card Number",
         "cardPinInputPlaceholder": "PIN",
-        "cardNameInputPlaceholder": "z.B. Mein Stadtgutschein"
+        "cardNameInputPlaceholder": "e.g. My Coupon Card"
       }
     }
   }
@@ -106,32 +135,40 @@ Create a static content with the name `walletCardTypes` in JSON format. This def
 
 #### Card Type Parameters
 
-| Parameter                                      | Type    | Required | Description                               |
-| ---------------------------------------------- | ------- | -------- | ----------------------------------------- |
-| `type`                                         | String  | **Yes**  | Card type name (e.g., "Stadtgutschein")   |
-| `description`                                  | String  | **Yes**  | Description of the card type              |
-| `iconName`                                     | String  | **Yes**  | Icon name from tabler-icons               |
-| `iconColor`                                    | String  | **Yes**  | Color of the card icon                    |
-| `iconBackgroundColor`                          | String  | **Yes**  | Background color for the card icon        |
-| `apiConnection`                                | Object  | **Yes**  | API connection details                    |
-| `apiConnection.endpoint`                       | String  | **Yes**  | API endpoint for card validation and info |
-| `apiConnection.network`                        | String  | **Yes**  | Network identifier                        |
-| `apiConnection.origin`                         | String  | **Yes**  | Origin URL for API requests               |
-| `apiConnection.referer`                        | String  | **Yes**  | Referer URL for API requests              |
-| `apiConnection.qrEndpoint`                     | String  | **Yes**  | Base URL for QR code generation           |
-| `addCardScreenSettings`                        | Object  | No       | Screen-specific settings for adding cards |
-| `addCardScreenSettings.title`                  | String  | No       | Title for the add card screen             |
-| `addCardScreenSettings.description`            | String  | No       | Description for the add card screen       |
-| `addCardScreenSettings.inputsInformation`      | Object  | No       | Input field configurations                |
-| `inputsInformation.maxCardNumberLenght`        | Number  | No       | Maximum length for card number            |
-| `inputsInformation.maxPinLength`               | Number  | No       | Maximum length for PIN                    |
-| `inputsInformation.isPinVisible`               | Boolean | No       | Whether PIN should be visible by default  |
-| `inputsInformation.cardNumberInputTitle`       | String  | No       | Label for card number input               |
-| `inputsInformation.cardPinInputTitle`          | String  | No       | Label for PIN input                       |
-| `inputsInformation.cardNameInputTitle`         | String  | No       | Label for card name input                 |
-| `inputsInformation.cardNumberInputPlaceholder` | String  | No       | Placeholder for card number input         |
-| `inputsInformation.cardPinInputPlaceholder`    | String  | No       | Placeholder for PIN input                 |
-| `inputsInformation.cardNameInputPlaceholder`   | String  | No       | Placeholder for card name input           |
+| Parameter                                      | Type   | Required | Description                                                                   |
+| ---------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------------- |
+| `type`                                         | String | **Yes**  | Card type identifier: `"coupon"` or `"bonus"` (used for validation logic)     |
+| `title`                                        | String | **Yes**  | Display title of the card type (shown in card lists)                          |
+| `description`                                  | String | **Yes**  | Description of the card type                                                  |
+| `iconName`                                     | String | **Yes**  | Icon name from tabler-icons                                                   |
+| `iconColor`                                    | String | **Yes**  | Color of the card icon                                                        |
+| `iconBackgroundColor`                          | String | **Yes**  | Background color for the card icon                                            |
+| `apiConnection`                                | Object | **Yes**  | API connection details                                                        |
+| `apiConnection.endpoint`                       | String | No       | API endpoint for card validation (required only for `type: "coupon"`)         |
+| `apiConnection.network`                        | String | No       | Network identifier (required only for `type: "coupon"`)                       |
+| `apiConnection.origin`                         | String | No       | Origin URL for API requests (required only for `type: "coupon"`)              |
+| `apiConnection.referer`                        | String | No       | Referer URL for API requests (required only for `type: "coupon"`)             |
+| `apiConnection.qrEndpoint`                     | String | **Yes**  | Base URL for QR code generation (can be empty string for bonus cards)         |
+| `addCardScreenSettings`                        | Object | No       | Screen-specific settings for adding cards                                     |
+| `addCardScreenSettings.title`                  | String | No       | Title for the add card screen                                                 |
+| `addCardScreenSettings.description`            | String | No       | Description for the add card screen                                           |
+| `addCardScreenSettings.inputsInformation`      | Object | No       | Input field configurations                                                    |
+| `inputsInformation.cardNumberLenght`           | Number | No       | Exact length for card number (renamed from `maxCardNumberLenght`)             |
+| `inputsInformation.pinLength`                  | Number | No       | Exact length for PIN (only for `type: "coupon"`, renamed from `maxPinLength`) |
+| `inputsInformation.cardNumberInputTitle`       | String | No       | Label for card number input                                                   |
+| `inputsInformation.cardPinInputTitle`          | String | No       | Label for PIN input (only for `type: "coupon"`)                               |
+| `inputsInformation.cardNameInputTitle`         | String | No       | Label for card name input                                                     |
+| `inputsInformation.cardNumberInputPlaceholder` | String | No       | Placeholder for card number input                                             |
+| `inputsInformation.cardPinInputPlaceholder`    | String | No       | Placeholder for PIN input (only for `type: "coupon"`)                         |
+| `inputsInformation.cardNameInputPlaceholder`   | String | No       | Placeholder for card name input                                               |
+
+**Important Notes:**
+
+- The `type` field determines the card behavior:
+  - `"coupon"`: Requires PIN, validates via API, shows balance and transactions
+  - `"bonus"`: No PIN required, no API validation, simpler workflow
+- `cardNumberLenght` and `pinLength` define exact lengths (not maximum)
+- For bonus cards, `apiConnection.endpoint`, `network`, `origin`, and `referer` are not required
 
 ## Data Storage
 
@@ -148,8 +185,9 @@ type TCard = {
   iconBackgroundColor: string;
   iconColor: string;
   iconName: string;
-  pinCode: string;
-  type: string;
+  pinCode?: string; // Optional - only required for coupon type cards
+  title: string;
+  type: string; // "coupon" or "bonus"
 };
 ```
 
@@ -166,25 +204,41 @@ The wallet module provides the following helper functions for card management:
 
 ### Adding a Card
 
+#### Standard Flow
+
 1. User navigates to Wallet Home Screen
 2. Clicks "Add Card" button
 3. Selects a card type from the available options
-4. Enters card number and PIN code
-5. Optionally enters a custom card name
-6. App validates the card via API
-7. If valid, card is saved to device storage
-8. User is redirected to the card detail screen
+4. Enters card number manually or uses barcode scanner
+5. For coupon type: Enters PIN code (hidden by default)
+6. For bonus type: No PIN required
+7. Optionally enters a custom card name
+8. For coupon type: App validates the card via API
+9. For bonus type: No API validation
+10. If valid (or no validation required), card is saved to device storage
+11. User is navigated back to Wallet Home Screen
+
+#### Barcode Scanner Flow
+
+1. User clicks "Scan Barcode" button on Add Card screen
+2. Camera scanner opens
+3. User scans barcode
+4. Card number field is automatically filled with scanned data
+5. User continues with standard flow from step 5
 
 ### Viewing Card Details
 
 1. User selects a card from Wallet Home Screen
 2. Card Detail Screen displays:
-   - QR code for payments
+   - QR code for payments (if `qrEndpoint` is configured)
    - Card number (formatted)
-   - PIN code
-   - Current balance
-   - Last 10 transactions
-   - Action buttons (Share, Delete, Refresh Balance)
+   - PIN code (for coupon type cards, with show/hide toggle)
+   - Current balance (for coupon type cards)
+   - Last 10 transactions (for coupon type cards)
+   - Action buttons (Share, Delete)
+   - Refresh Balance button (for coupon type cards only)
+
+**Note:** Bonus cards show a simplified view without balance, transactions, or refresh functionality.
 
 ### Making a Payment
 
@@ -195,22 +249,30 @@ The wallet module provides the following helper functions for card management:
 ### Sharing a Card
 
 1. User clicks the "Share" button on Card Detail Screen
-2. App captures a screenshot of the QR code and card information
-3. Native share dialog opens
-4. User can share via any installed sharing app
+2. App captures a screenshot of the QR code and card information (including PIN if available)
+3. Image is saved to cache directory and converted to shareable format
+4. Native share dialog opens
+5. User can share via any installed sharing app
+
+**Note:** The shared image includes the QR code, card number, and PIN (if applicable) for easy sharing with others.
 
 ### Deleting a Card
 
 1. User clicks the "Delete" button on Card Detail Screen
-2. Confirmation modal appears with balance warning
+2. Confirmation modal appears
+   - For coupon cards: Shows balance warning if balance exists
+   - For bonus cards: Shows standard confirmation
 3. User confirms deletion
 4. Card is removed from device storage
+5. User is navigated back to Wallet Home Screen
 
 ## API Integration
 
 ### Card Validation Endpoint
 
-When a user adds a card, the app makes a request to validate the card:
+**Note:** API validation is only performed for cards with `type: "coupon"`. Bonus cards skip this validation step.
+
+When a user adds a coupon card, the app makes a request to validate the card:
 
 **Request:**
 
@@ -325,16 +387,31 @@ The following default values are used when configuration is not provided:
 
 ### Card Won't Add
 
-- Check if card number and PIN are correct
-- Verify API connection settings in card type configuration
-- Check network connectivity
-- Ensure card is not already added (duplicate check)
+- **For coupon cards:**
+  - Check if card number and PIN are correct
+  - Verify API connection settings in card type configuration
+  - Check network connectivity
+  - Ensure API endpoint is accessible
+- **For all cards:**
+  - Ensure card is not already added (duplicate check)
+  - Verify card number matches the required length in configuration
+  - For coupon cards: Verify PIN matches the required length
 
-### Balance Not Updating
+### Barcode Scanner Issues
+
+- Ensure camera permissions are granted
+- Check if barcode is clear and well-lit
+- Try manual entry if scanner fails
+- Verify barcode format matches expected card number format
+
+### Balance Not Updating (Coupon Cards Only)
 
 - Check API endpoint availability
 - Verify network connection
 - Try manual refresh using the refresh button
+- Ensure API credentials (network, origin, referer) are correct
+
+**Note:** Bonus cards do not support balance checking.
 
 ### QR Code Not Displaying
 

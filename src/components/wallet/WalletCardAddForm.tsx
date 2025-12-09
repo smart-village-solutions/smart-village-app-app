@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert } from 'react-native';
 
@@ -32,11 +32,13 @@ type CardFormData = {
 export const WalletCardAddForm = ({
   apiConnection,
   cardInformation,
-  inputsInformation
+  inputsInformation,
+  scannedCardNumber
 }: {
   apiConnection: TApiConnection;
   cardInformation?: TCard;
   inputsInformation?: TInputsInformation;
+  scannedCardNumber?: string;
 }) => {
   const navigation = useNavigation<StackNavigationProp<Record<string, any>>>();
 
@@ -62,15 +64,22 @@ export const WalletCardAddForm = ({
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    setValue
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
       cardName: '',
-      cardNumber: '',
+      cardNumber: scannedCardNumber,
       pinCode: ''
     }
   });
+
+  useEffect(() => {
+    if (scannedCardNumber) {
+      setValue('cardNumber', scannedCardNumber);
+    }
+  }, [scannedCardNumber, setValue]);
 
   const onSubmit = async (cardData: CardFormData) => {
     const cardInfo = {
@@ -172,7 +181,7 @@ export const WalletCardAddForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop noPaddingBottom>
         <Button title={texts.wallet.add.button} onPress={handleSubmit(onSubmit)} />
       </Wrapper>
     </>

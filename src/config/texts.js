@@ -1678,6 +1678,7 @@ export const texts = {
       button: 'Karte hinzufügen',
       cardAddDescription: 'Geben Sie Ihre Kartendaten ein und speichern Sie sie.',
       cardAddTitle: 'Karte hinzufügen',
+      cardScan: 'Karte scannen',
       noCardsAvailable: 'Keine Kartentypen verfügbar',
       selectCardType: 'Kartentyp auswählen',
       inputs: {
