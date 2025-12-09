@@ -25,6 +25,7 @@ type ImageProps = {
   borderRadius?: number;
   button?: { title: string; onPress: () => void };
   containerStyle?: object | object[];
+  isImageFullWidth?: boolean;
   message?: string;
   PlaceholderContent?: React.ReactNode;
   placeholderStyle?: object | object[];
@@ -40,6 +41,7 @@ export const Image = ({
   borderRadius = 0,
   button,
   containerStyle,
+  isImageFullWidth,
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
   placeholderStyle = styles.placeholderStyle,
@@ -90,7 +92,7 @@ export const Image = ({
 
   const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
   const showChildren = !!message || !!button || showImageRights;
-  const defaultImageStyle = stylesForImage(aspectRatio).defaultStyle;
+  const defaultImageStyle = stylesForImage(aspectRatio, isImageFullWidth).defaultStyle;
 
   const imageStyle = useMemo(
     () => [style || defaultImageStyle, { borderRadius }],
@@ -148,8 +150,12 @@ const styles = StyleSheet.create({
 });
 
 /* eslint-disable react-native/no-unused-styles */
-const stylesForImage = (aspectRatio?: { width: number; height: number }) => {
-  const width = imageWidth();
+const stylesForImage = (
+  aspectRatio?: { width: number; height: number },
+  isImageFullWidth?: boolean
+) => {
+  const width = imageWidth(isImageFullWidth);
+
   return StyleSheet.create({
     defaultStyle: {
       height: imageHeight(width, aspectRatio),

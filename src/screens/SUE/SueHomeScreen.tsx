@@ -103,6 +103,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     <SafeAreaViewFlex>
       <ScrollView>
         <ConnectedImagesCarousel
+          isImageFullWidth
           navigation={navigation}
           publicJsonFile="sueHomeCarousel"
           refreshTimeKey="publicJsonFile-sueHomeCarousel"

@@ -21,6 +21,7 @@ export const ImagesCarousel = ({
   autoplayInterval,
   data,
   isDisturber,
+  isImageFullWidth,
   navigation,
   refreshTimeKey
 }) => {
@@ -59,7 +60,7 @@ export const ImagesCarousel = ({
     isMainserverUp,
     refreshTime
   });
-  const itemWidth = imageWidth();
+  const itemWidth = imageWidth(isImageFullWidth);
 
   const renderItem = useCallback(
     ({ item, refreshInterval }) => {
@@ -102,6 +103,7 @@ export const ImagesCarousel = ({
                   aspectRatio={aspectRatio}
                   button={item.button}
                   containerStyle={styles.imageContainer}
+                  isImageFullWidth={isImageFullWidth}
                   message={item.message}
                   navigation={navigation}
                   refreshInterval={item.refreshInterval || refreshInterval}
@@ -118,6 +120,7 @@ export const ImagesCarousel = ({
           aspectRatio={aspectRatio}
           button={item.button}
           containerStyle={styles.imageContainer}
+          isImageFullWidth={isImageFullWidth}
           message={item.message}
           navigation={navigation}
           refreshInterval={item.refreshInterval || refreshInterval}
@@ -229,6 +232,7 @@ ImagesCarousel.propTypes = {
   autoplayInterval: PropTypes.number,
   data: PropTypes.array.isRequired,
   isDisturber: PropTypes.bool,
+  isImageFullWidth: PropTypes.bool,
   navigation: PropTypes.object,
   refreshTimeKey: PropTypes.string
 };
