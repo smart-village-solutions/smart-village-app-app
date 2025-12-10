@@ -22,7 +22,6 @@
     },
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
-    "orientation": "default",
     "primaryColor": "#107821",
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -108,7 +107,7 @@
       [
         "expo-screen-orientation",
         {
-          "initialOrientation": "PORTRAIT"
+          "initialOrientation": "DEFAULT"
         }
       ],
       [
