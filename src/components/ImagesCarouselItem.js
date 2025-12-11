@@ -18,6 +18,7 @@ export const ImagesCarouselItem = memo(
     button,
     buttons,
     containerStyle,
+    isImageFullWidth,
     message,
     navigation,
     refreshInterval,
@@ -34,14 +35,23 @@ export const ImagesCarouselItem = memo(
           onPress={() => navigation.navigate({ name, params })}
           activeOpacity={0.8}
         >
-          <Image {...{ button, source, message, containerStyle, aspectRatio }} />
+          <Image {...{ button, source, message, containerStyle, aspectRatio, isImageFullWidth }} />
         </TouchableOpacity>
       );
     }
 
     return (
       <Image
-        {...{ button, buttons, source, message, containerStyle, aspectRatio, refreshInterval }}
+        {...{
+          button,
+          buttons,
+          source,
+          message,
+          containerStyle,
+          aspectRatio,
+          isImageFullWidth,
+          refreshInterval
+        }}
       />
     );
   }
@@ -54,6 +64,7 @@ ImagesCarouselItem.propTypes = {
   button: PropTypes.object,
   buttons: PropTypes.arrayOf(PropTypes.object),
   containerStyle: PropTypes.object,
+  isImageFullWidth: PropTypes.bool,
   message: PropTypes.string,
   navigation: PropTypes.object,
   refreshInterval: PropTypes.number,

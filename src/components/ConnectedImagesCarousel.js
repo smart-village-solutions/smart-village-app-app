@@ -11,7 +11,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { ImagesCarousel } from './ImagesCarousel';
 import { LoadingContainer } from './LoadingContainer';
 
-export const ConnectedImagesCarousel = ({ navigation, publicJsonFile }) => {
+export const ConnectedImagesCarousel = ({ isImageFullWidth, navigation, publicJsonFile }) => {
   const { data, loading, refetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
     name: publicJsonFile,
@@ -34,6 +34,7 @@ export const ConnectedImagesCarousel = ({ navigation, publicJsonFile }) => {
       navigation={navigation}
       data={_shuffle(data)}
       refreshTimeKey={`publicJsonFile-${publicJsonFile}`}
+      isImageFullWidth={isImageFullWidth}
       aspectRatio={
         globalSettings?.[publicJsonFile]?.imageAspectRatio
           ? parsedImageAspectRatio(globalSettings[publicJsonFile].imageAspectRatio)
@@ -44,6 +45,7 @@ export const ConnectedImagesCarousel = ({ navigation, publicJsonFile }) => {
 };
 
 ConnectedImagesCarousel.propTypes = {
+  isImageFullWidth: PropTypes.bool,
   navigation: PropTypes.object.isRequired,
   publicJsonFile: PropTypes.string.isRequired
 };
