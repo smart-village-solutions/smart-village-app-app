@@ -95,7 +95,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           backImage={() => (
             <Image
               source={require('../../../assets/sue-icon-pin.png')}
-              containerStyle={styles.logo}
+              style={styles.logo}
               borderRadius={normalize(20)}
             />
           )}
