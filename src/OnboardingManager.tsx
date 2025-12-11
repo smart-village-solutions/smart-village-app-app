@@ -44,6 +44,9 @@ const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
 
       // set orientation to "default", to allow both portrait and landscape
       ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
+    } else {
+      // lock to portrait during onboarding
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     }
   }, [onboardingComplete]);
 };
