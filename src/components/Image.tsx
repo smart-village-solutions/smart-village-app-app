@@ -8,7 +8,7 @@ import { colors, consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
 
-import { ImageButton } from './ImageButton';
+import { ImageButton, TImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
 
@@ -23,7 +23,8 @@ const NO_IMAGE = { uri: 'NO_IMAGE' };
 type ImageProps = {
   aspectRatio?: { width: number; height: number };
   borderRadius?: number;
-  button?: { title: string; onPress: () => void };
+  button?: TImageButton;
+  buttons?: TImageButton[];
   containerStyle?: object | object[];
   message?: string;
   PlaceholderContent?: React.ReactNode;
@@ -39,6 +40,7 @@ export const Image = ({
   aspectRatio,
   borderRadius = 0,
   button,
+  buttons = [],
   containerStyle,
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
@@ -120,6 +122,10 @@ export const Image = ({
             <View style={[styles.overlayFill, styles.contentContainerStyle]}>
               {!!message && <ImageMessage message={message} />}
               {!!button && <ImageButton button={button} />}
+              {!!buttons?.length &&
+                buttons.map((button, index) => (
+                  <ImageButton key={`${button.title}-${index}`} button={button} />
+                ))}
               {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
             </View>
           )}

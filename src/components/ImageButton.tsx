@@ -6,7 +6,7 @@ import { Icon } from '../config';
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
 
-type TImageButton = {
+export type TImageButton = {
   iconName?: keyof typeof Icon;
   params?: any;
   routeName: string;
