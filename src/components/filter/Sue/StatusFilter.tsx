@@ -17,7 +17,7 @@ type Props = {
 };
 
 export const StatusFilter = ({ containerStyle, data, filters, label, name, setFilters }: Props) => (
-  <View style={(styles.container, containerStyle)}>
+  <View style={[styles.container, containerStyle]}>
     <Label bold>{label}</Label>
     <WrapperRow spaceBetween>
       {data?.map((item: StatusProps, index: number) => (
