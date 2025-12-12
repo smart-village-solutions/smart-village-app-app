@@ -4,8 +4,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
-import { Alert, Linking, StyleSheet, View } from 'react-native';
+import { Alert, Linking, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
@@ -24,7 +25,7 @@ import { SETTINGS_SCREENS, TValues, mapToMapMarkers } from '../../../screens';
 import { MapMarker, ScreenName } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
-import { Wrapper, WrapperHorizontal } from '../../Wrapper';
+import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { MapLibre } from '../../map';
 
@@ -267,8 +268,8 @@ export const SueReportLocation = ({
   };
 
   return (
-    <View style={[styles.container, isFullscreenMap && styles.noPaddingTop]}>
-      <WrapperHorizontal>
+    <>
+      <Wrapper noPaddingBottom noPaddingTop={isFullscreenMap}>
         <MapLibre
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
@@ -280,7 +281,12 @@ export const SueReportLocation = ({
             styles.map,
             isFullscreenMap && styles.fullscreenMap,
             isFullscreenMap && {
-              height: device.height - safeAreaBottom - safeAreaTop - bottomTabBarHeight
+              height:
+                device.height -
+                safeAreaBottom -
+                safeAreaTop -
+                bottomTabBarHeight -
+                (device.platform === 'android' ? getStatusBarHeight() : 0)
             }
           ]}
           onMapPress={onMapPress}
@@ -292,7 +298,7 @@ export const SueReportLocation = ({
           setPinEnabled
           preserveZoomOnSelectedPosition
         />
-      </WrapperHorizontal>
+      </Wrapper>
 
       <Wrapper style={[isFullscreenMap && styles.wrapperHidden]}>
         <RegularText small>{texts.sue.report.mapHint}</RegularText>
@@ -378,26 +384,20 @@ export const SueReportLocation = ({
           ref={cityInputRef}
         />
       </Wrapper>
-    </View>
+    </>
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: normalize(16),
-    width: '100%'
-  },
   fullscreenMap: {
     marginLeft: 0,
+    marginRight: 0,
     width: device.width
   },
   map: {
     height: normalize(300),
     width: device.width - 2 * normalize(16)
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   wrapperHidden: {
     display: 'none'

@@ -5,6 +5,7 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
@@ -146,8 +147,10 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
          * connected to a network with no information of internet connectivity.
          */}
         {((!!latitude && !!longitude) || !!address) && (
-          <Wrapper noPaddingBottom>
-            <BoldText>{texts.sue.location}</BoldText>
+          <Wrapper noPaddingBottom noPaddingTop={isFullscreenMap}>
+            <BoldText style={[isFullscreenMap && styles.wrapperHidden]}>
+              {texts.sue.location}
+            </BoldText>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
               <MapLibre
                 isMyLocationButtonVisible={false}
@@ -162,7 +165,12 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
                   styles.map,
                   isFullscreenMap && styles.fullscreenMap,
                   isFullscreenMap && {
-                    height: device.height - safeAreaBottom - safeAreaTop - bottomTabBarHeight
+                    height:
+                      device.height -
+                      safeAreaBottom -
+                      safeAreaTop -
+                      bottomTabBarHeight -
+                      (device.platform === 'android' ? getStatusBarHeight() : 0)
                   }
                 ]}
                 onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}

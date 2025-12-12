@@ -805,7 +805,7 @@ export const MapLibre = ({
           style={[
             styles.buttonsContainer,
             styles.myLocationButtonContainer,
-            isFullscreenMap && { right: normalize(4) }
+            isFullscreenMap && { right: 0 }
           ]}
         >
           <View style={styles.buttons}>
@@ -826,7 +826,7 @@ export const MapLibre = ({
             styles.maximizeButtonContainer,
             isFullscreenMap && {
               bottom: normalize(15) + (safeAreaBottom ? 0 : bottomTabBarHeight),
-              right: normalize(4)
+              right: 0
             }
           ]}
         >

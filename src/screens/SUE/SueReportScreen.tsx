@@ -522,6 +522,11 @@ export const SueReportScreen = ({
     }
   }, [currentProgress]);
 
+  // Ensure map fullscreen mode is exited when navigating between steps
+  useEffect(() => {
+    setIsFullscreenMap(false);
+  }, [currentProgress]);
+
   const onSubmit = useCallback(
     async (sueReportData: TReports) => {
       Keyboard.dismiss();
@@ -639,13 +644,12 @@ export const SueReportScreen = ({
 
   return (
     <SafeAreaViewFlex>
-      <SueReportProgress
-        progress={sueProgressWithConfig}
-        currentProgress={currentProgress + 1}
-        isFullscreenMap={isFullscreenMap}
-      />
-
       <DefaultKeyboardAvoidingView>
+        <SueReportProgress
+          progress={sueProgressWithConfig}
+          currentProgress={currentProgress + 1}
+          isFullscreenMap={isFullscreenMap}
+        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           horizontal
@@ -690,14 +694,14 @@ export const SueReportScreen = ({
                 />
               )}
 
-              {device.platform === 'android' && (
+              {device.platform === 'android' && !isFullscreenMap && (
                 <View style={{ height: normalize(keyboardHeight) * 0.5 }} />
               )}
             </ScrollView>
           ))}
         </ScrollView>
 
-        <Divider />
+        {!isFullscreenMap && <Divider />}
 
         {!!service?.serviceName && !!service.description && currentProgress === 0 && (
           <Wrapper style={styles.noPaddingBottom}>
