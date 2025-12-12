@@ -142,7 +142,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
           }, [selectedDate[item.name]]);
 
           return (
-            <View key={item.name} style={(styles.container, containerStyle)}>
+            <View key={item.name} style={[styles.container, containerStyle]}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
