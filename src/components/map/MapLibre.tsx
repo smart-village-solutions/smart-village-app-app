@@ -71,6 +71,16 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
   );
 };
 
+// useBottomTabBarHeight throws if no bottom tab navigator is in context;
+// fall back to 0 for stack-only screens.
+const useSafeBottomTabBarHeight = () => {
+  try {
+    return useBottomTabBarHeight();
+  } catch (error) {
+    return 0;
+  }
+};
+
 type Props = {
   calloutTextEnabled?: boolean;
   clusterDistance?: number;
@@ -190,7 +200,7 @@ export const MapLibre = ({
   const mapPressTimeoutRef = useRef<any>(null);
   const hasInitialFitRef = useRef(false);
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const bottomTabBarHeight = useSafeBottomTabBarHeight();
 
   let initialRegion: LocationObjectCoords = {
     latitude: 51.1657,
