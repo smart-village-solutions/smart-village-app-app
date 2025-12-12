@@ -6,7 +6,7 @@
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/smart-village-solutions/smart-village-app-app",
     "platforms": ["ios", "android"],
-    "version": "4.1.4",
+    "version": "4.2.0",
     "runtimeVersion": {
       "policy": "appVersion"
     },

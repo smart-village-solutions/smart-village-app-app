@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.2.0] :crown:
+
+The new version updates the map module to a whole new feeling, extends profile features and upgrades Expo to latest SDK version 54
+
+## Breaking
+
+The map implementation has been completely replaced from `react-native-maps` to `@maplibre/maplibre-react-native`. This means:
+
+- any custom map configurations or styles need to be updated to work with MapLibre
+- map customization API has changed significantly
+
+### Added
+
+- added the feature of creating an account and logging in via keykloak
+- added automatic login feature for the coupon module
+- added feature to display icons for categories
+- added `@rnrepo/expo-config-plugin` to reduce android build time
+- added the ability to display full-width images in html view
+- added Map/List view switcher component for sue module
+- added touchable reset functionality in city selection
+- added safe call for bottom tab bar height to avoid crashes in apps with drawer navigation
+- temporary opt-out for iOS 26 glass effects with `UIDesignRequiresCompatibility` set to `true` in `infoPlist`
+
+### Changed
+
+- upgraded Expo to version 53: https://expo.dev/changelog/sdk-53
+- upgraded Expo to version 54: https://expo.dev/changelog/sdk-54
+- changed to map package `@maplibre/maplibre-react-native`
+- enhanced map handling and layout adjustments
+- changed image component with `Expo-Image`
+- enhanced button and image button components
+- changed the draggable property of customisable tiles with `react-native-gesture-handler`
+- refactored view type handling in sue module
+
+### Fixed
+
+- fixed an error in the coupon module where discounts were not displayed when the discount value was 0
+- fixed the city selection issue
+- fixed image styling in CardListItem
+- simplified marker anchor positioning
+- updated style prop for images in `SueReportSend` and `SueHomeScreen`
+- fixed missing `refreshTimeKey` prop to `ConnectedImagesCarousel`
+- fixed carousel image full screen in landscape mode
+
 ## [4.1.4]
 
 This version adds new features to the Volunteer module and introduces more personalized push notifications
@@ -22,6 +66,7 @@ This version adds new features to the Volunteer module and introduces more perso
 - added a feature to reposition the copyright information in the image on the news details screen
 
 ### Changed
+
 - adjusted querying and renderings for vouchers
 
 ### Fixed
