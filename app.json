@@ -54,7 +54,8 @@
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp", "youtube"],
-        "LSMinimumSystemVersion": "12.0"
+        "LSMinimumSystemVersion": "12.0",
+        "UIDesignRequiresCompatibility": true
       },
       "config": {
         "usesNonExemptEncryption": false
