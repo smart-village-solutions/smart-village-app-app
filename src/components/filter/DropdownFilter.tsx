@@ -93,7 +93,7 @@ export const DropdownFilter = ({
 
   return (
     <>
-      <View style={(styles.container, containerStyle)}>
+      <View style={[styles.container, containerStyle]}>
         <DropdownSelect
           data={dropdownData}
           isOverlayFilter={isOverlayFilter}
