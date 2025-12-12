@@ -3,6 +3,9 @@ import React, { createContext, useEffect, useState } from 'react';
 import { Dimensions } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
+/**
+ * Initial device dimensions used before the first orientation listener callback fires.
+ */
 const defaultDimensions = {
   height: Dimensions.get('window').height,
   width: Dimensions.get('window').width
@@ -13,11 +16,17 @@ const defaultDimensions = {
 const defaultOrientation =
   defaultDimensions.width < defaultDimensions.height ? 'portrait' : 'landscape';
 
+/**
+ * Provides the current orientation (`portrait`/`landscape`) and the corresponding screen size.
+ */
 export const OrientationContext = createContext({
   orientation: defaultOrientation,
   dimensions: defaultDimensions
 });
 
+/**
+ * Maps Expo orientation enums to the string values consumed by the UI.
+ */
 const getOrientation = (orientation) => {
   if (
     orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
@@ -29,6 +38,9 @@ const getOrientation = (orientation) => {
   return 'portrait';
 };
 
+/**
+ * Listens to device orientation changes and updates `OrientationContext` for the subtree.
+ */
 export const OrientationProvider = ({ children }) => {
   const [dimensions, setDimensions] = useState(defaultDimensions);
   const [orientation, setOrientation] = useState(defaultOrientation);

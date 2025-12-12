@@ -2,11 +2,17 @@ import moment from 'moment';
 
 import { OpeningHour } from '../types';
 
+/** A normalized interval that indicates when an opening or closing range starts and ends. */
 type OpeningInterval = {
   timeFrom?: Date;
   timeTo?: Date;
 };
 
+/**
+ * Returns the localized German name for the weekday of the provided date.
+ *
+ * @param date A Date object that should be translated to a weekday name.
+ */
 export const getReadableDay = (date: Date) => {
   switch (date.getDay()) {
     case 0:
@@ -29,6 +35,9 @@ export const getReadableDay = (date: Date) => {
 /**
  * returns whether a date is after the end date or before the start date
  */
+/**
+ * Returns `true` if `date` is after `start` (inclusive) and before `end` (exclusive) when those bounds exist.
+ */
 const dateIsWithinInterval = (date: Date, start?: Date, end?: Date) => {
   // return false if the end is before the date
   if (end) {
@@ -47,6 +56,15 @@ const dateIsWithinInterval = (date: Date, start?: Date, end?: Date) => {
   return true;
 };
 
+/**
+ * Builds a Date instance from a parsed string, optionally overriding the year portion.
+ *
+ * If `useYear` is false, the function replaces the year in `dateString` with the current
+ * year so that recurring opening hour ranges stay relevant.
+ *
+ * @param dateString A date string in the format `DD.MM.YYYY` or similar.
+ * @param useYear If true, keep the original year; otherwise, align to the current year.
+ */
 export const dateWithCorrectYear = (dateString?: string, useYear?: boolean) => {
   if (!dateString) {
     return new Date();
@@ -83,6 +101,9 @@ const getTodayWithTime = (time: string) => {
   return moment(time, 'HH:mm').toDate();
 };
 
+/**
+ * Transforms an `OpeningHour` object into a normalized interval that can be merged with others.
+ */
 const getIntervalFromOpeningTime = (openingHour: OpeningHour) => {
   return {
     timeFrom: openingHour.timeFrom?.length ? getTodayWithTime(openingHour.timeFrom) : undefined,
@@ -129,6 +150,11 @@ const mergeIntervals = (
 /**
  * Merges all overlapping intervals and sorts them.
  * @returns  Disjoint and sorted time intervals
+ */
+/**
+ * Merges overlapping intervals and returns them sorted by start time.
+ *
+ * @param intervals List of intervals that might overlap or be unsorted.
  */
 const mergeAndSortTimeIntervals = (intervals: OpeningInterval[]) => {
   if (!intervals.length) {
@@ -179,6 +205,9 @@ const mergeAndSortTimeIntervals = (intervals: OpeningInterval[]) => {
  * Finds the next interval after, or surrounding the time, that is open, but not closed.
  * It assumes that both the openIntervals and the closedIntervals are consisting of sorted and disjoint intervals.
  */
+/**
+ * Returns the next valid opening time after `time`, respecting explicitly closed intervals.
+ */
 const findNextOpenTime = (
   openIntervals: OpeningInterval[],
   closedIntervals: OpeningInterval[],
@@ -208,6 +237,9 @@ const findNextOpenTime = (
 /**
  * Finds the next interval after, or surrounding the time, that is not open or closed.
  * It assumes that both the openIntervals and the closedIntervals are consisting of sorted and disjoint intervals.
+ */
+/**
+ * Resolves the next moment when the location transitions from open to closed.
  */
 const findNextClosedTime = (
   openIntervals: OpeningInterval[],
@@ -246,6 +278,14 @@ const findNextClosedTime = (
  * timeDiff may be undefined, if there are opening times where either timeFrom or timeTo is missing.
  */
 // eslint-disable-next-line complexity
+/**
+ * Determines whether the provided opening hours include the current moment and when they change.
+ *
+ * @param openingHours Array of `OpeningHour` definitions, including weekday, range, and open/close flags.
+ * @param now Optional date to evaluate. Defaults to the current moment with seconds/milliseconds zeroed.
+ *
+ * @returns `open` to indicate whether the location is currently open, and `timeDiff` with minutes to the next state change.
+ */
 export const isOpen = (
   openingHours: OpeningHour[],
   now = new Date()

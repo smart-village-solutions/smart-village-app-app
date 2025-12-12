@@ -38,6 +38,10 @@ const FILTER_IDS = {
   ATOZ: 4
 };
 
+/**
+ * Landing page for BB-BUS that wires together Matomo tracking, nested queries and filtering UI
+ * to list services by popularity, search or alphabetic grouping.
+ */
 export const IndexScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -89,6 +93,10 @@ export const IndexScreen = ({ navigation }) => {
   const selectedFilter = filter.find((entry) => entry.selected);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
+  /**
+   * Normalises the service list returned by the API and memoises the result to avoid repeat
+   * processing while a user browses through the filters.
+   */
   const getListItems = _memoize(
     (data) =>
       // sort and filter data to return only data with present `object` or `name` alphabetically
@@ -113,6 +121,9 @@ export const IndexScreen = ({ navigation }) => {
     (data, areaId) => [(data[0].object || data[0]).id, data.length, areaId].join('-')
   );
 
+  /**
+   * Converts the raw areas payload into dropdown-ready entries and preselects the current area.
+   */
   const getAreas = (data) => {
     const areas = data?.area;
 
@@ -124,6 +135,9 @@ export const IndexScreen = ({ navigation }) => {
     }));
   };
 
+  /**
+   * Combines the Top 10 ids with the enriched service data so ordering from the CMS is preserved.
+   */
   const getTop10 = (data, top10Ids) => {
     const top10 = data?.publicServiceTypes;
 

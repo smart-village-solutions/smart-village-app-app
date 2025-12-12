@@ -7,6 +7,9 @@ import { BoldText } from '../Text';
 
 import { AZFilterElement } from './AZFilterElement';
 
+/**
+ * Horizontal A–Z selector for BB-BUS entries that mirrors the native picker behavior.
+ */
 export const AZFilter = memo(({ data, setData }) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 

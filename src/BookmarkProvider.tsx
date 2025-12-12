@@ -7,6 +7,7 @@ import {
   toggleBookmark as toggleBookmarkHelper
 } from './helpers';
 
+/** Values exposed via the bookmark context so components can read and mutate favorites. */
 type BookmarkProviderValues = {
   bookmarks?: BookmarkList;
   toggleBookmark: (itemType: string, id: string, suffix?: number | string) => Promise<void>;
@@ -14,10 +15,14 @@ type BookmarkProviderValues = {
 
 // if we try to toggle a bookmark, while the component is not wrapped
 // inside of a provider simply do nothing.
+/** Context exposing the persisted bookmark map and mutation helper. */
 export const BookmarkContext = createContext<BookmarkProviderValues>({
   toggleBookmark: () => new Promise<void>((resolve) => resolve())
 });
 
+/**
+ * Loads bookmarks from storage on mount and provides a toggle helper to update the store and state.
+ */
 export const BookmarkProvider = ({ children }: { children?: React.ReactNode }) => {
   const [bookmarks, setBookmarks] = useState<BookmarkList>();
 

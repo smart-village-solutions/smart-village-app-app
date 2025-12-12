@@ -6,6 +6,9 @@ import { matomoSettings } from './helpers';
 import { useUserInfoAsync } from './hooks';
 import { SettingsContext } from './SettingsProvider';
 
+/**
+ * Initializes Matomo tracking with runtime settings/consent and exposes the tracker via context.
+ */
 export const CustomMatomoProvider = ({ children }) => {
   const [matomoInstance, setMatomoInstance] = useState();
   const getUserInfo = useUserInfoAsync();
