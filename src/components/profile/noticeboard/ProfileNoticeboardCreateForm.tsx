@@ -372,6 +372,7 @@ export const ProfileNoticeboardCreateForm = ({
       }
 
       if (documents?.length) {
+        let documentUrl;
         for (const document of documents) {
           if (!document.id) {
             try {
