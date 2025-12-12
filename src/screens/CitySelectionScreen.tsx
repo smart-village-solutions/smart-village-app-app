@@ -1,6 +1,6 @@
 import _kebabCase from 'lodash/kebabCase';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
   Button,
@@ -10,7 +10,6 @@ import {
   SafeAreaViewFlex,
   ServiceTiles,
   Title,
-  Touchable,
   Wrapper,
   WrapperRow
 } from '../components';
@@ -140,9 +139,9 @@ export const CitySelectionScreen = () => {
         <WrapperRow itemsCenter>
           <Title>{storedCity}</Title>
 
-          <Touchable onPress={onResetPress}>
+          <TouchableOpacity onPress={onResetPress}>
             <Icon.Pen color={colors.darkText} size={normalize(18)} style={styles.paddingLeft} />
-          </Touchable>
+          </TouchableOpacity>
         </WrapperRow>
       </Wrapper>
 
