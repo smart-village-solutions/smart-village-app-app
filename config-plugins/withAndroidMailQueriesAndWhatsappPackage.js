@@ -30,7 +30,7 @@ const withAndroidMailQueriesAndWhatsappPackage = (config) => {
     });
 
     modified = addIntentToQuery({
-      mod,
+      mod: modified,
       intent: { actionName: 'com.whatsapp' }
     });
 
