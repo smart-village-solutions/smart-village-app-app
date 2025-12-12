@@ -79,11 +79,6 @@
         "READ_MEDIA_IMAGES",
         "READ_MEDIA_VIDEO"
       ],
-      "config": {
-        "googleMaps": {
-          "apiKey": "abcdef"
-        }
-      },
       "allowBackup": false
     },
     "plugins": [
