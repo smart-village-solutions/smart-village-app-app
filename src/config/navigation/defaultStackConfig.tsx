@@ -88,6 +88,7 @@ import {
   VoucherIndexScreen,
   VoucherLoginScreen,
   VoucherScannerScreen,
+  WalletHomeScreen,
   WasteCollectionScreen,
   WasteCollectionSettingsScreen,
   WeatherScreen,
@@ -641,6 +642,11 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.voucher.qr },
       routeName: ScreenName.VoucherScanner,
       screenComponent: VoucherScannerScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.wallet.home },
+      routeName: ScreenName.WalletHome,
+      screenComponent: WalletHomeScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.wasteCollection },
