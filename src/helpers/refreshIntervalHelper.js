@@ -1,5 +1,5 @@
-import moment from 'moment';
 import _isEmpty from 'lodash/isEmpty';
+import moment from 'moment';
 
 import { consts } from '../config/consts';
 
@@ -52,6 +52,19 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
         addToStore('refresh-intervals', {
           ...refreshIntervals,
           [refreshTimeKey]: nextHour
+        });
+      }
+
+      break;
+    }
+    case consts.REFRESH_INTERVALS.ONCE_PER_MINUTE: {
+      const nextMinute = moment().add(1, 'minutes').unix();
+
+      if (nextMinute > refreshTime) {
+        // store or update refresh time in AsyncStorage
+        addToStore('refresh-intervals', {
+          ...refreshIntervals,
+          [refreshTimeKey]: nextMinute
         });
       }
 

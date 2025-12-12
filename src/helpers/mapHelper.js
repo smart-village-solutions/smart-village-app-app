@@ -27,3 +27,18 @@ export function locationLink(mapsString, geoLocation) {
       return `https://maps.google.com/?q=${mapsString}`;
   }
 }
+
+export const getBounds = (locations) => {
+  const latitudes = locations.map((l) => l.position.latitude);
+  const longitudes = locations.map((l) => l.position.longitude);
+
+  const north = Math.max(...latitudes);
+  const south = Math.min(...latitudes);
+  const east = Math.max(...longitudes);
+  const west = Math.min(...longitudes);
+
+  return {
+    ne: [east, north],
+    sw: [west, south]
+  };
+};

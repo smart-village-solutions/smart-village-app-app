@@ -111,8 +111,8 @@ type TContent = {
     geoMap: {
       areas: any[];
       center: number[];
-      clisterTreshold: number;
       clusterDistance: number;
+      clusterThreshold: number;
       locationIsRequired: boolean;
       locationStreetIsRequired: boolean;
       minZoom: number;
@@ -125,9 +125,11 @@ type TContent = {
   errorMessage: string;
   errors: any;
   getValues: UseFormGetValues<TValues>;
+  isFullscreenMap: boolean;
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   service?: TService;
+  setIsFullscreenMap: (value: boolean) => void;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setService: any;
   setShowCoordinatesFromImageAlert: (value: boolean) => void;
@@ -144,9 +146,11 @@ const Content = ({
   errorMessage,
   errors,
   getValues,
+  isFullscreenMap,
   requiredInputs,
   selectedPosition,
   service,
+  setIsFullscreenMap,
   setSelectedPosition,
   setService,
   setShowCoordinatesFromImageAlert,
@@ -178,8 +182,10 @@ const Content = ({
           control={control}
           errorMessage={errorMessage}
           getValues={getValues}
+          isFullscreenMap={isFullscreenMap}
           requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
+          setIsFullscreenMap={setIsFullscreenMap}
           setSelectedPosition={setSelectedPosition}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}
@@ -260,6 +266,7 @@ export const SueReportScreen = ({
   const [storedValues, setStoredValues] = useState<TReports>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
   const [contentHeights, setContentHeights] = useState([]);
+  const [isFullscreenMap, setIsFullscreenMap] = useState(false);
 
   const memoizedConfiguration = useMemo(
     () => ({
@@ -515,6 +522,11 @@ export const SueReportScreen = ({
     }
   }, [currentProgress]);
 
+  // Ensure map fullscreen mode is exited when navigating between steps
+  useEffect(() => {
+    setIsFullscreenMap(false);
+  }, [currentProgress]);
+
   const onSubmit = useCallback(
     async (sueReportData: TReports) => {
       Keyboard.dismiss();
@@ -632,9 +644,12 @@ export const SueReportScreen = ({
 
   return (
     <SafeAreaViewFlex>
-      <SueReportProgress progress={sueProgressWithConfig} currentProgress={currentProgress + 1} />
-
       <DefaultKeyboardAvoidingView>
+        <SueReportProgress
+          progress={sueProgressWithConfig}
+          currentProgress={currentProgress + 1}
+          isFullscreenMap={isFullscreenMap}
+        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           horizontal
@@ -665,9 +680,11 @@ export const SueReportScreen = ({
                   errorMessage={errorMessage}
                   errors={errors}
                   getValues={getValues}
+                  isFullscreenMap={isFullscreenMap}
                   requiredInputs={item.requiredInputs}
                   selectedPosition={selectedPosition}
                   service={service}
+                  setIsFullscreenMap={setIsFullscreenMap}
                   setSelectedPosition={setSelectedPosition}
                   setService={setService}
                   setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
@@ -677,14 +694,14 @@ export const SueReportScreen = ({
                 />
               )}
 
-              {device.platform === 'android' && (
+              {device.platform === 'android' && !isFullscreenMap && (
                 <View style={{ height: normalize(keyboardHeight) * 0.5 }} />
               )}
             </ScrollView>
           ))}
         </ScrollView>
 
-        <Divider />
+        {!isFullscreenMap && <Divider />}
 
         {!!service?.serviceName && !!service.description && currentProgress === 0 && (
           <Wrapper style={styles.noPaddingBottom}>
@@ -694,7 +711,11 @@ export const SueReportScreen = ({
         )}
 
         <Wrapper
-          style={[styles.buttonContainer, currentProgress !== 0 && styles.buttonContainerRow]}
+          style={[
+            styles.buttonContainer,
+            currentProgress !== 0 && styles.buttonContainerRow,
+            isFullscreenMap && styles.buttonContainerHidden
+          ]}
         >
           {currentProgress !== 0 && (
             <Button
@@ -730,6 +751,9 @@ export const SueReportScreen = ({
 const styles = StyleSheet.create({
   buttonContainer: {
     paddingBottom: 0
+  },
+  buttonContainerHidden: {
+    display: 'none'
   },
   buttonContainerRow: {
     flexDirection: 'row',

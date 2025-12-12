@@ -1,18 +1,21 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { StackScreenProps } from '@react-navigation/stack';
+import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
-  HeadlineText,
   HtmlView,
   ImageSection,
   LoadingContainer,
-  Map,
+  MapLibre,
   RegularText,
   SafeAreaViewFlex,
   SueCategory,
@@ -25,7 +28,6 @@ import {
 } from '../../components';
 import { colors, device, normalize, texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { ScreenName } from '../../types';
 
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -35,6 +37,9 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const { statuses } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {};
   const [refreshing, setRefreshing] = useState(false);
+  const [isFullscreenMap, setIsFullscreenMap] = useState(false);
+  const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   const { data, refetch, isLoading } = useQuery(
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, queryVariables?.id],
@@ -52,6 +57,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const {
     address,
     description,
+    id,
     lat: latitude,
     long: longitude,
     mediaUrl,
@@ -94,38 +100,41 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
           />
         }
       >
-        <ImageSection mediaContents={mediaContents} />
-        {!mediaContents?.length && <SueImageFallback style={styles.sueImageContainer} />}
+        <View style={[isFullscreenMap && styles.wrapperHidden]}>
+          <ImageSection mediaContents={mediaContents} />
+          {!mediaContents?.length && <SueImageFallback style={styles.sueImageContainer} />}
 
-        {!!serviceName && !!requestedDatetime && (
-          <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
-        )}
+          {!!serviceName && !!requestedDatetime && (
+            <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
+          )}
 
-        {!!title && (
-          <WrapperHorizontal>
-            <HeadlineText big>{title}</HeadlineText>
-          </WrapperHorizontal>
-        )}
-
-        {!!status && <SueStatus iconName={matchedStatus.iconName} status={matchedStatus?.status} />}
-
-        <WrapperHorizontal>
-          <Divider />
-        </WrapperHorizontal>
-
-        {!!description && (
-          <>
-            <Wrapper>
-              <BoldText>{texts.sue.description}</BoldText>
-              <HtmlView big={false} html={description} />
-            </Wrapper>
-
+          {!!title && (
             <WrapperHorizontal>
-              <Divider />
+              <BoldText big>{title}</BoldText>
             </WrapperHorizontal>
-          </>
-        )}
+          )}
 
+          {!!status && (
+            <SueStatus iconName={matchedStatus.iconName} status={matchedStatus?.status} />
+          )}
+
+          <WrapperHorizontal>
+            <Divider />
+          </WrapperHorizontal>
+
+          {!!description && (
+            <>
+              <Wrapper>
+                <BoldText>{texts.sue.description}</BoldText>
+                <HtmlView big={false} html={description} />
+              </Wrapper>
+
+              <WrapperHorizontal>
+                <Divider />
+              </WrapperHorizontal>
+            </>
+          )}
+        </View>
         {/* There are several connection states that can happen
          * a) We are connected to a wifi and our mainserver is up (and reachable)
          *   a.1) OSM is reachable -> everything is fine
@@ -138,52 +147,68 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
          * connected to a network with no information of internet connectivity.
          */}
         {((!!latitude && !!longitude) || !!address) && (
-          <Wrapper noPaddingBottom>
-            <BoldText>{texts.sue.location}</BoldText>
+          <Wrapper noPaddingBottom noPaddingTop={isFullscreenMap}>
+            <BoldText style={[isFullscreenMap && styles.wrapperHidden]}>
+              {texts.sue.location}
+            </BoldText>
             {!!latitude && !!longitude && isConnected && isMainserverUp && (
-              <Map
-                isMaximizeButtonVisible
-                locations={[{ position: { latitude, longitude }, id: serviceRequestId }]}
-                mapStyle={styles.map}
-                onMaximizeButtonPress={() =>
-                  navigation.navigate(ScreenName.MapView, {
-                    locations: [{ position: { latitude, longitude }, id: serviceRequestId }],
-                    selectedMarker: serviceRequestId
-                  })
-                }
-                selectedMarker={serviceRequestId}
+              <MapLibre
+                isMyLocationButtonVisible={false}
+                locations={[
+                  {
+                    iconName: `Sue${_upperFirst(matchedStatus.iconName)}`,
+                    id,
+                    position: { latitude, longitude }
+                  }
+                ]}
+                mapStyle={[
+                  styles.map,
+                  isFullscreenMap && styles.fullscreenMap,
+                  isFullscreenMap && {
+                    height:
+                      device.height -
+                      safeAreaBottom -
+                      safeAreaTop -
+                      bottomTabBarHeight -
+                      (device.platform === 'android' ? getStatusBarHeight() : 0)
+                  }
+                ]}
+                onMaximizeButtonPress={() => setIsFullscreenMap((prev: boolean) => !prev)}
               />
             )}
           </Wrapper>
         )}
-        {!!address && (
-          <Wrapper noPaddingTop>
-            <RegularText>{address.replace('\r\n ', '\r\n')}</RegularText>
-          </Wrapper>
-        )}
 
-        {((!!latitude && !!longitude) || !!address) && (
-          <WrapperHorizontal>
-            <Divider />
-          </WrapperHorizontal>
-        )}
+        <View style={[isFullscreenMap && styles.wrapperHidden]}>
+          {!!address && (
+            <Wrapper noPaddingTop>
+              <RegularText>{address.replace('\r\n ', '\r\n')}</RegularText>
+            </Wrapper>
+          )}
 
-        {!!requestedDatetime && <SueDatetime requestedDatetime={requestedDatetime} />}
-
-        {!!status && <SueStatuses status={status} />}
-
-        {!!serviceNotice && (
-          <>
+          {((!!latitude && !!longitude) || !!address) && (
             <WrapperHorizontal>
               <Divider />
             </WrapperHorizontal>
+          )}
 
-            <Wrapper>
-              <BoldText>{texts.sue.answer}</BoldText>
-              <HtmlView big={false} html={serviceNotice} />
-            </Wrapper>
-          </>
-        )}
+          {!!requestedDatetime && <SueDatetime requestedDatetime={requestedDatetime} />}
+
+          {!!status && <SueStatuses status={status} />}
+
+          {!!serviceNotice && (
+            <>
+              <WrapperHorizontal>
+                <Divider />
+              </WrapperHorizontal>
+
+              <Wrapper>
+                <BoldText>{texts.sue.answer}</BoldText>
+                <HtmlView big={false} html={serviceNotice} />
+              </Wrapper>
+            </>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaViewFlex>
   );
@@ -191,10 +216,18 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  fullscreenMap: {
+    marginLeft: 0,
+    width: device.width
+  },
   map: {
-    width: device.width - 2 * normalize(14)
+    height: normalize(300),
+    width: '100%'
   },
   sueImageContainer: {
     width: '100%'
+  },
+  wrapperHidden: {
+    display: 'none'
   }
 });

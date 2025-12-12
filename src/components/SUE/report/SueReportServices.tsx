@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    padding: normalize(14)
+    padding: normalize(16)
   },
   tile: {
     alignItems: 'center',
