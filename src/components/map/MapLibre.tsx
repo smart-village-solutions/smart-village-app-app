@@ -781,8 +781,8 @@ export const MapLibre = ({
               <MarkerView
                 anchor={
                   layerStyles.singleIcon.iconAnchor == 'bottom'
-                    ? { x: 0.5, y: selectedFeature ? 1.85 : 0.5 }
-                    : { x: 0.5, y: selectedFeature ? 1.45 : 0.5 }
+                    ? { x: 0.5, y: 1.85 }
+                    : { x: 0.5, y: 1.45 }
                 }
                 coordinate={selectedFeature?.geometry?.coordinates}
                 pointerEvents="none"
