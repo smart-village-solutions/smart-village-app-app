@@ -17,13 +17,13 @@ const keyExtractor = (item, index) => index + item.title + item.startDate;
 
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   const initialQueryVariables = {};
-  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(queryVariables);
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
     ...resourceFiltersState[GenericType.ConstructionSite]
   });
+  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(queryVariables);
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITES);
 
   const renderItem = useCallback(
