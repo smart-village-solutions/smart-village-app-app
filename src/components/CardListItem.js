@@ -44,8 +44,8 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
       !!picture?.url && (
         <Image
           borderRadius={sue ? 0 : imageBorderRadius}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
-          containerStyle={[styles.imageContainer, imageStyle]}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, sue && styles.sueImage]}
+          containerStyle={[styles.imageContainer, sue && styles.sueImage, imageStyle]}
           key={keyExtractor(picture.url, index)}
           placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
