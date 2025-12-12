@@ -135,7 +135,7 @@ export const useConsulData = ({ query, queryVariables }) => {
     case QUERY_TYPES.CONSUL.PUBLIC_COMMENT:
       return usePublicComment({ query, queryVariables });
     default:
-      null;
+      return null;
   }
 };
 
