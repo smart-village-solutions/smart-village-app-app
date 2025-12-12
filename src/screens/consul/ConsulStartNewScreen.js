@@ -19,7 +19,7 @@ const getComponent = (query) => {
     case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
       return NewProposal;
     default:
-      null;
+      return null;
   }
 };
 
