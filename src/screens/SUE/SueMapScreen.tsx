@@ -14,6 +14,7 @@ import {
   Image,
   LoadingContainer,
   Map,
+  MapAndListSwitcher,
   RegularText,
   SafeAreaViewFlex,
   SueImageFallback,
@@ -31,7 +32,7 @@ import {
   useSystemPermission
 } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { MapMarker } from '../../types';
+import { MapMarker, SueViewType } from '../../types';
 
 const CloseButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableOpacity
@@ -80,18 +81,21 @@ export const mapToMapMarkers = (
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
+  viewType: SueViewType;
+  setViewType: (viewType: SueViewType) => void;
 };
 
 /* eslint-disable complexity */
-export const SueMapScreen = ({ navigation, route }: Props) => {
+export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props) => {
   const { locationSettings = {} } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
   const { locationService } = settings;
-  const { sueStatus = {} } = appDesignSystem;
+  const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { mapPinColors = {} } = sueStatus;
+  const { showViewSwitcherButton = false } = sueListItem;
   const { geoMap = {} } = sueConfig;
   const systemPermission = useSystemPermission();
   const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
@@ -245,6 +249,9 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
             </ListItem.Content>
           </ListItem>
         </View>
+      )}
+      {!!showViewSwitcherButton && (
+        <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
       )}
     </SafeAreaViewFlex>
   );

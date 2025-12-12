@@ -110,7 +110,7 @@ export const SueReportSend = ({
         <Wrapper>
           <Image
             source={require('../../../../assets/lottie/SUE/cleaning.gif')}
-            containerStyle={styles.image}
+            style={styles.image}
             resizeMode="contain"
           />
         </Wrapper>
