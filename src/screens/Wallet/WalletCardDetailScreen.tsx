@@ -19,6 +19,7 @@ import {
   Button,
   ButtonVariants,
   EmptyMessage,
+  HeadlineText,
   LoadingSpinner,
   Modal,
   RegularText,
@@ -271,7 +272,7 @@ export const WalletCardDetailScreen = ({
 
               {cardType === ECardType.COUPON && (
                 <WrapperVertical noPaddingBottom>
-                  <BoldText>{texts.wallet.detail.lastTransactions}</BoldText>
+                  <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
                 </WrapperVertical>
               )}
             </Wrapper>
