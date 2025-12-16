@@ -29,19 +29,20 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
     subtitle,
     title
   } = item;
+  const { sueListItem = {} } = appDesignSystem;
   const {
     contentSequence,
     imageBorderRadius = normalize(8),
     imageStyle,
     textsStyle = {}
-  } = appDesignSystem;
+  } = sueListItem;
   const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
 
   const sequenceMap = {
     picture: () =>
-      !!picture?.url && (
+      picture?.url ? (
         <Image
           borderRadius={sue ? 0 : imageBorderRadius}
           style={[stylesWithProps({ aspectRatio, horizontal }).image, sue && styles.sueImage]}
@@ -50,7 +51,12 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
           placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
         />
-      ),
+      ) : sue ? (
+        <SueImageFallback
+          key={keyExtractor('fallbackImage', index)}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
+        />
+      ) : null,
     overtitle: () =>
       !!overtitle && (
         <HeadlineText
@@ -78,7 +84,14 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
         </RegularText>
       ),
     title: () =>
-      !!title && (
+      !!title &&
+      (sue ? (
+        <WrapperHorizontal key={keyExtractor(title, index)}>
+          <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
+            {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+          </HeadlineText>
+        </WrapperHorizontal>
+      ) : (
         <HeadlineText
           key={keyExtractor(title, index)}
           small={!bigTitle}
@@ -86,37 +99,37 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
         >
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </HeadlineText>
-      ),
+      )),
 
     // SUE
-    sue: {
-      address: () => (
+    address: () =>
+      !!sue &&
+      !!address && (
         <Wrapper key={keyExtractor(address, index)}>
           <RegularText small>{address}</RegularText>
         </Wrapper>
       ),
-      category: () => (
+    category: () =>
+      !!sue &&
+      !!serviceName &&
+      !!requestedDatetime && (
         <SueCategory
           key={keyExtractor(serviceName, index)}
           serviceName={serviceName}
           requestedDatetime={requestedDatetime}
         />
       ),
-      divider: () => (
+    divider: () =>
+      !!sue && (
         <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
           <Divider />
         </Wrapper>
       ),
-      pictureFallback: () => (
-        <SueImageFallback
-          key={keyExtractor('fallbackImage', index)}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
-        />
-      ),
-      status: () => (
+    status: () =>
+      !!sue &&
+      !!status && (
         <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
       )
-    }
   };
 
   if (contentSequence?.length) {
@@ -139,24 +152,20 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
 
     if (sue) {
       if (!picture?.url) {
-        cardContent.push(sequenceMap.sue.pictureFallback());
+        cardContent.push(sequenceMap.picture());
       }
       if (serviceName && requestedDatetime) {
-        cardContent.push(sequenceMap.sue.category());
-        cardContent.push(sequenceMap.sue.divider());
+        cardContent.push(sequenceMap.category());
+        cardContent.push(sequenceMap.divider());
       }
       if (title) {
-        cardContent.push(
-          <WrapperHorizontal key={keyExtractor(title, index)}>
-            {sequenceMap.title()}
-          </WrapperHorizontal>
-        );
+        cardContent.push(sequenceMap.title());
       }
       if (address) {
-        cardContent.push(sequenceMap.sue.address());
+        cardContent.push(sequenceMap.address());
       }
       if (status) {
-        cardContent.push(sequenceMap.sue.status());
+        cardContent.push(sequenceMap.status());
       }
     }
   }

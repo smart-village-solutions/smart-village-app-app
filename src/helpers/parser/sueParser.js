@@ -32,6 +32,7 @@ export const parseSueData = (data, appDesignSystem) => {
       ...item,
       id: item.serviceRequestId,
       address: item.address?.replace('\r\n ', '\r\n'),
+      appDesignSystem,
       aspectRatio: parsedImageAspectRatio('361:203'),
       bottomDivider: false,
       iconName: matchedStatus?.iconName,
