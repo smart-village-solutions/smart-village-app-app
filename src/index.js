@@ -26,6 +26,7 @@ import {
   storageHelper,
   voucherAuthToken
 } from './helpers';
+import { IconProvider } from './IconProvider';
 import { Navigator } from './navigation/Navigator';
 import { NetworkContext, NetworkProvider } from './NetworkProvider';
 import { OnboardingManager } from './OnboardingManager';
@@ -218,17 +219,19 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <ConfigurationsProvider>
-          <OnboardingManager>
-            <ProfileProvider>
-              <UnreadMessagesProvider>
-                <RootView>
-                  <Navigator navigationType={initialGlobalSettings.navigation} />
-                </RootView>
-              </UnreadMessagesProvider>
-            </ProfileProvider>
-          </OnboardingManager>
-        </ConfigurationsProvider>
+        <IconProvider>
+          <ConfigurationsProvider>
+            <OnboardingManager>
+              <ProfileProvider>
+                <UnreadMessagesProvider>
+                  <RootView>
+                    <Navigator navigationType={initialGlobalSettings.navigation} />
+                  </RootView>
+                </UnreadMessagesProvider>
+              </ProfileProvider>
+            </OnboardingManager>
+          </ConfigurationsProvider>
+        </IconProvider>
       </SettingsProvider>
     </ApolloProvider>
   );

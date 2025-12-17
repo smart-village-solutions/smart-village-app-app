@@ -4,6 +4,7 @@ import { StackNavigationOptions } from '@react-navigation/stack';
 import { ViewStyle } from 'react-native';
 
 import { Icon } from '../config';
+import { IconLibrary } from '../IconProvider';
 
 export enum ScreenName {
   About = 'About',
@@ -144,6 +145,7 @@ export type CustomTab = {
   activeIconName?: keyof typeof Icon;
   iconLandscapeStyle?: ViewStyle;
   iconName: keyof typeof Icon;
+  iconSet?: IconLibrary;
   iconSize?: number;
   iconStyle?: ViewStyle;
   label: string;

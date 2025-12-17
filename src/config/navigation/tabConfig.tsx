@@ -3,6 +3,7 @@ import React from 'react';
 import { ViewStyle } from 'react-native';
 
 import { OrientationAwareIcon } from '../../components';
+import { IconLibrary } from '../../IconProvider';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
 import { colors } from '../colors';
 import { Icon } from '../icons';
@@ -123,6 +124,7 @@ export const createDynamicTabConfig = (
   screen: ScreenName,
   activeIconName?: keyof typeof Icon,
   iconLandscapeStyle?: ViewStyle,
+  iconSet?: IconLibrary,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
   strokeColor?: string,
@@ -149,6 +151,7 @@ export const createDynamicTabConfig = (
             : Icon[iconName as keyof typeof Icon]
         }
         iconName={!!activeIconName && focused ? activeIconName : iconName}
+        iconSet={iconSet}
         landscapeStyle={iconLandscapeStyle}
         size={normalize(iconSize)}
         strokeColor={strokeColor}
