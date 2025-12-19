@@ -357,15 +357,19 @@ export const Overviews = ({ navigation, route }) => {
     );
   }
 
+  const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
+
   return (
     <SafeAreaViewFlex>
-      <Filter
-        filterTypes={filterTypes}
-        initialQueryVariables={initialQueryVariables}
-        isOverlay
-        queryVariables={queryVariables}
-        setQueryVariables={setQueryVariables}
-      />
+      {!showMapFilter && (
+        <Filter
+          filterTypes={filterTypes}
+          initialQueryVariables={initialQueryVariables}
+          isOverlay
+          queryVariables={queryVariables}
+          setQueryVariables={setQueryVariables}
+        />
+      )}
 
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
         switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (

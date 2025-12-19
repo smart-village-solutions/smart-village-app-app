@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -56,18 +56,39 @@ export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenP
   // filter out the category ids
   const categoryIdsTabs = sortedCategoryNames?.map((category) => parseInt(category[0]));
 
+  // initialize selectedCategory with the first category that has items, or just the first category
+  useEffect(() => {
+    if (!categoryIdsTabs?.length || selectedCategory) return;
+
+    // try to find a category with items
+    const categoryWithItems = categoryIdsTabs.find((categoryId: number) => {
+      const itemsForCategory = listItems?.filter((item: { categories: { id: string }[] }) =>
+        item.categories.some((category: { id: string }) => category.id == categoryId)
+      );
+      return itemsForCategory?.filter((item: any) => !item.component)?.length > 0;
+    });
+
+    // select category with items, or fallback to first category
+    setSelectedCategory(categoryWithItems ?? categoryIdsTabs[0]);
+  }, [categoryIdsTabs, selectedCategory, listItems]);
+
   useFocusEffect(
     useCallback(() => {
-      // if there are no filtered list items for the selected category, select the other category
+      // check if the selected category still has items
+      // if not, switch to the other category
       if (
-        !filteredListItems?.filter((item: any) => !item.component)?.length &&
-        !!categoryIdsTabs?.length
+        selectedCategory &&
+        categoryIdsTabs?.length &&
+        !filteredListItems?.filter((item: any) => !item.component)?.length
       ) {
-        setSelectedCategory(
-          categoryIdsTabs.find((categoryId: number) => categoryId != selectedCategory)
+        const otherCategory = categoryIdsTabs.find(
+          (categoryId: number) => categoryId != selectedCategory
         );
+        if (otherCategory) {
+          setSelectedCategory(otherCategory);
+        }
       }
-    }, [filteredListItems, selectedCategory, categoryIdsTabs])
+    }, [selectedCategory, categoryIdsTabs, filteredListItems])
   );
 
   // add the section header component to the beginning of the list items, that will be at index 1,

@@ -3,6 +3,7 @@ import _sortBy from 'lodash/sortBy';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconUrl, colors, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -34,6 +35,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
   const [categoryIds, setCategoryIds] = useState<string[]>(
     queryVariables.categoryIds?.map((item) => item.toString()) || []
   );
+  const safeAreaInsets = useSafeAreaInsets();
 
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.CATEGORIES_FILTER), {
     variables: {
@@ -47,7 +49,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
   );
 
   useEffect(() => {
-    refetch({ limit: undefined, categoryIds });
+    refetch?.({ limit: undefined, categoryIds });
   }, [categoryIds]);
 
   const onPress = (item: { id: string | number }, isActive: boolean) => {
@@ -63,12 +65,20 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
 
   if (loading) return null;
 
+  const horizontalPadding = normalize(16);
+  const contentPaddingLeft = horizontalPadding + safeAreaInsets.left;
+  const contentPaddingRight = horizontalPadding + safeAreaInsets.right;
+
   return (
     <View style={styles.filterContainer}>
       <FlatList
         data={filter}
         horizontal
         keyExtractor={keyExtractor}
+        contentContainerStyle={{
+          paddingLeft: contentPaddingLeft,
+          paddingRight: contentPaddingRight
+        }}
         renderItem={({ item, index }) => {
           const isActive = categoryIds.includes(item.id.toString());
 
@@ -133,6 +143,6 @@ const styles = StyleSheet.create({
     marginRight: normalize(16)
   },
   list: {
-    paddingLeft: normalize(10)
+    flexGrow: 0
   }
 });

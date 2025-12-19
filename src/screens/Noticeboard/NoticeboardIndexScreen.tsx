@@ -173,20 +173,40 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     }, [])
   );
 
+  // initialize selectedCategory with the first category that has items, or just the first category
+  useEffect(() => {
+    if (!categoryIdsTabs?.length || selectedCategory) return;
+
+    // try to find a category with items
+    const categoryWithItems = categoryIdsTabs.find((categoryId: number) => {
+      const itemsForCategory = listItems?.filter((item: { categories: { id: string }[] }) =>
+        item.categories.some((category: { id: string }) => category.id == categoryId)
+      );
+      return itemsForCategory?.filter((item: any) => !item.component)?.length > 0;
+    });
+
+    // select category with items, or fallback to first category
+    setSelectedCategory(categoryWithItems ?? categoryIdsTabs[0]);
+  }, [categoryIdsTabs, selectedCategory, listItems]);
+
   useFocusEffect(
     useCallback(() => {
-      // if there are no filtered list items for the selected category, select the other category
+      // after refetch, check if the selected category still has items
+      // if not, switch to the other category
       if (
         !loading &&
-        !filteredListItems?.filter((item: any) => !item.component)?.length &&
-        !!categoryIdsTabs?.length &&
-        !!selectedCategory
+        selectedCategory &&
+        categoryIdsTabs?.length &&
+        !filteredListItems?.filter((item: any) => !item.component)?.length
       ) {
-        setSelectedCategory(
-          categoryIdsTabs.find((categoryId: number) => categoryId != selectedCategory)
+        const otherCategory = categoryIdsTabs.find(
+          (categoryId: number) => categoryId != selectedCategory
         );
+        if (otherCategory) {
+          setSelectedCategory(otherCategory);
+        }
       }
-    }, [loading, filteredListItems, selectedCategory, categoryIdsTabs])
+    }, [loading, selectedCategory, categoryIdsTabs, filteredListItems])
   );
 
   // add the section header component to the beginning of the list items, that will be at index 1,

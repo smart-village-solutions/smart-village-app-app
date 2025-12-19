@@ -3,7 +3,14 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, DeviceEventEmitter, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  DeviceEventEmitter,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle
+} from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import { DateData, Direction } from 'react-native-calendars/src/types';
 import { useInfiniteQuery, useQuery } from 'react-query';
@@ -37,6 +44,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   query: string;
   queryVariables: { contentContainerId?: number; dateRange?: string[]; limit?: number };
+  subListContainerStyle?: StyleProp<ViewStyle>;
 };
 
 const today = moment().format('YYYY-MM-DD');
@@ -49,7 +57,8 @@ export const Calendar = ({
   eventListIntro,
   navigation,
   query,
-  queryVariables
+  queryVariables,
+  subListContainerStyle
 }: Props) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -143,7 +152,7 @@ export const Calendar = ({
         });
       }
     },
-    [query, queryVariables, contentContainerId]
+    [query, subList, queryVariables, navigation, contentContainerId]
   );
 
   const onMonthChange = useCallback(
@@ -199,7 +208,7 @@ export const Calendar = ({
     dates[selectedDay] = {
       ...(dates[selectedDay] ?? {}),
       selected: true,
-      selectedColor: colors.lighterPrimary
+      selectedColor: colors.calendarSelected
     };
 
     return dates;
@@ -298,8 +307,9 @@ export const Calendar = ({
           )
         }
         theme={{
-          todayTextColor: colors.primary,
-          todayBackgroundColor: colors.lighterPrimaryRgba,
+          calendarBackground: colors.calendarBackground,
+          todayTextColor: colors.calendarTodayText,
+          selectedDayTextColor: colors.calendarSelectedDayText,
           indicatorColor: colors.refreshControl,
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
@@ -309,13 +319,23 @@ export const Calendar = ({
             width: DOT_SIZE
           }
         }}
+        style={styles.noPaddingLeftAndRight}
       />
 
       {subList && (
         <ListComponent
-          data={loadingSubList || isRefetchingSubList ? [] : listItems}
+          containerStyle={subListContainerStyle}
+          data={listItems}
           fetchMoreData={fetchMoreData}
           ListFooterComponent={() => {
+            if (loadingSubList || isRefetchingSubList) {
+              return (
+                <LoadingContainer>
+                  <ActivityIndicator color={colors.refreshControl} />
+                </LoadingContainer>
+              );
+            }
+
             if (eventListIntro?.buttonType == EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING) {
               return <View style={styles.spacer} />;
             }
@@ -323,18 +343,12 @@ export const Calendar = ({
             return null;
           }}
           ListEmptyComponent={
-            loadingSubList || isRefetchingSubList ? (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.refreshControl} />
-              </LoadingContainer>
-            ) : (
-              <>
-                <EmptyMessage title={texts.empty.list} />
-                {eventListIntro?.buttonType === EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
-                  <View style={styles.spacer} />
-                )}
-              </>
-            )
+            <>
+              <EmptyMessage title={texts.empty.list} />
+              {eventListIntro?.buttonType === EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
+                <View style={styles.spacer} />
+              )}
+            </>
           }
           ListHeaderComponent={<View style={styles.spacerSmall} />}
           navigation={navigation}
@@ -353,5 +367,9 @@ const styles = StyleSheet.create({
   },
   spacerSmall: {
     height: normalize(20)
+  },
+  noPaddingLeftAndRight: {
+    paddingLeft: 0,
+    paddingRight: 0
   }
 });

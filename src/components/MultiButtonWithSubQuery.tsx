@@ -1,8 +1,8 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 
-import { SubQuery } from '../types';
 import { Icon } from '../config';
+import { SubQuery } from '../types';
 
 import { Button } from './Button';
 

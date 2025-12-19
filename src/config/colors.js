@@ -28,6 +28,10 @@ export const colors = {
   overlayRgba: 'rgba(20, 20, 20, 0.7)', // black with 0.7 alpha
 
   surface: white,
+  calendarBackground: white,
+  calendarTodayText: '#107821', // primary
+  calendarSelectedDayText: black,
+  calendarSelected: '#5EC66F', // lighterPrimary
   transparent: 'transparent',
   gray20,
   gray40,

@@ -292,8 +292,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
                   onDayPress={onDayPress}
                   renderArrow={renderArrow}
                   theme={{
-                    todayTextColor: colors.primary,
-                    todayBackgroundColor: colors.lighterPrimaryRgba,
+                    calendarBackground: colors.calendarBackground,
+                    todayTextColor: colors.calendarTodayText,
+                    selectedDayTextColor: colors.calendarSelectedDayText,
                     indicatorColor: colors.refreshControl,
                     dotStyle: {
                       borderRadius: DOT_SIZE / 2,

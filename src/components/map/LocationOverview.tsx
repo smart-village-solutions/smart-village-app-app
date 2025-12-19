@@ -167,9 +167,10 @@ export const LocationOverview = ({
     return <LoadingSpinner loading />;
   }
 
+  const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
   const mapMarkers = mapToMapMarkers(pointsOfInterest);
 
-  if (!mapMarkers?.length) {
+  if (!mapMarkers?.length && !showMapFilter) {
     return (
       <Wrapper>
         <RegularText placeholder small center>
@@ -199,7 +200,7 @@ export const LocationOverview = ({
       : undefined;
 
     item.leftIcon = (
-      <View style={[styles.iconContainer, styles.imageSize]}>
+      <View style={[styles.iconContainer, styles.imageStyle]}>
         {!!SelectedIcon && <SelectedIcon color={colors.darkerPrimary} />}
       </View>
     );
@@ -215,11 +216,9 @@ export const LocationOverview = ({
 
   return (
     <>
-      {(queryVariables?.categoryIds?.length || 0) > 1 && (
-        <ChipFilter queryVariables={queryVariables} refetch={refetch} />
-      )}
+      {showMapFilter && <ChipFilter queryVariables={queryVariables} refetch={refetch} />}
 
-      {!!mapMarkers?.length && (
+      {(!!mapMarkers?.length || showMapFilter) && (
         <MapLibre
           currentPosition={currentPosition}
           isMultipleMarkersMap
@@ -229,6 +228,7 @@ export const LocationOverview = ({
           onMarkerPress={setSelectedPointOfInterest}
           selectedMarker={selectedPointOfInterest}
           selectedPosition={selectedPosition}
+          showMapFilter={showMapFilter}
         />
       )}
 
@@ -247,7 +247,7 @@ export const LocationOverview = ({
           <TextListItem
             containerStyle={styles.textListItemContainer}
             imageContainerStyle={styles.imageRadius}
-            imageStyle={styles.imageSize}
+            imageStyle={styles.imageStyle}
             item={{
               ...item,
               bottomDivider: false,
@@ -273,7 +273,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: normalize(8),
     justifyContent: 'center'
   },
-  imageSize: {
+  imageStyle: {
+    borderBottomRightRadius: 0,
+    borderTopRightRadius: 0,
     height: normalize(96),
     width: normalize(96)
   },
