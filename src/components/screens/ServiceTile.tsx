@@ -18,7 +18,10 @@ export type TServiceTile = {
   iconName?: ComponentProps<typeof IconSet>['name'];
   image: string;
   isVisible?: boolean;
-  numberOfTiles?: number;
+  numberOfTiles?: {
+    landscape?: number;
+    portrait?: number;
+  };
   params?: any;
   query?: string;
   routeName: string;
@@ -93,7 +96,7 @@ export const ServiceTile = ({
 
   return (
     <ServiceBox
-      bigTile={!!item.tile}
+      bigTile={!!item.tile && !item.title}
       dimensions={dimensions}
       hasTileStyle={hasTileStyle}
       numberOfTiles={item?.numberOfTiles}
@@ -161,9 +164,10 @@ export const ServiceTile = ({
                 },
                 !!item.tile &&
                   stylesWithProps({
-                    tileSizeFactor,
+                    item,
                     orientation,
-                    safeAreaInsets
+                    safeAreaInsets,
+                    tileSizeFactor
                   }).bigTile
               ]}
               PlaceholderContent={null}
@@ -235,16 +239,19 @@ const styles = StyleSheet.create({
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
-  tileSizeFactor = 1,
+  item,
   orientation,
-  safeAreaInsets
+  safeAreaInsets,
+  tileSizeFactor = 1
 }: {
-  tileSizeFactor?: number;
+  item: TServiceTile;
   orientation: string;
   safeAreaInsets: EdgeInsets;
+  tileSizeFactor?: number;
 }) => {
   const containerPadding = normalize(14);
-  const numberOfTiles = orientation === 'landscape' ? 5 : 3;
+  const { numberOfTiles: { landscape = 5, portrait = 3 } = {} } = item;
+  const numberOfTiles = orientation === 'landscape' ? landscape : portrait;
   const deviceHeight = device.height - safeAreaInsets.left - safeAreaInsets.right;
 
   // calculate tile sizes based on device orientation, safe area insets and padding

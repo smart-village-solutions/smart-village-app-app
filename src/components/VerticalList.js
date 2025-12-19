@@ -16,6 +16,7 @@ const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 /* eslint-disable complexity */
 export const VerticalList = ({
+  containerStyle,
   data,
   fetchMoreData,
   isIndexStartingAt1 = false,
@@ -134,7 +135,7 @@ export const VerticalList = ({
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainerStyle}
       stickyHeaderIndices={stickyHeaderIndices}
-      style={[styles.container, isPartOfIndexScreen && styles.indexScreenContainer]}
+      style={[styles.container, isPartOfIndexScreen && styles.indexScreenContainer, containerStyle]}
     />
   );
 };
@@ -159,6 +160,7 @@ const styles = StyleSheet.create({
 });
 
 VerticalList.propTypes = {
+  containerStyle: PropTypes.object,
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   isIndexStartingAt1: PropTypes.bool,

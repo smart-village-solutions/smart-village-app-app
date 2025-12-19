@@ -90,11 +90,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       topDivider
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
-    let titleText = withCard ? (
-      <BoldText small style={styles.topMargin}>
-        {trimNewLines(title)}
-      </BoldText>
-    ) : isHeadlineTitle ? (
+    let titleText = isHeadlineTitle ? (
       <HeadlineText small>{trimNewLines(title)}</HeadlineText>
     ) : withCard ? (
       <BoldText style={styles.topMargin}>{trimNewLines(title)}</BoldText>

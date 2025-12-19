@@ -262,6 +262,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                 navigation={navigation}
                 query={query}
                 queryVariables={queryVariables}
+                subListContainerStyle={styles.noPaddingHorizontal}
               />
             ) : (
               <EmptyMessage title={texts.empty.list} />
@@ -341,5 +342,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
 const styles = StyleSheet.create({
   noPaddingBottom: {
     paddingBottom: 0
+  },
+  noPaddingHorizontal: {
+    paddingHorizontal: 0
   }
 });

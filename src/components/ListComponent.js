@@ -51,6 +51,7 @@ const getComponent = (query, horizontal, sectionByDate) => {
 // the ListComponent will default to being horizontal for CardLists,
 // which can be overwritten by passing in the horizontal prop
 export const ListComponent = ({
+  containerStyle,
   contentContainerStyle,
   data,
   estimatedItemSize,
@@ -88,6 +89,7 @@ export const ListComponent = ({
   return (
     <Component
       categoryTitles={categoryTitles}
+      containerStyle={containerStyle}
       contentContainerStyle={contentContainerStyle}
       data={data}
       estimatedItemSize={estimatedItemSize}
@@ -114,6 +116,7 @@ export const ListComponent = ({
 };
 
 ListComponent.propTypes = {
+  containerStyle: PropTypes.object,
   contentContainerStyle: PropTypes.object,
   data: PropTypes.array,
   estimatedItemSize: PropTypes.number,

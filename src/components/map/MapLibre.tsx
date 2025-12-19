@@ -831,7 +831,8 @@ export const MapLibre = ({
           style={[
             styles.buttonsContainer,
             styles.myLocationButtonContainer,
-            isFullscreenMap && { right: 0 }
+            isFullscreenMap && { right: 0 },
+            otherProps?.showMapFilter && { top: normalize(64) }
           ]}
         >
           <View style={styles.buttons}>

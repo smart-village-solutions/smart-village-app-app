@@ -443,7 +443,9 @@ export const ProfileNoticeboardCreateForm = ({
 
       await createGenericItem({
         variables: {
-          categoryName: noticeboardNewData.noticeboardType,
+          categoryName: !isCarpool
+            ? texts.noticeboard.categoryNames[noticeboardNewData.noticeboardType]
+            : noticeboardNewData.noticeboardType,
           contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
           dates: [

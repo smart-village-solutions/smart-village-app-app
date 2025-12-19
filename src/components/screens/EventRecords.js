@@ -4,7 +4,13 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, DeviceEventEmitter, RefreshControl, View } from 'react-native';
+import {
+  ActivityIndicator,
+  DeviceEventEmitter,
+  RefreshControl,
+  StyleSheet,
+  View
+} from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
@@ -319,6 +325,7 @@ export const EventRecords = ({ navigation, route }) => {
               navigation={navigation}
               query={query}
               queryVariables={queryVariables}
+              subListContainerStyle={styles.noPaddingHorizontal}
             />
           ) : (
             <EmptyMessage title={texts.empty.list} showIcon />
@@ -351,6 +358,12 @@ export const EventRecords = ({ navigation, route }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  noPaddingHorizontal: {
+    paddingHorizontal: 0
+  }
+});
 
 EventRecords.propTypes = {
   navigation: PropTypes.object.isRequired,

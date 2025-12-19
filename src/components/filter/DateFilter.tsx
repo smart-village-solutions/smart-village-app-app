@@ -45,7 +45,7 @@ const CalendarView = ({
     dates[date] = {
       ...(dates[date] ?? {}),
       selected: true,
-      selectedColor: colors.lighterPrimary
+      selectedColor: colors.calendarSelected
     };
 
     return dates;
@@ -93,8 +93,9 @@ const CalendarView = ({
         }
         renderArrow={renderArrow}
         theme={{
-          todayTextColor: colors.secondary,
-          indicatorColor: colors.secondary,
+          todayTextColor: colors.calendarTodayText,
+          selectedDayTextColor: colors.calendarSelectedDayText,
+          indicatorColor: colors.refreshControl,
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
             height: DOT_SIZE,

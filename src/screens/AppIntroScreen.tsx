@@ -12,17 +12,10 @@ import {
   ViewStyle
 } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import {
-  BoldText,
-  Checkbox,
-  Image,
-  RegularText,
-  SafeAreaViewFlex,
-  Wrapper,
-  WrapperVertical
-} from '../components';
+import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { colors, device, Icon, normalize, texts } from '../config';
 import { addToStore, Initializer } from '../helpers';
 import { useStaticContent } from '../hooks';
@@ -189,7 +182,7 @@ const TermsAndConditionsSection = ({
     <View style={{ position: 'absolute', bottom: normalize(180), width: '100%' }}>
       <Wrapper>
         <Checkbox
-          containerStyle={[styles.leftAligned, { backgroundColor }]}
+          containerStyle={{ backgroundColor }}
           boldTitle={false}
           center={false}
           checked={hasAcceptedDataPrivacy}
@@ -211,24 +204,26 @@ const TermsAndConditionsSection = ({
         presentationStyle="pageSheet"
         visible={isModalVisibleDataPrivacy}
       >
-        <View style={styles.spacer}>
-          <TouchableOpacity
-            onPress={() => setModalVisibleDataPrivacy(false)}
-            style={styles.termsAndConditionsCloseButton}
-          >
-            <Icon.Close />
-          </TouchableOpacity>
-        </View>
-        <HtmlScreen
-          navigation={undefined}
-          route={{
-            params: {
-              title: texts.profile.privacyCheckLink,
-              query: QUERY_TYPES.PUBLIC_HTML_FILE,
-              queryVariables: { name: contentName }
-            }
-          }}
-        />
+        <SafeAreaView style={styles.flex}>
+          <View style={styles.spacer}>
+            <TouchableOpacity
+              onPress={() => setModalVisibleDataPrivacy(false)}
+              style={styles.termsAndConditionsCloseButton}
+            >
+              <Icon.Close />
+            </TouchableOpacity>
+          </View>
+          <HtmlScreen
+            navigation={undefined}
+            route={{
+              params: {
+                title: texts.profile.privacyCheckLink,
+                query: QUERY_TYPES.PUBLIC_HTML_FILE,
+                queryVariables: { name: contentName }
+              }
+            }}
+          />
+        </SafeAreaView>
       </Modal>
     </View>
   );
@@ -265,15 +260,17 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
   );
 
   const TitleComponent = () => (
-    <BoldText big style={styles.leftAligned}>
-      {item.title.toUpperCase()}
-    </BoldText>
+    <Wrapper noPaddingBottom>
+      <BoldText big style={styles.leftAligned}>
+        {item.title.toUpperCase()}
+      </BoldText>
+    </Wrapper>
   );
 
   const TextComponent = () => (
-    <WrapperVertical>
+    <Wrapper>
       <RegularText style={styles.leftAligned}>{item.text}</RegularText>
-    </WrapperVertical>
+    </Wrapper>
   );
 
   const getPropertyOrder = (obj: AppIntroSlide) => {
@@ -431,6 +428,9 @@ const styles = StyleSheet.create({
   leftAligned: {
     paddingHorizontal: normalize(40),
     textAlign: 'left'
+  },
+  flex: {
+    flex: 1
   },
   hiddenDot: {
     backgroundColor: colors.surface
