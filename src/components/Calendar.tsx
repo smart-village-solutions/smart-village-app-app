@@ -64,8 +64,7 @@ export const Calendar = ({
   const [queryVariablesWithDateRangeSubList, setQueryVariablesWithDateRangeSubList] = useState<any>(
     {
       ...queryVariables,
-      dateRange: [today, today],
-      onlyUniqEvents: true
+      dateRange: [today, today]
     }
   );
   const contentContainerId = queryVariables.contentContainerId;
@@ -125,8 +124,7 @@ export const Calendar = ({
         if (subList) {
           setQueryVariablesWithDateRangeSubList({
             ...queryVariables,
-            dateRange: [day.dateString, day.dateString],
-            onlyUniqEvents: true
+            dateRange: [day.dateString, day.dateString]
           });
         } else {
           navigation.push(ScreenName.Index, {
@@ -253,8 +251,7 @@ export const Calendar = ({
     subList &&
       setQueryVariablesWithDateRangeSubList({
         ...queryVariables,
-        dateRange: queryVariablesWithDateRangeSubList.dateRange,
-        onlyUniqEvents: true
+        dateRange: queryVariablesWithDateRangeSubList.dateRange
       });
   }, [queryVariables]);
 
