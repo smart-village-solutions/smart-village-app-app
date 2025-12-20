@@ -172,7 +172,7 @@ const TermsAndConditionsSection = ({
   setShowButtonTermsAndConditions
 }: {
   backgroundColor?: string;
-  contentName: string;
+  contentName?: string;
   setShowButtonTermsAndConditions: (value: boolean) => void;
 }) => {
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
@@ -281,7 +281,7 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
     };
 
     return Object.keys(obj)
-      .filter((key) => key in propertyMap)
+      .filter((key) => !!obj[key] && key in propertyMap)
       .map((key) => ({ key, Component: propertyMap[key] }));
   };
 
