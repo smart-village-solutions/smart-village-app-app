@@ -29,11 +29,10 @@ import { EmptyMessage } from './EmptyMessage';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
 import { renderArrow } from './calendarArrows';
-import { EVENT_SUGGESTION_BUTTON } from './screens';
 
 setupLocales();
 
-const { CALENDAR, ROOT_ROUTE_NAMES } = consts;
+const { CALENDAR, EVENT_SUGGESTION_BUTTON, ROOT_ROUTE_NAMES } = consts;
 const { DOT_SIZE, MAX_DOTS_PER_DAY } = CALENDAR;
 export const REFRESH_CALENDAR = 'REFRESH_CALENDAR';
 

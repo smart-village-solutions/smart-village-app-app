@@ -14,20 +14,7 @@ import {
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
-import {
-  Calendar,
-  CalendarListToggle,
-  EmptyMessage,
-  EventSuggestionButton,
-  Filter,
-  ListComponent,
-  LoadingContainer,
-  REFRESH_CALENDAR,
-  RegularText,
-  SafeAreaViewFlex,
-  WrapperVertical
-} from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -50,11 +37,18 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
+import { Calendar, REFRESH_CALENDAR } from '../Calendar';
+import { CalendarListToggle } from '../CalendarListToggle';
+import { EmptyMessage } from '../EmptyMessage';
+import { EventSuggestionButton } from '../EventSuggestionButton';
+import { Filter } from '../filter';
+import { ListComponent } from '../ListComponent';
+import { LoadingContainer } from '../LoadingContainer';
+import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
+import { RegularText } from '../Text';
+import { WrapperVertical } from '../Wrapper';
 
-export const EVENT_SUGGESTION_BUTTON = {
-  TOP: 'top',
-  BOTTOM_FLOATING: 'bottom-floating'
-};
+const { EVENT_SUGGESTION_BUTTON } = consts;
 
 const keyForSelectedValueByQuery = (isLocationFilter) =>
   isLocationFilter ? 'location' : 'categoryId';
@@ -197,12 +191,15 @@ export const EventRecords = ({ navigation, route }) => {
 
     return parsedListItems;
   }, [
-    additionalData,
-    data?.pages?.flatMap((page) => page?.[query]),
-    hasDailyFilterSelection,
     query,
-    queryVariables.dateRange,
-    isLocationAlertShow
+    data?.pages,
+    additionalData,
+    queryVariables,
+    hasDailyFilterSelection,
+    currentPosition,
+    isLocationAlertShow,
+    locationSettings,
+    navigation
   ]);
 
   const refresh = useCallback(async () => {
@@ -231,7 +228,14 @@ export const EventRecords = ({ navigation, route }) => {
       locations: eventRecordsAddressesData,
       queryVariables
     });
-  }, [data]);
+  }, [
+    data,
+    eventRecordsAddressesData,
+    eventRecordsCategoriesData,
+    query,
+    queryVariables,
+    resourceFilters
+  ]);
 
   useEffect(() => {
     updateResourceFiltersStateHelper({
@@ -240,7 +244,7 @@ export const EventRecords = ({ navigation, route }) => {
       resourceFiltersDispatch,
       resourceFiltersState
     });
-  }, [query, queryVariables]);
+  }, [query, queryVariables, resourceFiltersDispatch, resourceFiltersState]);
 
   const fetchMoreData = useCallback(async () => {
     if (showCalendar) return { data: { [query]: [] } };
@@ -250,7 +254,7 @@ export const EventRecords = ({ navigation, route }) => {
     }
 
     return {};
-  }, [data, fetchNextPage, showCalendar, hasNextPage, query]);
+  }, [fetchNextPage, showCalendar, hasNextPage, query]);
 
   const eventSuggestionOnPress = useCallback(() => {
     if (eventListIntro.url) {

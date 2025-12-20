@@ -4,20 +4,18 @@ import React, { useCallback, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import {
-  ConversationListItem,
-  GroupedListItem,
-  GroupedSectionHeader,
-  SearchResultSectionList,
-  SectionHeader,
-  VoucherListItem,
-  WasteCollectionListItem
-} from '../components';
 import { CardListItem } from '../components/CardListItem';
+import { GroupedListItem } from '../components/GroupedListItem';
+import { GroupedSectionHeader } from '../components/GroupedSectionHeader';
+import { SectionHeader } from '../components/SectionHeader';
 import { TextListItem } from '../components/TextListItem';
+import { ConversationListItem } from '../components/profile/ConversationListItem';
+import { SearchResultSectionList } from '../components/search/SearchResultSectionList';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
+import { VoucherListItem } from '../components/vouchers/VoucherListItem';
+import { WasteCollectionListItem } from '../components/waste/WasteCollectionListItem';
 import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';

@@ -14,23 +14,7 @@ import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import {
-  Button,
-  CategoryList,
-  EmptyMessage,
-  Filter,
-  HeaderLeft,
-  HtmlView,
-  IndexFilterWrapperAndList,
-  IndexMapSwitch,
-  ListComponent,
-  LoadingContainer,
-  LocationOverview,
-  RegularText,
-  SafeAreaViewFlex,
-  WrapperVertical
-} from '../../components';
-import { colors, Icon, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -56,16 +40,27 @@ import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { GenericType } from '../../types';
+import { Button } from '../Button';
+import { CategoryList } from '../CategoryList';
+import { EmptyMessage } from '../EmptyMessage';
+import { Filter } from '../filter';
+import { HeaderLeft } from '../HeaderLeft';
+import { HtmlView } from '../HtmlView';
+import { IndexFilterWrapperAndList } from '../IndexFilterWrapperAndList';
+import { IndexMapSwitch } from '../IndexMapSwitch';
+import { ListComponent } from '../ListComponent';
+import { LoadingContainer } from '../LoadingContainer';
+import { LocationOverview } from '../map/LocationOverview';
+import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
+import { RegularText } from '../Text';
+import { WrapperVertical } from '../Wrapper';
 
 const FILTER_TYPES = {
   LIST: 'list',
   MAP: 'map'
 };
 
-export const SWITCH_BETWEEN_LIST_AND_MAP = {
-  TOP_FILTER: 'top-filter',
-  BOTTOM_FLOATING_BUTTON: 'bottom-floating-button'
-};
+const { SWITCH_BETWEEN_LIST_AND_MAP } = consts;
 
 const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
@@ -239,13 +234,17 @@ export const Overviews = ({ navigation, route }) => {
     return parsedListItems;
   }, [
     query,
-    queryVariables,
     data,
     titleDetail,
     bookmarkable,
+    queryVariables,
+    subQuery,
     sortByDistance,
-    position,
-    isLocationAlertShow
+    currentPosition,
+    radiusSearchByDistance,
+    isLocationAlertShow,
+    locationSettings,
+    navigation
   ]);
 
   const refresh = useCallback(() => {

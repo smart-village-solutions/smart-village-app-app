@@ -2,13 +2,14 @@ import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
 import { BackToTop } from './BackToTop';
-import { SWITCH_BETWEEN_LIST_AND_MAP } from './screens';
+
+const { SWITCH_BETWEEN_LIST_AND_MAP } = consts;
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 

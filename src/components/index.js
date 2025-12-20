@@ -50,7 +50,7 @@ export * from './DropdownHeader';
 export * from './DropdownSelect';
 export * from './EditHeader';
 export * from './EmptyMessage';
-export * from './EventSuggeestionButton';
+export * from './EventSuggestionButton';
 export * from './FavoritesHeader';
 export * from './GroupedListItem';
 export * from './GroupedSectionHeader';

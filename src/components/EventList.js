@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { normalize } from '../config';
+import { consts, normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
 import { LoadingSpinner } from './LoadingSpinner';
-import { EVENT_SUGGESTION_BUTTON } from './screens';
+
+const { EVENT_SUGGESTION_BUTTON } = consts;
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 

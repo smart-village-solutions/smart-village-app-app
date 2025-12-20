@@ -2,9 +2,11 @@ import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
+import { consts } from '../config';
 
 import { Button } from './Button';
-import { EVENT_SUGGESTION_BUTTON } from './screens';
+
+const { EVENT_SUGGESTION_BUTTON } = consts;
 
 export const EventSuggestionButton = ({
   buttonTitle,

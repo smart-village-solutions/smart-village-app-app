@@ -2,14 +2,15 @@ import { FlashList } from '@shopify/flash-list';
 import React, { useContext, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { normalize } from '../config';
+import { consts, normalize } from '../config';
 import { useGroupedData, useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
 import { BackToTop } from './BackToTop';
 import { LoadingSpinner } from './LoadingSpinner';
-import { SWITCH_BETWEEN_LIST_AND_MAP } from './screens';
+
+const { SWITCH_BETWEEN_LIST_AND_MAP } = consts;
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 

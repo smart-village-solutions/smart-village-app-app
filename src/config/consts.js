@@ -99,6 +99,11 @@ export const consts = {
     MAX_DOTS_PER_DAY: 5
   },
 
+  EVENT_SUGGESTION_BUTTON: {
+    TOP: 'top',
+    BOTTOM_FLOATING: 'bottom-floating'
+  },
+
   POLL_INTERVALS: {
     WEATHER: 3600000
   },
@@ -138,6 +143,11 @@ export const consts = {
   MAP: {
     DEFAULT_PIN: 'defaultPin',
     OWN_LOCATION_PIN: 'ownLocationPin'
+  },
+
+  SWITCH_BETWEEN_LIST_AND_MAP: {
+    TOP_FILTER: 'top-filter',
+    BOTTOM_FLOATING_BUTTON: 'bottom-floating-button'
   },
 
   MEDIA_TYPES: {
