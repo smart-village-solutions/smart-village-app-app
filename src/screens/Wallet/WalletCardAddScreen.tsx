@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 
 import {
-  Button,
   DefaultKeyboardAvoidingView,
   SafeAreaViewFlex,
   WalletCardAddForm,
   WalletCardScanner,
   WalletHeader,
-  Wrapper,
   WrapperVertical
 } from '../../components';
 import { texts } from '../../config';
@@ -55,11 +53,8 @@ export const WalletCardAddScreen = ({ route }: { route: RouteProp<any, any> }) =
             cardInformation={card}
             inputsInformation={inputsInformation}
             scannedCardNumber={cardNumber}
+            setIsScannerOpen={setIsScannerOpen}
           />
-
-          <Wrapper noPaddingTop>
-            <Button title={texts.wallet.add.cardScan} onPress={() => setIsScannerOpen(true)} />
-          </Wrapper>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
