@@ -96,7 +96,7 @@ export const ServiceTile = ({
 
   return (
     <ServiceBox
-      bigTile={!!item.tile && !item.title}
+      bigTile={!!item.tile}
       dimensions={dimensions}
       hasTileStyle={hasTileStyle}
       numberOfTiles={item?.numberOfTiles}
@@ -108,7 +108,10 @@ export const ServiceTile = ({
       ]}
     >
       <TouchableOpacity
-        style={[hasTileStyle && styles.button]}
+        style={[
+          hasTileStyle && styles.button,
+          !!item.tile && !!item.title && styles.buttonWithTitle
+        ]}
         onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
@@ -203,6 +206,9 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     width: '100%'
+  },
+  buttonWithTitle: {
+    width: device.width / 3 - normalize(16)
   },
   editableTile: {
     flex: 1,
