@@ -1684,6 +1684,7 @@ export const texts = {
       inputs: {
         cardNameInputPlaceholder: 'Kartenname eingeben',
         cardNameInputTitle: 'Kartenname',
+        cardNumberHint: 'Bitte Nummer eingeben oder per Kamera scannen.',
         cardNumberInputPlaceholder: 'Kartennummer eingeben',
         cardNumberInputTitle: 'Kartennummer',
         cardPinInputPlaceholder: 'PIN eingeben',
