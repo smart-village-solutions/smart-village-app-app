@@ -108,10 +108,7 @@ export const ServiceTile = ({
       ]}
     >
       <TouchableOpacity
-        style={[
-          hasTileStyle && styles.button,
-          !!item.tile && !!item.title && styles.buttonWithTitle
-        ]}
+        style={[hasTileStyle && styles.button]}
         onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
@@ -188,7 +185,16 @@ export const ServiceTile = ({
               center
               accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
               numberOfLines={itemNumberOfLines || numberOfLines}
-              style={normalizedFontStyle}
+              style={[
+                normalizedFontStyle,
+                !!item.tile &&
+                  stylesWithProps({
+                    item,
+                    orientation,
+                    safeAreaInsets,
+                    tileSizeFactor
+                  }).bigTileTitle
+              ]}
             >
               {item.title}
             </BoldText>
@@ -206,9 +212,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     width: '100%'
-  },
-  buttonWithTitle: {
-    width: device.width / 3 - normalize(16)
   },
   editableTile: {
     flex: 1,
@@ -268,6 +271,10 @@ const stylesWithProps = ({
   return StyleSheet.create({
     bigTile: {
       height: tileSize * tileSizeFactor,
+      marginBottom: 0,
+      width: tileSize - containerPadding / 2
+    },
+    bigTileTitle: {
       marginBottom: 0,
       width: tileSize - containerPadding / 2
     }
