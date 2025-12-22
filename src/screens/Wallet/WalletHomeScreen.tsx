@@ -35,7 +35,9 @@ const footer = ({
       <Button
         title={buttonText}
         onPress={() => {
-          navigation.navigate(ScreenName.WalletCardsList);
+          navigation.navigate(ScreenName.WalletCardsList, {
+            title: texts.screenTitles.wallet.cardsList
+          });
         }}
       />
 
@@ -117,7 +119,7 @@ export const WalletHomeScreen = () => {
         <Icon.NamedIcon name={card.iconName} color={card.iconColor} />
       </Wrapper>
     ),
-    params: { card },
+    params: { card, title: texts.screenTitles.wallet.detail },
     routeName: ScreenName.WalletCardDetail,
     subtitle: card.description,
     title: card.cardName || card.title

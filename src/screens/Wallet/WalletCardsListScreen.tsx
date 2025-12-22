@@ -14,7 +14,7 @@ import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { ScreenName, TCard } from '../../types';
 
-export const WalletCardsListScreen = () => {
+export const WalletCardsListScreen = ({ route }: { route: RouteProp<any, any> }) => {
   const { isConnected } = useContext(NetworkContext);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -53,7 +53,7 @@ export const WalletCardsListScreen = () => {
           <Icon.NamedIcon name={iconName} color={iconColor} />
         </Wrapper>
       ),
-      params: { card },
+      params: { card, title: texts.screenTitles.wallet.cardAdd },
       routeName: ScreenName.WalletCardAdd,
       subtitle: description,
       title,

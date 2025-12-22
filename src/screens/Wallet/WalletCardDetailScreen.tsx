@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -19,6 +19,7 @@ import {
   Button,
   ButtonVariants,
   EmptyMessage,
+  HeadlineText,
   LoadingSpinner,
   Modal,
   RegularText,
@@ -80,7 +81,7 @@ export const WalletCardDetailScreen = ({
   route: RouteProp<{ params: { card: TCard } }>;
 }) => {
   const { card } = route.params;
-  const { apiConnection, cardNumber, pinCode, type: cardType } = card;
+  const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = card;
   const [isFirstLoading, setFirstLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [cardData, setCardData] = useState<TCard | TCardInfo>(card);
@@ -115,7 +116,7 @@ export const WalletCardDetailScreen = ({
       // Wait for ViewShot to mount
       setTimeout(async () => {
         const base64 = await viewShotRef?.current?.capture();
-        const fileUri = `${FileSystem.cacheDirectory}wallet-card-${cardNumber}.png`;
+        const fileUri = `${FileSystem.cacheDirectory}${cardName ? cardName : title}.png`;
 
         // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
         await FileSystem.writeAsStringAsync(fileUri, base64, {
@@ -185,7 +186,7 @@ export const WalletCardDetailScreen = ({
         }
         ListHeaderComponent={
           <>
-            {!!apiConnection.qrEndpoint && !!cardNumber && (
+            {!!cardNumber && (
               <Wrapper itemsCenter>
                 <TouchableOpacity
                   onPress={() => setIsFullScreenQR(true)}
@@ -271,7 +272,7 @@ export const WalletCardDetailScreen = ({
 
               {cardType === ECardType.COUPON && (
                 <WrapperVertical noPaddingBottom>
-                  <BoldText>{texts.wallet.detail.lastTransactions}</BoldText>
+                  <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
                 </WrapperVertical>
               )}
             </Wrapper>
