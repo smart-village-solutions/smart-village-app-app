@@ -267,7 +267,7 @@ buck-out/
 
 # Expo
 .expo/
-web-build/
-dist/
+# Temporary documentation output
+docs/typedoc/
 
 # @end expo-cli

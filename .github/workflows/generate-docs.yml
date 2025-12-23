@@ -1,0 +1,30 @@
+name: Generate documentation
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  jsdoc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        run: |
+          git clone --depth 1 "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" "$GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE"
+          git checkout "$GITHUB_REF_NAME"
+
+      - name: Install Node.js 20
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Generate docs
+        run: yarn generate-docs
+        env:
+          CI: true

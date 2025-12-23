@@ -19,6 +19,10 @@ import { getQuery, QUERY_TYPES } from '../queries';
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
+/**
+ * Lists all bookmarked entries for a specific category by re-running the underlying query with
+ * the stored bookmark ids and rendering them via the shared `ListComponent`.
+ */
 export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const queryKey = query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query;

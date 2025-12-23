@@ -5,6 +5,10 @@ import { ScrollView } from 'react-native';
 import { CrossData, Logo, RegularText, Wrapper } from '../components';
 import { texts } from '../config';
 
+/**
+ * Shows meta information for a data provider including its logo and linked content via
+ * `CrossData`.
+ */
 export const DataProviderScreen = ({ navigation, route }) => {
   const dataProviderName = route.params?.dataProviderName ?? '';
   const logo = route.params?.logo ?? '';
