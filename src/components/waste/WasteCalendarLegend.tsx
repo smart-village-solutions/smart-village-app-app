@@ -9,14 +9,15 @@ import { WasteCalendarLegendEntry } from './WasteCalendarLegendEntry';
 
 export const WasteCalendarLegend = ({
   data,
-  dots
+  selectedDay
 }: {
   data?: WasteTypeData;
-  dots: {
-    color: string;
-    selectedColor: string;
-  }[];
+  selectedDay: {
+    dots: { color: string; selectedColor: string }[];
+    note?: string | null;
+  };
 }) => {
+  const { dots = [], note = null } = selectedDay || {};
   if (!data || !dots?.length) {
     return null;
   }
@@ -35,11 +36,12 @@ export const WasteCalendarLegend = ({
         (key) =>
           selectedData[key] && (
             <WasteCalendarLegendEntry
-              key={selectedData[key].label}
               color={selectedData[key].color}
-              selectedColor={selectedData[key].selected_color}
-              label={`  ${selectedData[key].label}`}
               dotStyle={styles.dot}
+              key={selectedData[key].label}
+              label={`${selectedData[key].label}`}
+              note={note}
+              selectedColor={selectedData[key].selected_color}
             />
           )
       )}

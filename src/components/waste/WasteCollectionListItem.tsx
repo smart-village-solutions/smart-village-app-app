@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Divider, Tooltip } from 'react-native-elements';
+import { Divider } from 'react-native-elements';
 
-import { colors, device, Icon, normalize } from '../../config';
+import { colors, normalize } from '../../config';
 import { momentFormat } from '../../helpers';
 import { HeadlineText, RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
@@ -37,19 +37,10 @@ export const WasteCollectionListItem = ({ item: groupedItem, options }) => {
                           {usedTypes[typeKey].color !== usedTypes[typeKey].selected_color && (
                             <Dot color={usedTypes[typeKey].selected_color} />
                           )}
-                          <RegularText> {usedTypes[typeKey].label} </RegularText>
-                          {item.note && (
-                            <Tooltip
-                              backgroundColor={colors.darkText}
-                              containerStyle={{ height: 'auto' }}
-                              overlayColor={colors.shadowRgba}
-                              popover={<RegularText lightest>{item.note}</RegularText>}
-                              withOverlay={device.platform === 'android'}
-                              withPointer
-                            >
-                              <Icon.Info size={normalize(15)} />
-                            </Tooltip>
-                          )}
+                          <View style={styles.labelContainer}>
+                            <RegularText>{usedTypes[typeKey].label} </RegularText>
+                            {!!item.note && <RegularText error>{item.note}</RegularText>}
+                          </View>
                         </WrapperRow>
                       </View>
                     )
@@ -73,6 +64,11 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: normalize(8),
     alignItems: 'center'
+  },
+  labelContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   width15: {
     width: '15%'
