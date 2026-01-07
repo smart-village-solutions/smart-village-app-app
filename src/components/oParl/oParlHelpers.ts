@@ -12,6 +12,15 @@ export const getOrganizationNameString = (organization?: OrganizationPreviewData
 export const getSortedAgendaItems = (agendaItems?: AgendaItemPreviewData[]) => {
   if (!agendaItems) return;
 
+  // Check if all items have the order property
+  const hasOrder = agendaItems.every((item) => typeof item.order === 'number');
+
+  // If order property exists, sort by order
+  if (hasOrder) {
+    return [...agendaItems].sort((a, b) => a.order - b.order);
+  }
+
+  // Otherwise, use the complex number-based sorting
   const romanToInt = (romanNumber: string): number | null => {
     const romanNumbers: Record<string, number> = {
       I: 1,
