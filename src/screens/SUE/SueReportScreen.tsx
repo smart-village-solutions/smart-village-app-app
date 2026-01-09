@@ -47,6 +47,7 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
+export const SUE_MY_REPORTS = 'sueMyReports';
 
 const { INPUT_KEYS, MB_TO_BYTES } = consts;
 
@@ -468,6 +469,22 @@ export const SueReportScreen = ({
     });
   }, [selectedPosition, service, getValues]);
 
+  const storeMyReportsValues = async (newReport: any) => {
+    try {
+      const jsonValue = await readFromStore(SUE_MY_REPORTS);
+      let myReports = [];
+
+      if (jsonValue != null) {
+        myReports = JSON.parse(jsonValue);
+      }
+      myReports.unshift(newReport);
+
+      await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
+    } catch (error) {
+      console.error('Error storing my reports values to AsyncStorage', error);
+    }
+  };
+
   const readReportValuesFromStore = async () => {
     const storedValues = await readFromStore(SUE_REPORT_VALUES);
 
@@ -580,7 +597,7 @@ export const SueReportScreen = ({
 
           return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
         },
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
           if (data?.status && data.status !== 200) {
             setIsLoading(false);
             setCurrentProgress(0);
@@ -588,6 +605,23 @@ export const SueReportScreen = ({
             return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
           }
 
+          await storeMyReportsValues({
+            address: `${sueReportData.street} ${sueReportData.houseNumber}\r\n ${sueReportData.postalCode} ${sueReportData.city}`,
+            id: data[0].service_request_id,
+            media_url: JSON.stringify(
+              JSON.parse(formData.images).map((image: any, index: number) => ({
+                contentType: 'image',
+                id: `local-${index}`,
+                url: image.uri,
+                visible: true
+              }))
+            ),
+            requestedDatetime: new Date().toISOString(),
+            serviceName: service?.serviceName,
+            serviceRequestId: data[0].service_request_id,
+            status: 'Unbearbeitet',
+            ...formData
+          });
           setIsDone(true);
           resetStoredValues();
           setIsLoading(false);
