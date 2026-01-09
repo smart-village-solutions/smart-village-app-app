@@ -83,26 +83,11 @@ export const CitySelectionScreen = () => {
     setDropdownData(items);
   }, [citiesData, storedCity]);
 
-  const onResetPress = useCallback(() => {
-    Alert.alert(
-      texts.citySelection.alerts.resetAlertTitle,
-      texts.citySelection.alerts.resetAlertMessage,
-      [
-        {
-          text: texts.citySelection.alerts.cancel,
-          style: 'cancel'
-        },
-        {
-          text: texts.citySelection.alerts.ok,
-          onPress: async () => {
-            setSelectedCity(null);
-            setStoredCity(null);
-            await storeSelectedCity(null);
-            updateDropdownData();
-          }
-        }
-      ]
-    );
+  const onResetPress = useCallback(async () => {
+    setSelectedCity(null);
+    setStoredCity(null);
+    await storeSelectedCity(null);
+    updateDropdownData();
   }, [updateDropdownData]);
 
   if (loading || htmlLoading || citiesLoading) {
