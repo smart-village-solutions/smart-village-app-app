@@ -36,7 +36,7 @@ export const parseSueData = (data, appDesignSystem) => {
       bottomDivider: false,
       iconName: matchedStatus?.iconName,
       params: {
-        title: item.title,
+        title: `#${item.serviceRequestId} ${item.title}`,
         query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
         queryVariables: { id: item.serviceRequestId },
         rootRouteName: ROOT_ROUTE_NAMES.SUE,
@@ -46,7 +46,8 @@ export const parseSueData = (data, appDesignSystem) => {
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
       routeName: ScreenName.Detail,
       status: matchedStatus?.status,
-      subtitle: undefined
+      subtitle: undefined,
+      title: `#${item.serviceRequestId} ${item.title}`
     };
   });
 };
