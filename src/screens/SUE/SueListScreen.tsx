@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
@@ -22,7 +22,7 @@ import {
   SueLoadingIndicator,
   WrapperVertical
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
@@ -174,7 +174,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         parsedListItem,
         (item) =>
           item.title?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
-          item.description?.toLowerCase().includes(queryVariables.search.toLowerCase())
+          item.description?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
+          item.address?.toLowerCase().includes(queryVariables.search.toLowerCase())
       );
     }
 
@@ -298,16 +299,3 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    paddingTop: normalize(16),
-    position: 'absolute'
-  },
-  icon: {
-    paddingLeft: normalize(8)
-  }
-});
