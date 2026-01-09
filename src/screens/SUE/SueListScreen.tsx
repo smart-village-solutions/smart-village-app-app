@@ -182,6 +182,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     return parsedListItem;
   }, [data, query, queryVariables]);
 
+  const displayCount = useMemo(() => {
+    return queryVariables.search ? listItems.length : dataCount?.length;
+  }, [queryVariables.search, listItems.length, dataCount?.length]);
+
   const refresh = async () => {
     setRefreshing(true);
     isConnected && (await refetch());
@@ -277,10 +281,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                 <Divider />
               </WrapperVertical>
 
-              {!!dataCount?.length && (
+              {!!displayCount && (
                 <RegularText small>
-                  {dataCount.length}{' '}
-                  {dataCount.length === 1 ? texts.filter.result : texts.filter.results}
+                  {displayCount} {displayCount === 1 ? texts.filter.result : texts.filter.results}
                 </RegularText>
               )}
             </>
