@@ -143,7 +143,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           )}
 
         {!!myReports?.length && (
-          <Wrapper noPaddingBottom noPaddingTop>
+          <Wrapper noPaddingBottom noPaddingTop={!!sueReportListNavigationButton}>
             <ReportListNavigationButton
               buttonTitle={texts.sue.viewMyReports}
               query={QUERY_TYPES.SUE.MY_REQUESTS}
