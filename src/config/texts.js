@@ -1267,11 +1267,13 @@ export const texts = {
       allSortingTypes: 'Alle Sortierarten',
       createdBy: 'Erstellt von',
       createdUntil: 'Erstellt bis',
+      search: 'Was suchen Sie?',
       selectCategory: 'Kategorie auswählen',
       sortBy: 'Sortieren nach',
       status: 'Status'
     },
     location: 'Ort',
+    myReports: 'Meine Meldungen',
     report: {
       addImage: 'Bilder hinzufügen',
       alerts: {
@@ -1355,6 +1357,9 @@ export const texts = {
     results: 'Ergebnisse',
     showListView: 'Liste',
     showMapView: 'Karte öffnen',
+    viewMyReportDetail: 'Mein gespeicherter Bericht anzeigen',
+    viewMyReports: 'Meine Meldungen ansehen',
+    viewOfficialReportDetail: 'Behördliche Meldungsdetails ansehen',
     viewReports: 'Meldungen ansehen'
   },
   survey: {

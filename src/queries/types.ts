@@ -64,6 +64,7 @@ export const QUERY_TYPES = {
     AREA_SERVICE: 'areaService',
     CONFIGURATIONS: 'configurations',
     LOCATION: 'location',
+    MY_REQUESTS: 'myRequests',
     PRIORITIES: 'priorities',
     REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',
     REQUESTS: 'requests',

@@ -422,8 +422,9 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
 
     // SUE
     case QUERY_TYPES.SUE.REQUESTS:
+    case QUERY_TYPES.SUE.MY_REQUESTS:
     case QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID:
-      return parseSueData(data, appDesignSystem);
+      return parseSueData(data, query, appDesignSystem);
 
     // VOLUNTEER
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:

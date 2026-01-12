@@ -129,7 +129,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const { data: dataCount } = useQuery(
     [QUERY_TYPES.SUE.LOCATION, { dataCountQueryVariables }],
-    () => getQuery(QUERY_TYPES.SUE.LOCATION)(dataCountQueryVariables)
+    () => getQuery(QUERY_TYPES.SUE.LOCATION)(dataCountQueryVariables),
+    {
+      enabled: query !== QUERY_TYPES.SUE.MY_REQUESTS
+    }
   );
 
   const services = useMemo(() => {
@@ -183,7 +186,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   }, [data, query, queryVariables]);
 
   const displayCount = useMemo(() => {
-    return queryVariables.search ? listItems.length : dataCount?.length;
+    return queryVariables.search || query === QUERY_TYPES.SUE.MY_REQUESTS
+      ? listItems.length
+      : dataCount?.length;
   }, [queryVariables.search, listItems.length, dataCount?.length]);
 
   const refresh = async () => {
@@ -223,63 +228,70 @@ export const SueListScreen = ({ navigation, route }: Props) => {
           ListHeaderComponent={
             <>
               <WrapperVertical>
-                <Search setQueryVariables={setQueryVariables} placeholder={texts.filter.search} />
-              </WrapperVertical>
-
-              <WrapperVertical>
-                {!!showViewSwitcherButton && (
-                  <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
-                )}
-                <Filter
-                  filterTypes={[
-                    {
-                      type: FILTER_TYPES.DATE,
-                      name: 'date',
-                      data: [
-                        {
-                          hasFutureDates: false,
-                          hasPastDates: true,
-                          name: 'start_date',
-                          placeholder: texts.sue.filter.createdBy
-                        },
-                        {
-                          hasFutureDates: false,
-                          hasPastDates: true,
-                          name: 'end_date',
-                          placeholder: texts.sue.filter.createdUntil
-                        }
-                      ]
-                    },
-                    {
-                      type: FILTER_TYPES.DROPDOWN,
-                      label: texts.sue.filter.selectCategory,
-                      name: 'service_code',
-                      data: services,
-                      placeholder: texts.sue.filter.allCategories
-                    },
-                    {
-                      type: FILTER_TYPES.SUE.STATUS,
-                      label: texts.sue.filter.status,
-                      name: 'status',
-                      data: statuses
-                    },
-                    {
-                      type: FILTER_TYPES.DROPDOWN,
-                      label: texts.sue.filter.sortBy,
-                      name: 'sortBy',
-                      data: SORT_OPTIONS,
-                      placeholder: texts.sue.filter.allSortingTypes
-                    }
-                  ]}
-                  queryVariables={initialQueryVariables}
+                <Search
                   setQueryVariables={setQueryVariables}
-                  withSearch
+                  placeholder={texts.sue.filter.search}
                 />
               </WrapperVertical>
 
-              <WrapperVertical>
-                <Divider />
-              </WrapperVertical>
+              {query !== QUERY_TYPES.SUE.MY_REQUESTS && (
+                <>
+                  <WrapperVertical>
+                    {!!showViewSwitcherButton && (
+                      <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
+                    )}
+                    <Filter
+                      filterTypes={[
+                        {
+                          type: FILTER_TYPES.DATE,
+                          name: 'date',
+                          data: [
+                            {
+                              hasFutureDates: false,
+                              hasPastDates: true,
+                              name: 'start_date',
+                              placeholder: texts.sue.filter.createdBy
+                            },
+                            {
+                              hasFutureDates: false,
+                              hasPastDates: true,
+                              name: 'end_date',
+                              placeholder: texts.sue.filter.createdUntil
+                            }
+                          ]
+                        },
+                        {
+                          type: FILTER_TYPES.DROPDOWN,
+                          label: texts.sue.filter.selectCategory,
+                          name: 'service_code',
+                          data: services,
+                          placeholder: texts.sue.filter.allCategories
+                        },
+                        {
+                          type: FILTER_TYPES.SUE.STATUS,
+                          label: texts.sue.filter.status,
+                          name: 'status',
+                          data: statuses
+                        },
+                        {
+                          type: FILTER_TYPES.DROPDOWN,
+                          label: texts.sue.filter.sortBy,
+                          name: 'sortBy',
+                          data: SORT_OPTIONS,
+                          placeholder: texts.sue.filter.allSortingTypes
+                        }
+                      ]}
+                      queryVariables={initialQueryVariables}
+                      setQueryVariables={setQueryVariables}
+                      withSearch
+                    />
+                  </WrapperVertical>
+
+                  <WrapperVertical>
+                    <Divider />
+                  </WrapperVertical>
+                </>
+              )}
 
               {!!displayCount && (
                 <RegularText small>

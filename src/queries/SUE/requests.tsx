@@ -1,7 +1,11 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { fetchSueEndpoints } from '../../helpers';
+import { SUE_STATUS } from '../../components';
+import { addToStore, fetchSueEndpoints, readFromStore } from '../../helpers';
+import { SUE_MY_REPORTS } from '../../screens';
+
+import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
 
 export const requests = async (queryVariables) => {
   const queryParams = new URLSearchParams(queryVariables);
@@ -24,6 +28,58 @@ export const requests = async (queryVariables) => {
       })
     );
   });
+};
+
+export const myRequests = async (): Promise<any[]> => {
+  let myReports = [];
+
+  try {
+    const jsonValue = await readFromStore(SUE_MY_REPORTS);
+
+    if (jsonValue?.length) {
+      myReports = JSON.parse(jsonValue);
+    }
+  } catch (e) {
+    console.error('Error reading my reports values from AsyncStorage', e);
+  }
+
+  // Process all reports and update statuses where needed
+  const updatedReports = await Promise.all(
+    myReports.map(async (item: any) => {
+      if (!item) return item;
+
+      // Parse media_url if it exists and is a string
+      if (item.media_url && typeof item.media_url === 'string') {
+        item.media_url = JSON.parse(item.media_url);
+      }
+
+      const isFinalStatus = item.status === SUE_STATUS.CLOSED || item.status === SUE_STATUS.INVALID;
+
+      if (item.serviceRequestId && !isFinalStatus) {
+        try {
+          const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
+
+          // Update status if it changed
+          if (onlineReport?.status && onlineReport.status !== item.status) {
+            item.status = onlineReport.status;
+          }
+        } catch (e) {
+          console.error(`Error fetching status for ${item.serviceRequestId}`, e);
+        }
+      }
+
+      return _mapKeys(item, (value, key) => _camelCase(key));
+    })
+  );
+
+  // Save updated reports back to AsyncStorage
+  try {
+    await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
+  } catch (e) {
+    console.error('Error saving updated reports to AsyncStorage', e);
+  }
+
+  return updatedReports;
 };
 
 /* eslint-disable complexity */

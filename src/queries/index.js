@@ -39,6 +39,7 @@ import {
   areaService,
   configurations,
   locations,
+  myRequests,
   priorities,
   requests,
   requestsWithServiceRequestId,
@@ -135,6 +136,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.SUE.PRIORITIES]: priorities,
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: requestsWithServiceRequestId,
     [QUERY_TYPES.SUE.REQUESTS]: requests,
+    [QUERY_TYPES.SUE.MY_REQUESTS]: myRequests,
     [QUERY_TYPES.SUE.SERVICES]: services,
     [QUERY_TYPES.SUE.STATUSES]: statuses,
 
