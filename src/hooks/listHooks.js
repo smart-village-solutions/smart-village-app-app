@@ -253,7 +253,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
-        if (query === QUERY_TYPES.SUE.REQUESTS) {
+        if (query === QUERY_TYPES.SUE.REQUESTS || query === QUERY_TYPES.SUE.MY_REQUESTS) {
           return <CardListItem navigation={navigation} item={item} index={index} sue />;
         }
 

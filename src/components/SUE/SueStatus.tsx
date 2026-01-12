@@ -68,9 +68,9 @@ export const SueStatus = ({
       {!!iconName && (
         <StatusIcon
           accessibilityLabel={
-            disabled 
-            ? `${texts.components.sueStatus.inactive} ${status}` 
-            : `${texts.components.sueStatus.active} ${status}`
+            disabled
+              ? `${texts.components.sueStatus.inactive} ${status}`
+              : `${texts.components.sueStatus.active} ${status}`
           }
           color={textColor}
           size={small ? normalize(12) : normalize(16)}
