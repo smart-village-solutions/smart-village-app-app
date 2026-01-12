@@ -1,5 +1,5 @@
-import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native';
-import React, { useContext, useLayoutEffect, useMemo } from 'react';
+import { NavigationProp, RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
@@ -18,6 +18,7 @@ import { normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { useStaticContent, useVersionCheck } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { myRequests } from '../../queries/SUE';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 
@@ -31,7 +32,15 @@ const LIST_NAVIGATION_BUTTON = {
   TOP: 'top'
 };
 
-const ReportListNavigationButton = () => {
+const ReportListNavigationButton = ({
+  buttonTitle = texts.sue.viewReports,
+  query = QUERY_TYPES.SUE.REQUESTS,
+  title = texts.sue.reports
+}: {
+  buttonTitle?: string;
+  query?: string;
+  title?: string;
+}) => {
   const navigation = useNavigation<NavigationProp<any>>();
 
   return (
@@ -39,11 +48,11 @@ const ReportListNavigationButton = () => {
       invert
       onPress={() =>
         navigation.navigate(ScreenName.SueList, {
-          query: QUERY_TYPES.SUE.REQUESTS,
-          title: texts.sue.reports
+          query,
+          title
         })
       }
-      title={texts.sue.viewReports}
+      title={buttonTitle}
     />
   );
 };
@@ -60,6 +69,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     showStaticContentList = true,
     staticContentListTitle
   } = staticContentList;
+  const [myReports, setMyReports] = useState<any[]>([]);
 
   useVersionCheck();
 
@@ -87,6 +97,17 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
 
     return listItem;
   }, [appDesignSystem, data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchMyReports = async () => {
+        const reports = await myRequests();
+        setMyReports(reports);
+      };
+
+      fetchMyReports();
+    }, [])
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -121,14 +142,23 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
             </Wrapper>
           )}
 
+        {!!myReports?.length && (
+          <Wrapper noPaddingBottom noPaddingTop>
+            <ReportListNavigationButton
+              buttonTitle={texts.sue.viewMyReports}
+              query={QUERY_TYPES.SUE.MY_REQUESTS}
+              title={texts.sue.myReports}
+            />
+          </Wrapper>
+        )}
+
         {!!staticContentListTitle && (
           <WrapperVertical
-            style={[
-              styles.noPaddingBottom,
+            noPaddingBottom
+            noPaddingTop={
               !!sueReportListNavigationButton &&
-                sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP &&
-                styles.noPaddingTop
-            ]}
+              sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP
+            }
           >
             <SectionHeader title={staticContentListTitle} />
           </WrapperVertical>
