@@ -67,6 +67,7 @@ export const QUERY_TYPES = {
     MY_REQUESTS: 'myRequests',
     PRIORITIES: 'priorities',
     REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',
+    MY_REQUEST_WITH_SERVICE_REQUEST_ID: 'myRequestWithServiceRequestId',
     REQUESTS: 'requests',
     SERVICES: 'services',
     STATUSES: 'statuses'

@@ -1357,7 +1357,7 @@ export const texts = {
     results: 'Ergebnisse',
     showListView: 'Liste',
     showMapView: 'Karte öffnen',
-    viewMyReportDetail: 'Mein gespeicherter Bericht anzeigen',
+    viewMyReportDetail: 'Meinen gespeicherten Bericht anzeigen',
     viewMyReports: 'Meine Meldungen ansehen',
     viewOfficialReportDetail: 'Behördliche Meldungsdetails ansehen',
     viewReports: 'Meldungen ansehen'
