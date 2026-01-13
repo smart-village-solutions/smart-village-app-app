@@ -11,6 +11,7 @@ import {
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
+  ChatbotScreen,
   CitySelectionScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
@@ -168,6 +169,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.Category,
       screenComponent: IndexScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.chatbot },
+      routeName: ScreenName.Chatbot,
+      screenComponent: ChatbotScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.myCity },

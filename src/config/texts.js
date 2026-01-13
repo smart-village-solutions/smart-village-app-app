@@ -1068,6 +1068,7 @@ export const texts = {
   screenTitles: {
     about: 'Menü',
     appSettings: 'App-Einstellungen',
+    chatbot: 'Chatbot',
     constructionSite: 'Baustelle',
     consul: {
       login: 'Anmelden',
