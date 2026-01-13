@@ -68,7 +68,8 @@ export const locationServiceEnabledAlert = ({
   }
 };
 
-enum SueStatus {
+export enum SUE_STATUS {
+  CLOSED = 'TICKET_STATUS_CLOSED',
   IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
   INVALID = 'TICKET_STATUS_INVALID',
   OPEN = 'TICKET_STATUS_OPEN',
@@ -149,7 +150,7 @@ export const SueReportLocation = ({
 
   const queryVariables = {
     start_date: '1900-01-01T00:00:00+01:00',
-    status: Object.values(SueStatus).map((status) => status)
+    status: Object.values(SUE_STATUS).map((status) => status)
   };
 
   const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>

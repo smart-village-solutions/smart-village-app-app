@@ -1,7 +1,7 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { StackScreenProps } from '@react-navigation/stack';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
+  Button,
   HtmlView,
   ImageSection,
   LoadingContainer,
@@ -27,7 +28,11 @@ import {
   WrapperHorizontal
 } from '../../components';
 import { colors, device, normalize, texts } from '../../config';
+import { readFromStore } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { ScreenName } from '../../types';
+
+import { SUE_MY_REPORTS } from './SueReportScreen';
 
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -35,9 +40,11 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
+  const query = route.params?.query ?? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
   const queryVariables = route.params?.queryVariables ?? {};
   const [refreshing, setRefreshing] = useState(false);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
+  const [isMyReport, setIsMyReport] = useState<boolean>(false);
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
 
@@ -46,7 +53,27 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(queryVariables?.id)
   );
 
-  if (isLoading) {
+  useEffect(() => {
+    const checkIfMyReport = async () => {
+      try {
+        const myReportsJson = await readFromStore(SUE_MY_REPORTS);
+        if (myReportsJson) {
+          const myReports = JSON.parse(myReportsJson);
+          const found = myReports.some(
+            (report: any) => report.serviceRequestId === route.params?.details?.serviceRequestId
+          );
+
+          setIsMyReport(!!found);
+        }
+      } catch (e) {
+        console.error('Error checking if report is my report', e);
+      }
+    };
+
+    checkIfMyReport();
+  }, [data, queryVariables, route.params]);
+
+  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID && isLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -67,7 +94,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     serviceRequestId,
     status,
     title
-  } = data;
+  } = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
 
   const refresh = async () => {
     setRefreshing(true);
@@ -121,6 +148,38 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
           <WrapperHorizontal>
             <Divider />
           </WrapperHorizontal>
+
+          {((query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID &&
+            !!data &&
+            data?.status !== 404) ||
+            (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID && isMyReport)) && (
+            <Wrapper noPaddingBottom>
+              <Button
+                big={false}
+                disabled={false}
+                icon=""
+                invert
+                small={false}
+                smallest={false}
+                onPress={() =>
+                  navigation.push(ScreenName.Detail, {
+                    details: route.params?.details,
+                    query:
+                      query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+                        ? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID
+                        : QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID,
+                    queryVariables: { id: serviceRequestId },
+                    title: `#${serviceRequestId} ${title}`
+                  })
+                }
+                title={
+                  query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+                    ? texts.sue.viewOfficialReportDetail
+                    : texts.sue.viewMyReportDetail
+                }
+              />
+            </Wrapper>
+          )}
 
           {!!description && (
             <>
