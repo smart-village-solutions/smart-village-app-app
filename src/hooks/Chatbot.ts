@@ -56,7 +56,7 @@ export const useChatbot = (
           display_name: config?.title || 'Bot'
         },
         // Convert quick replies to GiftedChat format if present
-        ...(!!botMessage.quick_replies?.length
+        ...(botMessage.quick_replies?.length
           ? {
               quickReplies: {
                 type: 'radio' as const,
@@ -260,7 +260,7 @@ export const useChatbot = (
         originalError: err instanceof Error ? err : undefined
       });
     }
-  }, [config, isNetworkConnected, sendMessage, convertBotMessageToChatMessage]);
+  }, [config, isNetworkConnected, convertBotMessageToChatMessage]);
 
   const disconnect = useCallback(() => {
     if (socketRef.current) {
@@ -292,16 +292,6 @@ export const useChatbot = (
       connect();
     }
   }, [isNetworkConnected, config, connectionState, disconnect, connect]);
-
-  useEffect(() => {
-    if (config && isNetworkConnected) {
-      connect();
-    }
-
-    return () => {
-      disconnect();
-    };
-  }, []);
 
   return {
     connect,

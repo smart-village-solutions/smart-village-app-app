@@ -2,15 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import {
-  BoldText,
-  Button,
-  Chat,
-  EmptyMessage,
-  LoadingSpinner,
-  SafeAreaViewFlex,
-  Wrapper
-} from '../components';
+import { Button, Chat, EmptyMessage, LoadingSpinner, Wrapper } from '../components';
 import { colors, Icon, normalize, texts } from '../config';
 import { useChatbot, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -90,7 +82,7 @@ export const ChatbotScreen = () => {
   if (error && connectionState === ChatbotConnectionState.Error) {
     return (
       <Wrapper>
-        <BoldText center>{error}</BoldText>
+        <EmptyMessage title={error.message} />
         <Wrapper>
           <Button
             big={false}
@@ -128,9 +120,6 @@ export const ChatbotScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    marginTop: normalize(20)
-  },
   headerButton: {
     paddingHorizontal: normalize(14)
   }

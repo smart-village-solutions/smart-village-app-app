@@ -17,6 +17,7 @@ import {
   MessageText,
   Send
 } from 'react-native-gifted-chat';
+import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
 import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
@@ -28,7 +29,6 @@ import { Image } from './Image';
 import { RegularText } from './Text';
 import { VolunteerAvatar } from './volunteer';
 import { Wrapper } from './Wrapper';
-import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
 const { IMAGE_TYPE_REGEX, MB_TO_BYTES, VIDEO_TYPE_REGEX } = consts;
 
@@ -463,7 +463,8 @@ const styles = StyleSheet.create({
     width: normalize(48)
   },
   spacingTime: {
-    paddingHorizontal: normalize(10)
+    paddingHorizontal: normalize(10),
+    paddingBottom: normalize(8)
   },
   textInputStyle: {
     borderColor: colors.gray20,
