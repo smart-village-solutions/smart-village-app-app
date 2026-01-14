@@ -45,6 +45,7 @@ export * from './DiagonalGradient';
 export * from './Disturber';
 export * from './DocumentList';
 export * from './DocumentListItem';
+export * from './DotsAnimation';
 export * from './DrawerHeader';
 export * from './DropdownHeader';
 export * from './DropdownSelect';
