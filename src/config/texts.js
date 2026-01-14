@@ -126,6 +126,22 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  chatbot: {
+    configurationMissing:
+      'Chatbot-Konfiguration nicht verfügbar. Bitte kontaktieren Sie den Administrator.',
+    connecting: 'Verbindung wird hergestellt...',
+    connectionError: 'Verbindungsfehler. Bitte versuchen Sie es erneut.',
+    connectionSetupError: 'Fehler beim Verbinden zum Chatbot.',
+    defaultPlaceholder: 'Nachricht eingeben...',
+    disconnected: 'Verbindung unterbrochen.',
+    headerButtonAccessibilityHint: 'Setzt die Konversation zurück und startet neu',
+    headerButtonAccessibilityLabel: 'Chatbot zurücksetzen',
+    offline: 'Keine Internetverbindung. Der Chatbot ist offline nicht verfügbar.',
+    reconnectFailed: 'Verbindung konnte nicht wiederhergestellt werden.',
+    retry: 'Erneut versuchen',
+    retryHint: 'Tippen, um die Verbindung erneut herzustellen',
+    sendError: 'Fehler beim Senden der Nachricht.'
+  },
   citySelection: {
     alerts: {
       cancel: 'Abbrechen',
