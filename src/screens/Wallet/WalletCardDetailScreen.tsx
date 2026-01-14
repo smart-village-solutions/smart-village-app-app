@@ -125,6 +125,9 @@ export const WalletCardDetailScreen = ({
 
         await Sharing.shareAsync(fileUri);
         setIsCapturing(false);
+
+        // Clean up the temporary file
+        await FileSystem.deleteAsync(fileUri, { idempotent: true });
       }, 50);
     } catch (e) {
       console.error(e);

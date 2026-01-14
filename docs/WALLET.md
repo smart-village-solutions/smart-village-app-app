@@ -153,7 +153,7 @@ The module supports two card types:
 | `addCardScreenSettings.title`                  | String | No       | Title for the add card screen                                                 |
 | `addCardScreenSettings.description`            | String | No       | Description for the add card screen                                           |
 | `addCardScreenSettings.inputsInformation`      | Object | No       | Input field configurations                                                    |
-| `inputsInformation.cardNumberLenght`           | Number | No       | Exact length for card number (renamed from `maxCardNumberLenght`)             |
+| `inputsInformation.cardNumberLenght`           | Number | No       | Exact length for card number (renamed from `maxCardNumberLength`)             |
 | `inputsInformation.pinLength`                  | Number | No       | Exact length for PIN (only for `type: "coupon"`, renamed from `maxPinLength`) |
 | `inputsInformation.cardNumberInputTitle`       | String | No       | Label for card number input                                                   |
 | `inputsInformation.cardPinInputTitle`          | String | No       | Label for PIN input (only for `type: "coupon"`)                               |
