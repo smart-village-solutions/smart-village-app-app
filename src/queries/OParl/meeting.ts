@@ -15,6 +15,7 @@ export const meetingQuery = [
           ${filePreviewEntries}
         }
         cancelled
+        conferenceLink
         created
         deleted
         end

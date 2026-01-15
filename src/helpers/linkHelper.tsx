@@ -14,7 +14,7 @@ import { device } from '../config';
  *
  * This method ensures, that a protocol is given or adds http:// at front
  */
-function ensureProtocol(link) {
+function ensureProtocol(link: string) {
   const protocolRegExpMatch = link.match(/^https?:|tel:|mailto:|maps:|geo:/);
   let linkWithProtocol = link.replaceAll(' ', '');
 
@@ -32,12 +32,12 @@ function ensureProtocol(link) {
  *
  * @return true if linkWithProtocol is a web page
  */
-function isWeb(linkWithProtocol) {
+function isWeb(linkWithProtocol: string) {
   return linkWithProtocol.match(/^https?:/);
 }
 
 // https://facebook.github.io/react-native/docs/linking.html#opening-external-links
-export function openLink(link, openWebScreen) {
+export function openLink(link: string, openWebScreen: ((link: string) => void) | null = null) {
   const linkWithProtocol = ensureProtocol(link);
 
   if (isWeb(linkWithProtocol) && openWebScreen) {
@@ -55,7 +55,15 @@ export function openLink(link, openWebScreen) {
  *
  * @returns {Array} - An array containing the merged web URLs.
  */
-export const mergeWebUrls = ({ webUrls, contact, contacts }) => {
+export const mergeWebUrls = ({
+  webUrls,
+  contact,
+  contacts
+}: {
+  webUrls?: any[];
+  contact?: any;
+  contacts?: any[];
+}) => {
   const mergedWebUrls = webUrls ? [...webUrls] : [];
 
   if (contact?.www) {
@@ -78,7 +86,7 @@ export const mergeWebUrls = ({ webUrls, contact, contacts }) => {
   });
 
   // filter out system unrelated web urls
-  return mergedWebUrls.filter((webUrl) => {
+  return mergedWebUrls.filter((webUrl: any) => {
     const { description, url } = webUrl;
 
     if (device.platform === 'ios') {
@@ -92,4 +100,22 @@ export const mergeWebUrls = ({ webUrls, contact, contacts }) => {
       );
     }
   });
+};
+
+/**
+ * Helper function to parse markdown links [text](url)
+ *
+ * @param text - The markdown link text to parse.
+ *
+ * @returns An object containing the link text and URL, or null if the input is not a valid markdown link.
+ */
+export const parseMarkdownLink = (text: string): { text: string; url: string } | null => {
+  const markdownLinkRegex = /^\[([^\]]+)\]\(([^)]+)\)$/;
+  const match = text.match(markdownLinkRegex);
+
+  if (match) {
+    return { text: match[1], url: match[2] };
+  }
+
+  return null;
 };

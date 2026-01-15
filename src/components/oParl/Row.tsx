@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors as RNEColors } from 'react-native-elements';
 
 import { Icon, colors, normalize } from '../../config';
+import { openLink, parseMarkdownLink } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperWrap } from '../Wrapper';
@@ -35,8 +36,15 @@ export const Row = ({
 }) => {
   if (!right) return null;
 
+  // Check if right is a markdown link
+  const markdownLink = typeof right === 'string' ? parseMarkdownLink(right) : null;
+
+  // If it's a markdown link, override onPress
+  const handlePress = markdownLink ? () => openLink(markdownLink.url) : onPress;
+  const displayText = markdownLink ? markdownLink.text : right;
+
   return (
-    <Touchable onPress={onPress} disabled={!onPress}>
+    <Touchable onPress={handlePress} disabled={!handlePress}>
       <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
         <Wrapper shrink style={[styles.left, { width: normalize(leftWidth) }]}>
           <RegularText small={smallLeft} numberOfLines={fullText ? undefined : 1}>
@@ -44,13 +52,13 @@ export const Row = ({
           </RegularText>
         </Wrapper>
         <Wrapper shrink style={styles.right}>
-          {typeof right === 'string' ? (
-            <RegularText numberOfLines={fullText ? undefined : 1}>{right}</RegularText>
+          {typeof displayText === 'string' ? (
+            <RegularText numberOfLines={fullText ? undefined : 1}>{displayText}</RegularText>
           ) : (
-            right
+            displayText
           )}
         </Wrapper>
-        {!!onPress && (
+        {!!handlePress && (
           <Wrapper style={styles.icon}>
             <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
           </Wrapper>
