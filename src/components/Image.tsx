@@ -26,6 +26,7 @@ type ImageProps = {
   button?: TImageButton;
   buttons?: TImageButton[];
   containerStyle?: object | object[];
+  imageRightsPosition?: 'inside-bottom-right' | 'outside-bottom';
   isImageFullWidth?: boolean;
   message?: string;
   PlaceholderContent?: React.ReactNode;
@@ -43,6 +44,7 @@ export const Image = ({
   button,
   buttons = [],
   containerStyle,
+  imageRightsPosition,
   isImageFullWidth,
   message,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
@@ -128,10 +130,15 @@ export const Image = ({
                 buttons.map((button, index) => (
                   <ImageButton key={`${button.title}-${index}`} button={button} />
                 ))}
-              {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
+              {!imageRightsPosition && showImageRights && (
+                <ImageRights imageRights={sourceProp.copyright} />
+              )}
             </View>
           )}
         </View>
+      )}
+      {!!imageRightsPosition && showImageRights && (
+        <ImageRights imageRights={sourceProp.copyright} imageRightsPosition={imageRightsPosition} />
       )}
     </View>
   );
