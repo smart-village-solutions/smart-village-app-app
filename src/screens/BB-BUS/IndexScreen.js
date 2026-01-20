@@ -25,7 +25,8 @@ import { SettingsContext } from '../../SettingsProvider';
 const { MATOMO_TRACKING } = consts;
 
 const INITIAL_FILTER = [
-  { id: 1, title: texts.bbBus.initialFilter.top10, selected: true },
+  // NOTE: the top 10 should not be available as initial filter anymore
+  // { id: 1, title: texts.bbBus.initialFilter.top10, selected: true },
   // TODO: commented out 'Lebenslagen' as the main server does not have data for that section yet
   // { id: 2, title: 'Lebenslagen', selected: false },
   { id: 3, title: texts.bbBus.initialFilter.search, selected: false },
