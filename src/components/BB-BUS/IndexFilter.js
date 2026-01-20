@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, normalize, texts } from '../../config';
+import { search } from '../../helpers';
+import { DropdownSelect } from '../DropdownSelect';
+import { IndexFilterWrapper } from '../IndexFilterElement';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
-import { DropdownSelect } from '../DropdownSelect';
-import { search } from '../../helpers';
-import { IndexFilterWrapper } from '../IndexFilterElement';
 
 import { AZFilter } from './AZFilter';
 import { TextSearch } from './TextSearch';
 
-/* category filter initial data */
-const initialCategoryFilterData = [
+/* situations filter initial data */
+const initialSituationsFilterData = [
   {
     id: 0,
     value: '- Bitte wählen -',
@@ -46,7 +46,7 @@ export const IndexFilter = ({
   setListItems
 }) => {
   const [serviceSearchData, setServiceSearchData] = useState('');
-  const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
+  const [situationsFilterData, setSituationsFilterData] = useState(initialSituationsFilterData);
   const [locationFilterData, setLocationFilterData] = useState(areas);
   const [AZFilterData, setAZFilterData] = useState(initialAZFilterData);
   const listItemsCount = listItems.length;
@@ -61,9 +61,9 @@ export const IndexFilter = ({
         return (
           <WrapperVertical>
             <DropdownSelect
-              data={categoryFilterData}
-              setData={setCategoryFilterData}
-              label={texts.bbBus.categoryFilter.label}
+              data={situationsFilterData}
+              setData={setSituationsFilterData}
+              label={texts.bbBus.situationsFilter.label}
             />
             <Divider style={styles.divider} />
             <DropdownSelect
@@ -123,7 +123,7 @@ export const IndexFilter = ({
     if (!locationFilterData || !locationFilterData.length) return areaId;
 
     return locationFilterData.find((item) => item.selected).areaId;
-  }, [locationFilterData]);
+  }, [areaId, locationFilterData]);
 
   useEffect(() => {
     areaId = getAreaId();
@@ -135,14 +135,14 @@ export const IndexFilter = ({
 
   useEffect(() => {
     if (!loading && selectedFilter.id === 2) {
-      const category = categoryFilterData.find((item) => item.selected).value;
+      const situation = situationsFilterData.find((item) => item.selected).value;
 
-      if (category.id > 0) {
+      if (situation.id > 0) {
         const searchResults = search({
           results,
           previousResults: listItems,
           location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
-          category: categoryFilterData.find((item) => item.selected).value
+          situation: situationsFilterData.find((item) => item.selected).value
         });
 
         setListItems(searchResults);
@@ -150,7 +150,16 @@ export const IndexFilter = ({
         setListItems([]);
       }
     }
-  }, [areaId, selectedFilter, categoryFilterData]);
+  }, [
+    areaId,
+    listItems,
+    loading,
+    locationFilterData,
+    results,
+    selectedFilter,
+    setListItems,
+    situationsFilterData
+  ]);
 
   useEffect(() => {
     if (!loading && selectedFilter.id === 3) {
@@ -182,7 +191,16 @@ export const IndexFilter = ({
         setListItems([]);
       }
     }
-  }, [areaId, selectedFilter, AZFilterData]);
+  }, [
+    areaId,
+    selectedFilter,
+    AZFilterData,
+    loading,
+    results,
+    listItems,
+    locationFilterData,
+    setListItems
+  ]);
 
   return (
     <View>

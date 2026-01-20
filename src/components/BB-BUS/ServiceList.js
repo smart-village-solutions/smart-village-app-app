@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { VerticalList } from '../VerticalList';
 
@@ -22,7 +22,7 @@ export const ServiceList = ({
     if (selectedFilter.id === 1) {
       setListItems(top10);
     }
-  }, [results.length, selectedFilter]);
+  }, [results.length, selectedFilter, top10]);
 
   return (
     <VerticalList

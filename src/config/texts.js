@@ -81,18 +81,19 @@ export const texts = {
       openingTime: 'Öffnungszeiten',
       wheelchairAccessible: 'Rollstuhlgerecht'
     },
-    categoryFilter: {
-      label: 'Lebenslage'
-    },
     employees: 'Ansprechpartner',
     initialFilter: {
       aToZ: 'A-Z',
       top10: 'Meistgesucht',
-      search: 'Suche'
+      search: 'Suche',
+      situations: 'Lebenslagen'
     },
     locationFilter: {
       label: 'Ort',
       searchPlaceholder: 'Suche'
+    },
+    situationsFilter: {
+      label: 'Lebenslage'
     },
     textSearch: {
       label: 'Dienstleistung',
