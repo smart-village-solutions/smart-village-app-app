@@ -7,9 +7,16 @@ import { StyleSheet, View } from 'react-native';
 import { fontConfig } from './config';
 import { SUE_REPORT_VALUES } from './screens';
 
+/**
+ * Loads fonts, resets lingering SUE draft data, and hides the native splash screen before
+ * rendering the actual app tree.
+ */
 const RootView = ({ children }: { children: React.ReactNode }) => {
   const [isFontLoaded] = useFonts(fontConfig);
 
+  /**
+   * Clears persisted SUE form values and dismisses the splash screen once fonts are ready.
+   */
   const onLayoutRootView = useCallback(async () => {
     if (isFontLoaded) {
       // when the application is closed and reopened, the saved data in the sue report form is deleted

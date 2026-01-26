@@ -21,6 +21,7 @@ import { useHomeRefresh, useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 import { GenericType } from './types';
 
+/** Maps backend filter type names to their corresponding GraphQL query identifiers. */
 const FILTER_QUERY_TYPES = {
   'GenericItem::ConstructionSite': GenericType.ConstructionSite,
   'GenericItem::Deadline': GenericType.Deadline,
@@ -34,6 +35,7 @@ const FILTER_QUERY_TYPES = {
   Tour: QUERY_TYPES.TOURS
 };
 
+/** Deeply merges `source` into `target`, preserving nested objects unless overridden. */
 const mergeDefaultConfiguration = (target, source) =>
   Object.entries(source).reduce(
     (acc, [key, value]) => {
@@ -46,6 +48,7 @@ const mergeDefaultConfiguration = (target, source) =>
     { ...target }
   );
 
+/** Default configuration object exposed before remote configuration loads. */
 const defaultConfiguration = {
   appDesignSystem: defaultAppDesignSystemConfig,
   refetch: () => {},
@@ -54,8 +57,13 @@ const defaultConfiguration = {
   sueConfig: defaultSueAppConfig
 };
 
+/** Provides app design system, resource filters, and SUE config merged from remote sources. */
 export const ConfigurationsContext = createContext(defaultConfiguration);
 
+/**
+ * Loads design system and SUE configuration, keeps them in sync with storage, and exposes
+ * a refetch callback for manual refreshes (e.g., pull-to-refresh on the home screen).
+ */
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = {} } = globalSettings;

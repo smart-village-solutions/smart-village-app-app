@@ -23,10 +23,12 @@ export const eventDate = (dateStart?: string, dateEnd?: string, returnFormat?: s
   }
 };
 
+/** Returns true when the provided date occurs before the end of the current day. */
 export const isBeforeEndOfToday = (date: string) => {
   return moment(date, 'YYYY-MM-DD').isBefore(moment().endOf('day'));
 };
 
+/** Checks whether the provided date string is today or in the future. */
 export const isTodayOrLater = (date: string) => {
   return moment().isBefore(moment(date, 'YYYY-MM-DD').endOf('day'));
 };
@@ -34,6 +36,9 @@ export const isTodayOrLater = (date: string) => {
 // if time is after 23:59:59, it means that the time is for the next day
 // so we need to reduce the hours by 24 and make a new time format from it to return
 // 00 for 24, 01 for 25, 02 for 26, etc.
+/**
+ * Normalizes HH:mm strings that overflow 23 hours by wrapping into the next day (24 -> 00, etc.).
+ */
 export const normalizeTime = (time: string) => {
   let hour = Number(time.split(':')[0]);
 

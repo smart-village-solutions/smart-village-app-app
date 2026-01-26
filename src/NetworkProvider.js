@@ -3,14 +3,19 @@ import React, { createContext, useEffect, useState } from 'react';
 
 import NetInfo from './NetInfo';
 
+/** Fallback connectivity values until NetInfo reports a status. */
 const defaultIsConnected = false;
 const defaultIsMainserverUp = null;
 
+/** Exposes network status flags (device connectivity + backend reachability). */
 export const NetworkContext = createContext({
   isConnected: defaultIsConnected,
   isMainserverUp: defaultIsMainserverUp
 });
 
+/**
+ * Subscribes to NetInfo updates and pushes connectivity data into context for consumers.
+ */
 export const NetworkProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(defaultIsConnected);
   const [isMainserverUp, setIsMainserverUp] = useState(defaultIsMainserverUp);

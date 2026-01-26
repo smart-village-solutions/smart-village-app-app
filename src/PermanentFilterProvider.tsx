@@ -17,6 +17,10 @@ import {
   resourceFiltersReducer
 } from './reducers';
 
+/**
+ * Exposes the permanent filter slices together with their dispatch functions so screens can read
+ * and update persisted selections.
+ */
 type PermanentFilterProviderValues = {
   dataProviderDispatch: React.Dispatch<PermanentFilterAction>;
   dataProviderState: string[];
@@ -26,6 +30,9 @@ type PermanentFilterProviderValues = {
   resourceFiltersState: { [key: string]: any };
 };
 
+/**
+ * Shared context giving callers access to permanent filters and their reducers.
+ */
 export const PermanentFilterContext = createContext<PermanentFilterProviderValues>({
   dataProviderDispatch: noop,
   dataProviderState: [],
@@ -35,6 +42,9 @@ export const PermanentFilterContext = createContext<PermanentFilterProviderValue
   resourceFiltersState: []
 });
 
+/**
+ * Wraps children with `PermanentFilterContext` so views can read and mutate permanent filters.
+ */
 export const PermanentFilterProvider = ({ children }: { children?: React.ReactNode }) => {
   const [dataProviderState, dataProviderDispatch] = useReducer(permanentFilterReducer, []);
   const [mowasRegionalKeysState, mowasRegionalKeysDispatch] = useReducer(
@@ -43,6 +53,9 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
   );
   const [resourceFiltersState, resourceFiltersDispatch] = useReducer(resourceFiltersReducer, []);
 
+  /**
+   * Hydrates all reducers with the persisted selections from AsyncStorage when the app boots.
+   */
   const loadFilters = useCallback(async () => {
     const dataProviderIds = ((await readFromStore(DATA_PROVIDER_FILTER_KEY)) ?? []) as string[];
     const mowasRegionalKeys = ((await readFromStore(MOWAS_REGIONAL_KEYS)) ?? []) as string[];

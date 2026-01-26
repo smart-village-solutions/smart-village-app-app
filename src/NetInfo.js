@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 
 import { namespace, secrets } from './config';
 
+/** Configure NetInfo reachability to ping the backend health endpoint. */
 // https://github.com/react-native-community/react-native-netinfo#netinfoconfiguration
 NetInfo.configure({
   useNativeReachability: false,
@@ -14,4 +15,5 @@ NetInfo.configure({
   reachabilityRequestTimeout: 10 * 1000 // 10s
 });
 
+/** Re-exported NetInfo instance with project-specific reachability settings. */
 export default NetInfo;

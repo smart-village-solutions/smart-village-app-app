@@ -15,6 +15,9 @@ import { GenericType } from '../types';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
+/**
+ * Builds the initial connection map, enabling sections that require network reachability checks.
+ */
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
   categoriesNews.forEach(({ categoryId }) => {
@@ -30,6 +33,9 @@ const getInitialConnectionState = (categoriesNews) => {
   return initialState;
 };
 
+/**
+ * Returns the number of stored bookmark ids, optionally skipping noticeboard entries for guests.
+ */
 const getBookmarkCount = (bookmarks, isLoggedIn) => {
   if (!bookmarks) return 0;
 
@@ -45,6 +51,10 @@ const getBookmarkCount = (bookmarks, isLoggedIn) => {
   return count;
 };
 
+/**
+ * Shows the grouped bookmark overview, refreshing server-backed content on focus and exposing
+ * sections per content type with Matomo tracking baked in.
+ */
 export const BookmarkScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks();
   const { isLoggedIn, refresh } = useProfileContext();

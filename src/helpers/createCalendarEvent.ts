@@ -9,6 +9,9 @@ import { Alert, Linking, Platform } from 'react-native';
 import appJson from '../../app.json';
 import { texts } from '../config';
 
+/**
+ * Detects whether the current iOS runtime is older than the Calendar API change (iOS 17).
+ */
 const isOlderIOS = (): boolean => {
   if (Platform.OS !== 'ios') return false;
 
@@ -18,6 +21,7 @@ const isOlderIOS = (): boolean => {
   return version < 17;
 };
 
+/** Event payload used when exporting items into the OS calendar. */
 type Event = {
   allDay: boolean;
   description?: string;
@@ -27,6 +31,9 @@ type Event = {
   title: string;
 };
 
+/**
+ * Creates a native calendar entry for the provided event, requesting permissions on old iOS versions.
+ */
 export const createCalendarEvent = async (eventDetails: Event) => {
   if (isOlderIOS()) {
     const { status } = await requestCalendarPermissionsAsync();

@@ -20,6 +20,9 @@ import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 
 const { MATOMO_TRACKING, MAP } = consts;
 
+/**
+ * Formats start and end timestamps into a compact string while showing time spans when provided.
+ */
 const formatDates = (startDate, endDate) => {
   const formattedStartDate = momentFormat(startDate, 'DD.MM.YYYY');
   const startTime = moment(startDate, 'YYYY-MM-DD HH:mm:ss').format('HH:mm');
@@ -37,6 +40,10 @@ const formatDates = (startDate, endDate) => {
 };
 
 // eslint-disable-next-line complexity
+/**
+ * Detailed construction site view with optional imagery, description blocks and a single map pin,
+ * backed by the `useConstructionSites` hook with pull-to-refresh support.
+ */
 export const ConstructionSiteDetailScreen = ({ route }) => {
   const id = route.params?.id;
   const queryVariables = { ids: id };

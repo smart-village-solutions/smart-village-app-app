@@ -13,8 +13,15 @@ import { GenericType } from '../types';
 
 const { MATOMO_TRACKING } = consts;
 
+/**
+ * Builds a stable list key using the index, title and start date to avoid collisions.
+ */
 const keyExtractor = (item, index) => index + item.title + item.startDate;
 
+/**
+ * Lists construction sites with filter overlays, persists the selected filter state and routes to
+ * the detail view when a list item is tapped.
+ */
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   const initialQueryVariables = {};
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
