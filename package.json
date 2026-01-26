@@ -117,6 +117,7 @@
     "react-native": "0.76.9",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-autocomplete-input": "^5.5.3",
+    "react-native-barcode-creator": "^0.1.8",
     "react-native-blob-util": "^0.19.11",
     "react-native-calendars": "^1.1308.0",
     "react-native-circular-progress-indicator": "^4.4.2",

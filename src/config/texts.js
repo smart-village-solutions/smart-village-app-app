@@ -1706,6 +1706,7 @@ export const texts = {
     detail: {
       backup: 'Backup',
       balance: 'Guthaben',
+      bonusNumber: 'Bonuskartennummer',
       cancel: 'Abbrechen',
       close: 'Schließen',
       code: 'Code',
@@ -1719,7 +1720,7 @@ export const texts = {
         'Beim Löschen der Karte ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       deleteSuccessMessage: 'Die Karte wurde erfolgreich gelöscht.',
       errorTitle: 'Fehler',
-      expandQrCode: 'QR-Code vergrößern',
+      expandCode: 'Code vergrößern',
       lastTransactions: 'Ihre letzten 10 Buchungen',
       noCardsAvailable: 'Keine Kartendaten verfügbar.',
       pin: 'PIN',
