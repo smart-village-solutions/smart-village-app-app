@@ -27,7 +27,7 @@ export const Button = ({
   small,
   smallest,
   title,
-  variants = ButtonVariants.DEFAULT // 'default' | 'accept' | 'reject' | 'delete'
+  variant = ButtonVariants.DEFAULT
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
@@ -35,7 +35,7 @@ export const Button = ({
     orientation === 'landscape' ||
     dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
-  if (variants === ButtonVariants.ACCEPT || variants === ButtonVariants.REJECT) {
+  if (variant === ButtonVariants.ACCEPT || variant === ButtonVariants.REJECT) {
     return (
       <RNEButton
         onPress={onPress}
@@ -43,8 +43,8 @@ export const Button = ({
         titleStyle={[styles.title, needLandscapeStyle && styles.titleLandscape]}
         buttonStyle={[
           styles.button,
-          variants === ButtonVariants.ACCEPT && styles.acceptButton,
-          variants === ButtonVariants.REJECT && styles.rejectButton
+          variant === ButtonVariants.ACCEPT && styles.acceptButton,
+          variant === ButtonVariants.REJECT && styles.rejectButton
         ]}
         containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
@@ -65,7 +65,7 @@ export const Button = ({
         big && styles.bigTitle,
         small && styles.smallTitle,
         smallest && styles.smallestTitle,
-        invert && variants === ButtonVariants.DELETE && styles.titleInvertReject
+        invert && variant === ButtonVariants.DELETE && styles.titleInvertReject
       ]}
       disabledStyle={styles.buttonDisabled}
       disabledTitleStyle={styles.title}
@@ -73,15 +73,15 @@ export const Button = ({
         styles.button,
         styles.buttonRadius,
         invert && styles.buttonInvert,
-        !invert && variants === ButtonVariants.DELETE && styles.rejectButton,
-        invert && variants === ButtonVariants.DELETE && styles.invertRejectButton,
+        !invert && variant === ButtonVariants.DELETE && styles.rejectButton,
+        invert && variant === ButtonVariants.DELETE && styles.invertRejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
         smallest && [styles.smallestButton, styles.smallestButtonRadius]
       ]}
       containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
       ViewComponent={
-        invert || variants === ButtonVariants.DELETE || disabled ? undefined : DiagonalGradient
+        invert || variant === ButtonVariants.DELETE || disabled ? undefined : DiagonalGradient
       }
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
@@ -209,7 +209,7 @@ Button.propTypes = {
   small: PropTypes.bool,
   smallest: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  variants: PropTypes.oneOf([
+  variant: PropTypes.oneOf([
     ButtonVariants.ACCEPT,
     ButtonVariants.DEFAULT,
     ButtonVariants.DELETE,

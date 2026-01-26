@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -33,7 +33,7 @@ import {
 import { colors, device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
-import { ECardType, TCard, TCardInfo } from '../../types';
+import { CardType, TCard, TCardInfo } from '../../types';
 
 const ShareableCard = ({
   apiConnection,
@@ -102,21 +102,22 @@ export const WalletCardDetailScreen = ({
       })) as TCardInfo;
 
       setCardData(cardInformation);
-      setFirstLoading(false);
     } catch (error) {
-      setFirstLoading(false);
       console.error('Error fetching card details:', error);
+    } finally {
+      setIsLoading(false);
     }
   }, [apiConnection, cardNumber, pinCode]);
 
   const handleShare = async () => {
+    const fileUri = `${FileSystem.cacheDirectory}${cardName ? cardName : title}.png`;
+
     try {
       setIsCapturing(true);
 
       // Wait for ViewShot to mount
       setTimeout(async () => {
         const base64 = await viewShotRef?.current?.capture();
-        const fileUri = `${FileSystem.cacheDirectory}${cardName ? cardName : title}.png`;
 
         // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
         await FileSystem.writeAsStringAsync(fileUri, base64, {
@@ -124,20 +125,20 @@ export const WalletCardDetailScreen = ({
         });
 
         await Sharing.shareAsync(fileUri);
-        setIsCapturing(false);
-
-        // Clean up the temporary file
-        await FileSystem.deleteAsync(fileUri, { idempotent: true });
       }, 50);
     } catch (e) {
       console.error(e);
       Alert.alert(texts.wallet.detail.errorTitle, texts.wallet.detail.shareErrorMessage);
+    } finally {
       setIsCapturing(false);
+
+      // Clean up the temporary file
+      await FileSystem.deleteAsync(fileUri, { idempotent: true });
     }
   };
 
   useEffect(() => {
-    if (cardType === ECardType.COUPON) {
+    if (cardType === CardType.COUPON) {
       fetchCardDetails();
     } else {
       setFirstLoading(false);
@@ -162,7 +163,7 @@ export const WalletCardDetailScreen = ({
     <>
       <WalletTransactionList
         items={
-          cardType === ECardType.COUPON && !!cardData?.transactions?.length
+          cardType === CardType.COUPON && !!cardData?.transactions?.length
             ? cardData.transactions.slice(0, 10)
             : []
         }
@@ -183,7 +184,7 @@ export const WalletCardDetailScreen = ({
               notFullWidth
               onPress={() => setIsModalVisible(true)}
               title={texts.wallet.detail.deleteButton}
-              variants={ButtonVariants.DELETE}
+              variant={ButtonVariants.DELETE}
             />
           </WrapperWrap>
         }
@@ -251,7 +252,7 @@ export const WalletCardDetailScreen = ({
                   </WrapperVertical>
                 )}
 
-                {cardType === ECardType.COUPON && (
+                {cardType === CardType.COUPON && (
                   <WrapperVertical noPaddingBottom>
                     <Button
                       icon={
@@ -273,7 +274,7 @@ export const WalletCardDetailScreen = ({
                 )}
               </Wrapper>
 
-              {cardType === ECardType.COUPON && (
+              {cardType === CardType.COUPON && (
                 <WrapperVertical noPaddingBottom>
                   <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
                 </WrapperVertical>
@@ -310,7 +311,7 @@ export const WalletCardDetailScreen = ({
 
         <Wrapper itemsCenter>
           <BoldText>{texts.wallet.detail.deleteConfirmationTitle}</BoldText>
-          {cardType === ECardType.COUPON && cardData?.balanceAsEuro && (
+          {cardType === CardType.COUPON && cardData?.balanceAsEuro && (
             <WrapperVertical>
               <RegularText center>
                 {texts.wallet.detail.deleteConfirmationMessage(cardData?.balanceAsEuro)}
@@ -330,7 +331,7 @@ export const WalletCardDetailScreen = ({
             }
           }}
           title={texts.wallet.detail.deleteAnywayButton}
-          variants={ButtonVariants.DELETE}
+          variant={ButtonVariants.DELETE}
         />
       </Modal>
 
