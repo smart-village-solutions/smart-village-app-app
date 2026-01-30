@@ -20,6 +20,7 @@ import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  PixelRatio,
   Platform,
   Pressable,
   StyleProp,
@@ -40,6 +41,54 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
 const { a11yLabel, MAP } = consts;
+
+type MarkerImageConfig = {
+  color?: string;
+  uri?: string;
+  scale?: number;
+};
+
+const getMarkerImageScale = () => {
+  const ratio = PixelRatio.get();
+
+  if (ratio >= 3) return 3;
+  if (ratio >= 2) return 2;
+
+  return 1;
+};
+
+const getScaledMarkerUri = (uri: string, scale: number) => {
+  if (scale === 1) return uri;
+  if (uri.includes('/map/2x/') || uri.includes('/map/3x/')) return uri;
+  if (!uri.includes('/map/')) return uri;
+
+  return uri.replace('/map/', `/map/${scale}x/`);
+};
+
+/**
+ * Creates a new marker image map where each entry with a URI is updated to a
+ * scaled URI and annotated with the provided scale, leaving missing URIs untouched.
+ *
+ * @param markerImages - The original marker image configuration map.
+ * @param scale - The scale factor to apply to marker image URIs.
+ * @returns A new map with scaled URIs and scale metadata, or undefined when no input is provided.
+ */
+const createScaledMarkerImages = (
+  markerImages: Record<string, MarkerImageConfig> | undefined,
+  scale: number
+) => {
+  if (!markerImages) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(markerImages).map(([key, value]) => {
+      if (!value?.uri) return [key, value];
+
+      const scaledUri = getScaledMarkerUri(value.uri, scale);
+
+      return [key, { ...value, uri: scaledUri, scale }];
+    })
+  );
+};
 
 const scaleCircleRadius = (radius: any, scale: number) => {
   if (radius == null) return undefined;
@@ -163,6 +212,11 @@ export const MapLibre = ({
     markerImages,
     zoomLevel = {}
   } = useMapFeatureConfig(locations);
+  const markerImageScale = useMemo(() => getMarkerImageScale(), []);
+  const resolvedMarkerImages = useMemo(
+    () => createScaledMarkerImages(markerImages, markerImageScale),
+    [markerImages, markerImageScale]
+  );
   const initialZoomLevel = isMultipleMarkersMap
     ? zoomLevel.multipleMarkers
     : zoomLevel.singleMarker;
@@ -594,7 +648,7 @@ export const MapLibre = ({
           visible={showsUserLocation}
         />
 
-        <Images images={markerImages} />
+        <Images images={resolvedMarkerImages} />
 
         {!!shape && !_isEmpty(layerStyles) && (
           <>
