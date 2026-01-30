@@ -128,6 +128,13 @@
           "image": "./assets/icon.png"
         }
       ],
+      [
+        "expo-notifications",
+        {
+          "color": "#DE7136",
+          "icon": "./assets/notification-icon.png"
+        }
+      ],
       "@maplibre/maplibre-react-native",
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
