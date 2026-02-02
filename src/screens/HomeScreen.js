@@ -163,11 +163,17 @@ const renderItem = ({ item }) => {
   );
 };
 
+/* eslint-disable complexity */
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
+  const {
+    hdvt = {},
+    homeScreenConfig = [],
+    sections = {},
+    widgets: widgetConfigs = []
+  } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,
@@ -263,7 +269,7 @@ export const HomeScreen = ({ navigation, route }) => {
     }, [])
   );
 
-  const data = [
+  const defaultData = [
     {
       categoriesNews,
       fetchPolicy,
@@ -298,10 +304,71 @@ export const HomeScreen = ({ navigation, route }) => {
     }
   ];
 
+  const configuredData = homeScreenConfig?.length
+    ? homeScreenConfig
+        .map((section) => {
+          switch (section.query) {
+            case QUERY_TYPES.NEWS_ITEMS:
+              return {
+                categoriesNews: section.categoriesNews || categoriesNews,
+                fetchPolicy,
+                limit: section.limit || limitNews,
+                navigation,
+                query: section.query || QUERY_TYPES.NEWS_ITEMS,
+                queryVariables: {
+                  limit: section.limit || limitNews,
+                  excludeDataProviderIds,
+                  excludeMowasRegionalKeys,
+                  ...section.queryVariables
+                },
+                showData: section.show
+              };
+            case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
+              return {
+                buttonTitle: section.buttonTitle || buttonPointsOfInterestAndTours,
+                fetchPolicy,
+                limit: section.limit || limitPointsOfInterestAndTours,
+                navigate: 'CATEGORIES_INDEX',
+                navigation,
+                query: section.query || QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
+                queryVariables: {
+                  limit: section.limit || limitPointsOfInterestAndTours,
+                  orderPoi: 'RAND',
+                  orderTour: 'RAND',
+                  onlyWithImage: true,
+                  ...section.queryVariables
+                },
+                showData: section.show,
+                title: section.title || headlinePointsOfInterestAndTours
+              };
+            case QUERY_TYPES.EVENT_RECORDS:
+              return {
+                buttonTitle: section.buttonTitle || buttonEvents,
+                fetchPolicy,
+                limit: section.limit || limitEvents,
+                navigate: 'EVENT_RECORDS_INDEX',
+                navigation,
+                query: section.query || QUERY_TYPES.EVENT_RECORDS,
+                queryVariables: {
+                  limit: section.limit || limitEvents,
+                  order: 'listDate_ASC',
+                  ...section.queryVariables
+                },
+                showData: section.show,
+                showVolunteerEvents,
+                title: section.title || headlineEvents
+              };
+            default:
+              return null;
+          }
+        })
+        .filter((item) => item !== null)
+    : defaultData;
+
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={data}
+        data={configuredData}
         ListHeaderComponent={
           <>
             <LiveTicker publicJsonFile="homeLiveTicker" />
