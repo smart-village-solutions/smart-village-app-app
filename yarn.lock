@@ -2827,13 +2827,13 @@
     "@react-navigation/elements" "^2.2.5"
     color "^4.2.3"
 
-"@reactvision/react-viro@^2.43.4":
-  version "2.43.4"
-  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.43.4.tgz#87b451f2365b90c15b6a704a10c53489bd7356dc"
-  integrity sha512-0/J1Glsl2N3ztDukcqX4qkBubhPez9Fv9q1TURK3l1NJcHc07JlizqPZnnUGLr/6idHICbVkMzSqQcb219Z7eA==
+"@reactvision/react-viro@^2.51.0":
+  version "2.51.0"
+  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.51.0.tgz#9a7c82fdf29ac03d1dc53b0041881c3897e42ffe"
+  integrity sha512-9X+0sobrY730kWGMNToc969QFR/hP3QMYFH9MPBe7TYbuCqKmPlzTfTlaLiqGt8DiL8qL2znLCsE0z4IiK6y/w==
   dependencies:
     "@expo/config-plugins" "^9.0.14"
-    react "19.0.0"
+    react "~19.1.0"
     react-native-gradle-plugin "^0.71.19"
 
 "@rnrepo/expo-config-plugin@^0.1.0-beta.0":
@@ -10982,15 +10982,15 @@ react-test-renderer@^19.0.0:
     react-is "^19.2.0"
     scheduler "^0.27.0"
 
-react@19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0.tgz#6e1969251b9f108870aa4bff37a0ce9ddfaaabdd"
-  integrity sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==
-
 react@19.1.0:
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/react/-/react-19.1.0.tgz#926864b6c48da7627f004795d6cce50e90793b75"
   integrity sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==
+
+react@~19.1.0:
+  version "19.1.5"
+  resolved "https://registry.yarnpkg.com/react/-/react-19.1.5.tgz#576af8ef98e2821d0911bbb52fd34538783e962c"
+  integrity sha512-lCX00zqONdNfcnJYEL91LuNYzyWFU70vKhApUR08Y1Fi/Y5FGw6l6hAWtlkq+k/vnx463XLm/5dyQp5HAJCw6Q==
 
 read-installed-packages@^2.0.1:
   version "2.0.1"

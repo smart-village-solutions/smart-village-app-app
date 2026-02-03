@@ -139,7 +139,8 @@
       "expo-secure-store",
       "expo-video",
       "expo-web-browser",
-      "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
+      "@reactvision/react-viro",
+      "./config-plugins/withAndroidMailQueriesAndWhatsappPackage",
     ]
   }
 }
