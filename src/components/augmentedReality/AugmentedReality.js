@@ -2,9 +2,10 @@ import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
+import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
@@ -134,6 +135,7 @@ export const AugmentedReality = ({
         <MapLibre
           geometryTourData={geometryTourData}
           locations={mapMarkers}
+          mapStyle={styles.map}
           onMarkerPress={(modelId) =>
             navigationToArtworksDetailScreen({
               data,
@@ -175,6 +177,8 @@ const mapToMapMarkers = (data) =>
       if (!latitude || !longitude) return undefined;
 
       return {
+        activeIconName: `${MAP.DEFAULT_PIN}Active`,
+        defaultPin: 1,
         iconName: MAP.DEFAULT_PIN,
         id: item.id.toString(),
         position: {
@@ -184,6 +188,13 @@ const mapToMapMarkers = (data) =>
       };
     })
     .filter((item) => item !== undefined);
+
+const styles = StyleSheet.create({
+  map: {
+    height: normalize(300),
+    width: '100%'
+  }
+});
 
 AugmentedReality.propTypes = {
   geometryTourData: PropTypes.array,
