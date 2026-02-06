@@ -68,6 +68,7 @@ const getScaledMarkerUri = (uri: string, scale: number) => {
 /**
  * Creates a new marker image map where each entry with a URI is updated to a
  * scaled URI and annotated with the provided scale, leaving missing URIs untouched.
+ * Also adds a prefix to all keys to avoid conflicts with base map style layer images.
  *
  * @param markerImages - The original marker image configuration map.
  * @param scale - The scale factor to apply to marker image URIs.
@@ -81,11 +82,14 @@ const createScaledMarkerImages = (
 
   return Object.fromEntries(
     Object.entries(markerImages).map(([key, value]) => {
-      if (!value?.uri) return [key, value];
+      // Add 'custom_' prefix to avoid conflicts with map style layer images (e.g., 'school')
+      const prefixedKey = `custom_${key}`;
+
+      if (!value?.uri) return [prefixedKey, value];
 
       const scaledUri = getScaledMarkerUri(value.uri, scale);
 
-      return [key, { ...value, uri: scaledUri, scale }];
+      return [prefixedKey, { ...value, uri: scaledUri, scale }];
     })
   );
 };
@@ -680,8 +684,12 @@ export const MapLibre = ({
                   iconImage: [
                     'case',
                     ['==', ['get', 'id'], selectedMarker],
-                    ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
-                    ['get', 'iconName']
+                    [
+                      'concat',
+                      'custom_',
+                      ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']]
+                    ],
+                    ['concat', 'custom_', ['get', 'iconName']]
                   ],
                   iconSize: [
                     'case',
@@ -795,7 +803,7 @@ export const MapLibre = ({
                 id="pin-single-icon"
                 style={{
                   ...layerStyles.singleIcon,
-                  iconImage: ['get', 'iconName'],
+                  iconImage: ['concat', 'custom_', ['get', 'iconName']],
                   iconSize: layerStyles.singleIcon.iconSize,
                   iconAnchor: [
                     'case',
@@ -820,7 +828,11 @@ export const MapLibre = ({
                   id="selected-single-icon"
                   style={{
                     ...layerStyles.singleIcon,
-                    iconImage: ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
+                    iconImage: [
+                      'concat',
+                      'custom_',
+                      ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']]
+                    ],
                     iconSize: layerStyles.singleIcon.iconSize * 1.2,
                     iconAnchor: [
                       'case',
