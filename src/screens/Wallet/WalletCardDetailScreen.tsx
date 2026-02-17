@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
+import { BarcodeCreatorView, BarcodeFormat } from 'react-native-barcode-creator';
 import ViewShot from 'react-native-view-shot';
 
 import {
@@ -38,23 +38,31 @@ import { CardType, TCard, TCardInfo } from '../../types';
 const ShareableCard = ({
   apiConnection,
   cardNumber,
+  cardType,
   pinCode
 }: {
   apiConnection: { qrEndpoint: string };
   cardNumber: string;
+  cardType: CardType;
   pinCode?: string;
 }) => {
   return (
-    <Wrapper itemsCenter>
-      <QRCode
-        size={normalize(device.width - 64)}
+    <Wrapper itemsCenter style={{ backgroundColor: colors.surface }}>
+      <BarcodeCreatorView
+        background={colors.surface}
+        foregroundColor={colors.darkText}
+        format={cardType === CardType.BONUS ? BarcodeFormat.CODE128 : BarcodeFormat.QR}
+        style={cardType === CardType.BONUS ? styles.barcode : styles.qrCode}
         value={`${apiConnection.qrEndpoint}${cardNumber}`}
       />
 
       <Wrapper itemsCenter>
         <WrapperRow>
           <RegularText center small>
-            {texts.wallet.detail.couponNumber}:{' '}
+            {cardType === CardType.BONUS
+              ? texts.wallet.detail.bonusNumber
+              : texts.wallet.detail.couponNumber}
+            :{' '}
           </RegularText>
           <BoldText small>{cardNumber}</BoldText>
         </WrapperRow>
@@ -87,7 +95,7 @@ export const WalletCardDetailScreen = ({
   const [cardData, setCardData] = useState<TCard | TCardInfo>(card);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFullScreenQR, setIsFullScreenQR] = useState(false);
+  const [isFullScreenCode, setIsFullScreenCode] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [isPinVisible, setIsPinVisible] = useState(false);
 
@@ -191,14 +199,17 @@ export const WalletCardDetailScreen = ({
         ListHeaderComponent={
           <>
             {!!cardNumber && (
-              <Wrapper itemsCenter>
+              <Wrapper itemsCenter noPaddingBottom>
                 <TouchableOpacity
-                  onPress={() => setIsFullScreenQR(true)}
-                  accessibilityLabel={texts.wallet.detail.expandQrCode}
+                  onPress={() => setIsFullScreenCode(true)}
+                  accessibilityLabel={texts.wallet.detail.expandCode}
                   accessibilityRole="button"
                 >
-                  <QRCode
-                    size={normalize(device.width - 64)}
+                  <BarcodeCreatorView
+                    background={colors.surface}
+                    foregroundColor={colors.darkText}
+                    format={cardType === CardType.BONUS ? BarcodeFormat.CODE128 : BarcodeFormat.QR}
+                    style={cardType === CardType.BONUS ? styles.barcode : styles.qrCode}
                     value={`${apiConnection.qrEndpoint}${cardNumber}`}
                   />
                 </TouchableOpacity>
@@ -210,7 +221,11 @@ export const WalletCardDetailScreen = ({
                 {!!cardNumber && (
                   <WrapperRow spaceBetween itemsCenter>
                     <BoldText small>{texts.wallet.detail.code}</BoldText>
-                    <BoldText small>{cardNumber.match(/.{1,4}/g)?.join('-')}</BoldText>
+                    <BoldText small>
+                      {cardType === CardType.COUPON
+                        ? cardNumber.match(/.{1,4}/g)?.join('-')
+                        : cardNumber}
+                    </BoldText>
                   </WrapperRow>
                 )}
 
@@ -338,7 +353,7 @@ export const WalletCardDetailScreen = ({
       <Modal
         closeButton={
           <TouchableOpacity
-            onPress={() => setIsFullScreenQR(false)}
+            onPress={() => setIsFullScreenCode(false)}
             style={styles.qrOverlayCloseButton}
             accessibilityLabel={texts.wallet.detail.close}
             accessibilityRole="button"
@@ -349,12 +364,16 @@ export const WalletCardDetailScreen = ({
         }
         isBackdropPress={true}
         isListView={false}
-        isVisible={isFullScreenQR}
-        onModalVisible={() => setIsFullScreenQR(false)}
+        isVisible={isFullScreenCode}
+        onModalVisible={() => setIsFullScreenCode(false)}
         overlayStyle={styles.qrOverlayContainer}
       >
         <Wrapper>
-          <ShareableCard apiConnection={apiConnection} cardNumber={cardNumber} />
+          <ShareableCard
+            apiConnection={apiConnection}
+            cardNumber={cardNumber}
+            cardType={cardType}
+          />
         </Wrapper>
       </Modal>
 
@@ -364,6 +383,7 @@ export const WalletCardDetailScreen = ({
             <ShareableCard
               apiConnection={apiConnection}
               cardNumber={cardNumber}
+              cardType={cardType}
               pinCode={pinCode}
             />
           </ViewShot>
@@ -375,6 +395,10 @@ export const WalletCardDetailScreen = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  barcode: {
+    height: device.width / normalize(2),
+    width: device.width - normalize(16)
+  },
   hiddenCaptureContainer: {
     position: 'absolute',
     top: -9999,
@@ -384,6 +408,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)
+  },
+  qrCode: {
+    height: device.width - normalize(16),
+    width: device.width - normalize(16)
   },
   qrOverlayContainer: {
     alignItems: 'center',
