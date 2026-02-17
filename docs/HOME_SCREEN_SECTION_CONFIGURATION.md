@@ -15,7 +15,7 @@ This document explains the integration and configuration of the HomeScreen secti
 
 1. **Configuration Source**: Ensure `globalSettings` provides `homeScreenConfig` and `sections` objects. These are typically loaded from remote or local settings.
 2. **Section Structure**: Each section in `homeScreenConfig` should define at minimum:
-   - `query`: One of `QUERY_TYPES.NEWS_ITEMS`, `QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS`, or `QUERY_TYPES.EVENT_RECORDS`.
+   - `query`: One of `newsItems`, `pointsOfInterestAndTours`, or `eventRecords`.
    - `show`: Boolean to toggle visibility.
    - `limit`, `buttonTitle`, `title`, and `queryVariables` as needed.
    - For news: `categoriesNews` array for category-based sections.
@@ -29,8 +29,11 @@ This document explains the integration and configuration of the HomeScreen secti
 ```js
   "homeScreenConfig": [
     {
-      "limit": 5,
+      "limitNews": 15,
       "query": "newsItems",
+      "queryVariables": {
+        "limit": 3
+      },
       "show": true,
       "categoriesNews": [
         {
@@ -51,9 +54,30 @@ This document explains the integration and configuration of the HomeScreen secti
           "rootRouteName": "Meldungen"
         }
       ]
+    },
+    {
+      "limitPointsOfInterestAndTours": 15,
+      "query": "pointsOfInterestAndTours",
+      "queryVariables": {
+        "limit": 10,
+        "orderPoi": "RAND",
+        "orderTour": "RAND",
+        "onlyWithImage": true
+      },
+      "show": true,
+      "headlinePointsOfInterestAndTours": "Sehenswürdigkeiten & Touren",
+      "buttonTitle": "Alle Sehenswürdigkeiten & Touren anzeigen"
+    },
+    {
+      "limitEvents": 15,
+      "query": "eventRecords",
+      "queryVariables": {
+        "limit": 3
+      },
+      "show": true,
+      "buttonTitle": "Alle Veranstaltungen anzeigen"
     }
   ],
-
 ```
 
 ## Testing & Validation

@@ -310,13 +310,13 @@ export const HomeScreen = ({ navigation, route }) => {
           switch (section.query) {
             case QUERY_TYPES.NEWS_ITEMS:
               return {
-                categoriesNews: section.categoriesNews || categoriesNews,
+                categoriesNews: section.categoriesNews,
                 fetchPolicy,
-                limit: section.limit || limitNews,
+                limit: section.limitNews,
                 navigation,
-                query: section.query || QUERY_TYPES.NEWS_ITEMS,
+                query: section.query,
                 queryVariables: {
-                  limit: section.limit || limitNews,
+                  limit: 3,
                   excludeDataProviderIds,
                   excludeMowasRegionalKeys,
                   ...section.queryVariables
@@ -325,38 +325,38 @@ export const HomeScreen = ({ navigation, route }) => {
               };
             case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
               return {
-                buttonTitle: section.buttonTitle || buttonPointsOfInterestAndTours,
+                buttonTitle: section.buttonTitle,
                 fetchPolicy,
-                limit: section.limit || limitPointsOfInterestAndTours,
+                limit: section.limitPointsOfInterestAndTours,
                 navigate: 'CATEGORIES_INDEX',
                 navigation,
-                query: section.query || QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
+                query: section.query,
                 queryVariables: {
-                  limit: section.limit || limitPointsOfInterestAndTours,
+                  limit: 10,
                   orderPoi: 'RAND',
                   orderTour: 'RAND',
                   onlyWithImage: true,
                   ...section.queryVariables
                 },
                 showData: section.show,
-                title: section.title || headlinePointsOfInterestAndTours
+                title: section.title
               };
             case QUERY_TYPES.EVENT_RECORDS:
               return {
-                buttonTitle: section.buttonTitle || buttonEvents,
+                buttonTitle: section.buttonTitle,
                 fetchPolicy,
-                limit: section.limit || limitEvents,
+                limit: section.limitEvents,
                 navigate: 'EVENT_RECORDS_INDEX',
                 navigation,
-                query: section.query || QUERY_TYPES.EVENT_RECORDS,
+                query: section.query,
                 queryVariables: {
-                  limit: section.limit || limitEvents,
+                  limit: 3,
                   order: 'listDate_ASC',
                   ...section.queryVariables
                 },
                 showData: section.show,
                 showVolunteerEvents,
-                title: section.title || headlineEvents
+                title: section.title
               };
             default:
               return null;
