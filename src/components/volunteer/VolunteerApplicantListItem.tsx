@@ -37,7 +37,7 @@ export const VolunteerApplicantListItem = ({
               });
             }}
             title={texts.volunteer.accept}
-            variants={ButtonVariants.ACCEPT}
+            variant={ButtonVariants.ACCEPT}
           />
         </ListItem.Content>
 
@@ -48,7 +48,7 @@ export const VolunteerApplicantListItem = ({
             });
           }}
           title={texts.volunteer.reject}
-          variants={ButtonVariants.REJECT}
+          variant={ButtonVariants.REJECT}
         />
       </ListItem>
     </View>

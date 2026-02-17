@@ -450,7 +450,7 @@ export const VolunteerFormCalendar = ({
           <Button
             onPress={() => deleteCalendarAlert(onCalendarDelete)}
             title={texts.volunteer.delete}
-            variants={ButtonVariants.DELETE}
+            variant={ButtonVariants.DELETE}
           />
         )}
         <Touchable onPress={() => navigation.goBack()}>

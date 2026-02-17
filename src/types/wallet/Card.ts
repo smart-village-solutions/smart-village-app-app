@@ -12,10 +12,10 @@ export type TCard = {
   routeName?: string;
   subtitle: string;
   title: string;
-  type: ECardType;
+  type: CardType;
 };
 
-export enum ECardType {
+export enum CardType {
   BONUS = 'bonus',
   COUPON = 'coupon'
 }

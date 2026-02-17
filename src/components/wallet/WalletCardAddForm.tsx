@@ -7,7 +7,7 @@ import { Alert, TouchableOpacity } from 'react-native';
 import { Icon, texts } from '../../config';
 import { ErrorSavingCard, saveCard } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
-import { ECardType, TApiConnection, TCard } from '../../types';
+import { CardType, ScreenName, TApiConnection, TCard } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { RegularText } from '../Text';
@@ -101,7 +101,7 @@ export const WalletCardAddForm = ({
     } as TCard;
 
     try {
-      if (cardType === ECardType.COUPON) {
+      if (cardType === CardType.COUPON) {
         await fetchCardInfo({
           apiConnection,
           cardNumber: cardData.cardNumber,
@@ -111,7 +111,7 @@ export const WalletCardAddForm = ({
 
       await saveCard(cardInfo);
 
-      navigation.pop(2);
+      navigation.popTo(ScreenName.WalletHome);
     } catch (error) {
       if (error?.message === ErrorSavingCard.DUPLICATE_CARD) {
         return Alert.alert(
@@ -131,7 +131,7 @@ export const WalletCardAddForm = ({
         <Input
           control={control}
           errorMessage={errors.cardNumber && errors.cardNumber.message}
-          keyboardType={cardType === ECardType.COUPON ? 'number-pad' : 'default'}
+          keyboardType={cardType === CardType.COUPON ? 'number-pad' : 'default'}
           label={cardNumberInputTitle}
           maxLength={cardNumberLength}
           name="cardNumber"
@@ -158,7 +158,7 @@ export const WalletCardAddForm = ({
         <RegularText smallest>{cardNumberHint}</RegularText>
       </Wrapper>
 
-      {cardType === ECardType.COUPON && (
+      {cardType === CardType.COUPON && (
         <Wrapper noPaddingTop>
           <Input
             control={control}
