@@ -19,5 +19,23 @@ export type TApiConnection = {
   endpoint: string;
   network: string;
   origin: string;
+  qrEndpoint: string;
   referer: string;
+};
+
+export type TCardInfo = {
+  balanceAsCent: number;
+  balanceAsEuro: string;
+  code: string;
+  codeFormated: string;
+  expiringCreditAsEuro: string;
+  expiringCreditTimeNice: string;
+  transactions: TTransaction[];
+};
+
+export type TTransaction = {
+  dealerName: string;
+  timeNice: string;
+  type: number;
+  valueAsEuro: string;
 };

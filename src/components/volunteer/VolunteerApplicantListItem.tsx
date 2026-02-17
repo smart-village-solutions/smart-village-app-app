@@ -6,7 +6,7 @@ import { ListItem } from 'react-native-elements';
 import { UseMutateAsyncFunction } from 'react-query';
 
 import { texts } from '../../config';
-import { Button } from '../Button';
+import { Button, ButtonVariants } from '../Button';
 import { ItemData, TextListItem } from '../TextListItem';
 
 type RouteParams = {
@@ -37,6 +37,7 @@ export const VolunteerApplicantListItem = ({
               });
             }}
             title={texts.volunteer.accept}
+            variants={ButtonVariants.ACCEPT}
           />
         </ListItem.Content>
 
@@ -47,6 +48,7 @@ export const VolunteerApplicantListItem = ({
             });
           }}
           title={texts.volunteer.reject}
+          variants={ButtonVariants.REJECT}
         />
       </ListItem>
     </View>

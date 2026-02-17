@@ -12,7 +12,7 @@ import { jsonParser, momentFormat } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { calendarDelete, calendarNew, calendarUpload, groupsMy } from '../../queries/volunteer';
 import { Calendar, VolunteerGroup } from '../../types';
-import { Button } from '../Button';
+import { Button, ButtonVariants } from '../Button';
 import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
@@ -450,6 +450,7 @@ export const VolunteerFormCalendar = ({
           <Button
             onPress={() => deleteCalendarAlert(onCalendarDelete)}
             title={texts.volunteer.delete}
+            variants={ButtonVariants.DELETE}
           />
         )}
         <Touchable onPress={() => navigation.goBack()}>
