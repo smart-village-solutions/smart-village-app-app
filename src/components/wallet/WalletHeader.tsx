@@ -16,7 +16,7 @@ type TWalletHeader = {
 export const WalletHeader = ({
   description = '',
   iconBackgroundColor = colors.lighterPrimaryRgba,
-  iconColor = colors.primary,
+  iconColor,
   iconName = 'credit-card',
   type = ''
 }: TWalletHeader) => {
