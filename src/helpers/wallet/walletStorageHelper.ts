@@ -2,17 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
 
 import { texts } from '../../config';
-
-export type TCard = {
-  backgroundColor: string;
-  cardName?: string;
-  cardNumber: string;
-  description?: string;
-  iconColor: string;
-  iconName: string;
-  pinCode: string;
-  type: string;
-};
+import { TCard } from '../../types';
 
 const WALLET_STORAGE_KEY = 'WALLET_STORAGE_KEY';
 
