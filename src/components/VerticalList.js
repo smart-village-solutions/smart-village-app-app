@@ -74,7 +74,10 @@ export const VerticalList = ({
       ListEmptyComponent={ListEmptyComponent}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={() => {
-        if (query === QUERY_TYPES.EVENT_RECORDS && ListFooterComponent) {
+        if (
+          (query === QUERY_TYPES.EVENT_RECORDS || query === QUERY_TYPES.WALLET) &&
+          ListFooterComponent
+        ) {
           return <ListFooterComponent />;
         }
 
