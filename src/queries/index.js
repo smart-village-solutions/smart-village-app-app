@@ -183,4 +183,5 @@ export const createQuery = (query) => {
 };
 
 // WHISTLEBLOW
+export * from './wallet';
 export * from './whistleblow';

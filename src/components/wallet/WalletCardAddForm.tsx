@@ -2,10 +2,12 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Alert } from 'react-native';
 
 import { texts } from '../../config';
 import { saveCard } from '../../helpers';
-import { TCard } from '../../types';
+import { fetchCardInfo } from '../../queries';
+import { TApiConnection, TCard } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
 import { Wrapper } from '../Wrapper';
@@ -29,11 +31,11 @@ type CardFormData = {
 };
 
 export const WalletCardAddForm = ({
-  apiEndpoint,
+  apiConnection,
   cardInformation,
   inputsInformation
 }: {
-  apiEndpoint: string;
+  apiConnection: TApiConnection;
   cardInformation?: TCard;
   inputsInformation?: TInputsInformation;
 }) => {
@@ -66,7 +68,7 @@ export const WalletCardAddForm = ({
 
   const onSubmit = async (cardData: CardFormData) => {
     const cardInfo = {
-      apiEndpoint: apiEndpoint,
+      apiConnection,
       iconBackgroundColor: cardInformation?.iconBackgroundColor,
       cardName: cardData.cardName,
       cardNumber: cardData.cardNumber,
@@ -78,12 +80,24 @@ export const WalletCardAddForm = ({
     } as TCard;
 
     try {
-      const { saved, duplicate } = await saveCard(cardInfo);
+      await fetchCardInfo({
+        apiConnection,
+        cardNumber: cardData.cardNumber,
+        cardPin: cardData.pinCode
+      });
 
-      if (saved && !duplicate) {
-        navigation.pop(2);
-      }
+      await saveCard(cardInfo);
+
+      navigation.pop(2);
     } catch (error) {
+      if (error?.message === 'Duplicate card') {
+        return Alert.alert(
+          texts.wallet.alert.duplicateCardTitle,
+          texts.wallet.alert.duplicateCardMessage
+        );
+      }
+
+      Alert.alert(texts.wallet.alert.invalidCardTitle, texts.wallet.alert.invalidCardMessage);
       console.error('Error saving card:', error);
     }
   };

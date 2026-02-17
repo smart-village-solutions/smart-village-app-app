@@ -15,7 +15,7 @@ export const WalletCardAddScreen = ({ route }: { route: RouteProp<any, any> }) =
   const { card } = route.params;
   const {
     addCardScreenSettings = {},
-    apiEndpoint,
+    apiConnection = {},
     iconBackgroundColor,
     iconColor,
     iconName
@@ -41,7 +41,7 @@ export const WalletCardAddScreen = ({ route }: { route: RouteProp<any, any> }) =
           </WrapperVertical>
 
           <WalletCardAddForm
-            apiEndpoint={apiEndpoint}
+            apiConnection={apiConnection}
             cardInformation={card}
             inputsInformation={inputsInformation}
           />

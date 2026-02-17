@@ -23,7 +23,7 @@ export const getSavedCards = async (): Promise<TCard[]> => {
   return JSON.parse(stored);
 };
 
-export const saveCard = async (card: TCard): Promise<{ saved: boolean; duplicate: boolean }> => {
+export const saveCard = async (card: TCard): Promise<void> => {
   try {
     const existingCards = await getSavedCards();
 
@@ -31,21 +31,15 @@ export const saveCard = async (card: TCard): Promise<{ saved: boolean; duplicate
     const isDuplicate = existingCards.some((c) => c.cardNumber === card.cardNumber);
 
     if (isDuplicate) {
-      // Warning (consider moving string to texts config for localization)
-      Alert.alert(texts.wallet.alert.duplicateCardTitle, texts.wallet.alert.duplicateCardMessage);
-
-      return { saved: false, duplicate: true };
+      throw new Error('Duplicate card');
     }
 
     const updatedCards = [...existingCards, card];
 
     await SecureStore.setItemAsync(WALLET_STORAGE_KEY, JSON.stringify(updatedCards));
-
-    return { saved: true, duplicate: false };
   } catch (error) {
     console.error('Failed to save card:', error);
-
-    return { saved: false, duplicate: false };
+    throw error;
   }
 };
 
