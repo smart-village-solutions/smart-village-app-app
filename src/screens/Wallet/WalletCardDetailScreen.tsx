@@ -46,7 +46,7 @@ const ShareableCard = ({
   return (
     <Wrapper itemsCenter>
       <QRCode
-        size={normalize(device.width - 32)}
+        size={normalize(device.width - 64)}
         value={`${apiConnection.qrEndpoint}${cardNumber}`}
       />
 
@@ -349,6 +349,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   qrOverlayCloseButton: {
+    alignItems: 'center',
     flexDirection: 'row',
     left: normalize(20),
     position: 'absolute',
