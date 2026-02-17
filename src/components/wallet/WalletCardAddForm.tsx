@@ -1,25 +1,27 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 
-import { texts } from '../../config';
+import { Icon, texts } from '../../config';
 import { ErrorSavingCard, saveCard } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
 import { ECardType, TApiConnection, TCard } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form';
+import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
 type TInputsInformation = {
   cardNameInputPlaceholder?: string;
   cardNameInputTitle?: string;
+  cardNumberHint?: string;
   cardNumberInputPlaceholder?: string;
   cardNumberInputTitle?: string;
+  cardNumberLength?: number;
   cardPinInputPlaceholder?: string;
   cardPinInputTitle?: string;
-  cardNumberLength?: number;
   pinLength?: number;
 };
 
@@ -32,22 +34,27 @@ type CardFormData = {
 export const WalletCardAddForm = ({
   apiConnection,
   cardInformation,
-  inputsInformation
+  inputsInformation,
+  scannedCardNumber = '',
+  setIsScannerOpen
 }: {
   apiConnection: TApiConnection;
   cardInformation?: TCard;
   inputsInformation?: TInputsInformation;
+  scannedCardNumber?: string;
+  setIsScannerOpen: (isOpen: boolean) => void;
 }) => {
   const navigation = useNavigation<StackNavigationProp<Record<string, any>>>();
 
   const {
     cardNameInputPlaceholder = texts.wallet.add.inputs.cardNameInputPlaceholder,
     cardNameInputTitle = texts.wallet.add.inputs.cardNameInputTitle,
+    cardNumberHint = texts.wallet.add.inputs.cardNumberHint,
     cardNumberInputPlaceholder = texts.wallet.add.inputs.cardNumberInputPlaceholder,
     cardNumberInputTitle = texts.wallet.add.inputs.cardNumberInputTitle,
+    cardNumberLength = 12,
     cardPinInputPlaceholder = texts.wallet.add.inputs.cardPinInputPlaceholder,
     cardPinInputTitle = texts.wallet.add.inputs.cardPinInputTitle,
-    cardNumberLength = 12,
     pinLength = 3
   } = inputsInformation || {};
   const {
@@ -62,15 +69,22 @@ export const WalletCardAddForm = ({
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    setValue
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
       cardName: '',
-      cardNumber: '',
+      cardNumber: scannedCardNumber || '',
       pinCode: ''
     }
   });
+
+  useEffect(() => {
+    if (scannedCardNumber) {
+      setValue('cardNumber', scannedCardNumber);
+    }
+  }, [scannedCardNumber, setValue]);
 
   const onSubmit = async (cardData: CardFormData) => {
     const cardInfo = {
@@ -122,6 +136,11 @@ export const WalletCardAddForm = ({
           maxLength={cardNumberLength}
           name="cardNumber"
           placeholder={cardNumberInputPlaceholder}
+          rightIcon={
+            <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
+              <Icon.NamedIcon name="scan" />
+            </TouchableOpacity>
+          }
           rules={{
             minLength: {
               value: cardNumberLength,
@@ -136,6 +155,7 @@ export const WalletCardAddForm = ({
             }
           }}
         />
+        <RegularText smallest>{cardNumberHint}</RegularText>
       </Wrapper>
 
       {cardType === ECardType.COUPON && (
@@ -172,7 +192,7 @@ export const WalletCardAddForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop noPaddingBottom>
         <Button title={texts.wallet.add.button} onPress={handleSubmit(onSubmit)} />
       </Wrapper>
     </>

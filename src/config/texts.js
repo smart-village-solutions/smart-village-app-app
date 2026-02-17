@@ -1678,11 +1678,13 @@ export const texts = {
       button: 'Karte hinzufügen',
       cardAddDescription: 'Geben Sie Ihre Kartendaten ein und speichern Sie sie.',
       cardAddTitle: 'Karte hinzufügen',
+      cardScan: 'Karte scannen',
       noCardsAvailable: 'Keine Kartentypen verfügbar',
       selectCardType: 'Kartentyp auswählen',
       inputs: {
         cardNameInputPlaceholder: 'Kartenname eingeben',
         cardNameInputTitle: 'Kartenname',
+        cardNumberHint: 'Bitte Nummer eingeben oder per Kamera scannen.',
         cardNumberInputPlaceholder: 'Kartennummer eingeben',
         cardNumberInputTitle: 'Kartennummer',
         cardPinInputPlaceholder: 'PIN eingeben',

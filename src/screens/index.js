@@ -35,6 +35,7 @@ export * from './MapViewScreen';
 export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';
 export * from './PdfScreen';
+export * from './Scanner';
 export * from './SearchScreen';
 export * from './SettingsScreen';
 export * from './SurveyDetailScreen';

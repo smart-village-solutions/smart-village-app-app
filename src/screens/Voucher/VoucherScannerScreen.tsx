@@ -1,21 +1,14 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
+import { BarcodeScanningResult } from 'expo-camera';
 import * as Linking from 'expo-linking';
-import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Alert } from 'react-native';
 
 import appJson from '../../../app.json';
-import {
-  Button,
-  LoadingSpinner,
-  RegularText,
-  SafeAreaViewFlex,
-  SectionHeader,
-  Wrapper
-} from '../../components';
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
+import { Scanner } from '../Scanner';
 
 const { HOST_NAMES } = consts;
 
@@ -35,7 +28,6 @@ const parseQrCode = (
 };
 
 export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
-  const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(true);
 
   const handleBarCodeScanned = ({ data }: BarcodeScanningResult) => {
@@ -63,64 +55,5 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
     });
   };
 
-  if (!permission) {
-    return (
-      <ScrollView>
-        <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
-        <LoadingSpinner loading />
-      </ScrollView>
-    );
-  }
-
-  if (!permission.granted) {
-    return (
-      <ScrollView>
-        <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
-        <Wrapper noPaddingBottom>
-          <RegularText>{texts.voucher.scannerScreen.cameraPermissionMissing}</RegularText>
-        </Wrapper>
-        <Wrapper>
-          <Button
-            title={texts.voucher.scannerScreen.requestPermissionButton}
-            onPress={() => {
-              requestPermission().then(({ canAskAgain }) => {
-                if (!canAskAgain) {
-                  Alert.alert(
-                    texts.voucher.scannerScreen.errorTitle,
-                    texts.voucher.scannerScreen.cameraPermissionMissingBody,
-                    [
-                      {
-                        text: texts.voucher.scannerScreen.cameraPermissionMissingButton,
-                        onPress: () => Linking.openSettings()
-                      },
-                      {
-                        text: texts.voucher.scannerScreen.cancel,
-                        onPress: () => {},
-                        style: 'cancel'
-                      }
-                    ]
-                  );
-                }
-              });
-            }}
-          />
-        </Wrapper>
-      </ScrollView>
-    );
-  }
-
-  return (
-    <SafeAreaViewFlex>
-      {isScanning ? (
-        <CameraView onBarcodeScanned={handleBarCodeScanned} style={styles.scanner} />
-      ) : null}
-    </SafeAreaViewFlex>
-  );
+  return <Scanner isScanning={isScanning} handleBarCodeScanned={handleBarCodeScanned} />;
 };
-
-const styles = StyleSheet.create({
-  scanner: {
-    height: '100%',
-    width: '100%'
-  }
-});

@@ -1,17 +1,21 @@
 import { RouteProp } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
   SafeAreaViewFlex,
   WalletCardAddForm,
+  WalletCardScanner,
   WalletHeader,
   WrapperVertical
 } from '../../components';
 import { texts } from '../../config';
 
 export const WalletCardAddScreen = ({ route }: { route: RouteProp<any, any> }) => {
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [cardNumber, setCardNumber] = useState('');
+
   const { card } = route.params;
   const {
     addCardScreenSettings = {},
@@ -25,6 +29,10 @@ export const WalletCardAddScreen = ({ route }: { route: RouteProp<any, any> }) =
     title = texts.wallet.add.cardAddTitle,
     inputsInformation = {}
   } = addCardScreenSettings;
+
+  if (isScannerOpen) {
+    return <WalletCardScanner setIsScannerOpen={setIsScannerOpen} setCardNumber={setCardNumber} />;
+  }
 
   return (
     <SafeAreaViewFlex>
@@ -44,6 +52,8 @@ export const WalletCardAddScreen = ({ route }: { route: RouteProp<any, any> }) =
             apiConnection={apiConnection}
             cardInformation={card}
             inputsInformation={inputsInformation}
+            scannedCardNumber={cardNumber}
+            setIsScannerOpen={setIsScannerOpen}
           />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
