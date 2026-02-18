@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import 'dayjs/locale/de';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -16,11 +17,14 @@ import {
   MessageText,
   Send
 } from 'react-native-gifted-chat';
+import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
 import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
+import { ScreenName } from '../types';
 
+import { DotsAnimation } from './DotsAnimation';
 import { Image } from './Image';
 import { RegularText } from './Text';
 import { VolunteerAvatar } from './volunteer';
@@ -47,14 +51,17 @@ export const Chat = ({
   bubbleWrapperStyleLeft,
   bubbleWrapperStyleRight,
   data,
+  isTyping = false,
   messageTextStyleLeft,
   messageTextStyleRight,
   onSendButton,
   placeholder = '',
   showActionButton = false,
+  showAvatar = true,
   textInputProps,
   userId
 }) => {
+  const navigation = useNavigation();
   const [messages, setMessages] = useState(data);
   const [medias, setMedias] = useState([]);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -78,6 +85,17 @@ export const Chat = ({
       setMedias([]);
     } else {
       return false;
+    }
+  };
+
+  const onQuickReply = (replies) => {
+    // Send the quick reply as a regular message
+    if (replies?.length) {
+      // For radio type, we get a single reply
+      // For checkbox type, we can get multiple replies
+      const replyText = replies.map((reply) => reply.title).join(', ');
+
+      onSendButton({ text: replyText, medias: [] });
     }
   };
 
@@ -118,13 +136,14 @@ export const Chat = ({
   return (
     <GiftedChat
       alwaysShowSend
+      isScrollToBottomEnabled
+      isStatusBarTranslucentAndroid
+      isTyping={isTyping}
       keyboardShouldPersistTaps="handled"
       locale="de"
-      isStatusBarTranslucentAndroid
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
-      isScrollToBottomEnabled
       scrollToBottomComponent={() => <Icon.ArrowDown />}
       listViewProps={{
         contentContainerStyle: {
@@ -132,6 +151,7 @@ export const Chat = ({
         }
       }}
       user={{ _id: parseInt(userId) }}
+      onQuickReply={onQuickReply}
       renderActions={(props) => {
         if (!showActionButton) return null;
 
@@ -173,7 +193,9 @@ export const Chat = ({
           />
         );
       }}
-      renderAvatar={(props) => <VolunteerAvatar item={{ user: props?.currentMessage?.user }} />}
+      renderAvatar={(props) =>
+        showAvatar && <VolunteerAvatar item={{ user: props?.currentMessage?.user }} />
+      }
       renderBubble={(props) => (
         <Bubble
           {...props}
@@ -208,7 +230,29 @@ export const Chat = ({
         ))
       }
       renderDay={(props) => <Day {...props} dateFormat="D. MMMM YYYY" />}
-      renderFooter={() => !!medias.length && renderFooter(medias, setMedias)}
+      renderFooter={() => {
+        const hasMedias = medias.length > 0;
+
+        // If we have neither medias nor typing, return null
+        if (!hasMedias && !isTyping) {
+          return null;
+        }
+
+        return (
+          <View>
+            {/* Show typing indicator if typing */}
+            {isTyping && (
+              <View style={styles.typingContainer}>
+                <View style={styles.typingBubble}>
+                  <DotsAnimation />
+                </View>
+              </View>
+            )}
+            {/* Show media preview if there are medias */}
+            {hasMedias && renderFooter(medias, setMedias)}
+          </View>
+        );
+      }}
       renderInputToolbar={(props) => (
         <InputToolbar
           {...props}
@@ -261,6 +305,36 @@ export const Chat = ({
             left: [styles.textStyle, messageTextStyleLeft],
             right: [styles.textStyle, messageTextStyleRight]
           }}
+          parsePatterns={(linkStyle) => [
+            // Bold text pattern (**text**)
+            {
+              pattern: /\*\*([^*]+)\*\*/g,
+              style: { fontFamily: 'bold', fontWeight: 'bold' },
+              renderText: (text) => {
+                const match = text.match(/\*\*([^*]+)\*\*/);
+                return match ? match[1] : text;
+              }
+            },
+            // Markdown link pattern ([text](url))
+            {
+              pattern: /\[([^\]]+)\]\(([^)]+)\)/g,
+              style: linkStyle,
+              onPress: (text) => {
+                const match = text.match(/\[([^\]]+)\]\(([^)]+)\)/);
+                if (match) {
+                  const url = match[2];
+                  // Add protocol if missing
+                  const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+
+                  navigation.navigate(ScreenName.Web, { webUrl: fullUrl });
+                }
+              },
+              renderText: (text) => {
+                const match = text.match(/\[([^\]]+)\]\(([^)]+)\)/);
+                return match ? match[1] : text;
+              }
+            }
+          ]}
         />
       )}
       renderSend={({ onSend, text, sendButtonProps, ...props }) => (
@@ -276,6 +350,17 @@ export const Chat = ({
         <View style={styles.spacingTime}>
           <RegularText small>{momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}</RegularText>
         </View>
+      )}
+      renderQuickReplies={(props) => (
+        <QuickReplies
+          {...props}
+          quickReplyStyle={{
+            backgroundColor: colors.primary,
+            borderRadius: normalize(8),
+            borderWidth: 0
+          }}
+          quickReplyTextStyle={{ color: colors.lightestText }}
+        />
       )}
     />
   );
@@ -378,7 +463,8 @@ const styles = StyleSheet.create({
     width: normalize(48)
   },
   spacingTime: {
-    paddingHorizontal: normalize(10)
+    paddingHorizontal: normalize(10),
+    paddingBottom: normalize(8)
   },
   textInputStyle: {
     borderColor: colors.gray20,
@@ -401,6 +487,19 @@ const styles = StyleSheet.create({
     fontFamily: 'regular',
     fontSize: normalize(14),
     lineHeight: normalize(20)
+  },
+  typingContainer: {
+    paddingBottom: normalize(10),
+    paddingLeft: normalize(15),
+    paddingRight: normalize(60)
+  },
+  typingBubble: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.gray20,
+    borderRadius: normalize(18),
+    minHeight: normalize(56),
+    paddingHorizontal: normalize(16),
+    paddingVertical: normalize(12)
   },
   videoBubble: {
     alignSelf: 'center',

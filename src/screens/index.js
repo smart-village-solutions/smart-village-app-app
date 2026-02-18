@@ -14,6 +14,7 @@ export * from './AboutScreen';
 export * from './AppIntroScreen';
 export * from './BookmarkCategoryScreen';
 export * from './BookmarkScreen';
+export * from './ChatbotScreen';
 export * from './CitySelectionScreen';
 export * from './ConstructionSiteDetailScreen';
 export * from './ConstructionSiteOverviewScreen';

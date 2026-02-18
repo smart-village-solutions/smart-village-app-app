@@ -9,6 +9,7 @@ export * from './Accessibility';
 export * from './Address';
 export * from './AppIntroSlide';
 export * from './Camera';
+export * from './Chatbot';
 export * from './ConstructionSite';
 export * from './Contact';
 export * from './Date';
