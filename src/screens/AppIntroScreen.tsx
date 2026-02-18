@@ -360,7 +360,7 @@ export const AppIntroScreen = ({
   }
 
   return (
-    <SafeAreaViewFlex style={[styles.background, { backgroundColor }]}>
+    <SafeAreaViewFlex style={[styles.background, { backgroundColor }]} edges={['top', 'bottom']}>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
         activeDotStyle={onlyTermsAndConditions ? styles.hiddenDot : styles.activeDot}
