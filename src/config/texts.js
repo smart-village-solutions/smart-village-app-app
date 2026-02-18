@@ -807,9 +807,11 @@ export const texts = {
       streetAddress: 'Straße/Nr.:'
     },
     meeting: {
+      action: 'Aktionen',
       agendaItem: 'Tagesordnungspunkte',
       auxiliaryFile: 'Dateianhänge',
       cancelled: 'Dieser Termin wurde abgesagt.',
+      conference: 'Konferenz',
       invitation: 'Einladung',
       license: 'Lizenz',
       location: 'Sitzungsort:',

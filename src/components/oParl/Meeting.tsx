@@ -29,6 +29,7 @@ export const Meeting = ({ data, navigation }: Props) => {
     agendaItem,
     auxiliaryFile,
     cancelled,
+    conferenceLink,
     created,
     deleted,
     end,
@@ -49,6 +50,9 @@ export const Meeting = ({ data, navigation }: Props) => {
 
   const sortedAgendaItems = getSortedAgendaItems(agendaItem);
   const formattedLocation = location && <FormattedLocation location={location} />;
+  const conferenceLinkMarkdown = conferenceLink
+    ? `[${meetingTexts.conference}](${conferenceLink})`
+    : undefined;
 
   return (
     <>
@@ -77,6 +81,7 @@ export const Meeting = ({ data, navigation }: Props) => {
           }
         />
         <Row left={meetingTexts.meetingState} right={meetingState} />
+        <Row left={meetingTexts.action} right={conferenceLinkMarkdown} />
       </WrapperHorizontal>
       <OParlPreviewSection
         data={sortedAgendaItems}

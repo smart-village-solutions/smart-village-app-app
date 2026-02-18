@@ -192,6 +192,7 @@ export type MeetingPreviewData = {
 export type MeetingData = {
   agendaItem?: AgendaItemPreviewData[];
   auxiliaryFile?: FilePreviewData[];
+  conferenceLink?: string;
   end?: number; // Date
   invitation?: FilePreviewData;
   location?: LocationPreviewData;
