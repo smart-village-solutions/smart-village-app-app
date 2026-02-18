@@ -34,7 +34,7 @@
       "\\.svg": "<rootDir>/__mocks__/svgMock.js"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?@?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|native-base|@sentry/.*|matomo-tracker-react-native|ramda|@reactvision/react-viro/*)"
+      "node_modules/(?!(jest-)?@?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|native-base|@sentry/.*|matomo-tracker-react-native|ramda|@reactvision/react-viro/*|tabler-icons-react-native)"
     ],
     "setupFiles": [
       "./jest-setup.js"
