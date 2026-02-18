@@ -105,7 +105,7 @@
     "graphql-request": "^3.0.0",
     "graphql-tag": "^2.12.6",
     "libphonenumber-js": "^1.10.58",
-    "lodash": "~4.17.21",
+    "lodash": "~4.17.23",
     "markdown-it": "13.0.2",
     "matomo-tracker-react-native": "^0.3.0",
     "metro-config": "^0.82.0",
