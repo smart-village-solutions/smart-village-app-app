@@ -15,7 +15,7 @@ import { Wrapper, WrapperHorizontal } from './Wrapper';
 const keyExtractor = (item, index) => `item${item}-index${index}`;
 
 /* eslint-disable complexity */
-const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) => {
+const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle) => {
   const {
     address,
     appDesignSystem = {},
@@ -40,18 +40,24 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
 
   const cardContent = [];
 
+  const titleComponent = (
+    <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
+      {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+    </HeadlineText>
+  );
+
   const sequenceMap = {
     picture: () =>
       picture?.url ? (
         <Image
-          borderRadius={sue ? 0 : imageBorderRadius}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, sue && styles.sueImage]}
-          containerStyle={[styles.imageContainer, sue && styles.sueImage, imageStyle]}
+          borderRadius={isSue ? 0 : imageBorderRadius}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, isSue && styles.sueImage]}
+          containerStyle={[styles.imageContainer, isSue && styles.sueImage, imageStyle]}
           key={keyExtractor(picture.url, index)}
           placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
         />
-      ) : sue ? (
+      ) : isSue ? (
         <SueImageFallback
           key={keyExtractor('fallbackImage', index)}
           style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
@@ -85,51 +91,40 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
       ),
     title: () =>
       !!title &&
-      (sue ? (
-        <WrapperHorizontal key={keyExtractor(title, index)}>
-          <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
-            {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-          </HeadlineText>
-        </WrapperHorizontal>
+      (isSue ? (
+        <WrapperHorizontal key={keyExtractor(title, index)}>{titleComponent}</WrapperHorizontal>
       ) : (
-        <HeadlineText
-          key={keyExtractor(title, index)}
-          small={!bigTitle}
-          style={[generalStyle, titleStyle]}
-        >
-          {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-        </HeadlineText>
+        titleComponent
       )),
-
-    // SUE
-    address: () =>
-      !!sue &&
-      !!address && (
-        <Wrapper key={keyExtractor(address, index)}>
-          <RegularText small>{address}</RegularText>
-        </Wrapper>
-      ),
-    category: () =>
-      !!sue &&
-      !!serviceName &&
-      !!requestedDatetime && (
-        <SueCategory
-          key={keyExtractor(serviceName, index)}
-          serviceName={serviceName}
-          requestedDatetime={requestedDatetime}
-        />
-      ),
-    divider: () =>
-      !!sue && (
-        <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
-          <Divider />
-        </Wrapper>
-      ),
-    status: () =>
-      !!sue &&
-      !!status && (
-        <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
-      )
+    ...(isSue
+      ? {
+          // SUE
+          address: () =>
+            !!address && (
+              <Wrapper key={keyExtractor(address, index)}>
+                <RegularText small>{address}</RegularText>
+              </Wrapper>
+            ),
+          category: () =>
+            !!serviceName &&
+            !!requestedDatetime && (
+              <SueCategory
+                key={keyExtractor(serviceName, index)}
+                serviceName={serviceName}
+                requestedDatetime={requestedDatetime}
+              />
+            ),
+          divider: () => (
+            <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
+              <Divider />
+            </Wrapper>
+          ),
+          status: () =>
+            !!status && (
+              <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
+            )
+        }
+      : {})
   };
 
   if (contentSequence?.length) {
@@ -143,14 +138,14 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
     if (!noOvertitle && overtitle) {
       cardContent.push(sequenceMap.overtitle());
     }
-    if (!sue && title) {
+    if (!isSue && title) {
       cardContent.push(sequenceMap.title());
     }
     if (subtitle) {
       cardContent.push(sequenceMap.subtitle());
     }
 
-    if (sue) {
+    if (isSue) {
       if (!picture?.url) {
         cardContent.push(sequenceMap.picture());
       }
@@ -179,18 +174,18 @@ export const CardListItem = memo(
     bigTitle = false,
     horizontal = false,
     index,
+    isSue = false,
     item,
     navigation,
-    noOvertitle = false,
-    sue = false
+    noOvertitle = false
   }) => {
     const {
       appDesignSystem = {},
       overtitle,
       params,
+      requestedDatetime,
       routeName: name,
       serviceName,
-      requestedDatetime,
       subtitle,
       title
     } = item;
@@ -225,10 +220,10 @@ export const CardListItem = memo(
               style={[
                 stylesWithProps({ horizontal }).contentContainer,
                 contentContainerStyle,
-                sue && styles.sueContentContainer
+                isSue && styles.sueContentContainer
               ]}
             >
-              {renderCardContent(item, index, horizontal, noOvertitle, bigTitle, sue)}
+              {renderCardContent(bigTitle, horizontal, index, isSue, item, noOvertitle)}
             </View>
           </Card>
         </View>
@@ -315,8 +310,8 @@ CardListItem.propTypes = {
   bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
   index: PropTypes.number,
+  isSue: PropTypes.bool,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
-  noOvertitle: PropTypes.bool,
-  sue: PropTypes.bool
+  noOvertitle: PropTypes.bool
 };

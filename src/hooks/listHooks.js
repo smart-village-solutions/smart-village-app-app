@@ -256,7 +256,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         }
 
         if (query === QUERY_TYPES.SUE.REQUESTS) {
-          return <CardListItem navigation={navigation} item={item} index={index} sue />;
+          return <CardListItem navigation={navigation} item={item} index={index} isSue />;
         }
 
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
