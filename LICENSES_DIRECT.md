@@ -978,13 +978,13 @@
     - publisher: Meliorence
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-render-html
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-render-html/README.md
-- **[react-native-safe-area-context@5.6.1](https://github.com/th3rdwave/react-native-safe-area-context)**
+- **[react-native-safe-area-context@5.6.2](https://github.com/AppAndFlow/react-native-safe-area-context)**
     - name: react-native-safe-area-context
-    - version: 5.6.1
+    - version: 5.6.2
     - description: A flexible way to handle safe area, also works on Android and web.
     - copyright: Copyright (c) 2019 Th3rd Wave
     - licenses: MIT
-    - repository: https://github.com/th3rdwave/react-native-safe-area-context
+    - repository: https://github.com/AppAndFlow/react-native-safe-area-context
     - publisher: Janic Duplessis
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-safe-area-context
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-safe-area-context/LICENSE
