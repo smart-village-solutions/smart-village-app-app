@@ -868,9 +868,9 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-get-random-values
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-get-random-values/LICENSE
-- **[react-native-gifted-chat@2.7.3](https://github.com/FaridSafi/react-native-gifted-chat)**
+- **[react-native-gifted-chat@2.8.1](https://github.com/FaridSafi/react-native-gifted-chat)**
     - name: react-native-gifted-chat
-    - version: 2.7.3
+    - version: 2.8.1
     - description: The most complete chat UI for React Native
     - copyright: Copyright (c) 2019 Farid from Safi
     - licenses: MIT
@@ -1118,6 +1118,16 @@
     - publisher: 
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/LICENSE.md
+- **[socket.io-client@4.8.3](https://github.com/socketio/socket.io)**
+    - name: socket.io-client
+    - version: 4.8.3
+    - description: Realtime application framework client
+    - copyright: Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors
+    - licenses: MIT
+    - repository: https://github.com/socketio/socket.io
+    - publisher: 
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/socket.io-client
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/socket.io-client/LICENSE
 - **[styled-components@4.4.1](https://github.com/styled-components/styled-components)**
     - name: styled-components
     - version: 4.4.1

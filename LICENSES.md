@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 954 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 961 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 70 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 23 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
@@ -1871,7 +1871,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Get the prebuild config",
     "publisher": ""
   },
-  "@expo/react-native-action-sheet@4.1.0": {
+  "@expo/react-native-action-sheet@4.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/react-native-action-sheet",
     "publisher": "Jesse Ruder",
@@ -1879,7 +1879,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Expo\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015 Expo",
     "name": "@expo/react-native-action-sheet",
-    "version": "4.1.0",
+    "version": "4.1.1",
     "description": "A cross-platform ActionSheet for React Native"
   },
   "@expo/schema-utils@0.1.8": {
@@ -2733,6 +2733,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@sinonjs/fake-timers",
     "version": "10.3.0",
     "description": "Fake JavaScript timers"
+  },
+  "@socket.io/component-emitter@3.1.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/socketio/emitter",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2014 Component contributors <dev@component.io>\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2014 Component contributors <dev@component.io>",
+    "name": "@socket.io/component-emitter",
+    "version": "3.1.2",
+    "description": "Event emitter",
+    "publisher": ""
   },
   "@svgr/babel-plugin-add-jsx-attribute@8.0.0": {
     "licenses": "MIT",
@@ -4772,14 +4782,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.2",
     "description": "Property descriptor factory"
   },
-  "dayjs@1.11.13": {
+  "dayjs@1.11.19": {
     "licenses": "MIT",
     "repository": "https://github.com/iamkun/dayjs",
     "publisher": "iamkun",
     "licenseText": "MIT License\n\nCopyright (c) 2018-present, iamkun\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2018-present, iamkun",
     "name": "dayjs",
-    "version": "1.11.13",
+    "version": "1.11.19",
     "description": "2KB immutable date time library alternative to Moment.js with the same modern API "
   },
   "debounce@2.2.0": {
@@ -5224,6 +5234,26 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "encoding",
     "version": "0.1.13",
     "description": "Convert encodings, uses iconv-lite"
+  },
+  "engine.io-client@6.6.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/socketio/socket.io",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2014-present Guillermo Rauch and Socket.IO contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors",
+    "name": "engine.io-client",
+    "version": "6.6.4",
+    "description": "Client for the realtime Engine",
+    "publisher": ""
+  },
+  "engine.io-parser@5.2.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/socketio/socket.io",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2014-present Guillermo Rauch and Socket.IO contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors",
+    "name": "engine.io-parser",
+    "version": "5.2.3",
+    "description": "Parser for the client for the realtime Engine",
+    "publisher": ""
   },
   "entities@2.0.3": {
     "licenses": "BSD-2-Clause",
@@ -9342,14 +9372,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A small implementation of `crypto.getRandomValues` for React Native. This is useful to polyfill for libraries like [uuid](https://www.npmjs.com/package/uuid) that depend on it.",
     "publisher": ""
   },
-  "react-native-gifted-chat@2.7.3": {
+  "react-native-gifted-chat@2.8.1": {
     "licenses": "MIT",
     "repository": "https://github.com/FaridSafi/react-native-gifted-chat",
     "publisher": "Farid Safi",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2019 Farid from Safi\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2019 Farid from Safi",
     "name": "react-native-gifted-chat",
-    "version": "2.7.3",
+    "version": "2.8.1",
     "description": "The most complete chat UI for React Native"
   },
   "react-native-gradle-plugin@0.71.19": {
@@ -10341,6 +10371,26 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "snake-case",
     "version": "3.0.4",
     "description": "Transform into a lower case string with underscores between words"
+  },
+  "socket.io-client@4.8.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/socketio/socket.io",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014-present Guillermo Rauch and Socket.IO contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
+    "copyright": "Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors",
+    "name": "socket.io-client",
+    "version": "4.8.3",
+    "description": "Realtime application framework client",
+    "publisher": ""
+  },
+  "socket.io-parser@4.2.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/socketio/socket.io",
+    "licenseText": "(The MIT License)\n\nCopyright (c) 2014-present Guillermo Rauch and Socket.IO contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the 'Software'), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors",
+    "name": "socket.io-parser",
+    "version": "4.2.5",
+    "description": "socket.io protocol parser",
+    "publisher": ""
   },
   "source-map-js@1.2.1": {
     "licenses": "BSD-3-Clause",
@@ -11516,6 +11566,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.18.1",
     "description": "Simple to use, blazing fast and thoroughly tested websocket client and server for Node.js"
   },
+  "ws@8.18.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/websockets/ws",
+    "publisher": "Einar Otto Stangvik",
+    "email": "einaros@gmail.com",
+    "licenseText": "Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>\nCopyright (c) 2013 Arnout Kazemier and contributors\nCopyright (c) 2016 Luigi Pinca and contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>. Copyright (c) 2013 Arnout Kazemier and contributors. Copyright (c) 2016 Luigi Pinca and contributors",
+    "name": "ws",
+    "version": "8.18.3",
+    "description": "Simple to use, blazing fast and thoroughly tested websocket client and server for Node.js"
+  },
   "xcode@3.0.1": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/apache/cordova-node-xcode",
@@ -11569,6 +11630,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "xmlbuilder",
     "version": "15.1.1",
     "description": "An XML builder for node.js"
+  },
+  "xmlhttprequest-ssl@2.1.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mjwwit/node-XMLHttpRequest",
+    "publisher": "Michael de Wit",
+    "licenseText": "Copyright (c) 2010 passive.ly LLC\n\n Permission is hereby granted, free of charge, to any person\n obtaining a copy of this software and associated documentation\n files (the \"Software\"), to deal in the Software without\n restriction, including without limitation the rights to use,\n copy, modify, merge, publish, distribute, sublicense, and/or sell\n copies of the Software, and to permit persons to whom the\n Software is furnished to do so, subject to the following\n conditions:\n\n The above copyright notice and this permission notice shall be\n included in all copies or substantial portions of the Software.\n\n THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\n EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\n OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\n NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\n HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\n WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\n FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\n OTHER DEALINGS IN THE SOFTWARE.",
+    "name": "xmlhttprequest-ssl",
+    "version": "2.1.2",
+    "description": "XMLHttpRequest for Node",
+    "copyright": ""
   },
   "xtend@4.0.2": {
     "licenses": "MIT",
