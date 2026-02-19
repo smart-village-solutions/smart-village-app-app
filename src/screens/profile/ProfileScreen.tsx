@@ -16,7 +16,7 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -107,8 +107,14 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             item={{
               bottomDivider: false,
               leftIcon: <VolunteerAvatar item={{ user: { display_name: displayName } }} />,
+              onPress: () =>
+                navigation.navigate(ScreenName.ProfileSettings, {
+                  email: email,
+                  member: data.member
+                }),
               title: displayName
             }}
+            navigation={navigation}
           />
         </Wrapper>
 
@@ -117,60 +123,6 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
         <ServiceTiles staticJsonName="profileService" />
 
         <Divider />
-
-        <SectionHeader containerStyle={styles.settingsContainer} title={texts.profile.settings} />
-
-        <WrapperHorizontal>
-          <TextListItem
-            item={{
-              isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileUpdate, { member: data.member }),
-              routeName: ScreenName.ProfileUpdate,
-              bottomDivider: true,
-              topDivider: true,
-              title: texts.profile.editProfile
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-
-          <TextListItem
-            item={{
-              isHeadlineTitle: false,
-              onPress: () =>
-                navigation.navigate(ScreenName.ProfileEditMail, { email: data.member.email }),
-              routeName: ScreenName.ProfileEditMail,
-              bottomDivider: true,
-              title: texts.profile.editMail
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-
-          <TextListItem
-            item={{
-              bottomDivider: true,
-              isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileEditPassword),
-              routeName: ScreenName.ProfileEditPassword,
-              title: texts.profile.editPassword
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-
-          <TextListItem
-            item={{
-              bottomDivider: true,
-              isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileDelete),
-              routeName: ScreenName.ProfileDelete,
-              title: texts.profile.deleteProfile
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-        </WrapperHorizontal>
 
         <Wrapper>
           <Button
