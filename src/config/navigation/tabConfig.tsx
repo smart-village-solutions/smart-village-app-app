@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
@@ -17,6 +17,22 @@ type TabBarIconProps = {
   size: number;
 };
 
+const getIconComponent = (name: keyof typeof Icon): ((props: any) => React.ReactElement) => {
+  return Icon[name] as unknown as (props: any) => React.ReactElement;
+};
+
+const dynamicTabStyles = StyleSheet.create({
+  highlightedIconWrapper: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: normalize(28),
+    height: normalize(56),
+    justifyContent: 'center',
+    marginTop: -normalize(14),
+    width: normalize(56)
+  }
+});
+
 const homeTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Home,
@@ -26,7 +42,7 @@ const homeTabConfig: TabConfig = {
     tabBarAccessibilityLabel: `${texts.tabBarLabel.home} (Tab 1 von 5)`,
     tabBarLabel: texts.tabBarLabel.home,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Home} />
+      <OrientationAwareIcon color={color} Icon={Icon.Home} iconName="Home" />
     )
   }
 };
@@ -125,6 +141,7 @@ export const createDynamicTabConfig = (
   iconLandscapeStyle?: ViewStyle,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
+  isHighlightedTab?: boolean,
   strokeColor?: string,
   strokeWidth?: number,
   tabBarLabelStyle?: ViewStyle,
@@ -140,21 +157,28 @@ export const createDynamicTabConfig = (
     tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${totalCount})`,
     tabBarLabel: label,
     tabBarLabelStyle,
-    tabBarIcon: ({ color, focused }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={
-          !!activeIconName && focused
-            ? Icon[activeIconName as keyof typeof Icon]
-            : Icon[iconName as keyof typeof Icon]
-        }
-        iconName={!!activeIconName && focused ? activeIconName : iconName}
-        landscapeStyle={iconLandscapeStyle}
-        size={normalize(iconSize)}
-        strokeColor={strokeColor}
-        strokeWidth={strokeWidth}
-        style={iconStyle}
-      />
-    )
+    tabBarIcon: ({ color, focused }: TabBarIconProps) => {
+      // Highlight the center tab in dynamic tab lists.
+
+      const selectedIconName = !!activeIconName && focused ? activeIconName : iconName;
+      const iconComponent = (
+        <OrientationAwareIcon
+          color={isHighlightedTab ? colors.surface : color}
+          Icon={getIconComponent(selectedIconName)}
+          iconName={selectedIconName}
+          landscapeStyle={iconLandscapeStyle}
+          size={normalize(isHighlightedTab ? 28 : iconSize)}
+          strokeColor={isHighlightedTab ? colors.surface : strokeColor}
+          strokeWidth={strokeWidth}
+          style={iconStyle}
+        />
+      );
+
+      if (!isHighlightedTab) {
+        return iconComponent;
+      }
+
+      return <View style={dynamicTabStyles.highlightedIconWrapper}>{iconComponent}</View>;
+    }
   }
 });
