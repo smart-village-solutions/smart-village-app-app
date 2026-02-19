@@ -8,11 +8,45 @@ import { storageNameCreator } from './storageNameCreator';
 // function for downloading AR objects
 /* eslint-disable complexity */
 export const downloadObject = async ({ index, data, setData }) => {
-  const downloadedData = [...data];
-  const dataItem = data[index];
+  const dataItem = data?.[index];
+  if (!dataItem?.payload?.scenes?.length) return;
 
-  for (const [sceneIndex, sceneItem] of dataItem?.payload?.scenes?.entries()) {
-    for (const objectItem of sceneItem?.downloadableUris) {
+  const totalDownloads = (dataItem.payload.scenes ?? []).reduce(
+    (acc, s) => acc + (s?.downloadableUris ?? []).length,
+    0
+  );
+
+  const alreadyLocalCount = (dataItem.payload.scenes ?? []).reduce(
+    (acc, s) => acc + (s?.localUris ?? []).length,
+    0
+  );
+
+  const initialPending = Math.max(totalDownloads - alreadyLocalCount, 0);
+
+  setData((prev) =>
+    (prev ?? []).map((item, i) => {
+      if (i !== index) return item;
+      const payload = item?.payload ?? {};
+      return {
+        ...item,
+        payload: {
+          ...payload,
+          totalDownloads,
+          pendingDownloads: initialPending,
+          completedDownloads: totalDownloads - initialPending,
+          downloadType: initialPending === 0 ? DOWNLOAD_TYPE.DOWNLOADED : DOWNLOAD_TYPE.DOWNLOADING,
+          progress: totalDownloads ? (totalDownloads - initialPending) / totalDownloads : 1
+        }
+      };
+    })
+  );
+
+  if (totalDownloads === 0) return;
+
+  for (const [sceneIndex, sceneItem] of dataItem.payload.scenes.entries()) {
+    const downloadableUris = sceneItem?.downloadableUris ?? [];
+
+    for (const objectItem of downloadableUris) {
       const {
         chromaKeyFilteredVideo,
         color,
@@ -46,94 +80,150 @@ export const downloadObject = async ({ index, data, setData }) => {
         sceneIndex
       });
 
-      const downloadResumable = FileSystem.createDownloadResumable(
-        uri,
-        directoryName,
-        {},
-        (progress) => downloadProgressInBytes(progress, index, downloadedData, setData)
-      );
-
       try {
-        /*
-        in order to load the textures properly, it is necessary to create a different folder for
-        each object. Saving all objects in the same folder with a specific name is important for
-        the display of the 3D object. If the folder does not exist at the time of downloading the
-        object, this folder must be created on the device before downloading.
-        */
         const dirInfo = await FileSystem.getInfoAsync(folderName);
         if (!dirInfo.exists) {
           await FileSystem.makeDirectoryAsync(folderName, { intermediates: true });
         }
 
-        let size = 0;
-        let fileSystemDownload = undefined;
+        const existingFileInfo = await FileSystem.getInfoAsync(directoryName);
+        const alreadyOnDisk = existingFileInfo?.exists;
 
-        if (uri) {
-          fileSystemDownload = await downloadResumable.downloadAsync();
-          const fileSystemInfo = await FileSystem.getInfoAsync(fileSystemDownload.uri);
-          size = fileSystemInfo.size;
+        let size = 0;
+        let finalLocalUri = undefined;
+
+        if (alreadyOnDisk) {
+          size = existingFileInfo?.size ?? 0;
+          finalLocalUri = directoryName;
+        } else if (uri) {
+          const downloadResumable = FileSystem.createDownloadResumable(
+            uri,
+            directoryName,
+            {},
+            (progress) => downloadProgressInBytes(progress, index, setData)
+          );
+
+          const fileSystemDownload = await downloadResumable.downloadAsync();
+          finalLocalUri = fileSystemDownload?.uri;
+
+          const fileSystemInfo = finalLocalUri
+            ? await FileSystem.getInfoAsync(finalLocalUri)
+            : null;
+
+          size = fileSystemInfo?.size ?? 0;
         }
 
-        downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
-        downloadedData[index].payload.size += size;
-        downloadedData[index].payload.scenes[sceneIndex].localUris?.push({
-          chromaKeyFilteredVideo, // HEX Color Code
-          color, // HEX Color Code,
-          direction, // Array [x,y,z]
-          height, // Number
+        const newLocalUriItem = {
+          chromaKeyFilteredVideo,
+          color,
+          direction,
+          height,
           id,
-          innerAngle: innerAngle && parseInt(innerAngle),
-          intensity, // Number
-          isSpatialSound, // Boolean
+          innerAngle: innerAngle && parseInt(innerAngle, 10),
+          intensity,
+          isSpatialSound,
           maxDistance: maxDistance && parseFloat(maxDistance),
           minDistance: minDistance && parseFloat(minDistance),
-          outerAngle: outerAngle && parseInt(outerAngle),
+          outerAngle: outerAngle && parseInt(outerAngle, 10),
           physicalWidth: physicalWidth && parseFloat(physicalWidth),
-          position, // Array [x,y,z]
-          rolloffModel, // String (none, linear, or logarithmic)
-          rotation, // Array [x,y,z]
-          scale, // Array [x,y,z]
-          shadowMapSize: shadowMapSize && parseInt(shadowMapSize),
+          position,
+          rolloffModel,
+          rotation,
+          scale,
+          shadowMapSize: shadowMapSize && parseInt(shadowMapSize, 10),
           shadowOpacity: shadowOpacity && parseFloat(shadowOpacity),
-          size, // Number
-          stable, // Boolean
-          temperature, // Number
-          title, // String
-          type, // String
-          uri: fileSystemDownload?.uri,
-          width // Number
-        });
+          size,
+          stable,
+          temperature,
+          title,
+          type,
+          uri: finalLocalUri,
+          width
+        };
 
-        addToStore(storageName, downloadedData[index]);
+        setData((prev) =>
+          (prev ?? []).map((item, i) => {
+            if (i !== index) return item;
+
+            const prevPayload = item?.payload ?? {};
+            const prevScenes = prevPayload?.scenes ?? [];
+
+            const nextScenes = prevScenes.map((scene, si) => {
+              if (si !== sceneIndex) return scene;
+
+              const prevLocal = scene?.localUris ?? [];
+              const alreadyInState = prevLocal.some((x) => x?.id === id);
+
+              return {
+                ...scene,
+                localUris: alreadyInState ? prevLocal : [...prevLocal, newLocalUriItem]
+              };
+            });
+
+            const prevPending = prevPayload?.pendingDownloads ?? totalDownloads;
+            const nextPending = Math.max(prevPending - 1, 0);
+
+            const nextCompleted = (prevPayload?.completedDownloads ?? 0) + 1;
+
+            const nextProgress = totalDownloads ? nextCompleted / totalDownloads : 1;
+
+            const nextItem = {
+              ...item,
+              payload: {
+                ...prevPayload,
+                scenes: nextScenes,
+                size: (prevPayload.size ?? 0) + size,
+                pendingDownloads: nextPending,
+                completedDownloads: nextCompleted,
+                progress: nextProgress,
+                downloadType:
+                  nextPending === 0 ? DOWNLOAD_TYPE.DOWNLOADED : DOWNLOAD_TYPE.DOWNLOADING
+              }
+            };
+
+            try {
+              addToStore(storageName, nextItem);
+            } catch (err) {
+              console.error(err);
+            }
+
+            return nextItem;
+          })
+        );
       } catch (e) {
         console.error(e);
       }
     }
   }
-
-  setData(downloadedData);
 };
 /* eslint-enable complexity */
 
-/**
- * callback function that allows us to see how many bytes per second the file is downloaded
- *
- * @param {object} progress         the object that holds the total size of the object
- *                                  returned by the `createDownloadResumable` function
- *                                  and how much was downloaded to the device
- * @param {number} index            the index information of the downloaded object in `JSON`
- * @param {array} downloadedData    `JSON` array containing the objects to be downloaded
- * @param {function} setData        state function that allows us to re-render the image on
- *                                  the screen to show the download size
- */
-const downloadProgressInBytes = (progress, index, downloadedData, setData) => {
-  downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADING;
-  downloadedData[index].payload.progressSize =
-    downloadedData[index].payload.size + progress.totalBytesWritten;
-  downloadedData[index].payload.progress =
-    downloadedData[index].payload.progressSize / downloadedData[index].payload.totalSize;
+const downloadProgressInBytes = (progress, index, setData) => {
+  setData((prev) =>
+    (prev ?? []).map((item, i) => {
+      if (i !== index) return item;
 
-  // we create a copy of the array to make the set state method aware of "there is something new"
-  // that should be rendered
-  setData([...downloadedData]);
+      const payload = item?.payload ?? {};
+
+      if ((payload.pendingDownloads ?? 0) === 0) {
+        return item;
+      }
+
+      const currentSize = payload.size ?? 0;
+      const totalSize = payload.totalSize ?? 1;
+
+      const progressSize = currentSize + (progress?.totalBytesWritten ?? 0);
+      const progressValue = progressSize / totalSize;
+
+      return {
+        ...item,
+        payload: {
+          ...payload,
+          downloadType: DOWNLOAD_TYPE.DOWNLOADING,
+          progressSize,
+          progress: progressValue
+        }
+      };
+    })
+  );
 };
