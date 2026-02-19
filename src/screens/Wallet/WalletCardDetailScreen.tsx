@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -20,6 +20,7 @@ import {
   ButtonVariants,
   EmptyMessage,
   HeadlineText,
+  Image,
   LoadingSpinner,
   Modal,
   RegularText,
@@ -33,6 +34,7 @@ import {
 import { colors, device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
 import { CardType, TCard, TCardInfo } from '../../types';
 
 const ShareableCard = ({
@@ -88,6 +90,10 @@ export const WalletCardDetailScreen = ({
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<{ params: { card: TCard } }>;
 }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { wallet = {} } = settings;
+  const image = wallet?.[CardType.BONUS] || {};
   const { card } = route.params;
   const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = card;
   const [isFirstLoading, setFirstLoading] = useState(true);
@@ -289,6 +295,15 @@ export const WalletCardDetailScreen = ({
                 )}
               </Wrapper>
 
+              {cardType === CardType.BONUS && !!image?.imageUrl && (
+                <WrapperVertical noPaddingBottom>
+                  <Image
+                    source={{ uri: image.imageUrl }}
+                    style={[styles.image, image.imageStyle]}
+                  />
+                </WrapperVertical>
+              )}
+
               {cardType === CardType.COUPON && (
                 <WrapperVertical noPaddingBottom>
                   <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
@@ -408,6 +423,11 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)
+  },
+  image: {
+    width: '100%',
+    height: normalize(360),
+    alignSelf: 'center'
   },
   qrCode: {
     height: device.width - normalize(16),
