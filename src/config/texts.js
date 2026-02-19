@@ -976,6 +976,7 @@ export const texts = {
     birthdayInvalid: 'Mindestalter nicht erreicht',
     birthdayPlaceholder: 'Mindestalter: 18 Jahre',
     city: 'Ort',
+    createContentTitle: 'Welche Art von Inhalte wollen Sie erstellen?',
     deleteProfile: 'Meine Daten löschen',
     deleteProfileAlertTitle: 'Anfrage',
     deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
@@ -1103,6 +1104,7 @@ export const texts = {
     mapView: 'Kartenansicht',
     myCity: 'Mein Ort',
     profile: {
+      create: 'Neuen Inhalt erstellen',
       home: 'Profil'
     },
     routePlanner: 'Routenplaner bbnavi',
