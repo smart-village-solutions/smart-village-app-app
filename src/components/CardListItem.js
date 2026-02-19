@@ -15,7 +15,7 @@ import { Wrapper, WrapperHorizontal } from './Wrapper';
 const keyExtractor = (item, index) => `item${item}-index${index}`;
 
 /* eslint-disable complexity */
-const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) => {
+const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle) => {
   const {
     address,
     appDesignSystem = {},
@@ -29,28 +29,40 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
     subtitle,
     title
   } = item;
+  const { sueListItem = {} } = appDesignSystem;
   const {
     contentSequence,
     imageBorderRadius = normalize(8),
     imageStyle,
     textsStyle = {}
-  } = appDesignSystem;
+  } = sueListItem;
   const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
 
+  const titleComponent = (
+    <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
+      {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+    </HeadlineText>
+  );
+
   const sequenceMap = {
     picture: () =>
-      !!picture?.url && (
+      picture?.url ? (
         <Image
-          borderRadius={sue ? 0 : imageBorderRadius}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, sue && styles.sueImage]}
-          containerStyle={[styles.imageContainer, sue && styles.sueImage, imageStyle]}
+          borderRadius={isSue ? 0 : imageBorderRadius}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, isSue && styles.sueImage]}
+          containerStyle={[styles.imageContainer, isSue && styles.sueImage, imageStyle]}
           key={keyExtractor(picture.url, index)}
           placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
         />
-      ),
+      ) : isSue ? (
+        <SueImageFallback
+          key={keyExtractor('fallbackImage', index)}
+          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
+        />
+      ) : null,
     overtitle: () =>
       !!overtitle && (
         <HeadlineText
@@ -78,45 +90,41 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
         </RegularText>
       ),
     title: () =>
-      !!title && (
-        <HeadlineText
-          key={keyExtractor(title, index)}
-          small={!bigTitle}
-          style={[generalStyle, titleStyle]}
-        >
-          {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-        </HeadlineText>
-      ),
-
-    // SUE
-    sue: {
-      address: () => (
-        <Wrapper key={keyExtractor(address, index)}>
-          <RegularText small>{address}</RegularText>
-        </Wrapper>
-      ),
-      category: () => (
-        <SueCategory
-          key={keyExtractor(serviceName, index)}
-          serviceName={serviceName}
-          requestedDatetime={requestedDatetime}
-        />
-      ),
-      divider: () => (
-        <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
-          <Divider />
-        </Wrapper>
-      ),
-      pictureFallback: () => (
-        <SueImageFallback
-          key={keyExtractor('fallbackImage', index)}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
-        />
-      ),
-      status: () => (
-        <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
-      )
-    }
+      !!title &&
+      (isSue ? (
+        <WrapperHorizontal key={keyExtractor(title, index)}>{titleComponent}</WrapperHorizontal>
+      ) : (
+        titleComponent
+      )),
+    ...(isSue
+      ? {
+          // SUE
+          address: () =>
+            !!address && (
+              <Wrapper key={keyExtractor(address, index)}>
+                <RegularText small>{address}</RegularText>
+              </Wrapper>
+            ),
+          category: () =>
+            !!serviceName &&
+            !!requestedDatetime && (
+              <SueCategory
+                key={keyExtractor(serviceName, index)}
+                serviceName={serviceName}
+                requestedDatetime={requestedDatetime}
+              />
+            ),
+          divider: () => (
+            <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
+              <Divider />
+            </Wrapper>
+          ),
+          status: () =>
+            !!status && (
+              <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
+            )
+        }
+      : {})
   };
 
   if (contentSequence?.length) {
@@ -130,33 +138,29 @@ const renderCardContent = (item, index, horizontal, noOvertitle, bigTitle, sue) 
     if (!noOvertitle && overtitle) {
       cardContent.push(sequenceMap.overtitle());
     }
-    if (!sue && title) {
+    if (!isSue && title) {
       cardContent.push(sequenceMap.title());
     }
     if (subtitle) {
       cardContent.push(sequenceMap.subtitle());
     }
 
-    if (sue) {
+    if (isSue) {
       if (!picture?.url) {
-        cardContent.push(sequenceMap.sue.pictureFallback());
+        cardContent.push(sequenceMap.picture());
       }
       if (serviceName && requestedDatetime) {
-        cardContent.push(sequenceMap.sue.category());
-        cardContent.push(sequenceMap.sue.divider());
+        cardContent.push(sequenceMap.category());
+        cardContent.push(sequenceMap.divider());
       }
       if (title) {
-        cardContent.push(
-          <WrapperHorizontal key={keyExtractor(title, index)}>
-            {sequenceMap.title()}
-          </WrapperHorizontal>
-        );
+        cardContent.push(sequenceMap.title());
       }
       if (address) {
-        cardContent.push(sequenceMap.sue.address());
+        cardContent.push(sequenceMap.address());
       }
       if (status) {
-        cardContent.push(sequenceMap.sue.status());
+        cardContent.push(sequenceMap.status());
       }
     }
   }
@@ -170,18 +174,18 @@ export const CardListItem = memo(
     bigTitle = false,
     horizontal = false,
     index,
+    isSue = false,
     item,
     navigation,
-    noOvertitle = false,
-    sue = false
+    noOvertitle = false
   }) => {
     const {
       appDesignSystem = {},
       overtitle,
       params,
+      requestedDatetime,
       routeName: name,
       serviceName,
-      requestedDatetime,
       subtitle,
       title
     } = item;
@@ -216,10 +220,10 @@ export const CardListItem = memo(
               style={[
                 stylesWithProps({ horizontal }).contentContainer,
                 contentContainerStyle,
-                sue && styles.sueContentContainer
+                isSue && styles.sueContentContainer
               ]}
             >
-              {renderCardContent(item, index, horizontal, noOvertitle, bigTitle, sue)}
+              {renderCardContent(bigTitle, horizontal, index, isSue, item, noOvertitle)}
             </View>
           </Card>
         </View>
@@ -306,8 +310,8 @@ CardListItem.propTypes = {
   bigTitle: PropTypes.bool,
   horizontal: PropTypes.bool,
   index: PropTypes.number,
+  isSue: PropTypes.bool,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
-  noOvertitle: PropTypes.bool,
-  sue: PropTypes.bool
+  noOvertitle: PropTypes.bool
 };
