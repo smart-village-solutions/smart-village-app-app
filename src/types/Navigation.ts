@@ -148,6 +148,7 @@ export type CustomTab = {
   iconName: keyof typeof Icon;
   iconSize?: number;
   iconStyle?: ViewStyle;
+  isHighlightedTab?: boolean;
   label: string;
   params?: Record<string, any>;
   screen: ScreenName;
