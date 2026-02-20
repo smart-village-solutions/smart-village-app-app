@@ -51,6 +51,7 @@ import {
   OParlSearchScreen,
   PdfScreen,
   ProfileConversationsScreen,
+  ProfileCreateContentFormScreen,
   ProfileCreateContentHomeScreen,
   ProfileDeleteScreen,
   ProfileEditMailScreen,
@@ -428,6 +429,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.ProfileConversations,
       screenComponent: ProfileConversationsScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.profile.create },
+      routeName: ScreenName.ProfileCreateContentForm,
+      screenComponent: ProfileCreateContentFormScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.profile.create },
