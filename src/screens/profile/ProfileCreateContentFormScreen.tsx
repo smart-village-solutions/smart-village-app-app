@@ -1,5 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
@@ -8,9 +9,8 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
-import { QUERY_TYPES } from '../../queries';
-import { ScrollView, StyleSheet } from 'react-native';
 import { normalize } from '../../config';
+import { QUERY_TYPES } from '../../queries';
 
 const getComponent = (query: keyof typeof QUERY_TYPES) => {
   switch (query) {
