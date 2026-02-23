@@ -2,8 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { StyleSheet } from 'react-native';
 
-import { consts, texts } from '../../../config';
+import { consts, device, normalize, texts } from '../../../config';
 import { Button } from '../../Button';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
@@ -13,15 +14,18 @@ import { MultiImageSelector } from '../../selectors';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
-type NewsFormValues = {
+type PoiFormValues = {
   date: Date | null;
   description: string;
   image: string | null;
-  subTitle: string;
+  placeName: string;
   title: string;
+  street: string;
+  postcode: string;
+  city: string;
 };
 
-export const NewsForm = () => {
+export const PointOfInterestForm = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,19 +33,22 @@ export const NewsForm = () => {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm<NewsFormValues>({
+  } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
       date: moment().toDate(),
       description: '',
       image: '[]',
-      subTitle: '',
-      title: ''
+      placeName: '',
+      title: '',
+      street: '',
+      postcode: '',
+      city: ''
     }
   });
 
-  // TODO: implement news item creation logic here
-  const onSubmit = (formValues: NewsFormValues) => {
+  // TODO: implement Poi item creation logic here
+  const onSubmit = (formValues: PoiFormValues) => {
     setIsLoading(true);
 
     setTimeout(() => {
@@ -68,21 +75,6 @@ export const NewsForm = () => {
 
       <Wrapper noPaddingTop>
         <Input
-          name="subTitle"
-          label={texts.profile.forms.subTitle}
-          placeholder={texts.profile.forms.subTitlePlaceholder}
-          autoCapitalize="none"
-          validate
-          rules={{
-            required: texts.profile.forms.subTitleError
-          }}
-          errorMessage={errors.subTitle && errors.subTitle.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
           name="description"
           label={texts.profile.forms.description}
           placeholder={texts.profile.forms.descriptionPlaceholder}
@@ -93,6 +85,67 @@ export const NewsForm = () => {
             required: texts.profile.forms.descriptionError
           }}
           errorMessage={errors.description && errors.description.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          name="placeName"
+          label={texts.profile.forms.placeName}
+          placeholder={texts.profile.forms.placeNamePlaceholder}
+          keyboardType="numeric"
+          autoCapitalize="none"
+          validate
+          rules={{
+            required: texts.profile.forms.placeNameError
+          }}
+          errorMessage={errors.placeName && errors.placeName.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          name="street"
+          label={texts.profile.forms.street}
+          placeholder={texts.profile.forms.streetPlaceholder}
+          autoCapitalize="none"
+          validate
+          rules={{
+            required: texts.profile.forms.streetError
+          }}
+          errorMessage={errors.street && errors.street.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          name="postcode"
+          label={texts.profile.forms.postcode}
+          placeholder={texts.profile.forms.postcodePlaceholder}
+          autoCapitalize="none"
+          validate
+          rules={{
+            required: texts.profile.forms.postcodeError
+          }}
+          errorMessage={errors.postalCode && errors.postalCode.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          name="city"
+          label={texts.profile.forms.city}
+          placeholder={texts.profile.forms.cityPlaceholder}
+          autoCapitalize="none"
+          validate
+          rules={{
+            required: texts.profile.forms.cityError
+          }}
+          errorMessage={errors.city && errors.city.message}
           control={control}
         />
       </Wrapper>
@@ -158,3 +211,10 @@ export const NewsForm = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  map: {
+    height: normalize(300),
+    width: device.width - 2 * normalize(16)
+  }
+});
