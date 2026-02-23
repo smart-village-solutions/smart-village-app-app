@@ -1,13 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
+import moment from 'moment';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
-import { texts } from '../../../config';
+import { consts, texts } from '../../../config';
 import { Button } from '../../Button';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
-import { Input } from '../../form';
+import { DateTimeInput, Input } from '../../form';
+import { MultiImageSelector } from '../../selectors';
+
+const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type NewsFormValues = {
   date: Date | null;
@@ -28,14 +32,15 @@ export const NewsForm = () => {
   } = useForm<NewsFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      date: null,
+      date: moment().toDate(),
       description: '',
-      image: null,
+      image: '[]',
       subTitle: '',
       title: ''
     }
   });
 
+  // TODO: implement news item creation logic here
   const onSubmit = (profileEditData: NewsFormValues) => {
     setIsLoading(true);
 
@@ -83,10 +88,57 @@ export const NewsForm = () => {
           placeholder={texts.profile.forms.descriptionPlaceholder}
           autoCapitalize="none"
           validate
+          richText
           rules={{
             required: texts.profile.forms.descriptionError
           }}
           errorMessage={errors.description && errors.description.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Controller
+          name="image"
+          render={({ field }) => (
+            <MultiImageSelector
+              {...{
+                control,
+                errorType: IMAGE_SELECTOR_ERROR_TYPES.NEWS,
+                field,
+                // isDeletable: !isEdit, // TODO: handle deletable state for edit mode
+                isMultiImages: true,
+                item: {
+                  buttonTitle: texts.profile.forms.addImages,
+                  name: 'image'
+                },
+                selectorType: IMAGE_SELECTOR_TYPES.NEWS
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Controller
+          name="date"
+          render={({ field: { name, onChange, value } }) => (
+            <DateTimeInput
+              {...{
+                boldLabel: true,
+                control,
+                errors,
+                label: texts.profile.forms.date,
+                mode: 'date',
+                name,
+                onChange,
+                placeholder: texts.profile.forms.datePlaceholder,
+                required: true,
+                value
+              }}
+            />
+          )}
           control={control}
         />
       </Wrapper>

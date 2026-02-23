@@ -171,12 +171,14 @@ export const consts = {
 
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
+    NEWS: 'News',
     NOTICEBOARD: 'Noticeboard',
     SUE: 'Sue',
     VOLUNTEER: 'Volunteer'
   },
 
   IMAGE_SELECTOR_TYPES: {
+    NEWS: 'News',
     NOTICEBOARD: 'Noticeboard',
     SUE: 'Sue',
     VOLUNTEER: 'Volunteer'
