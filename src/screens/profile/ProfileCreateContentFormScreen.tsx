@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import {
   DefaultKeyboardAvoidingView,
   NewsForm,
+  PointOfInterestForm,
   RegularText,
   SafeAreaViewFlex,
   Wrapper
@@ -16,6 +17,8 @@ const getComponent = (query: keyof typeof QUERY_TYPES) => {
   switch (query) {
     case QUERY_TYPES.NEWS_ITEM:
       return NewsForm;
+    case QUERY_TYPES.POINT_OF_INTEREST:
+      return PointOfInterestForm;
     default:
       return NewsForm;
   }
