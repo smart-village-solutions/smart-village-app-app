@@ -436,7 +436,14 @@ export const defaultStackConfig = ({
       screenComponent: ProfileCreateContentFormScreen
     },
     {
-      initialParams: initialParams || { title: texts.screenTitles.profile.create },
+      initialParams: initialParams || {
+        title: texts.screenTitles.profile.create,
+        query: QUERY_TYPES.PUBLIC_JSON_FILE,
+        queryVariables: {
+          name: 'profile'
+        },
+        rootRouteName: ScreenName.Profile
+      },
       routeName: ScreenName.ProfileCreateContentHome,
       screenComponent: ProfileCreateContentHomeScreen
     },
