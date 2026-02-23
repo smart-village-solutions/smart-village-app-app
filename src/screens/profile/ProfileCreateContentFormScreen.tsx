@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
+  EventForm,
   NewsForm,
   PointOfInterestForm,
   RegularText,
@@ -19,6 +20,8 @@ const getComponent = (query: keyof typeof QUERY_TYPES) => {
       return NewsForm;
     case QUERY_TYPES.POINT_OF_INTEREST:
       return PointOfInterestForm;
+    case QUERY_TYPES.EVENT_RECORD:
+      return EventForm;
     default:
       return NewsForm;
   }
