@@ -119,6 +119,7 @@ export const WalletCardDetailScreen = ({
     } catch (error) {
       console.error('Error fetching card details:', error);
     } finally {
+      setFirstLoading(false);
       setIsLoading(false);
     }
   }, [apiConnection, cardNumber, pinCode]);
