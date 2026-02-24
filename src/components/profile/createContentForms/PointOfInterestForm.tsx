@@ -9,7 +9,7 @@ import { Button } from '../../Button';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
-import { DateTimeInput, Input } from '../../form';
+import { DateTimeInput, DropdownInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
 import {
   createDefaultOpeningHour,
@@ -22,10 +22,14 @@ import {
   PriceInformations
 } from './InputGroups/PriceInformations';
 import { createDefaultWebUrl, WebUrlFormValue, WebUrls } from './InputGroups/WebUrls';
+import { GET_CATEGORIES } from '../../../queries/categories';
+import { useQuery } from 'react-apollo';
+import { LoadingSpinner } from '../../LoadingSpinner';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type PoiFormValues = {
+  categoryName: string;
   city: string;
   date: Date | null;
   description: string;
@@ -44,12 +48,21 @@ export const PointOfInterestForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const {
+    data: dataCategories,
+    loading: loadingCategories,
+    refetch: refetchCategories
+  } = useQuery(GET_CATEGORIES, {
+    variables: { tagList: ['point_of_interest'] }
+  });
+
+  const {
     control,
     formState: { errors },
     handleSubmit
   } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
+      categoryName: '',
       city: '',
       date: moment().toDate(),
       description: '',
@@ -102,8 +115,42 @@ export const PointOfInterestForm = () => {
     }, 1000);
   };
 
+  if (loadingCategories) {
+    return <LoadingSpinner loading />;
+  }
+
+  const categoryNameDropdownData =
+    dataCategories?.categories?.map((category) => ({
+      id: category.id,
+      name: category.name,
+      value: category.name
+    })) || [];
+
   return (
     <>
+      <Wrapper noPaddingTop>
+        <Controller
+          name="categoryName"
+          render={({ field: { name, onChange, value } }) => (
+            <DropdownInput
+              {...{
+                errors,
+                data: categoryNameDropdownData,
+                value,
+                valueKey: 'name',
+                onChange,
+                name,
+                required: true,
+                label: `${texts.defectReport.categoryName} *`,
+                placeholder: texts.defectReport.categoryName,
+                control
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
       <Wrapper noPaddingTop>
         <Input
           name="name"
