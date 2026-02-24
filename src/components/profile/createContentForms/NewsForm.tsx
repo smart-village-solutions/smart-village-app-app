@@ -54,7 +54,7 @@ export const NewsForm = () => {
       <Wrapper noPaddingTop>
         <Input
           name="title"
-          label={texts.profile.forms.title}
+          label={`${texts.profile.forms.title} *`}
           placeholder={texts.profile.forms.titlePlaceholder}
           autoCapitalize="none"
           validate
@@ -73,9 +73,6 @@ export const NewsForm = () => {
           placeholder={texts.profile.forms.subTitlePlaceholder}
           autoCapitalize="none"
           validate
-          rules={{
-            required: texts.profile.forms.subTitleError
-          }}
           errorMessage={errors.subTitle && errors.subTitle.message}
           control={control}
         />
@@ -89,9 +86,6 @@ export const NewsForm = () => {
           autoCapitalize="none"
           validate
           richText
-          rules={{
-            required: texts.profile.forms.descriptionError
-          }}
           errorMessage={errors.description && errors.description.message}
           control={control}
         />
