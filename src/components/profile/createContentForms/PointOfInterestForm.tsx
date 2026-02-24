@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 
 import { consts, device, normalize, texts } from '../../../config';
@@ -11,18 +11,32 @@ import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
 import { DateTimeInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
+import {
+  createDefaultOpeningHour,
+  OpeningHourFormValue,
+  OpeningHours
+} from './InputGroups/OpeningHours';
+import {
+  createDefaultPriceInformation,
+  PriceInformationFormValue,
+  PriceInformations
+} from './InputGroups/PriceInformations';
+import { createDefaultWebUrl, WebUrlFormValue, WebUrls } from './InputGroups/WebUrls';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type PoiFormValues = {
+  city: string;
   date: Date | null;
   description: string;
   image: string | null;
+  name: string;
+  openingHours: OpeningHourFormValue[];
   placeName: string;
-  title: string;
-  street: string;
   postcode: string;
-  city: string;
+  priceInformations: PriceInformationFormValue[];
+  street: string;
+  webUrls: WebUrlFormValue[];
 };
 
 export const PointOfInterestForm = () => {
@@ -36,19 +50,51 @@ export const PointOfInterestForm = () => {
   } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
+      city: '',
       date: moment().toDate(),
       description: '',
       image: '[]',
+      name: '',
+      openingHours: [],
       placeName: '',
-      title: '',
-      street: '',
       postcode: '',
-      city: ''
+      priceInformations: [],
+      street: '',
+      webUrls: []
     }
+  });
+
+  const {
+    fields: openingHoursFields,
+    append: appendOpeningHour,
+    remove: removeOpeningHour
+  } = useFieldArray({
+    control,
+    name: 'openingHours'
+  });
+
+  const {
+    fields: webUrlsFields,
+    append: appendWebUrl,
+    remove: removeWebUrl
+  } = useFieldArray({
+    control,
+    name: 'webUrls'
+  });
+
+  const {
+    fields: priceInformationsFields,
+    append: appendPriceInformation,
+    remove: removePriceInformation
+  } = useFieldArray({
+    control,
+    name: 'priceInformations'
   });
 
   // TODO: implement Poi item creation logic here
   const onSubmit = (formValues: PoiFormValues) => {
+    console.log('openingHours', formValues);
+
     setIsLoading(true);
 
     setTimeout(() => {
@@ -60,15 +106,15 @@ export const PointOfInterestForm = () => {
     <>
       <Wrapper noPaddingTop>
         <Input
-          name="title"
-          label={texts.profile.forms.title}
-          placeholder={texts.profile.forms.titlePlaceholder}
+          name="name"
+          label={`${texts.profile.forms.name} *`}
+          placeholder={texts.profile.forms.namePlaceholder}
           autoCapitalize="none"
           validate
           rules={{
-            required: texts.profile.forms.titleError
+            required: texts.profile.forms.nameError
           }}
-          errorMessage={errors.title && errors.title.message}
+          errorMessage={errors.name && errors.name.message}
           control={control}
         />
       </Wrapper>
@@ -81,9 +127,6 @@ export const PointOfInterestForm = () => {
           autoCapitalize="none"
           validate
           richText
-          rules={{
-            required: texts.profile.forms.descriptionError
-          }}
           errorMessage={errors.description && errors.description.message}
           control={control}
         />
@@ -97,9 +140,6 @@ export const PointOfInterestForm = () => {
           keyboardType="numeric"
           autoCapitalize="none"
           validate
-          rules={{
-            required: texts.profile.forms.placeNameError
-          }}
           errorMessage={errors.placeName && errors.placeName.message}
           control={control}
         />
@@ -112,9 +152,6 @@ export const PointOfInterestForm = () => {
           placeholder={texts.profile.forms.streetPlaceholder}
           autoCapitalize="none"
           validate
-          rules={{
-            required: texts.profile.forms.streetError
-          }}
           errorMessage={errors.street && errors.street.message}
           control={control}
         />
@@ -127,10 +164,7 @@ export const PointOfInterestForm = () => {
           placeholder={texts.profile.forms.postcodePlaceholder}
           autoCapitalize="none"
           validate
-          rules={{
-            required: texts.profile.forms.postcodeError
-          }}
-          errorMessage={errors.postalCode && errors.postalCode.message}
+          errorMessage={errors.postcode && errors.postcode.message}
           control={control}
         />
       </Wrapper>
@@ -142,9 +176,6 @@ export const PointOfInterestForm = () => {
           placeholder={texts.profile.forms.cityPlaceholder}
           autoCapitalize="none"
           validate
-          rules={{
-            required: texts.profile.forms.cityError
-          }}
           errorMessage={errors.city && errors.city.message}
           control={control}
         />
@@ -172,6 +203,51 @@ export const PointOfInterestForm = () => {
           control={control}
         />
       </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendOpeningHour(createDefaultOpeningHour())}
+          title={texts.profile.forms.addOpeningHours}
+        />
+      </Wrapper>
+
+      <OpeningHours
+        control={control as any}
+        errors={errors as any}
+        fields={openingHoursFields}
+        remove={removeOpeningHour}
+      />
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendWebUrl(createDefaultWebUrl())}
+          title={texts.profile.forms.addLinks}
+        />
+      </Wrapper>
+
+      <WebUrls
+        control={control as any}
+        errors={errors as any}
+        fields={webUrlsFields}
+        remove={removeWebUrl}
+      />
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
+          title={texts.profile.forms.addPriceInformation}
+        />
+      </Wrapper>
+
+      <PriceInformations
+        control={control as any}
+        errors={errors as any}
+        fields={priceInformationsFields}
+        remove={removePriceInformation}
+      />
 
       <Wrapper noPaddingTop>
         <Controller
