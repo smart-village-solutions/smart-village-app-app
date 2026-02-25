@@ -1045,6 +1045,7 @@ export const texts = {
       endDatePlaceholder: 'Wählen Sie ein Enddatum aus',
       endTime: 'Endzeit',
       endTimePlaceholder: 'Wählen Sie eine Endzeit aus',
+      eventLocation: 'Veranstaltungsort',
       eventRepeatableDescription:
         'Sie eine Veranstaltungsserie, indem Sie die gewünschten Wiederholungen festlegen.',
       eventRepeatableTitle: 'Veranstaltungsserie Erstellen',
