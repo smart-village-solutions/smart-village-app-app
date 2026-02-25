@@ -1,33 +1,58 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useQuery } from 'react-apollo';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 
 import { colors, consts, Icon, texts } from '../../../config';
+import { GET_CATEGORIES } from '../../../queries/categories';
 import { Button } from '../../Button';
 import { Checkbox } from '../../Checkbox';
+import { Label } from '../../Label';
+import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
-import { DateTimeInput, DropdownInput, Input } from '../../form';
+import { DateTimeInput, DropdownInput, DropdownInputProps, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
-import { LoadingSpinner } from '../../LoadingSpinner';
-import { GET_CATEGORIES } from '../../../queries/categories';
-import { useQuery } from 'react-apollo';
+
+import {
+  ContactFormValue,
+  Contacts,
+  createDefaultContact,
+  createDefaultPriceInformation,
+  createDefaultWebUrl,
+  PriceInformationFormValue,
+  PriceInformations,
+  WebUrlFormValue,
+  WebUrls
+} from './InputGroups';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
+
+const renewalIntervals = [
+  { value: texts.profile.forms.renewalIntervalDaily },
+  { value: texts.profile.forms.renewalIntervalWeekly },
+  { value: texts.profile.forms.renewalIntervalMonthly },
+  { value: texts.profile.forms.renewalIntervalYearly }
+] as unknown as DropdownInputProps['data'];
 
 type EventFormValues = {
   categoryName: string;
   description: string;
+  contacts: ContactFormValue[];
   endDate: Date | null;
   endTime: Date | null;
   image: string | null;
-  isRepeatable: boolean;
+  priceInformations: PriceInformationFormValue[];
+  repeat: boolean;
+  repeatInterval: string;
+  repeatUntilDate: Date | null;
   startDate: Date | null;
   startTime: Date | null;
   title: string;
+  webUrls: WebUrlFormValue[];
 };
 
 export const EventForm = () => {
@@ -50,21 +75,58 @@ export const EventForm = () => {
     mode: 'onBlur',
     defaultValues: {
       categoryName: '',
+      contacts: [],
       description: '',
       endDate: moment().toDate(),
       endTime: moment().toDate(),
       image: '[]',
-      isRepeatable: false,
+      priceInformations: [],
+      repeat: false,
+      repeatInterval: '',
+      repeatUntilDate: moment().toDate(),
       startDate: moment().toDate(),
       startTime: moment().toDate(),
-      title: ''
+      title: '',
+      webUrls: []
     }
+  });
+
+  const isRepeatable = useWatch({
+    control,
+    name: 'repeat'
+  });
+
+  const {
+    fields: webUrlsFields,
+    append: appendWebUrl,
+    remove: removeWebUrl
+  } = useFieldArray({
+    control,
+    name: 'webUrls'
+  });
+
+  const {
+    fields: priceInformationsFields,
+    append: appendPriceInformation,
+    remove: removePriceInformation
+  } = useFieldArray({
+    control,
+    name: 'priceInformations'
+  });
+
+  const {
+    fields: contactsFields,
+    append: appendContact,
+    remove: removeContact
+  } = useFieldArray({
+    control,
+    name: 'contacts'
   });
 
   // TODO: implement event creation logic here
   const onSubmit = (formValues: EventFormValues) => {
     setIsLoading(true);
-
+    console.log(formValues);
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -89,16 +151,17 @@ export const EventForm = () => {
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
-                errors,
+                boldLabel: true,
+                control,
                 data: categoryNameDropdownData,
-                value,
-                valueKey: 'name',
-                onChange,
-                name,
-                required: true,
+                errors,
                 label: `${texts.defectReport.categoryName} *`,
+                name,
+                onChange,
                 placeholder: texts.defectReport.categoryName,
-                control
+                required: true,
+                value,
+                valueKey: 'name'
               }}
             />
           )}
@@ -109,12 +172,12 @@ export const EventForm = () => {
       <Wrapper noPaddingTop>
         <Input
           name="title"
-          label={texts.profile.forms.title}
-          placeholder={texts.profile.forms.titlePlaceholder}
+          label={`${texts.profile.forms.eventTitle} *`}
+          placeholder={texts.profile.forms.eventTitlePlaceholder}
           autoCapitalize="none"
           validate
           rules={{
-            required: texts.profile.forms.titleError
+            required: texts.profile.forms.eventTitleError
           }}
           errorMessage={errors.title && errors.title.message}
           control={control}
@@ -129,9 +192,6 @@ export const EventForm = () => {
           autoCapitalize="none"
           validate
           richText
-          rules={{
-            required: texts.profile.forms.descriptionError
-          }}
           errorMessage={errors.description && errors.description.message}
           control={control}
         />
@@ -169,7 +229,7 @@ export const EventForm = () => {
                 boldLabel: true,
                 control,
                 errors,
-                label: texts.profile.forms.startDate,
+                label: `${texts.profile.forms.startDate} *`,
                 mode: 'date',
                 name,
                 onChange,
@@ -253,8 +313,11 @@ export const EventForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Label bold>{texts.profile.forms.eventRepeatableTitle}</Label>
+        <Label>{texts.profile.forms.eventRepeatableDescription}</Label>
+
         <Controller
-          name="isRepeatable"
+          name="repeat"
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
@@ -268,6 +331,92 @@ export const EventForm = () => {
           control={control}
         />
       </Wrapper>
+
+      {isRepeatable && (
+        <>
+          <Wrapper noPaddingTop>
+            <Input
+              name="repeatInterval"
+              label={`${texts.profile.forms.repeatInterval} *`}
+              placeholder={texts.profile.forms.repeatIntervalPlaceholder}
+              autoCapitalize="none"
+              keyboardType="numeric"
+              validate
+              rules={{
+                required: isRepeatable ? texts.profile.forms.repeatIntervalError : undefined
+              }}
+              errorMessage={errors.repeatInterval && errors.repeatInterval.message}
+              control={control}
+            />
+
+            <Controller
+              name="repeatUntilDate"
+              render={({ field: { name, onChange, value } }) => (
+                <DropdownInput
+                  {...{
+                    errors,
+                    data: renewalIntervals,
+                    value,
+                    valueKey: 'value',
+                    onChange,
+                    name,
+                    label: `${texts.profile.forms.renewalInterval} *`,
+                    required: isRepeatable,
+                    control,
+                    showSearch: false
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </Wrapper>
+        </>
+      )}
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendContact(createDefaultContact())}
+          title={texts.profile.forms.addContact}
+        />
+      </Wrapper>
+
+      <Contacts
+        control={control as any}
+        errors={errors as any}
+        fields={contactsFields}
+        remove={removeContact}
+      />
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
+          title={texts.profile.forms.addPriceInformation}
+        />
+      </Wrapper>
+
+      <PriceInformations
+        control={control as any}
+        errors={errors as any}
+        fields={priceInformationsFields}
+        remove={removePriceInformation}
+      />
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendWebUrl(createDefaultWebUrl())}
+          title={texts.profile.forms.addLinks}
+        />
+      </Wrapper>
+
+      <WebUrls
+        control={control as any}
+        errors={errors as any}
+        fields={webUrlsFields}
+        remove={removeWebUrl}
+      />
 
       <Wrapper noPaddingTop>
         <Button

@@ -1,30 +1,31 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useState } from 'react';
+import { useQuery } from 'react-apollo';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 
 import { consts, device, normalize, texts } from '../../../config';
+import { GET_CATEGORIES } from '../../../queries/categories';
 import { Button } from '../../Button';
+import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
+
 import {
   createDefaultOpeningHour,
-  OpeningHourFormValue,
-  OpeningHours
-} from './InputGroups/OpeningHours';
-import {
   createDefaultPriceInformation,
+  createDefaultWebUrl,
+  OpeningHourFormValue,
+  OpeningHours,
   PriceInformationFormValue,
-  PriceInformations
-} from './InputGroups/PriceInformations';
-import { createDefaultWebUrl, WebUrlFormValue, WebUrls } from './InputGroups/WebUrls';
-import { GET_CATEGORIES } from '../../../queries/categories';
-import { useQuery } from 'react-apollo';
-import { LoadingSpinner } from '../../LoadingSpinner';
+  PriceInformations,
+  WebUrlFormValue,
+  WebUrls
+} from './InputGroups';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -134,16 +135,17 @@ export const PointOfInterestForm = () => {
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
-                errors,
+                boldLabel: true,
+                control,
                 data: categoryNameDropdownData,
-                value,
-                valueKey: 'name',
-                onChange,
-                name,
-                required: true,
+                errors,
                 label: `${texts.defectReport.categoryName} *`,
+                name,
+                onChange,
                 placeholder: texts.defectReport.categoryName,
-                control
+                required: true,
+                value,
+                valueKey: 'name'
               }}
             />
           )}
