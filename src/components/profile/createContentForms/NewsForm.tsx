@@ -81,16 +81,17 @@ export const NewsForm = () => {
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
-                errors,
+                boldLabel: true,
+                control,
                 data: categoryNameDropdownData,
-                value,
-                valueKey: 'name',
-                onChange,
-                name,
-                required: true,
+                errors,
                 label: `${texts.defectReport.categoryName} *`,
+                name,
+                onChange,
                 placeholder: texts.defectReport.categoryName,
-                control
+                required: true,
+                value,
+                valueKey: 'name'
               }}
             />
           )}
