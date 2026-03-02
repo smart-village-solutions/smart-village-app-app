@@ -339,28 +339,26 @@ export const EventForm = () => {
         <Controller
           name="location"
           render={({ field: { onChange, value } }) => (
-            <>
-              <MapLibre
-                locations={[]}
-                mapCenterPosition={selectedPosition}
-                mapStyle={styles.map}
-                onMapPress={({ geometry }) => {
-                  const coordinate = {
-                    latitude: geometry?.coordinates[1],
-                    longitude: geometry?.coordinates[0]
-                  };
+            <MapLibre
+              locations={[]}
+              mapCenterPosition={selectedPosition}
+              mapStyle={styles.map}
+              onMapPress={({ geometry }) => {
+                const coordinate = {
+                  latitude: geometry?.coordinates[1],
+                  longitude: geometry?.coordinates[0]
+                };
 
-                  setSelectedPosition(coordinate);
-                  setValue('latitude', coordinate.latitude);
-                  setValue('longitude', coordinate.longitude);
+                setSelectedPosition(coordinate);
+                setValue('latitude', coordinate.latitude);
+                setValue('longitude', coordinate.longitude);
 
-                  return { isLocationSelectable: true };
-                }}
-                selectedPosition={selectedPosition}
-                setPinEnabled
-                setOwnLocation
-              />
-            </>
+                return { isLocationSelectable: true };
+              }}
+              selectedPosition={selectedPosition}
+              setPinEnabled
+              setOwnLocation
+            />
           )}
           control={control}
         />
@@ -369,8 +367,8 @@ export const EventForm = () => {
       <Wrapper noPaddingTop>
         <Input
           name="regionName"
-          label={texts.profile.forms.placeName}
-          placeholder={texts.profile.forms.placeNamePlaceholder}
+          label={texts.profile.forms.regionName}
+          placeholder={texts.profile.forms.regionNamePlaceholder}
           autoCapitalize="none"
           validate
           errorMessage={errors.regionName && errors.regionName.message}
@@ -456,16 +454,17 @@ export const EventForm = () => {
               render={({ field: { name, onChange, value } }) => (
                 <DropdownInput
                   {...{
-                    errors,
-                    data: renewalIntervals,
-                    value,
-                    valueKey: 'value',
-                    onChange,
-                    name,
-                    label: `${texts.profile.forms.renewalInterval} *`,
-                    required: isRepeatable,
                     control,
-                    showSearch: false
+                    data: renewalIntervals,
+                    errors,
+                    label: `${texts.profile.forms.renewalInterval} *`,
+                    name,
+                    onChange,
+                    placeholder: texts.profile.forms.renewalIntervalPlaceholder,
+                    required: isRepeatable,
+                    showSearch: false,
+                    value,
+                    valueKey: 'value'
                   }}
                 />
               )}

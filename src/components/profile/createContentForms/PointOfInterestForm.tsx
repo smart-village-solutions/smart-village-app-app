@@ -8,6 +8,7 @@ import { StyleSheet } from 'react-native';
 import { consts, device, normalize, texts } from '../../../config';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { Button } from '../../Button';
+import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
@@ -26,6 +27,7 @@ import {
   WebUrlFormValue,
   WebUrls
 } from './InputGroups';
+import { MapLibre } from '../../map';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -35,11 +37,14 @@ type PoiFormValues = {
   date: Date | null;
   description: string;
   image: string | null;
+  latitude: number | null;
+  location: string;
+  longitude: number | null;
   name: string;
   openingHours: OpeningHourFormValue[];
-  placeName: string;
   postcode: string;
   priceInformations: PriceInformationFormValue[];
+  regionName: string;
   street: string;
   webUrls: WebUrlFormValue[];
 };
@@ -47,6 +52,10 @@ type PoiFormValues = {
 export const PointOfInterestForm = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const {
     data: dataCategories,
@@ -59,7 +68,8 @@ export const PointOfInterestForm = () => {
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    setValue
   } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
@@ -68,11 +78,14 @@ export const PointOfInterestForm = () => {
       date: moment().toDate(),
       description: '',
       image: '[]',
+      latitude: null,
+      location: '',
+      longitude: null,
       name: '',
       openingHours: [],
-      placeName: '',
       postcode: '',
       priceInformations: [],
+      regionName: '',
       street: '',
       webUrls: []
     }
@@ -107,8 +120,6 @@ export const PointOfInterestForm = () => {
 
   // TODO: implement Poi item creation logic here
   const onSubmit = (formValues: PoiFormValues) => {
-    console.log('openingHours', formValues);
-
     setIsLoading(true);
 
     setTimeout(() => {
@@ -182,14 +193,45 @@ export const PointOfInterestForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Label bold>{texts.profile.forms.adresse}</Label>
+
+        <Controller
+          name="location"
+          render={({ field: { onChange, value } }) => (
+            <MapLibre
+              locations={[]}
+              mapCenterPosition={selectedPosition}
+              mapStyle={styles.map}
+              onMapPress={({ geometry }) => {
+                const coordinate = {
+                  latitude: geometry?.coordinates[1],
+                  longitude: geometry?.coordinates[0]
+                };
+
+                setSelectedPosition(coordinate);
+                setValue('latitude', coordinate.latitude);
+                setValue('longitude', coordinate.longitude);
+
+                return { isLocationSelectable: true };
+              }}
+              selectedPosition={selectedPosition}
+              setPinEnabled
+              setOwnLocation
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
         <Input
-          name="placeName"
-          label={texts.profile.forms.placeName}
-          placeholder={texts.profile.forms.placeNamePlaceholder}
+          name="regionName"
+          label={texts.profile.forms.regionName}
+          placeholder={texts.profile.forms.regionNamePlaceholder}
           keyboardType="numeric"
           autoCapitalize="none"
           validate
-          errorMessage={errors.placeName && errors.placeName.message}
+          errorMessage={errors.regionName && errors.regionName.message}
           control={control}
         />
       </Wrapper>
