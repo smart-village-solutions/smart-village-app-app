@@ -38,6 +38,7 @@ import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
+import { NavigationType } from '../../navigation/Navigator';
 
 const { a11yLabel, MAP } = consts;
 
@@ -149,7 +150,7 @@ export const MapLibre = ({
   ...otherProps
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
+  const { settings = {}, navigation = NavigationType.TAB } = globalSettings;
   const { locationService = {} } = settings;
   const {
     clusterCircleColor,
@@ -200,7 +201,8 @@ export const MapLibre = ({
   const mapPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitialFitRef = useRef(false);
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const tabBarHeight = useSafeBottomTabBarHeight();
+  const bottomTabBarHeight = navigation === NavigationType.TAB ? tabBarHeight : 0;
 
   let initialRegion: Partial<LocationObjectCoords> = {
     latitude: 51.1657,
