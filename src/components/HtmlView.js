@@ -50,6 +50,9 @@ td {
 td:last-child {
   border-right: 1px solid ${'#b5b5b5'};
 }
+tr:first-child td {
+  border-top: 1px solid ${'#b5b5b5'};
+}
 table {
   border-bottom: 1px solid ${'#b5b5b5'};
 }
