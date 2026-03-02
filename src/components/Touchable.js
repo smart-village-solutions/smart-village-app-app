@@ -5,7 +5,7 @@ import { device } from '../config';
 
 export const Touchable = (props) =>
   device.platform === 'ios' ? (
-    <TouchableOpacity {...props} />
+    <TouchableOpacity activeOpacity={0.8} {...props} />
   ) : (
     <TouchableNativeFeedback {...props} />
   );
