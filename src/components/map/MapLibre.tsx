@@ -20,6 +20,7 @@ import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  PixelRatio,
   Platform,
   Pressable,
   StyleProp,
@@ -40,6 +41,69 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
 const { a11yLabel, MAP } = consts;
+
+const CAMERA_ANIMATION_DURATION = 1500;
+const CAMERA_ANIMATION_MODE = 'easeTo';
+const DEFAULT_CENTER_LATITUDE = 51.1657;
+const DEFAULT_CENTER_LONGITUDE = 10.4515;
+const FOLLOW_USER_TIMEOUT = 5000;
+const MAP_PRESS_DEBOUNCE = 50;
+const MARKER_PREFIX = 'custom_';
+const MARKER_SCALE_SELECTED = 1.2;
+const MAX_ZOOM_LEVEL = 20;
+const MIN_TARGET_ZOOM = 16;
+const PROXIMITY_THRESHOLD = 0.0008;
+
+type MarkerImageConfig = {
+  color?: string;
+  uri?: string;
+  scale?: number;
+};
+
+const getMarkerImageScale = () => {
+  const ratio = PixelRatio.get();
+
+  if (ratio >= 3) return 3;
+  if (ratio >= 2) return 2;
+
+  return 1;
+};
+
+const getScaledMarkerUri = (uri: string, scale: number) => {
+  if (scale === 1) return uri;
+  if (uri.includes('/map/2x/') || uri.includes('/map/3x/')) return uri;
+  if (!uri.includes('/map/')) return uri;
+
+  return uri.replace('/map/', `/map/${scale}x/`);
+};
+
+/**
+ * Creates a new marker image map where each entry with a URI is updated to a
+ * scaled URI and annotated with the provided scale, leaving missing URIs untouched.
+ * Also adds a prefix to all keys to avoid conflicts with base map style layer images.
+ *
+ * @param markerImages - The original marker image configuration map.
+ * @param scale - The scale factor to apply to marker image URIs.
+ * @returns A new map with scaled URIs and scale metadata, or undefined when no input is provided.
+ */
+const createScaledMarkerImages = (
+  markerImages: Record<string, MarkerImageConfig> | undefined,
+  scale: number
+) => {
+  if (!markerImages) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(markerImages).map(([key, value]) => {
+      const prefixedKey = `${MARKER_PREFIX}${key}`;
+
+      if (!value?.uri) return [prefixedKey, value];
+
+      const scaledUri = getScaledMarkerUri(value.uri, scale);
+
+      return [prefixedKey, { ...value, uri: scaledUri, scale }];
+    })
+  );
+};
 
 const scaleCircleRadius = (radius: any, scale: number) => {
   if (radius == null) return undefined;
@@ -73,14 +137,73 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
   );
 };
 
-// useBottomTabBarHeight throws if no bottom tab navigator is in context;
-// fall back to 0 for stack-only screens.
-const useSafeBottomTabBarHeight = () => {
-  try {
-    return useBottomTabBarHeight();
-  } catch (error) {
-    return 0;
+/**
+ * Helper to get icon anchor based on icon name.
+ * Own location pin is centered, others are anchored at bottom.
+ */
+const getIconAnchor = (iconName: string, anchorDefault: string) => [
+  'case',
+  ['==', ['get', 'iconName'], iconName],
+  'center',
+  anchorDefault
+];
+
+/**
+ * Calculates initial map region based on available position data.
+ */
+const calculateInitialRegion = ({
+  defaultAlternativePosition,
+  mapCenterPosition,
+  isMultipleMarkersMap,
+  locations,
+  showsUserLocation,
+  currentPosition
+}: {
+  defaultAlternativePosition?: any;
+  mapCenterPosition?: LocationObjectCoords;
+  isMultipleMarkersMap: boolean;
+  locations: MapMarker[];
+  showsUserLocation: boolean;
+  currentPosition?: LocationObject;
+}): Partial<LocationObjectCoords> => {
+  let region: Partial<LocationObjectCoords> = {
+    latitude: DEFAULT_CENTER_LATITUDE,
+    longitude: DEFAULT_CENTER_LONGITUDE
+  };
+
+  if (defaultAlternativePosition) {
+    region = {
+      ...region,
+      latitude: defaultAlternativePosition.coords?.latitude,
+      longitude: defaultAlternativePosition.coords?.longitude
+    };
   }
+
+  if (mapCenterPosition) {
+    region = { ...region, ...mapCenterPosition };
+  }
+
+  const isSingleLocation =
+    !isMultipleMarkersMap || (isMultipleMarkersMap && locations?.length === 1);
+  const firstLocation = locations?.[0];
+
+  if (isSingleLocation && firstLocation?.position?.latitude && firstLocation?.position?.longitude) {
+    region = {
+      ...region,
+      latitude: firstLocation.position.latitude,
+      longitude: firstLocation.position.longitude
+    };
+  }
+
+  if (showsUserLocation && currentPosition?.coords.latitude && currentPosition?.coords.longitude) {
+    region = {
+      ...region,
+      latitude: currentPosition.coords.latitude,
+      longitude: currentPosition.coords.longitude
+    };
+  }
+
+  return region;
 };
 
 type Props = {
@@ -163,6 +286,11 @@ export const MapLibre = ({
     markerImages,
     zoomLevel = {}
   } = useMapFeatureConfig(locations);
+  const markerImageScale = useMemo(() => getMarkerImageScale(), []);
+  const resolvedMarkerImages = useMemo(
+    () => createScaledMarkerImages(markerImages, markerImageScale),
+    [markerImages, markerImageScale]
+  );
   const initialZoomLevel = isMultipleMarkersMap
     ? zoomLevel.multipleMarkers
     : zoomLevel.singleMarker;
@@ -202,49 +330,25 @@ export const MapLibre = ({
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
 
-  let initialRegion: Partial<LocationObjectCoords> = {
-    latitude: 51.1657,
-    longitude: 10.4515
-  };
-
-  if (defaultAlternativePosition) {
-    initialRegion = {
-      ...initialRegion,
-      latitude: defaultAlternativePosition.coords?.latitude,
-      longitude: defaultAlternativePosition.coords?.longitude
-    };
-  }
-
-  if (mapCenterPosition) {
-    initialRegion = {
-      ...initialRegion,
-      ...mapCenterPosition
-    };
-  }
-
-  if (
-    (!isMultipleMarkersMap || (isMultipleMarkersMap && locations?.length === 1)) &&
-    locations?.[0]?.position?.latitude &&
-    locations?.[0]?.position?.longitude
-  ) {
-    initialRegion = {
-      ...initialRegion,
-      latitude: locations[0].position.latitude,
-      longitude: locations[0].position.longitude
-    };
-  }
-
-  if (
-    showsUserLocation &&
-    otherProps.currentPosition?.coords.latitude &&
-    otherProps.currentPosition?.coords.longitude
-  ) {
-    initialRegion = {
-      ...initialRegion,
-      latitude: otherProps.currentPosition.coords.latitude,
-      longitude: otherProps.currentPosition.coords.longitude
-    };
-  }
+  const initialRegion = useMemo(
+    () =>
+      calculateInitialRegion({
+        defaultAlternativePosition,
+        mapCenterPosition,
+        isMultipleMarkersMap,
+        locations,
+        showsUserLocation,
+        currentPosition: otherProps.currentPosition
+      }),
+    [
+      defaultAlternativePosition,
+      mapCenterPosition,
+      isMultipleMarkersMap,
+      locations,
+      showsUserLocation,
+      otherProps.currentPosition
+    ]
+  );
 
   useEffect(() => {
     if (suppressAutoFitRef.current || hasInitialFitRef.current) {
@@ -353,19 +457,19 @@ export const MapLibre = ({
 
     if (preserveZoomOnSelectedPosition) {
       cameraRef.current?.setCamera({
-        animationDuration: 1500,
-        animationMode: 'easeTo',
+        animationDuration: CAMERA_ANIMATION_DURATION,
+        animationMode: CAMERA_ANIMATION_MODE,
         centerCoordinate: [longitude, latitude]
       });
       return;
     }
 
-    const targetZoom = Math.max(zoomLevel?.singleMarker ?? 0, 16);
-    const zoomForSelection = Math.min(targetZoom, 20);
+    const targetZoom = Math.max(zoomLevel?.singleMarker ?? 0, MIN_TARGET_ZOOM);
+    const zoomForSelection = Math.min(targetZoom, MAX_ZOOM_LEVEL);
 
     cameraRef.current?.setCamera({
-      animationDuration: 1500,
-      animationMode: 'easeTo',
+      animationDuration: CAMERA_ANIMATION_DURATION,
+      animationMode: CAMERA_ANIMATION_MODE,
       centerCoordinate: [longitude, latitude],
       zoomLevel: zoomForSelection
     });
@@ -421,7 +525,7 @@ export const MapLibre = ({
       const { latitude: selLat, longitude: selLng } = selectedLocation.position;
       const dLat = Math.abs(selLat - tapLat);
       const dLng = Math.abs(selLng - tapLng);
-      if (dLat < 0.0008 && dLng < 0.0008) {
+      if (dLat < PROXIMITY_THRESHOLD && dLng < PROXIMITY_THRESHOLD) {
         clearSelection(false, 'map-press-proximity');
         return;
       }
@@ -449,7 +553,7 @@ export const MapLibre = ({
         onMapPress?.({ geometry: { coordinates: [] } });
       }
       mapPressTimeoutRef.current = null;
-    }, 50);
+    }, MAP_PRESS_DEBOUNCE);
   };
 
   const selectedMarkerId = useMemo(
@@ -515,12 +619,12 @@ export const MapLibre = ({
       const zoomForCluster = await shapeSourceRef.current?.getClusterExpansionZoom(feature);
       const safeCurrentZoom = currentZoomLevel ?? initialZoomLevel ?? 0;
       const baseZoom = zoomForCluster ?? safeCurrentZoom;
-      const newZoomLevel = Math.min(Math.max(baseZoom, safeCurrentZoom + 1), 20);
+      const newZoomLevel = Math.min(Math.max(baseZoom, safeCurrentZoom + 1), MAX_ZOOM_LEVEL);
 
       onMarkerPress?.();
       cameraRef.current?.setCamera({
-        animationDuration: 1500,
-        animationMode: 'easeTo',
+        animationDuration: CAMERA_ANIMATION_DURATION,
+        animationMode: CAMERA_ANIMATION_MODE,
         centerCoordinate: (feature.geometry as GeoJSON.Point).coordinates as [number, number],
         zoomLevel: newZoomLevel
       });
@@ -536,8 +640,8 @@ export const MapLibre = ({
     suppressAutoFitRef.current = false;
 
     cameraRef.current?.setCamera({
-      animationDuration: 1500,
-      animationMode: 'easeTo',
+      animationDuration: CAMERA_ANIMATION_DURATION,
+      animationMode: CAMERA_ANIMATION_MODE,
       centerCoordinate: (feature.geometry as GeoJSON.Point).coordinates as [number, number]
     });
     onMarkerPress?.(feature.properties?.id);
@@ -594,7 +698,7 @@ export const MapLibre = ({
           visible={showsUserLocation}
         />
 
-        <Images images={markerImages} />
+        <Images images={resolvedMarkerImages} />
 
         {!!shape && !_isEmpty(layerStyles) && (
           <>
@@ -626,21 +730,23 @@ export const MapLibre = ({
                   iconImage: [
                     'case',
                     ['==', ['get', 'id'], selectedMarker],
-                    ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
-                    ['get', 'iconName']
+                    [
+                      'concat',
+                      MARKER_PREFIX,
+                      ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']]
+                    ],
+                    ['concat', MARKER_PREFIX, ['get', 'iconName']]
                   ],
                   iconSize: [
                     'case',
                     ['==', ['get', 'id'], selectedMarker],
-                    layerStyles.singleIcon.iconSize * 1.2,
+                    layerStyles.singleIcon.iconSize * MARKER_SCALE_SELECTED,
                     layerStyles.singleIcon.iconSize
                   ],
-                  iconAnchor: [
-                    'case',
-                    ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-                    'center',
+                  iconAnchor: getIconAnchor(
+                    MAP.OWN_LOCATION_PIN,
                     layerStyles.singleIcon.iconAnchor
-                  ],
+                  ),
                   iconAllowOverlap: true,
                   iconIgnorePlacement: true
                 }}
@@ -741,14 +847,12 @@ export const MapLibre = ({
                 id="pin-single-icon"
                 style={{
                   ...layerStyles.singleIcon,
-                  iconImage: ['get', 'iconName'],
+                  iconImage: ['concat', MARKER_PREFIX, ['get', 'iconName']],
                   iconSize: layerStyles.singleIcon.iconSize,
-                  iconAnchor: [
-                    'case',
-                    ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-                    'center',
+                  iconAnchor: getIconAnchor(
+                    MAP.OWN_LOCATION_PIN,
                     layerStyles.singleIcon.iconAnchor
-                  ],
+                  ),
                   iconAllowOverlap: true,
                   iconIgnorePlacement: true
                 }}
@@ -766,14 +870,16 @@ export const MapLibre = ({
                   id="selected-single-icon"
                   style={{
                     ...layerStyles.singleIcon,
-                    iconImage: ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
-                    iconSize: layerStyles.singleIcon.iconSize * 1.2,
-                    iconAnchor: [
-                      'case',
-                      ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-                      'center',
-                      layerStyles.singleIcon.iconAnchor
+                    iconImage: [
+                      'concat',
+                      MARKER_PREFIX,
+                      ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']]
                     ],
+                    iconSize: layerStyles.singleIcon.iconSize * MARKER_SCALE_SELECTED,
+                    iconAnchor: getIconAnchor(
+                      MAP.OWN_LOCATION_PIN,
+                      layerStyles.singleIcon.iconAnchor
+                    ),
                     iconAllowOverlap: true,
                     iconIgnorePlacement: true
                   }}
@@ -826,7 +932,7 @@ export const MapLibre = ({
           onPress={() => {
             setFollowsUserLocation(true);
             onMyLocationButtonPress?.({});
-            setTimeout(() => setFollowsUserLocation(false), 5000);
+            setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
           }}
           style={[
             styles.buttonsContainer,
