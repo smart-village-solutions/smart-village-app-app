@@ -58,7 +58,7 @@
     "@react-navigation/elements": "^2.2.5",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
-    "@reactvision/react-viro": "^2.43.4",
+    "@reactvision/react-viro": "^2.51.0",
     "@rnrepo/expo-config-plugin": "^0.1.0-beta.0",
     "@sentry/react-native": "~7.2.0",
     "@shopify/flash-list": "2.0.2",
