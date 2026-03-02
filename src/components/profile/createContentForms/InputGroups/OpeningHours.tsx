@@ -161,17 +161,17 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
             render={({ field: { name, onChange, value } }) => (
               <DropdownInput
                 {...{
-                  errors,
-                  data: weekdays,
-                  value,
-                  valueKey: 'value',
-                  onChange,
-                  name,
-                  required: true,
-                  label: texts.profile.forms.openingHourGroup.day,
-                  placeholder: texts.profile.forms.openingHourGroup.day,
                   control,
-                  showSearch: false
+                  data: weekdays,
+                  errors,
+                  label: texts.profile.forms.openingHourGroup.day,
+                  name,
+                  onChange,
+                  placeholder: texts.profile.forms.openingHourGroup.day,
+                  required: true,
+                  showSearch: false,
+                  value,
+                  valueKey: 'value'
                 }}
               />
             )}
