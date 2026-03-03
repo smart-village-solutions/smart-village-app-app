@@ -1037,6 +1037,11 @@ export const texts = {
         urlText: 'Linktext (wird ggf. statt der URL angezeigt)',
         urlTextPlaceholder: 'Geben Sie hier einen Linktext ein'
       },
+      contentCreateSuccessAlertMessage: 'Die Erstellung des Inhalts war erfolgreich.',
+      contentCreateSuccessAlertTitle: 'Erfolg',
+      contentImageUploadErrorAlertMessage:
+        'Beim Hochladen eines Bildes ist ein Fehler aufgetreten.',
+      contentImageUploadErrorAlertTitle: 'Fehler',
       date: 'Veröffentlichungsdatum',
       datePlaceholder: 'Wählen Sie ein Veröffentlichungsdatum aus',
       description: 'Inhalt',
@@ -1071,7 +1076,8 @@ export const texts = {
         description: 'Linktext',
         descriptionPlaceholder: 'Geben Sie hier einen Linktext ein',
         title: 'Link',
-        url: 'URL'
+        url: 'URL',
+        urlPlaceholder: 'Geben Sie hier eine URL ein'
       },
       name: 'Name',
       nameError: 'Der Name muss ausgefüllt werden',
@@ -1085,6 +1091,10 @@ export const texts = {
         descriptionPlaceholder: 'Geben Sie hier eine Beschreibung ein',
         title: 'Preiskategorie'
       },
+      pushNotificationCheckbox: 'Sende eine Push-Notification',
+      pushNotificationDescription:
+        'Nach dem Erstellen dieser Nachricht kann eine Push-Notification an alle registrierten Geräte gesendet werden, mit dem Hinweis auf diese Nachricht. Aktivieren Sie dazu vor dem Speichern das folgende Kontrollkästchen. Bitte nutzen Sie diese Funktion sparsam, um die Aufmerksamkeit der Kunden nicht zu sehr zu beanspruchen.',
+      pushNotificationTitle: 'Push-Notification',
       regionName: 'Ortsbezeichnung',
       regionNameError: 'Die Region muss ausgefüllt werden',
       regionNamePlaceholder: 'Geben Sie hier eine Region ein',

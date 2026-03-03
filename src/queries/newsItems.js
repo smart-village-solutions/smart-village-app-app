@@ -189,3 +189,26 @@ export const GET_NEWS_ITEM = gql`
     }
   }
 `;
+
+export const CREATE_NEWS_ITEM = gql`
+  mutation CreateNewsItem(
+    $categories: [CategoryInput!]
+    $contentBlocks: [ContentBlockInput!]
+    $publishedAt: String
+    $pushNotification: Boolean
+    $sourceUrl: WebUrlInput
+    $title: String
+  ) {
+    createNewsItem(
+      categories: $categories
+      contentBlocks: $contentBlocks
+      publishedAt: $publishedAt
+      pushNotification: $pushNotification
+      sourceUrl: $sourceUrl
+      title: $title
+    ) {
+      id
+      title
+    }
+  }
+`;

@@ -14,6 +14,7 @@ import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../form';
+import { MapLibre } from '../../map';
 import { MultiImageSelector } from '../../selectors';
 
 import {
@@ -27,7 +28,6 @@ import {
   WebUrlFormValue,
   WebUrls
 } from './InputGroups';
-import { MapLibre } from '../../map';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
