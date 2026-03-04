@@ -247,23 +247,32 @@ export const GET_EVENT_RECORD = gql`
 
 export const CREATE_EVENT_RECORDS = gql`
   mutation CreateEventRecord(
-    $title: String!
+    $addresses: [AddressInput!]
+    $categories: [CategoryInput!]
     $categoryName: String
+    $contacts: [ContactInput!]
+    $dates: [DateInput!]
     $description: String
-    $dateStart: String
-    $dateEnd: String
-    $timeStart: String
-    $timeEnd: String
-    $city: String
+    $externalId: String
+    $mediaContents: [MediaContentInput!]
+    $organizer: OperatingCompanyInput
+    $priceInformations: [PriceInput!]
+    $title: String!
+    $urls: [WebUrlInput!]
   ) {
     createEventRecord(
-      title: $title
+      addresses: $addresses
+      categories: $categories
       categoryName: $categoryName
+      contacts: $contacts
+      dates: $dates
       description: $description
-      dates: [
-        { dateStart: $dateStart, dateEnd: $dateEnd, timeStart: $timeStart, timeEnd: $timeEnd }
-      ]
-      addresses: [{ city: $city, kind: "default" }]
+      externalId: $externalId
+      mediaContents: $mediaContents
+      organizer: $organizer
+      priceInformations: $priceInformations
+      title: $title
+      urls: $urls
     ) {
       id
       title

@@ -6,8 +6,15 @@ import { Alert, StyleSheet } from 'react-native';
 
 import { consts, device, normalize, texts } from '../../../config';
 import { GET_CATEGORIES } from '../../../queries/categories';
-import { uploadMediaContent } from '../../../queries/mediaContent';
 import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
+import {
+  buildAddressData,
+  buildContactData,
+  buildOpeningHours,
+  buildPriceInformations,
+  buildWebUrls,
+  uploadImages
+} from '../../../helpers/pointOfInterestFormHelper';
 import { Button } from '../../Button';
 import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
@@ -30,95 +37,6 @@ import {
   WebUrls
 } from './InputGroups';
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
-
-const buildGeoLocation = (latitude: number | null, longitude: number | null) => {
-  if (latitude == null || longitude == null) return undefined;
-  return { latitude, longitude };
-};
-
-const buildAddressData = (formValues: PoiFormValues) => {
-  const geoLocation = buildGeoLocation(formValues.latitude, formValues.longitude);
-
-  return {
-    ...(geoLocation && { geoLocation }),
-    ...(formValues.city && { city: formValues.city }),
-    ...(formValues.regionName && { addition: formValues.regionName }),
-    ...(formValues.street && { street: formValues.street }),
-    ...(formValues.postcode && { zip: formValues.postcode })
-  };
-};
-
-const buildContactData = (formValues: PoiFormValues) => {
-  const contactWebUrl = formValues.url
-    ? {
-        url: formValues.url,
-        ...(formValues.urlText && { description: formValues.urlText })
-      }
-    : undefined;
-
-  const contact = {
-    ...(formValues.firstname && { firstName: formValues.firstname }),
-    ...(formValues.surname && { lastName: formValues.surname }),
-    ...(formValues.phone && { phone: formValues.phone }),
-    ...(formValues.email && { email: formValues.email }),
-    ...(formValues.fax && { fax: formValues.fax }),
-    ...(contactWebUrl && { webUrls: [contactWebUrl] })
-  };
-
-  return Object.keys(contact).length ? contact : undefined;
-};
-
-const buildOpeningHours = (openingHours: OpeningHourFormValue[]) =>
-  openingHours.map((oh) => ({
-    open: oh.isOpen,
-    ...(oh.startDate && { dateFrom: oh.startDate }),
-    ...(oh.endDate && { dateTo: oh.endDate }),
-    ...(oh.description && { description: oh.description }),
-    ...(oh.startTime && { timeFrom: oh.startTime }),
-    ...(oh.endTime && { timeTo: oh.endTime }),
-    ...(oh.weekday && { weekday: oh.weekday })
-  }));
-
-const buildWebUrls = (webUrls: WebUrlFormValue[]) =>
-  webUrls
-    .filter((w) => !!w.url)
-    .map((w) => ({
-      url: w.url,
-      ...(w.description && { description: w.description })
-    }));
-
-const buildPriceInformations = (priceInformations: PriceInformationFormValue[]) =>
-  priceInformations
-    .filter((p) => !!p.amount)
-    .map((p) => ({
-      amount: parseFloat(p.amount),
-      ...(p.description && { description: p.description })
-    }));
-
-const uploadImages = async (
-  imageJson: string
-): Promise<
-  | { imageUrls: { sourceUrl: { url: string }; contentType: string }[]; uploadError: false }
-  | { uploadError: true }
-> => {
-  const images = JSON.parse(imageJson);
-  const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
-    .filter((image) => !!image.id)
-    .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
-
-  for (const image of images) {
-    if (image.id) continue;
-
-    try {
-      const uploadedUrl = await uploadMediaContent(image, 'image');
-      if (uploadedUrl) imageUrls.push({ sourceUrl: { url: uploadedUrl }, contentType: 'image' });
-    } catch {
-      return { uploadError: true };
-    }
-  }
-
-  return { imageUrls, uploadError: false };
-};
 
 type PoiFormValues = {
   categories: string;

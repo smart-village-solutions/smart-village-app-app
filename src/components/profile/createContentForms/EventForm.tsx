@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../../config';
 import { GET_CATEGORIES } from '../../../queries/categories';
@@ -29,6 +29,17 @@ import {
   WebUrlFormValue,
   WebUrls
 } from './InputGroups';
+import { CREATE_EVENT_RECORDS } from '../../../queries/eventRecords';
+import {
+  buildAddressData,
+  buildContactData,
+  buildContactsData,
+  buildDate,
+  buildOpeningHours,
+  buildPriceInformations,
+  buildWebUrls,
+  uploadImages
+} from '../../../helpers';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -40,7 +51,7 @@ const renewalIntervals = [
 ] as unknown as DropdownInputProps['data'];
 
 type EventFormValues = {
-  categoryName: string;
+  categories: string;
   city: string;
   contacts: ContactFormValue[];
   description: string;
@@ -88,7 +99,7 @@ export const EventForm = () => {
   } = useForm<EventFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categoryName: '',
+      categories: '',
       city: '',
       contacts: [],
       description: '',
@@ -144,13 +155,53 @@ export const EventForm = () => {
     name: 'contacts'
   });
 
-  // TODO: implement event creation logic here
-  const onSubmit = (formValues: EventFormValues) => {
+  const [createEventRecord, { loading }] = useMutation(CREATE_EVENT_RECORDS);
+
+  const onSubmit = async (formValues: EventFormValues) => {
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const result = await uploadImages(formValues.image ?? '[]');
+
+      if (result.uploadError) {
+        setIsLoading(false);
+        Alert.alert(
+          texts.profile.forms.contentImageUploadErrorAlertTitle,
+          texts.profile.forms.contentImageUploadErrorAlertMessage
+        );
+        return;
+      }
+
+      const { imageUrls } = result;
+      const dates = buildDate(formValues);
+      const contacts = buildContactsData(formValues.contacts);
+      const webUrls = buildWebUrls(formValues.webUrls);
+      const priceInformations = buildPriceInformations(formValues.priceInformations);
+
+      await createEventRecord({
+        variables: {
+          addresses: [buildAddressData(formValues)],
+          categories: formValues.categories.map((name: string) => ({ name })),
+          title: formValues.title,
+          repeat: formValues.repeat,
+          ...(formValues.description && { description: formValues.description }),
+          ...(imageUrls.length && { mediaContents: imageUrls }),
+          ...(webUrls.length && { webUrls }),
+          ...(priceInformations.length && { priceInformations }),
+          ...(contacts && { contacts }),
+          ...(dates && { ...dates })
+        }
+      });
+
+      navigation.goBack();
+      Alert.alert(
+        texts.profile.forms.contentCreateSuccessAlertTitle,
+        texts.profile.forms.contentCreateSuccessAlertMessage
+      );
+    } catch (error) {
       setIsLoading(false);
-    }, 1000);
+      console.error(error);
+    }
   };
 
   if (loadingCategories) {
@@ -168,7 +219,7 @@ export const EventForm = () => {
     <>
       <Wrapper noPaddingTop>
         <Controller
-          name="categoryName"
+          name="categories"
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
@@ -177,6 +228,7 @@ export const EventForm = () => {
                 data: categoryNameDropdownData,
                 errors,
                 label: `${texts.defectReport.categoryName} *`,
+                multipleSelect: true,
                 name,
                 onChange,
                 placeholder: texts.defectReport.categoryName,
@@ -523,7 +575,7 @@ export const EventForm = () => {
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.profile.forms.send}
-          disabled={isLoading}
+          disabled={loading || isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>

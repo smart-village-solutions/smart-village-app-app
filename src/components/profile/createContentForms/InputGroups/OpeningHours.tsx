@@ -4,21 +4,14 @@ import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../../config';
+import { OpeningHourFormValue } from '../../../../helpers';
 import { Checkbox } from '../../../Checkbox';
 import { RegularText } from '../../../Text';
 import { Wrapper } from '../../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../../form';
 import { DropdownInputProps } from '../../../form/DropdownInput';
 
-export type OpeningHourFormValue = {
-  description: string;
-  endDate: Date;
-  endTime: Date;
-  isOpen: boolean;
-  startDate: Date;
-  startTime: Date;
-  weekday: number;
-};
+export type { OpeningHourFormValue };
 
 type OpeningHoursProps = {
   control: Control<FieldValues>;

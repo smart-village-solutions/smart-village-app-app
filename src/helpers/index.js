@@ -10,6 +10,7 @@ export * from './calendarHelper';
 export * from './cameraHelper';
 export * from './citySelectionHelper';
 export * from './colorHelper';
+export * from './contentCreateFormHelper';
 export * from './dateTimeHelper';
 export * from './deleteArrayItem';
 export * from './documentDownloadHelper';
