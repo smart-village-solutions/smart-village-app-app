@@ -11,7 +11,7 @@ export type ContactFormValue = {
   description: string;
   email: string;
   fax: string;
-  name: string;
+  firstname: string;
   phone: string;
   surname: string;
   url: string;
@@ -29,7 +29,7 @@ export const createDefaultContact = (): ContactFormValue => ({
   description: '',
   email: '',
   fax: '',
-  name: '',
+  firstname: '',
   phone: '',
   surname: '',
   url: '',
@@ -53,66 +53,70 @@ export const Contacts = ({ control, errors, fields, remove }: ContactsProps) => 
           </View>
 
           <Input
-            name={`contacts.${index}.name`}
-            label={texts.profile.forms.contacts.name}
-            placeholder={texts.profile.forms.contacts.namePlaceholder}
             autoCapitalize="none"
-            validate
             control={control}
+            label={texts.profile.forms.contacts.firstname}
+            name={`contacts.${index}.firstname`}
+            placeholder={texts.profile.forms.contacts.firstnamePlaceholder}
+            validate
           />
 
           <Input
-            name={`contacts.${index}.surname`}
+            autoCapitalize="none"
+            control={control}
             label={texts.profile.forms.contacts.surname}
+            name={`contacts.${index}.surname`}
             placeholder={texts.profile.forms.contacts.surnamePlaceholder}
-            autoCapitalize="none"
             validate
-            control={control}
           />
 
           <Input
-            name={`contacts.${index}.email`}
+            autoCapitalize="none"
+            control={control}
+            keyboardType="email-address"
             label={texts.profile.forms.contacts.email}
+            name={`contacts.${index}.email`}
             placeholder={texts.profile.forms.contacts.emailPlaceholder}
-            autoCapitalize="none"
             validate
-            control={control}
           />
 
           <Input
-            name={`contacts.${index}.phone`}
+            autoCapitalize="none"
+            control={control}
+            keyboardType="phone-pad"
             label={texts.profile.forms.contacts.phone}
+            name={`contacts.${index}.phone`}
             placeholder={texts.profile.forms.contacts.phonePlaceholder}
-            autoCapitalize="none"
             validate
-            control={control}
           />
 
           <Input
-            name={`contacts.${index}.fax`}
+            autoCapitalize="none"
+            control={control}
+            keyboardType="phone-pad"
             label={texts.profile.forms.contacts.fax}
+            name={`contacts.${index}.fax`}
             placeholder={texts.profile.forms.contacts.faxPlaceholder}
-            autoCapitalize="none"
             validate
-            control={control}
           />
 
           <Input
-            name={`contacts.${index}.url`}
+            autoCapitalize="none"
+            control={control}
+            keyboardType="url"
             label={texts.profile.forms.contacts.url}
+            name={`contacts.${index}.url`}
             placeholder={texts.profile.forms.contacts.urlPlaceholder}
-            autoCapitalize="none"
             validate
-            control={control}
           />
 
           <Input
-            name={`contacts.${index}.urlText`}
-            label={texts.profile.forms.contacts.urlText}
-            placeholder={texts.profile.forms.contacts.urlTextPlaceholder}
             autoCapitalize="none"
-            validate
             control={control}
+            label={texts.profile.forms.contacts.urlText}
+            name={`contacts.${index}.urlText`}
+            placeholder={texts.profile.forms.contacts.urlTextPlaceholder}
+            validate
           />
         </Wrapper>
       ))}

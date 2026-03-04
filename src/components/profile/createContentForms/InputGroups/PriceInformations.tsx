@@ -53,6 +53,7 @@ export const PriceInformations = ({ control, errors, fields, remove }: PriceInfo
             name={`priceInformations.${index}.amount`}
             label={texts.profile.forms.priceInformation.amount}
             autoCapitalize="none"
+            keyboardType="numeric"
             validate
             control={control}
           />
