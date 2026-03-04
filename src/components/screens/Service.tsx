@@ -1,14 +1,15 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { usePersonalizedTiles } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
+import { ProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { ScreenName } from '../../types';
+import { ProfileRoles, ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -20,6 +21,31 @@ import { ServiceTile, TServiceTile } from './ServiceTile';
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
 const ITEMS_PER_ROW_PORTRAIT = 3;
 const ITEMS_PER_ROW_LANDSCAPE = 5;
+
+/**
+ * Maps item.params.query values (camelCase) to their corresponding ProfileRoles keys.
+ * Only queries listed here are subject to role-based filtering.
+ */
+const QUERY_TO_ROLE_MAP: Partial<Record<string, keyof ProfileRoles>> = {
+  constructionSite: 'role_construction_site',
+  deadlines: 'role_deadlines',
+  defectReport: 'role_defect_report',
+  encounterSupport: 'role_encounter_support',
+  eventRecord: 'role_event_record',
+  job: 'role_job',
+  lunch: 'role_lunch',
+  newsItem: 'role_news_item',
+  noticeboard: 'role_noticeboard',
+  offer: 'role_offer',
+  pointOfInterest: 'role_point_of_interest',
+  pushNotification: 'role_push_notification',
+  staticContents: 'role_static_contents',
+  survey: 'role_survey',
+  tour: 'role_tour',
+  tourStops: 'role_tour_stops',
+  voucher: 'role_voucher',
+  wasteCalendar: 'role_waste_calendar'
+};
 
 export const umlautSwitcher = (text: string) => {
   if (!text) return;
@@ -41,6 +67,7 @@ export const umlautSwitcher = (text: string) => {
   return replacedText;
 };
 
+/* eslint-disable complexity */
 export const Service = ({
   data,
   isEditMode,
@@ -54,6 +81,9 @@ export const Service = ({
 }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { orientation } = useContext(OrientationContext);
+  const { currentUserData } = useContext(ProfileContext);
+  const roles = currentUserData?.roles || undefined;
+  const route = useRoute();
   const { settings = {} } = globalSettings;
   const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
@@ -106,17 +136,31 @@ export const Service = ({
     </View>
   );
 
-  if (isLoading && isEditMode) return <LoadingSpinner loading />;
-
-  const tilesCount = tiles?.length || 0;
   const isPortrait = orientation === 'portrait';
   const itemsPerRow = isPortrait ? ITEMS_PER_ROW_PORTRAIT : ITEMS_PER_ROW_LANDSCAPE;
 
-  // Split the tiles array into subarrays (rows), each containing up to itemsPerRow elements.
-  // This is done to render tiles row-by-row in a grid layout based on screen orientation.
+  // Role-based filtering: only active on ProfileCreateContentHome in view mode.
+  // Edit mode always shows all tiles so users can manage their layout.
+  // If roles are not available, all tiles are shown.
+  const visibleTiles = useMemo(() => {
+    if (route.name !== ScreenName.ProfileCreateContentHome || isEditMode || !roles) {
+      return tiles;
+    }
+
+    return tiles?.filter((tile) => {
+      const roleKey = tile.params?.query ? QUERY_TO_ROLE_MAP[tile.params.query] : undefined;
+      // If no role mapping exists for this tile's query, always show it
+      if (!roleKey) return true;
+      return roles[roleKey];
+    });
+  }, [tiles, route.name, isEditMode, roles]);
+
+  if (isLoading && isEditMode) return <LoadingSpinner loading />;
+
+  // Split the visible tiles into rows for grid layout based on screen orientation.
   const rows: TServiceTile[][] = [];
-  for (let i = 0; i < tilesCount; i += itemsPerRow) {
-    rows.push(tiles.slice(i, i + itemsPerRow));
+  for (let i = 0; i < (visibleTiles?.length || 0); i += itemsPerRow) {
+    rows.push(visibleTiles.slice(i, i + itemsPerRow));
   }
 
   return isEditMode ? (
@@ -124,7 +168,9 @@ export const Service = ({
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
       style={styles.diagonalGradient}
     >
-      <DraggableGrid onDragEnd={onDragEnd}>{tiles?.map(renderItem)}</DraggableGrid>
+      <DraggableGrid onDragEnd={onDragEnd}>
+        {tiles?.map((item, index) => renderItem(item, index))}
+      </DraggableGrid>
       {toggler}
     </DiagonalGradient>
   ) : (
@@ -147,10 +193,11 @@ export const Service = ({
           </WrapperWrap>
         );
       })}
-      {!!tiles?.length && toggler}
+      {!!visibleTiles?.length && toggler}
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   diagonalGradient: {

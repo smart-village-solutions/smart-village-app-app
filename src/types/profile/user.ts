@@ -18,7 +18,29 @@ export type ProfileMember = {
     };
     updated_at: string;
   };
+  roles: ProfileRoles;
   success: boolean;
+};
+
+export type ProfileRoles = {
+  role_construction_site: boolean;
+  role_deadlines: boolean;
+  role_defect_report: boolean;
+  role_encounter_support: boolean;
+  role_event_record: boolean;
+  role_job: boolean;
+  role_lunch: boolean;
+  role_news_item: boolean;
+  role_noticeboard: boolean;
+  role_offer: boolean;
+  role_point_of_interest: boolean;
+  role_push_notification: boolean;
+  role_static_contents: boolean;
+  role_survey: boolean;
+  role_tour_stops: boolean;
+  role_tour: boolean;
+  role_voucher: boolean;
+  role_waste_calendar: boolean;
 };
 
 export type ProfileRegistration = {
