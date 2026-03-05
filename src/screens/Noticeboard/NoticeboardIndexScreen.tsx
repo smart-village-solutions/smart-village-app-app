@@ -27,8 +27,8 @@ import {
   parseListItemsFromQuery,
   profileAuthToken,
   profileUserData,
-  storeProfileAuthToken,
   storeProfileUserData,
+  storeTokens,
   updateResourceFiltersStateHelper
 } from '../../helpers';
 import { useStaticContent } from '../../hooks';
@@ -69,7 +69,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     enabled: isLoginRequired && isProfileLoggedIn,
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
-        storeProfileAuthToken();
+        storeTokens();
 
         return;
       }
