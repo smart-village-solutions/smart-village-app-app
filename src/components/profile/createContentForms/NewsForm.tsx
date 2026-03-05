@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert } from 'react-native';
@@ -19,6 +19,8 @@ import { MultiImageSelector } from '../../selectors';
 import { Checkbox } from '../../Checkbox';
 import { StyleSheet } from 'react-native';
 import { Label } from '../../Label';
+import { ProfileContext } from '../../../ProfileProvider';
+import { uploadImages } from '../../../helpers';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -35,6 +37,8 @@ type NewsFormValues = {
 };
 
 export const NewsForm = () => {
+  const { currentUserData } = useContext(ProfileContext);
+
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,29 +76,18 @@ export const NewsForm = () => {
     setIsLoading(true);
 
     try {
-      const images = JSON.parse(formValues.image);
-      const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
-        .filter((image) => !!image.id)
-        .map((image) => ({ contentType: 'image', sourceUrl: { url: image.uri } }));
+      const result = await uploadImages(formValues.image ?? '[]');
 
-      if (images?.length) {
-        for (const image of images) {
-          if (!image.id) {
-            try {
-              imageUrl = await uploadMediaContent(image, 'image');
-
-              imageUrl && imageUrls.push({ sourceUrl: { url: imageUrl }, contentType: 'image' });
-            } catch (error) {
-              setIsLoading(false);
-              Alert.alert(
-                texts.profile.forms.contentImageUploadErrorAlertTitle,
-                texts.profile.forms.contentImageUploadErrorAlertMessage
-              );
-              return;
-            }
-          }
-        }
+      if (result.uploadError) {
+        setIsLoading(false);
+        Alert.alert(
+          texts.profile.forms.contentImageUploadErrorAlertTitle,
+          texts.profile.forms.contentImageUploadErrorAlertMessage
+        );
+        return;
       }
+
+      const { imageUrls } = result;
 
       await createNewsItem({
         variables: {
@@ -106,18 +99,18 @@ export const NewsForm = () => {
               title: formValues.title,
               intro: formValues.subTitle,
               body: formValues.description,
-              mediaContents: JSON.parse(formValues.image).map((image: { uri: string }) => ({
-                contentType: 'image',
-                sourceUrl: { url: image.uri }
-              }))
+              mediaContents: imageUrls
             }
           ],
           publishedAt: formValues.date,
           pushNotification: formValues.sendPushNotification,
-          sourceUrl: {
-            url: formValues.url,
-            description: formValues.urlDescription
-          },
+          ...(formValues.url &&
+            formValues.urlDescription && {
+              sourceUrl: {
+                url: formValues.url,
+                description: formValues.urlDescription
+              }
+            }),
           title: formValues.title
         }
       });
@@ -278,26 +271,28 @@ export const NewsForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
-        <Label bold>{texts.profile.forms.pushNotificationTitle}</Label>
-        <Label>{texts.profile.forms.pushNotificationDescription}</Label>
+      {currentUserData?.roles.role_push_notification && (
+        <Wrapper noPaddingTop>
+          <Label bold>{texts.profile.forms.pushNotificationTitle}</Label>
+          <Label>{texts.profile.forms.pushNotificationDescription}</Label>
 
-        <Controller
-          name="sendPushNotification"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              checked={!!value}
-              checkedIcon={<Icon.SquareCheckFilled />}
-              containerStyle={styles.checkboxContainerStyle}
-              onPress={() => onChange(!value)}
-              textStyle={styles.checkboxTextStyle}
-              title={texts.profile.forms.pushNotificationCheckbox}
-              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
+          <Controller
+            name="sendPushNotification"
+            render={({ field: { onChange, value } }) => (
+              <Checkbox
+                checked={!!value}
+                checkedIcon={<Icon.SquareCheckFilled />}
+                containerStyle={styles.checkboxContainerStyle}
+                onPress={() => onChange(!value)}
+                textStyle={styles.checkboxTextStyle}
+                title={texts.profile.forms.pushNotificationCheckbox}
+                uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
 
       <Wrapper noPaddingTop>
         <Button

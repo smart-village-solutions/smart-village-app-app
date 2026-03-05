@@ -182,14 +182,14 @@ export const EventForm = () => {
         variables: {
           addresses: [buildAddressData(formValues)],
           categories: formValues.categories.map((name: string) => ({ name })),
+          dates,
           title: formValues.title,
           repeat: formValues.repeat,
           ...(formValues.description && { description: formValues.description }),
           ...(imageUrls.length && { mediaContents: imageUrls }),
           ...(webUrls.length && { webUrls }),
           ...(priceInformations.length && { priceInformations }),
-          ...(contacts && { contacts }),
-          ...(dates && { ...dates })
+          ...(contacts && { contacts })
         }
       });
 
