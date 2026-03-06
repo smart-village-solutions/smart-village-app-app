@@ -3,24 +3,22 @@ import moment from 'moment';
 import React, { useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
+import { ProfileContext } from '../../../ProfileProvider';
 import { colors, consts, Icon, texts } from '../../../config';
+import { uploadImages } from '../../../helpers';
 import { GET_CATEGORIES } from '../../../queries/categories';
-import { uploadMediaContent } from '../../../queries/mediaContent';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
+import { Checkbox } from '../../Checkbox';
+import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
-import { Checkbox } from '../../Checkbox';
-import { StyleSheet } from 'react-native';
-import { Label } from '../../Label';
-import { ProfileContext } from '../../../ProfileProvider';
-import { uploadImages } from '../../../helpers';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
