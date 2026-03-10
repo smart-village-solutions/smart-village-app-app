@@ -976,7 +976,7 @@ export const texts = {
     birthdayInvalid: 'Mindestalter nicht erreicht',
     birthdayPlaceholder: 'Mindestalter: 18 Jahre',
     city: 'Ort',
-    createContentTitle: 'Welche Art von Inhalte wollen Sie erstellen?',
+    createContentTitle: 'Welche Art von Inhalten wollen Sie erstellen?',
     deleteProfile: 'Meine Daten löschen',
     deleteProfileAlertTitle: 'Anfrage',
     deleteProfileAlertMessage: 'Die Anfrage zur Löschung deiner Daten wurde erfolgreich versendet.',
@@ -1048,12 +1048,22 @@ export const texts = {
       endTimePlaceholder: 'Wählen Sie eine Endzeit aus',
       eventLocation: 'Veranstaltungsort',
       eventRepeatableDescription:
-        'Sie eine Veranstaltungsserie, indem Sie die gewünschten Wiederholungen festlegen.',
-      eventRepeatableTitle: 'Veranstaltungsserie Erstellen',
+        'Erstellen Sie eine Veranstaltungsserie, indem Sie die gewünschten Wiederholungen festlegen.',
+      eventRepeatableTitle: 'Veranstaltungsserie erstellen',
       eventTitle: 'Veranstaltungsname',
       eventTitleError: 'Der Veranstaltungsname muss ausgefüllt werden',
       eventTitlePlaceholder: 'Geben Sie hier einen Veranstaltungsnamen ein',
       isRepeatable: 'Veranstaltung wiederholen',
+      linkGroup: {
+        deleteButtonAccessibility: 'Link löschen',
+        description: 'Linktext',
+        descriptionPlaceholder: 'Geben Sie hier einen Linktext ein',
+        title: 'Link',
+        url: 'URL'
+      },
+      name: 'Name',
+      nameError: 'Der Name muss ausgefüllt werden',
+      namePlaceholder: 'Geben Sie hier einen Namen ein',
       openingHourGroup: {
         day: 'Wochentag',
         dayPlaceholder: 'Wählen Sie einen Wochentag aus',
@@ -1067,20 +1077,12 @@ export const texts = {
         startTime: 'Startzeit',
         title: 'Öffnungszeit'
       },
-      linkGroup: {
-        description: 'Linktext',
-        descriptionPlaceholder: 'Geben Sie hier einen Linktext ein',
-        title: 'Link',
-        url: 'URL'
-      },
-      name: 'Name',
-      nameError: 'Der Name muss ausgefüllt werden',
-      namePlaceholder: 'Geben Sie hier einen Namen ein',
       postcode: 'Postleitzahl',
       postcodeError: 'Die Postleitzahl muss ausgefüllt werden',
       postcodePlaceholder: 'Geben Sie hier eine Postleitzahl ein',
       priceInformation: {
         amount: 'Preis',
+        deleteButtonAccessibility: 'Preisinformation löschen',
         description: 'Beschreibung',
         descriptionPlaceholder: 'Geben Sie hier eine Beschreibung ein',
         title: 'Preiskategorie'

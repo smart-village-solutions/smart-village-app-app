@@ -14,24 +14,17 @@ import {
 import { normalize } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 
-const getComponent = (query: keyof typeof QUERY_TYPES) => {
-  switch (query) {
-    case QUERY_TYPES.NEWS_ITEM:
-      return NewsForm;
-    case QUERY_TYPES.POINT_OF_INTEREST:
-      return PointOfInterestForm;
-    case QUERY_TYPES.EVENT_RECORD:
-      return EventForm;
-    default:
-      return NewsForm;
-  }
-};
-
 export const ProfileCreateContentFormScreen = ({ route }: StackScreenProps<any>) => {
   const query = route.params?.query;
   const headlineInfo = route.params?.headlineInfo;
-
-  const Component = getComponent(query);
+  const formContent =
+    query === QUERY_TYPES.POINT_OF_INTEREST ? (
+      <PointOfInterestForm />
+    ) : query === QUERY_TYPES.EVENT_RECORD ? (
+      <EventForm />
+    ) : (
+      <NewsForm />
+    );
 
   return (
     <SafeAreaViewFlex>
@@ -46,7 +39,7 @@ export const ProfileCreateContentFormScreen = ({ route }: StackScreenProps<any>)
             </Wrapper>
           )}
 
-          <Component headlineInfo={headlineInfo} />
+          {formContent}
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

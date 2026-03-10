@@ -32,7 +32,7 @@ export const WebUrls = ({ control, errors, fields, remove }: WebUrlsProps) => {
           <View style={styles.linkGroupHeader}>
             <RegularText>{texts.profile.forms.linkGroup.title}</RegularText>
             <TouchableOpacity
-              accessibilityLabel={texts.profile.forms.openingHourGroup.deleteButtonAccessibility}
+              accessibilityLabel={texts.profile.forms.linkGroup.deleteButtonAccessibility}
               onPress={() => remove(index)}
               style={styles.deleteButton}
             >

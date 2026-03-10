@@ -32,7 +32,7 @@ export const PriceInformations = ({ control, errors, fields, remove }: PriceInfo
           <View style={styles.linkGroupHeader}>
             <RegularText>{texts.profile.forms.priceInformation.title}</RegularText>
             <TouchableOpacity
-              accessibilityLabel={texts.profile.forms.openingHourGroup.deleteButtonAccessibility}
+              accessibilityLabel={texts.profile.forms.priceInformation.deleteButtonAccessibility}
               onPress={() => remove(index)}
               style={styles.deleteButton}
             >

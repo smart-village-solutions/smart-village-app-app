@@ -17,7 +17,7 @@ export type OpeningHourFormValue = {
   isOpen: boolean;
   startDate: Date;
   startTime: Date;
-  weekday: number;
+  weekday: string;
 };
 
 type OpeningHoursProps = {
@@ -44,7 +44,7 @@ export const createDefaultOpeningHour = (): OpeningHourFormValue => ({
   isOpen: false,
   startDate: moment().toDate(),
   startTime: moment().toDate(),
-  weekday: 0
+  weekday: ''
 });
 
 export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursProps) => {

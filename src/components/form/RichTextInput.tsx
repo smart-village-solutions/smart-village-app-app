@@ -1,9 +1,9 @@
-import React, { forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type {
-  EnrichedTextInputProps,
   EnrichedTextInputInstance,
+  EnrichedTextInputProps,
   OnChangeSelectionEvent,
   OnChangeStateEvent
 } from 'react-native-enriched';
@@ -13,6 +13,16 @@ import { colors, consts, Icon, normalize } from '../../config';
 import { Label } from '../Label';
 
 const { URL_REGEX } = consts;
+
+type ToolbarAction =
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strikethrough'
+  | 'list'
+  | 'list-numbers'
+  | 'blockquote'
+  | 'link';
 
 export const RichTextInput = forwardRef(
   (
@@ -45,11 +55,12 @@ export const RichTextInput = forwardRef(
     ref: React.Ref<EnrichedTextInputInstance>
   ) => {
     // Separate ref for EnrichedTextInput (used when richText={true})
-    const internalRichTextRef = useRef<EnrichedTextInputInstance>(null);
-    const richTextRef = (ref as React.RefObject<EnrichedTextInputInstance>) || internalRichTextRef;
+    const richTextRef = useRef<EnrichedTextInputInstance>(null);
     const [isActive, setIsActive] = useState(false);
     const [richTextState, setRichTextState] = useState<OnChangeStateEvent | null>(null);
     const [selectionState, setSelectionState] = useState<OnChangeSelectionEvent | null>(null);
+
+    useImperativeHandle(ref, () => richTextRef.current as EnrichedTextInputInstance, []);
 
     const handleSetLink = () => {
       // Selected text is used as both link label and URL input.
@@ -63,16 +74,6 @@ export const RichTextInput = forwardRef(
 
       richTextRef.current?.setLink(selectionState.start, selectionState.end, selectedText, url);
     };
-
-    type ToolbarAction =
-      | 'bold'
-      | 'italic'
-      | 'underline'
-      | 'strikethrough'
-      | 'list'
-      | 'list-numbers'
-      | 'blockquote'
-      | 'link';
 
     const handleToolbarAction = (action: ToolbarAction) => {
       const editor = richTextRef.current;
