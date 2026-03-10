@@ -1103,7 +1103,8 @@ export const texts = {
     mapView: 'Kartenansicht',
     myCity: 'Mein Ort',
     profile: {
-      home: 'Profil'
+      home: 'Profil',
+      settings: 'Einstellungen'
     },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',

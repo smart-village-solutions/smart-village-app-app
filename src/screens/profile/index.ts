@@ -7,5 +7,6 @@ export * from './ProfileLoginScreen';
 export * from './ProfileMessagingScreen';
 export * from './ProfileRegistrationScreen';
 export * from './ProfileResetPasswordScreen';
+export * from './ProfileSettingsScreen';
 export * from './ProfileSignupScreen';
 export * from './ProfileUpdateScreen';

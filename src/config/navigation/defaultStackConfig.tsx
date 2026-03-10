@@ -59,6 +59,7 @@ import {
   ProfileMessagingScreen,
   ProfileRegistrationScreen,
   ProfileResetPasswordScreen,
+  ProfileSettingsScreen,
   ProfileSignupScreen,
   ProfileUpdateScreen,
   SearchScreen,
@@ -462,6 +463,11 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileResetPassword,
       screenComponent: ProfileResetPasswordScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.profile.settings },
+      routeName: ScreenName.ProfileSettings,
+      screenComponent: ProfileSettingsScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.profile.home },
