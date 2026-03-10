@@ -164,8 +164,9 @@ export const MultiImageSelector = ({
   };
 
   if (
-    selectorType === IMAGE_SELECTOR_TYPES.SUE ||
-    selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD
+    selectorType === IMAGE_SELECTOR_TYPES.NEWS ||
+    selectorType === IMAGE_SELECTOR_TYPES.NOTICEBOARD ||
+    selectorType === IMAGE_SELECTOR_TYPES.SUE
   ) {
     return (
       <>

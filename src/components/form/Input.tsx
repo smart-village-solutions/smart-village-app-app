@@ -7,6 +7,8 @@ import { AccessibilityContext } from '../../AccessibilityProvider';
 import { colors, consts, device, Icon, normalize } from '../../config';
 import { Label } from '../Label';
 
+import { RichTextInput } from './RichTextInput';
+
 const { a11yLabel } = consts;
 
 type Props = InputProps &
@@ -16,6 +18,7 @@ type Props = InputProps &
     row?: boolean;
     chat?: boolean;
     boldLabel?: boolean;
+    richText?: boolean;
   };
 
 /* eslint-disable complexity */
@@ -35,6 +38,7 @@ export const Input = forwardRef(
       multiline = false,
       rightIcon,
       chat = false,
+      richText = false,
       inputContainerStyle,
       inputStyle,
       containerStyle,
@@ -75,6 +79,24 @@ export const Input = forwardRef(
         });
       }
     }, []);
+
+    if (richText) {
+      return (
+        <RichTextInput
+          {...{
+            boldLabel,
+            containerStyle,
+            disabled,
+            errorMessage,
+            field,
+            inputContainerStyle,
+            isReduceTransparencyEnabled,
+            label,
+            ...furtherProps
+          }}
+        />
+      );
+    }
 
     if (chat) {
       return (

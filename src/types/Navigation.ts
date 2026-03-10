@@ -61,6 +61,8 @@ export enum ScreenName {
   Pdf = 'Pdf',
   Profile = 'Profile',
   ProfileConversations = 'ProfileConversations',
+  ProfileCreateContentForm = 'ProfileCreateContentForm',
+  ProfileCreateContentHome = 'ProfileCreateContentHome',
   ProfileDelete = 'ProfileDelete',
   ProfileEditMail = 'ProfileEditMail',
   ProfileEditPassword = 'ProfileEditPassword',
@@ -148,6 +150,7 @@ export type CustomTab = {
   iconName: keyof typeof Icon;
   iconSize?: number;
   iconStyle?: ViewStyle;
+  isHighlightedTab?: boolean;
   label: string;
   params?: Record<string, any>;
   screen: ScreenName;

@@ -10621,6 +10621,11 @@ react-native-elements@^3.4.3:
     react-native-ratings "8.0.4"
     react-native-size-matters "^0.3.1"
 
+react-native-enriched@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-enriched/-/react-native-enriched-0.4.0.tgz#032e576167f44ff0af5c783f2da787b231cdd535"
+  integrity sha512-Pqu2Hm06URh4jD/xTwb5+zwSkyR/ylsFx8i00EdzItv5I12PM6aW+XQQH0IjBV76OwzHWbieVxr+2P2+34cvWQ==
+
 react-native-expo-image-cache@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/react-native-expo-image-cache/-/react-native-expo-image-cache-4.1.0.tgz#649cbe9786249134d3eafed5baba50bbfa80c029"

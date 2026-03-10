@@ -10,6 +10,11 @@ import { CustomTab, TabConfig, TabNavigatorConfig } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
 
+const isTabConfig = (
+  tabConfig: CustomTab | TabConfig | string | undefined
+): tabConfig is TabConfig =>
+  !!tabConfig && typeof tabConfig !== 'string' && 'stackConfig' in tabConfig;
+
 export const useTabRoutes = () => {
   const { data: tabRoutesData, loading } = useStaticContent<TabNavigatorConfig>({
     name: 'tabNavigation',
@@ -29,38 +34,43 @@ export const useTabRoutes = () => {
 
     !loading &&
       setTabRoutes((prev) => {
-        const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])?.map(
-          (tabConfig, index) => {
+        const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])
+          ?.map((tabConfig, index) => {
             if (typeof tabConfig === 'string') {
               // here we are comparing defaultTabs with the array on main-server.
               // if the string in the main-server array matches the `initialRouteName` in the
               // `tabNavigatorConfig` (default), that tab is automatically selected.
               return tabNavigatorConfig.tabConfigs.find(
-                ({ stackConfig }) => stackConfig.initialRouteName === tabConfig
-              );
-            } else if ('stackConfig' in tabConfig) {
-              return tabConfig;
-            } else {
-              return createDynamicTabConfig(
-                tabConfig.accessibilityLabel,
-                tabConfig.iconName,
-                tabConfig.iconSize,
-                index,
-                tabConfig.label,
-                tabConfigs.length,
-                tabConfig.screen,
-                tabConfig.activeIconName,
-                tabConfig.iconLandscapeStyle,
-                tabConfig.iconStyle,
-                tabConfig.params,
-                tabConfig.strokeColor,
-                tabConfig.strokeWidth,
-                tabConfig.tabBarLabelStyle,
-                tabConfig.tilesScreenParams
+                (defaultTabConfig): defaultTabConfig is TabConfig =>
+                  isTabConfig(defaultTabConfig) &&
+                  defaultTabConfig.stackConfig.initialRouteName === tabConfig
               );
             }
-          }
-        );
+
+            if ('stackConfig' in tabConfig) {
+              return tabConfig;
+            }
+
+            return createDynamicTabConfig(
+              tabConfig.accessibilityLabel,
+              tabConfig.iconName,
+              tabConfig.iconSize,
+              index,
+              tabConfig.label,
+              tabConfigs.length,
+              tabConfig.screen,
+              tabConfig.activeIconName,
+              tabConfig.iconLandscapeStyle,
+              tabConfig.iconStyle,
+              tabConfig.params,
+              tabConfig.isHighlightedTab,
+              tabConfig.strokeColor,
+              tabConfig.strokeWidth,
+              tabConfig.tabBarLabelStyle,
+              tabConfig.tilesScreenParams
+            );
+          })
+          .filter(isTabConfig);
 
         return {
           ...prev,
@@ -87,7 +97,7 @@ export const MainTabNavigator = () => {
 
   useEffect(() => {
     if (!loading && tabRoutes) {
-      setTabConfigs(tabRoutes.tabConfigs);
+      setTabConfigs(tabRoutes.tabConfigs.filter(isTabConfig));
     }
   }, [loading, tabRoutes]);
 
