@@ -68,7 +68,6 @@ export const NewsForm = () => {
   });
 
   const [createNewsItem, { loading }] = useMutation(CREATE_NEWS_ITEM);
-  let imageUrl: string | undefined;
 
   const onSubmit = async (formValues: NewsFormValues) => {
     setIsLoading(true);
@@ -103,11 +102,11 @@ export const NewsForm = () => {
           publishedAt: formValues.date,
           pushNotification: formValues.sendPushNotification,
           ...(formValues.url && {
-              sourceUrl: {
-                url: formValues.url,
-                ...(formValues.urlDescription && { description: formValues.urlDescription })
-              }
-            }),
+            sourceUrl: {
+              url: formValues.url,
+              ...(formValues.urlDescription && { description: formValues.urlDescription })
+            }
+          }),
           title: formValues.title
         }
       });

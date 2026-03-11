@@ -71,7 +71,7 @@ type EventFormValues = {
   startTime: Date | null;
   street: string;
   title: string;
-  webUrls: WebUrlFormValue[];
+  urls: WebUrlFormValue[];
 };
 
 /* eslint-disable complexity */
@@ -120,7 +120,7 @@ export const EventForm = () => {
       startTime: moment().toDate(),
       street: '',
       title: '',
-      webUrls: []
+      urls: []
     }
   });
 
@@ -145,7 +145,7 @@ export const EventForm = () => {
     remove: removeWebUrl
   } = useFieldArray({
     control,
-    name: 'webUrls'
+    name: 'urls'
   });
 
   const {
@@ -186,7 +186,7 @@ export const EventForm = () => {
       const { imageUrls } = result;
       const dates = buildDate(formValues);
       const contacts = buildContactsData(formValues.contacts);
-      const webUrls = buildWebUrls(formValues.webUrls);
+      const webUrls = buildWebUrls(formValues.urls);
       const priceInformations = buildPriceInformations(formValues.priceInformations);
 
       await createEventRecord({
@@ -204,7 +204,7 @@ export const EventForm = () => {
             }),
           ...(formValues.description && { description: formValues.description }),
           ...(imageUrls.length && { mediaContents: imageUrls }),
-          ...(webUrls.length && { webUrls }),
+          ...(webUrls.length && { urls: webUrls }),
           ...(priceInformations.length && { priceInformations }),
           ...(contacts && { contacts })
         }

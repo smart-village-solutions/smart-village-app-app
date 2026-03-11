@@ -287,7 +287,6 @@ export const PointOfInterestForm = () => {
           name="regionName"
           label={texts.profile.forms.regionName}
           placeholder={texts.profile.forms.regionNamePlaceholder}
-          keyboardType="numeric"
           autoCapitalize="none"
           validate
           errorMessage={errors.regionName && errors.regionName.message}
