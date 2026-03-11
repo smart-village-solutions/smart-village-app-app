@@ -6,10 +6,25 @@ import { ProfileMember } from '../types';
 import { addToStore, readFromStore } from './storageHelper';
 
 export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
+export const PROFILE_USER_AUTH_TOKEN = 'PROFILE_USER_AUTH_TOKEN';
 const PROFILE_CURRENT_USER = 'PROFILE_CURRENT_USER';
 const PROFILE_UPDATED = 'PROFILE_UPDATED';
 
-export const storeProfileAuthToken = (authToken?: string) => {
+export const storeTokens = (authToken?: string, userAuthToken?: string) => {
+  if (authToken) {
+    storeProfileAuthToken(authToken);
+  } else {
+    storeProfileAuthToken();
+  }
+
+  if (userAuthToken) {
+    storeProfileUserAuthToken(userAuthToken);
+  } else {
+    storeProfileUserAuthToken();
+  }
+};
+
+const storeProfileAuthToken = (authToken?: string) => {
   if (authToken) {
     SecureStore.setItemAsync(PROFILE_AUTH_TOKEN, authToken);
   } else {
@@ -31,6 +46,30 @@ export const profileAuthToken = async () => {
   }
 
   return authToken;
+};
+
+const storeProfileUserAuthToken = (userAuthToken?: string) => {
+  if (userAuthToken) {
+    SecureStore.setItemAsync(PROFILE_USER_AUTH_TOKEN, userAuthToken);
+  } else {
+    SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
+  }
+};
+
+export const profileUserAuthToken = async () => {
+  let userAuthToken = null;
+
+  // The reason for the problem of staying in SplashScreen that occurs after the application is
+  // updated on the Android side is the inability to obtain the token here.
+  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
+  try {
+    userAuthToken = await SecureStore.getItemAsync(PROFILE_USER_AUTH_TOKEN);
+  } catch {
+    // Token deleted here so that it can be recreated
+    SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
+  }
+
+  return userAuthToken;
 };
 
 export const storeProfileUserData = (userData?: ProfileMember) => {

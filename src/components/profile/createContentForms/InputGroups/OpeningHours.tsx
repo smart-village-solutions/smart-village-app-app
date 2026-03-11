@@ -20,14 +20,14 @@ type OpeningHoursProps = {
   remove: (index: number) => void;
 };
 
-const weekdays = [
-  { value: texts.noticeboard.weekday.monday },
-  { value: texts.noticeboard.weekday.tuesday },
-  { value: texts.noticeboard.weekday.wednesday },
-  { value: texts.noticeboard.weekday.thursday },
-  { value: texts.noticeboard.weekday.friday },
-  { value: texts.noticeboard.weekday.saturday },
-  { value: texts.noticeboard.weekday.sunday }
+export const weekdays = [
+  { value: texts.noticeboard.weekday.monday, index: 0 },
+  { value: texts.noticeboard.weekday.tuesday, index: 1 },
+  { value: texts.noticeboard.weekday.wednesday, index: 2 },
+  { value: texts.noticeboard.weekday.thursday, index: 3 },
+  { value: texts.noticeboard.weekday.friday, index: 4 },
+  { value: texts.noticeboard.weekday.saturday, index: 5 },
+  { value: texts.noticeboard.weekday.sunday, index: 6 }
 ] as unknown as DropdownInputProps['data'];
 
 export const createDefaultOpeningHour = (): OpeningHourFormValue => ({
@@ -164,7 +164,7 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
                   required: true,
                   showSearch: false,
                   value,
-                  valueKey: 'value'
+                  valueKey: 'index'
                 }}
               />
             )}

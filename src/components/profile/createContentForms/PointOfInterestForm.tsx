@@ -5,8 +5,6 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
 
 import { consts, device, normalize, texts } from '../../../config';
-import { GET_CATEGORIES } from '../../../queries/categories';
-import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
 import {
   buildAddressData,
   buildContactData,
@@ -14,7 +12,9 @@ import {
   buildPriceInformations,
   buildWebUrls,
   uploadImages
-} from '../../../helpers/pointOfInterestFormHelper';
+} from '../../../helpers';
+import { GET_CATEGORIES } from '../../../queries/categories';
+import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
 import { Button } from '../../Button';
 import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
@@ -86,7 +86,7 @@ export const PointOfInterestForm = () => {
   } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categories: '',
+      categories: '[]',
       city: '',
       description: '',
       email: '',
@@ -287,7 +287,6 @@ export const PointOfInterestForm = () => {
           name="regionName"
           label={texts.profile.forms.regionName}
           placeholder={texts.profile.forms.regionNamePlaceholder}
-          keyboardType="numeric"
           autoCapitalize="none"
           validate
           errorMessage={errors.regionName && errors.regionName.message}

@@ -23,6 +23,7 @@ import {
   graphqlFetchPolicy,
   parsedImageAspectRatio,
   profileAuthToken,
+  profileUserAuthToken,
   storageHelper,
   voucherAuthToken
 } from './helpers';
@@ -59,13 +60,15 @@ const MainAppWithApolloProvider = () => {
       // get the authentication token from local SecureStore if it exists
       const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
       const authToken = (await profileAuthToken()) || (await voucherAuthToken());
+      const userAuthToken = await profileUserAuthToken();
 
       // return the headers to the context so httpLink can read them
       return {
         headers: {
           ...headers,
           authorization: accessToken ? `Bearer ${accessToken}` : '',
-          'X-Authorization': authToken || ''
+          'X-Authorization': authToken || '',
+          'X-User-Authorization': userAuthToken || ''
         }
       };
     });

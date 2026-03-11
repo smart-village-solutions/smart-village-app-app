@@ -17,7 +17,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
-import { storeProfileAuthToken } from '../../helpers';
+import { storeTokens } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { profileEditMail } from '../../queries/profile';
 import { ProfileEditMail, ScreenName } from '../../types';
@@ -86,7 +86,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 
         showUpdateSuccessAlert({
           onPress: () => {
-            storeProfileAuthToken();
+            storeTokens();
             navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
           }
         });

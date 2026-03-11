@@ -257,6 +257,10 @@ export const CREATE_EVENT_RECORDS = gql`
     $mediaContents: [MediaContentInput!]
     $organizer: OperatingCompanyInput
     $priceInformations: [PriceInput!]
+    $recurring: String
+    $recurringInterval: String
+    $recurringType: String
+    $recurringWeekdays: [String!]
     $title: String!
     $urls: [WebUrlInput!]
   ) {
@@ -271,6 +275,10 @@ export const CREATE_EVENT_RECORDS = gql`
       mediaContents: $mediaContents
       organizer: $organizer
       priceInformations: $priceInformations
+      recurring: $recurring
+      recurringInterval: $recurringInterval
+      recurringType: $recurringType
+      recurringWeekdays: $recurringWeekdays
       title: $title
       urls: $urls
     ) {

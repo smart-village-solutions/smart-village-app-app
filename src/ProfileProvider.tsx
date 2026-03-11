@@ -1,12 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import {
-  profileAuthToken,
-  profileUserData,
-  storeProfileAuthToken,
-  storeProfileUserData
-} from './helpers';
+import { profileAuthToken, profileUserData, storeProfileUserData, storeTokens } from './helpers';
 import { useHomeRefresh } from './hooks';
 import { QUERY_TYPES } from './queries';
 import { member } from './queries/profile';
@@ -32,7 +27,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
     enabled: isLoggedIn,
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
-        storeProfileAuthToken();
+        storeTokens();
         setIsLoggedIn(false);
         setCurrentUserData(null);
 

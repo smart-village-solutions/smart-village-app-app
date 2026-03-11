@@ -17,7 +17,7 @@ import {
   WrapperHorizontal
 } from '../../components';
 import { colors, normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { storeProfileUserData, storeTokens } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -47,7 +47,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
   const { isLoading, data, refetch } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
-        storeProfileAuthToken();
+        storeTokens();
 
         showLoginAgainAlert({
           onPress: () =>
@@ -177,7 +177,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             invert
             onPress={() => {
               resetUnreadMessages();
-              storeProfileAuthToken();
+              storeTokens();
               storeProfileUserData();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
             }}

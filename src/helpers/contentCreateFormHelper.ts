@@ -1,5 +1,7 @@
 import { uploadMediaContent } from '../queries/mediaContent';
 
+import { momentFormat } from './momentHelper';
+
 export type OpeningHourFormValue = {
   description: string;
   endDate: Date;
@@ -39,7 +41,7 @@ export type ContactInput = {
   urlText: string;
 };
 
-export type Date = {
+export type DateInput = {
   endDate: Date;
   endTime: Date;
   startDate: Date;
@@ -91,24 +93,26 @@ export const buildContactsData = (contacts: ContactInput[]) => {
   return contactData.length ? contactData : undefined;
 };
 
-export const buildDate = (input: Date) => {
-  return {
-    ...(input.endDate && { dateTo: input.endDate }),
-    ...(input.endTime && { timeTo: input.endTime }),
-    ...(input.startDate && { dateFrom: input.startDate }),
-    ...(input.startTime && { timeFrom: input.startTime })
-  };
+export const buildDate = (input: DateInput) => {
+  return [
+    {
+      ...(input.endDate && { dateEnd: momentFormat(input.endDate, 'YYYY-MM-DD') }),
+      ...(input.endTime && { timeEnd: momentFormat(input.endTime, 'HH:mm') }),
+      ...(input.startDate && { dateStart: momentFormat(input.startDate, 'YYYY-MM-DD') }),
+      ...(input.startTime && { timeStart: momentFormat(input.startTime, 'HH:mm') })
+    }
+  ];
 };
 
 export const buildOpeningHours = (openingHours: OpeningHourFormValue[]) =>
   openingHours.map((oh) => ({
     open: oh.isOpen,
-    ...(oh.startDate && { dateFrom: oh.startDate }),
-    ...(oh.endDate && { dateTo: oh.endDate }),
+    ...(oh.startDate && { dateFrom: momentFormat(oh.startDate, 'YYYY-MM-DD') }),
+    ...(oh.endDate && { dateTo: momentFormat(oh.endDate, 'YYYY-MM-DD') }),
     ...(oh.description && { description: oh.description }),
-    ...(oh.startTime && { timeFrom: oh.startTime }),
-    ...(oh.endTime && { timeTo: oh.endTime }),
-    ...(oh.weekday && { weekday: oh.weekday })
+    ...(oh.startTime && { timeFrom: momentFormat(oh.startTime, 'HH:mm') }),
+    ...(oh.endTime && { timeTo: momentFormat(oh.endTime, 'HH:mm') }),
+    ...(oh.weekday !== undefined && { weekday: oh.weekday })
   }));
 
 export const buildWebUrls = (webUrls: WebUrlFormValue[]) =>
