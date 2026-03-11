@@ -112,7 +112,7 @@ export const buildOpeningHours = (openingHours: OpeningHourFormValue[]) =>
     ...(oh.description && { description: oh.description }),
     ...(oh.startTime && { timeFrom: momentFormat(oh.startTime, 'HH:mm') }),
     ...(oh.endTime && { timeTo: momentFormat(oh.endTime, 'HH:mm') }),
-    ...(oh.weekday && { weekday: oh.weekday })
+    ...(oh.weekday !== undefined && { weekday: oh.weekday })
   }));
 
 export const buildWebUrls = (webUrls: WebUrlFormValue[]) =>
