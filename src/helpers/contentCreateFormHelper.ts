@@ -41,7 +41,7 @@ export type ContactInput = {
   urlText: string;
 };
 
-export type Date = {
+export type DateInput = {
   endDate: Date;
   endTime: Date;
   startDate: Date;
@@ -93,7 +93,7 @@ export const buildContactsData = (contacts: ContactInput[]) => {
   return contactData.length ? contactData : undefined;
 };
 
-export const buildDate = (input: Date) => {
+export const buildDate = (input: DateInput) => {
   return [
     {
       ...(input.endDate && { dateEnd: momentFormat(input.endDate, 'YYYY-MM-DD') }),
