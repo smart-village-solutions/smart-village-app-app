@@ -102,11 +102,10 @@ export const NewsForm = () => {
           ],
           publishedAt: formValues.date,
           pushNotification: formValues.sendPushNotification,
-          ...(formValues.url &&
-            formValues.urlDescription && {
+          ...(formValues.url && {
               sourceUrl: {
                 url: formValues.url,
-                description: formValues.urlDescription
+                ...(formValues.urlDescription && { description: formValues.urlDescription })
               }
             }),
           title: formValues.title
