@@ -1,12 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../../config';
+import {
+  buildAddressData,
+  buildContactsData,
+  buildDate,
+  buildPriceInformations,
+  buildWebUrls,
+  PriceInformationFormValue,
+  uploadImages,
+  WebUrlFormValue
+} from '../../../helpers';
 import { GET_CATEGORIES } from '../../../queries/categories';
+import { CREATE_EVENT_RECORDS } from '../../../queries/eventRecords';
 import { Button } from '../../Button';
 import { Checkbox } from '../../Checkbox';
 import { Label } from '../../Label';
@@ -24,23 +35,22 @@ import {
   createDefaultContact,
   createDefaultPriceInformation,
   createDefaultWebUrl,
-  PriceInformationFormValue,
   PriceInformations,
-  WebUrlFormValue,
-  WebUrls
+  WebUrls,
+  weekdays
 } from './InputGroups';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
-const renewalIntervals = [
-  { value: texts.profile.forms.renewalIntervalDaily },
-  { value: texts.profile.forms.renewalIntervalWeekly },
-  { value: texts.profile.forms.renewalIntervalMonthly },
-  { value: texts.profile.forms.renewalIntervalYearly }
+const recurringIntervals = [
+  { value: texts.profile.forms.renewalIntervalDaily, index: '0' },
+  { value: texts.profile.forms.renewalIntervalWeekly, index: '1' },
+  { value: texts.profile.forms.renewalIntervalMonthly, index: '2' },
+  { value: texts.profile.forms.renewalIntervalYearly, index: '3' }
 ] as unknown as DropdownInputProps['data'];
 
 type EventFormValues = {
-  categoryName: string;
+  categories: string;
   city: string;
   contacts: ContactFormValue[];
   description: string;
@@ -52,15 +62,16 @@ type EventFormValues = {
   longitude: number | null;
   postcode: string;
   priceInformations: PriceInformationFormValue[];
+  recurring: boolean;
+  recurringInterval: string;
+  recurringType: string;
+  recurringWeekdays: number[];
   regionName: string;
-  repeat: boolean;
-  repeatInterval: string;
-  repeatUntilDate: Date | null;
   startDate: Date | null;
   startTime: Date | null;
   street: string;
   title: string;
-  webUrls: WebUrlFormValue[];
+  urls: WebUrlFormValue[];
 };
 
 /* eslint-disable complexity */
@@ -88,7 +99,7 @@ export const EventForm = () => {
   } = useForm<EventFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categoryName: '',
+      categories: '[]',
       city: '',
       contacts: [],
       description: '',
@@ -100,21 +111,32 @@ export const EventForm = () => {
       longitude: null,
       postcode: '',
       priceInformations: [],
+      recurring: false,
+      recurringInterval: '',
+      recurringType: '',
+      recurringWeekdays: [],
       regionName: '',
-      repeat: false,
-      repeatInterval: '',
-      repeatUntilDate: moment().toDate(),
       startDate: moment().toDate(),
       startTime: moment().toDate(),
       street: '',
       title: '',
-      webUrls: []
+      urls: []
     }
   });
 
-  const isRepeatable = useWatch({
+  const isRecurring = useWatch({
     control,
-    name: 'repeat'
+    name: 'recurring'
+  });
+
+  const recurringType = useWatch({
+    control,
+    name: 'recurringType'
+  });
+
+  const recurringWeekdays = useWatch({
+    control,
+    name: 'recurringWeekdays'
   });
 
   const {
@@ -123,7 +145,7 @@ export const EventForm = () => {
     remove: removeWebUrl
   } = useFieldArray({
     control,
-    name: 'webUrls'
+    name: 'urls'
   });
 
   const {
@@ -144,13 +166,59 @@ export const EventForm = () => {
     name: 'contacts'
   });
 
-  // TODO: implement event creation logic here
-  const onSubmit = (formValues: EventFormValues) => {
+  const [createEventRecord, { loading }] = useMutation(CREATE_EVENT_RECORDS);
+
+  const onSubmit = async (formValues: EventFormValues) => {
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const result = await uploadImages(formValues.image ?? '[]');
+
+      if (result.uploadError) {
+        setIsLoading(false);
+        Alert.alert(
+          texts.profile.forms.contentImageUploadErrorAlertTitle,
+          texts.profile.forms.contentImageUploadErrorAlertMessage
+        );
+        return;
+      }
+
+      const { imageUrls } = result;
+      const dates = buildDate(formValues);
+      const contacts = buildContactsData(formValues.contacts);
+      const webUrls = buildWebUrls(formValues.urls);
+      const priceInformations = buildPriceInformations(formValues.priceInformations);
+
+      await createEventRecord({
+        variables: {
+          addresses: [buildAddressData(formValues)],
+          categories: formValues.categories.map((name: string) => ({ name })),
+          dates,
+          title: formValues.title,
+          recurring: formValues.recurring ? '1' : '0',
+          ...(formValues.recurring && { recurringInterval: formValues.recurringInterval }),
+          ...(formValues.recurring && { recurringType: formValues.recurringType }),
+          ...(formValues.recurring &&
+            !!formValues.recurringWeekdays.length && {
+              recurringWeekdays: formValues.recurringWeekdays.map((day) => day.toString())
+            }),
+          ...(formValues.description && { description: formValues.description }),
+          ...(imageUrls.length && { mediaContents: imageUrls }),
+          ...(webUrls.length && { urls: webUrls }),
+          ...(priceInformations.length && { priceInformations }),
+          ...(contacts && { contacts })
+        }
+      });
+
+      navigation.goBack();
+      Alert.alert(
+        texts.profile.forms.contentCreateSuccessAlertTitle,
+        texts.profile.forms.contentCreateSuccessAlertMessage
+      );
+    } catch (error) {
       setIsLoading(false);
-    }, 1000);
+      console.error(error);
+    }
   };
 
   if (loadingCategories) {
@@ -168,7 +236,7 @@ export const EventForm = () => {
     <>
       <Wrapper noPaddingTop>
         <Controller
-          name="categoryName"
+          name="categories"
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
@@ -177,6 +245,7 @@ export const EventForm = () => {
                 data: categoryNameDropdownData,
                 errors,
                 label: `${texts.defectReport.categoryName} *`,
+                multipleSelect: true,
                 name,
                 onChange,
                 placeholder: texts.defectReport.categoryName,
@@ -417,7 +486,7 @@ export const EventForm = () => {
         <Label>{texts.profile.forms.eventRepeatableDescription}</Label>
 
         <Controller
-          name="repeat"
+          name="recurring"
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
@@ -432,45 +501,66 @@ export const EventForm = () => {
         />
       </Wrapper>
 
-      {isRepeatable && (
+      {isRecurring && (
         <>
           <Wrapper noPaddingTop>
             <Input
-              name="repeatInterval"
+              name="recurringInterval"
               label={`${texts.profile.forms.repeatInterval} *`}
               placeholder={texts.profile.forms.repeatIntervalPlaceholder}
               autoCapitalize="none"
               keyboardType="numeric"
               validate
               rules={{
-                required: isRepeatable ? texts.profile.forms.repeatIntervalError : undefined
+                required: isRecurring ? texts.profile.forms.repeatIntervalError : undefined
               }}
-              errorMessage={errors.repeatInterval && errors.repeatInterval.message}
+              errorMessage={errors.recurringInterval && errors.recurringInterval.message}
               control={control}
             />
 
             <Controller
-              name="repeatUntilDate"
+              name="recurringType"
               render={({ field: { name, onChange, value } }) => (
                 <DropdownInput
                   {...{
                     control,
-                    data: renewalIntervals,
+                    data: recurringIntervals,
                     errors,
                     label: `${texts.profile.forms.renewalInterval} *`,
                     name,
                     onChange,
                     placeholder: texts.profile.forms.renewalIntervalPlaceholder,
-                    required: isRepeatable,
+                    required: isRecurring,
                     showSearch: false,
                     value,
-                    valueKey: 'value'
+                    valueKey: 'index'
                   }}
                 />
               )}
               control={control}
             />
           </Wrapper>
+
+          {recurringType === '1' &&
+            weekdays.map((item, index) => (
+              <Wrapper noPaddingTop key={index}>
+                <Checkbox
+                  checked={recurringWeekdays?.includes(index) ?? false}
+                  checkedIcon={<Icon.SquareCheckFilled />}
+                  containerStyle={styles.checkboxContainerStyle}
+                  onPress={() => {
+                    const current = recurringWeekdays ?? [];
+                    const updated = current.includes(index)
+                      ? current.filter((day) => day !== index)
+                      : [...current, index].sort((a, b) => a - b);
+
+                    setValue('recurringWeekdays', updated);
+                  }}
+                  title={item.value}
+                  uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+                />
+              </Wrapper>
+            ))}
         </>
       )}
 
@@ -523,7 +613,7 @@ export const EventForm = () => {
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.profile.forms.send}
-          disabled={isLoading}
+          disabled={loading || isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>

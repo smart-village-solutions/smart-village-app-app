@@ -3,14 +3,10 @@ import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../../config';
+import { PriceInformationFormValue } from '../../../../helpers';
 import { RegularText } from '../../../Text';
 import { Wrapper } from '../../../Wrapper';
 import { Input } from '../../../form';
-
-export type PriceInformationFormValue = {
-  description: string;
-  amount: string;
-};
 
 type PriceInformationsProps = {
   control: Control<FieldValues>;

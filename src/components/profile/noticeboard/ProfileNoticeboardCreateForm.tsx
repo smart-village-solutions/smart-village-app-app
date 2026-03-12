@@ -28,7 +28,7 @@ import {
   graphqlFetchPolicy,
   momentFormat,
   parseListItemsFromQuery,
-  storeProfileAuthToken
+  storeTokens
 } from '../../../helpers';
 import { useStaticContent } from '../../../hooks';
 import { NetworkContext } from '../../../NetworkProvider';
@@ -141,7 +141,7 @@ export const ProfileNoticeboardCreateForm = ({
   const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member) {
-        storeProfileAuthToken();
+        storeTokens();
 
         showLoginAgainAlert({
           onPress: () =>

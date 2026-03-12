@@ -167,6 +167,7 @@ export const NoticeboardCreateForm = ({
       if (/^\d+(?:[.,]\d{2})?$/.test(price)) {
         price = `${noticeboardNewData.price} ${noticeboardNewData.priceType}`.trim();
       }
+
       const images = JSON.parse(noticeboardNewData.image);
       const imageUrls: { sourceUrl: { url: string }; contentType: string }[] = images
         .filter((image) => !!image.id)

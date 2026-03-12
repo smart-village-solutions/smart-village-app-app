@@ -3,14 +3,10 @@ import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../../config';
+import { WebUrlFormValue } from '../../../../helpers';
 import { RegularText } from '../../../Text';
 import { Wrapper } from '../../../Wrapper';
 import { Input } from '../../../form';
-
-export type WebUrlFormValue = {
-  description: string;
-  url: string;
-};
 
 type WebUrlsProps = {
   control: Control<FieldValues>;

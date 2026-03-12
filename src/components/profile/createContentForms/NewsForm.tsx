@@ -1,31 +1,42 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
+import { Alert, StyleSheet } from 'react-native';
 
-import { consts, texts } from '../../../config';
+import { ProfileContext } from '../../../ProfileProvider';
+import { colors, consts, Icon, texts } from '../../../config';
+import { uploadImages } from '../../../helpers';
+import { GET_CATEGORIES } from '../../../queries/categories';
+import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
+import { Checkbox } from '../../Checkbox';
+import { Label } from '../../Label';
+import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
-import { GET_CATEGORIES } from '../../../queries/categories';
-import { useQuery } from 'react-apollo';
-import { LoadingSpinner } from '../../LoadingSpinner';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type NewsFormValues = {
-  categoryName: string;
+  categories: string;
   date: Date | null;
   description: string;
-  image: string | null;
+  image: string;
   subTitle: string;
   title: string;
+  url: string;
+  urlDescription: string;
+  sendPushNotification: boolean;
 };
 
 export const NewsForm = () => {
+  const { currentUserData } = useContext(ProfileContext);
+
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,22 +55,71 @@ export const NewsForm = () => {
   } = useForm<NewsFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categoryName: '',
+      categories: '[]',
       date: moment().toDate(),
       description: '',
       image: '[]',
       subTitle: '',
-      title: ''
+      title: '',
+      url: '',
+      urlDescription: '',
+      sendPushNotification: false
     }
   });
 
-  // TODO: implement news item creation logic here
-  const onSubmit = (formValues: NewsFormValues) => {
+  const [createNewsItem, { loading }] = useMutation(CREATE_NEWS_ITEM);
+
+  const onSubmit = async (formValues: NewsFormValues) => {
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const result = await uploadImages(formValues.image ?? '[]');
+
+      if (result.uploadError) {
+        setIsLoading(false);
+        Alert.alert(
+          texts.profile.forms.contentImageUploadErrorAlertTitle,
+          texts.profile.forms.contentImageUploadErrorAlertMessage
+        );
+        return;
+      }
+
+      const { imageUrls } = result;
+
+      await createNewsItem({
+        variables: {
+          categories: formValues.categories.map((categoryName: string) => ({
+            name: categoryName
+          })),
+          contentBlocks: [
+            {
+              title: formValues.title,
+              intro: formValues.subTitle,
+              body: formValues.description,
+              mediaContents: imageUrls
+            }
+          ],
+          publishedAt: formValues.date,
+          pushNotification: formValues.sendPushNotification,
+          ...(formValues.url && {
+            sourceUrl: {
+              url: formValues.url,
+              ...(formValues.urlDescription && { description: formValues.urlDescription })
+            }
+          }),
+          title: formValues.title
+        }
+      });
+
+      navigation.goBack();
+      Alert.alert(
+        texts.profile.forms.contentCreateSuccessAlertTitle,
+        texts.profile.forms.contentCreateSuccessAlertMessage
+      );
+    } catch (error) {
       setIsLoading(false);
-    }, 1000);
+      console.error(error);
+    }
   };
 
   if (loadingCategories) {
@@ -70,14 +130,15 @@ export const NewsForm = () => {
     dataCategories?.categories?.map((category) => ({
       id: category.id,
       name: category.name,
-      value: category.name
+      value: category.name,
+      selected: false
     })) || [];
 
   return (
     <>
       <Wrapper noPaddingTop>
         <Controller
-          name="categoryName"
+          name="categories"
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
@@ -86,6 +147,7 @@ export const NewsForm = () => {
                 data: categoryNameDropdownData,
                 errors,
                 label: `${texts.defectReport.categoryName} *`,
+                multipleSelect: true,
                 name,
                 onChange,
                 placeholder: texts.defectReport.categoryName,
@@ -101,41 +163,39 @@ export const NewsForm = () => {
 
       <Wrapper noPaddingTop>
         <Input
-          name="title"
-          label={`${texts.profile.forms.title} *`}
-          placeholder={texts.profile.forms.titlePlaceholder}
           autoCapitalize="none"
-          validate
-          rules={{
-            required: texts.profile.forms.titleError
-          }}
+          control={control}
           errorMessage={errors.title && errors.title.message}
-          control={control}
+          label={`${texts.profile.forms.title} *`}
+          name="title"
+          placeholder={texts.profile.forms.titlePlaceholder}
+          rules={{ required: texts.profile.forms.titleError }}
+          validate
         />
       </Wrapper>
 
       <Wrapper noPaddingTop>
         <Input
-          name="subTitle"
-          label={texts.profile.forms.subTitle}
-          placeholder={texts.profile.forms.subTitlePlaceholder}
           autoCapitalize="none"
-          validate
+          control={control}
           errorMessage={errors.subTitle && errors.subTitle.message}
-          control={control}
+          label={texts.profile.forms.subTitle}
+          name="subTitle"
+          placeholder={texts.profile.forms.subTitlePlaceholder}
+          validate
         />
       </Wrapper>
 
       <Wrapper noPaddingTop>
         <Input
-          name="description"
-          label={texts.profile.forms.description}
-          placeholder={texts.profile.forms.descriptionPlaceholder}
           autoCapitalize="none"
-          validate
-          richText
-          errorMessage={errors.description && errors.description.message}
           control={control}
+          errorMessage={errors.description && errors.description.message}
+          label={texts.profile.forms.description}
+          name="description"
+          placeholder={texts.profile.forms.descriptionPlaceholder}
+          richText
+          validate
         />
       </Wrapper>
 
@@ -186,11 +246,57 @@ export const NewsForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.linkGroup.url}
+          name="url"
+          placeholder={texts.profile.forms.linkGroup.urlPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.linkGroup.description}
+          name="urlDescription"
+          placeholder={texts.profile.forms.linkGroup.descriptionPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      {currentUserData?.roles.role_push_notification && (
+        <Wrapper noPaddingTop>
+          <Label bold>{texts.profile.forms.pushNotificationTitle}</Label>
+          <Label>{texts.profile.forms.pushNotificationDescription}</Label>
+
+          <Controller
+            name="sendPushNotification"
+            render={({ field: { onChange, value } }) => (
+              <Checkbox
+                checked={!!value}
+                checkedIcon={<Icon.SquareCheckFilled />}
+                containerStyle={styles.checkboxContainerStyle}
+                onPress={() => onChange(!value)}
+                textStyle={styles.checkboxTextStyle}
+                title={texts.profile.forms.pushNotificationCheckbox}
+                uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
+
+      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.profile.forms.send}
-          disabled={isLoading}
+          disabled={loading || isLoading}
         />
+
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>
             {texts.profile.forms.abort}
@@ -200,3 +306,16 @@ export const NewsForm = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  checkboxContainerStyle: {
+    backgroundColor: colors.surface,
+    borderWidth: 0,
+    marginLeft: 0,
+    marginRight: 0
+  },
+  checkboxTextStyle: {
+    color: colors.darkText,
+    fontWeight: 'normal'
+  }
+});

@@ -5,7 +5,7 @@ import { Overlay } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { Icon, colors, normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { storeProfileUserData, storeTokens } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -52,7 +52,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     {
       onSuccess: (responseData: ProfileMember) => {
         if (!responseData?.member) {
-          storeProfileAuthToken();
+          storeTokens();
 
           return;
         }

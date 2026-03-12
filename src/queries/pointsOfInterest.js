@@ -292,3 +292,34 @@ export const GET_POINT_OF_INTEREST_TRAVEL_TIMES = gql`
     }
   }
 `;
+
+export const CREATE_POINT_OF_INTEREST = gql`
+  mutation CreatePointOfInterest(
+    $addresses: [AddressInput!]
+    $categories: [CategoryInput!]
+    $contact: ContactInput
+    $description: String
+    $location: LocationInput
+    $mediaContents: [MediaContentInput!]
+    $name: String!
+    $openingHours: [OpeningHourInput!]
+    $priceInformations: [PriceInput!]
+    $webUrls: [WebUrlInput!]
+  ) {
+    createPointOfInterest(
+      addresses: $addresses
+      categories: $categories
+      contact: $contact
+      description: $description
+      location: $location
+      mediaContents: $mediaContents
+      name: $name
+      openingHours: $openingHours
+      priceInformations: $priceInformations
+      webUrls: $webUrls
+    ) {
+      id
+      name
+    }
+  }
+`;

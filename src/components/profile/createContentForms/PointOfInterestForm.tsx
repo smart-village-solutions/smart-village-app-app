@@ -1,51 +1,64 @@
 import { useNavigation } from '@react-navigation/native';
-import moment from 'moment';
 import React, { useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
 import { consts, device, normalize, texts } from '../../../config';
+import {
+  buildAddressData,
+  buildContactData,
+  buildOpeningHours,
+  buildPriceInformations,
+  buildWebUrls,
+  OpeningHourFormValue,
+  PriceInformationFormValue,
+  uploadImages,
+  WebUrlFormValue
+} from '../../../helpers';
 import { GET_CATEGORIES } from '../../../queries/categories';
+import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
 import { Button } from '../../Button';
 import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper } from '../../Wrapper';
-import { DateTimeInput, DropdownInput, Input } from '../../form';
+import { DropdownInput, Input } from '../../form';
+import { MapLibre } from '../../map';
 import { MultiImageSelector } from '../../selectors';
 
 import {
   createDefaultOpeningHour,
   createDefaultPriceInformation,
   createDefaultWebUrl,
-  OpeningHourFormValue,
   OpeningHours,
-  PriceInformationFormValue,
   PriceInformations,
-  WebUrlFormValue,
   WebUrls
 } from './InputGroups';
-import { MapLibre } from '../../map';
-
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type PoiFormValues = {
-  categoryName: string;
+  categories: string;
   city: string;
-  date: Date | null;
   description: string;
+  email: string;
+  fax: string;
+  firstname: string;
   image: string | null;
   latitude: number | null;
   location: string;
   longitude: number | null;
   name: string;
   openingHours: OpeningHourFormValue[];
+  phone: string;
   postcode: string;
   priceInformations: PriceInformationFormValue[];
   regionName: string;
   street: string;
+  surname: string;
+  url: string;
+  urlText: string;
   webUrls: WebUrlFormValue[];
 };
 
@@ -73,20 +86,26 @@ export const PointOfInterestForm = () => {
   } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categoryName: '',
+      categories: '[]',
       city: '',
-      date: moment().toDate(),
       description: '',
+      email: '',
+      fax: '',
+      firstname: '',
       image: '[]',
       latitude: null,
       location: '',
       longitude: null,
       name: '',
       openingHours: [],
+      phone: '',
       postcode: '',
       priceInformations: [],
       regionName: '',
       street: '',
+      surname: '',
+      url: '',
+      urlText: '',
       webUrls: []
     }
   });
@@ -118,13 +137,52 @@ export const PointOfInterestForm = () => {
     name: 'priceInformations'
   });
 
-  // TODO: implement Poi item creation logic here
-  const onSubmit = (formValues: PoiFormValues) => {
+  const [createPointOfInterest, { loading }] = useMutation(CREATE_POINT_OF_INTEREST);
+
+  const onSubmit = async (formValues: PoiFormValues) => {
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const result = await uploadImages(formValues.image ?? '[]');
+
+      if (result.uploadError) {
+        setIsLoading(false);
+        Alert.alert(
+          texts.profile.forms.contentImageUploadErrorAlertTitle,
+          texts.profile.forms.contentImageUploadErrorAlertMessage
+        );
+        return;
+      }
+
+      const { imageUrls } = result;
+      const contact = buildContactData(formValues);
+      const openingHours = buildOpeningHours(formValues.openingHours);
+      const webUrls = buildWebUrls(formValues.webUrls);
+      const priceInformations = buildPriceInformations(formValues.priceInformations);
+
+      await createPointOfInterest({
+        variables: {
+          addresses: [buildAddressData(formValues)],
+          categories: formValues.categories.map((name: string) => ({ name })),
+          name: formValues.name,
+          ...(formValues.description && { description: formValues.description }),
+          ...(imageUrls.length && { mediaContents: imageUrls }),
+          ...(contact && { contact }),
+          ...(openingHours.length && { openingHours }),
+          ...(webUrls.length && { webUrls }),
+          ...(priceInformations.length && { priceInformations })
+        }
+      });
+
+      navigation.goBack();
+      Alert.alert(
+        texts.profile.forms.contentCreateSuccessAlertTitle,
+        texts.profile.forms.contentCreateSuccessAlertMessage
+      );
+    } catch (error) {
       setIsLoading(false);
-    }, 1000);
+      console.error(error);
+    }
   };
 
   if (loadingCategories) {
@@ -142,7 +200,7 @@ export const PointOfInterestForm = () => {
     <>
       <Wrapper noPaddingTop>
         <Controller
-          name="categoryName"
+          name="categories"
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
@@ -151,6 +209,7 @@ export const PointOfInterestForm = () => {
                 data: categoryNameDropdownData,
                 errors,
                 label: `${texts.defectReport.categoryName} *`,
+                multipleSelect: true,
                 name,
                 onChange,
                 placeholder: texts.defectReport.categoryName,
@@ -228,7 +287,6 @@ export const PointOfInterestForm = () => {
           name="regionName"
           label={texts.profile.forms.regionName}
           placeholder={texts.profile.forms.regionNamePlaceholder}
-          keyboardType="numeric"
           autoCapitalize="none"
           validate
           errorMessage={errors.regionName && errors.regionName.message}
@@ -296,6 +354,91 @@ export const PointOfInterestForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Label bold>{texts.profile.forms.contacts.title}</Label>
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.contacts.firstname}
+          name="firstname"
+          placeholder={texts.profile.forms.contacts.firstnamePlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.contacts.surname}
+          name="surname"
+          placeholder={texts.profile.forms.contacts.surnamePlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          keyboardType="email-address"
+          label={texts.profile.forms.contacts.email}
+          name="email"
+          placeholder={texts.profile.forms.contacts.emailPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          keyboardType="phone-pad"
+          label={texts.profile.forms.contacts.phone}
+          name="phone"
+          placeholder={texts.profile.forms.contacts.phonePlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          keyboardType="phone-pad"
+          label={texts.profile.forms.contacts.fax}
+          name="fax"
+          placeholder={texts.profile.forms.contacts.faxPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          keyboardType="url"
+          label={texts.profile.forms.contacts.url}
+          name="url"
+          placeholder={texts.profile.forms.contacts.urlPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.contacts.urlText}
+          name="urlText"
+          placeholder={texts.profile.forms.contacts.urlTextPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
         <Button
           invert
           onPress={() => appendOpeningHour(createDefaultOpeningHour())}
@@ -341,33 +484,10 @@ export const PointOfInterestForm = () => {
       />
 
       <Wrapper noPaddingTop>
-        <Controller
-          name="date"
-          render={({ field: { name, onChange, value } }) => (
-            <DateTimeInput
-              {...{
-                boldLabel: true,
-                control,
-                errors,
-                label: texts.profile.forms.date,
-                mode: 'date',
-                name,
-                onChange,
-                placeholder: texts.profile.forms.datePlaceholder,
-                required: true,
-                value
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.profile.forms.send}
-          disabled={isLoading}
+          disabled={loading || isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>
           <RegularText primary center>

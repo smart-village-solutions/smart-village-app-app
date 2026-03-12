@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { LoadingSpinner, SafeAreaViewFlex, ServiceTiles } from '../../components';
+import { SafeAreaViewFlex, ServiceTiles } from '../../components';
 import { texts } from '../../config';
 import { profileAuthToken } from '../../helpers';
 import { useProfileContext } from '../../ProfileProvider';
@@ -10,7 +10,7 @@ import { useProfileContext } from '../../ProfileProvider';
 import { ProfileHomeScreen } from './ProfileHomeScreen';
 
 export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { refresh, isLoading, isLoggedIn } = useProfileContext();
+  const { refresh, isLoggedIn } = useProfileContext();
 
   const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(isLoggedIn);
 
@@ -32,10 +32,6 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
       getLoginStatus();
     }, [route.params?.refreshUser])
   );
-
-  if (isLoading) {
-    return <LoadingSpinner loading />;
-  }
 
   if (!isProfileLoggedIn || !isLoggedIn) {
     return <ProfileHomeScreen navigation={navigation} route={route} />;
