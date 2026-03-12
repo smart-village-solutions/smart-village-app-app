@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { colors, Icon, normalize, texts } from '../../../../config';
 import { WebUrlFormValue } from '../../../../helpers';
 import { RegularText } from '../../../Text';
-import { Wrapper } from '../../../Wrapper';
+import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { Input } from '../../../form';
 
 type WebUrlsProps = {
@@ -26,7 +26,7 @@ export const WebUrls = ({ control, errors, fields, remove }: WebUrlsProps) => {
       {fields.map((linkField, index) => (
         <Wrapper noPaddingTop key={linkField.id}>
           <View style={styles.linkGroupHeader}>
-            <RegularText>{texts.profile.forms.linkGroup.title}</RegularText>
+            <RegularText small>{texts.profile.forms.linkGroup.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.linkGroup.deleteButtonAccessibility}
               onPress={() => remove(index)}
@@ -36,18 +36,21 @@ export const WebUrls = ({ control, errors, fields, remove }: WebUrlsProps) => {
             </TouchableOpacity>
           </View>
 
+          <WrapperVertical>
+            <Input
+              name={`webUrls.${index}.url`}
+              label={texts.profile.forms.linkGroup.url}
+              placeholder={texts.profile.forms.linkGroup.urlPlaceholder}
+              autoCapitalize="none"
+              validate
+              control={control}
+            />
+          </WrapperVertical>
+
           <Input
             name={`webUrls.${index}.description`}
             label={texts.profile.forms.linkGroup.description}
             placeholder={texts.profile.forms.linkGroup.descriptionPlaceholder}
-            autoCapitalize="none"
-            validate
-            control={control}
-          />
-
-          <Input
-            name={`webUrls.${index}.url`}
-            label={texts.profile.forms.linkGroup.url}
             autoCapitalize="none"
             validate
             control={control}

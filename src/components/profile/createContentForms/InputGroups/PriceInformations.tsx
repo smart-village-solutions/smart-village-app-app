@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { colors, Icon, normalize, texts } from '../../../../config';
 import { PriceInformationFormValue } from '../../../../helpers';
 import { RegularText } from '../../../Text';
-import { Wrapper } from '../../../Wrapper';
+import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { Input } from '../../../form';
 
 type PriceInformationsProps = {
@@ -26,7 +26,7 @@ export const PriceInformations = ({ control, errors, fields, remove }: PriceInfo
       {fields.map((linkField, index) => (
         <Wrapper noPaddingTop key={linkField.id}>
           <View style={styles.linkGroupHeader}>
-            <RegularText>{texts.profile.forms.priceInformation.title}</RegularText>
+            <RegularText small>{texts.profile.forms.priceInformation.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.priceInformation.deleteButtonAccessibility}
               onPress={() => remove(index)}
@@ -36,18 +36,21 @@ export const PriceInformations = ({ control, errors, fields, remove }: PriceInfo
             </TouchableOpacity>
           </View>
 
-          <Input
-            name={`priceInformations.${index}.description`}
-            label={texts.profile.forms.priceInformation.description}
-            placeholder={texts.profile.forms.priceInformation.descriptionPlaceholder}
-            autoCapitalize="none"
-            validate
-            control={control}
-          />
+          <WrapperVertical>
+            <Input
+              name={`priceInformations.${index}.description`}
+              label={texts.profile.forms.priceInformation.description}
+              placeholder={texts.profile.forms.priceInformation.descriptionPlaceholder}
+              autoCapitalize="none"
+              validate
+              control={control}
+            />
+          </WrapperVertical>
 
           <Input
             name={`priceInformations.${index}.amount`}
             label={texts.profile.forms.priceInformation.amount}
+            placeholder={texts.profile.forms.priceInformation.amountPlaceholder}
             autoCapitalize="none"
             validate
             control={control}

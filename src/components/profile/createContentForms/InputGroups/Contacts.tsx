@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../../config';
 import { RegularText } from '../../../Text';
-import { Wrapper } from '../../../Wrapper';
+import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { Input } from '../../../form';
 
 export type ContactFormValue = {
@@ -42,7 +42,7 @@ export const Contacts = ({ control, errors, fields, remove }: ContactsProps) => 
       {fields.map((linkField, index) => (
         <Wrapper noPaddingTop key={linkField.id}>
           <View style={styles.linkGroupHeader}>
-            <RegularText>{texts.profile.forms.contacts.title}</RegularText>
+            <RegularText small>{texts.profile.forms.contacts.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.contacts.deleteButtonAccessibility}
               onPress={() => remove(index)}
@@ -52,63 +52,75 @@ export const Contacts = ({ control, errors, fields, remove }: ContactsProps) => 
             </TouchableOpacity>
           </View>
 
-          <Input
-            autoCapitalize="none"
-            control={control}
-            label={texts.profile.forms.contacts.firstname}
-            name={`contacts.${index}.firstname`}
-            placeholder={texts.profile.forms.contacts.firstnamePlaceholder}
-            validate
-          />
+          <WrapperVertical>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              label={texts.profile.forms.contacts.firstname}
+              name={`contacts.${index}.firstname`}
+              placeholder={texts.profile.forms.contacts.firstnamePlaceholder}
+              validate
+            />
+          </WrapperVertical>
 
-          <Input
-            autoCapitalize="none"
-            control={control}
-            label={texts.profile.forms.contacts.surname}
-            name={`contacts.${index}.surname`}
-            placeholder={texts.profile.forms.contacts.surnamePlaceholder}
-            validate
-          />
+          <WrapperVertical noPaddingTop>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              label={texts.profile.forms.contacts.surname}
+              name={`contacts.${index}.surname`}
+              placeholder={texts.profile.forms.contacts.surnamePlaceholder}
+              validate
+            />
+          </WrapperVertical>
 
-          <Input
-            autoCapitalize="none"
-            control={control}
-            keyboardType="email-address"
-            label={texts.profile.forms.contacts.email}
-            name={`contacts.${index}.email`}
-            placeholder={texts.profile.forms.contacts.emailPlaceholder}
-            validate
-          />
+          <WrapperVertical noPaddingTop>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              keyboardType="email-address"
+              label={texts.profile.forms.contacts.email}
+              name={`contacts.${index}.email`}
+              placeholder={texts.profile.forms.contacts.emailPlaceholder}
+              validate
+            />
+          </WrapperVertical>
 
-          <Input
-            autoCapitalize="none"
-            control={control}
-            keyboardType="phone-pad"
-            label={texts.profile.forms.contacts.phone}
-            name={`contacts.${index}.phone`}
-            placeholder={texts.profile.forms.contacts.phonePlaceholder}
-            validate
-          />
+          <WrapperVertical noPaddingTop>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              keyboardType="phone-pad"
+              label={texts.profile.forms.contacts.phone}
+              name={`contacts.${index}.phone`}
+              placeholder={texts.profile.forms.contacts.phonePlaceholder}
+              validate
+            />
+          </WrapperVertical>
 
-          <Input
-            autoCapitalize="none"
-            control={control}
-            keyboardType="phone-pad"
-            label={texts.profile.forms.contacts.fax}
-            name={`contacts.${index}.fax`}
-            placeholder={texts.profile.forms.contacts.faxPlaceholder}
-            validate
-          />
+          <WrapperVertical noPaddingTop>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              keyboardType="phone-pad"
+              label={texts.profile.forms.contacts.fax}
+              name={`contacts.${index}.fax`}
+              placeholder={texts.profile.forms.contacts.faxPlaceholder}
+              validate
+            />
+          </WrapperVertical>
 
-          <Input
-            autoCapitalize="none"
-            control={control}
-            keyboardType="url"
-            label={texts.profile.forms.contacts.url}
-            name={`contacts.${index}.url`}
-            placeholder={texts.profile.forms.contacts.urlPlaceholder}
-            validate
-          />
+          <WrapperVertical noPaddingTop>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              keyboardType="url"
+              label={texts.profile.forms.contacts.url}
+              name={`contacts.${index}.url`}
+              placeholder={texts.profile.forms.contacts.urlPlaceholder}
+              validate
+            />
+          </WrapperVertical>
 
           <Input
             autoCapitalize="none"

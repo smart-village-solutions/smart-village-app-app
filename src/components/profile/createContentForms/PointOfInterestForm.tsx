@@ -1,10 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { MutableRefObject, useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import {
+  Controller,
+  FieldErrors,
+  SubmitErrorHandler,
+  useFieldArray,
+  useForm
+} from 'react-hook-form';
+import { Alert, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Divider } from 'react-native-elements';
 
-import { consts, device, normalize, texts } from '../../../config';
+import { colors, consts, device, normalize, texts } from '../../../config';
 import {
   buildAddressData,
   buildContactData,
@@ -23,7 +30,7 @@ import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
-import { Wrapper } from '../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { DropdownInput, Input } from '../../form';
 import { MapLibre } from '../../map';
 import { MultiImageSelector } from '../../selectors';
@@ -62,13 +69,45 @@ type PoiFormValues = {
   webUrls: WebUrlFormValue[];
 };
 
-export const PointOfInterestForm = () => {
+type PointOfInterestFormProps = {
+  scrollViewRef?: MutableRefObject<ScrollView | null>;
+};
+
+const orderedFieldNames: Array<keyof PoiFormValues> = [
+  'categories',
+  'name',
+  'description',
+  'regionName',
+  'street',
+  'postcode',
+  'city',
+  'location'
+];
+
+const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
+  if (!value || typeof value !== 'object') {
+    return [];
+  }
+
+  if ('message' in value || 'type' in value || 'ref' in value) {
+    return parentPath ? [parentPath] : [];
+  }
+
+  return Object.entries(value).flatMap(([key, nestedValue]) => {
+    const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+    return getErrorPaths(nestedValue, currentPath);
+  });
+};
+
+export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps) => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
+  const fieldPositionsRef = useRef<Partial<Record<keyof PoiFormValues | string, number>>>({});
 
   const {
     data: dataCategories,
@@ -139,6 +178,13 @@ export const PointOfInterestForm = () => {
 
   const [createPointOfInterest, { loading }] = useMutation(CREATE_POINT_OF_INTEREST);
 
+  const registerFieldPosition = useCallback(
+    (fieldName: keyof PoiFormValues | string) => (event: LayoutChangeEvent) => {
+      fieldPositionsRef.current[fieldName] = event.nativeEvent.layout.y;
+    },
+    []
+  );
+
   const onSubmit = async (formValues: PoiFormValues) => {
     setIsLoading(true);
 
@@ -185,6 +231,35 @@ export const PointOfInterestForm = () => {
     }
   };
 
+  const scrollToFirstError: SubmitErrorHandler<PoiFormValues> = useCallback(
+    (formErrors: FieldErrors<PoiFormValues>) => {
+      const errorPaths = getErrorPaths(formErrors);
+      const firstMatchingField = orderedFieldNames.find((fieldName) =>
+        errorPaths.some((path) => path === fieldName || path.startsWith(`${fieldName}.`))
+      );
+
+      if (!firstMatchingField) {
+        return;
+      }
+
+      const y = fieldPositionsRef.current[firstMatchingField];
+
+      if (typeof y !== 'number') {
+        return;
+      }
+
+      scrollViewRef?.current?.scrollTo({
+        animated: true,
+        y: Math.max(0, y - normalize(24))
+      });
+    },
+    [scrollViewRef]
+  );
+
+  const handleFormSubmit = useCallback(() => {
+    void handleSubmit(onSubmit, scrollToFirstError)();
+  }, [handleSubmit, onSubmit, scrollToFirstError]);
+
   if (loadingCategories) {
     return <LoadingSpinner loading />;
   }
@@ -198,7 +273,7 @@ export const PointOfInterestForm = () => {
 
   return (
     <>
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
         <Controller
           name="categories"
           render={({ field: { name, onChange, value } }) => (
@@ -208,11 +283,11 @@ export const PointOfInterestForm = () => {
                 control,
                 data: categoryNameDropdownData,
                 errors,
-                label: `${texts.defectReport.categoryName} *`,
+                label: `${texts.profile.forms.categories} *`,
                 multipleSelect: true,
                 name,
                 onChange,
-                placeholder: texts.defectReport.categoryName,
+                placeholder: texts.profile.forms.categoriesPlaceholder,
                 required: true,
                 value,
                 valueKey: 'name'
@@ -223,7 +298,7 @@ export const PointOfInterestForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('name')}>
         <Input
           name="name"
           label={`${texts.profile.forms.name} *`}
@@ -238,7 +313,7 @@ export const PointOfInterestForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('description')}>
         <Input
           name="description"
           label={texts.profile.forms.description}
@@ -251,9 +326,96 @@ export const PointOfInterestForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
-        <Label bold>{texts.profile.forms.adresse}</Label>
+      <Wrapper noPaddingBottom>
+        <Divider style={styles.divider} />
+      </Wrapper>
 
+      <Wrapper>
+        <RegularText>{texts.profile.forms.images}</RegularText>
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Controller
+          name="image"
+          render={({ field }) => (
+            <MultiImageSelector
+              {...{
+                control,
+                errorType: IMAGE_SELECTOR_ERROR_TYPES.NEWS,
+                field,
+                // isDeletable: !isEdit, // TODO: handle deletable state for edit mode
+                isMultiImages: true,
+                item: {
+                  buttonTitle: texts.profile.forms.addImages,
+                  name: 'image'
+                },
+                selectorType: IMAGE_SELECTOR_TYPES.NEWS
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <RegularText>{texts.profile.forms.address}</RegularText>
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('regionName')}>
+        <Input
+          name="regionName"
+          label={texts.profile.forms.regionName}
+          placeholder={texts.profile.forms.regionNamePlaceholder}
+          autoCapitalize="none"
+          validate
+          errorMessage={errors.regionName && errors.regionName.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('street')}>
+        <Input
+          name="street"
+          label={texts.profile.forms.street}
+          placeholder={texts.profile.forms.streetPlaceholder}
+          autoCapitalize="none"
+          validate
+          errorMessage={errors.street && errors.street.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('postcode')}>
+        <Input
+          name="postcode"
+          label={texts.profile.forms.postcode}
+          placeholder={texts.profile.forms.postcodePlaceholder}
+          autoCapitalize="none"
+          keyboardType="numeric"
+          validate
+          errorMessage={errors.postcode && errors.postcode.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('city')}>
+        <Input
+          name="city"
+          label={texts.profile.forms.city}
+          placeholder={texts.profile.forms.cityPlaceholder}
+          autoCapitalize="none"
+          validate
+          errorMessage={errors.city && errors.city.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('location')}>
+        <Label bold>{texts.profile.forms.coordinates}</Label>
         <Controller
           name="location"
           render={({ field: { onChange, value } }) => (
@@ -282,79 +444,35 @@ export const PointOfInterestForm = () => {
         />
       </Wrapper>
 
+      <Wrapper noPaddingBottom>
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.openingHours}</RegularText>
+      </Wrapper>
+
+      <OpeningHours
+        control={control as any}
+        errors={errors as any}
+        fields={openingHoursFields}
+        remove={removeOpeningHour}
+      />
+
       <Wrapper noPaddingTop>
-        <Input
-          name="regionName"
-          label={texts.profile.forms.regionName}
-          placeholder={texts.profile.forms.regionNamePlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.regionName && errors.regionName.message}
-          control={control}
+        <Button
+          invert
+          onPress={() => appendOpeningHour(createDefaultOpeningHour())}
+          title={texts.profile.forms.addOpeningHours}
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
-        <Input
-          name="street"
-          label={texts.profile.forms.street}
-          placeholder={texts.profile.forms.streetPlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.street && errors.street.message}
-          control={control}
-        />
-      </Wrapper>
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
 
-      <Wrapper noPaddingTop>
-        <Input
-          name="postcode"
-          label={texts.profile.forms.postcode}
-          placeholder={texts.profile.forms.postcodePlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.postcode && errors.postcode.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          name="city"
-          label={texts.profile.forms.city}
-          placeholder={texts.profile.forms.cityPlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.city && errors.city.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Controller
-          name="image"
-          render={({ field }) => (
-            <MultiImageSelector
-              {...{
-                control,
-                errorType: IMAGE_SELECTOR_ERROR_TYPES.NEWS,
-                field,
-                // isDeletable: !isEdit, // TODO: handle deletable state for edit mode
-                isMultiImages: true,
-                item: {
-                  buttonTitle: texts.profile.forms.addImages,
-                  name: 'image'
-                },
-                selectorType: IMAGE_SELECTOR_TYPES.NEWS
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Label bold>{texts.profile.forms.contacts.title}</Label>
+      <Wrapper>
+        <RegularText>{texts.profile.forms.contacts.title}</RegularText>
       </Wrapper>
 
       <Wrapper noPaddingTop>
@@ -438,27 +556,35 @@ export const PointOfInterestForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
-        <Button
-          invert
-          onPress={() => appendOpeningHour(createDefaultOpeningHour())}
-          title={texts.profile.forms.addOpeningHours}
-        />
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.priceInformations}</RegularText>
       </Wrapper>
 
-      <OpeningHours
+      <PriceInformations
         control={control as any}
         errors={errors as any}
-        fields={openingHoursFields}
-        remove={removeOpeningHour}
+        fields={priceInformationsFields}
+        remove={removePriceInformation}
       />
 
       <Wrapper noPaddingTop>
         <Button
           invert
-          onPress={() => appendWebUrl(createDefaultWebUrl())}
-          title={texts.profile.forms.addLinks}
+          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
+          title={texts.profile.forms.addPriceInformation}
         />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.links}</RegularText>
       </Wrapper>
 
       <WebUrls
@@ -471,21 +597,14 @@ export const PointOfInterestForm = () => {
       <Wrapper noPaddingTop>
         <Button
           invert
-          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
-          title={texts.profile.forms.addPriceInformation}
+          onPress={() => appendWebUrl(createDefaultWebUrl())}
+          title={texts.profile.forms.addLinks}
         />
       </Wrapper>
 
-      <PriceInformations
-        control={control as any}
-        errors={errors as any}
-        fields={priceInformationsFields}
-        remove={removePriceInformation}
-      />
-
       <Wrapper noPaddingTop>
         <Button
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleFormSubmit}
           title={texts.profile.forms.send}
           disabled={loading || isLoading}
         />
@@ -500,8 +619,11 @@ export const PointOfInterestForm = () => {
 };
 
 const styles = StyleSheet.create({
+  divider: {
+    backgroundColor: colors.placeholder
+  },
   map: {
-    height: normalize(300),
+    height: normalize(200),
     width: device.width - 2 * normalize(16)
   }
 });

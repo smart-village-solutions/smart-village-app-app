@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import React, { useContext, useState } from 'react';
+import React, { MutableRefObject, useCallback, useContext, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Controller, useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { Alert, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { ProfileContext } from '../../../ProfileProvider';
-import { colors, consts, Icon, texts } from '../../../config';
+import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { uploadImages } from '../../../helpers';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
@@ -16,7 +17,7 @@ import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
-import { Wrapper } from '../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
 
@@ -34,11 +35,42 @@ type NewsFormValues = {
   sendPushNotification: boolean;
 };
 
-export const NewsForm = () => {
+type NewsFormProps = {
+  scrollViewRef?: MutableRefObject<ScrollView | null>;
+};
+
+const orderedFieldNames: Array<keyof NewsFormValues> = [
+  'categories',
+  'title',
+  'subTitle',
+  'description',
+  'url',
+  'urlDescription',
+  'date'
+];
+
+const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
+  if (!value || typeof value !== 'object') {
+    return [];
+  }
+
+  if ('message' in value || 'type' in value || 'ref' in value) {
+    return parentPath ? [parentPath] : [];
+  }
+
+  return Object.entries(value).flatMap(([key, nestedValue]) => {
+    const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+    return getErrorPaths(nestedValue, currentPath);
+  });
+};
+
+export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
   const { currentUserData } = useContext(ProfileContext);
 
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
+  const fieldPositionsRef = useRef<Partial<Record<keyof NewsFormValues | string, number>>>({});
 
   const {
     data: dataCategories,
@@ -68,6 +100,13 @@ export const NewsForm = () => {
   });
 
   const [createNewsItem, { loading }] = useMutation(CREATE_NEWS_ITEM);
+
+  const registerFieldPosition = useCallback(
+    (fieldName: keyof NewsFormValues | string) => (event: LayoutChangeEvent) => {
+      fieldPositionsRef.current[fieldName] = event.nativeEvent.layout.y;
+    },
+    []
+  );
 
   const onSubmit = async (formValues: NewsFormValues) => {
     setIsLoading(true);
@@ -122,6 +161,35 @@ export const NewsForm = () => {
     }
   };
 
+  const scrollToFirstError: SubmitErrorHandler<NewsFormValues> = useCallback(
+    (formErrors: FieldErrors<NewsFormValues>) => {
+      const errorPaths = getErrorPaths(formErrors);
+      const firstMatchingField = orderedFieldNames.find((fieldName) =>
+        errorPaths.some((path) => path === fieldName || path.startsWith(`${fieldName}.`))
+      );
+
+      if (!firstMatchingField) {
+        return;
+      }
+
+      const y = fieldPositionsRef.current[firstMatchingField];
+
+      if (typeof y !== 'number') {
+        return;
+      }
+
+      scrollViewRef?.current?.scrollTo({
+        animated: true,
+        y: Math.max(0, y - normalize(24))
+      });
+    },
+    [scrollViewRef]
+  );
+
+  const handleFormSubmit = useCallback(() => {
+    void handleSubmit(onSubmit, scrollToFirstError)();
+  }, [handleSubmit, onSubmit, scrollToFirstError]);
+
   if (loadingCategories) {
     return <LoadingSpinner loading />;
   }
@@ -130,13 +198,12 @@ export const NewsForm = () => {
     dataCategories?.categories?.map((category) => ({
       id: category.id,
       name: category.name,
-      value: category.name,
-      selected: false
+      value: category.name
     })) || [];
 
   return (
     <>
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
         <Controller
           name="categories"
           render={({ field: { name, onChange, value } }) => (
@@ -146,11 +213,11 @@ export const NewsForm = () => {
                 control,
                 data: categoryNameDropdownData,
                 errors,
-                label: `${texts.defectReport.categoryName} *`,
+                label: `${texts.profile.forms.categories} *`,
                 multipleSelect: true,
                 name,
                 onChange,
-                placeholder: texts.defectReport.categoryName,
+                placeholder: texts.profile.forms.categoriesPlaceholder,
                 required: true,
                 value,
                 valueKey: 'name'
@@ -161,7 +228,7 @@ export const NewsForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
         <Input
           autoCapitalize="none"
           control={control}
@@ -174,7 +241,7 @@ export const NewsForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('subTitle')}>
         <Input
           autoCapitalize="none"
           control={control}
@@ -186,17 +253,25 @@ export const NewsForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('description')}>
         <Input
           autoCapitalize="none"
           control={control}
           errorMessage={errors.description && errors.description.message}
-          label={texts.profile.forms.description}
+          label={texts.profile.forms.text}
           name="description"
-          placeholder={texts.profile.forms.descriptionPlaceholder}
+          placeholder={texts.profile.forms.textPlaceholder}
           richText
           validate
         />
+      </Wrapper>
+
+      <Wrapper noPaddingBottom>
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.images}</RegularText>
       </Wrapper>
 
       <Wrapper noPaddingTop>
@@ -223,6 +298,40 @@ export const NewsForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <RegularText>{texts.profile.forms.linkGroup.source}</RegularText>
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('url')}>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.linkGroup.url}
+          name="url"
+          placeholder={texts.profile.forms.linkGroup.urlPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('urlDescription')}>
+        <Input
+          autoCapitalize="none"
+          control={control}
+          label={texts.profile.forms.linkGroup.description}
+          name="urlDescription"
+          placeholder={texts.profile.forms.linkGroup.descriptionPlaceholder}
+          validate
+        />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper onLayout={registerFieldPosition('date')}>
         <Controller
           name="date"
           render={({ field: { name, onChange, value } }) => (
@@ -242,28 +351,6 @@ export const NewsForm = () => {
             />
           )}
           control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          autoCapitalize="none"
-          control={control}
-          label={texts.profile.forms.linkGroup.url}
-          name="url"
-          placeholder={texts.profile.forms.linkGroup.urlPlaceholder}
-          validate
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          autoCapitalize="none"
-          control={control}
-          label={texts.profile.forms.linkGroup.description}
-          name="urlDescription"
-          placeholder={texts.profile.forms.linkGroup.descriptionPlaceholder}
-          validate
         />
       </Wrapper>
 
@@ -292,7 +379,7 @@ export const NewsForm = () => {
 
       <Wrapper noPaddingTop>
         <Button
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleFormSubmit}
           title={texts.profile.forms.send}
           disabled={loading || isLoading}
         />
@@ -317,5 +404,8 @@ const styles = StyleSheet.create({
   checkboxTextStyle: {
     color: colors.darkText,
     fontWeight: 'normal'
+  },
+  divider: {
+    backgroundColor: colors.placeholder
   }
 });

@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React from 'react';
+import React, { useRef } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
@@ -15,21 +15,23 @@ import { normalize } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 
 export const ProfileCreateContentFormScreen = ({ route }: StackScreenProps<any>) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query;
   const headlineInfo = route.params?.headlineInfo;
   const formContent =
     query === QUERY_TYPES.POINT_OF_INTEREST ? (
-      <PointOfInterestForm />
+      <PointOfInterestForm scrollViewRef={scrollViewRef} />
     ) : query === QUERY_TYPES.EVENT_RECORD ? (
-      <EventForm />
+      <EventForm scrollViewRef={scrollViewRef} />
     ) : (
-      <NewsForm />
+      <NewsForm scrollViewRef={scrollViewRef} />
     );
 
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          ref={scrollViewRef}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.paddingBottom}
         >

@@ -1,9 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { MutableRefObject, useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import {
+  Controller,
+  FieldErrors,
+  SubmitErrorHandler,
+  useFieldArray,
+  useForm,
+  useWatch
+} from 'react-hook-form';
+import { Alert, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../../config';
 import {
@@ -24,7 +32,7 @@ import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
-import { Wrapper } from '../../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, DropdownInputProps, Input } from '../../form';
 import { MapLibre } from '../../map';
 import { MultiImageSelector } from '../../selectors';
@@ -74,14 +82,54 @@ type EventFormValues = {
   urls: WebUrlFormValue[];
 };
 
+type EventFormProps = {
+  scrollViewRef?: MutableRefObject<ScrollView | null>;
+};
+
+const orderedFieldNames: Array<keyof EventFormValues> = [
+  'categories',
+  'title',
+  'description',
+  'startDate',
+  'startTime',
+  'endDate',
+  'endTime',
+  'recurringInterval',
+  'recurringType',
+  'regionName',
+  'street',
+  'postcode',
+  'city',
+  'location'
+];
+
+const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
+  if (!value || typeof value !== 'object') {
+    return [];
+  }
+
+  if ('message' in value || 'type' in value || 'ref' in value) {
+    return parentPath ? [parentPath] : [];
+  }
+
+  return Object.entries(value).flatMap(([key, nestedValue]) => {
+    const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+    return getErrorPaths(nestedValue, currentPath);
+  });
+};
+
+const endDateBeforeStartDateError = 'Das Enddatum darf nicht vor dem Startdatum liegen';
+
 /* eslint-disable complexity */
-export const EventForm = () => {
+export const EventForm = ({ scrollViewRef }: EventFormProps) => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
+  const fieldPositionsRef = useRef<Partial<Record<keyof EventFormValues | string, number>>>({});
 
   const {
     data: dataCategories,
@@ -134,6 +182,11 @@ export const EventForm = () => {
     name: 'recurringType'
   });
 
+  const startDate = useWatch({
+    control,
+    name: 'startDate'
+  });
+
   const recurringWeekdays = useWatch({
     control,
     name: 'recurringWeekdays'
@@ -167,6 +220,38 @@ export const EventForm = () => {
   });
 
   const [createEventRecord, { loading }] = useMutation(CREATE_EVENT_RECORDS);
+
+  const registerFieldPosition = useCallback(
+    (fieldName: keyof EventFormValues | string) => (event: LayoutChangeEvent) => {
+      fieldPositionsRef.current[fieldName] = event.nativeEvent.layout.y;
+    },
+    []
+  );
+
+  const scrollToFirstError: SubmitErrorHandler<EventFormValues> = useCallback(
+    (formErrors: FieldErrors<EventFormValues>) => {
+      const errorPaths = getErrorPaths(formErrors);
+      const firstMatchingField = orderedFieldNames.find((fieldName) =>
+        errorPaths.some((path) => path === fieldName || path.startsWith(`${fieldName}.`))
+      );
+
+      if (!firstMatchingField) {
+        return;
+      }
+
+      const y = fieldPositionsRef.current[firstMatchingField];
+
+      if (typeof y !== 'number') {
+        return;
+      }
+
+      scrollViewRef?.current?.scrollTo({
+        animated: true,
+        y: Math.max(0, y - normalize(24))
+      });
+    },
+    [scrollViewRef]
+  );
 
   const onSubmit = async (formValues: EventFormValues) => {
     setIsLoading(true);
@@ -221,6 +306,10 @@ export const EventForm = () => {
     }
   };
 
+  const handleFormSubmit = useCallback(() => {
+    void handleSubmit(onSubmit, scrollToFirstError)();
+  }, [handleSubmit, onSubmit, scrollToFirstError]);
+
   if (loadingCategories) {
     return <LoadingSpinner loading />;
   }
@@ -234,7 +323,7 @@ export const EventForm = () => {
 
   return (
     <>
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
         <Controller
           name="categories"
           render={({ field: { name, onChange, value } }) => (
@@ -244,11 +333,11 @@ export const EventForm = () => {
                 control,
                 data: categoryNameDropdownData,
                 errors,
-                label: `${texts.defectReport.categoryName} *`,
+                label: `${texts.profile.forms.categories} *`,
                 multipleSelect: true,
                 name,
                 onChange,
-                placeholder: texts.defectReport.categoryName,
+                placeholder: texts.profile.forms.categoriesPlaceholder,
                 required: true,
                 value,
                 valueKey: 'name'
@@ -259,7 +348,7 @@ export const EventForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
         <Input
           name="title"
           label={`${texts.profile.forms.eventTitle} *`}
@@ -274,7 +363,7 @@ export const EventForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('description')}>
         <Input
           name="description"
           label={texts.profile.forms.description}
@@ -285,6 +374,14 @@ export const EventForm = () => {
           errorMessage={errors.description && errors.description.message}
           control={control}
         />
+      </Wrapper>
+
+      <Wrapper noPaddingBottom>
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.images}</RegularText>
       </Wrapper>
 
       <Wrapper noPaddingTop>
@@ -311,6 +408,14 @@ export const EventForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <RegularText>{texts.profile.forms.eventDate}</RegularText>
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('startDate')}>
         <Controller
           name="startDate"
           render={({ field: { name, onChange, value } }) => (
@@ -333,30 +438,7 @@ export const EventForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
-        <Controller
-          name="endDate"
-          render={({ field: { name, onChange, value } }) => (
-            <DateTimeInput
-              {...{
-                boldLabel: true,
-                control,
-                errors,
-                label: texts.profile.forms.endDate,
-                mode: 'date',
-                name,
-                onChange,
-                placeholder: texts.profile.forms.endDatePlaceholder,
-                required: true,
-                value
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('startTime')}>
         <Controller
           name="startTime"
           render={({ field: { name, onChange, value } }) => (
@@ -379,7 +461,44 @@ export const EventForm = () => {
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('endDate')}>
+        <Controller
+          name="endDate"
+          render={({ field: { name, onChange, value } }) => (
+            <DateTimeInput
+              {...{
+                boldLabel: true,
+                control,
+                errors,
+                label: texts.profile.forms.endDate,
+                minimumDate: startDate ?? undefined,
+                mode: 'date',
+                name,
+                onChange,
+                placeholder: texts.profile.forms.endDatePlaceholder,
+                required: true,
+                rules: {
+                  validate: (selectedEndDate) => {
+                    if (!selectedEndDate || !startDate) {
+                      return true;
+                    }
+
+                    return moment(selectedEndDate)
+                      .startOf('day')
+                      .isBefore(moment(startDate).startOf('day'))
+                      ? endDateBeforeStartDateError
+                      : true;
+                  }
+                },
+                value
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('endTime')}>
         <Controller
           name="endTime"
           render={({ field: { name, onChange, value } }) => (
@@ -403,107 +522,31 @@ export const EventForm = () => {
       </Wrapper>
 
       <Wrapper noPaddingTop>
-        <Label bold>{texts.profile.forms.eventLocation}</Label>
+        <RegularText small>{texts.profile.forms.eventRepeatableTitle}</RegularText>
+        <RegularText></RegularText>
+        <RegularText smallest>{texts.profile.forms.eventRepeatableDescription}</RegularText>
 
-        <Controller
-          name="location"
-          render={({ field: { onChange, value } }) => (
-            <MapLibre
-              locations={[]}
-              mapCenterPosition={selectedPosition}
-              mapStyle={styles.map}
-              onMapPress={({ geometry }) => {
-                const coordinate = {
-                  latitude: geometry?.coordinates[1],
-                  longitude: geometry?.coordinates[0]
-                };
-
-                setSelectedPosition(coordinate);
-                setValue('latitude', coordinate.latitude);
-                setValue('longitude', coordinate.longitude);
-
-                return { isLocationSelectable: true };
-              }}
-              selectedPosition={selectedPosition}
-              setPinEnabled
-              setOwnLocation
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          name="regionName"
-          label={texts.profile.forms.regionName}
-          placeholder={texts.profile.forms.regionNamePlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.regionName && errors.regionName.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          name="street"
-          label={texts.profile.forms.street}
-          placeholder={texts.profile.forms.streetPlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.street && errors.street.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          name="postcode"
-          label={texts.profile.forms.postcode}
-          placeholder={texts.profile.forms.postcodePlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.postcode && errors.postcode.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          name="city"
-          label={texts.profile.forms.city}
-          placeholder={texts.profile.forms.cityPlaceholder}
-          autoCapitalize="none"
-          validate
-          errorMessage={errors.city && errors.city.message}
-          control={control}
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Label bold>{texts.profile.forms.eventRepeatableTitle}</Label>
-        <Label>{texts.profile.forms.eventRepeatableDescription}</Label>
-
-        <Controller
-          name="recurring"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              checked={!!value}
-              checkedIcon={<Icon.SquareCheckFilled />}
-              containerStyle={styles.checkboxContainerStyle}
-              onPress={() => onChange(!value)}
-              title={texts.profile.forms.isRepeatable}
-              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-            />
-          )}
-          control={control}
-        />
+        <WrapperVertical noPaddingBottom>
+          <Controller
+            name="recurring"
+            render={({ field: { onChange, value } }) => (
+              <Checkbox
+                checked={!!value}
+                checkedIcon={<Icon.SquareCheckFilled />}
+                containerStyle={styles.checkboxContainerStyle}
+                onPress={() => onChange(!value)}
+                title={texts.profile.forms.isRepeatable}
+                uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+              />
+            )}
+            control={control}
+          />
+        </WrapperVertical>
       </Wrapper>
 
       {isRecurring && (
         <>
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('recurringInterval')}>
             <Input
               name="recurringInterval"
               label={`${texts.profile.forms.repeatInterval} *`}
@@ -517,12 +560,15 @@ export const EventForm = () => {
               errorMessage={errors.recurringInterval && errors.recurringInterval.message}
               control={control}
             />
+          </Wrapper>
 
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('recurringType')}>
             <Controller
               name="recurringType"
               render={({ field: { name, onChange, value } }) => (
                 <DropdownInput
                   {...{
+                    boldLabel: true,
                     control,
                     data: recurringIntervals,
                     errors,
@@ -565,11 +611,98 @@ export const EventForm = () => {
       )}
 
       <Wrapper noPaddingTop>
-        <Button
-          invert
-          onPress={() => appendContact(createDefaultContact())}
-          title={texts.profile.forms.addContact}
+        <Divider style={styles.divider} />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <RegularText>{texts.profile.forms.eventLocation}</RegularText>
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('regionName')}>
+        <Input
+          name="regionName"
+          label={texts.profile.forms.regionName}
+          placeholder={texts.profile.forms.regionNamePlaceholder}
+          autoCapitalize="none"
+          validate
+          errorMessage={errors.regionName && errors.regionName.message}
+          control={control}
         />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('street')}>
+        <Input
+          name="street"
+          label={texts.profile.forms.street}
+          placeholder={texts.profile.forms.streetPlaceholder}
+          autoCapitalize="none"
+          validate
+          errorMessage={errors.street && errors.street.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('postcode')}>
+        <Input
+          name="postcode"
+          label={texts.profile.forms.postcode}
+          placeholder={texts.profile.forms.postcodePlaceholder}
+          autoCapitalize="none"
+          keyboardType="numeric"
+          validate
+          errorMessage={errors.postcode && errors.postcode.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('city')}>
+        <Input
+          name="city"
+          label={texts.profile.forms.city}
+          placeholder={texts.profile.forms.cityPlaceholder}
+          autoCapitalize="none"
+          validate
+          errorMessage={errors.city && errors.city.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('location')}>
+        <Label bold>{texts.profile.forms.coordinates}</Label>
+        <Controller
+          name="location"
+          render={({ field: { onChange, value } }) => (
+            <MapLibre
+              locations={[]}
+              mapCenterPosition={selectedPosition}
+              mapStyle={styles.map}
+              onMapPress={({ geometry }) => {
+                const coordinate = {
+                  latitude: geometry?.coordinates[1],
+                  longitude: geometry?.coordinates[0]
+                };
+
+                setSelectedPosition(coordinate);
+                setValue('latitude', coordinate.latitude);
+                setValue('longitude', coordinate.longitude);
+
+                return { isLocationSelectable: true };
+              }}
+              selectedPosition={selectedPosition}
+              setPinEnabled
+              setOwnLocation
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.eventContact}</RegularText>
       </Wrapper>
 
       <Contacts
@@ -582,9 +715,17 @@ export const EventForm = () => {
       <Wrapper noPaddingTop>
         <Button
           invert
-          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
-          title={texts.profile.forms.addPriceInformation}
+          onPress={() => appendContact(createDefaultContact())}
+          title={texts.profile.forms.addContact}
         />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.priceInformations}</RegularText>
       </Wrapper>
 
       <PriceInformations
@@ -597,9 +738,17 @@ export const EventForm = () => {
       <Wrapper noPaddingTop>
         <Button
           invert
-          onPress={() => appendWebUrl(createDefaultWebUrl())}
-          title={texts.profile.forms.addLinks}
+          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
+          title={texts.profile.forms.addPriceInformation}
         />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.links}</RegularText>
       </Wrapper>
 
       <WebUrls
@@ -611,7 +760,15 @@ export const EventForm = () => {
 
       <Wrapper noPaddingTop>
         <Button
-          onPress={handleSubmit(onSubmit)}
+          invert
+          onPress={() => appendWebUrl(createDefaultWebUrl())}
+          title={texts.profile.forms.addLinks}
+        />
+      </Wrapper>
+
+      <Wrapper noPaddingTop>
+        <Button
+          onPress={handleFormSubmit}
           title={texts.profile.forms.send}
           disabled={loading || isLoading}
         />
@@ -633,8 +790,11 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0
   },
+  divider: {
+    backgroundColor: colors.placeholder
+  },
   map: {
-    height: normalize(250),
+    height: normalize(200),
     width: device.width - 2 * normalize(16)
   }
 });

@@ -7,7 +7,7 @@ import { colors, Icon, normalize, texts } from '../../../../config';
 import { OpeningHourFormValue } from '../../../../helpers';
 import { Checkbox } from '../../../Checkbox';
 import { RegularText } from '../../../Text';
-import { Wrapper } from '../../../Wrapper';
+import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../../form';
 import { DropdownInputProps } from '../../../form/DropdownInput';
 
@@ -44,7 +44,7 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
       {fields.map((openingHourField, index) => (
         <Wrapper noPaddingTop key={openingHourField.id}>
           <View style={styles.openingHourGroupHeader}>
-            <RegularText>{texts.profile.forms.openingHourGroup.title}</RegularText>
+            <RegularText small>{texts.profile.forms.openingHourGroup.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.openingHourGroup.deleteButtonAccessibility}
               onPress={() => remove(index)}
@@ -54,120 +54,133 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
             </TouchableOpacity>
           </View>
 
-          <Controller
-            name={`openingHours.${index}.startDate`}
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: texts.profile.forms.openingHourGroup.startDate,
-                  mode: 'date',
-                  name,
-                  onChange,
-                  placeholder: texts.profile.forms.openingHourGroup.startDate,
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
+          <WrapperVertical>
+            <Controller
+              name={`openingHours.${index}.startDate`}
+              render={({ field: { name, onChange, value } }) => (
+                <DateTimeInput
+                  {...{
+                    boldLabel: true,
+                    control,
+                    errors,
+                    label: texts.profile.forms.openingHourGroup.startDate,
+                    mode: 'date',
+                    name,
+                    onChange,
+                    placeholder: texts.profile.forms.openingHourGroup.startDate,
+                    required: true,
+                    value
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </WrapperVertical>
 
-          <Controller
-            name={`openingHours.${index}.startTime`}
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: texts.profile.forms.openingHourGroup.startTime,
-                  mode: 'time',
-                  name,
-                  onChange,
-                  placeholder: texts.profile.forms.openingHourGroup.startTime,
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
+          <WrapperVertical noPaddingTop>
+            <Controller
+              name={`openingHours.${index}.startTime`}
+              render={({ field: { name, onChange, value } }) => (
+                <DateTimeInput
+                  {...{
+                    boldLabel: true,
+                    control,
+                    errors,
+                    label: texts.profile.forms.openingHourGroup.startTime,
+                    mode: 'time',
+                    name,
+                    onChange,
+                    placeholder: texts.profile.forms.openingHourGroup.startTime,
+                    required: true,
+                    value
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </WrapperVertical>
 
-          <Controller
-            name={`openingHours.${index}.endDate`}
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: texts.profile.forms.openingHourGroup.endDate,
-                  mode: 'date',
-                  name,
-                  onChange,
-                  placeholder: texts.profile.forms.openingHourGroup.endDate,
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
+          <WrapperVertical noPaddingTop>
+            <Controller
+              name={`openingHours.${index}.endDate`}
+              render={({ field: { name, onChange, value } }) => (
+                <DateTimeInput
+                  {...{
+                    boldLabel: true,
+                    control,
+                    errors,
+                    label: texts.profile.forms.openingHourGroup.endDate,
+                    mode: 'date',
+                    name,
+                    onChange,
+                    placeholder: texts.profile.forms.openingHourGroup.endDate,
+                    required: true,
+                    value
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </WrapperVertical>
 
-          <Controller
-            name={`openingHours.${index}.endTime`}
-            render={({ field: { name, onChange, value } }) => (
-              <DateTimeInput
-                {...{
-                  boldLabel: true,
-                  control,
-                  errors,
-                  label: texts.profile.forms.openingHourGroup.endTime,
-                  mode: 'time',
-                  name,
-                  onChange,
-                  placeholder: texts.profile.forms.openingHourGroup.endTime,
-                  required: true,
-                  value
-                }}
-              />
-            )}
-            control={control}
-          />
+          <WrapperVertical noPaddingTop>
+            <Controller
+              name={`openingHours.${index}.endTime`}
+              render={({ field: { name, onChange, value } }) => (
+                <DateTimeInput
+                  {...{
+                    boldLabel: true,
+                    control,
+                    errors,
+                    label: texts.profile.forms.openingHourGroup.endTime,
+                    mode: 'time',
+                    name,
+                    onChange,
+                    placeholder: texts.profile.forms.openingHourGroup.endTime,
+                    required: true,
+                    value
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </WrapperVertical>
 
-          <Input
-            name={`openingHours.${index}.description`}
-            label={texts.profile.forms.openingHourGroup.description}
-            placeholder={texts.profile.forms.openingHourGroup.descriptionPlaceholder}
-            autoCapitalize="none"
-            validate
-            control={control}
-          />
+          <WrapperVertical noPaddingTop>
+            <Input
+              name={`openingHours.${index}.description`}
+              label={texts.profile.forms.openingHourGroup.description}
+              placeholder={texts.profile.forms.openingHourGroup.descriptionPlaceholder}
+              autoCapitalize="none"
+              validate
+              control={control}
+            />
+          </WrapperVertical>
 
-          <Controller
-            name={`openingHours.${index}.weekday`}
-            render={({ field: { name, onChange, value } }) => (
-              <DropdownInput
-                {...{
-                  control,
-                  data: weekdays,
-                  errors,
-                  label: texts.profile.forms.openingHourGroup.day,
-                  name,
-                  onChange,
-                  placeholder: texts.profile.forms.openingHourGroup.day,
-                  required: true,
-                  showSearch: false,
-                  value,
-                  valueKey: 'index'
-                }}
-              />
-            )}
-            control={control}
-          />
+          <WrapperVertical noPaddingTop>
+            <Controller
+              name={`openingHours.${index}.weekday`}
+              render={({ field: { name, onChange, value } }) => (
+                <DropdownInput
+                  {...{
+                    boldLabel: true,
+                    control,
+                    data: weekdays,
+                    errors,
+                    label: texts.profile.forms.openingHourGroup.day,
+                    name,
+                    onChange,
+                    placeholder: texts.profile.forms.openingHourGroup.day,
+                    required: true,
+                    showSearch: false,
+                    value,
+                    valueKey: 'index'
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </WrapperVertical>
 
           <Controller
             name={`openingHours.${index}.isOpen`}
