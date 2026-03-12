@@ -70,12 +70,12 @@ export const umlautSwitcher = (text: string) => {
 /* eslint-disable complexity */
 export const Service = ({
   data,
-  isEditMode,
+  isEditMode = false,
   staticJsonName,
   hasDiagonalGradientBackground
 }: {
   data: any;
-  isEditMode: boolean;
+  isEditMode?: boolean;
   staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
