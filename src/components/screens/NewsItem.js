@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, View } from 'react-native';
+import { useMutation } from 'react-apollo';
 
-import { consts } from '../../config';
-import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
+import { Icon, colors, consts, texts } from '../../config';
+import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
+import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { DELETE_NEWS_ITEM } from '../../queries/newsItems';
+import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
+import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
 import { SectionHeader } from '../SectionHeader';
@@ -17,15 +23,15 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const NewsItem = ({ data, route }) => {
+export const NewsItem = ({ data, navigation, refetch, route }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { currentUserData, isLoggedIn } = useProfileContext();
   const { showImageRights } = globalSettings || {};
   const imageRightsPosition = showImageRights?.newsDetail?.imageRightsPosition;
 
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings, categories } =
     data;
 
-  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
   const subtitle = dataProvider && dataProvider.name;
   // the title of a news item is either a given main title or the title from the first content block
@@ -50,11 +56,66 @@ export const NewsItem = ({ data, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const currentUserDataProviderId = currentUserData?.user?.data_provider_id;
+  const isCurrentUser =
+    isLoggedIn &&
+    !!currentUserDataProviderId &&
+    !!dataProvider?.id &&
+    currentUserDataProviderId == dataProvider.id;
+  const [deleteNewsItem] = useMutation(DELETE_NEWS_ITEM, {
+    variables: { id: data.id },
+    onCompleted: () => navigation.goBack()
+  });
+
+  useDetailRefresh(() => {
+    refetch?.();
+  });
 
   return (
     <View>
+      {isCurrentUser && (
+        <Wrapper noPaddingBottom>
+          <WrapperRow spaceAround>
+            <Button
+              icon={<Icon.Pencil color={colors.lightestText} />}
+              iconPosition="left"
+              notFullWidth
+              onPress={() =>
+                navigation.push(ScreenName.ProfileCreateContentForm, {
+                  initialData: data,
+                  mode: 'edit',
+                  query: QUERY_TYPES.NEWS_ITEM
+                })
+              }
+              title={texts.noticeboard.edit}
+            />
+            <Button
+              icon={<Icon.Trash />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() =>
+                Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.delete, [
+                  {
+                    text: texts.noticeboard.abort,
+                    onPress: () => null,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.noticeboard.delete,
+                    onPress: () => deleteNewsItem(),
+                    style: 'destructive'
+                  }
+                ])
+              }
+              title={texts.noticeboard.delete}
+            />
+          </WrapperRow>
+        </Wrapper>
+      )}
+
       {!!subtitle && (
-        <WrapperVertical style={styles.noPaddingBottom}>
+        <WrapperVertical noPaddingBottom>
           <WrapperRow center>
             <HeadlineText smaller uppercase>
               {subtitle}
@@ -98,14 +159,9 @@ export const NewsItem = ({ data, route }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  noPaddingBottom: {
-    paddingBottom: 0
-  }
-});
-
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
+  refetch: PropTypes.func,
   route: PropTypes.object.isRequired
 };

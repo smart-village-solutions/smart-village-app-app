@@ -1,13 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useMemo, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { useMutation } from 'react-apollo';
+import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, normalize, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { DELETE_POINT_OF_INTEREST } from '../../queries/pointsOfInterest';
+import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -15,7 +19,7 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { VoucherListItem } from '../vouchers';
@@ -32,8 +36,9 @@ export const INCREMENT_VOUCHER_COUNT = 5;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
+export const PointOfInterest = ({ data, hideMap, navigation, refetch, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { currentUserData } = useProfileContext();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showOpeningTimes = true } = settings;
@@ -89,6 +94,18 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   }, [vouchers]);
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const currentUserDataProviderId = currentUserData?.user?.data_provider_id;
+  const isCurrentUser =
+    !!currentUserDataProviderId &&
+    !!dataProvider?.id &&
+    currentUserDataProviderId == dataProvider.id;
+  const [deletePointOfInterest] = useMutation(DELETE_POINT_OF_INTEREST, {
+    variables: { id: data.id },
+    onCompleted: () => navigation.goBack()
+  });
+  useDetailRefresh(() => {
+    refetch?.();
+  });
 
   const categoryName = route.params?.queryVariables?.categoryName;
   let nestedCategory;
@@ -98,6 +115,47 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
   return (
     <WrapperVertical>
+      {isCurrentUser && (
+        <Wrapper noPaddingBottom>
+          <WrapperRow spaceAround>
+            <Button
+              icon={<Icon.Pencil color={colors.lightestText} />}
+              iconPosition="left"
+              notFullWidth
+              onPress={() =>
+                navigation.push(ScreenName.ProfileCreateContentForm, {
+                  initialData: data,
+                  mode: 'edit',
+                  query: QUERY_TYPES.POINT_OF_INTEREST
+                })
+              }
+              title={texts.noticeboard.edit}
+            />
+            <Button
+              icon={<Icon.Trash />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() =>
+                Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.delete, [
+                  {
+                    text: texts.noticeboard.abort,
+                    onPress: () => null,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.noticeboard.delete,
+                    onPress: () => deletePointOfInterest(),
+                    style: 'destructive'
+                  }
+                ])
+              }
+              title={texts.noticeboard.delete}
+            />
+          </WrapperRow>
+        </Wrapper>
+      )}
+
       {(!!nestedCategory?.name || category?.name) && (
         <WrapperHorizontal>
           <HeadlineText smaller uppercase>
@@ -247,5 +305,6 @@ PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
   navigation: PropTypes.object,
+  refetch: PropTypes.func,
   route: PropTypes.object.isRequired
 };

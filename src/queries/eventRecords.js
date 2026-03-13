@@ -149,6 +149,10 @@ export const GET_EVENT_RECORD = gql`
     eventRecord(id: $id) {
       ...defaultFields
       ...dateFields
+      recurring
+      recurringInterval
+      recurringType
+      recurringWeekdays
       dates {
         id
         weekday
@@ -254,6 +258,7 @@ export const CREATE_EVENT_RECORDS = gql`
     $dates: [DateInput!]
     $description: String
     $externalId: String
+    $id: ID
     $mediaContents: [MediaContentInput!]
     $organizer: OperatingCompanyInput
     $priceInformations: [PriceInput!]
@@ -272,6 +277,7 @@ export const CREATE_EVENT_RECORDS = gql`
       dates: $dates
       description: $description
       externalId: $externalId
+      id: $id
       mediaContents: $mediaContents
       organizer: $organizer
       priceInformations: $priceInformations
@@ -292,6 +298,16 @@ export const GET_EVENT_RECORDS_ADDRESSES = gql`
   query {
     eventRecordsAddresses {
       city
+    }
+  }
+`;
+
+export const DELETE_EVENT_RECORD = gql`
+  mutation DeleteEventRecord($id: ID!) {
+    changeVisibility(id: $id, recordType: "EventRecord", visible: false) {
+      id
+      status
+      statusCode
     }
   }
 `;

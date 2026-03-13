@@ -18,13 +18,15 @@ export const ProfileCreateContentFormScreen = ({ route }: StackScreenProps<any>)
   const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query;
   const headlineInfo = route.params?.headlineInfo;
+  const initialData = route.params?.initialData;
+  const mode = route.params?.mode ?? 'create';
   const formContent =
     query === QUERY_TYPES.POINT_OF_INTEREST ? (
-      <PointOfInterestForm scrollViewRef={scrollViewRef} />
+      <PointOfInterestForm initialData={initialData} mode={mode} scrollViewRef={scrollViewRef} />
     ) : query === QUERY_TYPES.EVENT_RECORD ? (
-      <EventForm scrollViewRef={scrollViewRef} />
+      <EventForm initialData={initialData} mode={mode} scrollViewRef={scrollViewRef} />
     ) : (
-      <NewsForm scrollViewRef={scrollViewRef} />
+      <NewsForm initialData={initialData} mode={mode} scrollViewRef={scrollViewRef} />
     );
 
   return (

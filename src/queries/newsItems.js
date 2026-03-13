@@ -55,6 +55,7 @@ export const GET_NEWS_ITEMS = gql`
       sourceUrl {
         id
         url
+        description
       }
       dataProvider {
         id
@@ -122,6 +123,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       sourceUrl {
         id
         url
+        description
       }
       dataProvider {
         id
@@ -168,6 +170,7 @@ export const GET_NEWS_ITEM = gql`
       sourceUrl {
         id
         url
+        description
       }
       dataProvider {
         id
@@ -194,6 +197,7 @@ export const CREATE_NEWS_ITEM = gql`
   mutation CreateNewsItem(
     $categories: [CategoryInput!]
     $contentBlocks: [ContentBlockInput!]
+    $id: ID
     $publishedAt: String
     $pushNotification: Boolean
     $sourceUrl: WebUrlInput
@@ -202,6 +206,7 @@ export const CREATE_NEWS_ITEM = gql`
     createNewsItem(
       categories: $categories
       contentBlocks: $contentBlocks
+      id: $id
       publishedAt: $publishedAt
       pushNotification: $pushNotification
       sourceUrl: $sourceUrl
@@ -209,6 +214,16 @@ export const CREATE_NEWS_ITEM = gql`
     ) {
       id
       title
+    }
+  }
+`;
+
+export const DELETE_NEWS_ITEM = gql`
+  mutation DeleteNewsItem($id: ID!) {
+    changeVisibility(id: $id, recordType: "NewsItem", visible: false) {
+      id
+      status
+      statusCode
     }
   }
 `;

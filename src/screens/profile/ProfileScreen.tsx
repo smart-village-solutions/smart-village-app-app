@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext } from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, RefreshControl, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
@@ -14,7 +14,7 @@ import {
   VolunteerAvatar,
   Wrapper
 } from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { colors, texts } from '../../config';
 import { storeProfileUserData, storeTokens } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -128,7 +128,6 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             onPress={() => {
               resetUnreadMessages();
               storeTokens();
-              storeProfileUserData();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
             }}
             title={texts.profile.logout}
@@ -138,10 +137,3 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  settingsContainer: {
-    marginBottom: normalize(9),
-    marginTop: normalize(9)
-  }
-});

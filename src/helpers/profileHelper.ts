@@ -21,6 +21,7 @@ export const storeTokens = (authToken?: string, userAuthToken?: string) => {
     storeProfileUserAuthToken(userAuthToken);
   } else {
     storeProfileUserAuthToken();
+    storeProfileUserData();
   }
 };
 

@@ -4,11 +4,11 @@ import { momentFormat } from './momentHelper';
 
 export type OpeningHourFormValue = {
   description: string;
-  endDate: Date;
-  endTime: Date;
+  endDate?: Date | null;
+  endTime?: Date | null;
   isOpen: boolean;
-  startDate: Date;
-  startTime: Date;
+  startDate?: Date | null;
+  startTime?: Date | null;
   weekday: number;
 };
 
@@ -42,10 +42,10 @@ export type ContactInput = {
 };
 
 export type DateInput = {
-  endDate: Date;
-  endTime: Date;
-  startDate: Date;
-  startTime: Date;
+  endDate?: Date | null;
+  endTime?: Date | null;
+  startDate?: Date | null;
+  startTime?: Date | null;
 };
 
 export const buildGeoLocation = (latitude: number | null, longitude: number | null) => {
@@ -104,6 +104,34 @@ export const buildDate = (input: DateInput) => {
   ];
 };
 
+export const parseDateInputValue = (
+  value?: Date | string | null,
+  // Default covers ISO with/without T-separator, date-only, and time-only strings from the API
+  formats: string[] = ['YYYY-MM-DDTHH:mm:ss.SSSZ', 'YYYY-MM-DD HH:mm:ss Z', 'YYYY-MM-DD']
+) => {
+  if (!value) return undefined;
+  if (value instanceof Date) return value;
+
+  for (const format of formats) {
+    if (format.includes('H')) {
+      // Datetime or time-only format: preserve timezone by formatting to full ISO string
+      const iso = momentFormat(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ', format);
+      if (iso === 'Invalid date') continue;
+      const d = new Date(iso);
+      if (!Number.isNaN(d.getTime())) return d;
+    } else {
+      // Date-only format: extract local calendar date and create local-midnight Date
+      // to avoid UTC-to-local-timezone shifts in date-only pickers.
+      const dateStr = momentFormat(value, 'YYYY-MM-DD', format);
+      if (dateStr === 'Invalid date') continue;
+      const d = new Date(`${dateStr}T00:00:00`);
+      if (!Number.isNaN(d.getTime())) return d;
+    }
+  }
+
+  return undefined;
+};
+
 export const buildOpeningHours = (openingHours: OpeningHourFormValue[]) =>
   openingHours.map((oh) => ({
     open: oh.isOpen,
@@ -112,7 +140,7 @@ export const buildOpeningHours = (openingHours: OpeningHourFormValue[]) =>
     ...(oh.description && { description: oh.description }),
     ...(oh.startTime && { timeFrom: momentFormat(oh.startTime, 'HH:mm') }),
     ...(oh.endTime && { timeTo: momentFormat(oh.endTime, 'HH:mm') }),
-    ...(oh.weekday !== undefined && { weekday: oh.weekday })
+    ...(oh.weekday !== undefined && oh.weekday >= 0 && { weekday: String(oh.weekday) })
   }));
 
 export const buildWebUrls = (webUrls: WebUrlFormValue[]) =>

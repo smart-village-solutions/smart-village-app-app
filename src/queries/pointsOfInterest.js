@@ -299,6 +299,7 @@ export const CREATE_POINT_OF_INTEREST = gql`
     $categories: [CategoryInput!]
     $contact: ContactInput
     $description: String
+    $id: ID
     $location: LocationInput
     $mediaContents: [MediaContentInput!]
     $name: String!
@@ -311,6 +312,7 @@ export const CREATE_POINT_OF_INTEREST = gql`
       categories: $categories
       contact: $contact
       description: $description
+      id: $id
       location: $location
       mediaContents: $mediaContents
       name: $name
@@ -320,6 +322,16 @@ export const CREATE_POINT_OF_INTEREST = gql`
     ) {
       id
       name
+    }
+  }
+`;
+
+export const DELETE_POINT_OF_INTEREST = gql`
+  mutation DeletePointOfInterest($id: ID!) {
+    changeVisibility(id: $id, recordType: "PointOfInterest", visible: false) {
+      id
+      status
+      statusCode
     }
   }
 `;

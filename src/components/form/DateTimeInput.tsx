@@ -121,7 +121,7 @@ type DateTimeInputProps = {
   placeholder: string;
   required?: boolean;
   rules?: any;
-  value?: string;
+  value?: Date | string | null;
 };
 
 export const DateTimeInput = ({

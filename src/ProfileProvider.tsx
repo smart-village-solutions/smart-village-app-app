@@ -62,8 +62,8 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
     if (!isLoggedIn) {
       logInCallback();
     } else {
-      setIsError(true);
       setIsLoading(false);
+      setIsError(true);
     }
   }, [isLoggedIn]);
 

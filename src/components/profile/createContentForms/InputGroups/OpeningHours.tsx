@@ -68,7 +68,6 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
                     name,
                     onChange,
                     placeholder: texts.profile.forms.openingHourGroup.startDate,
-                    required: true,
                     value
                   }}
                 />
@@ -91,7 +90,6 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
                     name,
                     onChange,
                     placeholder: texts.profile.forms.openingHourGroup.startTime,
-                    required: true,
                     value
                   }}
                 />
@@ -114,7 +112,6 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
                     name,
                     onChange,
                     placeholder: texts.profile.forms.openingHourGroup.endDate,
-                    required: true,
                     value
                   }}
                 />
@@ -137,7 +134,6 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
                     name,
                     onChange,
                     placeholder: texts.profile.forms.openingHourGroup.endTime,
-                    required: true,
                     value
                   }}
                 />
@@ -171,7 +167,6 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
                     name,
                     onChange,
                     placeholder: texts.profile.forms.openingHourGroup.day,
-                    required: true,
                     showSearch: false,
                     value,
                     valueKey: 'index'

@@ -10,7 +10,7 @@ import {
   useForm,
   useWatch
 } from 'react-hook-form';
-import { Alert, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../../config';
@@ -18,12 +18,14 @@ import {
   buildAddressData,
   buildContactsData,
   buildDate,
+  parseDateInputValue,
   buildPriceInformations,
   buildWebUrls,
   PriceInformationFormValue,
   uploadImages,
   WebUrlFormValue
 } from '../../../helpers';
+import { DETAIL_REFRESH_EVENT } from '../../../hooks';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_EVENT_RECORDS } from '../../../queries/eventRecords';
 import { Button } from '../../Button';
@@ -58,12 +60,13 @@ const recurringIntervals = [
 ] as unknown as DropdownInputProps['data'];
 
 type EventFormValues = {
-  categories: string;
+  categories: string[] | string;
   city: string;
   contacts: ContactFormValue[];
   description: string;
   endDate: Date | null;
   endTime: Date | null;
+  id?: string;
   image: string | null;
   latitude: number | null;
   location: string;
@@ -83,6 +86,8 @@ type EventFormValues = {
 };
 
 type EventFormProps = {
+  initialData?: any;
+  mode?: 'create' | 'edit';
   scrollViewRef?: MutableRefObject<ScrollView | null>;
 };
 
@@ -121,21 +126,79 @@ const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
 
 const endDateBeforeStartDateError = 'Das Enddatum darf nicht vor dem Startdatum liegen';
 
+const buildImageValue = (mediaContents: any[] = []) =>
+  JSON.stringify(
+    mediaContents
+      .filter(
+        (mediaContent) => mediaContent?.contentType === 'image' && mediaContent?.sourceUrl?.url
+      )
+      .map((mediaContent) => {
+        const uri = mediaContent.sourceUrl.url;
+        const imageName = uri.split('/').pop();
+
+        return { id: mediaContent.id, infoText: imageName, uri };
+      })
+  );
+
+const buildMediaContentInput = (mediaContents: any[] = []) =>
+  mediaContents
+    .filter((mediaContent) => mediaContent?.contentType && mediaContent?.sourceUrl?.url)
+    .map((mediaContent) => ({
+      contentType: mediaContent.contentType,
+      ...(mediaContent.captionText && { captionText: mediaContent.captionText }),
+      ...(mediaContent.copyright && { copyright: mediaContent.copyright }),
+      sourceUrl: {
+        url: mediaContent.sourceUrl.url
+      }
+    }));
+
+const buildContactsValue = (contacts: any[] = []): ContactFormValue[] =>
+  contacts.map((contact) => ({
+    description: '',
+    email: contact?.email ?? '',
+    fax: contact?.fax ?? '',
+    firstname: contact?.firstName ?? '',
+    phone: contact?.phone ?? '',
+    surname: contact?.lastName ?? '',
+    url: contact?.webUrls?.[0]?.url ?? '',
+    urlText: contact?.webUrls?.[0]?.description ?? ''
+  }));
+
+const buildWebUrlsValue = (webUrls: any[] = []): WebUrlFormValue[] =>
+  webUrls.map((webUrl) => ({
+    description: webUrl?.description ?? '',
+    url: webUrl?.url ?? ''
+  }));
+
+const buildPriceInformationsValue = (priceInformations: any[] = []): PriceInformationFormValue[] =>
+  priceInformations.map((priceInformation) => ({
+    amount:
+      priceInformation?.amount !== null && priceInformation?.amount !== undefined
+        ? `${priceInformation.amount}`
+        : '',
+    description: priceInformation?.description ?? ''
+  }));
+
 /* eslint-disable complexity */
-export const EventForm = ({ scrollViewRef }: EventFormProps) => {
+export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: EventFormProps) => {
   const navigation = useNavigation();
+  const isEdit = mode === 'edit' && !!initialData?.id;
+  const initialDates = initialData?.date || initialData?.dates?.[0] || {};
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
     latitude: number;
     longitude: number;
-  } | null>(null);
+  } | null>(
+    initialData?.addresses?.[0]?.geoLocation
+      ? {
+          latitude: initialData.addresses[0].geoLocation.latitude,
+          longitude: initialData.addresses[0].geoLocation.longitude
+        }
+      : null
+  );
   const fieldPositionsRef = useRef<Partial<Record<keyof EventFormValues | string, number>>>({});
 
-  const {
-    data: dataCategories,
-    loading: loadingCategories,
-    refetch: refetchCategories
-  } = useQuery(GET_CATEGORIES, {
+  const { data: dataCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES, {
     variables: { tagList: ['event_record'] }
   });
 
@@ -147,28 +210,36 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
   } = useForm<EventFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categories: '[]',
-      city: '',
-      contacts: [],
-      description: '',
-      endDate: moment().toDate(),
-      endTime: moment().toDate(),
-      image: '[]',
-      latitude: null,
+      categories:
+        initialData?.categories?.map((category: { name: string }) => category.name) ||
+        (initialData?.category?.name ? [initialData.category.name] : []),
+      city: initialData?.addresses?.[0]?.city ?? '',
+      contacts: buildContactsValue(initialData?.contacts),
+      description: initialData?.description ?? '',
+      endDate: parseDateInputValue(initialDates?.dateTo) ?? (isEdit ? null : moment().toDate()),
+      endTime:
+        parseDateInputValue(initialDates?.timeTo, ['HH:mm', 'HH:mm:ss']) ??
+        (isEdit ? null : moment().toDate()),
+      id: initialData?.id ?? '',
+      image: buildImageValue(initialData?.mediaContents),
+      latitude: initialData?.addresses?.[0]?.geoLocation?.latitude ?? null,
       location: '',
-      longitude: null,
-      postcode: '',
-      priceInformations: [],
-      recurring: false,
-      recurringInterval: '',
-      recurringType: '',
-      recurringWeekdays: [],
-      regionName: '',
-      startDate: moment().toDate(),
-      startTime: moment().toDate(),
-      street: '',
-      title: '',
-      urls: []
+      longitude: initialData?.addresses?.[0]?.geoLocation?.longitude ?? null,
+      postcode: initialData?.addresses?.[0]?.zip ?? '',
+      priceInformations: buildPriceInformationsValue(initialData?.priceInformations),
+      recurring: initialData?.recurring === '1' || initialData?.recurring === true,
+      recurringInterval: initialData?.recurringInterval ? `${initialData.recurringInterval}` : '',
+      recurringType: initialData?.recurringType ? `${initialData.recurringType}` : '',
+      recurringWeekdays:
+        initialData?.recurringWeekdays?.map((weekday: string | number) => Number(weekday)) || [],
+      regionName: initialData?.addresses?.[0]?.addition ?? '',
+      startDate: parseDateInputValue(initialDates?.dateFrom) ?? (isEdit ? null : moment().toDate()),
+      startTime:
+        parseDateInputValue(initialDates?.timeFrom, ['HH:mm', 'HH:mm:ss']) ??
+        (isEdit ? null : moment().toDate()),
+      street: initialData?.addresses?.[0]?.street ?? '',
+      title: initialData?.title ?? '',
+      urls: buildWebUrlsValue(initialData?.webUrls)
     }
   });
 
@@ -269,6 +340,9 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
       }
 
       const { imageUrls } = result;
+      const existingNonImageMediaContents = buildMediaContentInput(
+        initialData?.mediaContents
+      ).filter((mediaContent) => mediaContent.contentType !== 'image');
       const dates = buildDate(formValues);
       const contacts = buildContactsData(formValues.contacts);
       const webUrls = buildWebUrls(formValues.urls);
@@ -276,6 +350,7 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
 
       await createEventRecord({
         variables: {
+          ...(isEdit && formValues.id && { id: formValues.id }),
           addresses: [buildAddressData(formValues)],
           categories: formValues.categories.map((name: string) => ({ name })),
           dates,
@@ -288,17 +363,24 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
               recurringWeekdays: formValues.recurringWeekdays.map((day) => day.toString())
             }),
           ...(formValues.description && { description: formValues.description }),
-          ...(imageUrls.length && { mediaContents: imageUrls }),
+          ...((existingNonImageMediaContents.length || imageUrls.length) && {
+            mediaContents: [...existingNonImageMediaContents, ...imageUrls]
+          }),
           ...(webUrls.length && { urls: webUrls }),
           ...(priceInformations.length && { priceInformations }),
           ...(contacts && { contacts })
         }
       });
 
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
       navigation.goBack();
       Alert.alert(
-        texts.profile.forms.contentCreateSuccessAlertTitle,
-        texts.profile.forms.contentCreateSuccessAlertMessage
+        isEdit
+          ? texts.profile.forms.contentUpdateSuccessAlertTitle
+          : texts.profile.forms.contentCreateSuccessAlertTitle,
+        isEdit
+          ? texts.profile.forms.contentUpdateSuccessAlertMessage
+          : texts.profile.forms.contentCreateSuccessAlertMessage
       );
     } catch (error) {
       setIsLoading(false);
@@ -452,7 +534,6 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
                 name,
                 onChange,
                 placeholder: texts.profile.forms.startTimePlaceholder,
-                required: true,
                 value
               }}
             />
@@ -476,7 +557,6 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
                 name,
                 onChange,
                 placeholder: texts.profile.forms.endDatePlaceholder,
-                required: true,
                 rules: {
                   validate: (selectedEndDate) => {
                     if (!selectedEndDate || !startDate) {
@@ -512,7 +592,6 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
                 name,
                 onChange,
                 placeholder: texts.profile.forms.endTimePlaceholder,
-                required: true,
                 value
               }}
             />
@@ -649,7 +728,12 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
           placeholder={texts.profile.forms.postcodePlaceholder}
           autoCapitalize="none"
           keyboardType="numeric"
+          maxLength={5}
           validate
+          rules={{
+            required: `${texts.profile.forms.postcode} muss ausgefüllt werden`,
+            minLength: { value: 5, message: texts.profile.postcodeMinLength }
+          }}
           errorMessage={errors.postcode && errors.postcode.message}
           control={control}
         />
@@ -671,7 +755,7 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
         <Label bold>{texts.profile.forms.coordinates}</Label>
         <Controller
           name="location"
-          render={({ field: { onChange, value } }) => (
+          render={() => (
             <MapLibre
               locations={[]}
               mapCenterPosition={selectedPosition}
@@ -769,7 +853,7 @@ export const EventForm = ({ scrollViewRef }: EventFormProps) => {
       <Wrapper noPaddingTop>
         <Button
           onPress={handleFormSubmit}
-          title={texts.profile.forms.send}
+          title={isEdit ? texts.profile.forms.save : texts.profile.forms.send}
           disabled={loading || isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>

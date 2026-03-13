@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type {
@@ -13,6 +13,37 @@ import { colors, consts, Icon, normalize } from '../../config';
 import { Label } from '../Label';
 
 const { URL_REGEX } = consts;
+
+const looksLikeHtml = (value: string) => /<\/?[a-z][\s\S]*>/i.test(value);
+
+const normalizeInitialHtml = (value: string) =>
+  value
+    .replace(/<\s*strong(\s|>)/gi, '<b$1')
+    .replace(/<\s*\/\s*strong\s*>/gi, '</b>')
+    .replace(/<\s*em(\s|>)/gi, '<i$1')
+    .replace(/<\s*\/\s*em\s*>/gi, '</i>')
+    .replace(/<\s*\/\s*p\s*>\s*<\s*p(\s|>)/gi, '</p><p><br></p><p$1');
+
+const denormalizeSubmittedHtml = (value: string) =>
+  value.replace(
+    /<\s*\/\s*p\s*>\s*<\s*p\s*>\s*<\s*br\s*\/?\s*>\s*<\s*\/\s*p\s*>\s*<\s*p(\s|>)/gi,
+    '</p><p$1'
+  );
+
+const getInitialRichTextValue = (value: string) => {
+  if (!value) {
+    return value;
+  }
+
+  const trimmedValue = value.trim();
+  const normalizedValue = normalizeInitialHtml(value);
+
+  if (trimmedValue.startsWith('<html>') && trimmedValue.endsWith('</html>')) {
+    return normalizeInitialHtml(value);
+  }
+
+  return looksLikeHtml(trimmedValue) ? `<html>${normalizedValue}</html>` : value;
+};
 
 type ToolbarAction =
   | 'bold'
@@ -59,8 +90,26 @@ export const RichTextInput = forwardRef(
     const [isActive, setIsActive] = useState(false);
     const [richTextState, setRichTextState] = useState<OnChangeStateEvent | null>(null);
     const [selectionState, setSelectionState] = useState<OnChangeSelectionEvent | null>(null);
+    const [initialValue, setInitialValue] = useState(() => getInitialRichTextValue(field.value));
+    const lastEditorValueRef = useRef(field.value);
 
     useImperativeHandle(ref, () => richTextRef.current as EnrichedTextInputInstance, []);
+
+    useEffect(() => {
+      if (field.value === lastEditorValueRef.current) {
+        return;
+      }
+
+      const nextInitialValue = getInitialRichTextValue(field.value);
+      lastEditorValueRef.current = field.value;
+
+      if (isActive) {
+        return;
+      }
+
+      setInitialValue(nextInitialValue);
+      richTextRef.current?.setValue(nextInitialValue);
+    }, [field.value, isActive]);
 
     const handleSetLink = () => {
       // Selected text is used as both link label and URL input.
@@ -205,10 +254,14 @@ export const RichTextInput = forwardRef(
           {toolbar}
           <EnrichedTextInput
             ref={richTextRef}
+            defaultValue={initialValue}
             // HTML value is pushed to the form field on every change
-            onChangeHtml={(e) =>
-              (field.onChange as ((value: string) => void) | undefined)?.(e.nativeEvent.value)
-            }
+            onChangeHtml={(e) => {
+              const nextValue = denormalizeSubmittedHtml(e.nativeEvent.value);
+
+              lastEditorValueRef.current = nextValue;
+              (field.onChange as ((value: string) => void) | undefined)?.(nextValue);
+            }}
             onChangeSelection={(e) => {
               setSelectionState(e.nativeEvent);
               onChangeSelection?.(e);

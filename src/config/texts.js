@@ -1043,6 +1043,8 @@ export const texts = {
       },
       contentCreateSuccessAlertMessage: 'Die Erstellung des Inhalts war erfolgreich.',
       contentCreateSuccessAlertTitle: 'Erfolg',
+      contentUpdateSuccessAlertMessage: 'Die Bearbeitung des Inhalts war erfolgreich.',
+      contentUpdateSuccessAlertTitle: 'Erfolg',
       contentImageUploadErrorAlertMessage:
         'Beim Hochladen eines Bildes ist ein Fehler aufgetreten.',
       contentImageUploadErrorAlertTitle: 'Fehler',
@@ -1124,6 +1126,7 @@ export const texts = {
       repeatIntervalPlaceholder: 'Geben Sie hier ein Intervall in Tagen ein',
       repeatUntilDate: 'Wiederholen bis',
       repeatUntilDatePlaceholder: 'Wählen Sie ein Enddatum für die Wiederholung aus',
+      save: 'Speichern',
       send: 'Senden',
       startDate: 'Startdatum',
       startDatePlaceholder: 'Wählen Sie ein Startdatum aus',

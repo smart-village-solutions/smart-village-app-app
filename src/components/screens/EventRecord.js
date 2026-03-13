@@ -1,13 +1,18 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useMutation } from 'react-apollo';
+import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
+import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, consts, normalize, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
+import { DELETE_EVENT_RECORD } from '../../queries/eventRecords';
+import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -16,7 +21,7 @@ import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -36,8 +41,8 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
-/* NOTE: we need to check a lot for presence, so this is that complex */
-export const EventRecord = ({ data, route }) => {
+export const EventRecord = ({ data, navigation, refetch, route }) => {
+  const { currentUserData } = useProfileContext();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { eventDetail = {} } = settings;
@@ -77,7 +82,6 @@ export const EventRecord = ({ data, route }) => {
     ])
   );
 
-  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   let media = [];
 
   !!mediaContents &&
@@ -108,6 +112,18 @@ export const EventRecord = ({ data, route }) => {
     });
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const currentUserDataProviderId = currentUserData?.user?.data_provider_id;
+  const isCurrentUser =
+    !!currentUserDataProviderId &&
+    !!dataProvider?.id &&
+    currentUserDataProviderId == dataProvider.id;
+  const [deleteEventRecord] = useMutation(DELETE_EVENT_RECORD, {
+    variables: { id: data.id },
+    onCompleted: () => navigation.goBack()
+  });
+  useDetailRefresh(() => {
+    refetch?.();
+  });
 
   const eventDates =
     dates
@@ -121,7 +137,48 @@ export const EventRecord = ({ data, route }) => {
 
   return (
     <View>
-      <WrapperVertical style={styles.noPaddingTop}>
+      {isCurrentUser && (
+        <Wrapper noPaddingBottom>
+          <WrapperRow spaceAround>
+            <Button
+              icon={<Icon.Pencil color={colors.lightestText} />}
+              iconPosition="left"
+              notFullWidth
+              onPress={() =>
+                navigation.push(ScreenName.ProfileCreateContentForm, {
+                  initialData: data,
+                  mode: 'edit',
+                  query: QUERY_TYPES.EVENT_RECORD
+                })
+              }
+              title={texts.noticeboard.edit}
+            />
+            <Button
+              icon={<Icon.Trash />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() =>
+                Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.delete, [
+                  {
+                    text: texts.noticeboard.abort,
+                    onPress: () => null,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.noticeboard.delete,
+                    onPress: () => deleteEventRecord(),
+                    style: 'destructive'
+                  }
+                ])
+              }
+              title={texts.noticeboard.delete}
+            />
+          </WrapperRow>
+        </Wrapper>
+      )}
+
+      <WrapperVertical noPaddingTop>
         <ImageSection mediaContents={mediaContents} />
       </WrapperVertical>
 
@@ -208,14 +265,12 @@ const styles = StyleSheet.create({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });
 
 EventRecord.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  refetch: PropTypes.func,
   route: PropTypes.object.isRequired
 };

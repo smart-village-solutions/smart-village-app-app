@@ -8,7 +8,7 @@ import {
   useFieldArray,
   useForm
 } from 'react-hook-form';
-import { Alert, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, device, normalize, texts } from '../../../config';
@@ -19,10 +19,12 @@ import {
   buildPriceInformations,
   buildWebUrls,
   OpeningHourFormValue,
+  parseDateInputValue,
   PriceInformationFormValue,
   uploadImages,
   WebUrlFormValue
 } from '../../../helpers';
+import { DETAIL_REFRESH_EVENT } from '../../../hooks';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
 import { Button } from '../../Button';
@@ -46,12 +48,13 @@ import {
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type PoiFormValues = {
-  categories: string;
+  categories: string[] | string;
   city: string;
   description: string;
   email: string;
   fax: string;
   firstname: string;
+  id?: string;
   image: string | null;
   latitude: number | null;
   location: string;
@@ -70,6 +73,8 @@ type PoiFormValues = {
 };
 
 type PointOfInterestFormProps = {
+  initialData?: any;
+  mode?: 'create' | 'edit';
   scrollViewRef?: MutableRefObject<ScrollView | null>;
 };
 
@@ -77,6 +82,7 @@ const orderedFieldNames: Array<keyof PoiFormValues> = [
   'categories',
   'name',
   'description',
+  'openingHours',
   'regionName',
   'street',
   'postcode',
@@ -100,20 +106,72 @@ const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
   });
 };
 
-export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps) => {
+const buildImageValue = (mediaContents: any[] = []) =>
+  JSON.stringify(
+    mediaContents
+      .filter(
+        (mediaContent) => mediaContent?.contentType === 'image' && mediaContent?.sourceUrl?.url
+      )
+      .map((mediaContent) => {
+        const uri = mediaContent.sourceUrl.url;
+        const imageName = uri.split('/').pop();
+
+        return { id: mediaContent.id, infoText: imageName, uri };
+      })
+  );
+
+const buildWebUrlsValue = (webUrls: any[] = []): WebUrlFormValue[] =>
+  webUrls.map((webUrl) => ({
+    description: webUrl?.description ?? '',
+    url: webUrl?.url ?? ''
+  }));
+
+const buildPriceInformationsValue = (priceInformations: any[] = []): PriceInformationFormValue[] =>
+  priceInformations.map((priceInformation) => ({
+    amount:
+      priceInformation?.amount !== null && priceInformation?.amount !== undefined
+        ? `${priceInformation.amount}`
+        : '',
+    description: priceInformation?.description ?? ''
+  }));
+
+const buildOpeningHoursValue = (openingHours: any[] = []): OpeningHourFormValue[] =>
+  openingHours.map((openingHour) => ({
+    description: openingHour?.description ?? '',
+    endDate: parseDateInputValue(openingHour?.dateTo) ?? null,
+    endTime: parseDateInputValue(openingHour?.timeTo, ['HH:mm', 'HH:mm:ss']) ?? null,
+    isOpen: !!openingHour?.open,
+    startDate: parseDateInputValue(openingHour?.dateFrom) ?? null,
+    startTime: parseDateInputValue(openingHour?.timeFrom, ['HH:mm', 'HH:mm:ss']) ?? null,
+    weekday:
+      openingHour?.weekday !== null && openingHour?.weekday !== undefined
+        ? Number(openingHour.weekday)
+        : -1
+  }));
+
+/* eslint-disable complexity */
+export const PointOfInterestForm = ({
+  initialData,
+  mode = 'create',
+  scrollViewRef
+}: PointOfInterestFormProps) => {
   const navigation = useNavigation();
+  const isEdit = mode === 'edit' && !!initialData?.id;
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
     latitude: number;
     longitude: number;
-  } | null>(null);
+  } | null>(
+    initialData?.addresses?.[0]?.geoLocation
+      ? {
+          latitude: initialData.addresses[0].geoLocation.latitude,
+          longitude: initialData.addresses[0].geoLocation.longitude
+        }
+      : null
+  );
   const fieldPositionsRef = useRef<Partial<Record<keyof PoiFormValues | string, number>>>({});
 
-  const {
-    data: dataCategories,
-    loading: loadingCategories,
-    refetch: refetchCategories
-  } = useQuery(GET_CATEGORIES, {
+  const { data: dataCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES, {
     variables: { tagList: ['point_of_interest'] }
   });
 
@@ -125,27 +183,30 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
   } = useForm<PoiFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categories: '[]',
-      city: '',
-      description: '',
-      email: '',
-      fax: '',
-      firstname: '',
-      image: '[]',
-      latitude: null,
+      categories:
+        initialData?.categories?.map((category: { name: string }) => category.name) ||
+        (initialData?.category?.name ? [initialData.category.name] : []),
+      city: initialData?.addresses?.[0]?.city ?? '',
+      description: initialData?.description ?? '',
+      email: initialData?.contact?.email ?? '',
+      fax: initialData?.contact?.fax ?? '',
+      firstname: initialData?.contact?.firstName ?? '',
+      id: initialData?.id ?? '',
+      image: buildImageValue(initialData?.mediaContents),
+      latitude: initialData?.addresses?.[0]?.geoLocation?.latitude ?? null,
       location: '',
-      longitude: null,
-      name: '',
-      openingHours: [],
-      phone: '',
-      postcode: '',
-      priceInformations: [],
-      regionName: '',
-      street: '',
-      surname: '',
-      url: '',
-      urlText: '',
-      webUrls: []
+      longitude: initialData?.addresses?.[0]?.geoLocation?.longitude ?? null,
+      name: initialData?.title ?? initialData?.name ?? '',
+      openingHours: buildOpeningHoursValue(initialData?.openingHours),
+      phone: initialData?.contact?.phone ?? '',
+      postcode: initialData?.addresses?.[0]?.zip ?? '',
+      priceInformations: buildPriceInformationsValue(initialData?.priceInformations),
+      regionName: initialData?.addresses?.[0]?.addition ?? '',
+      street: initialData?.addresses?.[0]?.street ?? '',
+      surname: initialData?.contact?.lastName ?? '',
+      url: initialData?.contact?.webUrls?.[0]?.url ?? '',
+      urlText: initialData?.contact?.webUrls?.[0]?.description ?? '',
+      webUrls: buildWebUrlsValue(initialData?.webUrls)
     }
   });
 
@@ -208,6 +269,7 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
 
       await createPointOfInterest({
         variables: {
+          ...(isEdit && formValues.id && { id: formValues.id }),
           addresses: [buildAddressData(formValues)],
           categories: formValues.categories.map((name: string) => ({ name })),
           name: formValues.name,
@@ -220,10 +282,15 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
         }
       });
 
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
       navigation.goBack();
       Alert.alert(
-        texts.profile.forms.contentCreateSuccessAlertTitle,
-        texts.profile.forms.contentCreateSuccessAlertMessage
+        isEdit
+          ? texts.profile.forms.contentUpdateSuccessAlertTitle
+          : texts.profile.forms.contentCreateSuccessAlertTitle,
+        isEdit
+          ? texts.profile.forms.contentUpdateSuccessAlertMessage
+          : texts.profile.forms.contentCreateSuccessAlertMessage
       );
     } catch (error) {
       setIsLoading(false);
@@ -396,7 +463,11 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
           placeholder={texts.profile.forms.postcodePlaceholder}
           autoCapitalize="none"
           keyboardType="numeric"
+          maxLength={5}
           validate
+          rules={{
+            minLength: { value: 5, message: texts.profile.postcodeMinLength }
+          }}
           errorMessage={errors.postcode && errors.postcode.message}
           control={control}
         />
@@ -418,7 +489,7 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
         <Label bold>{texts.profile.forms.coordinates}</Label>
         <Controller
           name="location"
-          render={({ field: { onChange, value } }) => (
+          render={() => (
             <MapLibre
               locations={[]}
               mapCenterPosition={selectedPosition}
@@ -448,7 +519,7 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
         <Divider style={styles.divider} />
       </Wrapper>
 
-      <Wrapper>
+      <Wrapper onLayout={registerFieldPosition('openingHours')}>
         <RegularText>{texts.profile.forms.openingHours}</RegularText>
       </Wrapper>
 
@@ -605,7 +676,7 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
       <Wrapper noPaddingTop>
         <Button
           onPress={handleFormSubmit}
-          title={texts.profile.forms.send}
+          title={isEdit ? texts.profile.forms.save : texts.profile.forms.send}
           disabled={loading || isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>
@@ -617,6 +688,7 @@ export const PointOfInterestForm = ({ scrollViewRef }: PointOfInterestFormProps)
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   divider: {

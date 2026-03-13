@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import React, { MutableRefObject, useCallback, useContext, useRef, useState } from 'react';
+import React, { MutableRefObject, useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { Alert, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { ProfileContext } from '../../../ProfileProvider';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { uploadImages } from '../../../helpers';
+import { parseDateInputValue, uploadImages } from '../../../helpers';
+import { DETAIL_REFRESH_EVENT } from '../../../hooks';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
@@ -24,9 +24,10 @@ import { MultiImageSelector } from '../../selectors';
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 
 type NewsFormValues = {
-  categories: string;
+  categories: string[] | string;
   date: Date | null;
   description: string;
+  id?: string;
   image: string;
   subTitle: string;
   title: string;
@@ -36,6 +37,8 @@ type NewsFormValues = {
 };
 
 type NewsFormProps = {
+  initialData?: any;
+  mode?: 'create' | 'edit';
   scrollViewRef?: MutableRefObject<ScrollView | null>;
 };
 
@@ -65,18 +68,42 @@ const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
   });
 };
 
-export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
-  const { currentUserData } = useContext(ProfileContext);
+const buildImageValue = (mediaContents: any[] = []) =>
+  JSON.stringify(
+    mediaContents
+      .filter(
+        (mediaContent) => mediaContent?.contentType === 'image' && mediaContent?.sourceUrl?.url
+      )
+      .map((mediaContent) => {
+        const uri = mediaContent.sourceUrl.url;
+        const imageName = uri.split('/').pop();
 
+        return { id: mediaContent.id, infoText: imageName, uri };
+      })
+  );
+
+const buildMediaContentInput = (mediaContents: any[] = []) =>
+  mediaContents
+    .filter((mediaContent) => mediaContent?.contentType && mediaContent?.sourceUrl?.url)
+    .map((mediaContent) => ({
+      contentType: mediaContent.contentType,
+      ...(mediaContent.captionText && { captionText: mediaContent.captionText }),
+      ...(mediaContent.copyright && { copyright: mediaContent.copyright }),
+      sourceUrl: {
+        url: mediaContent.sourceUrl.url
+      }
+    }));
+
+/* eslint-disable complexity */
+export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFormProps) => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const fieldPositionsRef = useRef<Partial<Record<keyof NewsFormValues | string, number>>>({});
+  const isEdit = mode === 'edit' && !!initialData?.id;
+  const contentBlock = initialData?.contentBlocks?.[0];
+  const additionalContentBlocks = initialData?.contentBlocks?.slice(1) ?? [];
 
-  const {
-    data: dataCategories,
-    loading: loadingCategories,
-    refetch: refetchCategories
-  } = useQuery(GET_CATEGORIES, {
+  const { data: dataCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES, {
     variables: { tagList: ['news_item'] }
   });
 
@@ -87,14 +114,15 @@ export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
   } = useForm<NewsFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categories: '[]',
-      date: moment().toDate(),
-      description: '',
-      image: '[]',
-      subTitle: '',
-      title: '',
-      url: '',
-      urlDescription: '',
+      categories: initialData?.categories?.map((category: { name: string }) => category.name) || [],
+      date: parseDateInputValue(initialData?.publishedAt) ?? moment().toDate(),
+      description: contentBlock?.body ?? '',
+      id: initialData?.id ?? '',
+      image: buildImageValue(contentBlock?.mediaContents),
+      subTitle: contentBlock?.intro ?? '',
+      title: initialData?.mainTitle ?? initialData?.title ?? contentBlock?.title ?? '',
+      url: initialData?.sourceUrl?.url ?? '',
+      urlDescription: initialData?.sourceUrl?.description ?? '',
       sendPushNotification: false
     }
   });
@@ -124,19 +152,34 @@ export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
       }
 
       const { imageUrls } = result;
+      const existingNonImageMediaContents = buildMediaContentInput(
+        contentBlock?.mediaContents
+      ).filter((mediaContent) => mediaContent.contentType !== 'image');
+      const preservedContentBlocks = additionalContentBlocks.map((block: any) => ({
+        ...(block?.id && { id: block.id }),
+        ...(block?.title && { title: block.title }),
+        ...(block?.intro && { intro: block.intro }),
+        ...(block?.body && { body: block.body }),
+        ...(block?.mediaContents?.length && {
+          mediaContents: buildMediaContentInput(block.mediaContents)
+        })
+      }));
 
       await createNewsItem({
         variables: {
+          ...(isEdit && formValues.id && { id: formValues.id }),
           categories: formValues.categories.map((categoryName: string) => ({
             name: categoryName
           })),
           contentBlocks: [
             {
+              ...(contentBlock?.id && { id: contentBlock.id }),
               title: formValues.title,
               intro: formValues.subTitle,
               body: formValues.description,
-              mediaContents: imageUrls
-            }
+              mediaContents: [...existingNonImageMediaContents, ...imageUrls]
+            },
+            ...preservedContentBlocks
           ],
           publishedAt: formValues.date,
           pushNotification: formValues.sendPushNotification,
@@ -150,10 +193,15 @@ export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
         }
       });
 
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
       navigation.goBack();
       Alert.alert(
-        texts.profile.forms.contentCreateSuccessAlertTitle,
-        texts.profile.forms.contentCreateSuccessAlertMessage
+        isEdit
+          ? texts.profile.forms.contentUpdateSuccessAlertTitle
+          : texts.profile.forms.contentCreateSuccessAlertTitle,
+        isEdit
+          ? texts.profile.forms.contentUpdateSuccessAlertMessage
+          : texts.profile.forms.contentCreateSuccessAlertMessage
       );
     } catch (error) {
       setIsLoading(false);
@@ -283,7 +331,6 @@ export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
                 control,
                 errorType: IMAGE_SELECTOR_ERROR_TYPES.NEWS,
                 field,
-                // isDeletable: !isEdit, // TODO: handle deletable state for edit mode
                 isMultiImages: true,
                 item: {
                   buttonTitle: texts.profile.forms.addImages,
@@ -380,7 +427,7 @@ export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
       <Wrapper noPaddingTop>
         <Button
           onPress={handleFormSubmit}
-          title={texts.profile.forms.send}
+          title={isEdit ? texts.profile.forms.save : texts.profile.forms.send}
           disabled={loading || isLoading}
         />
 
@@ -393,6 +440,7 @@ export const NewsForm = ({ scrollViewRef }: NewsFormProps) => {
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   checkboxContainerStyle: {
