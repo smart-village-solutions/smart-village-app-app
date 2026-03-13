@@ -2,10 +2,17 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  MutableRefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { useMutation, useQuery as useQueryWithApollo } from 'react-apollo';
-import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { Alert, Keyboard, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -99,17 +106,58 @@ type TNoticeboardCreateData = {
   licensePlate?: string;
 };
 
+const orderedFieldNames: Array<keyof TNoticeboardCreateData> = [
+  'name',
+  'email',
+  'noticeboardType',
+  'age',
+  'title',
+  'body',
+  'departureDate',
+  'departureTime',
+  'departureAddress',
+  'departureStreet',
+  'departureZip',
+  'departureCity',
+  'destinationAddress',
+  'destinationStreet',
+  'destinationZip',
+  'destinationCity',
+  'drivingFrequency',
+  'drivingFrequencyDays',
+  'availablePlaces',
+  'dateEnd'
+];
+
+const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
+  if (!value || typeof value !== 'object') {
+    return [];
+  }
+
+  if ('message' in value || 'type' in value || 'ref' in value) {
+    return parentPath ? [parentPath] : [];
+  }
+
+  return Object.entries(value).flatMap(([key, nestedValue]) => {
+    const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+    return getErrorPaths(nestedValue, currentPath);
+  });
+};
+
 /* eslint-disable complexity */
 export const ProfileNoticeboardCreateForm = ({
   data,
   navigation,
   queryVariables,
-  route
+  route,
+  scrollViewRef
 }: {
   data: any;
   navigation: StackNavigationProp<any>;
   queryVariables: { [key: string]: any };
   route: any;
+  scrollViewRef?: MutableRefObject<ScrollView | null>;
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -191,6 +239,7 @@ export const ProfileNoticeboardCreateForm = ({
     setValue,
     watch
   } = useForm({
+    shouldFocusError: false,
     defaultValues: {
       id: data?.id ?? '',
       body: data?.contentBlocks?.[0]?.body ?? '',
@@ -240,6 +289,9 @@ export const ProfileNoticeboardCreateForm = ({
       licensePlate: data?.payload?.licensePlate ?? ''
     }
   });
+  const fieldPositionsRef = useRef<Partial<Record<keyof TNoticeboardCreateData | string, number>>>(
+    {}
+  );
 
   useEffect(() => {
     setValue('email', memberData?.member?.email ?? '');
@@ -261,6 +313,38 @@ export const ProfileNoticeboardCreateForm = ({
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
   let imageUrl: string | undefined;
+
+  const registerFieldPosition = useCallback(
+    (fieldName: keyof TNoticeboardCreateData | string) => (event: LayoutChangeEvent) => {
+      fieldPositionsRef.current[fieldName] = event.nativeEvent.layout.y;
+    },
+    []
+  );
+
+  const scrollToFirstError: SubmitErrorHandler<TNoticeboardCreateData> = useCallback(
+    (formErrors: FieldErrors<TNoticeboardCreateData>) => {
+      const errorPaths = getErrorPaths(formErrors);
+      const firstMatchingField = orderedFieldNames.find((fieldName) =>
+        errorPaths.some((path) => path === fieldName || path.startsWith(`${fieldName}.`))
+      );
+
+      if (!firstMatchingField) {
+        return;
+      }
+
+      const y = fieldPositionsRef.current[firstMatchingField];
+
+      if (typeof y !== 'number') {
+        return;
+      }
+
+      scrollViewRef?.current?.scrollTo({
+        animated: true,
+        y: Math.max(0, y - normalize(24))
+      });
+    },
+    [scrollViewRef]
+  );
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -475,13 +559,17 @@ export const ProfileNoticeboardCreateForm = ({
     }
   };
 
+  const handleFormSubmit = useCallback(() => {
+    void handleSubmit(onSubmit, scrollToFirstError)();
+  }, [handleSubmit, onSubmit, scrollToFirstError]);
+
   return (
     <>
       <Input name="dateStart" hidden control={control} />
 
       {!isCarpool ? (
         <>
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('name')}>
             <Input
               name="name"
               label={`${texts.noticeboard.inputName} *`}
@@ -496,7 +584,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('email')}>
             <Input
               name="email"
               label={`${texts.noticeboard.inputMail} *`}
@@ -515,7 +603,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('noticeboardType')}>
             <Label bold>{`${texts.noticeboard.selectNoticeboardType} *`}</Label>
             <Controller
               name="noticeboardType"
@@ -548,7 +636,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
             <Input
               name="title"
               label={`${texts.noticeboard.inputTitle} *`}
@@ -562,7 +650,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('body')}>
             <Input
               control={control}
               errorMessage={errors.body && errors.body.message}
@@ -579,7 +667,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('dateEnd')}>
             <WrapperRow spaceBetween>
               <Input
                 name="price"
@@ -628,7 +716,7 @@ export const ProfileNoticeboardCreateForm = ({
       ) : (
         <>
           {!isEdit && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('noticeboardType')}>
               <Label bold>{`${texts.noticeboard.selectCarpoolType} *`}</Label>
               <Controller
                 name="noticeboardType"
@@ -670,7 +758,7 @@ export const ProfileNoticeboardCreateForm = ({
             </Wrapper>
           )}
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('name')}>
             <Input
               name="name"
               label={`${texts.noticeboard.inputName} *`}
@@ -685,7 +773,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('email')}>
             <Input
               name="email"
               label={`${texts.noticeboard.inputMail} *`}
@@ -705,7 +793,7 @@ export const ProfileNoticeboardCreateForm = ({
           </Wrapper>
 
           {carpoolInputConfig?.[selectedCategory]?.includes('age') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('age')}>
               <Input
                 name="age"
                 label={`${texts.noticeboard.inputAge} *`}
@@ -729,7 +817,7 @@ export const ProfileNoticeboardCreateForm = ({
             </Wrapper>
           )}
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
             <Input
               name="title"
               label={`${texts.noticeboard.inputTitle} *`}
@@ -743,7 +831,7 @@ export const ProfileNoticeboardCreateForm = ({
             />
           </Wrapper>
 
-          <Wrapper noPaddingTop>
+          <Wrapper noPaddingTop onLayout={registerFieldPosition('body')}>
             <Input
               control={control}
               errorMessage={errors.body && errors.body.message}
@@ -761,7 +849,7 @@ export const ProfileNoticeboardCreateForm = ({
           </Wrapper>
 
           {carpoolInputConfig?.[selectedCategory]?.includes('departureDate') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('departureDate')}>
               <Controller
                 name="departureDate"
                 render={({ field: { name, onChange, value } }) => (
@@ -787,7 +875,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('departureTime') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('departureTime')}>
               <Controller
                 name="departureTime"
                 render={({ field: { name, onChange, value } }) => (
@@ -812,7 +900,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('departureAddress') ? (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('departureAddress')}>
               <Input
                 name="departureAddress"
                 label={`${texts.noticeboard.inputDepartureAddress} *`}
@@ -832,7 +920,11 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('departureStreet') && (
-            <Wrapper noPaddingTop noPaddingBottom>
+            <Wrapper
+              noPaddingTop
+              noPaddingBottom
+              onLayout={registerFieldPosition('departureStreet')}
+            >
               <Input
                 name="departureStreet"
                 placeholder={texts.noticeboard.inputDepartureStreet}
@@ -844,7 +936,11 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('departureZip') && (
-            <Wrapper noPaddingTop noPaddingBottom>
+            <Wrapper
+              noPaddingTop
+              noPaddingBottom
+              onLayout={registerFieldPosition('departureZip')}
+            >
               <Input
                 name="departureZip"
                 placeholder={`${texts.noticeboard.inputDepartureZip} *`}
@@ -866,7 +962,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('departureCity') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('departureCity')}>
               <Input
                 name="departureCity"
                 placeholder={texts.noticeboard.inputDepartureCity}
@@ -878,7 +974,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('destinationAddress') ? (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('destinationAddress')}>
               <Input
                 name="destinationAddress"
                 label={`${texts.noticeboard.inputDestinationAddress} *`}
@@ -898,7 +994,11 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('destinationStreet') && (
-            <Wrapper noPaddingTop noPaddingBottom>
+            <Wrapper
+              noPaddingTop
+              noPaddingBottom
+              onLayout={registerFieldPosition('destinationStreet')}
+            >
               <Input
                 name="destinationStreet"
                 placeholder={texts.noticeboard.inputDestinationStreet}
@@ -910,7 +1010,11 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('destinationZip') && (
-            <Wrapper noPaddingTop noPaddingBottom>
+            <Wrapper
+              noPaddingTop
+              noPaddingBottom
+              onLayout={registerFieldPosition('destinationZip')}
+            >
               <Input
                 name="destinationZip"
                 placeholder={`${texts.noticeboard.inputDestinationZip} *`}
@@ -932,7 +1036,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('destinationCity') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('destinationCity')}>
               <Input
                 name="destinationCity"
                 placeholder={texts.noticeboard.inputDestinationCity}
@@ -944,7 +1048,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('drivingFrequency') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('drivingFrequency')}>
               <Label bold>{texts.noticeboard.drivingFrequency} *</Label>
               <Controller
                 name="drivingFrequency"
@@ -995,7 +1099,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {drivingFrequency === CARPOOL_FREQUENCY_OPTIONS[1].value && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('drivingFrequencyDays')}>
               <Label bold>{texts.noticeboard.selectDrivingDays}</Label>
               <Controller
                 name="drivingFrequencyDays"
@@ -1055,7 +1159,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('availablePlaces') && (
-            <Wrapper>
+            <Wrapper onLayout={registerFieldPosition('availablePlaces')}>
               <Input
                 name="availablePlaces"
                 label={texts.noticeboard.inputAvailablePlaces}
@@ -1098,7 +1202,7 @@ export const ProfileNoticeboardCreateForm = ({
           )}
 
           {carpoolInputConfig?.[selectedCategory]?.includes('dateEnd') && (
-            <Wrapper noPaddingTop>
+            <Wrapper noPaddingTop onLayout={registerFieldPosition('dateEnd')}>
               <Controller
                 name="dateEnd"
                 render={({ field: { name, onChange, value } }) => (
@@ -1245,7 +1349,7 @@ export const ProfileNoticeboardCreateForm = ({
           <LoadingSpinner loading />
         ) : (
           <Button
-            onPress={handleSubmit(onSubmit)}
+            onPress={handleFormSubmit}
             title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
             disabled={isCarpool && !selectedCategory}
           />

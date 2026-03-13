@@ -2,10 +2,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React, { useContext, useState } from 'react';
+import React, { MutableRefObject, useCallback, useContext, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { Alert, Keyboard, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 
 import {
   Button,
@@ -57,17 +57,45 @@ type TNoticeboardCreateData = {
   title: string;
 };
 
+const orderedFieldNames: Array<keyof TNoticeboardCreateData> = [
+  'name',
+  'email',
+  'noticeboardType',
+  'title',
+  'body',
+  'dateEnd',
+  'termsOfService'
+];
+
+const getErrorPaths = (value: unknown, parentPath = ''): string[] => {
+  if (!value || typeof value !== 'object') {
+    return [];
+  }
+
+  if ('message' in value || 'type' in value || 'ref' in value) {
+    return parentPath ? [parentPath] : [];
+  }
+
+  return Object.entries(value).flatMap(([key, nestedValue]) => {
+    const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+    return getErrorPaths(nestedValue, currentPath);
+  });
+};
+
 /* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
   data,
   navigation,
   queryVariables,
-  route
+  route,
+  scrollViewRef
 }: {
   data: any;
   navigation: StackNavigationProp<any>;
   queryVariables: { [key: string]: any };
   route: any;
+  scrollViewRef?: MutableRefObject<ScrollView | null>;
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -114,6 +142,7 @@ export const NoticeboardCreateForm = ({
     formState: { errors },
     handleSubmit
   } = useForm({
+    shouldFocusError: false,
     defaultValues: {
       id: data?.id ?? '',
       body: data?.contentBlocks?.[0]?.body ?? '',
@@ -138,10 +167,45 @@ export const NoticeboardCreateForm = ({
       title: data?.title ?? ''
     }
   });
+  const fieldPositionsRef = useRef<Partial<Record<keyof TNoticeboardCreateData | string, number>>>(
+    {}
+  );
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
   let imageUrl: string | undefined;
   let documentUrl: string | undefined;
+
+  const registerFieldPosition = useCallback(
+    (fieldName: keyof TNoticeboardCreateData | string) => (event: LayoutChangeEvent) => {
+      fieldPositionsRef.current[fieldName] = event.nativeEvent.layout.y;
+    },
+    []
+  );
+
+  const scrollToFirstError: SubmitErrorHandler<TNoticeboardCreateData> = useCallback(
+    (formErrors: FieldErrors<TNoticeboardCreateData>) => {
+      const errorPaths = getErrorPaths(formErrors);
+      const firstMatchingField = orderedFieldNames.find((fieldName) =>
+        errorPaths.some((path) => path === fieldName || path.startsWith(`${fieldName}.`))
+      );
+
+      if (!firstMatchingField) {
+        return;
+      }
+
+      const y = fieldPositionsRef.current[firstMatchingField];
+
+      if (typeof y !== 'number') {
+        return;
+      }
+
+      scrollViewRef?.current?.scrollTo({
+        animated: true,
+        y: Math.max(0, y - normalize(24))
+      });
+    },
+    [scrollViewRef]
+  );
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
     Keyboard.dismiss();
@@ -300,11 +364,15 @@ export const NoticeboardCreateForm = ({
     }
   };
 
+  const handleFormSubmit = useCallback(() => {
+    void handleSubmit(onSubmit, scrollToFirstError)();
+  }, [handleSubmit, onSubmit, scrollToFirstError]);
+
   return (
     <>
       <Input name="dateStart" hidden control={control} />
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('name')}>
         <Input
           name="name"
           label={`${texts.noticeboard.inputName} *`}
@@ -318,7 +386,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('email')}>
         <Input
           name="email"
           label={`${texts.noticeboard.inputMail} *`}
@@ -337,7 +405,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('noticeboardType')}>
         <Label bold>{`${texts.noticeboard.selectNoticeboardType} *`}</Label>
         <Controller
           name="noticeboardType"
@@ -368,7 +436,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
         <Input
           name="title"
           label={`${texts.noticeboard.inputTitle} *`}
@@ -382,7 +450,7 @@ export const NoticeboardCreateForm = ({
         />
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('body')}>
         <Input
           control={control}
           errorMessage={errors.body && errors.body.message}
@@ -420,7 +488,7 @@ export const NoticeboardCreateForm = ({
         </WrapperRow>
       </Wrapper>
 
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('dateEnd')}>
         <Controller
           name="dateEnd"
           render={({ field: { name, onChange, value } }) => (
@@ -511,7 +579,7 @@ export const NoticeboardCreateForm = ({
         </WrapperHorizontal>
       )}
 
-      <Wrapper>
+      <Wrapper onLayout={registerFieldPosition('termsOfService')}>
         <Controller
           name="termsOfService"
           render={({ field: { onChange, value } }) => (
@@ -534,7 +602,7 @@ export const NoticeboardCreateForm = ({
           <LoadingSpinner loading />
         ) : (
           <Button
-            onPress={handleSubmit(onSubmit)}
+            onPress={handleFormSubmit}
             title={isEdit ? texts.noticeboard.editButton : texts.noticeboard.sendButton}
           />
         )}
