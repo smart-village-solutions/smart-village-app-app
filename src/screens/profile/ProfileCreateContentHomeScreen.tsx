@@ -20,22 +20,22 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
   const [refreshing, setRefreshing] = useState(false);
 
   const {
-    data: userTiles,
-    loading: loadingUserTiles,
-    refetch: refetchUserTiles
+    data: topTiles,
+    loading: loadingTopTiles,
+    refetch: refetchTopTiles
   } = useStaticContent({
-    refreshTimeKey: 'publicJsonFile-profileCreateContentServiceUser',
-    name: 'profileCreateContentServiceUser',
+    refreshTimeKey: 'publicJsonFile-profileCreateContentServiceTop',
+    name: 'profileCreateContentServiceTop',
     type: 'json'
   });
 
   const {
-    data: memberTiles,
-    loading: loadingMemberTiles,
-    refetch: refetchMemberTiles
+    data: bottomTiles,
+    loading: loadingBottomTiles,
+    refetch: refetchBottomTiles
   } = useStaticContent({
-    refreshTimeKey: 'publicJsonFile-profileCreateContentServiceMember',
-    name: 'profileCreateContentServiceMember',
+    refreshTimeKey: 'publicJsonFile-profileCreateContentServiceBottom',
+    name: 'profileCreateContentServiceBottom',
     type: 'json'
   });
 
@@ -45,10 +45,10 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
 
   const refreshContent = useCallback(async () => {
     setRefreshing(true);
-    isConnected && (await refetchUserTiles?.());
-    isConnected && (await refetchMemberTiles?.());
+    isConnected && (await refetchTopTiles?.());
+    isConnected && (await refetchBottomTiles?.());
     setRefreshing(false);
-  }, [isConnected, refetchMemberTiles, refetchUserTiles]);
+  }, [isConnected, refetchBottomTiles, refetchTopTiles]);
 
   // refresh if the refreshUser param changed, which happens after login
   useEffect(refreshUser, [route.params?.refreshUser]);
@@ -69,7 +69,7 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
     return <ProfileHomeScreen navigation={navigation} route={route} />;
   }
 
-  if (loadingUserTiles || loadingMemberTiles) {
+  if (loadingTopTiles || loadingBottomTiles) {
     return <LoadingSpinner loading />;
   }
 
@@ -86,8 +86,8 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
         }
         contentContainerStyle={styles.contentContainer}
       >
-        <Service data={userTiles} staticJsonName="profileCreateContentServiceUser" />
-        <Service data={memberTiles} staticJsonName="profileCreateContentServiceMember" />
+        <Service data={topTiles} staticJsonName="profileCreateContentServiceTop" />
+        <Service data={bottomTiles} staticJsonName="profileCreateContentServiceBottom" />
       </ScrollView>
     </SafeAreaViewFlex>
   );
