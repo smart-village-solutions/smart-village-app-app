@@ -217,9 +217,7 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
       contacts: buildContactsValue(initialData?.contacts),
       description: initialData?.description ?? '',
       endDate: parseDateInputValue(initialDates?.dateTo) ?? (isEdit ? null : moment().toDate()),
-      endTime:
-        parseDateInputValue(initialDates?.timeTo, ['HH:mm', 'HH:mm:ss']) ??
-        (isEdit ? null : moment().toDate()),
+      endTime: parseDateInputValue(initialDates?.timeTo, ['HH:mm', 'HH:mm:ss']) ?? null,
       id: initialData?.id ?? '',
       image: buildImageValue(initialData?.mediaContents),
       latitude: initialData?.addresses?.[0]?.geoLocation?.latitude ?? null,
@@ -234,9 +232,7 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
         initialData?.recurringWeekdays?.map((weekday: string | number) => Number(weekday)) || [],
       regionName: initialData?.addresses?.[0]?.addition ?? '',
       startDate: parseDateInputValue(initialDates?.dateFrom) ?? (isEdit ? null : moment().toDate()),
-      startTime:
-        parseDateInputValue(initialDates?.timeFrom, ['HH:mm', 'HH:mm:ss']) ??
-        (isEdit ? null : moment().toDate()),
+      startTime: parseDateInputValue(initialDates?.timeFrom, ['HH:mm', 'HH:mm:ss']) ?? null,
       street: initialData?.addresses?.[0]?.street ?? '',
       title: initialData?.title ?? '',
       urls: buildWebUrlsValue(initialData?.webUrls)
@@ -731,7 +727,6 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
           maxLength={5}
           validate
           rules={{
-            required: `${texts.profile.forms.postcode} muss ausgefüllt werden`,
             minLength: { value: 5, message: texts.profile.postcodeMinLength }
           }}
           errorMessage={errors.postcode && errors.postcode.message}
