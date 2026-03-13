@@ -52,7 +52,6 @@ type PoiFormValues = {
   city: string;
   description: string;
   email: string;
-  fax: string;
   firstname: string;
   id?: string;
   image: string | null;
@@ -189,7 +188,6 @@ export const PointOfInterestForm = ({
       city: initialData?.addresses?.[0]?.city ?? '',
       description: initialData?.description ?? '',
       email: initialData?.contact?.email ?? '',
-      fax: initialData?.contact?.fax ?? '',
       firstname: initialData?.contact?.firstName ?? '',
       id: initialData?.id ?? '',
       image: buildImageValue(initialData?.mediaContents),
@@ -596,18 +594,6 @@ export const PointOfInterestForm = ({
         <Input
           autoCapitalize="none"
           control={control}
-          keyboardType="phone-pad"
-          label={texts.profile.forms.contacts.fax}
-          name="fax"
-          placeholder={texts.profile.forms.contacts.faxPlaceholder}
-          validate
-        />
-      </Wrapper>
-
-      <Wrapper noPaddingTop>
-        <Input
-          autoCapitalize="none"
-          control={control}
           keyboardType="url"
           label={texts.profile.forms.contacts.url}
           name="url"
@@ -632,29 +618,6 @@ export const PointOfInterestForm = ({
       </WrapperHorizontal>
 
       <Wrapper>
-        <RegularText>{texts.profile.forms.priceInformations}</RegularText>
-      </Wrapper>
-
-      <PriceInformations
-        control={control as any}
-        errors={errors as any}
-        fields={priceInformationsFields}
-        remove={removePriceInformation}
-      />
-
-      <Wrapper noPaddingTop>
-        <Button
-          invert
-          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
-          title={texts.profile.forms.addPriceInformation}
-        />
-      </Wrapper>
-
-      <WrapperHorizontal>
-        <Divider style={styles.divider} />
-      </WrapperHorizontal>
-
-      <Wrapper>
         <RegularText>{texts.profile.forms.links}</RegularText>
       </Wrapper>
 
@@ -670,6 +633,29 @@ export const PointOfInterestForm = ({
           invert
           onPress={() => appendWebUrl(createDefaultWebUrl())}
           title={texts.profile.forms.addLinks}
+        />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.priceInformations}</RegularText>
+      </Wrapper>
+
+      <PriceInformations
+        control={control as any}
+        errors={errors as any}
+        fields={priceInformationsFields}
+        remove={removePriceInformation}
+      />
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
+          title={texts.profile.forms.addPriceInformation}
         />
       </Wrapper>
 

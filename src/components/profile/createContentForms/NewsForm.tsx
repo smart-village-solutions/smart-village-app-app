@@ -6,14 +6,12 @@ import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook
 import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { colors, consts, normalize, texts } from '../../../config';
 import { parseDateInputValue, uploadImages } from '../../../helpers';
 import { DETAIL_REFRESH_EVENT } from '../../../hooks';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
-import { Checkbox } from '../../Checkbox';
-import { Label } from '../../Label';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
@@ -251,31 +249,6 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
 
   return (
     <>
-      <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
-        <Controller
-          name="categories"
-          render={({ field: { name, onChange, value } }) => (
-            <DropdownInput
-              {...{
-                boldLabel: true,
-                control,
-                data: categoryNameDropdownData,
-                errors,
-                label: `${texts.profile.forms.categories} *`,
-                multipleSelect: true,
-                name,
-                onChange,
-                placeholder: texts.profile.forms.categoriesPlaceholder,
-                required: true,
-                value,
-                valueKey: 'name'
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-
       <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
         <Input
           autoCapitalize="none"
@@ -378,6 +351,30 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
         <Divider style={styles.divider} />
       </WrapperHorizontal>
 
+      <Wrapper onLayout={registerFieldPosition('categories')}>
+        <Controller
+          name="categories"
+          render={({ field: { name, onChange, value } }) => (
+            <DropdownInput
+              {...{
+                boldLabel: true,
+                control,
+                data: categoryNameDropdownData,
+                errors,
+                label: `${texts.profile.forms.categories}`,
+                multipleSelect: true,
+                name,
+                onChange,
+                placeholder: texts.profile.forms.categoriesPlaceholder,
+                value,
+                valueKey: 'name'
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
       <Wrapper onLayout={registerFieldPosition('date')}>
         <Controller
           name="date"
@@ -401,7 +398,7 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
         />
       </Wrapper>
 
-      {currentUserData?.roles.role_push_notification && (
+      {/* {currentUserData?.roles.role_push_notification && (
         <Wrapper noPaddingTop>
           <Label bold>{texts.profile.forms.pushNotificationTitle}</Label>
           <Label>{texts.profile.forms.pushNotificationDescription}</Label>
@@ -422,7 +419,7 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
             control={control}
           />
         </Wrapper>
-      )}
+      )} */}
 
       <Wrapper noPaddingTop>
         <Button

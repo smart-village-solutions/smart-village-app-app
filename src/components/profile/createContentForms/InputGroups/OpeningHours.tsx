@@ -32,7 +32,7 @@ export const createDefaultOpeningHour = (): OpeningHourFormValue => ({
   description: '',
   endDate: moment().toDate(),
   endTime: moment().toDate(),
-  isOpen: false,
+  isOpen: true,
   startDate: moment().toDate(),
   startTime: moment().toDate(),
   weekday: -1

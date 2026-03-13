@@ -18,9 +18,9 @@ import {
   buildAddressData,
   buildContactsData,
   buildDate,
-  parseDateInputValue,
   buildPriceInformations,
   buildWebUrls,
+  parseDateInputValue,
   PriceInformationFormValue,
   uploadImages,
   WebUrlFormValue
@@ -809,29 +809,6 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
       </WrapperHorizontal>
 
       <Wrapper>
-        <RegularText>{texts.profile.forms.priceInformations}</RegularText>
-      </Wrapper>
-
-      <PriceInformations
-        control={control as any}
-        errors={errors as any}
-        fields={priceInformationsFields}
-        remove={removePriceInformation}
-      />
-
-      <Wrapper noPaddingTop>
-        <Button
-          invert
-          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
-          title={texts.profile.forms.addPriceInformation}
-        />
-      </Wrapper>
-
-      <WrapperHorizontal>
-        <Divider style={styles.divider} />
-      </WrapperHorizontal>
-
-      <Wrapper>
         <RegularText>{texts.profile.forms.links}</RegularText>
       </Wrapper>
 
@@ -847,6 +824,29 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
           invert
           onPress={() => appendWebUrl(createDefaultWebUrl())}
           title={texts.profile.forms.addLinks}
+        />
+      </Wrapper>
+
+      <WrapperHorizontal>
+        <Divider style={styles.divider} />
+      </WrapperHorizontal>
+
+      <Wrapper>
+        <RegularText>{texts.profile.forms.priceInformations}</RegularText>
+      </Wrapper>
+
+      <PriceInformations
+        control={control as any}
+        errors={errors as any}
+        fields={priceInformationsFields}
+        remove={removePriceInformation}
+      />
+
+      <Wrapper noPaddingTop>
+        <Button
+          invert
+          onPress={() => appendPriceInformation(createDefaultPriceInformation())}
+          title={texts.profile.forms.addPriceInformation}
         />
       </Wrapper>
 
