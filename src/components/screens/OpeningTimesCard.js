@@ -20,6 +20,34 @@ const DateBox = styled(TimeBox)`
   flex-direction: column;
 `;
 
+const weekdayLabels = [
+  texts.noticeboard.weekday.monday,
+  texts.noticeboard.weekday.tuesday,
+  texts.noticeboard.weekday.wednesday,
+  texts.noticeboard.weekday.thursday,
+  texts.noticeboard.weekday.friday,
+  texts.noticeboard.weekday.saturday,
+  texts.noticeboard.weekday.sunday
+];
+
+const getReadableWeekday = (weekday) => {
+  if (weekday === null || weekday === undefined || weekday === '') {
+    return '';
+  }
+
+  if (typeof weekday === 'number' && weekday >= 0 && weekday < weekdayLabels.length) {
+    return weekdayLabels[weekday];
+  }
+
+  if (typeof weekday === 'string' && /^\d+$/.test(weekday)) {
+    const weekdayIndex = Number(weekday);
+
+    return weekdayLabels[weekdayIndex] ?? weekday;
+  }
+
+  return weekday;
+};
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const OpeningTimesCard = ({
@@ -49,6 +77,7 @@ export const OpeningTimesCard = ({
             useYear = false
           } = item;
           const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
+          const readableWeekday = getReadableWeekday(weekday);
 
           return (
             <WrapperVertical
@@ -60,7 +89,9 @@ export const OpeningTimesCard = ({
                 index === slicedArray.length - 1 && styles.noPaddingBottom
               ]}
             >
-              {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
+              {!!readableWeekday && (
+                <BoldText style={styles.marginBottom}>{readableWeekday}</BoldText>
+              )}
 
               {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
                 <WrapperRow>

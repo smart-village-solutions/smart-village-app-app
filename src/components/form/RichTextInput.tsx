@@ -4,15 +4,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type {
   EnrichedTextInputInstance,
   EnrichedTextInputProps,
-  OnChangeSelectionEvent,
   OnChangeStateEvent
 } from 'react-native-enriched';
 import { EnrichedTextInput } from 'react-native-enriched';
 
-import { colors, consts, Icon, normalize } from '../../config';
+import { colors, Icon, normalize } from '../../config';
 import { Label } from '../Label';
-
-const { URL_REGEX } = consts;
 
 const looksLikeHtml = (value: string) => /<\/?[a-z][\s\S]*>/i.test(value);
 
@@ -52,8 +49,7 @@ type ToolbarAction =
   | 'strikethrough'
   | 'list'
   | 'list-numbers'
-  | 'blockquote'
-  | 'link';
+  | 'blockquote';
 
 export const RichTextInput = forwardRef(
   (
@@ -89,7 +85,6 @@ export const RichTextInput = forwardRef(
     const richTextRef = useRef<EnrichedTextInputInstance>(null);
     const [isActive, setIsActive] = useState(false);
     const [richTextState, setRichTextState] = useState<OnChangeStateEvent | null>(null);
-    const [selectionState, setSelectionState] = useState<OnChangeSelectionEvent | null>(null);
     const [initialValue, setInitialValue] = useState(() => getInitialRichTextValue(field.value));
     const lastEditorValueRef = useRef(field.value);
 
@@ -110,19 +105,6 @@ export const RichTextInput = forwardRef(
       setInitialValue(nextInitialValue);
       richTextRef.current?.setValue(nextInitialValue);
     }, [field.value, isActive]);
-
-    const handleSetLink = () => {
-      // Selected text is used as both link label and URL input.
-      if (!selectionState) return;
-
-      const selectedText = selectionState.text.trim();
-      if (!selectedText) return;
-
-      const isAbsoluteUrl = URL_REGEX.test(selectedText);
-      const url = isAbsoluteUrl ? selectedText : `https://${selectedText}`;
-
-      richTextRef.current?.setLink(selectionState.start, selectionState.end, selectedText, url);
-    };
 
     const handleToolbarAction = (action: ToolbarAction) => {
       const editor = richTextRef.current;
@@ -149,9 +131,6 @@ export const RichTextInput = forwardRef(
           return;
         case 'blockquote':
           editor.toggleBlockQuote();
-          return;
-        case 'link':
-          handleSetLink();
           return;
       }
     };
@@ -196,18 +175,11 @@ export const RichTextInput = forwardRef(
           iconName: 'list-numbers',
           action: 'list-numbers',
           isActive: richTextState?.orderedList.isActive
-        }
-      ],
-      [
+        },
         {
           iconName: 'blockquote',
           action: 'blockquote',
           isActive: richTextState?.blockQuote.isActive
-        },
-        {
-          iconName: 'link',
-          action: 'link',
-          isActive: richTextState?.link.isActive
         }
       ]
     ];
@@ -263,7 +235,6 @@ export const RichTextInput = forwardRef(
               (field.onChange as ((value: string) => void) | undefined)?.(nextValue);
             }}
             onChangeSelection={(e) => {
-              setSelectionState(e.nativeEvent);
               onChangeSelection?.(e);
             }}
             onChangeState={(e) => setRichTextState(e.nativeEvent)}

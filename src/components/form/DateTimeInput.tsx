@@ -143,6 +143,12 @@ export const DateTimeInput = ({
   const format = mode === 'date' ? formatDate : formatTime;
   const pickerInput =
     (!!value && format(typeof value === 'string' ? new Date(value) : value)) || placeholder;
+  const pickerValue =
+    value instanceof Date
+      ? value
+      : typeof value === 'string'
+        ? new Date(value)
+        : minimumDate || maximumDate || new Date();
 
   return (
     <>
@@ -166,7 +172,7 @@ export const DateTimeInput = ({
       />
       <DateTimePicker
         {...{
-          value,
+          value: pickerValue,
           maximumDate,
           minimumDate,
           mode,

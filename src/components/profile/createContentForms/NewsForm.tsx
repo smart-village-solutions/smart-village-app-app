@@ -1,21 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import React, { MutableRefObject, useCallback, useRef, useState } from 'react';
+import React, { MutableRefObject, useCallback, useContext, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../../config';
+import { ProfileContext } from '../../../ProfileProvider';
+import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { parseDateInputValue, uploadImages } from '../../../helpers';
 import { DETAIL_REFRESH_EVENT } from '../../../hooks';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
+import { Checkbox } from '../../Checkbox';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
-import { Wrapper, WrapperHorizontal } from '../../Wrapper';
+import { Wrapper, WrapperVertical } from '../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
 
@@ -94,12 +96,12 @@ const buildMediaContentInput = (mediaContents: any[] = []) =>
 
 /* eslint-disable complexity */
 export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFormProps) => {
+  const { currentUserData } = useContext(ProfileContext);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const fieldPositionsRef = useRef<Partial<Record<keyof NewsFormValues | string, number>>>({});
   const isEdit = mode === 'edit' && !!initialData?.id;
   const contentBlock = initialData?.contentBlocks?.[0];
-  const additionalContentBlocks = initialData?.contentBlocks?.slice(1) ?? [];
 
   const { data: dataCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES, {
     variables: { tagList: ['news_item'] }
@@ -134,78 +136,110 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
     []
   );
 
-  const onSubmit = async (formValues: NewsFormValues) => {
-    setIsLoading(true);
+  const onSubmit = useCallback(
+    async (formValues: NewsFormValues) => {
+      setIsLoading(true);
 
-    try {
-      const result = await uploadImages(formValues.image ?? '[]');
+      try {
+        const submitContentBlock = initialData?.contentBlocks?.[0];
+        const submitAdditionalContentBlocks = initialData?.contentBlocks?.slice(1) ?? [];
+        const result = await uploadImages(formValues.image ?? '[]');
 
-      if (result.uploadError) {
-        setIsLoading(false);
+        if (result.uploadError) {
+          setIsLoading(false);
+          Alert.alert(
+            texts.profile.forms.contentImageUploadErrorAlertTitle,
+            texts.profile.forms.contentImageUploadErrorAlertMessage
+          );
+          return;
+        }
+
+        const { imageUrls } = result;
+        const existingNonImageMediaContents = buildMediaContentInput(
+          submitContentBlock?.mediaContents
+        ).filter((mediaContent) => mediaContent.contentType !== 'image');
+        const preservedContentBlocks = submitAdditionalContentBlocks.map((block: any) => ({
+          ...(block?.id && { id: block.id }),
+          ...(block?.title && { title: block.title }),
+          ...(block?.intro && { intro: block.intro }),
+          ...(block?.body && { body: block.body }),
+          ...(block?.mediaContents?.length && {
+            mediaContents: buildMediaContentInput(block.mediaContents)
+          })
+        }));
+
+        await createNewsItem({
+          variables: {
+            ...(isEdit && formValues.id && { id: formValues.id }),
+            categories: formValues.categories.map((categoryName: string) => ({
+              name: categoryName
+            })),
+            contentBlocks: [
+              {
+                ...(submitContentBlock?.id && { id: submitContentBlock.id }),
+                title: formValues.title,
+                intro: formValues.subTitle,
+                body: formValues.description,
+                mediaContents: [...existingNonImageMediaContents, ...imageUrls]
+              },
+              ...preservedContentBlocks
+            ],
+            publishedAt: formValues.date,
+            pushNotification: formValues.sendPushNotification,
+            ...(formValues.url && {
+              sourceUrl: {
+                url: formValues.url,
+                ...(formValues.urlDescription && { description: formValues.urlDescription })
+              }
+            }),
+            title: formValues.title
+          }
+        });
+
+        DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+        navigation.goBack();
         Alert.alert(
-          texts.profile.forms.contentImageUploadErrorAlertTitle,
-          texts.profile.forms.contentImageUploadErrorAlertMessage
+          isEdit
+            ? texts.profile.forms.contentUpdateSuccessAlertTitle
+            : texts.profile.forms.contentCreateSuccessAlertTitle,
+          isEdit
+            ? texts.profile.forms.contentUpdateSuccessAlertMessage
+            : texts.profile.forms.contentCreateSuccessAlertMessage
         );
+      } catch (error) {
+        setIsLoading(false);
+        console.error(error);
+      }
+    },
+    [createNewsItem, initialData, isEdit, navigation]
+  );
+
+  const submitWithPushNotificationConfirmation = useCallback(
+    (formValues: NewsFormValues) => {
+      if (!formValues.sendPushNotification) {
+        void onSubmit(formValues);
         return;
       }
 
-      const { imageUrls } = result;
-      const existingNonImageMediaContents = buildMediaContentInput(
-        contentBlock?.mediaContents
-      ).filter((mediaContent) => mediaContent.contentType !== 'image');
-      const preservedContentBlocks = additionalContentBlocks.map((block: any) => ({
-        ...(block?.id && { id: block.id }),
-        ...(block?.title && { title: block.title }),
-        ...(block?.intro && { intro: block.intro }),
-        ...(block?.body && { body: block.body }),
-        ...(block?.mediaContents?.length && {
-          mediaContents: buildMediaContentInput(block.mediaContents)
-        })
-      }));
-
-      await createNewsItem({
-        variables: {
-          ...(isEdit && formValues.id && { id: formValues.id }),
-          categories: formValues.categories.map((categoryName: string) => ({
-            name: categoryName
-          })),
-          contentBlocks: [
-            {
-              ...(contentBlock?.id && { id: contentBlock.id }),
-              title: formValues.title,
-              intro: formValues.subTitle,
-              body: formValues.description,
-              mediaContents: [...existingNonImageMediaContents, ...imageUrls]
-            },
-            ...preservedContentBlocks
-          ],
-          publishedAt: formValues.date,
-          pushNotification: formValues.sendPushNotification,
-          ...(formValues.url && {
-            sourceUrl: {
-              url: formValues.url,
-              ...(formValues.urlDescription && { description: formValues.urlDescription })
-            }
-          }),
-          title: formValues.title
-        }
-      });
-
-      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
-      navigation.goBack();
       Alert.alert(
-        isEdit
-          ? texts.profile.forms.contentUpdateSuccessAlertTitle
-          : texts.profile.forms.contentCreateSuccessAlertTitle,
-        isEdit
-          ? texts.profile.forms.contentUpdateSuccessAlertMessage
-          : texts.profile.forms.contentCreateSuccessAlertMessage
+        texts.profile.forms.pushNotificationConfirmTitle,
+        texts.profile.forms.pushNotificationConfirmMessage,
+        [
+          {
+            style: 'cancel',
+            text: texts.profile.abort
+          },
+          {
+            onPress: () => {
+              void onSubmit(formValues);
+            },
+            text: texts.profile.ok
+          }
+        ]
       );
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
+    },
+    [onSubmit]
+  );
 
   const scrollToFirstError: SubmitErrorHandler<NewsFormValues> = useCallback(
     (formErrors: FieldErrors<NewsFormValues>) => {
@@ -233,8 +267,8 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
   );
 
   const handleFormSubmit = useCallback(() => {
-    void handleSubmit(onSubmit, scrollToFirstError)();
-  }, [handleSubmit, onSubmit, scrollToFirstError]);
+    void handleSubmit(submitWithPushNotificationConfirmation, scrollToFirstError)();
+  }, [handleSubmit, scrollToFirstError, submitWithPushNotificationConfirmation]);
 
   if (loadingCategories) {
     return <LoadingSpinner loading />;
@@ -347,11 +381,11 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
         />
       </Wrapper>
 
-      <WrapperHorizontal>
+      <Wrapper noPaddingTop>
         <Divider style={styles.divider} />
-      </WrapperHorizontal>
+      </Wrapper>
 
-      <Wrapper onLayout={registerFieldPosition('categories')}>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
         <Controller
           name="categories"
           render={({ field: { name, onChange, value } }) => (
@@ -375,7 +409,7 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
         />
       </Wrapper>
 
-      <Wrapper onLayout={registerFieldPosition('date')}>
+      <Wrapper noPaddingTop onLayout={registerFieldPosition('date')}>
         <Controller
           name="date"
           render={({ field: { name, onChange, value } }) => (
@@ -398,28 +432,36 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
         />
       </Wrapper>
 
-      {/* {currentUserData?.roles.role_push_notification && (
-        <Wrapper noPaddingTop>
-          <Label bold>{texts.profile.forms.pushNotificationTitle}</Label>
-          <Label>{texts.profile.forms.pushNotificationDescription}</Label>
+      {currentUserData?.roles.role_push_notification && (
+        <>
+          <Wrapper noPaddingTop>
+            <Divider style={styles.divider} />
+          </Wrapper>
+          <Wrapper noPaddingTop>
+            <RegularText>{texts.profile.forms.pushNotificationTitle}</RegularText>
+            <RegularText></RegularText>
+            <RegularText smallest>{texts.profile.forms.pushNotificationDescription}</RegularText>
 
-          <Controller
-            name="sendPushNotification"
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                checked={!!value}
-                checkedIcon={<Icon.SquareCheckFilled />}
-                containerStyle={styles.checkboxContainerStyle}
-                onPress={() => onChange(!value)}
-                textStyle={styles.checkboxTextStyle}
-                title={texts.profile.forms.pushNotificationCheckbox}
-                uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+            <WrapperVertical noPaddingBottom>
+              <Controller
+                name="sendPushNotification"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    checked={!!value}
+                    checkedIcon={<Icon.SquareCheckFilled />}
+                    containerStyle={styles.checkboxContainerStyle}
+                    onPress={() => onChange(!value)}
+                    textStyle={styles.checkboxTextStyle}
+                    title={texts.profile.forms.pushNotificationCheckbox}
+                    uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+                  />
+                )}
+                control={control}
               />
-            )}
-            control={control}
-          />
-        </Wrapper>
-      )} */}
+            </WrapperVertical>
+          </Wrapper>
+        </>
+      )}
 
       <Wrapper noPaddingTop>
         <Button

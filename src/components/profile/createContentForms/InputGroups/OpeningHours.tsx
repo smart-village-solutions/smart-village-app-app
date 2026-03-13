@@ -31,10 +31,10 @@ export const weekdays = [
 export const createDefaultOpeningHour = (): OpeningHourFormValue => ({
   description: '',
   endDate: moment().toDate(),
-  endTime: moment().toDate(),
+  endTime: null,
   isOpen: true,
   startDate: moment().toDate(),
-  startTime: moment().toDate(),
+  startTime: null,
   weekday: -1
 });
 
@@ -54,7 +54,40 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
             </TouchableOpacity>
           </View>
 
-          <WrapperVertical>
+          <WrapperVertical noPaddingTop>
+            <Controller
+              name={`openingHours.${index}.isOpen`}
+              render={({ field: { onChange, value } }) => {
+                const isOpen = value ?? true;
+
+                return (
+                  <View>
+                    <Checkbox
+                      checked={!!isOpen}
+                      checkedIcon={<Icon.CircleCheckFilled />}
+                      containerStyle={styles.checkboxContainerStyle}
+                      navigate={() => undefined}
+                      onPress={() => onChange(true)}
+                      title={texts.profile.forms.openingHourGroup.open}
+                      uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
+                    />
+                    <Checkbox
+                      checked={!isOpen}
+                      checkedIcon={<Icon.CircleCheckFilled />}
+                      containerStyle={styles.checkboxContainerStyle}
+                      navigate={() => undefined}
+                      onPress={() => onChange(false)}
+                      title={texts.profile.forms.openingHourGroup.closed}
+                      uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
+                    />
+                  </View>
+                );
+              }}
+              control={control}
+            />
+          </WrapperVertical>
+
+          <WrapperVertical noPaddingTop>
             <Controller
               name={`openingHours.${index}.startDate`}
               render={({ field: { name, onChange, value } }) => (
@@ -176,22 +209,6 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
               control={control}
             />
           </WrapperVertical>
-
-          <Controller
-            name={`openingHours.${index}.isOpen`}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                checked={!!value}
-                checkedIcon={<Icon.SquareCheckFilled />}
-                containerStyle={styles.checkboxContainerStyle}
-                navigate={() => undefined}
-                onPress={() => onChange(!value)}
-                title={texts.profile.forms.openingHourGroup.isOpen}
-                uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-              />
-            )}
-            control={control}
-          />
         </Wrapper>
       ))}
     </>

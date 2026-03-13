@@ -143,7 +143,9 @@ const buildOpeningHoursValue = (openingHours: any[] = []): OpeningHourFormValue[
     startDate: parseDateInputValue(openingHour?.dateFrom) ?? null,
     startTime: parseDateInputValue(openingHour?.timeFrom, ['HH:mm', 'HH:mm:ss']) ?? null,
     weekday:
-      openingHour?.weekday !== null && openingHour?.weekday !== undefined
+      openingHour?.weekday !== null &&
+      openingHour?.weekday !== undefined &&
+      openingHour?.weekday !== ''
         ? Number(openingHour.weekday)
         : -1
   }));

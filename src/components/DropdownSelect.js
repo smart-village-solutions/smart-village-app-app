@@ -50,7 +50,7 @@ export const DropdownSelect = ({
   const [arrow, setArrow] = useState('down');
   const selectedData = data?.find((entry) => entry.selected);
   const selectedValue = selectedData?.value;
-  const selectedIndex = selectedData?.index;
+  const selectedIndex = data?.findIndex((entry) => entry.selected) ?? -1;
   const selectedMultipleData = data?.filter((entry) => entry.selected);
   const selectedMultipleValues = selectedMultipleData?.map((entry) => entry.value).join(', ');
 
@@ -75,7 +75,11 @@ export const DropdownSelect = ({
     [data, selectedMultipleValues, selectedValue, multipleSelect, placeholder]
   );
 
-  const preselect = (index) => dropdownRef.current.select(index);
+  const preselect = (index) => {
+    if (index < 0) return;
+
+    dropdownRef.current.select(index);
+  };
 
   useEffect(() => {
     preselect(selectedIndex);

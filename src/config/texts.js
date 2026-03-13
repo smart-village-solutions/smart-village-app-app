@@ -1084,6 +1084,7 @@ export const texts = {
       namePlaceholder: 'Geben Sie hier einen Namen ein',
       openingHours: 'Öffnungszeiten',
       openingHourGroup: {
+        closed: 'Geschlossen',
         day: 'Wochentag',
         dayPlaceholder: 'Wählen Sie einen Wochentag aus',
         deleteButtonAccessibility: 'Öffnungszeit löschen',
@@ -1092,6 +1093,7 @@ export const texts = {
         endDate: 'Enddatum',
         endTime: 'Endzeit',
         isOpen: 'Geöffnet?',
+        open: 'Geöffnet',
         startDate: 'Startdatum',
         startTime: 'Startzeit',
         title: 'Öffnungszeit'
@@ -1108,7 +1110,10 @@ export const texts = {
         title: 'Preiskategorie'
       },
       priceInformations: 'Preise',
-      pushNotificationCheckbox: 'Sende eine Push-Notification',
+      pushNotificationCheckbox: 'sende eine Push-Notification',
+      pushNotificationConfirmMessage:
+        'Sind Sie sicher, dass alle Angaben vollständig und korrekt sind? Wenn ein Veröffentlichungsdatum in der Zukunft angegeben wurde, hat dies keinen Einfluss auf die Push-Notification. Push-Notifications werden immer sofort nach dem Speichern der Nachricht versendet.',
+      pushNotificationConfirmTitle: 'Hinweis',
       pushNotificationDescription:
         'Nach dem Erstellen dieser Nachricht kann eine Push-Notification an alle registrierten Geräte gesendet werden, mit dem Hinweis auf diese Nachricht. Aktivieren Sie dazu vor dem Speichern das folgende Kontrollkästchen. Bitte nutzen Sie diese Funktion sparsam, um die Aufmerksamkeit der Kunden nicht zu sehr zu beanspruchen.',
       pushNotificationTitle: 'Push-Notification',
