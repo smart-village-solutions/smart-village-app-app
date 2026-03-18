@@ -59,6 +59,7 @@ export const ConfigurationsContext = createContext(defaultConfiguration);
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = {} } = globalSettings;
+  const hasSueSettings = Object.prototype.hasOwnProperty.call(settings || {}, 'sue');
   const { sue = {} } = settings || {};
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
@@ -67,14 +68,14 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const { data: sueConfigData, refetch: refetchSueConfig } = useQuery(
     [QUERY_TYPES.SUE.CONFIGURATIONS],
     () => getQuery(QUERY_TYPES.SUE.CONFIGURATIONS)(),
-    { enabled: !!Object.keys(sue).length }
+    { enabled: hasSueSettings }
   );
 
   const { data: sueProgress, refetch: refetchSueProgress } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
     type: 'json',
-    skip: !Object.keys(sue).length
+    skip: !hasSueSettings
   });
 
   const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
@@ -82,7 +83,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   });
 
   const mergedConfig = useMemo(() => {
-    const isSueConfigEmpty = !Object.keys(sue).length;
+    const isSueConfigEmpty = !hasSueSettings;
     const isResourceFiltersEmpty = !resourceFiltersData?.resourceFilters?.length;
 
     if (isSueConfigEmpty && isResourceFiltersEmpty) {
@@ -99,7 +100,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [sueConfigData, sueProgress, resourceFiltersData]);
+  }, [appDesignSystem, hasSueSettings, resourceFiltersData, sue, sueConfigData, sueProgress]);
 
   const reloadCallback = useCallback(async () => {
     setIsLoading(true);
