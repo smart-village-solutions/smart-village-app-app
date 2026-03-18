@@ -274,6 +274,7 @@ export const SueReportLocation = ({
           calloutTextEnabled
           clusterDistance={configuration.geoMap?.clusterDistance}
           clusterThreshold={configuration.geoMap?.clusterThreshold}
+          currentPosition={currentPosition}
           isMultipleMarkersMap
           isMyLocationButtonVisible={!!locationService}
           locations={locations}
