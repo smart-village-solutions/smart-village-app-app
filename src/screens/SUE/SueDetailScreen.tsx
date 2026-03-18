@@ -110,7 +110,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
           {!!title && (
             <WrapperHorizontal>
-              <BoldText big>{title}</BoldText>
+              <BoldText big>{serviceRequestId ? `#${serviceRequestId} ${title}` : title}</BoldText>
             </WrapperHorizontal>
           )}
 
