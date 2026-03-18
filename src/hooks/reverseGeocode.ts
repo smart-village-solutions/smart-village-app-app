@@ -5,6 +5,15 @@ import { UseFormSetValue } from 'react-hook-form';
 import appJson from '../../app.json';
 import { TValues } from '../screens';
 
+const CITY_FALLBACK_KEYS = [
+  'city',
+  'town',
+  'village',
+  'municipality',
+  'city_district',
+  'county'
+] as const;
+
 export const useReverseGeocode = () => {
   return useCallback(
     async ({
@@ -33,8 +42,11 @@ export const useReverseGeocode = () => {
           )
         ).json();
 
+        // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.
         const city =
-          response?.address?.city || response?.address?.town || response?.address?.village || '';
+          CITY_FALLBACK_KEYS.map((key) => response?.address?.[key]).find(
+            (value) => typeof value === 'string' && value.length > 0
+          ) || '';
         const houseNumber = response?.address?.house_number || '';
         const street = response?.address?.road || '';
         const postalCode = response?.address?.postcode || '';
