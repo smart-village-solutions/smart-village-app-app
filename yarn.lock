@@ -2827,10 +2827,10 @@
     "@react-navigation/elements" "^2.2.5"
     color "^4.2.3"
 
-"@reactvision/react-viro@^2.51.0":
-  version "2.51.0"
-  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.51.0.tgz#9a7c82fdf29ac03d1dc53b0041881c3897e42ffe"
-  integrity sha512-9X+0sobrY730kWGMNToc969QFR/hP3QMYFH9MPBe7TYbuCqKmPlzTfTlaLiqGt8DiL8qL2znLCsE0z4IiK6y/w==
+"@reactvision/react-viro@^2.53.0":
+  version "2.53.1"
+  resolved "https://registry.yarnpkg.com/@reactvision/react-viro/-/react-viro-2.53.1.tgz#00b887967642b9e18aec9d473f7c186095703880"
+  integrity sha512-kerTYPv/kV9FUxODJN6p2imlUd5aPgy9ZrSsl++rhsnoNClewpjlookSSI+un55dicGQQiXM78dnSyHd9c4qKg==
   dependencies:
     "@expo/config-plugins" "^9.0.14"
     react "~19.1.0"
