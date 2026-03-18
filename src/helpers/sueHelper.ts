@@ -1,5 +1,25 @@
 import { storageHelper } from './storageHelper';
 
+/**
+ * Resolves the SUE limit-of-area city with the following priority:
+ * 1. Use the explicitly configured city from `globalSettings`.
+ * 2. Otherwise derive it from the first SUE configs geo map area name.
+ * 3. Remove bracketed suffixes like "[kreisfreie Stadt]" from the derived name.
+ */
+export const getSueLimitOfAreaCity = ({
+  areaName = '',
+  configuredCity = ''
+}: {
+  areaName?: string;
+  configuredCity?: string;
+}) => {
+  if (configuredCity) {
+    return configuredCity;
+  }
+
+  return areaName.replace(/\s*\[[^\]]*]\s*/g, '').trim();
+};
+
 export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   const configurations = await storageHelper.configurations();
   const { sueConfig = {} } = configurations;

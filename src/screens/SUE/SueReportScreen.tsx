@@ -36,7 +36,12 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, device, normalize, texts } from '../../config';
-import { addToStore, formatSizeStandard, readFromStore } from '../../helpers';
+import {
+  addToStore,
+  formatSizeStandard,
+  getSueLimitOfAreaCity,
+  readFromStore
+} from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
@@ -253,8 +258,18 @@ export const SueReportScreen = ({
   const {
     city: limitOfCity = '',
     postalCodes: limitOfPostalCodes = [],
-    errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
+    errorMessage: configuredErrorMessage = ''
   } = limitOfArea;
+  const limitOfAreaCity = getSueLimitOfAreaCity({
+    areaName: geoMap?.areas?.[0]?.name,
+    configuredCity: limitOfCity
+  });
+  const areaServiceAreaId =
+    geoMap?.areas?.[0]?.id ||
+    (sueConfig as { apiConfig?: { areaService?: { id?: string } } })?.apiConfig?.areaService?.id ||
+    '';
+  const errorMessage =
+    configuredErrorMessage || texts.sue.report.alerts.limitOfArea(limitOfAreaCity);
 
   const [showCoordinatesFromImageAlert, setShowCoordinatesFromImageAlert] = useState(false);
   const [currentProgress, setCurrentProgress] = useState(0);
@@ -330,9 +345,9 @@ export const SueReportScreen = ({
   });
 
   const { data: areaServiceData, isLoading: areaServiceLoading } = useQuery(
-    [QUERY_TYPES.SUE.AREA_SERVICE],
+    [QUERY_TYPES.SUE.AREA_SERVICE, areaServiceAreaId, limitOfAreaCity],
     () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
-    { enabled: !!limitOfCity }
+    { enabled: !!limitOfAreaCity }
   );
 
   const { mutateAsync } = useMutation(postRequests);
