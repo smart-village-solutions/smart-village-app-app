@@ -24,8 +24,8 @@ import {
   Button,
   DefaultKeyboardAvoidingView,
   HeaderRight,
+  HtmlView,
   LoadingContainer,
-  RegularText,
   SafeAreaViewFlex,
   SueReportDescription,
   SueReportLocation,
@@ -706,7 +706,7 @@ export const SueReportScreen = ({
         {!!service?.serviceName && !!service.description && currentProgress === 0 && (
           <Wrapper style={styles.noPaddingBottom}>
             <BoldText>{service.serviceName}</BoldText>
-            <RegularText>{service.description}</RegularText>
+            <HtmlView big={false} html={service.description} />
           </Wrapper>
         )}
 
