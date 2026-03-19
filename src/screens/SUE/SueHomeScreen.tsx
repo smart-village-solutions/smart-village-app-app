@@ -16,6 +16,7 @@ import {
 } from '../../components';
 import { normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { navigateToRoute } from '../../helpers';
 import { useStaticContent, useVersionCheck } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { myRequests } from '../../queries/SUE';
@@ -35,10 +36,12 @@ const LIST_NAVIGATION_BUTTON = {
 const ReportListNavigationButton = ({
   buttonTitle = texts.sue.viewReports,
   query = QUERY_TYPES.SUE.REQUESTS,
+  targetTabIndex,
   title = texts.sue.reports
 }: {
   buttonTitle?: string;
   query?: string;
+  targetTabIndex?: number;
   title?: string;
 }) => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -47,9 +50,14 @@ const ReportListNavigationButton = ({
     <Button
       invert
       onPress={() =>
-        navigation.navigate(ScreenName.SueList, {
-          query,
-          title
+        navigateToRoute({
+          navigation,
+          params: {
+            query,
+            title
+          },
+          routeName: ScreenName.SueList,
+          targetTabIndex
         })
       }
       title={buttonTitle}
@@ -61,7 +69,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
-  const { staticContentList = {}, sueReportListNavigationButton } = sections;
+  const { staticContentList = {}, sueListTargetTabIndex, sueReportListNavigationButton } = sections;
   const {
     staticContentName = 'staticContentList',
     staticContentListDescription,
@@ -138,7 +146,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
         {!!sueReportListNavigationButton &&
           sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP && (
             <Wrapper noPaddingBottom style={styles.paddingTop}>
-              <ReportListNavigationButton />
+              <ReportListNavigationButton targetTabIndex={sueListTargetTabIndex} />
             </Wrapper>
           )}
 
@@ -147,6 +155,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
             <ReportListNavigationButton
               buttonTitle={texts.sue.viewMyReports}
               query={QUERY_TYPES.SUE.MY_REQUESTS}
+              targetTabIndex={sueListTargetTabIndex}
               title={texts.sue.myReports}
             />
           </Wrapper>
@@ -180,7 +189,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
         {!!sueReportListNavigationButton &&
           sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.BOTTOM && (
             <Wrapper noPaddingBottom>
-              <ReportListNavigationButton />
+              <ReportListNavigationButton targetTabIndex={sueListTargetTabIndex} />
             </Wrapper>
           )}
       </ScrollView>
@@ -193,12 +202,6 @@ const styles = StyleSheet.create({
     height: normalize(30),
     width: normalize(30),
     marginRight: normalize(16)
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   paddingTop: {
     paddingTop: normalize(16)
