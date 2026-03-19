@@ -77,8 +77,6 @@ export const DefectReportLocationForm = ({
             };
 
             setSelectedPosition(coordinate);
-
-            return { isLocationSelectable: true };
           }}
           selectedPosition={selectedPosition}
           setPinEnabled

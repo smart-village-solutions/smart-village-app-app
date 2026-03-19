@@ -107,7 +107,7 @@ type Props = {
     geometry: {
       coordinates: number[];
     };
-  }) => { isLocationSelectable: boolean };
+  }) => void | Promise<void>;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
   onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
@@ -175,10 +175,24 @@ export const MapLibre = ({
   const [selectedFeature, setSelectedFeature] = useState<GeoJSON.Feature | null>(null);
   const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
 
   const suppressAutoFitRef = useRef(false);
+  const safelyHandleOnMapPress = useCallback(
+    async (geometry: { coordinates: number[] }) => {
+      if (!onMapPress) {
+        return;
+      }
+
+      try {
+        await onMapPress({ geometry });
+      } catch (error) {
+        console.error('onMapPress handler failed:', error);
+      }
+    },
+    [onMapPress]
+  );
+
   const clearSelection = useCallback(
     (notifyParent = false, reason?: string) => {
       if (reason) {
@@ -308,18 +322,23 @@ export const MapLibre = ({
     return alternativeCoords.latitude == latitude && alternativeCoords.longitude == longitude;
   }, [showsUserLocation, selectedPosition, alternativePosition, defaultAlternativePosition]);
 
-  useEffect(() => {
-    if (!selectedPosition) return;
+  const newPins = useMemo(() => {
+    if (!selectedPosition) {
+      return [];
+    }
 
     const { latitude, longitude } = selectedPosition;
 
-    if (latitude == null || longitude == null) return;
+    if (latitude == null || longitude == null) {
+      return [];
+    }
 
-    const newPin = point([longitude, latitude], {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
-      id: `new-pin-${Date.now()}`
-    });
-    setNewPins([newPin]);
+    return [
+      point([longitude, latitude], {
+        iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
+        id: 'selected-position-pin'
+      })
+    ];
   }, [isOwnLocation, selectedPosition]);
 
   useEffect(() => {
@@ -383,21 +402,9 @@ export const MapLibre = ({
     if (!geometry) return;
     clearSelection(true, 'set-pin');
 
-    const coordinates = geometry.coordinates as number[];
-    if (!coordinates?.length) return;
+    if (!(geometry.coordinates as number[])?.length) return;
 
-    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
-
-    if (!isLocationSelectable) {
-      setNewPins([]);
-      return;
-    }
-
-    const newPin = point(coordinates, {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
-      id: `new-pin-${Date.now()}`
-    });
-    setNewPins([newPin]);
+    await safelyHandleOnMapPress(geometry);
   };
 
   const handleMapPress = (event: any) => {
@@ -433,9 +440,9 @@ export const MapLibre = ({
 
     if (mapPressTimeoutRef.current) clearTimeout(mapPressTimeoutRef.current);
 
-    mapPressTimeoutRef.current = setTimeout(() => {
+    mapPressTimeoutRef.current = setTimeout(async () => {
       if (setPinEnabled && event?.geometry) {
-        handleMapPressToSetNewPin(
+        await handleMapPressToSetNewPin(
           event as {
             geometry: { coordinates: [number, number] };
             features?: unknown[];
@@ -443,10 +450,10 @@ export const MapLibre = ({
         );
       } else if (event?.geometry) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.(event as { geometry: { coordinates: number[] } });
+        await safelyHandleOnMapPress(event.geometry as { coordinates: number[] });
       } else if (!setPinEnabled) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.({ geometry: { coordinates: [] } });
+        await safelyHandleOnMapPress({ coordinates: [] });
       }
       mapPressTimeoutRef.current = null;
     }, 50);
@@ -504,7 +511,7 @@ export const MapLibre = ({
       clearSelection(true, 'shape-source-press-empty');
       if (event?.geometry) {
         // Cast event geometry to match onMapPress expected type
-        onMapPress?.({ geometry: event.geometry } as { geometry: { coordinates: number[] } });
+        await safelyHandleOnMapPress(event.geometry as { coordinates: number[] });
       }
       return;
     }

@@ -19,14 +19,18 @@ export const useReverseGeocode = () => {
     async ({
       areaServiceData,
       errorMessage,
+      isLatestRequest,
       position,
       setValue
     }: {
       areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
+      isLatestRequest?: () => boolean;
       position: LocationObjectCoords;
       setValue: UseFormSetValue<TValues>;
-    }) => {
+    }): Promise<{ isStale: boolean; isWithinArea: boolean }> => {
+      const shouldApplyResult = isLatestRequest || (() => true);
+      const staleResult = { isStale: true, isWithinArea: false };
       const { latitude, longitude } = position;
 
       try {
@@ -42,6 +46,10 @@ export const useReverseGeocode = () => {
           )
         ).json();
 
+        if (!shouldApplyResult()) {
+          return staleResult;
+        }
+
         // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.
         const city =
           CITY_FALLBACK_KEYS.map((key) => response?.address?.[key]).find(
@@ -50,21 +58,32 @@ export const useReverseGeocode = () => {
         const houseNumber = response?.address?.house_number || '';
         const street = response?.address?.road || '';
         const postalCode = response?.address?.postcode || '';
+        const isWithinArea = !!areaServiceData?.postalCodes?.includes(postalCode);
 
-        if (areaServiceData?.postalCodes?.includes(postalCode)) {
+        if (!shouldApplyResult()) {
+          return staleResult;
+        }
+
+        if (isWithinArea) {
           setValue('city', city);
           setValue('houseNumber', houseNumber);
           setValue('street', street);
           setValue('postalCode', postalCode);
-        } else {
-          setValue('city', '');
-          setValue('houseNumber', '');
-          setValue('street', '');
-          setValue('postalCode', '');
 
-          throw new Error(errorMessage);
+          return { isStale: false, isWithinArea: true };
         }
+
+        setValue('city', '');
+        setValue('houseNumber', '');
+        setValue('street', '');
+        setValue('postalCode', '');
+
+        throw new Error(errorMessage);
       } catch (error) {
+        if (!shouldApplyResult()) {
+          return staleResult;
+        }
+
         throw new Error(error.message);
       }
     },

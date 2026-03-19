@@ -125,8 +125,6 @@ export const LocationSettings = () => {
                 };
 
                 setSelectedPosition(coordinate);
-
-                return { isLocationSelectable: true };
               }}
               selectedPosition={selectedPosition}
               setPinEnabled
