@@ -4,7 +4,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
+import { imageHeight, imageWidth, momentFormat, navigateToRoute, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
 import { SueCategory, SueImageFallback, SueStatus } from './SUE';
@@ -186,6 +186,7 @@ export const CardListItem = memo(
       requestedDatetime,
       routeName: name,
       serviceName,
+      targetTabIndex,
       subtitle,
       title
     } = item;
@@ -205,7 +206,16 @@ export const CardListItem = memo(
     return (
       <Touchable
         accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
-        onPress={() => navigation && navigation.push(name, params)}
+        onPress={() =>
+          navigation &&
+          navigateToRoute({
+            navigation,
+            params,
+            routeName: name,
+            targetTabIndex,
+            usePush: true
+          })
+        }
         disabled={!navigation}
       >
         <View>

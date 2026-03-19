@@ -175,3 +175,9 @@ export type TabNavigatorConfig = {
 };
 
 export type NavigatorConfig = { type: 'drawer' } | { type: 'tab' };
+
+export type RouteTarget = {
+  params?: Record<string, unknown>;
+  routeName: string;
+  targetTabIndex?: number;
+};

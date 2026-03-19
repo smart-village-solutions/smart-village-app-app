@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 
-import { Icon } from '../config';
+import { Icon, normalize } from '../config';
+import { navigateToRoute } from '../helpers';
 
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
@@ -21,11 +22,12 @@ export type TImageButton = {
     small?: boolean;
     smallest?: boolean;
   };
+  targetTabIndex?: number;
   title?: string;
 };
 
 export const ImageButton = ({ button }: { button: TImageButton }) => {
-  const { iconName, params, routeName, style = {}, title } = button;
+  const { iconName, params, routeName, style = {}, targetTabIndex, title } = button;
   const {
     big,
     disabled,
@@ -48,9 +50,9 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   return (
     <Wrapper noPaddingTop noPaddingBottom>
       <Button
-        icon={!!iconName && <SelectedIcon color={iconColor} />}
+        icon={!!iconName && <SelectedIcon color={iconColor} size={normalize(16)} />}
         title={title}
-        onPress={() => navigation.navigate(routeName, params)}
+        onPress={() => navigateToRoute({ navigation, params, routeName, targetTabIndex })}
         {...{ big, disabled, iconPosition, invert, lightest, notFullWidth, small, smallest }}
       />
     </Wrapper>
