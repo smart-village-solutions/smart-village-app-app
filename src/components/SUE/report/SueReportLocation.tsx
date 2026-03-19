@@ -143,6 +143,7 @@ export const SueReportLocation = ({
   const houseNumberInputRef = useRef();
   const postalCodeInputRef = useRef();
   const cityInputRef = useRef();
+  const latestReverseGeocodeRequestRef = useRef(0);
 
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
@@ -208,25 +209,39 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const onMapPress = ({ geometry }: { geometry: { coordinates: number[] } }) => {
+  const clearAddressFields = () => {
+    setValue('city', '');
+    setValue('houseNumber', '');
+    setValue('street', '');
+    setValue('postalCode', '');
+  };
+
+  const onMapPress = async ({ geometry }: { geometry: { coordinates: number[] } }) => {
     const position = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
+    const requestId = latestReverseGeocodeRequestRef.current + 1;
+
+    latestReverseGeocodeRequestRef.current = requestId;
     setSelectedPosition(position);
     setUpdateRegionFromImage(false);
+    clearAddressFields();
 
-    return reverseGeocode({
-      areaServiceData,
-      errorMessage,
-      position,
-      setValue
-    })
-      .then(() => {
-        return { isLocationSelectable: true };
-      })
-      .catch((error) => {
-        setSelectedPosition(undefined);
-        Alert.alert(texts.sue.report.alerts.hint, error?.message);
-        return { isLocationSelectable: false };
+    try {
+      await reverseGeocode({
+        areaServiceData,
+        errorMessage,
+        isLatestRequest: () => latestReverseGeocodeRequestRef.current === requestId,
+        position,
+        setValue
       });
+    } catch (error) {
+      if (latestReverseGeocodeRequestRef.current !== requestId) {
+        return;
+      }
+
+      setSelectedPosition(undefined);
+      clearAddressFields();
+      Alert.alert(texts.sue.report.alerts.hint, error?.message);
+    }
   };
 
   const onMyLocationButtonPress = async ({

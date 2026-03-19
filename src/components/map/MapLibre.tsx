@@ -56,8 +56,10 @@ const PROXIMITY_THRESHOLD = 0.0008;
  * Converts remote markerImages config entries into MapLibre v11-compliant ImageEntry objects.
  * Entries with a `uri` field are wrapped as `{ source: { uri } }` per the v11 ImageEntry spec.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buildMarkerImages = (markerImages: Record<string, any> | undefined): Record<string, ImageEntry> | undefined => {
+const buildMarkerImages = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  markerImages: Record<string, any> | undefined
+): Record<string, ImageEntry> | undefined => {
   if (!markerImages) return undefined;
 
   return Object.fromEntries(
@@ -166,17 +168,6 @@ const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
 };
 
 /**
- * Helper to get icon anchor based on icon name.
- * Own location pin is centered, others are anchored at bottom.
- */
-const getIconAnchor = (iconName: string, anchorDefault: string) => [
-  'case',
-  ['==', ['get', 'iconName'], iconName],
-  'center',
-  anchorDefault
-];
-
-/**
  * Calculates initial map region based on available position data.
  */
 const calculateInitialRegion = ({
@@ -187,6 +178,7 @@ const calculateInitialRegion = ({
   showsUserLocation,
   currentPosition
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultAlternativePosition?: any;
   mapCenterPosition?: LocationObjectCoords;
   isMultipleMarkersMap: boolean;
@@ -267,7 +259,7 @@ type Props = {
     geometry: {
       coordinates: number[];
     };
-  }) => { isLocationSelectable: boolean };
+  }) => void | Promise<void>;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
   onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
@@ -309,7 +301,6 @@ export const MapLibre = ({
   showMapFilter,
   showsUserLocation: showsUserLocationProp,
   setPinEnabled,
-  showMarkerLabels = false,
   preserveZoomOnSelectedPosition = false,
   style
 }: Props) => {
@@ -323,7 +314,6 @@ export const MapLibre = ({
     clusterMinPoints = 2,
     clusterProperties,
     clusterTextColor,
-    labelStyles = {},
     layerStyles = {},
     loading,
     markerImages,
@@ -334,21 +324,6 @@ export const MapLibre = ({
     ? zoomLevel.multipleMarkers
     : zoomLevel.singleMarker;
 
-  // Build a MapLibre `case` expression for label halo color:
-  // active pins (iconName contains 'Active') get labelBackgroundActiveColor, others get labelBackgroundColor.
-  const markerLabelHaloColor = useMemo(() => {
-    if (!showMarkerLabels) return undefined;
-
-    const { labelBackgroundColor: bg, labelBackgroundActiveColor: bgActive } = labelStyles as {
-      labelBackgroundColor?: string;
-      labelBackgroundActiveColor?: string;
-    };
-
-    if (!bg && !bgActive) return undefined;
-
-    return ['case', ['in', 'Active', ['get', 'iconName']], bgActive ?? bg, bg ?? bgActive];
-  }, [showMarkerLabels, labelStyles]);
-
   const { locationSettings = {} } = useLocationSettings();
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const showsUserLocation =
@@ -357,10 +332,24 @@ export const MapLibre = ({
   const [selectedFeature, setSelectedFeature] = useState<GeoJSON.Feature | null>(null);
   const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
 
   const suppressAutoFitRef = useRef(false);
+  const safelyHandleOnMapPress = useCallback(
+    async (geometry: { coordinates: number[] }) => {
+      if (!onMapPress) {
+        return;
+      }
+
+      try {
+        await onMapPress({ geometry });
+      } catch (error) {
+        console.error('onMapPress handler failed:', error);
+      }
+    },
+    [onMapPress]
+  );
+
   const clearSelection = useCallback(
     (notifyParent = false, reason?: string) => {
       if (reason) {
@@ -500,6 +489,25 @@ export const MapLibre = ({
     });
   }, [isOwnLocation, selectedPosition]);
 
+  const newPins = useMemo(() => {
+    if (!selectedPosition) {
+      return [];
+    }
+
+    const { latitude, longitude } = selectedPosition;
+
+    if (latitude == null || longitude == null) {
+      return [];
+    }
+
+    return [
+      point([longitude, latitude], {
+        iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
+        id: 'selected-position-pin'
+      })
+    ];
+  }, [isOwnLocation, selectedPosition]);
+
   useEffect(() => {
     if (!selectedFeature?.properties?.id) return;
 
@@ -549,33 +557,12 @@ export const MapLibre = ({
     });
   }, [mapReady, preserveZoomOnSelectedPosition, selectedPosition, zoomLevel?.singleMarker]);
 
-  const handleMapPressToSetNewPin = async (event: {
-    geometry: {
-      coordinates: [number, number];
-    };
-    features?: unknown[];
-  }) => {
-    if (event?.features && event.features.length > 0) return;
-
-    const { geometry } = event;
-    if (!geometry) return;
+  const handleMapPressToSetNewPin = async (lngLat: [number, number]) => {
     clearSelection(true, 'set-pin');
 
-    const coordinates = geometry.coordinates as number[];
-    if (!coordinates?.length) return;
+    if (!lngLat?.length) return;
 
-    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
-
-    if (!isLocationSelectable) {
-      setNewPins([]);
-      return;
-    }
-
-    const newPin = point(coordinates, {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
-      id: `new-pin-${Date.now()}`
-    });
-    setNewPins([newPin]);
+    await safelyHandleOnMapPress({ coordinates: lngLat });
   };
 
   const handleMapPress = (
@@ -614,22 +601,15 @@ export const MapLibre = ({
 
     if (mapPressTimeoutRef.current) clearTimeout(mapPressTimeoutRef.current);
 
-    mapPressTimeoutRef.current = setTimeout(() => {
-      const mapPressPayload = { geometry: { coordinates: nativeEvent?.lngLat ?? [] } };
-
+    mapPressTimeoutRef.current = setTimeout(async () => {
       if (setPinEnabled && nativeEvent?.lngLat) {
-        handleMapPressToSetNewPin(
-          mapPressPayload as {
-            geometry: { coordinates: [number, number] };
-            features?: unknown[];
-          }
-        );
+        await handleMapPressToSetNewPin(nativeEvent.lngLat as [number, number]);
       } else if (nativeEvent?.lngLat) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.(mapPressPayload as { geometry: { coordinates: number[] } });
+        await safelyHandleOnMapPress({ coordinates: nativeEvent.lngLat as number[] });
       } else if (!setPinEnabled) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.({ geometry: { coordinates: [] } });
+        await safelyHandleOnMapPress({ coordinates: [] });
       }
       mapPressTimeoutRef.current = null;
     }, MAP_PRESS_DEBOUNCE);
@@ -678,10 +658,7 @@ export const MapLibre = ({
     if (!feature) {
       clearSelection(true, 'shape-source-press-empty');
       if (nativeEvent?.lngLat) {
-        // Cast event geometry to match onMapPress expected type
-        onMapPress?.({
-          geometry: { coordinates: nativeEvent.lngLat }
-        } as { geometry: { coordinates: number[] } });
+        await safelyHandleOnMapPress({ coordinates: nativeEvent.lngLat as number[] });
       }
       return;
     }
@@ -782,6 +759,24 @@ export const MapLibre = ({
   const { paint: clusterPaint } = splitLayerStyle('circle', {
     ...layerStyles.clusteredCircle,
     circleColor: clusterCircleColor,
+    circlePitchAlignment: 'map'
+  });
+  const { paint: clusterRingOuterPaint } = splitLayerStyle('circle', {
+    circleColor: clusterCircleColor,
+    circleRadius: clusterRingOuterRadius,
+    circleOpacity: 0.2,
+    circlePitchAlignment: 'map'
+  });
+  const { paint: clusterRingMidPaint } = splitLayerStyle('circle', {
+    circleColor: clusterCircleColor,
+    circleRadius: clusterRingMidRadius,
+    circleOpacity: 0.3,
+    circlePitchAlignment: 'map'
+  });
+  const { paint: clusterRingInnerPaint } = splitLayerStyle('circle', {
+    circleColor: clusterCircleColor,
+    circleRadius: clusterRingInnerRadius,
+    circleOpacity: 0.5,
     circlePitchAlignment: 'map'
   });
   const { paint: clusterCountPaint, layout: clusterCountLayout } = splitLayerStyle('symbol', {
@@ -908,12 +903,7 @@ export const MapLibre = ({
                   type="circle"
                   filter={['has', 'point_count']}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  paint={{
-                    'circle-color': clusterCircleColor as any,
-                    'circle-radius': clusterRingOuterRadius as any,
-                    'circle-opacity': 0.2,
-                    'circle-pitch-alignment': 'map'
-                  }}
+                  paint={clusterRingOuterPaint as any}
                 />
               )}
 
@@ -923,12 +913,7 @@ export const MapLibre = ({
                   type="circle"
                   filter={['has', 'point_count']}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  paint={{
-                    'circle-color': clusterCircleColor as any,
-                    'circle-radius': clusterRingMidRadius as any,
-                    'circle-opacity': 0.3,
-                    'circle-pitch-alignment': 'map'
-                  }}
+                  paint={clusterRingMidPaint as any}
                 />
               )}
 
@@ -938,12 +923,7 @@ export const MapLibre = ({
                   type="circle"
                   filter={['has', 'point_count']}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  paint={{
-                    'circle-color': clusterCircleColor as any,
-                    'circle-radius': clusterRingInnerRadius as any,
-                    'circle-opacity': 0.5,
-                    'circle-pitch-alignment': 'map'
-                  }}
+                  paint={clusterRingInnerPaint as any}
                 />
               )}
 
