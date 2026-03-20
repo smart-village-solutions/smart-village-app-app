@@ -178,7 +178,7 @@ const mapToMapMarkers = (data) =>
 
       return {
         activeIconName: `${MAP.DEFAULT_PIN}Active`,
-        defaultPin: 1,
+        [MAP.DEFAULT_PIN]: 1,
         iconName: MAP.DEFAULT_PIN,
         id: item.id.toString(),
         position: {
