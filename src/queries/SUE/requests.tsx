@@ -20,8 +20,13 @@ export const requests = async (queryVariables) => {
     resolve(
       response.map((item: any) => {
         // convert media_url to JSON, as it is returned as a string by the API
-        if (item?.media_url) {
-          item.media_url = JSON.parse(item.media_url);
+        if (item?.media_url && typeof item.media_url === 'string') {
+          try {
+            item.media_url = JSON.parse(item.media_url);
+          } catch (e) {
+            // Do not let malformed media_url break the whole response
+            console.error('Error parsing media_url from SUE requests response', e);
+          }
         }
 
         return _mapKeys(item, (value, key) => _camelCase(key));
@@ -50,7 +55,12 @@ export const myRequests = async (): Promise<any[]> => {
 
       // Parse media_url if it exists and is a string
       if (item.media_url && typeof item.media_url === 'string') {
-        item.media_url = JSON.parse(item.media_url);
+        try {
+          item.media_url = JSON.parse(item.media_url);
+        } catch (e) {
+          // Do not let malformed stored media_url break the whole Promise.all
+          console.error('Error parsing media_url for stored SUE report', e);
+        }
       }
 
       const isFinalStatus = item.status === SUE_STATUS.CLOSED || item.status === SUE_STATUS.INVALID;
