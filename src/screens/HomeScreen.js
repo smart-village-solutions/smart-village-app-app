@@ -43,15 +43,61 @@ const renderItem = ({ item }) => {
     buttonTitle,
     categoriesNews,
     fetchPolicy,
+    isDrawer,
     limit,
     navigate,
     navigation,
+    publicJsonFile,
     query,
     queryVariables,
+    refreshTimeKey,
     showData,
     showVolunteerEvents,
-    title
+    title,
+    type,
+    widgetConfigs,
+    widgetStyle
   } = item;
+
+  // Static component types (LiveTicker, Carousel, Widgets, Disturber, HomeService, HomeButtons, About)
+  if (type) {
+    if (!item.show) return null;
+
+    switch (type) {
+      case 'liveTicker':
+        return <LiveTicker publicJsonFile={publicJsonFile || 'homeLiveTicker'} />;
+      case 'carousel':
+        return (
+          <ConnectedImagesCarousel
+            navigation={navigation}
+            publicJsonFile={publicJsonFile || 'homeCarousel'}
+            refreshTimeKey={refreshTimeKey || 'publicJsonFile-homeCarousel'}
+          />
+        );
+      case 'widgets':
+        return <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />;
+      case 'disturber':
+        return (
+          <Disturber navigation={navigation} publicJsonFile={publicJsonFile || 'homeDisturber'} />
+        );
+      case 'homeService':
+        if (!isDrawer) return null;
+        return <HomeService publicJsonFile={publicJsonFile || 'homeService'} />;
+      case 'homeButtons':
+        return <HomeButtons publicJsonFile={publicJsonFile || 'homeButtons'} />;
+      case 'about':
+        if (!isDrawer) return null;
+        return (
+          <About
+            navigation={navigation}
+            publicJsonFile={publicJsonFile || 'homeAbout'}
+            withHomeRefresh
+          />
+        );
+      default:
+        return null;
+    }
+  }
 
   const NAVIGATION = {
     CATEGORIES_INDEX: {
@@ -269,7 +315,13 @@ export const HomeScreen = ({ navigation, route }) => {
     }, [])
   );
 
+  const isDrawer = route.params?.isDrawer;
+
   const defaultData = [
+    { type: 'liveTicker', show: true },
+    { type: 'carousel', show: true, navigation },
+    { type: 'widgets', show: true, widgetConfigs, widgetStyle },
+    { type: 'disturber', show: true, navigation },
     {
       categoriesNews,
       fetchPolicy,
@@ -301,12 +353,27 @@ export const HomeScreen = ({ navigation, route }) => {
       showData: showEvents,
       showVolunteerEvents,
       title: headlineEvents
-    }
+    },
+    { type: 'homeService', show: true, isDrawer },
+    { type: 'homeButtons', show: true },
+    { type: 'about', show: true, isDrawer, navigation }
   ];
 
   const configuredData = homeScreenConfig?.length
     ? homeScreenConfig
         .map((section) => {
+          // Handle static component type entries (liveTicker, carousel, widgets, etc.)
+          if (section.type) {
+            return {
+              ...section,
+              show: section.show !== false,
+              isDrawer,
+              navigation,
+              widgetConfigs,
+              widgetStyle
+            };
+          }
+
           switch (section.query) {
             case QUERY_TYPES.NEWS_ITEMS:
               return {
@@ -321,7 +388,7 @@ export const HomeScreen = ({ navigation, route }) => {
                   excludeMowasRegionalKeys,
                   ...section.queryVariables
                 },
-                showData: section.show
+                showData: section.show !== false
               };
             case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
               return {
@@ -338,7 +405,7 @@ export const HomeScreen = ({ navigation, route }) => {
                   onlyWithImage: true,
                   ...section.queryVariables
                 },
-                showData: section.show,
+                showData: section.show !== false,
                 title: section.title
               };
             case QUERY_TYPES.EVENT_RECORDS:
@@ -354,7 +421,7 @@ export const HomeScreen = ({ navigation, route }) => {
                   order: 'listDate_ASC',
                   ...section.queryVariables
                 },
-                showData: section.show,
+                showData: section.show !== false,
                 showVolunteerEvents,
                 title: section.title
               };
@@ -369,32 +436,6 @@ export const HomeScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       <FlatList
         data={configuredData}
-        ListHeaderComponent={
-          <>
-            <LiveTicker publicJsonFile="homeLiveTicker" />
-
-            <ConnectedImagesCarousel
-              navigation={navigation}
-              publicJsonFile="homeCarousel"
-              refreshTimeKey="publicJsonFile-homeCarousel"
-            />
-
-            <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />
-
-            <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
-          </>
-        }
-        ListFooterComponent={
-          route.params?.isDrawer ? (
-            <>
-              <HomeService publicJsonFile="homeService" />
-              <HomeButtons publicJsonFile="homeButtons" />
-              <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
-            </>
-          ) : (
-            <HomeButtons publicJsonFile="homeButtons" />
-          )
-        }
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
