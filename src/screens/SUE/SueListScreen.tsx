@@ -183,13 +183,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     }
 
     return parsedListItem;
-  }, [data, query, queryVariables]);
+  }, [appDesignSystem, data, query, queryVariables]);
 
   const displayCount = useMemo(() => {
     return queryVariables.search || query === QUERY_TYPES.SUE.MY_REQUESTS
       ? listItems.length
       : dataCount?.length;
-  }, [queryVariables.search, listItems.length, dataCount?.length]);
+  }, [queryVariables.search, query, listItems.length, dataCount?.length]);
 
   const refresh = async () => {
     setRefreshing(true);

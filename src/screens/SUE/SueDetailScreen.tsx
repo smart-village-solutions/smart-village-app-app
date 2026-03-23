@@ -161,17 +161,39 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
                 invert
                 small={false}
                 smallest={false}
-                onPress={() =>
+                onPress={async () => {
+                  // Determine which query we are navigating to
+                  const targetQuery =
+                    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+                      ? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID
+                      : QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID;
+                  let details = route.params?.details;
+
+                  // When navigating to "Mein gespeicherter Bericht", prefer local data from SUE_MY_REPORTS
+                  if (targetQuery === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID) {
+                    try {
+                      const storedReports = (await readFromStore(SUE_MY_REPORTS)) || [];
+                      const matchingReport = Array.isArray(storedReports)
+                        ? storedReports.find(
+                            (report: any) => report?.serviceRequestId === serviceRequestId
+                          )
+                        : null;
+
+                      if (matchingReport) {
+                        details = matchingReport;
+                      }
+                    } catch (e) {
+                      // In case of any storage error, fall back to existing route params
+                    }
+                  }
+
                   navigation.push(ScreenName.Detail, {
-                    details: route.params?.details,
-                    query:
-                      query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
-                        ? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID
-                        : QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID,
+                    details,
+                    query: targetQuery,
                     queryVariables: { id: serviceRequestId },
                     title: `#${serviceRequestId} ${title}`
-                  })
-                }
+                  });
+                }}
                 title={
                   query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
                     ? texts.sue.viewOfficialReportDetail
