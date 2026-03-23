@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { consts } from '../config';
+import { navigateToRoute } from '../helpers';
 
 import { Image } from './Image';
 
@@ -24,7 +25,7 @@ export const ImagesCarouselItem = memo(
     refreshInterval,
     source
   }) => {
-    const { routeName: name, params } = source;
+    const { routeName: name, params, targetTabIndex } = source;
 
     if (name && params) {
       return (
@@ -32,7 +33,14 @@ export const ImagesCarouselItem = memo(
           accessibilityLabel={`${
             source.captionText ? source.captionText : consts.a11yLabel.imageCarousel
           } ${consts.a11yLabel.button}`}
-          onPress={() => navigation.navigate({ name, params })}
+          onPress={() =>
+            navigateToRoute({
+              navigation,
+              params,
+              routeName: name,
+              targetTabIndex
+            })
+          }
           activeOpacity={0.8}
         >
           <Image {...{ button, source, message, containerStyle, aspectRatio, isImageFullWidth }} />
