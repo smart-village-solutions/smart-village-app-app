@@ -63,16 +63,16 @@ export const IndexFilter = ({
             <DropdownSelect
               data={categoryFilterData}
               setData={setCategoryFilterData}
-              label={texts.bbBus.categoryFilter.label}
+              label={texts.bus.categoryFilter.label}
             />
             <Divider style={styles.divider} />
             <DropdownSelect
               data={locationFilterData}
               setData={setLocationFilterData}
-              label={texts.bbBus.locationFilter.label}
+              label={texts.bus.locationFilter.label}
               showSearch
               searchInputStyle={styles.searchInput}
-              searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
+              searchPlaceholder={texts.bus.locationFilter.searchPlaceholder}
             />
           </WrapperVertical>
         );
@@ -82,17 +82,17 @@ export const IndexFilter = ({
             <TextSearch
               data={serviceSearchData}
               setData={setServiceSearchData}
-              placeholder={texts.bbBus.textSearch.placeholder}
-              label={texts.bbBus.textSearch.label}
+              placeholder={texts.bus.textSearch.placeholder}
+              label={texts.bus.textSearch.label}
             />
             <Divider style={styles.divider} />
             <DropdownSelect
               data={locationFilterData}
               setData={setLocationFilterData}
-              label={texts.bbBus.locationFilter.label}
+              label={texts.bus.locationFilter.label}
               showSearch
               searchInputStyle={styles.searchInput}
-              searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
+              searchPlaceholder={texts.bus.locationFilter.searchPlaceholder}
             />
           </WrapperVertical>
         );
@@ -104,10 +104,10 @@ export const IndexFilter = ({
               <DropdownSelect
                 data={locationFilterData}
                 setData={setLocationFilterData}
-                label={texts.bbBus.locationFilter.label}
+                label={texts.bus.locationFilter.label}
                 showSearch
                 searchInputStyle={styles.searchInput}
-                searchPlaceholder={texts.bbBus.locationFilter.searchPlaceholder}
+                searchPlaceholder={texts.bus.locationFilter.searchPlaceholder}
               />
             </WrapperVertical>
           </WrapperVertical>

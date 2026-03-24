@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { VerticalList } from '../VerticalList';
 
@@ -16,13 +16,14 @@ export const ServiceList = ({
   setAreaId,
   top10
 }) => {
-  const [listItems, setListItems] = useState(selectedFilter.id === 1 ? top10 : []);
+  const activeFilter = selectedFilter || { id: 3 };
+  const [listItems, setListItems] = useState(activeFilter.id === 1 ? top10 : []);
 
   useEffect(() => {
-    if (selectedFilter.id === 1) {
+    if (activeFilter.id === 1) {
       setListItems(top10);
     }
-  }, [results.length, selectedFilter]);
+  }, [activeFilter.id, results.length, top10]);
 
   return (
     <VerticalList
@@ -31,7 +32,7 @@ export const ServiceList = ({
       noSubtitle
       ListHeaderComponent={
         <IndexFilter
-          selectedFilter={selectedFilter}
+          selectedFilter={activeFilter}
           results={results}
           listItems={listItems}
           setListItems={setListItems}

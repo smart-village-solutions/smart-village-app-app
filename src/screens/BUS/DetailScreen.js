@@ -2,21 +2,17 @@ import _remove from 'lodash/remove';
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
-import { useQuery } from 'react-apollo';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { BBBusClient } from '../../BBBusClient';
 import { BackToTop, Button, SafeAreaViewFlex } from '../../components';
-import { Authority } from '../../components/BB-BUS/Authority';
-import { Persons } from '../../components/BB-BUS/Persons';
-import { TextBlock } from '../../components/BB-BUS/TextBlock';
+import { Authority } from '../../components/BUS/Authority';
+import { Persons } from '../../components/BUS/Persons';
+import { TextBlock } from '../../components/BUS/TextBlock';
 import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, device, normalize } from '../../config';
-import { matomoTrackingString, openLink, rootRouteName } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
-import { GET_SERVICE } from '../../queries/BB-BUS';
+import { matomoTrackingString, openLink } from '../../helpers';
+import { useBusService, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
@@ -106,28 +102,23 @@ const parseTextBlocks = (service) => {
 // eslint-disable-next-line complexity
 export const DetailScreen = ({ route }) => {
   const scrollViewRef = useRef();
-  const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { bus = {} } = settings;
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [client] = useState(BBBusClient(globalSettings?.settings?.busBb?.uri));
 
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const details = route?.params?.data ?? '';
-  const areaId = route.params?.areaId ?? globalSettings?.settings?.busBb?.v2?.areaId?.toString();
+  const areaId = route.params?.areaId ?? bus?.areaId?.toString();
   const id = details.id;
 
-  useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
+  useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BUS, headerTitle]));
 
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  const { data, loading, refetch } = useQuery(GET_SERVICE, {
-    variables: { externalIds: id, areaId },
-    client,
-    fetchPolicy: 'network-only',
-    skip: !id || !areaId
-  });
+  const { data: service, isLoading: loading, refetch } = useBusService({ areaId, id });
 
   if (!id || !areaId) return null;
 
@@ -137,11 +128,12 @@ export const DetailScreen = ({ route }) => {
 
   const refresh = async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
   };
-
-  const service = data?.publicServiceTypes?.[0];
 
   if (!service) return null;
 

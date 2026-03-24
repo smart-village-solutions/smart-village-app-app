@@ -1,6 +1,6 @@
 import _isEmpty from 'lodash/isEmpty';
 import _isObjectLike from 'lodash/isObjectLike';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { useQuery } from 'react-apollo';
 
 import appJson from '../../app.json';
@@ -47,7 +47,6 @@ export const useStaticContent = <T>({
   refetch: () => Promise<unknown>;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const [error, setError] = useState(false);
 
   const refreshTime = useRefreshTime(refreshTimeKey ?? name, refreshInterval);
 
@@ -77,34 +76,44 @@ export const useStaticContent = <T>({
     return await refetch?.();
   }, [refetch]);
 
-  const publicFileData = useMemo(() => {
-    setError(false);
+  const { data: publicFileData, parseError } = useMemo(() => {
+    let nextParseError = false;
 
     if (type === 'html') {
-      return data?.publicHtmlFile?.content;
+      return {
+        data: data?.publicHtmlFile?.content,
+        parseError: false
+      };
     }
 
     try {
       const json = data?.publicJsonFile?.content;
 
       if (!_isEmpty(json) && _isObjectLike(json)) {
-        return parseFromJson ? parseFromJson(json) : json;
+        return {
+          data: parseFromJson ? parseFromJson(json) : json,
+          parseError: false
+        };
       } else if (!loading && data) {
-        // set error true if there is bad data without `publicJsonFile.content`
-        setError(true);
+        nextParseError = true;
       }
     } catch (error) {
-      setError(true);
+      nextParseError = true;
     }
+
+    return {
+      data: undefined,
+      parseError: nextParseError
+    };
   }, [data, parseFromJson]);
 
   return {
     data: publicFileData,
-    error: error || !!queryError,
+    error: parseError || !!queryError,
     // add the extra condition to avoid weird rendering states, where `loading` is false, but the
     // `publicFileData` is not yet set. this way we can safely manipulate `data` and then update the
     // `publicFileData` with it, after the query has finished loading.
-    loading: loading || (publicFileData === undefined && !error && !queryError && !skip),
+    loading: loading || (publicFileData === undefined && !parseError && !queryError && !skip),
     refetch: refetchCallback
   };
 };

@@ -101,10 +101,7 @@ import {
   WhistleblowFormScreen,
   getTilesScreen
 } from '../../screens';
-import {
-  DetailScreen as BBBUSDetailScreen,
-  IndexScreen as BBBUSIndexScreen
-} from '../../screens/BB-BUS';
+import { DetailScreen as BusDetailScreen, IndexScreen as BusIndexScreen } from '../../screens/BUS';
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
@@ -149,13 +146,13 @@ export const defaultStackConfig = ({
     },
     {
       initialParams,
-      routeName: ScreenName.BBBUSIndex,
-      screenComponent: BBBUSIndexScreen
+      routeName: ScreenName.BusIndex,
+      screenComponent: BusIndexScreen
     },
     {
       initialParams,
-      routeName: ScreenName.BBBUSDetail,
-      screenComponent: BBBUSDetailScreen,
+      routeName: ScreenName.BusDetail,
+      screenComponent: BusDetailScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
     },
     {

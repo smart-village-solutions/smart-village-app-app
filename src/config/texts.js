@@ -75,7 +75,7 @@ export const texts = {
     worksOfArt: 'Kunstwerke'
   },
   backToTop: 'zurück nach oben',
-  bbBus: {
+  bus: {
     authority: {
       elevator: 'Aufzug vorhanden',
       openingTime: 'Öffnungszeiten',

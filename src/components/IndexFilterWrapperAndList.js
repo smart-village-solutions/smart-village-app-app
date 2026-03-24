@@ -12,7 +12,7 @@ import { WrapperHorizontal } from './Wrapper';
 const { a11yLabel } = consts;
 
 export const IndexFilterWrapperAndList = ({ filter, setFilter }) => {
-  const selectedFilter = filter.find((entry) => entry.selected);
+  const selectedFilter = filter.find((entry) => entry.selected) || filter[0];
 
   return (
     <IndexFilterWrapper>
@@ -28,7 +28,7 @@ export const IndexFilterWrapperAndList = ({ filter, setFilter }) => {
             })`}
             onPress={() => {
               // only trigger onPress if a new selection is made
-              if (selectedFilter.id === item.id) return;
+              if (selectedFilter?.id === item.id) return;
 
               const updatedFilter = filter.map((entry) => {
                 if (entry.id === item.id) {
