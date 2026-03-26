@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, normalize, texts } from '../../config';
+import { search } from '../../helpers';
+import { DropdownSelect } from '../DropdownSelect';
+import { IndexFilterWrapper } from '../IndexFilterElement';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
-import { DropdownSelect } from '../DropdownSelect';
-import { search } from '../../helpers';
-import { IndexFilterWrapper } from '../IndexFilterElement';
 
+import { AreaAutocomplete } from './AreaAutocomplete';
 import { AZFilter } from './AZFilter';
 import { TextSearch } from './TextSearch';
 
@@ -37,25 +38,22 @@ const initialAZFilterData = alphabetWithUmlauts.map((value, index) => ({
 
 export const IndexFilter = ({
   areaId,
-  areas,
+  areaName,
+  initialAreaId,
+  initialAreaName,
   listItems,
   loading,
   results,
   selectedFilter,
-  setAreaId,
+  setArea,
   setListItems
 }) => {
   const [serviceSearchData, setServiceSearchData] = useState('');
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
-  const [locationFilterData, setLocationFilterData] = useState(areas);
   const [AZFilterData, setAZFilterData] = useState(initialAZFilterData);
   const listItemsCount = listItems.length;
 
-  /* eslint-disable indent */
-  /* NOTE: there are differences in eslint config and auto linting for switch */
   const renderFilterComponents = (selectedFilterId) => {
-    if (loading) return <Wrapper></Wrapper>;
-
     switch (selectedFilterId) {
       case 2:
         return (
@@ -66,13 +64,12 @@ export const IndexFilter = ({
               label={texts.bus.categoryFilter.label}
             />
             <Divider style={styles.divider} />
-            <DropdownSelect
-              data={locationFilterData}
-              setData={setLocationFilterData}
-              label={texts.bus.locationFilter.label}
-              showSearch
-              searchInputStyle={styles.searchInput}
-              searchPlaceholder={texts.bus.locationFilter.searchPlaceholder}
+            <AreaAutocomplete
+              areaId={areaId}
+              areaName={areaName}
+              initialAreaId={initialAreaId}
+              initialAreaName={initialAreaName}
+              onSelectArea={setArea}
             />
           </WrapperVertical>
         );
@@ -86,13 +83,12 @@ export const IndexFilter = ({
               label={texts.bus.textSearch.label}
             />
             <Divider style={styles.divider} />
-            <DropdownSelect
-              data={locationFilterData}
-              setData={setLocationFilterData}
-              label={texts.bus.locationFilter.label}
-              showSearch
-              searchInputStyle={styles.searchInput}
-              searchPlaceholder={texts.bus.locationFilter.searchPlaceholder}
+            <AreaAutocomplete
+              areaId={areaId}
+              areaName={areaName}
+              initialAreaId={initialAreaId}
+              initialAreaName={initialAreaName}
+              onSelectArea={setArea}
             />
           </WrapperVertical>
         );
@@ -101,13 +97,12 @@ export const IndexFilter = ({
           <WrapperVertical>
             <AZFilter data={AZFilterData} setData={setAZFilterData} />
             <WrapperVertical>
-              <DropdownSelect
-                data={locationFilterData}
-                setData={setLocationFilterData}
-                label={texts.bus.locationFilter.label}
-                showSearch
-                searchInputStyle={styles.searchInput}
-                searchPlaceholder={texts.bus.locationFilter.searchPlaceholder}
+              <AreaAutocomplete
+                areaId={areaId}
+                areaName={areaName}
+                initialAreaId={initialAreaId}
+                initialAreaName={initialAreaName}
+                onSelectArea={setArea}
               />
             </WrapperVertical>
           </WrapperVertical>
@@ -115,34 +110,18 @@ export const IndexFilter = ({
       default:
         return <Wrapper></Wrapper>;
     }
-    /* eslint-enable indent */
   };
 
-  // read about useCallback here https://overreacted.io/a-complete-guide-to-useeffect/
-  const getAreaId = useCallback(() => {
-    if (!locationFilterData || !locationFilterData.length) return areaId;
-
-    return locationFilterData.find((item) => item.selected).areaId;
-  }, [locationFilterData]);
-
   useEffect(() => {
-    areaId = getAreaId();
+    if (loading) return;
 
-    // trigger a refetch and re-rendering of the IndexScreen for the new area
-    // if the areaId has changed
-    areaId && setAreaId(areaId);
-  }, [getAreaId]);
+    if (selectedFilter.id === 2) {
+      const category = categoryFilterData.find((item) => item.selected);
 
-  useEffect(() => {
-    if (!loading && selectedFilter.id === 2) {
-      const category = categoryFilterData.find((item) => item.selected).value;
-
-      if (category.id > 0) {
+      if (category?.id > 0) {
         const searchResults = search({
           results,
-          previousResults: listItems,
-          location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
-          category: categoryFilterData.find((item) => item.selected).value
+          category: category.value
         });
 
         setListItems(searchResults);
@@ -150,30 +129,30 @@ export const IndexFilter = ({
         setListItems([]);
       }
     }
-  }, [areaId, selectedFilter, categoryFilterData]);
+  }, [areaId, categoryFilterData, loading, results, selectedFilter.id, setListItems]);
 
   useEffect(() => {
-    if (!loading && selectedFilter.id === 3) {
+    if (loading) return;
+
+    if (selectedFilter.id === 3) {
       const searchResults = search({
         results,
-        previousResults: listItems,
-        location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
         keyword: serviceSearchData
       });
 
       setListItems(searchResults);
     }
-  }, [areaId, selectedFilter, serviceSearchData]);
+  }, [areaId, loading, results, selectedFilter.id, serviceSearchData, setListItems]);
 
   useEffect(() => {
-    if (!loading && selectedFilter.id === 4) {
+    if (loading) return;
+
+    if (selectedFilter.id === 4) {
       const character = (AZFilterData.find((item) => item.selected) || {}).value;
 
       if (character) {
         const searchResults = search({
           results,
-          previousResults: listItems,
-          location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
           character
         });
 
@@ -182,7 +161,7 @@ export const IndexFilter = ({
         setListItems([]);
       }
     }
-  }, [areaId, selectedFilter, AZFilterData]);
+  }, [AZFilterData, areaId, loading, results, selectedFilter.id, setListItems]);
 
   return (
     <View>
@@ -208,28 +187,18 @@ const styles = StyleSheet.create({
     fontSize: normalize(10),
     letterSpacing: normalize(1.5),
     lineHeight: normalize(30)
-  },
-  searchInput: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderRgba,
-    borderWidth: 0,
-    color: colors.darkText,
-    fontFamily: 'regular',
-    fontSize: normalize(16),
-    justifyContent: 'space-between',
-    lineHeight: normalize(22),
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(12)
   }
 });
 
 IndexFilter.propTypes = {
   areaId: PropTypes.string.isRequired,
-  areas: PropTypes.array,
+  areaName: PropTypes.string,
+  initialAreaId: PropTypes.string,
+  initialAreaName: PropTypes.string,
   listItems: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   results: PropTypes.array.isRequired,
   selectedFilter: PropTypes.object.isRequired,
-  setAreaId: PropTypes.func.isRequired,
+  setArea: PropTypes.func.isRequired,
   setListItems: PropTypes.func.isRequired
 };

@@ -19,6 +19,16 @@ const requestJson = async (url, apiKey) => {
   return response.json();
 };
 
+const mapPoliticalArea = (area) => {
+  if (!area?.id && !area?.ags && !(area?.displayName || area?.name || area?.nameShort)) return null;
+
+  return {
+    ags: area?.ags,
+    id: area.id,
+    label: area?.displayName || area?.name || area?.nameShort
+  };
+};
+
 export const findPublicServices = async ({ areaId, bus, searchWord = '' }) => {
   const { apiKey, uri: baseUrl } = bus;
   const encodedSearchWord = encodeURIComponent(searchWord);
@@ -46,4 +56,33 @@ export const getPublicService = async ({ areaId, bus, id }) => {
   const payload = await requestJson(`${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`, apiKey);
 
   return payload?.object || payload;
+};
+
+export const getPoliticalArea = async ({ areaId, bus }) => {
+  const { apiKey, uri: baseUrl } = bus;
+  const encodedAreaId = encodeURIComponent(areaId);
+  const payload = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, apiKey);
+
+  return mapPoliticalArea(payload);
+};
+
+export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
+  const { apiKey, uri: baseUrl } = bus;
+  const query = searchTerm.trim();
+
+  if (query.length < 3) return [];
+
+  const sanitizedSearchWords = query
+    .split(/\s+/)
+    .map((word) => word.replace(/[^0-9A-Za-zÄÖÜäöüß]/g, ''))
+    .filter(Boolean);
+
+  if (!sanitizedSearchWords.length) return [];
+
+  const searchWordsQuery = sanitizedSearchWords
+    .map((word) => `searchWords=${encodeURIComponent(`${word}*`)}`)
+    .join('&');
+  const payload = await requestJson(`${baseUrl}/political-area/search?${searchWordsQuery}`, apiKey);
+
+  return Array.isArray(payload?.values) ? payload.values : [];
 };
