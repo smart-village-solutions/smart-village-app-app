@@ -134,6 +134,7 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
   const clusterSuperiorColor = data?.clusterSuperiorColor;
   const clusterSuperiorTextColor = data?.clusterSuperiorTextColor;
   const layerStyles = data?.layerStyles;
+  const labelStyles = data?.labelStyles;
   const markerImages = data?.markerImages;
   const zoomLevel = data?.zoomLevel;
 
@@ -155,6 +156,7 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
       clusterFallbackTextColor
     ),
     layerStyles,
+    labelStyles,
     loading,
     markerImages,
     zoomLevel

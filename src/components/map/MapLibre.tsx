@@ -114,6 +114,7 @@ type Props = {
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
   setPinEnabled?: boolean;
+  showMarkerLabels?: boolean;
   showsUserLocation?: boolean;
   preserveZoomOnSelectedPosition?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -144,6 +145,7 @@ export const MapLibre = ({
   selectedMarker = '',
   selectedPosition,
   setPinEnabled,
+  showMarkerLabels = false,
   preserveZoomOnSelectedPosition = false,
   style,
   ...otherProps
@@ -158,6 +160,7 @@ export const MapLibre = ({
     clusterMinPoints = 2,
     clusterProperties,
     clusterTextColor,
+    labelStyles = {},
     layerStyles = {},
     loading,
     markerImages,
@@ -166,6 +169,21 @@ export const MapLibre = ({
   const initialZoomLevel = isMultipleMarkersMap
     ? zoomLevel.multipleMarkers
     : zoomLevel.singleMarker;
+
+  // Build a MapLibre `case` expression for label halo color:
+  // active pins (iconName contains 'Active') get labelBackgroundActiveColor, others get labelBackgroundColor.
+  const markerLabelHaloColor = useMemo(() => {
+    if (!showMarkerLabels) return undefined;
+
+    const { labelBackgroundColor: bg, labelBackgroundActiveColor: bgActive } = labelStyles as {
+      labelBackgroundColor?: string;
+      labelBackgroundActiveColor?: string;
+    };
+
+    if (!bg && !bgActive) return undefined;
+
+    return ['case', ['in', 'Active', ['get', 'iconName']], bgActive ?? bg, bg ?? bgActive];
+  }, [showMarkerLabels, labelStyles]);
 
   const { locationSettings = {} } = useLocationSettings();
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
@@ -642,7 +660,22 @@ export const MapLibre = ({
                     layerStyles.singleIcon.iconAnchor
                   ],
                   iconAllowOverlap: true,
-                  iconIgnorePlacement: true
+                  iconIgnorePlacement: true,
+                  ...(showMarkerLabels && {
+                    textField: ['get', 'label'],
+                    textFont: ['Noto Sans Bold', 'Open Sans Bold'],
+                    textSize: (labelStyles as any)?.labelSize ?? 12,
+                    textColor: (labelStyles as any)?.labelColor ?? '#ffffff',
+                    // offset from pin anchor (bottom of icon) upward into pin head
+                    textOffset: [0, -2.0],
+                    textAnchor: 'center',
+                    textAllowOverlap: true,
+                    textIgnorePlacement: true,
+                    ...(markerLabelHaloColor && {
+                      textHaloColor: markerLabelHaloColor,
+                      textHaloWidth: 7
+                    })
+                  })
                 }}
               />
 

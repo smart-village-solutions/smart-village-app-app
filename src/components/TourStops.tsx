@@ -106,6 +106,7 @@ export const TourStops = ({
           geometryTourData={geometryTourData}
           locations={mapMarkers}
           mapStyle={styles.map}
+          showMarkerLabels
           showsUserLocation
           isMyLocationButtonVisible={true}
           onMarkerPress={(tourId) => {
@@ -124,9 +125,9 @@ export const TourStops = ({
   );
 };
 
-export const mapToMapMarkers = (data, id) =>
+export const mapToMapMarkers = (data, id?) =>
   data
-    ?.map((item) => {
+    ?.map((item, index) => {
       const latitude = item.location?.geoLocation?.latitude;
       const longitude = item.location?.geoLocation?.longitude;
 
@@ -137,6 +138,7 @@ export const mapToMapMarkers = (data, id) =>
         activeIconName: `${MAP.DEFAULT_PIN}Active`,
         [MAP.DEFAULT_PIN]: 1,
         id: item.id.toString(),
+        label: String(index + 1),
         position: {
           latitude,
           longitude

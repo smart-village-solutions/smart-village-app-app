@@ -129,6 +129,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
           geometryTourData={geometryTourData}
           locations={mapMarkers}
           mapStyle={styles.map}
+          showMarkerLabels
           showsUserLocation={true}
           isMyLocationButtonVisible={true}
           onMarkerPress={(tourId) => {
