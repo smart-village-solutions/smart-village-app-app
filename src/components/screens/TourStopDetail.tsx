@@ -107,7 +107,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 
       <WrapperHorizontal>
         <Button
-          title="zur Map"
+          title={texts.tour.showOnMap}
           onPress={() => scrollViewRef.current?.scrollTo({ y: mapY, animated: true })}
         />
       </WrapperHorizontal>

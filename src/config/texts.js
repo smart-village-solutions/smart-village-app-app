@@ -1435,6 +1435,7 @@ export const texts = {
     distance: 'Entfernung',
     end: 'Tourende',
     operatingCompany: 'Veranstalter',
+    showOnMap: 'Auf Karte anzeigen',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
   },
