@@ -37,12 +37,16 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
     let subscription: Location.LocationSubscription | null = null;
 
     const subscribe = async () => {
-      subscription = await Location.watchHeadingAsync((headingData) => {
-        // trueHeading is -1 when unavailable (e.g. no GPS fix), fall back to magHeading.
-        const heading =
-          headingData.trueHeading >= 0 ? headingData.trueHeading : headingData.magHeading;
-        setDeviceHeading(heading);
-      });
+      try {
+        subscription = await Location.watchHeadingAsync((headingData) => {
+          // trueHeading is -1 when unavailable (e.g. no GPS fix), fall back to magHeading.
+          const heading =
+            headingData.trueHeading >= 0 ? headingData.trueHeading : headingData.magHeading;
+          setDeviceHeading(heading);
+        });
+      } catch {
+        // Heading unavailable (missing permissions or unsupported hardware) — arrow stays hidden.
+      }
     };
 
     subscribe();

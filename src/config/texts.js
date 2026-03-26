@@ -1434,7 +1434,9 @@ export const texts = {
     },
     distance: 'Entfernung',
     end: 'Tourende',
+    next: 'Nächster',
     operatingCompany: 'Veranstalter',
+    previous: 'Vorheriger',
     showOnMap: 'Auf Karte anzeigen',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'

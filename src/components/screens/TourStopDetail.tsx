@@ -16,11 +16,11 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { TourDetailInfoCard } from '../infoCard';
 import { MapLibre } from '../map';
+import { MediaSection } from '../MediaSection';
 import { locationServiceEnabledAlert } from '../SUE/report/SueReportLocation';
 import { mapToMapMarkers } from '../TourStops';
 import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
-import { MediaSection } from '../MediaSection';
 import { SectionHeader } from './../SectionHeader';
 import { TourCard } from './TourCard';
 
@@ -56,7 +56,10 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
   }, [systemPermission, locationServiceEnabled, navigation, currentPosition]);
 
   const nextStop = () => {
-    const currentIndex = tourStops.findIndex((stop) => stop.id === id);
+    const currentIndex = tourStops.findIndex((stop) => stop.id?.toString() === id?.toString());
+
+    if (currentIndex === -1) return;
+
     const nextStop = tourStops[currentIndex + 1];
 
     if (nextStop) {
@@ -71,7 +74,10 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
   };
 
   const previousStop = () => {
-    const currentIndex = tourStops.findIndex((stop) => stop.id === id);
+    const currentIndex = tourStops.findIndex((stop) => stop.id?.toString() === id?.toString());
+
+    if (currentIndex === -1) return;
+
     const previousStop = tourStops[currentIndex - 1];
 
     if (previousStop) {
@@ -93,6 +99,9 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
   useEffect(() => {
     scrollViewRef.current?.scrollTo({ y: 0, animated: false });
   }, [id]);
+
+  // Normalize id to string for reliable comparisons (map markers pass string IDs)
+  const idStr = id?.toString();
 
   return (
     <ScrollView ref={scrollViewRef}>
@@ -130,8 +139,8 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
           locations={mapMarkers}
           mapStyle={styles.map}
           showMarkerLabels
-          showsUserLocation={true}
-          isMyLocationButtonVisible={true}
+          showsUserLocation
+          isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,
@@ -149,23 +158,23 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
         <WrapperVertical>
           <WrapperRow center spaceAround>
             <Button
+              disabled={idStr === tourStops[0].id?.toString()}
               icon={
                 <Icon.ArrowLeft color={id === tourStops[0].id ? colors.surface : colors.primary} />
               }
               iconPosition="left"
               invert
               notFullWidth
-              disabled={id === tourStops[0].id}
               onPress={previousStop}
-              title="Vorheriger"
+              title={texts.tour.previous}
             />
             <Button
+              disabled={idStr === tourStops[tourStops.length - 1].id?.toString()}
               icon={<Icon.ArrowRight color={colors.surface} />}
               iconPosition="right"
               notFullWidth
-              disabled={id === tourStops[tourStops.length - 1].id}
               onPress={nextStop}
-              title="Nächster"
+              title={texts.tour.next}
             />
           </WrapperRow>
         </WrapperVertical>
@@ -173,7 +182,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
     </ScrollView>
   );
 };
-/* eslint-disable complexity */
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   map: {

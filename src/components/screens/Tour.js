@@ -6,19 +6,18 @@ import { View } from 'react-native';
 import { consts, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { AugmentedReality } from '../augmentedReality';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { Wrapper } from '../Wrapper';
 import { SectionHeader } from '../SectionHeader';
+import { TourStops } from '../TourStops';
+import { Wrapper } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
-import { TourStops } from '../TourStops';
 
 const { MATOMO_TRACKING } = consts;
 

@@ -38,7 +38,7 @@ export const TourStops = ({
   tourStops
 }: {
   geometryTourData: any;
-  id: number;
+  id: number | string;
   navigation: any;
   tourStops: any[];
 }) => {
@@ -65,7 +65,7 @@ export const TourStops = ({
     }
   }, [systemPermission, locationServiceEnabled, navigation, currentPosition]);
 
-  if (settings.ar?.tourId === id) {
+  if (settings.ar?.tourId === String(id)) {
     return <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />;
   }
 
@@ -108,7 +108,7 @@ export const TourStops = ({
           mapStyle={styles.map}
           showMarkerLabels
           showsUserLocation
-          isMyLocationButtonVisible={true}
+          isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,
@@ -134,7 +134,10 @@ export const mapToMapMarkers = (data, id?) =>
       if (!latitude || !longitude) return undefined;
 
       return {
-        iconName: item.id === id ? `${MAP.DEFAULT_PIN}Active` : MAP.DEFAULT_PIN,
+        iconName:
+          !!id && item.id.toString() === id.toString()
+            ? `${MAP.DEFAULT_PIN}Active`
+            : MAP.DEFAULT_PIN,
         activeIconName: `${MAP.DEFAULT_PIN}Active`,
         [MAP.DEFAULT_PIN]: 1,
         id: item.id.toString(),

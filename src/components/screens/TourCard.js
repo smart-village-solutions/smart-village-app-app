@@ -19,7 +19,7 @@ const addressOnPress = (address) => {
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const TourCard = ({ lengthKm, tourAddresses, payload }) => {
-  const { duration, endLocation, startLocation } = payload || {};
+  const { duration = '' } = payload || {};
 
   return (
     <View>
@@ -82,5 +82,8 @@ const styles = StyleSheet.create({
 
 TourCard.propTypes = {
   lengthKm: PropTypes.number,
-  tourAddresses: PropTypes.array
+  tourAddresses: PropTypes.array,
+  payload: PropTypes.shape({
+    duration: PropTypes.string
+  })
 };

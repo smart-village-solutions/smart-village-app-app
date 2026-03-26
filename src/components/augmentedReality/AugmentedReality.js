@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, texts } from '../../config';
+import { texts } from '../../config';
 import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
@@ -12,15 +12,13 @@ import { Button } from '../Button';
 import { IndexFilterWrapperAndList } from '../IndexFilterWrapperAndList';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
-import { INITIAL_FILTER, mapToMapMarkers } from '../TourStops';
+import { INITIAL_FILTER, mapToMapMarkers, TOP_FILTER } from '../TourStops';
 import { Wrapper } from '../Wrapper';
 import { MapLibre } from '../map';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
-
-const { MAP } = consts;
 
 export const AugmentedReality = ({
   geometryTourData,
