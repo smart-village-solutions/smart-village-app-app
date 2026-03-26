@@ -19,9 +19,11 @@ export const navigateWithSubQuery = ({
   params?:
     | {
         isExternal?: boolean;
+        pdfUrl?: string;
         routeName: string;
         webUrl: string;
         paramsForButton?: {
+          pdfUrl?: string;
           query: string;
           queryVariables: { name: string };
           rootRouteName: string;
@@ -58,6 +60,7 @@ export const navigateWithSubQuery = ({
     // it contains a `routeName` and a `webUrl`
     return navigation.push(params.routeName, {
       isExternal: params.isExternal,
+      pdfUrl: params.pdfUrl,
       rootRouteName,
       title,
       webUrl: params.webUrl
@@ -72,6 +75,7 @@ export const navigateWithSubQuery = ({
   return navigation.push(subQuery.routeName, {
     ...subParams,
     isExternal: subQuery.isExternal,
+    pdfUrl: subQuery.pdfUrl,
     rootRouteName,
     title,
     webUrl: subQuery.webUrl
