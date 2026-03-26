@@ -17,4 +17,5 @@ export * from './Service';
 export * from './ServiceTile';
 export * from './ServiceTiles';
 export * from './Tour';
+export * from './TourStopDetail';
 export * from './TravelTimes';
