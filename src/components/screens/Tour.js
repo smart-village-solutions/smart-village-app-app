@@ -18,6 +18,7 @@ import { SectionHeader } from '../SectionHeader';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
+import { TourStops } from '../TourStops';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -31,11 +32,12 @@ export const Tour = ({ data, navigation, route }) => {
     contact,
     dataProvider,
     description,
-    id,
     geometryTourData,
+    id,
     lengthKm,
     mediaContents,
     operatingCompany,
+    payload,
     title,
     tourStops,
     webUrls
@@ -78,7 +80,7 @@ export const Tour = ({ data, navigation, route }) => {
       </Wrapper>
 
       {(!!tourAddresses.length || !!lengthKm) && (
-        <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
+        <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} payload={payload} />
       )}
 
       {!!description && (
@@ -91,7 +93,7 @@ export const Tour = ({ data, navigation, route }) => {
       )}
 
       {!!tourStops?.length && (
-        <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />
+        <TourStops {...{ geometryTourData, id, navigation, tourStops, payload }} />
       )}
 
       <OperatingCompany

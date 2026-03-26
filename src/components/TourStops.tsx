@@ -1,0 +1,153 @@
+import * as Location from 'expo-location';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { StyleSheet } from 'react-native';
+
+import { consts, normalize, texts } from '../config';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../hooks';
+import { SettingsContext } from '../SettingsProvider';
+import { ScreenName } from '../types';
+
+import { AugmentedReality } from './augmentedReality';
+import { IndexFilterWrapperAndList } from './IndexFilterWrapperAndList';
+import { ListComponent } from './ListComponent';
+import { MapLibre } from './map';
+import { SectionHeader } from './SectionHeader';
+import { locationServiceEnabledAlert } from './SUE/report/SueReportLocation';
+
+const { MAP } = consts;
+
+export const TOP_FILTER = {
+  MAP_VIEW: 'mapView',
+  LIST_VIEW: 'listView'
+};
+
+export const INITIAL_FILTER = [
+  { id: TOP_FILTER.MAP_VIEW, title: texts.augmentedReality.filter.mapView, selected: true },
+  { id: TOP_FILTER.LIST_VIEW, title: texts.augmentedReality.filter.listView, selected: false }
+];
+
+export const TourStops = ({
+  geometryTourData,
+  id,
+  navigation,
+  tourStops
+}: {
+  geometryTourData: any;
+  id: number;
+  navigation: any;
+  tourStops: any[];
+}) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+
+  const { locationSettings = {} } = useLocationSettings();
+  const { locationService: locationServiceEnabled } = locationSettings as {
+    locationService?: boolean;
+  };
+  const systemPermission = useSystemPermission();
+  const skipPosition =
+    systemPermission?.status !== Location.PermissionStatus.GRANTED || !locationServiceEnabled;
+  const { position } = usePosition(skipPosition);
+  const { position: lastKnownPosition } = useLastKnownPosition(skipPosition);
+  const currentPosition = position || lastKnownPosition;
+
+  // Show location permission alert once when the screen mounts and permissions are missing
+  useEffect(() => {
+    if (!systemPermission) return;
+
+    if (!locationServiceEnabled || systemPermission.status !== Location.PermissionStatus.GRANTED) {
+      locationServiceEnabledAlert({ currentPosition, locationServiceEnabled, navigation });
+    }
+  }, [systemPermission, locationServiceEnabled, navigation, currentPosition]);
+
+  if (settings.ar?.tourId === id) {
+    return <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />;
+  }
+
+  const [filter, setFilter] = useState(INITIAL_FILTER);
+  const selectedFilterId = filter.find((entry) => entry.selected)?.id;
+
+  const listItem = useMemo(
+    () =>
+      tourStops?.map((tourStop) => ({
+        ...tourStop,
+        title: tourStop.title,
+        routeName: ScreenName.TourStopDetail,
+        params: {
+          geometryTourData,
+          id: tourStop.id,
+          title: tourStop.title,
+          tourStopData: tourStop,
+          tourStops
+        }
+      })),
+    [tourStops, geometryTourData]
+  );
+
+  const mapMarkers = mapToMapMarkers(tourStops);
+
+  return (
+    <>
+      <SectionHeader title={texts.tour.tour} />
+      <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
+
+      {selectedFilterId === TOP_FILTER.LIST_VIEW && (
+        <ListComponent data={listItem} navigation={navigation} />
+      )}
+
+      {selectedFilterId === TOP_FILTER.MAP_VIEW && (
+        <MapLibre
+          currentPosition={currentPosition}
+          geometryTourData={geometryTourData}
+          locations={mapMarkers}
+          mapStyle={styles.map}
+          showsUserLocation
+          isMyLocationButtonVisible={true}
+          onMarkerPress={(tourId) => {
+            navigation.navigate(ScreenName.TourStopDetail, {
+              geometryTourData,
+              id: tourId,
+              title: tourStops.find((stop) => stop.id.toString() === tourId)?.title,
+              tourStopData: tourStops.find((stop) => stop.id.toString() === tourId),
+              tourStops
+            });
+          }}
+          // onMaximizeButtonPress={() => console.log('Maximize map pressed')} // TODO: implement maximize map functionality
+        />
+      )}
+    </>
+  );
+};
+
+export const mapToMapMarkers = (data, id) =>
+  data
+    ?.map((item) => {
+      const latitude = item.location?.geoLocation?.latitude;
+      const longitude = item.location?.geoLocation?.longitude;
+
+      if (!latitude || !longitude) return undefined;
+
+      return {
+        iconName: item.id === id ? `${MAP.DEFAULT_PIN}Active` : MAP.DEFAULT_PIN,
+        activeIconName: `${MAP.DEFAULT_PIN}Active`,
+        [MAP.DEFAULT_PIN]: 1,
+        id: item.id.toString(),
+        position: {
+          latitude,
+          longitude
+        }
+      };
+    })
+    .filter((item) => item !== undefined);
+
+const styles = StyleSheet.create({
+  map: {
+    height: normalize(500),
+    width: '100%'
+  }
+});

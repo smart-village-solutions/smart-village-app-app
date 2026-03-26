@@ -103,6 +103,7 @@ export * from './Text';
 export * from './TextListItem';
 export * from './Title';
 export * from './Touchable';
+export * from './TourStops';
 export * from './VersionNumber';
 export * from './VerticalList';
 export * from './Wrapper';

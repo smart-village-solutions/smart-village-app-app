@@ -12,6 +12,7 @@ import { Button } from '../Button';
 import { IndexFilterWrapperAndList } from '../IndexFilterWrapperAndList';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
+import { INITIAL_FILTER, mapToMapMarkers } from '../TourStops';
 import { Wrapper } from '../Wrapper';
 import { MapLibre } from '../map';
 
@@ -20,16 +21,6 @@ import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
 const { MAP } = consts;
-
-const TOP_FILTER = {
-  MAP_VIEW: 'mapView',
-  LIST_VIEW: 'listView'
-};
-
-const INITIAL_FILTER = [
-  { id: TOP_FILTER.MAP_VIEW, title: texts.augmentedReality.filter.mapView, selected: true },
-  { id: TOP_FILTER.LIST_VIEW, title: texts.augmentedReality.filter.listView, selected: false }
-];
 
 export const AugmentedReality = ({
   geometryTourData,
@@ -165,25 +156,6 @@ export const AugmentedReality = ({
     </>
   );
 };
-
-const mapToMapMarkers = (data) =>
-  data
-    ?.map((item) => {
-      const latitude = item.location?.geoLocation?.latitude;
-      const longitude = item.location?.geoLocation?.longitude;
-
-      if (!latitude || !longitude) return undefined;
-
-      return {
-        iconName: MAP.DEFAULT_PIN,
-        id: item.id.toString(),
-        position: {
-          latitude,
-          longitude
-        }
-      };
-    })
-    .filter((item) => item !== undefined);
 
 AugmentedReality.propTypes = {
   geometryTourData: PropTypes.array,
