@@ -1435,6 +1435,11 @@ export const texts = {
     updateRequiredTitle: 'Aktualisierung erforderlich',
     updateTitle: 'Neue Version verfügbar'
   },
+  otaUpdateAlert: {
+    updateMessage: 'Auf "Jetzt aktualisieren" tippen, um die neueste Version direkt zu verwenden.',
+    updateNow: 'Jetzt aktualisieren',
+    updateTitle: 'Neue Version verfügbar'
+  },
   volunteer: {
     abort: 'Abbrechen',
     about: 'Über',

@@ -18,6 +18,7 @@ export * from './locationHooks';
 export * from './matomoHooks';
 export * from './NewsCategories';
 export * from './openWebScreen';
+export * from './otaUpdate';
 export * from './permanentFilter';
 export * from './personalizedTiles';
 export * from './pullToRefetch';

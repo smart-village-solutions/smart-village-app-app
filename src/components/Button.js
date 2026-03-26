@@ -10,16 +10,16 @@ import { DiagonalGradient } from './DiagonalGradient';
 
 /* eslint-disable complexity */
 export const Button = ({
-  big,
-  disabled,
-  icon,
+  big = false,
+  disabled = false,
+  icon = undefined,
   iconPosition = 'right',
   invert = false,
   lightest = false,
   notFullWidth = false,
   onPress,
-  small,
-  smallest,
+  small = false,
+  smallest = false,
   title
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);

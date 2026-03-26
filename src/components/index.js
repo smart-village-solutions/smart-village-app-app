@@ -87,6 +87,8 @@ export * from './MultiButtonWithSubQuery';
 export * from './NewsSectionPlaceholder';
 export * from './NoTouchDay';
 export * from './OptionToggle';
+export * from './OtaUpdateBanner';
+export * from './OtaUpdateManager';
 export * from './OrientationAwareIcon';
 export * from './PreviewSection';
 export * from './Radiobutton';

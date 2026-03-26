@@ -37,6 +37,7 @@ import { ReactQueryProvider } from './ReactQueryProvider';
 import RootView from './RootView';
 import { initialContext, SettingsProvider } from './SettingsProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
+import { OtaUpdateManager } from './components';
 
 const { LIST_TYPES } = consts;
 
@@ -223,6 +224,7 @@ const MainAppWithApolloProvider = () => {
             <ProfileProvider>
               <UnreadMessagesProvider>
                 <RootView>
+                  <OtaUpdateManager />
                   <Navigator navigationType={initialGlobalSettings.navigation} />
                 </RootView>
               </UnreadMessagesProvider>
