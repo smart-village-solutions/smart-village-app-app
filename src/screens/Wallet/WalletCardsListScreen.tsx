@@ -37,29 +37,31 @@ export const WalletCardsListScreen = ({ route }: { route: RouteProp<any, any> })
     return <LoadingSpinner loading />;
   }
 
-  const listItem = (data || []).map((card: TCard) => {
-    const {
-      description = '',
-      iconBackgroundColor = colors.lighterPrimaryRgba,
-      iconColor = colors.primary,
-      iconName = 'credit-card',
-      title = '',
-      type = ''
-    } = card;
+  const listItem = (data || [])
+    .filter((card: TCard) => card.isVisible !== false)
+    .map((card: TCard) => {
+      const {
+        description = '',
+        iconBackgroundColor = colors.lighterPrimaryRgba,
+        iconColor = colors.primary,
+        iconName = 'credit-card',
+        title = '',
+        type = ''
+      } = card;
 
-    return {
-      leftIcon: (
-        <Wrapper style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
-          <Icon.NamedIcon name={iconName} color={iconColor} />
-        </Wrapper>
-      ),
-      params: { card, title: texts.screenTitles.wallet.cardAdd },
-      routeName: ScreenName.WalletCardAdd,
-      subtitle: description,
-      title,
-      type
-    };
-  });
+      return {
+        leftIcon: (
+          <Wrapper style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
+            <Icon.NamedIcon name={iconName} color={iconColor} />
+          </Wrapper>
+        ),
+        params: { card, title: texts.screenTitles.wallet.cardAdd },
+        routeName: ScreenName.WalletCardAdd,
+        subtitle: description,
+        title,
+        type
+      };
+    });
 
   return (
     <WalletList

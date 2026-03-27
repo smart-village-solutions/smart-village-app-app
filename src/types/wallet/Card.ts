@@ -6,6 +6,7 @@ export type TCard = {
   iconBackgroundColor: string;
   iconColor: string;
   iconName: string;
+  isVisible?: boolean;
   leftIcon: React.ReactNode;
   params?: Record<string, any>;
   pinCode?: string;
