@@ -27,6 +27,7 @@ export const GET_POINTS_OF_INTEREST = gql`
     ) {
       id
       name
+      payload
       categories {
         id
         name

@@ -1,105 +1,77 @@
-import _upperFirst from 'lodash/upperFirst';
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { Icon, IconUrl, colors, normalize, texts } from '../../config';
-import { LoadingContainer } from '../LoadingContainer';
+import { IconUrl, colors, normalize, texts } from '../../config';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperHorizontal } from '../Wrapper';
+import { WrapperHorizontal } from '../Wrapper';
 
-type AvailableVehiclesProps = {
+export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
+
+export type AvailableVehiclesProps = {
   id: string;
   name: string;
   count?: number;
+  properties: {
+    [vehiclePropertyKey]: string;
+  };
+};
+
+export const fetchAvailableVehicles = async (freeStatusUrl: string) => {
+  let availableVehiclesData = [];
+
+  try {
+    const response = await fetch(freeStatusUrl);
+
+    const data = await response.json();
+    const status = response.status;
+    const ok = response.ok;
+
+    const availableVehicles =
+      Array.isArray(data?.features) && data.features.length
+        ? data.features
+        : data?.type === 'Feature'
+        ? [data]
+        : [];
+
+    if (ok && status === 200 && availableVehicles.length) {
+      availableVehiclesData = availableVehicles;
+    }
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+  return availableVehiclesData;
 };
 
 export const AvailableVehicles = ({
-  freeStatusUrl,
+  status,
   iconName
 }: {
-  freeStatusUrl: string;
+  status: 'frei' | 'belegt' | 'unbekannt' | null;
   iconName: string;
 }) => {
-  const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(freeStatusUrl);
-
-        const data = await response.json();
-        const status = response.status;
-        const ok = response.ok;
-
-        if (ok && status === 200 && !!data?.available) {
-          setAvailableVehiclesData(getCountArray(data.available));
-        }
-      } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const getCountArray = useCallback((vehicles: AvailableVehiclesProps[]) => {
-    const vehicleCounts = vehicles.reduce<Record<string, number>>((accumulator, vehicle) => {
-      accumulator[vehicle.name] = (accumulator[vehicle.name] || 0) + 1;
-      return accumulator;
-    }, {});
-
-    return Object.keys(vehicleCounts).map((key) => ({
-      id: key,
-      name: key,
-      count: vehicleCounts[key]
-    }));
-  }, []);
-
-  if (loading) {
-    return (
-      <>
-        <SectionHeader title={texts.pointOfInterest.availableVehicles} />
-
-        <LoadingContainer>
-          <ActivityIndicator color={colors.refreshControl} />
-        </LoadingContainer>
-      </>
-    );
-  }
-
+  const statusCircle =
+    status === 'frei' ? (
+      <RegularText style={{ color: '#7cbb4d' }}> ⬤</RegularText>
+    ) : status === 'belegt' ? (
+      <RegularText style={{ color: '#e60041' }}> ⬤</RegularText>
+    ) : null;
   return (
     <>
       <SectionHeader title={texts.pointOfInterest.availableVehicles} />
 
-      {availableVehiclesData?.length ? (
-        availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
-          <Fragment key={item.id}>
-            <ListItem containerStyle={styles.container}>
-              {!!iconName && <IconUrl iconName={iconName} />}
-              <ListItem.Content style={styles.contentContainer}>
-                <RegularText>{item.name}</RegularText>
-                <RegularText>{item.count}</RegularText>
-              </ListItem.Content>
-            </ListItem>
-            {index !== availableVehiclesData.length - 1 && (
-              <WrapperHorizontal>
-                <Divider style={styles.divider} />
-              </WrapperHorizontal>
-            )}
-          </Fragment>
-        ))
-      ) : (
-        <Wrapper>
-          <RegularText placeholder small>
-            {texts.pointOfInterest.noAvailableVehicles}
+      <ListItem containerStyle={styles.container}>
+        {!!iconName && <IconUrl iconName={iconName} />}
+        <ListItem.Content style={styles.contentContainer}>
+          <RegularText>{texts.pointOfInterest.status}: </RegularText>
+          <RegularText>
+            {status}
+            {statusCircle}{' '}
           </RegularText>
-        </Wrapper>
-      )}
+        </ListItem.Content>
+      </ListItem>
 
       <WrapperHorizontal>
         <Divider />

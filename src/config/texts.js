@@ -963,6 +963,7 @@ export const texts = {
       trolleyBus: 'Oberleitungsbus'
     },
     showLunches: 'Zum aktuellen Gastro-Angebot',
+    status: 'Status',
     today: 'Heute',
     vouchers: 'Aktuelle Angebote',
     vouchersMore: 'Weitere Angebote',
