@@ -9,17 +9,16 @@ import { WrapperHorizontal } from '../Wrapper';
 
 export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
 
-export type AvailableVehiclesProps = {
-  id: string;
-  name: string;
-  count?: number;
+export type VehicleStatusFeature = {
   properties: {
     [vehiclePropertyKey]: string;
   };
 };
 
-export const fetchAvailableVehicles = async (freeStatusUrl: string) => {
-  let availableVehiclesData = [];
+export const fetchAvailableVehicles = async (
+  freeStatusUrl: string
+): Promise<VehicleStatusFeature[]> => {
+  let availableVehiclesData: VehicleStatusFeature[] = [];
 
   try {
     const response = await fetch(freeStatusUrl);

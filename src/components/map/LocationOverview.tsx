@@ -156,7 +156,7 @@ export const LocationOverview = ({
   let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
 
   useEffect(() => {
-    if (!pointsOfInterest?.length) return;
+    if (!isConnected || !pointsOfInterest?.length) return;
 
     // Collect unique freeStatusUrls from all POIs
     const uniqueUrls: string[] = [
@@ -170,7 +170,7 @@ export const LocationOverview = ({
     if (!uniqueUrls.length) return;
 
     // Fetch all vehicle statuses in parallel
-    Promise.all(
+    Promise.allSettled(
       uniqueUrls.map(async (url) => {
         const data = await fetchAvailableVehicles(url);
         const status = data?.length && data[0]?.properties?.[vehiclePropertyKey];
@@ -179,13 +179,20 @@ export const LocationOverview = ({
     ).then((results) => {
       const statuses: Record<string, string> = {};
 
-      for (const [url, status] of results) {
-        if (status) statuses[url] = status;
-      }
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          const [url, status] = result.value;
+          if (status) {
+            statuses[url] = status;
+          }
+        }
+        // Rejected results are ignored so that one failing request
+        // does not prevent processing of the others.
+      });
 
       setVehicleStatuses(statuses);
     });
-  }, [pointsOfInterest]);
+  }, [isConnected, pointsOfInterest]);
 
   if (filterByOpeningTimes && pointsOfInterest) {
     pointsOfInterest = pointsOfInterest.filter((entry) => isOpen(entry.openingHours)?.open);

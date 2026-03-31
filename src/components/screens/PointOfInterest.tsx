@@ -21,7 +21,7 @@ import { VoucherListItem } from '../vouchers';
 
 import {
   AvailableVehicles,
-  AvailableVehiclesProps,
+  VehicleStatusFeature,
   fetchAvailableVehicles,
   vehiclePropertyKey
 } from './AvailableVehicles';
@@ -49,7 +49,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   const { settings = {} } = globalSettings;
   const { showOpeningTimes = true } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
-  const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>([]);
+  const [availableVehiclesData, setAvailableVehiclesData] = useState<VehicleStatusFeature[]>([]);
   const {
     addresses,
     categories,
