@@ -47,6 +47,10 @@ const MOBILE_USER_AGENT = Platform.select({
     'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36'
 });
 
+// Only allow http(s) URLs to be opened externally; reject custom schemes
+// (tel:, intent:, etc.) that could be injected via content.
+const isSafeHttpUrl = (url) => /^https?:\/\//i.test(url);
+
 // SoundCloud widget and CDN domains that must be allowed to navigate freely.
 const isSoundCloudDomain = (url) => url?.includes('soundcloud.com') || url?.includes('sndcdn.com');
 
@@ -57,7 +61,9 @@ const handleSoundCloudNavigation = (request) => {
   if (!request.isTopFrame) return true;
   if (request.url === 'about:blank' || request.url.startsWith('data:')) return true;
   if (isSoundCloudDomain(request.url)) return true;
-  Linking.openURL(request.url).catch(() => null);
+  if (isSafeHttpUrl(request.url)) {
+    Linking.openURL(request.url).catch(() => null);
+  }
   return false;
 };
 
@@ -66,11 +72,18 @@ const handleSoundCloudNavigation = (request) => {
 const handleShouldStartLoadWithRequest = (request) => {
   if (!request.isTopFrame) return true;
   if (request.url === 'about:blank' || request.url.startsWith('data:')) return true;
-  Linking.openURL(request.url).catch(() => null);
+  if (isSafeHttpUrl(request.url)) {
+    Linking.openURL(request.url).catch(() => null);
+  }
   return false;
 };
 
-// Hides WebView automation signals that trigger Cloudflare bot detection.
+// NOTE:
+// Historically this constant modified `navigator.webdriver` and `navigator.plugins`
+// inside the WebView to evade bot/automation detection for some embeds.
+// This kind of fingerprint spoofing is brittle, can violate third‑party ToS,
+// and may break embeds in unexpected ways, so it has been intentionally
+// disabled and kept as a no‑op to preserve the existing API shape.
 const ANTI_BOT_JS = `
   (function() {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined });

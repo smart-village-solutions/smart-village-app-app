@@ -1,4 +1,5 @@
 import * as Location from 'expo-location';
+import { LocationObjectCoords } from 'expo-location';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -10,7 +11,7 @@ import {
   useSystemPermission
 } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
-import { ScreenName } from '../types';
+import { MapMarker, ScreenName } from '../types';
 
 import { AugmentedReality } from './augmentedReality';
 import { IndexFilterWrapperAndList } from './IndexFilterWrapperAndList';
@@ -110,11 +111,13 @@ export const TourStops = ({
           showsUserLocation
           isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
+            const selectedTourStop = tourStops.find((stop) => stop.id.toString() === tourId);
+
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,
               id: tourId,
-              title: tourStops.find((stop) => stop.id.toString() === tourId)?.title,
-              tourStopData: tourStops.find((stop) => stop.id.toString() === tourId),
+              title: selectedTourStop?.title,
+              tourStopData: selectedTourStop,
               tourStops
             });
           }}
@@ -125,7 +128,20 @@ export const TourStops = ({
   );
 };
 
-export const mapToMapMarkers = (data, id?) =>
+type TourStopItem = {
+  id: string | number;
+  location?: {
+    geoLocation?: {
+      latitude?: number;
+      longitude?: number;
+    };
+  };
+};
+
+export const mapToMapMarkers = (
+  data: TourStopItem[] | undefined,
+  id?: string | number
+): MapMarker[] | undefined =>
   data
     ?.map((item, index) => {
       const latitude = item.location?.geoLocation?.latitude;
@@ -145,7 +161,7 @@ export const mapToMapMarkers = (data, id?) =>
         position: {
           latitude,
           longitude
-        }
+        } as LocationObjectCoords
       };
     })
     .filter((item) => item !== undefined);

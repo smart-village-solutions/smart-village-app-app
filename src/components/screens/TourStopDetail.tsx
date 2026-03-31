@@ -142,11 +142,13 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
           showsUserLocation
           isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
+            const selectedTourStop = tourStops.find((stop) => stop.id.toString() === tourId);
+
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,
               id: tourId,
-              title: tourStops.find((stop) => stop.id.toString() === tourId)?.title,
-              tourStopData: tourStops.find((stop) => stop.id.toString() === tourId),
+              title: selectedTourStop?.title,
+              tourStopData: selectedTourStop,
               tourStops
             });
           }}
@@ -160,7 +162,9 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
             <Button
               disabled={idStr === tourStops[0].id?.toString()}
               icon={
-                <Icon.ArrowLeft color={id === tourStops[0].id ? colors.surface : colors.primary} />
+                <Icon.ArrowLeft
+                  color={idStr === tourStops[0].id?.toString() ? colors.surface : colors.primary}
+                />
               }
               iconPosition="left"
               invert
