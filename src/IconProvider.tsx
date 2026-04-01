@@ -19,7 +19,7 @@ interface IconContextValue {
   getIconLibraries: () => IconLibrary[];
 }
 
-const DEFAULT_ICON_LIBRARIES: IconLibrary[] = ['tabler'];
+const DEFAULT_ICON_LIBRARIES: IconLibrary[] = ['tabler', 'ionicons'];
 
 const IconContext = createContext<IconContextValue>({
   iconLibraries: DEFAULT_ICON_LIBRARIES,

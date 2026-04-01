@@ -160,11 +160,13 @@ calendar: 'calendar'; // ionicons.tsx
 2. Map this name to each library's specific name in their mapping files:
 
 **tabler.tsx:**
-calendar-event in Tabler
-// ...
-};
 
-````
+```typescript
+export const tablerIconMapping: Record<string, string> = {
+  calendar: 'calendar-event' // calendar-event in Tabler
+  // ...
+};
+```
 
 **ionicons.tsx:**
 
@@ -173,19 +175,18 @@ export const ioniconsIconMapping: Record<string, string> = {
   calendar: 'calendar' // calendar in Ionicons
   // ...
 };
-````
+```
 
-3. Expose it in Icon.tsx for usage
-
-````
-
-3. Icon.tsx'te kullanıma sunun:
+3. Expose it in Icon.tsx for usage:
 
 ```typescript
 export const Icon = {
   Calendar: (props: IconProps) => <NamedIcon name="calendar" {...props} />
   // ...
-};Priority Order
+};
+```
+
+## Priority Order
 
 1. **Custom SVG** - If a custom SVG exists, it always has the highest priority
 2. **Specified iconSet** - If the `iconSet` prop is provided, that library is tried first
@@ -199,7 +200,7 @@ export const Icon = {
 ```json
 // globalSettings
 { "settings": { "icon": "tabler" } }
-````
+```
 
 All icons come from Tabler (except custom SVGs).
 
@@ -248,14 +249,13 @@ export const newlibraryIconMapping: Record<string, string> = {
 };
 ````
 
-3. Add to `mappings/index.tsx`
-
-````
-
-3. `mappings/index.tsx`'e ekleyin:
+3. Add to `mappings/index.tsx`:
 
 ```typescript
-exnewlibrary: newlibraryIconMapping // ← NEW
+export const iconMappings: Record<IconLibrary, Record<string, string>> = {
+  tabler: tablerIconMapping,
+  ionicons: ioniconsIconMapping,
+  newlibrary: newlibraryIconMapping // ← NEW
 };
 
 export const getMappedIconName = (unifiedName: string, library: IconLibrary) => {
@@ -265,7 +265,7 @@ export const getMappedIconName = (unifiedName: string, library: IconLibrary) => 
     // ...
   }
 };
-````
+```
 
 4. Add to `getIconComponentFromLibrary` in `Icon.tsx`:
 
@@ -281,9 +281,9 @@ The system currently supports these icon libraries:
 
 - **Tabler Icons** (default)
 - **Ionicons**
-- **AntDesign**
-- **Entypo**
-- \*\*Feaing
+- **MaterialIcons**
+- **FontAwesome**
+- **Custom SVG icons** (highest priority)
 
 Run the existing tests:
 
