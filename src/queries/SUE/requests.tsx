@@ -7,6 +7,9 @@ import { SUE_MY_REPORTS } from '../../screens';
 
 import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
 
+// TTL for how often we refresh the status of a stored report (in ms)
+const STATUS_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 export const requests = async (queryVariables) => {
   const queryParams = new URLSearchParams(queryVariables);
   const { sueFetchObj = {}, sueRequestsUrl = '' } = await fetchSueEndpoints();
@@ -35,8 +38,10 @@ export const requests = async (queryVariables) => {
   });
 };
 
+/* eslint-disable complexity */
 export const myRequests = async (): Promise<any[]> => {
   let myReports = [];
+  const now = Date.now();
 
   try {
     const jsonValue = await readFromStore(SUE_MY_REPORTS);
@@ -65,13 +70,20 @@ export const myRequests = async (): Promise<any[]> => {
 
       const isFinalStatus = item.status === SUE_STATUS.CLOSED || item.status === SUE_STATUS.INVALID;
 
-      if (item.serviceRequestId && !isFinalStatus) {
+      // Only refresh non-final reports if the last check is older than our TTL (or missing)
+      const shouldRefreshStatus =
+        item.serviceRequestId &&
+        !isFinalStatus &&
+        (!item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
+
+      if (shouldRefreshStatus) {
         try {
           const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
 
           // Update status if it changed
           if (onlineReport?.status && onlineReport.status !== item.status) {
             item.status = onlineReport.status;
+            item.lastStatusCheck = now;
           }
         } catch (e) {
           console.error(`Error fetching status for ${item.serviceRequestId}`, e);
@@ -91,6 +103,7 @@ export const myRequests = async (): Promise<any[]> => {
 
   return updatedReports;
 };
+/* eslint-enable complexity */
 
 /* eslint-disable complexity */
 export const postRequests = async (data: any) => {

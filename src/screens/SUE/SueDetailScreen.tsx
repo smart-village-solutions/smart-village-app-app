@@ -172,15 +172,19 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
                   // When navigating to "Mein gespeicherter Bericht", prefer local data from SUE_MY_REPORTS
                   if (targetQuery === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID) {
                     try {
-                      const storedReports = (await readFromStore(SUE_MY_REPORTS)) || [];
-                      const matchingReport = Array.isArray(storedReports)
-                        ? storedReports.find(
-                            (report: any) => report?.serviceRequestId === serviceRequestId
-                          )
-                        : null;
+                      const storedReportsJson = await readFromStore(SUE_MY_REPORTS);
 
-                      if (matchingReport) {
-                        details = matchingReport;
+                      if (storedReportsJson) {
+                        const storedReports = JSON.parse(storedReportsJson);
+                        const matchingReport = Array.isArray(storedReports)
+                          ? storedReports.find(
+                              (report: any) => report?.serviceRequestId === serviceRequestId
+                            )
+                          : null;
+
+                        if (matchingReport) {
+                          details = matchingReport;
+                        }
                       }
                     } catch (e) {
                       // In case of any storage error, fall back to existing route params
