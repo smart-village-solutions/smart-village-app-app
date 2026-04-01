@@ -38,6 +38,7 @@ import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
+/* eslint-disable complexity */
 const renderItem = ({ item }) => {
   const {
     buttonTitle,
@@ -50,7 +51,6 @@ const renderItem = ({ item }) => {
     publicJsonFile,
     query,
     queryVariables,
-    refreshTimeKey,
     showData,
     showVolunteerEvents,
     title,
@@ -71,7 +71,6 @@ const renderItem = ({ item }) => {
           <ConnectedImagesCarousel
             navigation={navigation}
             publicJsonFile={publicJsonFile || 'homeCarousel'}
-            refreshTimeKey={refreshTimeKey || 'publicJsonFile-homeCarousel'}
           />
         );
       case 'widgets':
@@ -209,7 +208,6 @@ const renderItem = ({ item }) => {
   );
 };
 
-/* eslint-disable complexity */
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -377,9 +375,9 @@ export const HomeScreen = ({ navigation, route }) => {
           switch (section.query) {
             case QUERY_TYPES.NEWS_ITEMS:
               return {
-                categoriesNews: section.categoriesNews,
+                categoriesNews: section.categoriesNews || categoriesNews,
                 fetchPolicy,
-                limit: section.limitNews,
+                limit: section.limitNews ?? limitNews,
                 navigation,
                 query: section.query,
                 queryVariables: {
@@ -392,9 +390,9 @@ export const HomeScreen = ({ navigation, route }) => {
               };
             case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
               return {
-                buttonTitle: section.buttonTitle,
+                buttonTitle: section.buttonTitle || buttonPointsOfInterestAndTours,
                 fetchPolicy,
-                limit: section.limitPointsOfInterestAndTours,
+                limit: section.limitPointsOfInterestAndTours ?? limitPointsOfInterestAndTours,
                 navigate: 'CATEGORIES_INDEX',
                 navigation,
                 query: section.query,
@@ -406,13 +404,13 @@ export const HomeScreen = ({ navigation, route }) => {
                   ...section.queryVariables
                 },
                 showData: section.show !== false,
-                title: section.title
+                title: section.title || headlinePointsOfInterestAndTours
               };
             case QUERY_TYPES.EVENT_RECORDS:
               return {
-                buttonTitle: section.buttonTitle,
+                buttonTitle: section.buttonTitle || buttonEvents,
                 fetchPolicy,
-                limit: section.limitEvents,
+                limit: section.limitEvents ?? limitEvents,
                 navigate: 'EVENT_RECORDS_INDEX',
                 navigation,
                 query: section.query,
@@ -423,7 +421,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 },
                 showData: section.show !== false,
                 showVolunteerEvents,
-                title: section.title
+                title: section.title || headlineEvents
               };
             default:
               return null;

@@ -105,6 +105,7 @@ The following example shows a full `homeScreenConfig` that controls the complete
       "limit": 3
     },
     "show": true,
+    "title": "Veranstaltungen",
     "buttonTitle": "Alle Veranstaltungen anzeigen"
   },
   {
@@ -121,6 +122,21 @@ The following example shows a full `homeScreenConfig` that controls the complete
   }
 ]
 ```
+
+### Default Fallbacks for Query Sections
+
+For data-driven sections (`query`-based entries), the following fields are **optional**. When omitted, they fall back to the defaults defined in the `sections` object of `globalSettings` (or the built-in defaults from `src/config/texts.js`):
+
+| Query                      | Optional field                  | Falls back to                                            |
+| -------------------------- | ------------------------------- | -------------------------------------------------------- |
+| `newsItems`                | `categoriesNews`                | `sections.categoriesNews` (default news categories)      |
+| `newsItems`                | `limitNews`                     | `sections.limitNews` (default: `15`)                     |
+| `pointsOfInterestAndTours` | `title`                         | `sections.headlinePointsOfInterestAndTours`              |
+| `pointsOfInterestAndTours` | `buttonTitle`                   | `sections.buttonPointsOfInterestAndTours`                |
+| `pointsOfInterestAndTours` | `limitPointsOfInterestAndTours` | `sections.limitPointsOfInterestAndTours` (default: `15`) |
+| `eventRecords`             | `title`                         | `sections.headlineEvents`                                |
+| `eventRecords`             | `buttonTitle`                   | `sections.buttonEvents`                                  |
+| `eventRecords`             | `limitEvents`                   | `sections.limitEvents` (default: `15`)                   |
 
 ### Backward Compatibility
 
@@ -145,4 +161,4 @@ Existing configurations that only contain `query`-based entries (without any `ty
 
 - See `src/screens/HomeScreen.js` for implementation details.
 - See `src/config/texts.js` for UI copy and localization.
-- See `src/components/HomeSection.js` for data section rendering logic.
+- See `src/components/HomeSection.tsx` for data section rendering logic.

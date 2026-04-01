@@ -111,7 +111,6 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           isImageFullWidth
           navigation={navigation}
           publicJsonFile="sueHomeCarousel"
-          refreshTimeKey="publicJsonFile-sueHomeCarousel"
         />
 
         {!!sueReportListNavigationButton &&
