@@ -605,11 +605,29 @@ export const SueReportScreen = ({
             return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
           }
 
+          const serviceRequestId = Array.isArray(data)
+            ? data[0]?.service_request_id
+            : data?.service_request_id;
+
+          if (!serviceRequestId) {
+            setIsLoading(false);
+            setCurrentProgress(0);
+
+            return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
+          }
+
+          let parsedImages = [];
+          try {
+            parsedImages = JSON.parse(formData.images) || [];
+          } catch (e) {
+            // fallback to empty list if images JSON is invalid
+          }
+
           await storeMyReportsValues({
             address: `${sueReportData.street} ${sueReportData.houseNumber}\r\n ${sueReportData.postalCode} ${sueReportData.city}`,
-            id: data[0].service_request_id,
+            id: serviceRequestId,
             media_url: JSON.stringify(
-              JSON.parse(formData.images).map((image: any, index: number) => ({
+              parsedImages.map((image: any, index: number) => ({
                 contentType: 'image',
                 id: `local-${index}`,
                 url: image.uri,
@@ -618,7 +636,7 @@ export const SueReportScreen = ({
             ),
             requestedDatetime: new Date().toISOString(),
             serviceName: service?.serviceName,
-            serviceRequestId: data[0].service_request_id,
+            serviceRequestId,
             status: 'Unbearbeitet',
             ...formData
           });
