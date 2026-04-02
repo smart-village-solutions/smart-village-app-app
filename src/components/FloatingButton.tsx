@@ -14,11 +14,9 @@ import { Image } from './Image';
 type TButton = {
   icon?: string;
   iconName?: string;
-  iconPosition?: 'left' | 'right';
-  invert?: boolean;
   params?: Record<string, unknown>;
+  accessibilityLabel?: string;
   routeName: ScreenName;
-  title: string;
   visibleScreens?: string[];
 };
 
@@ -60,10 +58,16 @@ export const FloatingButton = ({ publicJsonFile }: { publicJsonFile: string }) =
       {visibleItems.map((item, index) => (
         <TouchableOpacity
           activeOpacity={0.8}
-          accessibilityLabel={item.title}
+          accessibilityLabel={item.accessibilityLabel}
           accessibilityRole="button"
-          key={`${item.title}-${index}`}
-          onPress={() => navigationRef.navigate(item.routeName as never, item.params as never)}
+          key={`${item.accessibilityLabel}-${index}`}
+          onPress={() => {
+            if (!navigationRef.isReady()) {
+              return;
+            }
+
+            navigationRef.navigate(item.routeName as never, item.params as never);
+          }}
           style={styles.button}
         >
           {item.icon ? (
