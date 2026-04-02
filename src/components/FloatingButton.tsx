@@ -1,17 +1,15 @@
 import { NavigationState, PartialState, useNavigationState } from '@react-navigation/native';
 import _filter from 'lodash/filter';
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Icon, normalize } from '../config';
+import { colors, Icon, normalize } from '../config';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 import { navigationRef } from '../navigation/navigationRef';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
-import { Button } from './Button';
 import { Image } from './Image';
-import { Wrapper } from './Wrapper';
 
 type TButton = {
   icon?: string;
@@ -59,35 +57,56 @@ export const FloatingButton = ({ publicJsonFile }: { publicJsonFile: string }) =
 
   return (
     <View style={[styles.container, stylesWithProps({ navigationType }).position]}>
-      <Wrapper>
-        {visibleItems.map((item, index) => (
-          <Button
-            icon={
-              item.icon ? (
-                <Image source={{ uri: item.icon }} style={styles.image} />
-              ) : item.iconName ? (
-                <Icon.NamedIcon name={item.iconName} />
-              ) : undefined
-            }
-            iconPosition={item.iconPosition || 'left'}
-            invert={item.invert || false}
-            key={`${item.title}-${index}`}
-            notFullWidth
-            onPress={() => navigationRef.navigate(item.routeName as never, item.params as never)}
-            title={item.title}
-          />
-        ))}
-      </Wrapper>
+      {visibleItems.map((item, index) => (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          accessibilityLabel={item.title}
+          accessibilityRole="button"
+          key={`${item.title}-${index}`}
+          onPress={() => navigationRef.navigate(item.routeName as never, item.params as never)}
+          style={styles.button}
+        >
+          {item.icon ? (
+            <Image source={{ uri: item.icon }} style={styles.icon} />
+          ) : item.iconName ? (
+            <Icon.NamedIcon name={item.iconName} color={colors.lightestText} size={normalize(24)} />
+          ) : null}
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };
 
+const BUTTON_SIZE = normalize(56);
+
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'center',
-    position: 'absolute'
+  button: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: BUTTON_SIZE / 2,
+    height: BUTTON_SIZE,
+    justifyContent: 'center',
+    marginTop: normalize(8),
+    width: BUTTON_SIZE,
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.4,
+        shadowRadius: 4
+      },
+      android: {
+        elevation: 6
+      }
+    })
   },
-  image: {
+  container: {
+    alignItems: 'flex-end',
+    position: 'absolute',
+    right: normalize(16)
+  },
+
+  icon: {
     height: normalize(24),
     width: normalize(24)
   }
@@ -98,7 +117,7 @@ const styles = StyleSheet.create({
 const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigationType === 'drawer' ? '5%' : 0
+      bottom: navigationType === 'drawer' ? '5%' : normalize(16)
     }
   });
 };
