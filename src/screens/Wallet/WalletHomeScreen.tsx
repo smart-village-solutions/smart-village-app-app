@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import {
@@ -16,6 +16,7 @@ import {
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
 import { getSavedCards } from '../../helpers';
+import { useStaticContent } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, TCard } from '../../types';
 
@@ -71,6 +72,20 @@ export const WalletHomeScreen = () => {
     title = walletHomeTexts.title
   } = wallet;
 
+  const { data: cardTypes } = useStaticContent<TCard[]>({
+    refreshTimeKey: 'publicJsonFile-walletCardTypes',
+    name: 'walletCardTypes',
+    type: 'json'
+  });
+
+  const cardTypeMap = useMemo(() => {
+    const map = new Map<string, TCard>();
+
+    cardTypes?.forEach((ct) => map.set(ct.type, ct));
+
+    return map;
+  }, [cardTypes]);
+
   const [cards, setCards] = useState<TCard[]>([]);
   const [savedCardsLoading, setSavedCardsLoading] = useState<boolean>(true);
 
@@ -113,17 +128,29 @@ export const WalletHomeScreen = () => {
     );
   }
 
-  const listItem = cards.map((card: TCard) => ({
-    leftIcon: (
-      <Wrapper style={[styles.iconContainer, { backgroundColor: card.iconBackgroundColor }]}>
-        <Icon.NamedIcon name={card.iconName} color={card.iconColor} />
-      </Wrapper>
-    ),
-    params: { card, title: texts.screenTitles.wallet.detail },
-    routeName: ScreenName.WalletCardDetail,
-    subtitle: card.description,
-    title: card.cardName || card.title
-  }));
+  const listItem = cards
+    .filter((card: TCard) => {
+      const serverCardType = cardTypeMap.get(card.type);
+
+      return serverCardType?.isVisible !== false;
+    })
+    .map((card: TCard) => {
+      const serverCardType = cardTypeMap.get(card.type);
+      const iconBackgroundColor = serverCardType?.iconBackgroundColor ?? card.iconBackgroundColor;
+      const iconColor = serverCardType?.iconColor ?? card.iconColor;
+
+      return {
+        leftIcon: (
+          <Wrapper style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
+            <Icon.NamedIcon name={card.iconName} color={iconColor} />
+          </Wrapper>
+        ),
+        params: { card, title: texts.screenTitles.wallet.detail },
+        routeName: ScreenName.WalletCardDetail,
+        subtitle: card.description,
+        title: card.cardName || card.title
+      };
+    });
 
   return (
     <WalletList
