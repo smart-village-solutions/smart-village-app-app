@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
@@ -136,7 +136,7 @@ export const WalletCardDetailScreen = ({
   const [isCapturing, setIsCapturing] = useState(false);
   const [isPinVisible, setIsPinVisible] = useState(false);
 
-  const viewShotRef = useRef();
+  const viewShotRef = useRef(null);
 
   const fetchCardDetails = useCallback(async () => {
     try {
@@ -162,16 +162,16 @@ export const WalletCardDetailScreen = ({
       setIsCapturing(true);
 
       // Wait for ViewShot to mount
-      setTimeout(async () => {
-        const base64 = await viewShotRef?.current?.capture();
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
-        // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
-        await FileSystem.writeAsStringAsync(fileUri, base64, {
-          encoding: FileSystem.EncodingType.Base64
-        });
+      const base64 = await viewShotRef?.current?.capture();
 
-        await Sharing.shareAsync(fileUri);
-      }, 50);
+      // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
+      await FileSystem.writeAsStringAsync(fileUri, base64, {
+        encoding: FileSystem.EncodingType.Base64
+      });
+
+      await Sharing.shareAsync(fileUri);
     } catch (e) {
       console.error(e);
       Alert.alert(texts.wallet.detail.errorTitle, texts.wallet.detail.shareErrorMessage);
