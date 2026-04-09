@@ -2,10 +2,12 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Animated,
+  Easing,
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
@@ -34,8 +36,72 @@ import {
 import { colors, device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
-import { SettingsContext } from '../../SettingsProvider';
 import { CardType, TCard, TCardInfo } from '../../types';
+
+const SECOND_DIGIT_HEIGHT = normalize(54);
+
+const AnimatedSeconds = ({ seconds }: { seconds: number }) => {
+  const slideAnim = useMemo(() => new Animated.Value(0), []);
+
+  useEffect(() => {
+    slideAnim.setValue(0);
+    Animated.timing(slideAnim, {
+      toValue: -SECOND_DIGIT_HEIGHT,
+      duration: 1000,
+      useNativeDriver: true,
+      easing: Easing.linear
+    }).start();
+  }, [seconds, slideAnim]);
+
+  const prev = ((seconds - 1 + 60) % 60).toString().padStart(2, '0');
+  const current = seconds.toString().padStart(2, '0');
+  const next = ((seconds + 1) % 60).toString().padStart(2, '0');
+  const nextNext = ((seconds + 2) % 60).toString().padStart(2, '0');
+
+  // Opacity transitions: current holds at full opacity for ~60% of the cycle
+  const prevOpacity = slideAnim.interpolate({
+    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
+    outputRange: [0, 0.15, 0.3],
+    extrapolate: 'clamp'
+  });
+
+  const currentOpacity = slideAnim.interpolate({
+    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
+    outputRange: [0.3, 1, 1],
+    extrapolate: 'clamp'
+  });
+
+  const nextOpacity = slideAnim.interpolate({
+    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
+    outputRange: [0.8, 0.2, 0.15],
+    extrapolate: 'clamp'
+  });
+
+  const nextNextOpacity = slideAnim.interpolate({
+    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
+    outputRange: [0.3, 0, 0],
+    extrapolate: 'clamp'
+  });
+
+  return (
+    <View style={styles.secondsSlotContainer}>
+      <Animated.View style={{ transform: [{ translateY: slideAnim }] }}>
+        <Animated.View style={[styles.secondSlot, { opacity: prevOpacity }]}>
+          <BoldText style={styles.liveClockText}>{prev}</BoldText>
+        </Animated.View>
+        <Animated.View style={[styles.secondSlot, { opacity: currentOpacity }]}>
+          <BoldText style={styles.liveClockText}>{current}</BoldText>
+        </Animated.View>
+        <Animated.View style={[styles.secondSlot, { opacity: nextOpacity }]}>
+          <BoldText style={styles.liveClockText}>{next}</BoldText>
+        </Animated.View>
+        <Animated.View style={[styles.secondSlot, { opacity: nextNextOpacity }]}>
+          <BoldText style={styles.liveClockText}>{nextNext}</BoldText>
+        </Animated.View>
+      </Animated.View>
+    </View>
+  );
+};
 
 const LiveClock = () => {
   const [time, setTime] = useState(new Date());
@@ -47,23 +113,26 @@ const LiveClock = () => {
 
   const hours = time.getHours().toString().padStart(2, '0');
   const minutes = time.getMinutes().toString().padStart(2, '0');
-  const seconds = time.getSeconds().toString().padStart(2, '0');
-  // Blinking colon effect: visible on even seconds, hidden on odd
-  const colonVisible = time.getSeconds() % 2 === 0;
+
+  const dateString = time.toLocaleDateString('de-DE', {
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 
   return (
     <View style={styles.liveClockContainer}>
-      <View style={styles.liveDot} />
-      <BoldText style={styles.liveClockText}>
-        {hours}
-        <BoldText style={[styles.liveClockText, { opacity: colonVisible ? 1 : 0.3 }]}>:</BoldText>
-        {minutes}
-        <BoldText style={[styles.liveClockText, { opacity: colonVisible ? 1 : 0.3 }]}>:</BoldText>
-        {seconds}
+      <View style={styles.clockRow}>
+        <BoldText style={styles.liveClockText}>{hours}</BoldText>
+        <BoldText style={styles.liveClockColon}>:</BoldText>
+        <BoldText style={styles.liveClockText}>{minutes}</BoldText>
+        <BoldText style={styles.liveClockColon}>:</BoldText>
+        <AnimatedSeconds seconds={time.getSeconds()} />
+      </View>
+      <BoldText small style={styles.dateText}>
+        {dateString}
       </BoldText>
-      <RegularText smallest style={styles.liveLabel}>
-        {texts.wallet.detail.liveIndicator}
-      </RegularText>
     </View>
   );
 };
@@ -72,20 +141,24 @@ const ShareableCard = ({
   apiConnection,
   cardNumber,
   cardType,
-  pinCode
+  pinCode,
+  serverCardType
 }: {
   apiConnection: { qrEndpoint: string };
   cardNumber: string;
   cardType: CardType;
   pinCode?: string;
+  serverCardType: TCard;
 }) => {
+  const { barcodeFormat = 'QR' } = serverCardType || {};
+
   return (
     <Wrapper itemsCenter style={{ backgroundColor: colors.surface }}>
       <BarcodeCreatorView
         background={colors.surface}
         foregroundColor={colors.darkText}
-        format={cardType === CardType.BONUS ? BarcodeFormat.CODE128 : BarcodeFormat.QR}
-        style={cardType === CardType.BONUS ? styles.barcode : styles.qrCode}
+        style={barcodeFormat === 'CODE128' ? styles.barcode : styles.qrCode}
+        format={BarcodeFormat[barcodeFormat]}
         value={`${apiConnection.qrEndpoint}${cardNumber}`}
       />
 
@@ -119,17 +192,19 @@ export const WalletCardDetailScreen = ({
   route
 }: {
   navigation: StackNavigationProp<Record<string, any>>;
-  route: RouteProp<{ params: { card: TCard } }>;
+  route: RouteProp<{ params: { savedCard: TCard; serverCardType: TCard } }>;
 }) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
-  const { wallet = {} } = settings;
-  const image = wallet?.[CardType.BONUS] || {};
-  const { card } = route.params;
-  const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = card;
+  const { savedCard, serverCardType } = route.params;
+  const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = savedCard;
+  const {
+    barcodeFormat = 'QR',
+    imageStyle,
+    imageUrl = '',
+    showLiveClock = false
+  } = serverCardType as TCard;
   const [isFirstLoading, setFirstLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [cardData, setCardData] = useState<TCard | TCardInfo>(card);
+  const [cardData, setCardData] = useState<TCard | TCardInfo>(savedCard);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFullScreenCode, setIsFullScreenCode] = useState(false);
@@ -246,15 +321,15 @@ export const WalletCardDetailScreen = ({
                   <BarcodeCreatorView
                     background={colors.surface}
                     foregroundColor={colors.darkText}
-                    format={cardType === CardType.BONUS ? BarcodeFormat.CODE128 : BarcodeFormat.QR}
-                    style={cardType === CardType.BONUS ? styles.barcode : styles.qrCode}
+                    format={BarcodeFormat[barcodeFormat]}
+                    style={barcodeFormat === 'CODE128' ? styles.barcode : styles.qrCode}
                     value={`${apiConnection.qrEndpoint}${cardNumber}`}
                   />
                 </TouchableOpacity>
-
-                <LiveClock />
               </Wrapper>
             )}
+
+            {cardType === CardType.COUPON && showLiveClock && <LiveClock />}
 
             <Wrapper>
               <Wrapper style={{ backgroundColor: colors.shadowRgba, borderRadius: normalize(8) }}>
@@ -296,7 +371,7 @@ export const WalletCardDetailScreen = ({
                   </WrapperVertical>
                 )}
 
-                {!!cardData?.balanceAsEuro && (
+                {cardData?.balanceAsEuro != null && (
                   <WrapperVertical noPaddingBottom>
                     <WrapperRow spaceBetween itemsCenter>
                       <BoldText small>{texts.wallet.detail.balance}</BoldText>
@@ -307,34 +382,31 @@ export const WalletCardDetailScreen = ({
                   </WrapperVertical>
                 )}
 
-                {cardType === CardType.COUPON && (
-                  <WrapperVertical noPaddingBottom>
-                    <Button
-                      icon={
-                        isLoading ? (
-                          <ActivityIndicator />
-                        ) : (
-                          <Icon.NamedIcon name="refresh" color={colors.surface} />
-                        )
-                      }
-                      iconPosition="left"
-                      onPress={async () => {
-                        setIsLoading(true);
-                        await fetchCardDetails();
-                        setIsLoading(false);
-                      }}
-                      title={texts.wallet.detail.updateBalance}
-                    />
-                  </WrapperVertical>
-                )}
+                <WrapperVertical noPaddingBottom>
+                  <Button
+                    icon={
+                      isLoading ? (
+                        <ActivityIndicator />
+                      ) : (
+                        <Icon.NamedIcon name="refresh" color={colors.surface} />
+                      )
+                    }
+                    iconPosition="left"
+                    onPress={async () => {
+                      setIsLoading(true);
+                      await fetchCardDetails();
+                      setIsLoading(false);
+                    }}
+                    title={texts.wallet.detail.updateBalance}
+                  />
+                </WrapperVertical>
               </Wrapper>
 
-              {cardType === CardType.BONUS && !!image?.imageUrl && (
+              {cardType === CardType.BONUS && showLiveClock && <LiveClock />}
+
+              {!!imageUrl && (
                 <WrapperVertical noPaddingBottom>
-                  <Image
-                    source={{ uri: image.imageUrl }}
-                    style={[styles.image, image.imageStyle]}
-                  />
+                  <Image source={{ uri: imageUrl }} style={[styles.image, imageStyle]} />
                 </WrapperVertical>
               )}
 
@@ -375,7 +447,7 @@ export const WalletCardDetailScreen = ({
 
         <Wrapper itemsCenter>
           <BoldText>{texts.wallet.detail.deleteConfirmationTitle}</BoldText>
-          {cardType === CardType.COUPON && cardData?.balanceAsEuro && (
+          {cardType === CardType.COUPON && cardData?.balanceAsEuro != null && (
             <WrapperVertical>
               <RegularText center>
                 {texts.wallet.detail.deleteConfirmationMessage(cardData?.balanceAsEuro)}
@@ -422,8 +494,10 @@ export const WalletCardDetailScreen = ({
             apiConnection={apiConnection}
             cardNumber={cardNumber}
             cardType={cardType}
+            serverCardType={serverCardType}
           />
-          <LiveClock />
+
+          {showLiveClock && <LiveClock />}
         </Wrapper>
       </Modal>
 
@@ -435,6 +509,7 @@ export const WalletCardDetailScreen = ({
               cardNumber={cardNumber}
               cardType={cardType}
               pinCode={pinCode}
+              serverCardType={serverCardType}
             />
           </ViewShot>
         </View>
@@ -476,29 +551,41 @@ const styles = StyleSheet.create({
   },
   liveClockContainer: {
     alignItems: 'center',
-    backgroundColor: colors.shadowRgba,
-    borderRadius: normalize(8),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: normalize(8),
-    paddingHorizontal: normalize(12),
-    paddingVertical: normalize(6)
+    marginTop: normalize(4),
+    paddingVertical: normalize(4)
   },
   liveClockText: {
     color: colors.primary,
+    fontSize: normalize(48),
     fontVariant: ['tabular-nums'],
-    fontSize: normalize(16)
+    lineHeight: SECOND_DIGIT_HEIGHT,
+    textAlign: 'center'
   },
-  liveDot: {
-    backgroundColor: colors.error,
-    borderRadius: normalize(4),
-    height: normalize(8),
-    marginRight: normalize(6),
-    width: normalize(8)
+  liveClockColon: {
+    color: colors.primary,
+    fontSize: normalize(48),
+    lineHeight: SECOND_DIGIT_HEIGHT,
+    marginHorizontal: normalize(2)
   },
-  liveLabel: {
-    color: colors.darkText,
-    marginLeft: normalize(6)
+  clockRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  secondsSlotContainer: {
+    height: SECOND_DIGIT_HEIGHT * 2,
+    overflow: 'hidden',
+    width: normalize(72)
+  },
+  secondSlot: {
+    alignItems: 'center',
+    height: SECOND_DIGIT_HEIGHT,
+    justifyContent: 'center'
+  },
+  dateText: {
+    bottom: normalize(20),
+    color: colors.placeholder,
+    position: 'absolute'
   },
   qrOverlayCloseButton: {
     alignItems: 'center',
