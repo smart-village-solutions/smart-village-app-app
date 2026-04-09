@@ -1722,6 +1722,7 @@ export const texts = {
       errorTitle: 'Fehler',
       expandCode: 'Code vergrößern',
       lastTransactions: 'Ihre letzten 10 Buchungen',
+      liveIndicator: 'LIVE',
       noCardsAvailable: 'Keine Kartendaten verfügbar.',
       pin: 'PIN',
       shareErrorMessage:

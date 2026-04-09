@@ -37,6 +37,37 @@ import { fetchCardInfo } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { CardType, TCard, TCardInfo } from '../../types';
 
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
+  const seconds = time.getSeconds().toString().padStart(2, '0');
+  // Blinking colon effect: visible on even seconds, hidden on odd
+  const colonVisible = time.getSeconds() % 2 === 0;
+
+  return (
+    <View style={styles.liveClockContainer}>
+      <View style={styles.liveDot} />
+      <BoldText style={styles.liveClockText}>
+        {hours}
+        <BoldText style={[styles.liveClockText, { opacity: colonVisible ? 1 : 0.3 }]}>:</BoldText>
+        {minutes}
+        <BoldText style={[styles.liveClockText, { opacity: colonVisible ? 1 : 0.3 }]}>:</BoldText>
+        {seconds}
+      </BoldText>
+      <RegularText smallest style={styles.liveLabel}>
+        {texts.wallet.detail.liveIndicator}
+      </RegularText>
+    </View>
+  );
+};
+
 const ShareableCard = ({
   apiConnection,
   cardNumber,
@@ -220,6 +251,8 @@ export const WalletCardDetailScreen = ({
                     value={`${apiConnection.qrEndpoint}${cardNumber}`}
                   />
                 </TouchableOpacity>
+
+                <LiveClock />
               </Wrapper>
             )}
 
@@ -390,6 +423,7 @@ export const WalletCardDetailScreen = ({
             cardNumber={cardNumber}
             cardType={cardType}
           />
+          <LiveClock />
         </Wrapper>
       </Modal>
 
@@ -439,6 +473,32 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     width: '100%'
+  },
+  liveClockContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.shadowRgba,
+    borderRadius: normalize(8),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: normalize(8),
+    paddingHorizontal: normalize(12),
+    paddingVertical: normalize(6)
+  },
+  liveClockText: {
+    color: colors.primary,
+    fontVariant: ['tabular-nums'],
+    fontSize: normalize(16)
+  },
+  liveDot: {
+    backgroundColor: colors.error,
+    borderRadius: normalize(4),
+    height: normalize(8),
+    marginRight: normalize(6),
+    width: normalize(8)
+  },
+  liveLabel: {
+    color: colors.darkText,
+    marginLeft: normalize(6)
   },
   qrOverlayCloseButton: {
     alignItems: 'center',
