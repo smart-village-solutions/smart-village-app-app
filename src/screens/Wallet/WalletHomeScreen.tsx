@@ -86,16 +86,16 @@ export const WalletHomeScreen = () => {
     return map;
   }, [cardTypes]);
 
-  const [cards, setCards] = useState<TCard[]>([]);
+  const [savedCards, setSavedCards] = useState<TCard[]>([]);
   const [savedCardsLoading, setSavedCardsLoading] = useState<boolean>(true);
 
   const fetchCards = useCallback(async () => {
     const savedCards = await getSavedCards();
 
     if (savedCards?.length) {
-      setCards(savedCards);
+      setSavedCards(savedCards);
     } else {
-      setCards([]);
+      setSavedCards([]);
     }
   }, []);
 
@@ -110,7 +110,7 @@ export const WalletHomeScreen = () => {
     return <LoadingSpinner loading />;
   }
 
-  if (!cards?.length) {
+  if (!savedCards?.length) {
     return (
       <SafeAreaViewFlex>
         <WrapperVertical>
@@ -128,27 +128,28 @@ export const WalletHomeScreen = () => {
     );
   }
 
-  const listItem = cards
-    .filter((card: TCard) => {
-      const serverCardType = cardTypeMap.get(card.type);
+  const listItem = savedCards
+    .filter((savedCard: TCard) => {
+      const serverCardType = cardTypeMap.get(savedCard.type);
 
       return serverCardType?.isVisible !== false;
     })
-    .map((card: TCard) => {
-      const serverCardType = cardTypeMap.get(card.type);
-      const iconBackgroundColor = serverCardType?.iconBackgroundColor ?? card.iconBackgroundColor;
-      const iconColor = serverCardType?.iconColor ?? card.iconColor;
+    .map((savedCard: TCard) => {
+      const serverCardType = cardTypeMap.get(savedCard.type);
+      const iconBackgroundColor =
+        serverCardType?.iconBackgroundColor ?? savedCard.iconBackgroundColor;
+      const iconColor = serverCardType?.iconColor ?? savedCard.iconColor;
 
       return {
         leftIcon: (
           <Wrapper style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
-            <Icon.NamedIcon name={card.iconName} color={iconColor} />
+            <Icon.NamedIcon name={savedCard.iconName} color={iconColor} />
           </Wrapper>
         ),
-        params: { card, title: texts.screenTitles.wallet.detail },
+        params: { savedCard, serverCardType, title: texts.screenTitles.wallet.detail },
         routeName: ScreenName.WalletCardDetail,
-        subtitle: card.description,
-        title: card.cardName || card.title
+        subtitle: savedCard.description,
+        title: savedCard.cardName || savedCard.title
       };
     });
 
