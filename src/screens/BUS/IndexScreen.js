@@ -91,13 +91,12 @@ export const IndexScreen = ({ navigation }) => {
     isLoading: isLoadingTop10,
     refetch: refetchTop10
   } = useBusTop10(services);
-  const resolvedAreaName = useMemo(() => {
-    if (`${areaId}` === `${initialAreaId}`) {
-      return areaName || initialAreaName;
-    }
-
-    return areaName;
-  }, [areaId, areaName, initialAreaId, initialAreaName]);
+  // areaName is '' on first render while initialAreaName loads asynchronously.
+  // Only use initialAreaName as a fallback when we are still on the configured default area.
+  const resolvedAreaName = useMemo(
+    () => areaName || (`${areaId}` === `${initialAreaId}` ? initialAreaName : ''),
+    [areaId, areaName, initialAreaId, initialAreaName]
+  );
 
   const refresh = async () => {
     setRefreshing(true);
