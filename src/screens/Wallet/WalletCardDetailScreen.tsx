@@ -148,9 +148,9 @@ const ShareableCard = ({
   cardNumber: string;
   cardType: CardType;
   pinCode?: string;
-  serverCardType: TCard;
+  serverCardType?: TCard;
 }) => {
-  const { barcodeFormat = 'QR' } = serverCardType || {};
+  const { barcodeFormat = 'QR' } = serverCardType ?? {};
 
   return (
     <Wrapper itemsCenter style={{ backgroundColor: colors.surface }}>
@@ -192,7 +192,7 @@ export const WalletCardDetailScreen = ({
   route
 }: {
   navigation: StackNavigationProp<Record<string, any>>;
-  route: RouteProp<{ params: { savedCard: TCard; serverCardType: TCard } }>;
+  route: RouteProp<{ params: { savedCard: TCard; serverCardType?: TCard } }>;
 }) => {
   const { savedCard, serverCardType } = route.params;
   const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = savedCard;
@@ -201,7 +201,7 @@ export const WalletCardDetailScreen = ({
     imageStyle,
     imageUrl = '',
     showLiveClock = false
-  } = serverCardType as TCard;
+  } = serverCardType ?? {};
   const [isFirstLoading, setFirstLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [cardData, setCardData] = useState<TCard | TCardInfo>(savedCard);
@@ -240,6 +240,10 @@ export const WalletCardDetailScreen = ({
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       const base64 = await viewShotRef?.current?.capture();
+
+      if (!base64) {
+        throw new Error('Failed to capture wallet card image');
+      }
 
       // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
       await FileSystem.writeAsStringAsync(fileUri, base64, {
@@ -382,24 +386,26 @@ export const WalletCardDetailScreen = ({
                   </WrapperVertical>
                 )}
 
-                <WrapperVertical noPaddingBottom>
-                  <Button
-                    icon={
-                      isLoading ? (
-                        <ActivityIndicator />
-                      ) : (
-                        <Icon.NamedIcon name="refresh" color={colors.surface} />
-                      )
-                    }
-                    iconPosition="left"
-                    onPress={async () => {
-                      setIsLoading(true);
-                      await fetchCardDetails();
-                      setIsLoading(false);
-                    }}
-                    title={texts.wallet.detail.updateBalance}
-                  />
-                </WrapperVertical>
+                {cardType === CardType.COUPON && (
+                  <WrapperVertical noPaddingBottom>
+                    <Button
+                      icon={
+                        isLoading ? (
+                          <ActivityIndicator />
+                        ) : (
+                          <Icon.NamedIcon name="refresh" color={colors.surface} />
+                        )
+                      }
+                      iconPosition="left"
+                      onPress={async () => {
+                        setIsLoading(true);
+                        await fetchCardDetails();
+                        setIsLoading(false);
+                      }}
+                      title={texts.wallet.detail.updateBalance}
+                    />
+                  </WrapperVertical>
+                )}
               </Wrapper>
 
               {cardType === CardType.BONUS && showLiveClock && <LiveClock />}
