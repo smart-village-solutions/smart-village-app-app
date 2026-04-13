@@ -22,22 +22,16 @@
     },
     "icon": "./assets/icon.png",
     "scheme": "<%= @mobile_app_schema_url %>",
-    "orientation": "portrait",
     "primaryColor": "#107821",
-    "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      <% if @apple_team_id.present? %>
-        "appleTeamId": "<%= @apple_team_id %>"
-      <% end %>
+      "appleTeamId": "<%= @apple_team_id %>"
       "bundleIdentifier": "<%= @mobile_app_bundle_identifier %>",
       "buildNumber": "<%= @mobile_app_ios_build_number %>",
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
-         <% if @asc_app_id.present? %>
-          "AppStoreID": "<%= @asc_app_id %>",
-        <% end %>
+        "AppStoreID": "<%= @asc_app_id %>",
         "AppStoreCountry": "de",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
@@ -80,7 +74,11 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "blockedPermissions": ["READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO"],
+      "blockedPermissions": [
+        "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "READ_MEDIA_IMAGES", 
+        "READ_MEDIA_VIDEO"
+      ],
       "allowBackup": false
     },
     "plugins": [
@@ -129,6 +127,7 @@
           "image": "./assets/icon.png"
         }
       ],
+      "@maplibre/maplibre-react-native",
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
       "@rnrepo/expo-config-plugin",
