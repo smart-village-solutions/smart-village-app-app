@@ -109,7 +109,7 @@ const buildHtmlDocument = (content) => `<!DOCTYPE html>
   <body>${content}</body>
 </html>`;
 
-const MediaItem = ({ mediaContent }) => {
+export const MediaItem = ({ mediaContent }) => {
   const rawUrl = mediaContent?.sourceUrl?.url ?? '';
   const youtubeId = extractYoutubeId(rawUrl);
 

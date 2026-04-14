@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../config';
+import { trimNewLines } from '../../helpers';
 import {
   useLastKnownPosition,
   useLocationSettings,
@@ -13,20 +14,22 @@ import {
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
-import { ImageSection } from '../ImageSection';
 import { TourDetailInfoCard } from '../infoCard';
 import { MapLibre } from '../map';
-import { MediaSection } from '../MediaSection';
+import { MediaCarousel } from '../MediaCarousel';
 import { locationServiceEnabledAlert } from '../SUE/report/SueReportLocation';
+import { HeadlineText, RegularText } from '../Text';
 import { mapToMapMarkers } from '../TourStops';
-import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 import { SectionHeader } from './../SectionHeader';
 import { TourCard } from './TourCard';
+import { Touchable } from '../Touchable';
+import { Divider } from 'react-native-elements';
 
 /* eslint-disable complexity */
 export const TourStopDetail = ({ route, navigation }: { route: any; navigation: any }) => {
-  const { geometryTourData, id, tourStops, tourStopData } = route.params;
+  const { geometryTourData, id, tourStops, tourStopData, subtitle } = route.params;
   const { description, lengthKm, mediaContents, title, tourAddresses } = tourStopData || {};
 
   const openWebScreen = useOpenWebScreen(
@@ -66,7 +69,9 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
       navigation.navigate(ScreenName.TourStopDetail, {
         geometryTourData,
         id: nextStop.id,
-        title: nextStop.title,
+        headline: nextStop.title,
+        subtitle: texts.tour.tourStop,
+        title: texts.tour.stop + ' ' + (currentIndex + 2),
         tourStopData: nextStop,
         tourStops
       });
@@ -84,7 +89,9 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
       navigation.navigate(ScreenName.TourStopDetail, {
         geometryTourData,
         id: previousStop.id,
-        title: previousStop.title,
+        headline: previousStop.title,
+        subtitle: texts.tour.tourStop,
+        title: texts.tour.stop + ' ' + currentIndex,
         tourStopData: previousStop,
         tourStops
       });
@@ -105,23 +112,38 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 
   return (
     <ScrollView ref={scrollViewRef}>
-      <ImageSection mediaContents={mediaContents} />
-      <SectionHeader title={title} />
+      {!!subtitle && (
+        <WrapperVertical noPaddingBottom>
+          <WrapperRow center>
+            <HeadlineText smaller uppercase>
+              {subtitle}
+            </HeadlineText>
+          </WrapperRow>
+        </WrapperVertical>
+      )}
+
+      <WrapperRow center>
+        <SectionHeader big center title={trimNewLines(title)} />
+      </WrapperRow>
+
+      <MediaCarousel mediaContents={mediaContents} />
+
+      <SectionHeader title={texts.tour.overview} />
 
       <TourDetailInfoCard currentPosition={currentPosition} tourStopData={tourStopData} />
 
-      {(!!tourAddresses?.length || !!lengthKm) && (
-        <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
-      )}
+      <>
+        <Wrapper>
+          <WrapperRow itemsCenter>
+            <Icon.Location color={colors.primary} style={styles.margin} />
+            <Touchable onPress={() => scrollViewRef.current?.scrollTo({ y: mapY, animated: true })}>
+              <RegularText>{texts.tour.showOnMap}</RegularText>
+            </Touchable>
+          </WrapperRow>
+        </Wrapper>
 
-      <WrapperHorizontal>
-        <Button
-          title={texts.tour.showOnMap}
-          onPress={() => scrollViewRef.current?.scrollTo({ y: mapY, animated: true })}
-        />
-      </WrapperHorizontal>
-
-      <MediaSection mediaContents={mediaContents} />
+        <Divider style={styles.divider} />
+      </>
 
       {!!description && (
         <View>
@@ -143,11 +165,14 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
           isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
             const selectedTourStop = tourStops.find((stop) => stop.id.toString() === tourId);
+            const index = tourStops.findIndex((stop) => stop.id.toString() === tourId);
 
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,
+              headline: selectedTourStop?.title,
               id: tourId,
-              title: selectedTourStop?.title,
+              subtitle: texts.tour.tourStop,
+              title: texts.tour.stop + ' ' + (index + 1),
               tourStopData: selectedTourStop,
               tourStops
             });
@@ -189,8 +214,14 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  divider: {
+    backgroundColor: colors.placeholder
+  },
   map: {
     height: normalize(500),
     width: '100%'
+  },
+  margin: {
+    marginRight: normalize(12)
   }
 });

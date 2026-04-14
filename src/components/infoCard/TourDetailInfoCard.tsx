@@ -159,7 +159,7 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
         <>
           <Wrapper>
             <WrapperRow itemsCenter>
-              <Icon.NamedIcon name="route" color={colors.primary} style={styles.margin} />
+              <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
               <View>
                 <RegularText small>{texts.tour.distance}</RegularText>
                 <BoldText small>{distanceText}</BoldText>
@@ -193,7 +193,7 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
                   }
                 ]}
               >
-                <Icon.NamedIcon name="arrow-narrow-up" color={colors.primary} />
+                <Icon.ArrowUp color={colors.primary} />
               </Animated.View>
               <View>
                 <RegularText small>{texts.tour.direction}</RegularText>

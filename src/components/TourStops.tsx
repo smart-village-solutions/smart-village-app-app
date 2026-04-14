@@ -75,14 +75,17 @@ export const TourStops = ({
 
   const listItem = useMemo(
     () =>
-      tourStops?.map((tourStop) => ({
+      tourStops?.map((tourStop, index) => ({
         ...tourStop,
-        title: tourStop.title,
         routeName: ScreenName.TourStopDetail,
+        overtitle: texts.tour.tourStop,
+        title: tourStop.title,
         params: {
           geometryTourData,
+          headline: tourStop.title,
           id: tourStop.id,
-          title: tourStop.title,
+          subtitle: texts.tour.tourStop,
+          title: texts.tour.stop + ' ' + (index + 1),
           tourStopData: tourStop,
           tourStops
         }
@@ -112,11 +115,14 @@ export const TourStops = ({
           isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
             const selectedTourStop = tourStops.find((stop) => stop.id.toString() === tourId);
+            const index = tourStops.findIndex((stop) => stop.id.toString() === tourId);
 
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,
+              headline: selectedTourStop?.title,
               id: tourId,
-              title: selectedTourStop?.title,
+              subtitle: texts.tour.tourStop,
+              title: texts.tour.stop + ' ' + (index + 1),
               tourStopData: selectedTourStop,
               tourStops
             });

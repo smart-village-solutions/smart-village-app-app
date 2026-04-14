@@ -1436,10 +1436,13 @@ export const texts = {
     end: 'Tourende',
     next: 'Nächster',
     operatingCompany: 'Veranstalter',
+    overview: 'Übersicht',
     previous: 'Vorheriger',
     showOnMap: 'Auf Karte anzeigen',
     start: 'Tourbeginn',
-    tour: 'Tourverlauf'
+    stop: 'Stop',
+    tour: 'Tourverlauf',
+    tourStop: 'Tourstopp'
   },
   updateAlert: {
     later: 'Später',
