@@ -1442,6 +1442,7 @@ export const texts = {
     start: 'Tourbeginn',
     stop: 'Stop',
     tour: 'Tourverlauf',
+    tourStart: 'Tour starten',
     tourStop: 'Tourstopp'
   },
   updateAlert: {

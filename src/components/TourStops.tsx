@@ -14,11 +14,13 @@ import { SettingsContext } from '../SettingsProvider';
 import { MapMarker, ScreenName } from '../types';
 
 import { AugmentedReality } from './augmentedReality';
+import { Button } from './Button';
 import { IndexFilterWrapperAndList } from './IndexFilterWrapperAndList';
 import { ListComponent } from './ListComponent';
 import { MapLibre } from './map';
 import { SectionHeader } from './SectionHeader';
 import { locationServiceEnabledAlert } from './SUE/report/SueReportLocation';
+import { Wrapper } from './Wrapper';
 
 const { MAP } = consts;
 
@@ -130,6 +132,23 @@ export const TourStops = ({
           // onMaximizeButtonPress={() => console.log('Maximize map pressed')} // TODO: implement maximize map functionality
         />
       )}
+
+      <Wrapper>
+        <Button
+          onPress={() => {
+            navigation.navigate(ScreenName.TourStopDetail, {
+              geometryTourData,
+              headline: tourStops[0]?.title,
+              id: tourStops[0]?.id,
+              subtitle: texts.tour.tourStop,
+              title: texts.tour.stop + ' 1',
+              tourStopData: tourStops[0],
+              tourStops
+            });
+          }}
+          title={texts.tour.tourStart}
+        />
+      </Wrapper>
     </>
   );
 };
