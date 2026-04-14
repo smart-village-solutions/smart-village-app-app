@@ -20,8 +20,30 @@ type Props = {
 };
 
 export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => {
-  const lat1 = currentPosition?.coords.latitude;
-  const lon1 = currentPosition?.coords.longitude;
+  const [localPosition, setLocalPosition] = useState<Location.LocationObject | undefined>(
+    currentPosition
+  );
+
+  // Re-fetch the device position every 10 seconds so displayed data stays up-to-date.
+  useEffect(() => {
+    const fetchPosition = async () => {
+      try {
+        const position = await Location.getCurrentPositionAsync({});
+        setLocalPosition(position);
+      } catch {
+        // Position unavailable — keep last known value.
+      }
+    };
+
+    fetchPosition();
+
+    const interval = setInterval(fetchPosition, 10_000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const lat1 = localPosition?.coords.latitude;
+  const lon1 = localPosition?.coords.longitude;
   const lat2 = tourStopData?.location?.geoLocation?.latitude;
   const lon2 = tourStopData?.location?.geoLocation?.longitude;
 
