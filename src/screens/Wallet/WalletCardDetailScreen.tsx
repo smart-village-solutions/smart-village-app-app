@@ -2,18 +2,17 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Animated,
-  Easing,
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
   View
 } from 'react-native';
 import { BarcodeCreatorView, BarcodeFormat } from 'react-native-barcode-creator';
+import { Divider } from 'react-native-elements';
 import ViewShot from 'react-native-view-shot';
 
 import {
@@ -23,6 +22,7 @@ import {
   EmptyMessage,
   HeadlineText,
   Image,
+  LiveClock,
   LoadingSpinner,
   Modal,
   RegularText,
@@ -37,105 +37,6 @@ import { colors, device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
 import { fetchCardInfo } from '../../queries';
 import { CardType, TCard, TCardInfo } from '../../types';
-
-const SECOND_DIGIT_HEIGHT = normalize(54);
-
-const AnimatedSeconds = ({ seconds }: { seconds: number }) => {
-  const slideAnim = useMemo(() => new Animated.Value(0), []);
-
-  useEffect(() => {
-    slideAnim.setValue(0);
-    Animated.timing(slideAnim, {
-      toValue: -SECOND_DIGIT_HEIGHT,
-      duration: 1000,
-      useNativeDriver: true,
-      easing: Easing.linear
-    }).start();
-  }, [seconds, slideAnim]);
-
-  const prev = ((seconds - 1 + 60) % 60).toString().padStart(2, '0');
-  const current = seconds.toString().padStart(2, '0');
-  const next = ((seconds + 1) % 60).toString().padStart(2, '0');
-  const nextNext = ((seconds + 2) % 60).toString().padStart(2, '0');
-
-  // Opacity transitions: current holds at full opacity for ~60% of the cycle
-  const prevOpacity = slideAnim.interpolate({
-    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
-    outputRange: [0, 0.15, 0.3],
-    extrapolate: 'clamp'
-  });
-
-  const currentOpacity = slideAnim.interpolate({
-    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
-    outputRange: [0.3, 1, 1],
-    extrapolate: 'clamp'
-  });
-
-  const nextOpacity = slideAnim.interpolate({
-    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
-    outputRange: [0.8, 0.2, 0.15],
-    extrapolate: 'clamp'
-  });
-
-  const nextNextOpacity = slideAnim.interpolate({
-    inputRange: [-SECOND_DIGIT_HEIGHT, -SECOND_DIGIT_HEIGHT * 0.4, 0],
-    outputRange: [0.3, 0, 0],
-    extrapolate: 'clamp'
-  });
-
-  return (
-    <View style={styles.secondsSlotContainer}>
-      <Animated.View style={{ transform: [{ translateY: slideAnim }] }}>
-        <Animated.View style={[styles.secondSlot, { opacity: prevOpacity }]}>
-          <BoldText style={styles.liveClockText}>{prev}</BoldText>
-        </Animated.View>
-        <Animated.View style={[styles.secondSlot, { opacity: currentOpacity }]}>
-          <BoldText style={styles.liveClockText}>{current}</BoldText>
-        </Animated.View>
-        <Animated.View style={[styles.secondSlot, { opacity: nextOpacity }]}>
-          <BoldText style={styles.liveClockText}>{next}</BoldText>
-        </Animated.View>
-        <Animated.View style={[styles.secondSlot, { opacity: nextNextOpacity }]}>
-          <BoldText style={styles.liveClockText}>{nextNext}</BoldText>
-        </Animated.View>
-      </Animated.View>
-    </View>
-  );
-};
-
-const LiveClock = () => {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const interval = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const hours = time.getHours().toString().padStart(2, '0');
-  const minutes = time.getMinutes().toString().padStart(2, '0');
-
-  const dateString = time.toLocaleDateString('de-DE', {
-    weekday: 'short',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-
-  return (
-    <View style={styles.liveClockContainer}>
-      <View style={styles.clockRow}>
-        <BoldText style={styles.liveClockText}>{hours}</BoldText>
-        <BoldText style={styles.liveClockColon}>:</BoldText>
-        <BoldText style={styles.liveClockText}>{minutes}</BoldText>
-        <BoldText style={styles.liveClockColon}>:</BoldText>
-        <AnimatedSeconds seconds={time.getSeconds()} />
-      </View>
-      <BoldText small style={styles.dateText}>
-        {dateString}
-      </BoldText>
-    </View>
-  );
-};
 
 const ShareableCard = ({
   apiConnection,
@@ -198,10 +99,12 @@ export const WalletCardDetailScreen = ({
   const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = savedCard;
   const {
     barcodeFormat = 'QR',
+    iconBackgroundColor,
     imageStyle,
-    imageUrl = '',
+    imageUrl,
+    showClockWithAnimation = false,
     showLiveClock = false
-  } = serverCardType ?? {};
+  } = serverCardType as TCard;
   const [isFirstLoading, setFirstLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [cardData, setCardData] = useState<TCard | TCardInfo>(savedCard);
@@ -293,49 +196,42 @@ export const WalletCardDetailScreen = ({
             : []
         }
         ListFooterComponent={
-          <WrapperWrap itemsCenter spaceAround center>
-            <Button
-              icon={<Icon.NamedIcon name="share" />}
-              iconPosition="left"
-              invert
-              notFullWidth
-              onPress={handleShare}
-              title={texts.wallet.detail.backup}
-            />
-            <Button
-              icon={<Icon.NamedIcon name="trash" color={colors.error} />}
-              iconPosition="left"
-              invert
-              notFullWidth
-              onPress={() => setIsModalVisible(true)}
-              title={texts.wallet.detail.deleteButton}
-              variant={ButtonVariants.DELETE}
-            />
-          </WrapperWrap>
-        }
-        ListHeaderComponent={
           <>
-            {!!cardNumber && (
-              <Wrapper itemsCenter noPaddingBottom>
-                <TouchableOpacity
-                  onPress={() => setIsFullScreenCode(true)}
-                  accessibilityLabel={texts.wallet.detail.expandCode}
-                  accessibilityRole="button"
-                >
-                  <BarcodeCreatorView
-                    background={colors.surface}
-                    foregroundColor={colors.darkText}
-                    format={BarcodeFormat[barcodeFormat]}
-                    style={barcodeFormat === 'CODE128' ? styles.barcode : styles.qrCode}
-                    value={`${apiConnection.qrEndpoint}${cardNumber}`}
+            {!!cardData?.balanceAsEuro && (
+              <Wrapper noPaddingTop>
+                <Divider />
+
+                <WrapperVertical noPaddingBottom>
+                  <WrapperRow spaceBetween itemsCenter>
+                    <BoldText small>{texts.wallet.detail.balance}</BoldText>
+                    <BoldText primary big>
+                      {cardData.balanceAsEuro} EUR
+                    </BoldText>
+                  </WrapperRow>
+                </WrapperVertical>
+
+                <WrapperVertical noPaddingBottom>
+                  <Button
+                    icon={
+                      isLoading ? (
+                        <ActivityIndicator />
+                      ) : (
+                        <Icon.NamedIcon name="refresh" color={colors.surface} />
+                      )
+                    }
+                    iconPosition="left"
+                    onPress={async () => {
+                      setIsLoading(true);
+                      await fetchCardDetails();
+                      setIsLoading(false);
+                    }}
+                    title={texts.wallet.detail.updateBalance}
                   />
-                </TouchableOpacity>
+                </WrapperVertical>
               </Wrapper>
             )}
 
-            {cardType === CardType.COUPON && showLiveClock && <LiveClock />}
-
-            <Wrapper>
+            <Wrapper noPaddingTop>
               <Wrapper style={{ backgroundColor: colors.shadowRgba, borderRadius: normalize(8) }}>
                 {!!cardNumber && (
                   <WrapperRow spaceBetween itemsCenter>
@@ -374,54 +270,77 @@ export const WalletCardDetailScreen = ({
                     </WrapperRow>
                   </WrapperVertical>
                 )}
-
-                {cardData?.balanceAsEuro != null && (
-                  <WrapperVertical noPaddingBottom>
-                    <WrapperRow spaceBetween itemsCenter>
-                      <BoldText small>{texts.wallet.detail.balance}</BoldText>
-                      <BoldText primary big>
-                        {cardData.balanceAsEuro} EUR
-                      </BoldText>
-                    </WrapperRow>
-                  </WrapperVertical>
-                )}
-
-                {cardType === CardType.COUPON && (
-                  <WrapperVertical noPaddingBottom>
-                    <Button
-                      icon={
-                        isLoading ? (
-                          <ActivityIndicator />
-                        ) : (
-                          <Icon.NamedIcon name="refresh" color={colors.surface} />
-                        )
-                      }
-                      iconPosition="left"
-                      onPress={async () => {
-                        setIsLoading(true);
-                        await fetchCardDetails();
-                        setIsLoading(false);
-                      }}
-                      title={texts.wallet.detail.updateBalance}
-                    />
-                  </WrapperVertical>
-                )}
               </Wrapper>
-
-              {cardType === CardType.BONUS && showLiveClock && <LiveClock />}
-
-              {!!imageUrl && (
-                <WrapperVertical noPaddingBottom>
-                  <Image source={{ uri: imageUrl }} style={[styles.image, imageStyle]} />
-                </WrapperVertical>
-              )}
-
-              {cardType === CardType.COUPON && (
-                <WrapperVertical noPaddingBottom>
-                  <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
-                </WrapperVertical>
-              )}
             </Wrapper>
+
+            <WrapperWrap itemsCenter spaceAround center>
+              <Button
+                icon={<Icon.NamedIcon name="share" />}
+                iconPosition="left"
+                invert
+                notFullWidth
+                onPress={handleShare}
+                title={texts.wallet.detail.share}
+              />
+              <Button
+                icon={<Icon.NamedIcon name="trash" color={colors.error} />}
+                iconPosition="left"
+                invert
+                notFullWidth
+                onPress={() => setIsModalVisible(true)}
+                title={texts.wallet.detail.deleteButton}
+                variant={ButtonVariants.DELETE}
+              />
+            </WrapperWrap>
+          </>
+        }
+        ListHeaderComponent={
+          <>
+            {showLiveClock && <LiveClock withAnimatedSeconds={showClockWithAnimation} />}
+
+            {!!cardNumber && (
+              <Wrapper itemsCenter noPaddingBottom>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[styles.barcodeButton, { backgroundColor: iconBackgroundColor }]}
+                  onPress={() => setIsFullScreenCode(true)}
+                  accessibilityLabel={texts.wallet.detail.expandCode}
+                  accessibilityRole="button"
+                >
+                  <BarcodeCreatorView
+                    background={iconBackgroundColor}
+                    foregroundColor={colors.darkText}
+                    format={BarcodeFormat[barcodeFormat]}
+                    style={cardType === CardType.BONUS ? styles.barcode : styles.qrCode}
+                    value={`${apiConnection.qrEndpoint}${cardNumber}`}
+                  />
+
+                  {cardType === CardType.BONUS && (
+                    <RegularText center small>
+                      {cardNumber}
+                    </RegularText>
+                  )}
+                </TouchableOpacity>
+              </Wrapper>
+            )}
+
+            {!!imageUrl && (
+              <Wrapper noPaddingTop>
+                <View style={{ backgroundColor: iconBackgroundColor }}>
+                  <Image
+                    resizeMode="contain"
+                    source={{ uri: imageUrl }}
+                    style={[styles.image, imageStyle]}
+                  />
+                </View>
+              </Wrapper>
+            )}
+
+            {!!cardData?.balanceAsEuro && (
+              <Wrapper noPaddingBottom>
+                <HeadlineText>{texts.wallet.detail.lastTransactions}</HeadlineText>
+              </Wrapper>
+            )}
           </>
         }
         refreshControl={
@@ -496,14 +415,14 @@ export const WalletCardDetailScreen = ({
         overlayStyle={styles.qrOverlayContainer}
       >
         <Wrapper>
+          <LiveClock withAnimatedSeconds={showClockWithAnimation} />
+
           <ShareableCard
             apiConnection={apiConnection}
             cardNumber={cardNumber}
             cardType={cardType}
             serverCardType={serverCardType}
           />
-
-          {showLiveClock && <LiveClock />}
         </Wrapper>
       </Modal>
 
@@ -530,6 +449,11 @@ const styles = StyleSheet.create({
     height: device.width / normalize(2),
     width: device.width - normalize(16)
   },
+  barcodeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%'
+  },
   hiddenCaptureContainer: {
     position: 'absolute',
     top: -9999,
@@ -554,44 +478,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     width: '100%'
-  },
-  liveClockContainer: {
-    alignItems: 'center',
-    marginTop: normalize(4),
-    paddingVertical: normalize(4)
-  },
-  liveClockText: {
-    color: colors.primary,
-    fontSize: normalize(48),
-    fontVariant: ['tabular-nums'],
-    lineHeight: SECOND_DIGIT_HEIGHT,
-    textAlign: 'center'
-  },
-  liveClockColon: {
-    color: colors.primary,
-    fontSize: normalize(48),
-    lineHeight: SECOND_DIGIT_HEIGHT,
-    marginHorizontal: normalize(2)
-  },
-  clockRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  secondsSlotContainer: {
-    height: SECOND_DIGIT_HEIGHT * 2,
-    overflow: 'hidden',
-    width: normalize(72)
-  },
-  secondSlot: {
-    alignItems: 'center',
-    height: SECOND_DIGIT_HEIGHT,
-    justifyContent: 'center'
-  },
-  dateText: {
-    bottom: normalize(20),
-    color: colors.placeholder,
-    position: 'absolute'
   },
   qrOverlayCloseButton: {
     alignItems: 'center',

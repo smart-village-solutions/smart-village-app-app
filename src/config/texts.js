@@ -1704,7 +1704,6 @@ export const texts = {
       invalidCardTitle: 'Ungültige Karte'
     },
     detail: {
-      backup: 'Backup',
       balance: 'Guthaben',
       bonusNumber: 'Bonuskartennummer',
       cancel: 'Abbrechen',
@@ -1724,6 +1723,7 @@ export const texts = {
       lastTransactions: 'Ihre letzten 10 Buchungen',
       noCardsAvailable: 'Keine Kartendaten verfügbar.',
       pin: 'PIN',
+      share: 'Teilen',
       shareErrorMessage:
         'Beim Teilen der Kartendaten ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       togglePinShow: 'PIN anzeigen',

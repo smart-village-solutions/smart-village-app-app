@@ -18,6 +18,7 @@ export type TCard = {
   params?: Record<string, any>;
   pinCode?: string;
   routeName?: string;
+  showClockWithAnimation?: boolean;
   showLiveClock?: boolean;
   subtitle: string;
   title: string;
