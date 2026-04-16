@@ -1,5 +1,8 @@
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 
+import appJson from '../../app.json';
+import { device } from '../config';
+
 type NavigationRoute = {
   name: string;
   params?: Partial<ParamListBase>;
@@ -24,8 +27,14 @@ const routeInfo = (route: NavigationRoute) => {
 export const useAppInfo = () => {
   const navigation = useNavigation();
   const navigationState = navigation.getState();
+  const buildNumber =
+    device.platform === 'ios' ? appJson.expo.ios.buildNumber : appJson.expo.android.versionCode;
   const route = navigationState.routes.map(routeInfo).join(' > ');
+
   return {
+    appVersion: appJson.expo.version,
+    buildNumber,
+    otaVersion: appJson.expo.extra.otaVersion,
     route
   };
 };
