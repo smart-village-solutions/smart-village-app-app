@@ -105,7 +105,9 @@ export const LiveClock = ({ withAnimatedSeconds }: { withAnimatedSeconds?: boole
           </BoldText>
         )}
       </View>
-      <BoldText style={withAnimatedSeconds ? styles.dateText : undefined}>{dateString}</BoldText>
+      <BoldText small style={withAnimatedSeconds ? styles.dateText : undefined}>
+        {dateString}
+      </BoldText>
     </Wrapper>
   );
 };
@@ -139,7 +141,6 @@ const styles = StyleSheet.create({
   dateText: {
     bottom: normalize(15),
     color: colors.placeholder,
-    left: normalize(90),
     position: 'absolute'
   }
 });
