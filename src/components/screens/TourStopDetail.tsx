@@ -108,6 +108,8 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 
   // Normalize id to string for reliable comparisons (map markers pass string IDs)
   const idStr = id?.toString();
+  const mapCenterPosition = tourStops.find((stop) => stop.id?.toString() === idStr)?.location
+    ?.geoLocation;
 
   return (
     <ScrollView ref={scrollViewRef}>
@@ -157,16 +159,17 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
         <MapLibre
           currentPosition={currentPosition}
           geometryTourData={geometryTourData}
+          isMultipleMarkersMap
+          isMyLocationButtonVisible
           locations={mapMarkers}
+          mapCenterPosition={mapCenterPosition}
           mapStyle={styles.map}
-          mapCenterPosition={
-            tourStops?.find((stop) => stop.id?.toString() === idStr)?.location?.geoLocation
-          }
           selectedMarker={idStr}
           showMarkerLabels
           showsUserLocation
-          isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
+            if (!tourId) return;
+
             const selectedTourStop = tourStops.find((stop) => stop.id?.toString() === tourId);
             const index = tourStops.findIndex((stop) => stop.id?.toString() === tourId);
 

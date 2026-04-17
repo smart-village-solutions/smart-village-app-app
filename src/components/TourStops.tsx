@@ -110,12 +110,16 @@ export const TourStops = ({
         <MapLibre
           currentPosition={currentPosition}
           geometryTourData={geometryTourData}
+          isMultipleMarkersMap
+          isMyLocationButtonVisible
           locations={mapMarkers}
+          mapCenterPosition={tourStops[0].location?.geoLocation}
           mapStyle={styles.map}
           showMarkerLabels
           showsUserLocation
-          isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
+            if (!tourId) return;
+
             const selectedTourStop = tourStops.find((stop) => stop.id.toString() === tourId);
             const index = tourStops.findIndex((stop) => stop.id.toString() === tourId);
 

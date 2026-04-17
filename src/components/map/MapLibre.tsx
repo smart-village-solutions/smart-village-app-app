@@ -252,7 +252,9 @@ export const MapLibre = ({
     };
   }
 
+  // Only center on the user's position when no explicit mapCenterPosition is provided.
   if (
+    !mapCenterPosition &&
     showsUserLocation &&
     otherProps.currentPosition?.coords.latitude &&
     otherProps.currentPosition?.coords.longitude
@@ -263,6 +265,27 @@ export const MapLibre = ({
       longitude: otherProps.currentPosition.coords.longitude
     };
   }
+
+  // Re-center the camera whenever mapCenterPosition changes after initial mount
+  // (e.g. next/previous stop navigation within the same screen instance).
+  const isFirstMapCenterMountRef = useRef(true);
+  useEffect(() => {
+    if (isFirstMapCenterMountRef.current) {
+      isFirstMapCenterMountRef.current = false;
+      return;
+    }
+
+    if (!mapReady || !mapCenterPosition || !cameraRef.current) return;
+
+    const { latitude, longitude } = mapCenterPosition;
+    if (latitude == null || longitude == null) return;
+
+    cameraRef.current.setCamera({
+      animationDuration: 800,
+      animationMode: 'easeTo',
+      centerCoordinate: [longitude, latitude]
+    });
+  }, [mapCenterPosition, mapReady]);
 
   useEffect(() => {
     if (suppressAutoFitRef.current || hasInitialFitRef.current) {
