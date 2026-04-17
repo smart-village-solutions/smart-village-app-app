@@ -1,6 +1,7 @@
 import * as Location from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { colors, Icon, normalize, texts } from '../../config';
 import { trimNewLines } from '../../helpers';
@@ -19,18 +20,16 @@ import { MapLibre } from '../map';
 import { MediaCarousel } from '../MediaCarousel';
 import { locationServiceEnabledAlert } from '../SUE/report/SueReportLocation';
 import { HeadlineText, RegularText } from '../Text';
+import { Touchable } from '../Touchable';
 import { mapToMapMarkers } from '../TourStops';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 import { SectionHeader } from './../SectionHeader';
-import { TourCard } from './TourCard';
-import { Touchable } from '../Touchable';
-import { Divider } from 'react-native-elements';
 
 /* eslint-disable complexity */
 export const TourStopDetail = ({ route, navigation }: { route: any; navigation: any }) => {
   const { geometryTourData, id, tourStops, tourStopData, subtitle } = route.params;
-  const { description, lengthKm, mediaContents, title, tourAddresses } = tourStopData || {};
+  const { description, mediaContents, title } = tourStopData || {};
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -160,12 +159,16 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
           geometryTourData={geometryTourData}
           locations={mapMarkers}
           mapStyle={styles.map}
+          mapCenterPosition={
+            tourStops?.find((stop) => stop.id?.toString() === idStr)?.location?.geoLocation
+          }
+          selectedMarker={idStr}
           showMarkerLabels
           showsUserLocation
           isMyLocationButtonVisible
           onMarkerPress={(tourId) => {
-            const selectedTourStop = tourStops.find((stop) => stop.id.toString() === tourId);
-            const index = tourStops.findIndex((stop) => stop.id.toString() === tourId);
+            const selectedTourStop = tourStops.find((stop) => stop.id?.toString() === tourId);
+            const index = tourStops.findIndex((stop) => stop.id?.toString() === tourId);
 
             navigation.navigate(ScreenName.TourStopDetail, {
               geometryTourData,

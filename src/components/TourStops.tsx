@@ -176,10 +176,8 @@ export const mapToMapMarkers = (
 
       return {
         iconName:
-          !!id && item.id.toString() === id.toString()
-            ? `${MAP.DEFAULT_PIN}Active`
-            : MAP.DEFAULT_PIN,
-        activeIconName: `${MAP.DEFAULT_PIN}Active`,
+          !!id && item.id.toString() === id.toString() ? 'tourStopPinActive' : 'tourStopPin',
+        activeIconName: 'tourStopPinActive',
         [MAP.DEFAULT_PIN]: 1,
         id: item.id.toString(),
         label: String(index + 1),

@@ -24,22 +24,28 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
     currentPosition
   );
 
-  // Re-fetch the device position every 10 seconds so displayed data stays up-to-date.
+  // Watch device position continuously so distance and bearing update as the user moves.
   useEffect(() => {
-    const fetchPosition = async () => {
+    let subscription: Location.LocationSubscription | null = null;
+
+    const subscribe = async () => {
       try {
-        const position = await Location.getCurrentPositionAsync({});
-        setLocalPosition(position);
+        subscription = await Location.watchPositionAsync(
+          { accuracy: Location.Accuracy.High, distanceInterval: 5 },
+          (position) => {
+            setLocalPosition(position);
+          }
+        );
       } catch {
         // Position unavailable — keep last known value.
       }
     };
 
-    fetchPosition();
+    subscribe();
 
-    const interval = setInterval(fetchPosition, 10_000);
-
-    return () => clearInterval(interval);
+    return () => {
+      subscription?.remove();
+    };
   }, []);
 
   const lat1 = localPosition?.coords.latitude;
@@ -138,20 +144,20 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
     }).start();
   }, [relativeBearing, arrowRotation]);
 
-  // Human-readable label for the absolute compass direction to the destination.
+  // Human-readable label for the relative direction to the destination (updates with device heading).
   const directionLabel = useMemo(() => {
-    if (absoluteBearing == null) return null;
+    if (relativeBearing == null) return null;
 
-    if (absoluteBearing >= 337.5 || absoluteBearing < 22.5) return texts.tour.directions.north;
-    if (absoluteBearing < 67.5) return texts.tour.directions.northEast;
-    if (absoluteBearing < 112.5) return texts.tour.directions.east;
-    if (absoluteBearing < 157.5) return texts.tour.directions.southEast;
-    if (absoluteBearing < 202.5) return texts.tour.directions.south;
-    if (absoluteBearing < 247.5) return texts.tour.directions.southWest;
-    if (absoluteBearing < 292.5) return texts.tour.directions.west;
+    if (relativeBearing >= 337.5 || relativeBearing < 22.5) return texts.tour.directions.north;
+    if (relativeBearing < 67.5) return texts.tour.directions.northEast;
+    if (relativeBearing < 112.5) return texts.tour.directions.east;
+    if (relativeBearing < 157.5) return texts.tour.directions.southEast;
+    if (relativeBearing < 202.5) return texts.tour.directions.south;
+    if (relativeBearing < 247.5) return texts.tour.directions.southWest;
+    if (relativeBearing < 292.5) return texts.tour.directions.west;
 
     return texts.tour.directions.northWest;
-  }, [absoluteBearing]);
+  }, [relativeBearing]);
 
   return (
     <View>

@@ -808,7 +808,21 @@ export const MapLibre = ({
                       layerStyles.singleIcon.iconAnchor
                     ],
                     iconAllowOverlap: true,
-                    iconIgnorePlacement: true
+                    iconIgnorePlacement: true,
+                    ...(showMarkerLabels && {
+                      textField: ['get', 'label'],
+                      textFont: ['Noto Sans Bold', 'Open Sans Bold'],
+                      textSize: (labelStyles as any)?.labelSizeActive ?? 14,
+                      textColor: (labelStyles as any)?.labelColorActive ?? '#ffffff',
+                      textOffset: [0, -2.0],
+                      textAnchor: 'center',
+                      textAllowOverlap: true,
+                      textIgnorePlacement: true,
+                      ...(markerLabelHaloColor && {
+                        textHaloColor: markerLabelHaloColor,
+                        textHaloWidth: 7
+                      })
+                    })
                   }}
                 />
               </ShapeSource>
