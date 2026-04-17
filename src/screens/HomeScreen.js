@@ -32,7 +32,10 @@ import {
   useRedeemLocalVouchers,
   useVersionCheck
 } from '../hooks';
-import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
+import {
+  HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT,
+  HOME_REFRESH_EVENT
+} from '../hooks/HomeRefresh';
 import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
 
@@ -237,6 +240,7 @@ export const HomeScreen = ({ navigation, route }) => {
     // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+    DeviceEventEmitter.emit(HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT);
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.

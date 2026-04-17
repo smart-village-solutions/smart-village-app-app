@@ -16,6 +16,23 @@ import { BoldText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper } from './Wrapper';
 
+const pointsOfInterestAndToursListCache = new Map<number, unknown[]>();
+
+// Keep exactly one shuffled snapshot per fetched data version so tab switches reuse the same order.
+const cachePointsOfInterestAndToursListData = (cacheKey: number, listData: unknown[]) => {
+  pointsOfInterestAndToursListCache.set(cacheKey, listData);
+
+  if (pointsOfInterestAndToursListCache.size > 1) {
+    const oldestKey = pointsOfInterestAndToursListCache.keys().next().value;
+
+    if (oldestKey !== undefined) {
+      pointsOfInterestAndToursListCache.delete(oldestKey);
+    }
+  }
+
+  return listData;
+};
+
 type Props = {
   additionalData?: unknown[];
   buttonTitle?: string;
@@ -28,10 +45,11 @@ type Props = {
   navigate?: () => void;
   navigateButton?: () => void;
   navigateLink?: () => void;
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<Record<string, object | undefined>>;
   listType?: string;
   placeholder?: React.ReactElement;
   query: string;
+  queryUpdatedAt?: number;
   queryVariables?: Record<string, unknown>;
   sectionData?: unknown[];
   sectionTitle?: string;
@@ -57,6 +75,7 @@ export const DataListSection = ({
   listType,
   placeholder,
   query,
+  queryUpdatedAt,
   queryVariables,
   sectionData,
   sectionTitle = getTitleForQuery(query),
@@ -82,7 +101,8 @@ export const DataListSection = ({
     );
   }
 
-  let listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
+  const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
+  const queryOptions = {
     withDate:
       (query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents) ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
@@ -90,7 +110,21 @@ export const DataListSection = ({
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
     withTime: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
     queryKey: query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query
-  });
+  };
+
+  let listData =
+    isPointsOfInterestAndTours && queryUpdatedAt
+      ? pointsOfInterestAndToursListCache.get(queryUpdatedAt)
+      : undefined;
+
+  if (!listData) {
+    listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, queryOptions);
+
+    if (isPointsOfInterestAndTours && queryUpdatedAt && listData?.length) {
+      // Cache the already shuffled output so the same query result keeps the same order.
+      listData = cachePointsOfInterestAndToursListData(queryUpdatedAt, listData);
+    }
+  }
 
   if (listData?.length && additionalData?.length) {
     listData.push(...additionalData);

@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { useHomeRefresh, useVolunteerData } from '../hooks';
+import { useHomePointsOfInterestAndToursRefresh, useHomeRefresh, useVolunteerData } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 
@@ -19,7 +19,7 @@ type Props = {
     | 'cache-and-network';
   isIndexStartingAt1: boolean;
   navigate: () => void;
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<Record<string, object | undefined>>;
   placeholder?: React.ReactElement;
   query: string;
   queryVariables: { limit?: number; take?: number };
@@ -40,11 +40,24 @@ export const HomeSection = ({
   title,
   titleDetail
 }: Props) => {
-  const { data, isLoading, refetch } = useQuery([query, queryVariables], async () => {
-    const client = await ReactQueryClient();
+  const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
+  // `dataUpdatedAt` is provided by react-query and changes whenever a successful fetch updates data.
+  const { data, dataUpdatedAt, isLoading, refetch } = useQuery(
+    [query, queryVariables],
+    async () => {
+      const client = await ReactQueryClient();
 
-    return await client.request(getQuery(query), queryVariables);
-  });
+      return await client.request(getQuery(query), queryVariables);
+    },
+    isPointsOfInterestAndTours
+      ? {
+          // Keep one random selection stable across tab switches; manual refresh uses a separate event.
+          staleTime: 60 * 60 * 1000,
+          refetchOnWindowFocus: false,
+          refetchOnReconnect: false
+        }
+      : undefined
+  );
 
   const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
 
@@ -59,14 +72,27 @@ export const HomeSection = ({
     isSectioned: false
   });
 
-  useHomeRefresh(() => {
-    refetch();
-    isCalendarWithVolunteerEvents && refetchVolunteerEvents();
-  });
+  useHomeRefresh(
+    isPointsOfInterestAndTours
+      ? undefined
+      : () => {
+          refetch();
+          isCalendarWithVolunteerEvents && refetchVolunteerEvents();
+        }
+  );
+
+  useHomePointsOfInterestAndToursRefresh(
+    isPointsOfInterestAndTours
+      ? () => {
+          // Pull-to-refresh must always fetch a new random result, even inside the cache window.
+          refetch();
+        }
+      : undefined
+  );
 
   let showButton = !!data?.[query]?.length;
 
-  if (query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS) {
+  if (isPointsOfInterestAndTours) {
     showButton =
       !!data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.length || !!data?.[QUERY_TYPES.TOURS]?.length;
   }
@@ -86,6 +112,7 @@ export const HomeSection = ({
       navigation={navigation}
       placeholder={placeholder}
       query={query}
+      queryUpdatedAt={dataUpdatedAt}
       sectionData={data}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}

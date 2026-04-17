@@ -4,6 +4,8 @@ import { DeviceEventEmitter } from 'react-native';
 import { QUERY_TYPES } from '../queries';
 
 export const HOME_REFRESH_EVENT = 'SVA_HOME_REFRESH';
+export const HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT =
+  'SVA_HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS';
 export const VOLUNTEER_HOME_REFRESH_EVENT = 'SVA_VOLUNTEER_HOME_REFRESH';
 export const VOLUNTEER_PERSONAL_REFRESH_EVENT = 'SVA_VOLUNTEER_PERSONAL_REFRESH';
 export const VOLUNTEER_GROUP_REFRESH_EVENT = 'SVA_VOLUNTEER_GROUP_REFRESH';
@@ -15,6 +17,20 @@ export const useHomeRefresh = (onRefresh?: () => void) => {
     if (!onRefresh) return;
 
     const subscription = DeviceEventEmitter.addListener(HOME_REFRESH_EVENT, onRefresh);
+
+    return () => subscription.remove();
+  }, [onRefresh]);
+};
+
+export const useHomePointsOfInterestAndToursRefresh = (onRefresh?: () => void) => {
+  useEffect(() => {
+    if (!onRefresh) return;
+
+    // This event is only emitted by manual pull-to-refresh to bypass stale time.
+    const subscription = DeviceEventEmitter.addListener(
+      HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT,
+      onRefresh
+    );
 
     return () => subscription.remove();
   }, [onRefresh]);
