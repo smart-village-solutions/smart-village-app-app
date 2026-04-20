@@ -1,3 +1,6 @@
+import type { ImageEntry } from '@maplibre/maplibre-react-native';
+import { useMemo } from 'react';
+
 import { consts } from '../../config';
 import { MapMarker } from '../../types';
 import { useStaticContent } from '../staticContent';
@@ -137,6 +140,19 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
   const markerImages = data?.markerImages;
   const zoomLevel = data?.zoomLevel;
 
+  // MapLibre v11: ImageEntry with `{ uri }` must be wrapped as `{ source: { uri } }`.
+  const v11MarkerImages = useMemo((): Record<string, ImageEntry> | undefined => {
+    if (!markerImages) return undefined;
+    return Object.fromEntries(
+      Object.entries(markerImages).map(([key, value]) => {
+        if (value && typeof value === 'object' && 'uri' in value) {
+          return [key, { source: value } as ImageEntry];
+        }
+        return [key, value as ImageEntry];
+      })
+    );
+  }, [markerImages]);
+
   return {
     clusterCircleColor: createCircleColorExpression(
       uniqueTypes,
@@ -156,7 +172,7 @@ export const useMapFeatureConfig = (locations: MapMarker[]) => {
     ),
     layerStyles,
     loading,
-    markerImages,
+    markerImages: v11MarkerImages,
     zoomLevel
   };
 };
