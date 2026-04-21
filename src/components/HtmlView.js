@@ -72,6 +72,40 @@ const htmlConfig = {
   }
 };
 
+const isYouTubeUri = (uri) => {
+  if (!uri) {
+    return false;
+  }
+  try {
+    const { hostname } = new URL(uri);
+    const normalizedHostname = hostname.toLowerCase();
+    return (
+      normalizedHostname === 'youtu.be' ||
+      normalizedHostname === 'youtube.com' ||
+      normalizedHostname.endsWith('.youtube.com')
+    );
+  } catch {
+    // Invalid URLs must not break HTML rendering.
+    return false;
+  }
+};
+
+// YouTube embeds require a Referer header, otherwise YouTube returns error 153
+// ("The request contains no HTTP Referer or equivalent client identity").
+// provideEmbeddedHeaders is called by @native-html/iframe-plugin for each iframe src
+// and the returned headers are passed to the underlying WebView source.
+// Note: using 'https://www.youtube.com' as Referer causes error 152-4 because YouTube
+// applies stricter embed rules when the Referer matches its own domain. Using a neutral
+// origin like 'https://example.com' (RFC 2606 reserved placeholder) satisfies the
+// presence check without triggering those domain-specific restrictions.
+const provideEmbeddedHeaders = (uri) => {
+  if (isYouTubeUri(uri)) {
+    return { Referer: 'https://example.com' };
+  }
+
+  return undefined;
+};
+
 export const HtmlView = memo(
   ({
     big = true,
@@ -108,6 +142,7 @@ export const HtmlView = memo(
       <HTML
         source={{ html }}
         {...htmlConfig}
+        provideEmbeddedHeaders={provideEmbeddedHeaders}
         renderersProps={{
           a: { onPress: (evt, href) => openLink(href, openWebScreen) },
           iframe: {
