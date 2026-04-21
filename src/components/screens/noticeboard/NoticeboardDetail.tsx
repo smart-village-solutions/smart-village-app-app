@@ -5,7 +5,7 @@ import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { useProfileContext } from '../../../ProfileProvider';
-import { Icon, normalize, texts } from '../../../config';
+import { colors, Icon, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
