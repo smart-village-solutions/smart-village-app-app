@@ -95,12 +95,12 @@ const isYouTubeUri = (uri) => {
 // provideEmbeddedHeaders is called by @native-html/iframe-plugin for each iframe src
 // and the returned headers are passed to the underlying WebView source.
 // Note: using 'https://www.youtube.com' as Referer causes error 152-4 because YouTube
-// applies stricter embed rules when the Referer matches its own domain. Using a neutral
-// origin like 'https://example.com' (RFC 2606 reserved placeholder) satisfies the
-// presence check without triggering those domain-specific restrictions.
+// applies stricter embed rules when the Referer matches its own domain. Using the
+// app's own domain 'https://smart-village.app' satisfies the presence check without
+// triggering those domain-specific restrictions.
 const provideEmbeddedHeaders = (uri) => {
   if (isYouTubeUri(uri)) {
-    return { Referer: 'https://example.com' };
+    return { Referer: 'https://smart-village.app' };
   }
 
   return undefined;
