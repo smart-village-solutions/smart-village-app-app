@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { useQuery } from 'react-apollo';
 
 import { useHomeRefresh } from './hooks';
+import { useTabRoutes } from './navigation/MainTabNavigator';
 import { useProfileContext } from './ProfileProvider';
 import { QUERY_TYPES, getQuery } from './queries';
 
@@ -14,8 +15,11 @@ export const UnreadMessagesContext = createContext(defaultUnreadMessage);
 
 export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNode }) => {
   const { isLoggedIn } = useProfileContext();
+  const { tabRoutes = {} } = useTabRoutes();
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
+
+  const hasProfileRoute = tabRoutes?.tabConfigs?.some((route) => route.screen === 'Profile');
 
   const {
     data: conversationData,
@@ -23,7 +27,7 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     refetch
   } = useQuery(getQuery(query), {
     pollInterval: defaultPollInterval,
-    skip: !isLoggedIn,
+    skip: !isLoggedIn || !hasProfileRoute,
     variables: {
       conversationableType: 'GenericItem'
     }
@@ -42,7 +46,7 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     return conversationData[query].reduce((total, conversation) => {
       return total + (conversation.unreadMessagesCount || 0);
     }, 0);
-  }, [conversationData]);
+  }, [conversationData, query]);
 
   useEffect(() => {
     setUnreadMessagesCount(getUnreadMessagesCount());
@@ -50,7 +54,7 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
 
   useEffect(() => {
     isLoggedIn && refetch();
-  }, [isLoggedIn]);
+  }, [isLoggedIn, refetch]);
 
   return (
     <UnreadMessagesContext.Provider
