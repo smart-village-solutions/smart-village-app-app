@@ -20,7 +20,13 @@ type TButton = {
   visibleScreens?: string[];
 };
 
-export const FloatingButton = ({ publicJsonFile }: { publicJsonFile: string }) => {
+export const FloatingButton = ({
+  bottomOffset = 0,
+  publicJsonFile
+}: {
+  bottomOffset?: number;
+  publicJsonFile: string;
+}) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
 
@@ -54,7 +60,7 @@ export const FloatingButton = ({ publicJsonFile }: { publicJsonFile: string }) =
   if (!visibleItems.length) return null;
 
   return (
-    <View style={[styles.container, stylesWithProps({ navigationType }).position]}>
+    <View style={[styles.container, stylesWithProps({ bottomOffset, navigationType }).position]}>
       {visibleItems.map((item, index) => (
         <TouchableOpacity
           activeOpacity={0.8}
@@ -118,10 +124,16 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
+const stylesWithProps = ({
+  bottomOffset,
+  navigationType
+}: {
+  bottomOffset: number;
+  navigationType: string;
+}) => {
   return StyleSheet.create({
     position: {
-      bottom: navigationType === 'drawer' ? '5%' : normalize(16)
+      bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset
     }
   });
 };
