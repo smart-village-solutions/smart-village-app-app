@@ -1,5 +1,5 @@
-import { NavigationProp, RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
+import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native';
+import React, { useContext, useLayoutEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
@@ -19,7 +19,6 @@ import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { navigateToRoute } from '../../helpers';
 import { useStaticContent, useVersionCheck } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { myRequests } from '../../queries/SUE';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 
@@ -80,8 +79,6 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     showStaticContentList = true,
     staticContentListTitle
   } = staticContentList;
-  const [myReports, setMyReports] = useState<any[]>([]);
-
   useVersionCheck();
 
   const { data } = useStaticContent({
@@ -109,17 +106,6 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     return listItem;
   }, [appDesignSystem, data]);
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchMyReports = async () => {
-        const reports = await myRequests();
-        setMyReports(reports);
-      };
-
-      fetchMyReports();
-    }, [])
-  );
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -136,6 +122,9 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     });
   }, []);
 
+  const hasTopListNavigationButton =
+    sueReportListNavigationButton && sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP;
+
   return (
     <SafeAreaViewFlex>
       <ScrollView>
@@ -145,36 +134,17 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           publicJsonFile="sueHomeCarousel"
         />
 
-        {!!sueReportListNavigationButton &&
-          sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP && (
-            <Wrapper noPaddingBottom style={styles.paddingTop}>
-              <ReportListNavigationButton
-                icon={<Icon.ArrowRight />}
-                targetTabIndex={sueListTargetTabIndex}
-              />
-            </Wrapper>
-          )}
-
-        {!!myReports?.length && (
-          <Wrapper noPaddingBottom noPaddingTop={!!sueReportListNavigationButton}>
+        {hasTopListNavigationButton && (
+          <Wrapper noPaddingBottom style={styles.paddingTop}>
             <ReportListNavigationButton
-              buttonTitle={texts.sue.viewMyReports}
               icon={<Icon.ArrowRight />}
-              query={QUERY_TYPES.SUE.MY_REQUESTS}
               targetTabIndex={sueListTargetTabIndex}
-              title={texts.sue.myReports}
             />
           </Wrapper>
         )}
 
         {!!staticContentListTitle && (
-          <WrapperVertical
-            noPaddingBottom
-            noPaddingTop={
-              !!sueReportListNavigationButton &&
-              sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP
-            }
-          >
+          <WrapperVertical noPaddingBottom noPaddingTop={hasTopListNavigationButton}>
             <SectionHeader title={staticContentListTitle} />
           </WrapperVertical>
         )}
@@ -192,7 +162,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           query={QUERY_TYPES.STATIC_CONTENT_LIST}
         />
 
-        {!!sueReportListNavigationButton &&
+        {sueReportListNavigationButton &&
           sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.BOTTOM && (
             <Wrapper noPaddingBottom>
               <ReportListNavigationButton
