@@ -14,7 +14,7 @@ import {
   Wrapper,
   WrapperVertical
 } from '../../components';
-import { normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { navigateToRoute } from '../../helpers';
 import { useStaticContent, useVersionCheck } from '../../hooks';
@@ -35,11 +35,13 @@ const LIST_NAVIGATION_BUTTON = {
 
 const ReportListNavigationButton = ({
   buttonTitle = texts.sue.viewReports,
+  icon,
   query = QUERY_TYPES.SUE.REQUESTS,
   targetTabIndex,
   title = texts.sue.reports
 }: {
   buttonTitle?: string;
+  icon?: React.ReactNode;
   query?: string;
   targetTabIndex?: number;
   title?: string;
@@ -48,6 +50,7 @@ const ReportListNavigationButton = ({
 
   return (
     <Button
+      icon={icon}
       invert
       onPress={() =>
         navigateToRoute({
@@ -145,7 +148,10 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
         {!!sueReportListNavigationButton &&
           sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP && (
             <Wrapper noPaddingBottom style={styles.paddingTop}>
-              <ReportListNavigationButton targetTabIndex={sueListTargetTabIndex} />
+              <ReportListNavigationButton
+                icon={<Icon.ArrowRight />}
+                targetTabIndex={sueListTargetTabIndex}
+              />
             </Wrapper>
           )}
 
@@ -153,6 +159,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           <Wrapper noPaddingBottom noPaddingTop={!!sueReportListNavigationButton}>
             <ReportListNavigationButton
               buttonTitle={texts.sue.viewMyReports}
+              icon={<Icon.ArrowRight />}
               query={QUERY_TYPES.SUE.MY_REQUESTS}
               targetTabIndex={sueListTargetTabIndex}
               title={texts.sue.myReports}
@@ -188,7 +195,10 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
         {!!sueReportListNavigationButton &&
           sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.BOTTOM && (
             <Wrapper noPaddingBottom>
-              <ReportListNavigationButton targetTabIndex={sueListTargetTabIndex} />
+              <ReportListNavigationButton
+                icon={<Icon.ArrowRight />}
+                targetTabIndex={sueListTargetTabIndex}
+              />
             </Wrapper>
           )}
       </ScrollView>
