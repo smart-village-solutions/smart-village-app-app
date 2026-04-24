@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -6,9 +8,6 @@ import { mainImageOfMediaContents } from '../imageHelper';
 const { ROOT_ROUTE_NAMES } = consts;
 
 export const parseVouchersData = (data, skipLastDivider) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   return data
     ?.filter((voucher) => {
       // filter out vouchers with no remaining quota
@@ -25,9 +24,11 @@ export const parseVouchersData = (data, skipLastDivider) => {
 
       // keep if at least one date entry where today falls within [dateStart, dateEnd]
       // missing dateStart → treat as already started; missing dateEnd → treat as never expiring
+      // use moment to avoid UTC-parsing issues with 'YYYY-MM-DD' strings (matches isActive pattern)
       return voucher.dates.some((date) => {
-        const hasStarted = !date.dateStart || new Date(date.dateStart) <= today;
-        const notExpired = !date.dateEnd || new Date(date.dateEnd) >= today;
+        const now = moment();
+        const hasStarted = !date.dateStart || moment(date.dateStart).startOf('day').isBefore(now);
+        const notExpired = !date.dateEnd || moment(date.dateEnd).endOf('day').isAfter(now);
 
         return hasStarted && notExpired;
       });

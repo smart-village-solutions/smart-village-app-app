@@ -145,7 +145,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
         <>
           {query === QUERY_TYPES.VOUCHERS && (
             <>
-              {!!showFilter && !queryVariables.category && (
+              {!!showFilter && !queryVariables.categoryId && (
                 <WrapperHorizontal>
                   <DropdownHeader
                     {...{
@@ -164,7 +164,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
                     <BoldText>{texts.voucher.indexLoginTitle}</BoldText>
                   </WrapperVertical>
 
-                  <WrapperVertical style={styles.noPaddingTop}>
+                  <WrapperVertical noPaddingTop>
                     <RegularText>{texts.voucher.indexLoginDescription}</RegularText>
                   </WrapperVertical>
 
@@ -176,7 +176,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               )}
 
               {count > 0 && (
-                <Wrapper noPaddingTop={!!showFilter && !queryVariables.category}>
+                <Wrapper noPaddingTop={!!showFilter && !queryVariables.categoryId}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
                   </BoldText>
