@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { useQuery as RQuseQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
@@ -50,7 +50,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const query = route.params?.query ?? '';
   const queryKey =
     query === QUERY_TYPES.VOUCHERS_REDEEMED ? QUERY_TYPES.VOUCHERS : QUERY_TYPES.GENERIC_ITEMS;
-  const showFilter = route.params?.showFilter ?? true;
+  const showFilter = route?.params?.showFilter ?? true;
   const imageUri = route?.params?.headerImage;
 
   const requestVariables = useMemo(() => {
@@ -78,19 +78,12 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     skip: query !== QUERY_TYPES.VOUCHERS || !showFilter
   });
 
-  // added this query with variables to calculate the listed content count
-  const { data: vouchersCount } = useQuery(getQuery(QUERY_TYPES.VOUCHERS_CATEGORIES), {
-    fetchPolicy,
-    skip: query !== QUERY_TYPES.VOUCHERS,
-    variables: { categoryId: queryVariables?.categoryId }
-  });
-
   const listItems = useMemo(() => {
     return parseListItemsFromQuery(query, data, undefined, {
       withDate: false,
       queryKey
     });
-  }, [data, query]);
+  }, [data, query, queryKey]);
 
   const dropdownData = useMemo(() => {
     const categories: TCategory[] = [];
@@ -136,9 +129,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     [query, queryVariables]
   );
 
-  const count = vouchersCount?.[queryKey]?.filter(
-    ({ categories }: { categories: { id: number; name: string }[] }) => !!categories?.length
-  )?.length;
+  const count = listItems?.length;
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -185,7 +176,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               )}
 
               {count > 0 && (
-                <Wrapper style={showFilter && styles.noPaddingTop}>
+                <Wrapper noPaddingTop={!!showFilter && !queryVariables.category}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
                   </BoldText>
@@ -214,9 +205,3 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
