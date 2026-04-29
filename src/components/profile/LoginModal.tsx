@@ -33,7 +33,7 @@ interface DataItem {
 
 /* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
-  const { isLoading, isLoggedIn, currentUserData } = useProfileContext();
+  const { isLoading, isLoggedIn, currentUserData, refresh } = useProfileContext();
   const [isVisible, setIsVisible] = useState(false);
   const isProfileUpdated =
     !!Object.keys(currentUserData?.member?.preferences || {}).length &&
@@ -46,25 +46,20 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     type: 'json'
   });
 
-  const { data: memberData, refetch: memberRefetch } = useQuery(
-    QUERY_TYPES.PROFILE.MEMBER,
-    member,
-    {
-      onSuccess: (responseData: ProfileMember) => {
-        if (!responseData?.member) {
-          storeProfileAuthToken();
+  const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    enabled: isLoggedIn,
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member) {
+        storeProfileAuthToken();
+        storeProfileUserData();
+        refresh();
 
-          return;
-        }
-
-        storeProfileUserData(responseData);
+        return;
       }
-    }
-  );
 
-  useEffect(() => {
-    memberRefetch();
-  }, []);
+      storeProfileUserData(responseData);
+    }
+  });
 
   useEffect(() => {
     if (!isLoading && (!isLoggedIn || !isProfileUpdated)) {
@@ -86,6 +81,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     return null;
   }
 
+  const memberForUpdate = memberData?.member ?? currentUserData?.member;
   const { backgroundColor, description, headline, picture, title } = contentData || {};
 
   return (
@@ -185,13 +181,18 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
               <WrapperHorizontal>
                 <Button
                   big
+                  disabled={!memberForUpdate}
                   invert
                   title={texts.profile.update}
                   onPress={() => {
+                    if (!memberForUpdate) {
+                      return;
+                    }
+
                     setIsVisible(false);
                     navigation.navigate(ScreenName.ProfileUpdate, {
                       from: LOGIN_MODAL,
-                      member: memberData?.member
+                      member: memberForUpdate
                     });
                   }}
                 />
