@@ -4,7 +4,7 @@ import { FlatList } from 'react-native';
 
 import { useRenderItem } from '../hooks';
 
-const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+const keyExtractor = (item) => `${item.params?.query || 'item'}-${item.id}`;
 
 export const HorizontalList = ({ navigation, data, query }) => {
   const renderItem = useRenderItem(query, navigation, { horizontal: true });
