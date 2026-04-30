@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.3.0] :world_map:
+
+This release introduces the new wallet and discovery tours modules, extends remote configurability for key screens and includes major SUE and map stability improvements
+
+### Added
+
+- added full wallet module flow with home, add card, detail and card API validation screens
+- added support for bonus and coupon card types with barcode and QR display options
+- added card scanner and card sharing actions for wallet cards
+- added live clock support on wallet detail screen for validity checks
+- added discovery tours module with tour stops, media carousel and tour start actions
+- added native chatbot messaging screen support
+- added server-configurable floating button support for selected screens
+- added dynamic HomeScreen section configuration that can be controlled remotely
+- added OTA update notification support on iOS and Android
+- added parking availability pins on the map via vehicle status integration
+- added optional `pdfUrl` support in sub query and navigation parameters
+- added SUE enhancements including saved report listing, service request ID search and address-based search improvements
+
+### Changed
+
+- upgraded map integration to `@maplibre/maplibre-react-native` v11 with migration-aligned updates
+- improved profile sync flow to apply member and role updates on startup, reconnect and home refresh
+- improved voucher handling by filtering coupons with start and end dates and by showing remaining quota in low-stock scenarios
+- enhanced feedback flow with route-based checkbox configuration and remotely configurable title support
+- enhanced wallet configuration with visibility controls for card types
+- improved waste calendar note rendering and visibility
+
+### Fixed
+
+- fixed YouTube iframe errors (153 / 152-4) in `HtmlView` by sending a valid `Referer` header
+- fixed unnecessary continuous conversations query execution when no profile tab is configured
+- fixed home points of interest and tours section instability by preventing reshuffling on normal remounts
+- fixed map screen crash risk in drawer-based apps by improving tab bar height handling
+- fixed city selection reset behavior by removing problematic alert flow
+- fixed card list rendering control issues in SUE
+- fixed OParl agenda sorting edge cases with improved order handling
+- fixed safe area handling by aligning `SafeAreaView` usage with `react-native-safe-area-context`
+
 ## [4.2.0] :crown:
 
 The new version updates the map module to a whole new feeling, extends profile features and upgrades Expo to latest SDK version 54
