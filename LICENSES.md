@@ -10,12 +10,12 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 961 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 986 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 70 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 23 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 22 |
-| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 10 |
+| [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 11 |
 | [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 5 |
 | [Unlicense](https://spdx.org/licenses/Unlicense.html) | 4 |
 | [0BSD](https://spdx.org/licenses/0BSD.html) | 3 |
@@ -1610,17 +1610,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "An object of css properties that don't accept values with units",
     "publisher": ""
   },
-  "@expo/cli@54.0.19": {
+  "@expo/cli@54.0.24": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
     "licenseText": "<!-- Title -->\n\n<p align=\"center\">\n  <a href=\"https://expo.dev/\">\n    <img alt=\"Expo CLI\" src=\"../../../.github/resources/cli-banner.svg\">\n  </a>\n</p>\n\n<p align=\"center\">The fastest way to build and run universal React Native apps for Android, iOS, and the web</p>\n\n<p align=\"center\">\n  <a aria-label=\"expo documentation\" href=\"https://docs.expo.dev/more/expo-cli/\">📚 Read the Documentation</a>\n  &ensp;•&ensp;\n  <a aria-label=\"expo documentation\" href=\"https://expo.dev/blog\">Learn more on our blog</a>\n  &ensp;•&ensp;\n  <a aria-label=\"Contribute to Expo CLI\" href=\"#contributing\">Contribute to Expo CLI</a>\n</p>\n\n<p align=\"center\">\n  <a aria-label=\"Join the Expo Discord\" href=\"https://discord.gg/4gtbPAdpaE\" target=\"_blank\">\n    <img alt=\"Discord\" src=\"https://img.shields.io/discord/695411232856997968.svg?style=for-the-badge&color=5865F2&logo=discord&logoColor=FFFFFF\" />\n  </a>\n</p>\n\n<p align=\"center\">\n  <a aria-label=\"Follow @expo on X\" href=\"https://x.com/intent/follow?screen_name=expo\" target=\"_blank\">\n    <img alt=\"Expo on X\" src=\"https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on GitHub\" href=\"https://github.com/expo\" target=\"_blank\">\n    <img alt=\"Expo on GitHub\" src=\"https://img.shields.io/badge/GitHub-222222?style=for-the-badge&logo=github&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on Reddit\" href=\"https://www.reddit.com/r/expo/\" target=\"_blank\">\n    <img alt=\"Expo on Reddit\" src=\"https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on Bluesky\" href=\"https://bsky.app/profile/expo.dev\" target=\"_blank\">\n    <img alt=\"Expo on LinkedIn\" src=\"https://img.shields.io/badge/Bluesky-1DA1F2?style=for-the-badge&logo=bluesky&logoColor=white\" target=\"_blank\" />\n  </a>&nbsp;\n  <a aria-label=\"Follow @expo on LinkedIn\" href=\"https://www.linkedin.com/company/expo-dev\" target=\"_blank\">\n    <img alt=\"Expo on LinkedIn\" src=\"https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=LinkedIn&logoColor=white\" target=\"_blank\" />\n  </a>\n\n  <p align=\"center\">⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project! ⭐️</p>\n</p>\n\n---\n\nThe `@expo/cli` package is a CLI binary that should be used via the `expo` package, like `npx expo start` (or `npx expo` for short).\n\n```\nnpx expo\n```\n\n> ⭐️ Be sure to star the Expo GitHub repo if you enjoy using the project!\n\n## Design\n\nThis CLI has the following purposes:\n\n- Be a minimal interface for starting a local development server that emulates a production EAS Updates server. The development server is the proxy between a native runtime (Expo Go, Dev Client) and a JS Bundler (Metro, Webpack).\n  - To accomplish secure manifest signing for the web, like AsyncStorage or Permissions where both require https/SSL, we need an authenticated Expo account. This is the only reason we include the authentication commands `login`, `logout`, `whoami`, `register`. Standard web CLIs don't have authentication commands because they either don't set up https or they use emulation via packages like `devcert`.\n- Orchestrating various native tools like Xcode, `Simulator.app`, Android Studio, ADB, etc. to make native builds as painless as possible. `run:ios`, `run:android` commands.\n- Implementing a versioned `prebuild` command that can reliably work with a project for long periods of time. Prebuild is like a bundler for native code, it generates the **android** and **ios** folders based on the project Expo config (**app.json**).\n  - `npx expo config` is auxiliary to `npx expo prebuild` and used for debugging/introspection.\n- Installing versioned libraries with `npx expo install` this is a minimal utility born out of pure necessity since versioning in React Native is hard to get right.\n\n# Contributing\n\nTo develop the CLI run (defaults to watch mode):\n\n```\nyarn build\n```\n\nWe highly recommend setting up an alias for the Expo CLI so you can try it in projects all around your computer. Open your **.zshrc** or other config file and add:\n\n```\nalias nexpo=\"/path/to/expo/packages/@expo/cli/build/bin/cli\"\n```\n\nThen use it with `nexpo` like `nexpo config`. You can also set up a debug version:\n\n```\nalias expo-inspect=\"node --inspect /path/to/expo/packages/@expo/cli/build/bin/cli\"\n```\n\nThen you can run it and visit `chrome://inspect/#devices` in Chrome, and press **\"Open dedicated DevTools for Node\"** to get a debugger attached to your process. When debugging the CLI, you'll want to disable workers whenever possible, this will make all code run on the same thread, this is mostly applicable to the `start` command, i.e. `expo-inspect start --max-workers 0`.\n\n## Format\n\n- Be sure to update the [`CHANGELOG.md`](./CHANGELOG.md) with changes for every PR. You only need to add the message, our GitHub bot will automatically suggest adding your name and PR number to the diff.\n- End `async` functions with `Async` like `runAsync`. This is just how we format functions at Expo.\n- When throwing errors, always opt for `CommandError` instead of `Error` -- this helps with debugging and making the experience feel more coherent.\n- Utilize the unified `Log` module instead of `console.log`.\n- When logging with variables, utilize the following format `Something happened (foo: bar, baz: foz)`.\n  - Avoid other formats like `Something happened: bar, foz` or `Something happened: foo=bar, baz=foz`.\n- Main UI components like command names (`expo start`), arguments (`--port`), and `--help` messages should be modified internally, by the Expo team to ensure the developer experience is unified across Expo tooling. External contributions modifying these core aspects may be rejected.\n- Use the `profile` utility method with the `EXPO_PROFILE=1` environment variable to measure execution time.\n- Avoid globals and singletons as these make testing harder and less predictable. The only global we have (at the time of writing this) is the `isOffline` boolean.\n\n## Environment\n\n- Always be cautious of the transitive size of dependencies. [packagephobia](https://packagephobia.now.sh/) is a great resource for determining if a package is lean. Try to minimize adding dependencies to the CLI.\n- We build the CLI using `taskr` + `swc`, this is partially inspired by Next.js' local CLI.\n- The build pipeline will inline the CLI version as an environment variable that is accessible anywhere in the CLI codebase. You can access it via `process.env.__EXPO_VERSION` instead of reading the local `package.json` at runtime.\n- Unlike the legacy global Expo CLI, this CLI is shipped with `expo` meaning the SDK Version is always present.\n  - Reduce SDK specific tasks since only one SDK should be accounted for in a single version of `@expo/cli`.\n  - The `@expo/config` method `getConfig` does not need the `skipSDKVersionRequirement` in any case since `expo` should always be installed. Ex: `getConfig('...', { skipSDKVersionRequirement: true });` shouldn't be used.\n- Also unlike the global Expo CLI we can assume that node modules are always installed since this CLI should be used via a project's local **node_modules** folder.\n  - This means we can't perform operations that upgrade the `expo` package as these may kill the running process. Features that need this pattern (like `expo upgrade`) should live in standalone global tools.\n\n## Testing\n\nThere are two testing scripts:\n\n- `yarn test`: Controlled unit and integration tests.\n- `yarn test:e2e`: End to end testing for CLI commands. This requires the files to be built with `yarn build`.\n\n---\n\n- You can target a specific set of tests with the `--watch` flag. Example: `yarn test --watch config`.\n- We use backticks for `it` blocks. Example <code>it(`works`)</code>.\n- If a pull request is fully self-contained to the `packages/@expo/cli/` folder (i.e. no `yarn.lock` modifications, etc.) then most native CI tests will be skipped, making CI pass faster in PRs.\n\n### Unit Testing Guidelines\n\n- Use `nock` for network requests.\n- No top level `describe` blocks that wrap all the tests in a file.\n- When testing a function, pass the function to the `describe` block instead of a stringified function name:\n  - `describe(foobar, () => {})` instead of `describe('foobar', () => {})`\n- Use virtual `fs` via `memfs` whenever possible.\n- We have a lot of global module [**mocks**](./e2e/setup.ts) already in place, consider them when writing tests.\n- GitHub Copilot can make writing tests a little less tedious.\n\n### E2E Testing Guidelines\n\n- E2E tests should be resilient and reliable, be sure to give them plenty of time for network requests.\n- When testing locally you had to have [Bun installed](https://bun.sh/docs/installation).\n- When testing locally you should attempt to reuse node modules for faster results. In the `npx expo prebuild` and `npx expo start` commands for instance, we utilize a helper method that will default to reusing a project + **node_modules** when run locally. This can be [toggled off](https://github.com/expo/expo/blob/11a5a4d27b7e1c8e4d6ddf0401397d789d89f52a/packages/%40expo/cli/e2e/__tests__/utils.ts#L174) to bootstrap a fresh project every time.\n- When bootstrapping test projects, utilize the temporary folder `os.tmpdir()` as this folder is automatically cleaned up when the computer restarts.\n\n## Coming from Expo CLI\n\n> TL;DR: `expo-cli` was 'make it work', whereas `@expo/cli` is 'make it right, make it fast'.\n\nThe legacy global `expo-cli` package was deprecated in favor of this versioned `@expo/cli` package for the following reasons:\n\n- `expo-cli` was too big and took way too long to install. This made CI frustrating to set up since you needed to also target global node modules for caching.\n- `expo-cli` worked for almost all versions of the `expo` package, meaning it was getting more complex with every release.\n- `expo-cli` combined service commands (like the legacy `build`, `submit`, `publish`) with project-level commands like `expo start`. We've since divided services into `eas-cli` and project commands into `npx expo` (`@expo/cli`). This structure is more optimal/faster for developers since they can install/update commands when they need them.\n- This CLI utilizes more Node.js standard features like `$EDITOR` instead of the custom `$EXPO_EDITOR` environment variable. Also transitioning away from `$EXPO_DEBUG` and more towards `$DEBUG=expo:*`. These types of changes make Expo CLI play nicer with existing tooling.\n- The DevTools UI has been deprecated to reduce the net installation size, minimize complexity, and make room for future debugging UIs (Hermes/v8 Chrome debugger).\n- The `expo start:web` and `expo web` commands have been rolled into `npx expo start` as we now lazily load platforms until the device requests them.\n- Other missing or beta features from `expo-cli` may still be getting migrated over to this new CLI. For a more comprehensive breakdown see the [start command PR](https://github.com/expo/expo/pull/16160).",
     "name": "@expo/cli",
-    "version": "54.0.19",
+    "version": "54.0.24",
     "description": "The Expo CLI",
     "copyright": ""
   },
-  "@expo/code-signing-certificates@0.0.5": {
+  "@expo/code-signing-certificates@0.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/code-signing-certificates",
     "publisher": "Expo",
@@ -1628,7 +1628,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2020-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2020-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/code-signing-certificates",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "A library for working with expo-updates code signing certificates"
   },
   "@expo/config-plugins@54.0.3": {
@@ -1691,23 +1691,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Types for the Expo config object app.config.ts",
     "publisher": ""
   },
-  "@expo/config@12.0.11": {
+  "@expo/config@12.0.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/config",
-    "version": "12.0.11",
-    "description": "A library for interacting with the app.json",
-    "publisher": ""
-  },
-  "@expo/config@12.0.12": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
-    "name": "@expo/config",
-    "version": "12.0.12",
+    "version": "12.0.13",
     "description": "A library for interacting with the app.json",
     "publisher": ""
   },
@@ -1741,14 +1731,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "hydrate environment variables from .env files into process.env",
     "publisher": ""
   },
-  "@expo/fingerprint@0.15.4": {
+  "@expo/fingerprint@0.15.5": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/fingerprint",
-    "version": "0.15.4",
+    "version": "0.15.5",
     "description": "A library to generate a fingerprint from a React Native project"
   },
   "@expo/image-utils@0.8.8": {
@@ -1759,6 +1749,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "@expo/image-utils",
     "version": "0.8.8",
     "description": "A package used by Expo CLI for processing images",
+    "publisher": ""
+  },
+  "@expo/json-file@10.0.13": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
+    "name": "@expo/json-file",
+    "version": "10.0.13",
+    "description": "A module for reading, writing, and manipulating JSON files",
     "publisher": ""
   },
   "@expo/json-file@10.0.7": {
@@ -1791,24 +1791,24 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A module for reading, writing, and manipulating JSON files",
     "publisher": ""
   },
-  "@expo/metro-config@54.0.11": {
+  "@expo/metro-config@54.0.15": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/metro-config",
-    "version": "54.0.11",
+    "version": "54.0.15",
     "description": "A Metro config for running React Native projects with the Metro bundler",
     "publisher": ""
   },
-  "@expo/metro@54.1.0": {
+  "@expo/metro@54.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo-metro",
     "publisher": "Expo",
     "licenseText": "MIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.. Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/metro",
-    "version": "54.1.0",
+    "version": "54.2.0",
     "description": "Generated and versioned meta-package wrapping Metro"
   },
   "@expo/osascript@2.3.8": {
@@ -1821,13 +1821,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Tools for running an osascripts in Node",
     "publisher": ""
   },
-  "@expo/package-manager@1.9.9": {
+  "@expo/package-manager@1.10.4": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/package-manager",
-    "version": "1.9.9",
+    "version": "1.10.4",
     "description": "A library for installing and finding packages in a project",
     "publisher": ""
   },
@@ -1861,13 +1861,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "@expo/prebuild-config@54.0.7": {
+  "@expo/prebuild-config@54.0.8": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "@expo/prebuild-config",
-    "version": "54.0.7",
+    "version": "54.0.8",
     "description": "Get the prebuild config",
     "publisher": ""
   },
@@ -3814,14 +3814,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "A Babel preset that enables parsing of proposals supported by the current Node.js version."
   },
-  "babel-preset-expo@54.0.8": {
+  "babel-preset-expo@54.0.10": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
     "email": "support@expo.dev",
     "licenseText": "# babel-preset-expo\n\nThis preset extends the default React Native preset (`@react-native/babel-preset`) and adds support for tree shaking, bundle splitting, React Server Components, Hermes compilation, advanced dead-code elimination, reanimated, Expo DOM components, server-side rendering, and more...\n\nYou can use this preset in any React Native project as a drop-in replacement for `@react-native/babel-preset`.\n\nIf you have problems with the code in this repository, please file issues & bug reports\nat https://github.com/expo/expo.\n\n## Expo Bundler Spec Compliance\n\nA bundler must follow these requirements if they are to be considered spec compliant for use with a **universal React** (Expo) project.\n\n## Options\n\n### `react-compiler`\n\nSettings to pass to `babel-plugin-react-compiler`. Set as `false` to disable the plugin. As of SDK 51, you must also enable `experiments.reactCompiler: true` in the `app.json`.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    'react-compiler': {\n      sources: (filename) => {\n        // Match file names to include in the React Compiler.\n        return filename.includes('src/path/to/dir');\n      },\n    },\n  },\n];\n```\n\n### `minifyTypeofWindow`\n\nSet `minifyTypeofWindow: true` to transform `typeof window` checks in your code, e.g. `if (typeof window === 'object')` -> `if (true)` in clients. This is useful when you're using libraries that mock the window object on native or in the server.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    // If your native app doesn't polyfill `window` then setting this to `false` can reduce bundle size.\n    native: {\n      minifyTypeofWindow: true,\n    },\n  },\n];\n```\n\nDefaults to `true` for server environments, and `false` for client environments to support legacy browser polyfills and web workers.\n\n### `reanimated`\n\n`boolean`, defaults to `true`. Set `reanimated: false` to disable adding the `react-native-reanimated/plugin` when `react-native-reanimated` is installed.\n\n### `worklets`\n\n`boolean`, `boolean`, defaults to `true`. Set `worklets: false` to disable adding the `react-native-worklets/plugin` when `react-native-worklets` is installed. Applies only when using standalone `react-native-worklets` or `react-native-reanimated 4`.\n\n### [`jsxRuntime`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#runtime)\n\n`classic | automatic`, defaults to `automatic`\n\n- `automatic` automatically convert JSX to JS without the need to `import React from 'react'` in every file. Be sure to follow the rest of the [setup guide](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#how-to-upgrade-to-the-new-jsx-transform) after enabling this, otherwise ESLint and other tools will throw warnings.\n- `classic` does not automatically import anything, React must imported into every file that uses JSX syntax.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    jsxRuntime: 'classic',\n  },\n];\n```\n\nThis property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This flag does nothing when `useTransformReactJSXExperimental` is set to `true` because `@babel/plugin-transform-react-jsx` is omitted.\n\n### [`jsxImportSource`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#importsource)\n\n`string`, defaults to `react`\n\nThis option allows specifying a custom import source for importing functions.\n\n```js\n[\n  'babel-preset-expo',\n  {\n    jsxRuntime: 'automatic',\n    jsxImportSource: 'react',\n  },\n];\n```\n\nThis property is passed down to [`@babel/plugin-transform-react-jsx`](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx). This options does nothing when `jsxRuntime` is not set to `automatic`.\n\n### [`lazyImports`](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy)\n\nChanges Babel's compiled `import` statements to be lazily evaluated when their imported bindings are used for the first time.\n\n_Note:_ this option has an effect only when the `disableImportExportTransform` option is set to `false`. On Android and iOS, `disableImportExportTransform` defaults to `false`, and on web it defaults to `true` to allow for tree shaking.\n\nThis can improve the initial load time of your app because evaluating dependencies up front is sometimes entirely un-necessary, particularly when the dependencies have no side effects.\n\nThe value of `lazyImports` has a few possible effects:\n\n- `null` - [@react-native/babel-preset](https://github.com/facebook/react-native/tree/main/packages/react-native-babel-preset) will handle it. (Learn more about it here: https://github.com/facebook/metro/commit/23e3503dde5f914f3e642ef214f508d0a699851d)\n- `false` - No lazy initialization of any imported module.\n- `true` - Lazy-init all imported modules except local imports (e.g., `./foo`), certain Expo packages that have side effects, and the two cases mentioned [here](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy).\n- `Array<string>` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.\n- `(string) => boolean` - [babel-plugin-transform-modules-commonjs](https://babeljs.io/docs/en/babel-plugin-transform-modules-commonjs#lazy) will handle it.\n\n  If you choose to do this, you can also access the list of Expo packages that have side effects by using `const lazyImportsBlacklist = require('babel-preset-expo/lazy-imports-blacklist');` which returns a `Set`.\n\n**default:** `null`\n\n```js\n[\n    'babel-preset-expo',\n    {\n        lazyImports: true\n    }\n],\n```\n\n### `disableImportExportTransform`\n\nPass `true` to disable the transform that converts import/export to `module.exports`. Avoid setting this property directly. If you're using Metro, set `experimentalImportSupport: true` instead to ensure the entire pipeline is configured correctly.\n\n```js\n// metro.config.js\n\nconfig.transformer.getTransformOptions = async () => ({\n  transform: {\n    // Setting this to `true` will automatically toggle `disableImportExportTransform` in `babel-preset-expo`.\n    experimentalImportSupport: true,\n  },\n});\n```\n\nIf `undefined` (default), this will be set automatically via `caller.supportsStaticESM` which is set by the bundler.\n\n```js\n[\n    'babel-preset-expo',\n    {\n        disableImportExportTransform: true\n    }\n],\n```\n\n### `unstable_transformProfile`\n\nChanges the engine preset in `@react-native/babel-preset` based on the JavaScript engine that is being targeted. In Expo SDK 50 and greater, this is automatically set based on the [`jsEngine`](https://docs.expo.dev/versions/latest/config/app/#jsengine) option in your `app.json`.\n\n### `unstable_transformImportMeta`\n\nEnable that transform that converts `import.meta` to `globalThis.__ExpoImportMetaRegistry`, defaults to `false` in client bundles and `true` for server bundles.\n\n> **Note:** Use this option at your own risk. If the JavaScript engine supports `import.meta` natively, this transformation may interfere with the native implementation.\n\n### `enableBabelRuntime`\n\nPassed to `@react-native/babel-preset`.\n\n### `disableFlowStripTypesTransform`\n\nPassed to `@react-native/babel-preset`.\n\n## Platform-specific options\n\nAll options can be passed in the platform-specific objects `native` and `web` to provide different settings on different platforms. For example, if you'd like to only apply `disableImportExportTransform` on web, use the following:\n\n```js\n[\n  'babel-preset-expo',\n  {\n    // Default value:\n    disableImportExportTransform: false,\n\n    web: {\n      // Web-specific value:\n      disableImportExportTransform: true,\n    },\n  },\n];\n```\n\nPlatform-specific options have higher priority over top-level options.\n\n### Babel Loader\n\nThe Babel loading mechanism must include the following properties on its `caller`.\n\n#### platform\n\nA `platform` property denoting the target platform. If the `platform` is not defined, it will default to using `web` when the `bundler` is `webpack` -- this is temporary and will throw an error in the future.\n\n| Value     | Description             |\n| --------- | ----------------------- |\n| `ios`     | Runs on iOS devices     |\n| `android` | Runs on Android devices |\n| `web`     | Runs in web browsers    |\n\n#### bundler\n\nA `bundler` property denoting the name of the bundler that is being used to create the JavaScript bundle.\nIf the `bundler` is not defined, it will default to checking if a `babel-loader` is used, if so then `webpack` will be used, otherwise it will default to `metro`.\n\n| Value     | Description                      |\n| --------- | -------------------------------- |\n| `metro`   | Bundling with [Metro][metro]     |\n| `webpack` | Bundling with [Webpack][webpack] |\n\n[metro]: https://facebook.github.io/metro/\n[webpack]: https://webpack.js.org/",
     "name": "babel-preset-expo",
-    "version": "54.0.8",
+    "version": "54.0.10",
     "description": "The Babel preset for Expo projects",
     "copyright": ""
   },
@@ -3856,6 +3856,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.0.2",
     "description": "Match balanced character pairs, like \"{\" and \"}\""
   },
+  "balanced-match@4.0.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/juliangruber/balanced-match",
+    "licenseText": "(MIT)\n\nOriginal code Copyright Julian Gruber <julian@juliangruber.com>\n\nPort to TypeScript Copyright Isaac Z. Schlueter <i@izs.me>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\nof the Software, and to permit persons to whom the Software is furnished to do\nso, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "name": "balanced-match",
+    "version": "4.0.4",
+    "description": "Match balanced character pairs, like \"{\" and \"}\"",
+    "copyright": "",
+    "publisher": ""
+  },
   "base-64@0.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/mathiasbynens/base64",
@@ -3865,6 +3875,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "base-64",
     "version": "0.1.0",
     "description": "A robust base64 encoder/decoder that is fully compatible with `atob()` and `btoa()`, written in JavaScript."
+  },
+  "base64-arraybuffer@1.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/niklasvh/base64-arraybuffer",
+    "publisher": "Niklas von Hertzen",
+    "email": "niklasvh@gmail.com",
+    "licenseText": "Copyright (c) 2012 Niklas von Hertzen\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2012 Niklas von Hertzen",
+    "name": "base64-arraybuffer",
+    "version": "1.0.2",
+    "description": "Encode/decode base64 data into ArrayBuffers"
   },
   "base64-js@1.5.1": {
     "licenses": "MIT",
@@ -3983,6 +4004,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "brace-expansion",
     "version": "2.0.1",
     "description": "Brace expansion as known from sh/bash"
+  },
+  "brace-expansion@5.0.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/juliangruber/brace-expansion",
+    "licenseText": "MIT License\n\nCopyright Julian Gruber <julian@juliangruber.com>\n\nTypeScript port Copyright Isaac Z. Schlueter <i@izs.me>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright Julian Gruber <julian@juliangruber.com>",
+    "name": "brace-expansion",
+    "version": "5.0.5",
+    "description": "Brace expansion as known from sh/bash",
+    "publisher": ""
   },
   "braces@3.0.3": {
     "licenses": "MIT",
@@ -4673,6 +4704,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "css-in-js-utils",
     "version": "3.1.0",
     "description": "Useful utility functions for CSS in JS solutions"
+  },
+  "css-line-break@2.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/niklasvh/css-line-break",
+    "publisher": "Niklas von Hertzen",
+    "email": "niklasvh@gmail.com",
+    "licenseText": "Copyright (c) 2017 Niklas von Hertzen\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2017 Niklas von Hertzen",
+    "name": "css-line-break",
+    "version": "2.1.0",
+    "description": "css-line-break =============="
   },
   "css-select@5.1.0": {
     "licenses": "BSD-2-Clause",
@@ -5514,6 +5556,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "5.0.1",
     "description": "An implementation of WHATWG EventTarget interface."
   },
+  "events@3.3.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Gozala/events",
+    "publisher": "Irakli Gozalishvili",
+    "email": "rfobic@gmail.com",
+    "licenseText": "MIT\n\nCopyright Joyent, Inc. and other Node contributors.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to permit\npersons to whom the Software is furnished to do so, subject to the\nfollowing conditions:\n\nThe above copyright notice and this permission notice shall be included\nin all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\nOR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\nNO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\nDAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\nOTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\nUSE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright Joyent, Inc. and other Node contributors.",
+    "name": "events",
+    "version": "3.3.0",
+    "description": "Node's event emitter for all engines."
+  },
   "exec-async@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/ccheever/exec-async",
@@ -5535,13 +5588,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A universal module that gets native application information such as its ID, app name, and build version at runtime",
     "copyright": ""
   },
-  "expo-asset@12.0.11": {
+  "expo-asset@12.0.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-asset\n\nAn Expo universal module to download assets and pass them into other APIs\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/asset/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/asset/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/asset/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-asset\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-asset",
-    "version": "12.0.11",
+    "version": "12.0.13",
     "description": "An Expo universal module to download assets and pass them into other APIs",
     "copyright": ""
   },
@@ -5595,53 +5648,43 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Provides an interface for getting and setting Clipboard content on Android, iOS and Web.",
     "copyright": ""
   },
-  "expo-constants@18.0.11": {
+  "expo-constants@18.0.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-constants\n\nProvides system information that remains constant throughout the lifetime of your app.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/constants/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-constants\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-constants",
-    "version": "18.0.11",
+    "version": "18.0.13",
     "description": "Provides system information that remains constant throughout the lifetime of your app.",
     "copyright": ""
   },
-  "expo-constants@18.0.12": {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-    "licenseText": "# expo-constants\n\nProvides system information that remains constant throughout the lifetime of your app.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/constants/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/constants/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-constants\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
-    "name": "expo-constants",
-    "version": "18.0.12",
-    "description": "Provides system information that remains constant throughout the lifetime of your app.",
-    "copyright": ""
-  },
-  "expo-crypto@15.0.8": {
+  "expo-crypto@15.0.9": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/crypto/\">\n    <img\n      src=\"../../.github/resources/expo-crypto.svg\"\n      alt=\"expo-crypto\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides cryptography primitives.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/crypto/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/crypto/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/crypto/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-crypto\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-crypto",
-    "version": "15.0.8",
+    "version": "15.0.9",
     "description": "Provides cryptography primitives for Android, iOS and web.",
     "copyright": ""
   },
-  "expo-dev-client@6.0.20": {
+  "expo-dev-client@6.0.21": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/dev-client/\">\n    <img\n      src=\"../../.github/resources/expo-dev-client.svg\"\n      alt=\"expo-dev-client\"\n      height=\"64\" />\n  </a>\n</p>\n\n`expo-dev-client` adds various useful development tools to your debug builds:\n\n- A configurable launcher UI, so you can launch updates (such as from [PR previews](https://docs.expo.dev/develop/development-builds/development-workflows#pr-previews)) and switch between development servers without needing to recompile the native app\n- Improved debugging tools (such as support for [inspecting network requests](https://docs.expo.dev/debugging/tools/#inspecting-network-requests))\n- [A powerful and extensible developer menu UI](https://docs.expo.dev/debugging/tools#developer-menu)\n\nExpo documentation refers to debug builds that include `expo-dev-client` as [development builds](https://docs.expo.dev/develop/development-builds/introduction/).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/versions/latest/sdk/dev-client).\n\n## Issues\n\nIf you encounter any issues using this package in your project, please [report your issue here](https://github.com/expo/expo/issues/new?template=dev_client_bug_report.yml).\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-dev-client",
-    "version": "6.0.20",
+    "version": "6.0.21",
     "description": "Expo Development Client",
     "copyright": ""
   },
-  "expo-dev-launcher@6.0.20": {
+  "expo-dev-launcher@6.0.21": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-dev-launcher\n\n`expo-dev-launcher` is an npm package installable in any Expo or React Native project. Once installed, any Debug builds of your application will gain the ability to load projects from Expo CLI. Release builds of your application will not change other than the addition of a few header files. This package is intended to be included in your project through [`expo-dev-client`](https://docs.expo.dev/versions/latest/sdk/dev-client/).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/develop/development-builds/introduction).\n\n## Contributing\n\nThe `expo-dev-launcher` repository consists of two different parts, the exported package, which includes the native functions, located in the `android`, `ios` and `src` folders and the Dev Launcher interface, located under the `bundle` folder.\n\nLocal development is usually done through `bare-expo`.\n\n### Making JavaScript changes inside the `bundle` folder\n\nTo update the JavaScript code inside the `bundle` folder, you need to run the `dev-launcher` bundler locally.\n\n1. Navigate to the `dev-launcher` package: `cd packages/expo-dev-launcher`\n2. Start the Metro bundler: `yarn start`\n3. Adjust the dev-launcher URL to point to your local bundler\n\n<details>\n\n#### On Android\n\nOpen [DevLauncherController.kt](/packages/expo-dev-launcher/android/src/debug/java/expo/modules/devlauncher/DevLauncherController.kt) and update the `DEV_LAUNCHER_HOST` value to your bundler URL.\n\nE.g.\n\n```diff\n- private val DEV_LAUNCHER_HOST: String? = null\n+ private val DEV_LAUNCHER_HOST: String? = \"10.0.2.2:8090\";\n```\n\n#### On iOS\n\n3.1. Open another terminal window and navigate to the `ios` folder inside `bare-expo`\n\n3.2. Export the `EX_DEV_LAUNCHER_URL` variable in your shell before running `pod install`.\n\nE.g.\n\n```\nexport EX_DEV_LAUNCHER_URL=http://localhost:8090\n```\n\nThis will cause the controller to see if the `expo-launcher` packager is running, and if so, use that instead of the prebuilt bundle.\n\n3.3. Run `pod install`\n\n</details>\n\n4. Recompile `bare-expo`\n5. Play with your changes on a simulator or device\n6. Once you've made all the necessary changes run `yarn bundle` to update the embedded bundle",
     "name": "expo-dev-launcher",
-    "version": "6.0.20",
+    "version": "6.0.21",
     "description": "Pre-release version of the Expo development launcher package for testing.",
     "copyright": ""
   },
@@ -5655,13 +5698,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Interface for expo-dev-menu",
     "copyright": ""
   },
-  "expo-dev-menu@7.0.18": {
+  "expo-dev-menu@7.0.19": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# 📦 expo-dev-menu\n\nExpo/React Native module to add developer menu to Debug builds of your application. This package is intended to be included in your project through [`expo-dev-client`](https://docs.expo.dev/develop/development-builds/introduction/#what-is-an-expo-dev-client).\n\n## Documentation\n\nYou can find more information in the [Expo documentation](https://docs.expo.dev/develop/development-builds/introduction).\n\n## Contributing\n\nThe `expo-dev-menu` repository consists of two different parts, the exported package, which includes the native functions, located in the `android`, `ios` and `src` folders and the Dev Menu interface, located under the `app` folder.\n\nLocal development is usually done through [`bare-expo`](/apps/bare-expo).\n\nFirst, make sure to `yarn` and `yarn start` in `expo-dev-menu` which will add the port for the dev menu packager to [`dev-menu-packager-host`](./assets/dev-menu-packager-host). This is bundled into the native code in `bare-expo` so it needs to be done first. When done with local development, you need to reset the contents of `dev-menu-packager-host`!\n\n### Making JavaScript changes inside the `app` folder\n\nTo update the JavaScript code inside the `app` folder, you need to run the `dev-menu` bundler locally.\n\n1. Navigate to the `dev-menu` package: `cd packages/expo-dev-menu`\n2. Start the Metro bundler: `yarn start`\n3. To use your local bundler on Android, open [DevMenuManager.kt](/packages/expo-dev-menu/android/src/debug/java/expo/modules/devmenu/DevMenuManager.kt) and set `useDeveloperSupport` to `true`.\n\n```diff\n- val useDeveloperSupport = false\n+ val useDeveloperSupport = true\n```\n\n4. Play with your changes on a simulator or device through `bare-expo`\n5. Once you've made all the necessary changes run `yarn bundle:prod:ios && yarn bundle:prod:android` to update the embedded bundle",
     "name": "expo-dev-menu",
-    "version": "7.0.18",
+    "version": "7.0.19",
     "description": "Expo/React Native module with the developer menu.",
     "copyright": ""
   },
@@ -5695,23 +5738,23 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Stable client identifier for EAS services",
     "copyright": ""
   },
-  "expo-file-system@19.0.21": {
+  "expo-file-system@19.0.22": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/filesystem/\">\n    <img\n      src=\"../../.github/resources/expo-file-system.svg\"\n      alt=\"expo-file-system\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the local file system on the device.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/filesystem/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/filesystem/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/filesystem/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n## Installation in bare Android React Native project\n\nThis module requires permissions to interact with the filesystem and create resumable downloads. The `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE` and `INTERNET` permissions are automatically added.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.INTERNET\" />\n```\n\n## Installation in bare iOS React Native project\n\nNo additional set up necessary.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-file-system",
-    "version": "19.0.21",
+    "version": "19.0.22",
     "description": "Provides access to the local file system on the device.",
     "copyright": ""
   },
-  "expo-font@14.0.10": {
+  "expo-font@14.0.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/font/\">\n    <img\n      src=\"../../.github/resources/expo-font.svg\"\n      alt=\"expo-font\"\n      height=\"64\" />\n  </a>\n</p>\n\nLoad fonts at runtime and use them in React Native components.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/font/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/font/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/font/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-font\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-font",
-    "version": "14.0.10",
+    "version": "14.0.11",
     "description": "Load fonts at runtime and use them in React Native components.",
     "copyright": ""
   },
@@ -5725,13 +5768,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Image loader",
     "copyright": ""
   },
-  "expo-image-picker@17.0.10": {
+  "expo-image-picker@17.0.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/imagepicker/\">\n    <img\n      src=\"../../.github/resources/expo-image-picker.svg\"\n      alt=\"expo-image-picker\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/imagepicker/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/imagepicker/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/imagepicker/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-image-picker\n```\n\n### Configure for Android\n\n> This is only required for usage in bare React Native apps.\n\nThis package automatically adds the `CAMERA`, `READ_EXTERNAL_STORAGE`, and `WRITE_EXTERNAL_STORAGE` permissions. They are used when picking images from the camera directly, or from the camera roll.\n\n```xml\n<!-- Added permissions -->\n<uses-permission android:name=\"android.permission.CAMERA\" />\n<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\n```\n\n### Configure for iOS\n\n> This is only required for usage in bare React Native apps.\n\nAdd `NSPhotoLibraryUsageDescription`, `NSCameraUsageDescription`, and `NSMicrophoneUsageDescription` keys to your `Info.plist`:\n\n```xml\n<key>NSPhotoLibraryUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to save photos</string>\n<key>NSCameraUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to access your camera</string>\n<key>NSMicrophoneUsageDescription</key>\n<string>Give $(PRODUCT_NAME) permission to use your microphone</string>\n```\n\nRun `npx pod-install` after installing the npm package.\n\n## Config Plugin\n\n> This plugin is applied automatically in EAS Build, only add the config plugin if you want to pass in extra properties.\n\nAfter installing this npm package, add the [config plugin](https://docs.expo.dev/config-plugins/introduction) to the [`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins) array of your `app.json` or `app.config.js`:\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\"expo-image-picker\"]\n  }\n}\n```\n\nNext, rebuild your app as described in the [\"Adding custom native code\"](https://docs.expo.dev/workflow/customizing/) guide.\n\n### API\n\nThe plugin provides props for extra customization. Every time you change the props or plugins, you'll need to rebuild (and `prebuild`) the native app. If no extra properties are added, defaults will be used.\n\n- `photosPermission` (_string | false_): Sets the iOS `NSPhotoLibraryUsageDescription` permission message to the `Info.plist`. Setting `false` will skip adding the permission on iOS and **does not** skip the permission on Android. Defaults to `Allow $(PRODUCT_NAME) to access your photos`.\n- `cameraPermission` (_string | false_): Sets the iOS `NSCameraUsageDescription` permission message to the `Info.plist`. Setting `false` will skip adding the permission on iOS and **does not** skip the permission on Android. Defaults to `Allow $(PRODUCT_NAME) to access your camera`.\n- `microphonePermission` (_string | false_): Sets the iOS `NSCameraUsageDescription` permission message to the `Info.plist`. Setting `false` will skip adding the permission on iOS and skips adding the `android.permission.RECORD_AUDIO` Android permission. Defaults to `Allow $(PRODUCT_NAME) to access your photos`.\n\n### Example\n\n```json\n{\n  \"expo\": {\n    \"plugins\": [\n      [\n        \"expo-image-picker\",\n        {\n          \"photosPermission\": \"custom photos permission\",\n          \"cameraPermission\": \"Allow $(PRODUCT_NAME) to open the camera\",\n\n          \"//\": \"Disables the microphone permission\",\n          \"microphonePermission\": false\n        }\n      ]\n    ]\n  }\n}\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-image-picker",
-    "version": "17.0.10",
+    "version": "17.0.11",
     "description": "Provides access to the system's UI for selecting images and videos from the phone's library or taking a photo with the camera.",
     "copyright": ""
   },
@@ -5786,13 +5829,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Provides a React component that renders a gradient view.",
     "copyright": ""
   },
-  "expo-linking@8.0.10": {
+  "expo-linking@8.0.12": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-linking\n\nCreate and open deep links universally.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/linking/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/linking/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/linking/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-linking\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-linking",
-    "version": "8.0.10",
+    "version": "8.0.12",
     "description": "Create and open deep links universally",
     "copyright": ""
   },
@@ -5816,13 +5859,13 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Allows reading geolocation information from the device. Your app can poll for the current location or subscribe to location update events.",
     "copyright": ""
   },
-  "expo-manifests@1.0.10": {
+  "expo-manifests@1.0.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "# expo-manifests\n\nCode to parse and use Expo and Expo Updates manifests.\n\n## Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-manifests",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "Code to parse and use Expo and Expo Updates manifests.",
     "copyright": ""
   },
@@ -5836,43 +5879,43 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Provides access to user's media library.",
     "copyright": ""
   },
-  "expo-modules-autolinking@3.0.23": {
+  "expo-modules-autolinking@3.0.25": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/modules/autolinking/\">\n    <img\n      src=\"../../.github/resources/expo-modules-autolinking.svg\"\n      alt=\"expo-modules-autolinking\"\n      height=\"64\" />\n  </a>\n</p>\n\nScripts that autolink Expo modules.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/modules/autolinking/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-modules-autolinking\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-modules-autolinking",
-    "version": "3.0.23",
+    "version": "3.0.25",
     "description": "Scripts that autolink Expo modules.",
     "copyright": ""
   },
-  "expo-modules-core@3.0.29": {
+  "expo-modules-core@3.0.30": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/modules/\">\n    <img\n      src=\"../../.github/resources/expo-modules-core.svg\"\n      alt=\"expo-modules-core\"\n      height=\"64\" />\n  </a>\n</p>\n\nThe core of Expo Modules architecture.\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-modules-core\n```\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n### Configure for Android\n\nNo additional set up necessary.\n\n# Importing native dependencies - autolinking\n\nMany React Native libraries come with platform-specific (native) code. This native code has to be linked into the project and, in some cases, configured further. These actions require some modifications to the native project files. One of the steps that has to be done with the native configuration is to enable the autolinking mechanism that takes care of including any supported module's native code into the project. The following configuration is required:\n\n### iOS\n\n> Caution! After you have made the following changes you will need to run `pod install` again.\n\n```ruby\n# Podfile\n\nrequire File.join(File.dirname(`node --print \"require.resolve('react-native/package.json')\"`), \"scripts/react_native_pods\")\nrequire File.join(File.dirname(`node --print \"require.resolve('expo-modules-core/package.json')\"`), \"cocoapods.rb\")\nrequire File.join(File.dirname(`node --print \"require.resolve('expo-modules-core/package.json')\"`), \"scripts/autolinking\")\n\n#  ...\n\ntarget \"TargetName\" do\n  use_unimodules!\n  config = use_native_modules!\n  use_react_native!(:path => config[\"reactNativePath\"])\n\n  # ...\nend\n```\n\n### Android\n\n```groovy\n// app/build.gradle\n\napply from: new File([\"node\", \"--print\", \"require.resolve('expo-modules-core/package.json')\"].execute(null, rootDir).text.trim(), \"../gradle.groovy\")\napply from: new File([\"node\", \"--print\", \"require.resolve('react-native/package.json')\"].execute(null, rootDir).text.trim(), \"../react.gradle\")\napply from: new File([\"node\", \"--print\", \"require.resolve('expo-updates/package.json')\"].execute(null, rootDir).text.trim(), \"../scripts/create-manifest-android.gradle\")\n\n// ...\n\napply from: new File([\"node\", \"--print\", \"require.resolve('@react-native-community/cli-platform-android/package.json')\"].execute(null, rootDir).text.trim(), \"../native_modules.gradle\");\napplyNativeModulesAppBuildGradle(project)\n```\n\n```groovy\n// settings.gradle\n\napply from: new File([\"node\", \"--print\", \"require.resolve('expo-modules-core/package.json')\"].execute(null, rootDir).text.trim(), \"../gradle.groovy\");\nincludeUnimodulesProjects()\n\napply from: new File([\"node\", \"--print\", \"require.resolve('@react-native-community/cli-platform-android/package.json')\"].execute(null, rootDir).text.trim(), \"../native_modules.gradle\");\napplyNativeModulesSettingsGradle(settings)\n```\n\n### Explanation\n\nThe scripts that are referenced in Gradle and Cocoapods are usually found the related package inside the project's `node_modules` directory. In the case of monorepos (such as Yarn workspaces) the project directory may not contain `node_modules` at all; instead, the modules are likely to be located at the root of the repository. In order to ensure that both cases are supported, we take advantage of the Node dependency resolution strategy. We invoke a subprocess that spawns the simple JavaScript snippet that tries to locate the desired npm package containing the script we need.\n\n- On iOS, we use [`` ` ` `` (backtick)](https://stackoverflow.com/questions/3159945/running-command-line-commands-within-ruby-script) ([alternative reference](https://ruby-doc.org/core-3.0.2/Kernel.html#method-i-60)).\n- On Android, we use [String[]#execute](<http://docs.groovy-lang.org/latest/html/groovy-jdk/java/lang/String[].html#execute()>) to obtain the results from the subprocess' stdout.\n\nThe Node process that is spawned runs [`require.resolve`](https://nodejs.org/dist/latest-v14.x/docs/api/modules.html#modules_require_resolve_request_options) to obtain the path to a module's `package.json`(if you look for the module location using solely module name, you'll be given the path to the file pointed by the `main` attribute from the `package.json` and we need to know the location of the module's root directory). We then assemble the path to the desired script and execute it.\n\nYou can read more about the scripts and libraries used in the examples above in their official READMEs.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-modules-core",
-    "version": "3.0.29",
+    "version": "3.0.30",
     "description": "The core of Expo Modules architecture",
     "copyright": ""
   },
-  "expo-notifications@0.32.15": {
+  "expo-notifications@0.32.17": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/notifications/\">\n    <img\n      src=\"../../.github/resources/expo-notifications.svg\"\n      alt=\"expo-notifications\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides an API to fetch push notification tokens and to present, schedule, receive and respond to notifications.\n\n## Features\n\n- 📣 schedule a one-off notification for a specific date, or some time from now,\n- 🔁 schedule a notification repeating in some time interval (or a calendar date match on iOS),\n- 1️⃣ get and set application badge icon number,\n- 📲 fetch a native device push token so you can send push notifications with FCM and APNS,\n- 😎 fetch an Expo push token so you can send push notifications with Expo,\n- 📬 listen to incoming notifications in the foreground and background,\n- 👆 listen to interactions with notifications (tapping or dismissing),\n- 🎛 handle notifications when the app is in foreground,\n- 🔕 imperatively dismiss notifications from Notification Center/tray,\n- 🗂 create, update, delete Android notification channels,\n- 🎨 set custom icon and color for notifications on Android.\n\n# Guides\n\nPlease refer to our [notification guides](https://docs.expo.dev/push-notifications/overview/).\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/notifications/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/notifications/)",
     "name": "expo-notifications",
-    "version": "0.32.15",
+    "version": "0.32.17",
     "description": "Provides an API to fetch push notification tokens and to present, schedule, receive, and respond to notifications.",
     "copyright": ""
   },
-  "expo-screen-orientation@9.0.8": {
+  "expo-screen-orientation@9.0.9": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/screen-orientation/\">\n    <img\n      src=\"../../.github/resources/expo-screen-orientation.svg\"\n      alt=\"expo-screen-orientation\"\n      height=\"64\" />\n  </a>\n</p>\n\nAllows you to manage the orientation of your app's interface.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/screen-orientation/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/screen-orientation/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/screen-orientation/). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-screen-orientation\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\nThe default [UIInterfaceOrientationMask](https://developer.apple.com/documentation/uikit/uiinterfaceorientationmask?language=objc) mask is `UIInterfaceOrientationMaskPortrait`. You can optionally add `EXDefaultScreenOrientationMask` key in your `Info.plist` to change the default orientation mask, e.g.\n\n```xml\n<key>EXDefaultScreenOrientationMask</key>\n<string>UIInterfaceOrientationMaskAllButUpsideDown</string>\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-screen-orientation",
-    "version": "9.0.8",
+    "version": "9.0.9",
     "description": "Expo universal module for managing device's screen orientation",
     "copyright": ""
   },
@@ -5886,23 +5929,33 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Provides a way to encrypt and securely store key-value pairs locally on the device.",
     "copyright": ""
   },
-  "expo-server@1.0.5": {
+  "expo-server@1.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "licenseText": "Server API for Expo Router projects",
     "name": "expo-server",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Server API for Expo Router projects",
     "copyright": "",
     "publisher": ""
   },
-  "expo-splash-screen@31.0.12": {
+  "expo-sharing@14.0.8": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/sharing/\">\n    <img\n      src=\"../../.github/resources/expo-sharing.svg\"\n      alt=\"expo-sharing\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides a way to share files directly with other compatible applications.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/sharing/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/sharing/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/sharing/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-sharing\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
+    "name": "expo-sharing",
+    "version": "14.0.8",
+    "description": "Provides a way to share files directly with other compatible applications.",
+    "copyright": ""
+  },
+  "expo-splash-screen@31.0.13": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/splash-screen/\">\n    <img\n      src=\"../../.github/resources/expo-splash-screen.svg\"\n      alt=\"expo-splash-screen\"\n      height=\"64\" />\n  </a>\n</p>\n\n`expo-splash-screen` allows you to customize your app's splash screen, which is the initial screen users see when the app is launched, before it has loaded. Splash screens (sometimes called launch screens) provide a user's first experience with your application.\n\n- [📜 CHANGELOG](./CHANGELOG.md)\n- [🚀 Features](#-features)\n- [📚 API](#-api)\n- [🗒 Examples](#-examples)\n- [💻 Installation in managed Expo projects](#-installation-in-managed-expo-projects)\n- [🖥 Installation in bare React Native projects](#-installation-in-bare-react-native-projects)\n  - [📱 Configure iOS](#-configure-ios)\n  - [🤖 Configure Android](#-configure-android)\n- [👏 Contributing](#-contributing)\n- [❓ Known issues](#-known-issues)\n- [⬆️ Migrate from old versions](#%EF%B8%8F-migrate-from-old-versions)\n- [🏅 Hall of fame](#-hall-of-fame)\n\n## 🚀 Features\n\n### Built-in splash screen image resize modes\n\n`expo-splash-screen` contains a built-in feature for taking care of properly displaying your splash screen image. You can use the following resize modes to obtain behavior as if you were using the React Native `<Image>` component's `resizeMode` style.\n\n#### `CONTAIN` resize mode\n\nScale the image uniformly (maintaining the image's aspect ratio) so that both dimensions the width and height of the image will be equal to or less than the corresponding dimension of the device's screen.\n\n<table>\n  <thead><tr><td>Android</td><td>iOS</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575867-aeeb3580-c3d6-11eb-825d-19a847fe30f5.mp4\n\n</td>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575885-b6124380-c3d6-11eb-8485-75a11832962c.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n#### `COVER` resize mode\n\nScale the image uniformly (maintaining the image's aspect ratio) so that both the width and height of the image will be equal to or larger than the corresponding dimension of the device's screen.\n\n<table>\n  <thead><tr><td>Android</td><td>iOS</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575871-b1e62600-c3d6-11eb-9435-5dee19791294.mp4\n\n</td>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575890-b7437080-c3d6-11eb-9c0a-3c563d1ee02a.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n#### `NATIVE` resize mode\n\n> **Android only.**\n\nBy using this resize mode your app will will leverage Android's ability to present a static bitmap while the application is starting up.\nAndroid (unlike iOS) does not support stretching of the provided image during launch, so the application will present the given image centered on the screen at its original dimensions.\n\n<table>\n  <thead><tr><td>Android</td></tr></thead>\n  <tbody><tr>\n<td>\n\nhttps://user-images.githubusercontent.com/379606/120575878-b3afe980-c3d6-11eb-80c1-72441c22e8be.mp4\n\n</td>\n    </tr>\n  </tbody>\n</table>\n\n> Animation above presents one of our [known issues](#native-mode-pushes-splash-image-up-a-little-bit)\n\nSelecting this resize mode requires some more work to be done in native configuration.\nPlease take a look at the [`res/drawable/splashscreen.xml`](#resdrawablesplashscreenxml) and [`res/drawable/splashscreen_background.png`](#resdrawablesplashscreen_backgroundpng) sections.\n\n### Per-appearance (a.k.a. dark-mode) splash screen\n\n`expo-splash-screen` supports per-appearance splash screens that respond to system appearance changes on iOS 13+ and dark-mode changes on Android 10+.\n\n### StatusBar customization\n\n`expo-splash-screen` allows customization of the StatusBar according to the [ReactNative StatusBar API](https://reactnative.dev/docs/statusbar).\n\n## 📚 API\n\n```tsx\nimport * as SplashScreen from 'expo-splash-screen';\n```\n\nThe native splash screen that is controlled via this module autohides once the ReactNative-controlled view hierarchy is mounted. This means that when your app first `render`s view component, the native splash screen will hide. This default behavior can be prevented by calling [`SplashScreen.preventAutoHideAsync()`](#splashscreenpreventautohideasync) and later on [`SplashScreen.hideAsync()`](#splashscreenhideasync).\n\n### `SplashScreen.preventAutoHideAsync()`\n\nThis method makes the native splash screen stay visible until [`SplashScreen.hideAsync()`](#splashscreenhideasync) is called. This must be called before any ReactNative-controlled view hierarchy is rendered (either in the global scope of your main component, or when the component renders `null` at the beginning - see [Examples section](#-examples)).\n\nPreventing default autohiding might come in handy if your application needs to prepare/download some resources and/or make some API calls before first rendering some actual view hierarchy.\n\n#### Returns\n\nA `Promise` that resolves to `true` when preventing autohiding succeeded and to `false` if the native splash screen is already prevented from autohiding (for instance, if you've already called this method).\n`Promise` rejection most likely means that native splash screen cannot be prevented from autohiding (it's already hidden when this method was executed).\n\n### `SplashScreen.hideAsync()`\n\nHides the native splash screen. Only works if the native splash screen has been previously prevented from autohiding by calling [`SplashScreen.preventAutoHideAsync()`](#splashscreenpreventautohideasync) method.\n\n#### Returns\n\nA `Promise` that resolves to `true` once the splash screen becomes hidden and to `false` if the splash screen is already hidden.\n\n## 🗒 Examples\n\n### `SplashScreen.preventAutoHideAsync()` in global scope\n\n`App.tsx`\n\n```tsx\nimport React from 'react';\nimport { StyleSheet, Text, View } from 'react-native';\nimport * as SplashScreen from 'expo-splash-screen';\n\n// Prevent native splash screen from autohiding before App component declaration\nSplashScreen.preventAutoHideAsync()\n  .then((result) => console.log(`SplashScreen.preventAutoHideAsync() succeeded: ${result}`))\n  .catch(console.warn); // it's good to explicitly catch and inspect any error\n\nexport default class App extends React.Component {\n  componentDidMount() {\n    // Hides native splash screen after 2s\n    setTimeout(async () => {\n      await SplashScreen.hideAsync();\n    }, 2000);\n  }\n\n  render() {\n    return (\n      <View style={styles.container}>\n        <Text style={styles.text}>SplashScreen Demo! 👋</Text>\n      </View>\n    );\n  }\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    alignItems: 'center',\n    justifyContent: 'center',\n    backgroundColor: '#aabbcc',\n  },\n  text: {\n    color: 'white',\n    fontWeight: 'bold',\n  },\n});\n```\n\n### `SplashScreen.preventAutoHideAsync()` in component that initially renders `null`\n\n`App.tsx`\n\n```tsx\nimport React from 'react';\nimport { StyleSheet, Text, View } from 'react-native';\nimport * as SplashScreen from 'expo-splash-screen';\n\nexport default class App extends React.Component {\n  state = {\n    appIsReady: false,\n  };\n\n  async componentDidMount() {\n    // Prevent native splash screen from autohiding\n    try {\n      await SplashScreen.preventAutoHideAsync();\n    } catch (e) {\n      console.warn(e);\n    }\n    this.prepareResources();\n  }\n\n  /**\n   * Method that serves to load resources and make API calls\n   */\n  prepareResources = async () => {\n    await performAPICalls(...);\n    await downloadAssets(...);\n\n    this.setState({ appIsReady: true }, async () => {\n      await SplashScreen.hideAsync();\n    });\n  }\n\n  render() {\n    if (!this.state.appIsReady) {\n      return null;\n    }\n\n    return (\n      <View style={styles.container}>\n        <Text style={styles.text}>SplashScreen Demo! 👋</Text>\n      </View>\n    )\n  }\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    alignItems: 'center',\n    justifyContent: 'center',\n    backgroundColor: '#aabbcc',\n  },\n  text: {\n    color: 'white',\n    fontWeight: 'bold',\n  },\n});\n```\n\n## 💻 Installation in managed Expo projects\n\nRefer to [the SplashScreen section of the Expo documentation](https://docs.expo.dev/versions/latest/sdk/splash-screen/).\n\n## 🖥 Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n## Add the package to your dependencies\n\n```\nnpx expo install expo-splash-screen\n```\n\n## 📱 Configure iOS\n\nRun `npx pod-install` after installing the package.\n\n### Manual Configuration\n\nTo achieve native splash screen (in iOS ecosystem it's called `LaunchScreen`) behavior, you have to provide either a `SplashScreen.storyboard` file or a `SplashScreen.xib` file, and configure your Xcode project accordingly.\n\nThe guide below shows how to configure your Xcode project to use a single image file as a splash screen using a `.storyboard` file (configuration for `.xib` filetype is analogous).\n\n1. [Add an image to `Images.xcassets`](#-add-an-image-to-imagesxcassets)\n2. [Create `SplashScreen.storyboard`](#-create-splashscreenstoryboard)\n3. [Select `Content Mode` for the `ImageView` in `SplashScreen.storyboard`](#-select-content-mode-for-the-imageview-in-splashscreenstoryboard)\n4. [Mark `SplashScreen.storyboard` as the LaunchScreen](#-mark-splashscreenstoryboard-as-the-launchscreen)\n5. [(<em>optional</em>) Enable dark mode](#-optional-enable-dark-mode)\n6. [(<em>optional</em>) Customize StatusBar](#-customize-statusbar)\n\n#### 🛠 Add an image to `Images.xcassets`\n\nFirst you need to add the image file that would serve as a splash screen to your native project's resources.\n\n1. In your Xcode project open the `.xcassets` (often named `Images.xcassets` or `Assets.xcassets`) file.\n2. In the content panel add `New image set` and name it `SplashScreen`.\n3. Provide the splash screen image you've prepared (you have to provide it in three different scales).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addImagesXcassets.png\" height=\"350\" />\n</details>\n\n#### 🛠 Create `SplashScreen.storyboard`\n\nThis is the actual splash screen definition and will be used by the system to render your splash screen.\n\n1. Create a `SplashScreen.storyboard` file.\n2. Add a `View Controller` to the newly created `.storyboard` file:\n   - open `Library` (`+` button on the top-right),\n   - find `View Controller` element,\n   - drag-and-drop it to the `.storyboard` file.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addViewControllerToStoryboard.png\" height=\"350\" />\n</details>\n\n3. Add an `Image View` to the `View Controller`:\n   - first remove other `View` element from `View Controller`,\n   - open `Library` (`+` button on the top-right),\n   - find `Image View` element,\n   - drag-and-drop it as a `View Controller` child in view hierarchy inspector.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addImageViewToStoryboard.png\" height=\"350\" />\n</details>\n\n4. Set `Storyboard ID` to `SplashScreenViewController`:\n   - select `View Controller` in view hierarchy inspector,\n   - navigate to `Identity Inspector` in the right panel,\n   - and set `Storyboard ID` to `SplashScreenViewController`.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addStoryboardID.png\" height=\"350\" />\n</details>\n\n5. Tick `Is Initial View Controller` in `SplashScreenViewController`:\n   - select `View Controller` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - and tick `Is Initial View Controller` in View Controller section.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-tickIsInitialViewController.png\" height=\"350\" />\n</details>\n\n6. Configure `Image View` source:\n   - select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - select `SplashScreen` in `Image` parameter).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-configureImageView.png\" height=\"350\" />\n</details>\n\n7. Configure `Background` of the `Image View`:\n   - select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - configure `Background` parameter:\n     - To enter a `#RRGGBB` value you need to select `Custom` option and in the `Colors Popup` that appeared you need to navigate to the second tab and choose `RGB Sliders` from dropdown select.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectBackgroundColor.png\" height=\"350\" />\n</details>\n\n#### 🛠 Select `Content Mode` for the `ImageView` in `SplashScreen.storyboard`\n\nThis is how your image will be displayed on the screen.\n\n1. Open `SplashScreen.storyboard` and select `Image View` from `View Controller`.\n2. Navigate to `Attributes Inspector` in the right panel and locate `Content Mode`.\n3. Select one of the following:\n   - `Aspect Fit` to obtain [CONTAIN resize mode](#contain-resize-mode),\n   - `Aspect Fill` to obtain [COVER resize mode](#cover-resize-mode).\n4. You can always choose other options to achieve different image positioning and scaling.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectImageViewContentMode.png\" height=\"350\" />\n</details>\n\n#### 🛠 Mark `SplashScreen.storyboard` as the LaunchScreen\n\nThe newly created `SplashScreen.storyboard` needs to be marked as the `Launch Screen File` in your Xcode project in order to be presented from the very beginning of your application launch.\n\n1. Select your project in `Project Navigator`\n2. Select your project name from `TARGETS` panel and navigate to `General` tab.\n3. Locate `App Icons and Launch Images` section and `Launch Screen File` option.\n4. Select or enter `SplashScreen` as the value for located option.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectLaunchScreen.png\" height=\"350\" />\n</details>\n\n#### 🛠 (<em>optional</em>) Enable dark mode\n\n##### Provide different background colors\n\nYou can take advantage of [`named colors`](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/WhatsNewXcode/xcode_9/xcode_9.html) in your Xcode project.\n\n1. Create a new `Color Set` and customize its values for different color modes:\n   - in your `.xcassets` directory (either create a new `.xcassets` for colors, or reuse an existing one e.g. with images) create `New Color Set` and name it `SplashScreenBackground`,\n   - navigate to `Attributes Inspector` in the right panel and change `Appearance` to `Any, Dark`,\n   - select desired color in `Attributes Inspector` in the right panel for each mode.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-createNamedColor.png\" height=\"350\" />\n</details>\n\n2. Select created `named color` as the `Background` for the `Image View` in `SplashScreen.storyboard`:\n   - open `SplashScreen.storyboard` and select `Image View` in view hierarchy inspector,\n   - navigate to `Attributes Inspector` in the right panel,\n   - configure `Background` parameter by selecting your created `named color` (that should be listed as `SplashScreenBackground`).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-selectNamedColor.png\" height=\"350\" />\n</details>\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addSplashScreenBackgroundImages.png\" height=\"250\" />\n</details>\n\n2. Update `SplashScreen.storyboard` to consist of a single top-level `View` with two `Image View` subviews (solid-colored image in the background and actual splash screen image in the foreground):\n\n   - open `SplashScreen.storyboard` and replace `Image View` with a plain `View` (search `Library` for it and drag&drop it in place of current `Image View`),\n   - add two\n\n3. Configure first `Image View` (background color):\n   - configure attributes in `Attributes Inspector`:\n     - set `Image` to `SplashScreenBackground` (prepared in previous step),\n     - set `Content Mode` to `Scale To Fill` (color needs to take all available space),\n   - make this subview take all available space in parent view:\n     - open `Add new constraints` bottom menu,\n     - make sure `Constrain to margin` is not checked,\n     - for every input, open the dropdown and select `View` (parent view reference) and set `0` as the value,\n     - once every side is covered (`0` value and parent view reference selected in dropdown) hit `Add 4 Constraints`,\n     - observe that in `View Hierarchy Inspector` constraints are added and `Image View` resized to take whole place of parent view.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-createBackgroundImageView.png\" height=\"350\" />\n</details>\n\n4. Configure second `Image View` (actual splash screen image):\n   - select second `Image View` and select correct `Image` in `Attributes Inspector` alongside with desired `Content Mode`,\n   - make this subview take all available space in parent view (see previous step).\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addConstraintsToImageViews.png\" height=\"350\" />\n</details>\n\n##### Provide different splash screen image\n\nYou might want to add a separate image for `dark` mode. If the system is switched to `dark` mode, it would pick this different image instead of the normal one and present it in the splash screen view.\n\n1. In your Xcode project open `SplashScreen` (created in previous section).\n2. Convert this asset to support `Dark Appearance`:\n\n- navigate to `Attributes Inspector` in the right panel,\n- locate `Appearances` section and select `Any, Dark`,\n- provide image for `dark mode` by dropping it to the correct box.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-addDarkImagesXcassets.png\" height=\"280\" />\n</details>\n\n#### 🛠 (<em>optional</em>) Customize StatusBar\n\nYou might want to customize the StatusBar appearance during the time the SplashScreen is being shown.\n\n1. Customize `StatusBar hiding` flag:\n\n- open main project view, select your project name from `TARGETS` panel and navigate to `Info` tab,\n- add or modify `Status bar initially hidden` attribute with desired value.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-statusBar-hidden.png\" height=\"350\" />\n</details>\n\n2. Customize `StatusBar style` option:\n\n- open main project view, select your project name from `TARGETS` panel and navigate to `Info` tab,\n- add or modify `Status bar style` attribute with desired value.\n\n<details>\n <summary>Show image with details</summary>\n<img src=\"./assets/configuration-ios-statusBar-style.png\" height=\"350\" />\n</details>\n\n## 🤖 Configure Android\n\nTo achieve fully-native splash screen behavior, `expo-splash-screen` needs to be hooked into the native view hierarchy and consume some resources that have to be placed under `/android/app/src/res` directory.\n\n### Manual Configuration\n\n1. [Configure `res/drawable/splashscreen_image.png`](#-configure-resdrawablesplashscreen_imagepng)\n2. [Configure `res/values/colors.xml`](#-configure-resvaluescolorsxml)\n3. [Configure `res/drawable/splashscreen.xml`](#-configure-resdrawablesplashscreenxml)\n4. [Configure `res/values/styles.xml`](#-configure-resvaluesstylesxml)\n5. [Configure `AndroidManifest.xml`](#-configure-androidmanifestxml)\n6. [(<em>optional</em>) Customzine `resizeMode`](#-optional-customize-resizemode)\n7. [(<em>optional</em>) Enable dark mode](#-optional-enable-dark-mode-1)\n8. [(<em>optional</em>) Customize StatusBar](#-customize-statusbar-1)\n\n#### 🛠 Configure `res/drawable/splashscreen_image.png`\n\nYou have to provide your splash screen image and place it under the `res/drawable` directory.\nThis image will be loaded as soon as Android mounts your application's native view hierarchy.\n\n##### `NATIVE` mode adjustments\n\nIf you've overridden `<string name=\"expo_splash_screen_resize_mode\">native</string>` mode in [`res/values/strings.xml`](#-optional-customize-resizemode), you need to do a few additional steps.\n\nIn your application's `res` directory you might want to have a number of `drawable-X` sub-directories (where `X` is the different DPI for different devices). They store different versions of images that are picked based on the device's DPI (for more information please see [this official Android docs](https://developer.android.com/training/multiscreen/screendensities#TaskProvideAltBmp)).\n\nTo achieve proper scaling of your splash screen image on every device you should have following directories:\n\n- `res/drawable-mdpi` - scale 1x - resources for medium-density (mdpi) screens (~160dpi). (This is the baseline density.)\n- `res/drawable-hdpi` - scale 1.5x - resources for high-density (hdpi) screens (~240dpi).\n- `res/drawable-xhdpi` - scale 2x - resources for extra-high-density (xhdpi) screens (~320dpi).\n- `res/drawable-xxhdpi` - scale 3x - resources for extra-extra-high-density (xxhdpi) screens (~480dpi).\n- `res/drawable-xxxhdpi` - scale 4x - resources for extra-extra-extra-high-density (xxxhdpi) uses (~640dpi).\n\nEach of directories mentioned above should contain the same `splashscreen_image.png` file, but with a different resolution (pay attention to scale factors).\n\n#### 🛠 Configure `res/values/colors.xml`\n\nThis file contains colors that are reused across your application at the native level.\nUpdate the file with the following content or create one if missing:\n\n```diff\n<resources>\n+ <color name=\"splashscreen_background\">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->\n  <!-- Other colors defined for your application -->\n</resources>\n```\n\n#### 🛠 Configure `res/drawable/splashscreen.xml`\n\nThis file contains the description of how the splash screen view should be drawn by the Android system.\nCreate the file with the following content:\n\n```diff\n+ <layer-list xmlns:android=\"http://schemas.android.com/apk/res/android\">\n+   <item android:drawable=\"@color/splashscreen_background\"/>\n+ </layer-list>\n```\n\n#### `NATIVE` mode adjustments\n\nIf you've overridden `<string name=\"expo_splash_screen_resize_mode\">native</string>` mode in [`res/values/strings.xml`](#-optional-customize-resizemode), you should add:\n\n```diff\n<layer-list xmlns:android=\"http://schemas.android.com/apk/res/android\">\n  <item android:drawable=\"@color/splashscreen_background\"/>\n+ <item>\n+   <bitmap android:gravity=\"center\" android:src=\"@drawable/splashscreen_image\"/>\n+ </item>\n</layer-list>\n```\n\n#### 🛠 Configure `res/values/styles.xml`\n\nLocate your main activity theme in `/android/app/src/res/values/styles.xml` or create one if missing.\n\n```diff\n  <!-- Main activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n+   <item name=\"android:windowBackground\">@drawable/splashscreen</item> <!-- this line instructs the system to use 'splashscreen.xml' as a background of the whole application -->\n    <!-- Other style properties -->\n  </style>\n```\n\n#### 🛠 Configure `AndroidManifest.xml`\n\nAdjust your application's main `AndroidManifest.xml` to contain an `android:theme` property pointing to the style that contains your splash screen configuration:\n\n```diff\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.example.myapp\">\n\n  ...\n\n  <application ...>\n\n+   <!-- Ensure that 'android:theme' property is pointing to the style containing native splash screen reference - see 'styles.xml' -->\n    <activity\n      android:name=\".MainActivity\"\n+     android:theme=\"@style/AppTheme\"\n      ...\n    >\n      ...\n    </activity>\n  </application>\n\n</manifest>\n```\n\n#### 🛠 (<em>optional</em>) Customize `resizeMode`\n\nThe default image [`resizeMode`](https://github.com/expo/expo/tree/%40kudo/modularize-expo-splash-screen/packages/expo-splash-screen#built-in-splash-screen-image-resize-modes) is [`CONTAIN`](https://github.com/expo/expo/tree/%40kudo/modularize-expo-splash-screen/packages/expo-splash-screen#contain-resize-mode). If you want to have different `resizeMode`, you need to override in `res/values/strings.xml`.\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_resize_mode\">contain|cover|native</string>\n</resources>\n```\n\n#### 🛠 (<em>optional</em>) Enable dark mode\n\n##### Provide different background colors - `res/values-night/colors.png`\n\nIf you want to have different background colors in your splash screen depending on the system color mode, you need to create a similar file to `colors.xml`, but in the directory `res/values-night`.\nValues in this file are going to picked by the system when it is switched to `dark` mode.\n\n```diff\n<resources>\n+ <color name=\"splashscreen_background\">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->\n</resources>\n```\n\n##### Provide different splash screen image - `res/drawable-night/splashscreen_image.png`\n\nYou might want to provide a separate splash screen image for dark mode usage, and place it under the `res/drawable-night` directory with exactly the same name as the normal one.\nThis step is optional, because you might want to have the same image in both `light` and `dark` modes (e.g. you have just a light-themed logo and you want to have different background colors in different modes).\n\n#### 🛠 (<em>optional</em>) Customize StatusBar\n\nYou might want to customize the StatusBar appearance during the time the SplashScreen is being shown.\n\n1. Customize `StatusBar hiding` flag\n\nTo have the StatusBar completely hidden you need to update your `res/values/styles.xml` file with the following entry (to prevent StatusBar from hiding either remove this entry or enter `false` as the value):\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:windowFullscreen\">true</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night`, `res/values-night-v23`, etc.), be sure to update these files accordingly.\n\nRead more about `android:windowFullscreen` flag in [official Android documentation](https://developer.android.com/reference/android/R.attr#windowFullscreen).\n\n2. Customize `StatusBar style` option\n\nThis option is only available for Android devices running Android 6.0 or greater.\nTo enforce `light` or `dark` StatusBar style for given system color mode, you have to prepare or update your `res/values-v23/styles.xml` file with the following entry (as of this option being supported since API 23, you have to configure specifically named directory containing separate configuration files):\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:windowLightStatusBar\">true|false</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nAvailable values:\n\n- `true` for having dark-colored icons,\n- `false` for having light-colored icons.\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night-v23` (for dark color mode), etc.), be sure to update these files accordingly.\n\nRead more about `android:windowLightStatusBar` flag in [official Android documentation](https://developer.android.com/reference/android/R.attr#windowLightStatusBar).\n\nTo read more about Android multi-API-level support see [this official documentation](https://developer.android.com/guide/topics/resources/providing-resources).\n\n3. Customize `StatusBar color` option (a.k.a. `background color` of the StatusBar component)\n\nTo achieve custom background color you need to create a new color resource and provide it to the SplashScreen `style` description.\n\nCreate new color resource in your `res/values/colors.xml` (if your application supports dark mode, consider adding different color in `res/values-night/colors.xml` file):\n\n```diff\n  <resources>\n    <color name=\"splashscreen_background\">#D0D0C0</color>\n+   <color name=\"splashscreen_statusbar_color\">#(AA)RRGGBB</color> <!-- #AARRGGBB or #RRGGBB format -->\n  </resources>\n```\n\nUpdate your `res/values/styles.xml` file with the following entry:\n\n```diff\n  <!-- Main/SplashScreen activity theme. -->\n  <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.NoActionBar\">\n    <item name=\"android:windowBackground\">@drawable/splashscreen</item>\n+   <item name=\"android:statusBarColor\">@color/splashscreen_statusbar_color</item>\n    <!-- Other style properties -->\n  </style>\n```\n\nIf you have multiple `styles.xml` files located in different directories containing exactly the same `style` entry (e.g. in `res/values-night`, `res/values-night-v23`, etc.), be sure to update these files accordingly.\n\nRead more about `android:statusBarColor` option in [official Android documentation](https://developer.android.com/reference/android/R.attr#statusBarColor).\n\n4. Customize `StatusBar translucent` flag\n\nWhen the StatusBar is translucent, the app will be able to draw under the StatusBar component area.\n\nTo make the StatusBar translucent update your `res/values/strings.xml` file with the following content:\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_status_bar_translucent\">true</string>\n</resources>\n```\n\n## 👏 Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).\n\n## ❓ Known issues\n\n### iOS caching\n\nSplash Screens on iOS apps can sometimes encounter a caching issue where the previous image will flash before showing the new, intended image. When this occurs, we recommend you try power cycling your device and uninstalling and re-installing the application. However, the caching sometimes can persist for a day or two, so be patient if the aforementioned steps were unable to resolve the issue.\n\n### `NATIVE` mode pushes splash image up a little bit\n\nSee [`NATIVE`](#native-resize-mode) mode preview above.\n\n> We are aware of this issue and unfortunately haven't been able to provide a solution as of yet. This is on our immediate roadmap...\n\n## ⬆️ Migrate from old versions\n\n### Migrate from expo-splash-screen < 0.12.0\n\nWe try to keep changes backward compatible, the code for `expo-splash-screen` will still work as it used to be. However, if you are going to migrate as new style API, here are the steps:\n\n1. Migrate your project from react-native-unimodules to expo-modules-core\n2. Remove expo-splash-screen code from MainActivity\n\n```diff\n--- a/android/app/src/main/java/com/helloworld/MainActivity.java\n+++ b/android/app/src/main/java/com/helloworld/MainActivity.java\n import com.facebook.react.ReactRootView;\n import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;\n\n-import host.exp.exponent.experience.splashscreen.legacy.singletons.SplashScreen;\n-import host.exp.exponent.experience.splashscreen.legacy.SplashScreenImageResizeMode;\n-\n public class MainActivity extends ReactActivity {\n   @Override\n   protected void onCreate(Bundle savedInstanceState) {\n     // This is required for expo-splash-screen.\n     setTheme(R.style.AppTheme);\n     super.onCreate(null);\n-    // SplashScreen.show(...) has to be called after super.onCreate(...)\n-    SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, ReactRootView.class, false);\n   }\n```\n\n3. Override default `resizeMode` and `statusBarTranslucent` in stings.xml\n\n```diff\n--- a/android/app/src/main/res/values/strings.xml\n+++ b/android/app/src/main/res/values/strings.xml\n <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n <resources>\n   <string name=\"app_name\">sdk42</string>\n+  <string name=\"expo_splash_screen_resize_mode\">contain</string>\n+  <string name=\"expo_splash_screen_status_bar_translucent\">false</string>\n</resources>\n```\n\n## 🏅 Hall Of Fame\n\nThis module is based on a solid work from (many thanks for that 👏):\n\n- [react-native-splash-screen](https://github.com/crazycodeboy/react-native-splash-screen)\n- [react-native-bootsplash](https://github.com/zoontek/react-native-bootsplash)\n- [react-native-make](https://github.com/bamlab/react-native-make)",
     "name": "expo-splash-screen",
-    "version": "31.0.12",
+    "version": "31.0.13",
     "description": "Provides a module to allow keeping the native Splash Screen visible until you choose to hide it.",
     "copyright": ""
   },
@@ -5936,43 +5989,43 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Native interface for modules that optionally depend on expo-updates, e.g. expo-dev-launcher.",
     "copyright": ""
   },
-  "expo-updates@29.0.15": {
+  "expo-updates@29.0.17": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/updates/\">\n    <img\n      src=\"../../.github/resources/expo-updates.svg\"\n      alt=\"expo-updates\"\n      height=\"64\" />\n  </a>\n</p>\n\nThe `expo-updates` module enables your app to manage remote updates to your application code.\n\nThis module works with a server that implements the [Expo Update protocol](https://docs.expo.dev/technical-specs/expo-updates-1/).\n\nThe [EAS Update](https://docs.expo.dev/eas-update/introduction/) hosted service implements this protocol.\n\nTo build a custom server that implements the protocol, see the example server source code [here](https://github.com/expo/custom-expo-updates-server).\n\n## Important documentation links\n\n- [Getting started](https://docs.expo.dev/eas-update/getting-started/)\n- [How EAS Update works](https://docs.expo.dev/eas-update/how-it-works/)\n- [Debugging](https://docs.expo.dev/eas-update/debug/)\n- [Migration from Classic Updates](https://docs.expo.dev/eas-update/migrate-from-classic-updates/)\n- [Updates JS API](https://docs.expo.dev/versions/latest/sdk/updates/)\n\n# Installation in bare React Native projects\n\nLearn how to install expo-updates in your project in the [Installing expo-updates documentation page](https://docs.expo.dev/bare/installing-updates/).",
     "name": "expo-updates",
-    "version": "29.0.15",
+    "version": "29.0.17",
     "description": "Fetches and manages remotely-hosted assets and updates to your app's JS bundle.",
     "copyright": ""
   },
-  "expo-video@3.0.15": {
+  "expo-video@3.0.16": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/unversioned/sdk/video/\">\n    <img\n      src=\"../../.github/resources/expo-video.svg\"\n      alt=\"expo-video\"\n      height=\"64\" />\n  </a>\n</p>\n\nA cross-platform, performant video component for React Native and Expo with Web support\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/video/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/video/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpm install expo-video\n```\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-video",
-    "version": "3.0.15",
+    "version": "3.0.16",
     "description": "A cross-platform, performant video component for React Native and Expo with Web support",
     "copyright": ""
   },
-  "expo-web-browser@15.0.10": {
+  "expo-web-browser@15.0.11": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
     "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/webbrowser/\">\n    <img\n      src=\"../../.github/resources/expo-web-browser.svg\"\n      alt=\"expo-web-browser\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/webbrowser/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/webbrowser/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/webbrowser/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-web-browser\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
     "name": "expo-web-browser",
-    "version": "15.0.10",
+    "version": "15.0.11",
     "description": "Provides access to the system's web browser and supports handling redirects. On iOS, it uses SFSafariViewController or ASWebAuthenticationSession, depending on the method you call, and on Android it uses ChromeCustomTabs. As of iOS 11, SFSafariViewController no longer shares cookies with Safari, so if you are using WebBrowser for authentication you will want to use WebBrowser.openAuthSessionAsync, and if you just want to open a webpage (such as your app privacy policy), then use WebBrowser.openBrowserAsync.",
     "copyright": ""
   },
-  "expo@54.0.29": {
+  "expo@54.0.34": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
     "publisher": "Expo",
     "licenseText": "# expo\n\nThe `expo` package is a single package you can install in any React Native app to begin using Expo modules. [API Reference](https://docs.expo.dev/versions/latest/sdk/expo/).\n\n- includes core infrastructure for Expo modules: `expo-modules-core` and `expo-modules-autolinking`.\n- bundles a minimal set of Expo modules that are required by nearly every app, such as `expo-asset`.\n- provides [`@expo/cli`](https://github.com/expo/expo/blob/main/packages/%40expo/cli/README.md), a small CLI that provides a clean interface around both bundlers (such as Metro and Webpack) and native build tools (Xcode, Simulator.app, Android Studio, ADB, etc.), can generate native projects with `npx expo prebuild`, and aligns compatible package versions with `npx expo install`.\n- exposes a JavaScript module that configures an app at runtime as needed to use `expo-font` and to function in Expo Go (optional, only if applicable).\n\n\nSee [CONTRIBUTING](./CONTRIBUTING.md) for instructions on working on this package.",
     "name": "expo",
-    "version": "54.0.29",
+    "version": "54.0.34",
     "description": "The Expo SDK",
     "copyright": ""
   },
@@ -6592,6 +6645,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "hosted-git-info",
     "version": "7.0.2",
     "description": "Provides metadata and conversions from repository urls for GitHub, Bitbucket and GitLab"
+  },
+  "html2canvas@1.4.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/niklasvh/html2canvas",
+    "publisher": "Niklas von Hertzen",
+    "email": "niklasvh@gmail.com",
+    "licenseText": "Copyright (c) 2012 Niklas von Hertzen\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2012 Niklas von Hertzen",
+    "name": "html2canvas",
+    "version": "1.4.1",
+    "description": "Screenshots with JavaScript"
   },
   "htmlparser2@7.2.0": {
     "licenses": "MIT",
@@ -7305,15 +7369,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.0.3",
     "description": "The fastest Node.js library for formatting terminal text with ANSI colors~!"
   },
-  "lan-network@0.1.7": {
+  "lan-network@0.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/kitten/lan-network",
     "publisher": "Phil Pluckthun",
     "email": "phil@kitten.sh",
-    "licenseText": "MIT License\n\nCopyright (c) Phil Pluckthun,\nCopyright (c) 2016 - 2020 Node Fetch Team,\nCopyright (c) Remix Software Inc. 2020-2021,\nCopyright (c) Shopify Inc. 2022-2024\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) Phil Pluckthun,. Copyright (c) 2016 - 2020 Node Fetch Team,. Copyright (c) Remix Software Inc. 2020-2021,. Copyright (c) Shopify Inc. 2022-2024",
+    "licenseText": "MIT License\n\nCopyright (c) Phil Pluckthun,\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) Phil Pluckthun,",
     "name": "lan-network",
-    "version": "0.1.7",
+    "version": "0.2.1",
     "description": "Best-effort discovery of the machine's default gateway and local network IP exclusively with UDP sockets."
   },
   "leven@3.1.0": {
@@ -7728,6 +7792,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-babel-transformer@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-babel-transformer",
+    "version": "0.83.3",
+    "description": "🚇 Base Babel transformer for Metro.",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-cache-key@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7746,6 +7819,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-cache-key@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-cache-key",
+    "version": "0.83.3",
+    "description": "🚇 Cache key utility.",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-cache@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7760,6 +7842,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "repository": "https://github.com/facebook/metro",
     "name": "metro-cache",
     "version": "0.83.2",
+    "description": "🚇 Cache layers for Metro.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro-cache@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-cache",
+    "version": "0.83.3",
     "description": "🚇 Cache layers for Metro.",
     "copyright": "",
     "publisher": ""
@@ -7784,6 +7875,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-config@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# Metro Config\n\n🚇 Config resolver and transformer for [Metro](https://metrobundler.dev/).",
+    "name": "metro-config",
+    "version": "0.83.3",
+    "description": "🚇 Config parser for Metro.",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-core@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7800,6 +7901,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "# Metro\n\n🚇 This package contains core files for [Metro](https://metrobundler.dev/).\n\n(TODO)",
     "name": "metro-core",
     "version": "0.83.2",
+    "description": "🚇 Metro's core package.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro-core@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# Metro\n\n🚇 This package contains core files for [Metro](https://metrobundler.dev/).\n\n(TODO)",
+    "name": "metro-core",
+    "version": "0.83.3",
     "description": "🚇 Metro's core package.",
     "copyright": "",
     "publisher": ""
@@ -7824,6 +7935,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-file-map@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# \\[Experimental\\] Metro File Map\n\n🚇 File system crawling, watching and mapping for [Metro](https://metrobundler.dev/).\n\nOriginally a fork of [`jest-haste-map`](https://github.com/facebook/jest/tree/main/packages/jest-haste-map).\n\nThis entire package should be considered \"experimental\" for the time being -\nthe API is considered internal and changes will not be semver-breaking.\n\nIf you need to rely on `metro-file-map` APIs directly please\n[raise an issue](https://github.com/facebook/metro/issues/new) to discuss your\nuse case.",
+    "name": "metro-file-map",
+    "version": "0.83.3",
+    "description": "[Experimental] - 🚇 File crawling, watching and mapping for Metro",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-minify-terser@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7838,6 +7959,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "repository": "https://github.com/facebook/metro",
     "name": "metro-minify-terser",
     "version": "0.83.2",
+    "description": "🚇 Minifier for Metro based on Terser.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro-minify-terser@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-minify-terser",
+    "version": "0.83.3",
     "description": "🚇 Minifier for Metro based on Terser.",
     "copyright": "",
     "publisher": ""
@@ -7862,6 +7992,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-resolver@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# metro-resolver\n\n🚇 [Metro](https://metrobundler.dev/) resolution logic",
+    "name": "metro-resolver",
+    "version": "0.83.3",
+    "description": "🚇 Implementation of Metro's resolution logic.",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-runtime@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7876,6 +8016,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "repository": "https://github.com/facebook/metro",
     "name": "metro-runtime",
     "version": "0.83.2",
+    "description": "🚇 Module required for evaluating Metro bundles.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro-runtime@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-runtime",
+    "version": "0.83.3",
     "description": "🚇 Module required for evaluating Metro bundles.",
     "copyright": "",
     "publisher": ""
@@ -7900,6 +8049,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-source-map@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# Metro\n\n🚇 The source map generator for [Metro](https://metrobundler.dev/).\n\n(TODO)",
+    "name": "metro-source-map",
+    "version": "0.83.3",
+    "description": "🚇 Source map generator for Metro.",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-symbolicate@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7914,6 +8073,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "repository": "https://github.com/facebook/metro",
     "name": "metro-symbolicate",
     "version": "0.83.2",
+    "description": "🚇 A tool to find the source location from JS bundles and stack traces.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro-symbolicate@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-symbolicate",
+    "version": "0.83.3",
     "description": "🚇 A tool to find the source location from JS bundles and stack traces.",
     "copyright": "",
     "publisher": ""
@@ -7936,6 +8104,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
+  "metro-transform-plugins@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-transform-plugins",
+    "version": "0.83.3",
+    "description": "🚇 Transform plugins for Metro.",
+    "copyright": "",
+    "publisher": ""
+  },
   "metro-transform-worker@0.82.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/metro",
@@ -7950,6 +8127,15 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "repository": "https://github.com/facebook/metro",
     "name": "metro-transform-worker",
     "version": "0.83.2",
+    "description": "🚇 Transform worker for Metro.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro-transform-worker@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "name": "metro-transform-worker",
+    "version": "0.83.3",
     "description": "🚇 Transform worker for Metro.",
     "copyright": "",
     "publisher": ""
@@ -7970,6 +8156,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "# Metro\n\n🚇 The JavaScript bundler for React Native.\n\n- **🚅 Fast**: We aim for sub-second reload cycles, fast startup and quick bundling speeds.\n- **⚖️ Scalable**: Works with thousands of modules in a single application.\n- **⚛️ Integrated**: Supports every React Native project out of the box.\n\nThis project was previously part of the [react-native](https://github.com/facebook/react-native) repository. In this smaller repository it is easier for the team working on Metro to respond to both issues and pull requests. See [react-native#13976](https://github.com/facebook/react-native/issues/13976) for the initial announcement.",
     "name": "metro",
     "version": "0.83.2",
+    "description": "🚇 The JavaScript bundler for React Native.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "metro@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# Metro\n\n🚇 The JavaScript bundler for React Native.\n\n- **🚅 Fast**: We aim for sub-second reload cycles, fast startup and quick bundling speeds.\n- **⚖️ Scalable**: Works with thousands of modules in a single application.\n- **⚛️ Integrated**: Supports every React Native project out of the box.\n\nThis project was previously part of the [react-native](https://github.com/facebook/react-native) repository. In this smaller repository it is easier for the team working on Metro to respond to both issues and pull requests. See [react-native#13976](https://github.com/facebook/react-native/issues/13976) for the initial announcement.",
+    "name": "metro",
+    "version": "0.83.3",
     "description": "🚇 The JavaScript bundler for React Native.",
     "copyright": "",
     "publisher": ""
@@ -8055,6 +8251,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules. The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice. If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n**_As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim._**",
     "name": "minimatch",
     "version": "10.1.1",
+    "description": "a glob matcher in javascript",
+    "copyright": ""
+  },
+  "minimatch@10.2.5": {
+    "licenses": "BlueOak-1.0.0",
+    "repository": "https://github.com/isaacs/minimatch",
+    "publisher": "Isaac Z. Schlueter",
+    "email": "i@izs.me",
+    "licenseText": "# Blue Oak Model License\n\nVersion 1.0.0\n\n## Purpose\n\nThis license gives everyone as much permission to work with\nthis software as possible, while protecting contributors\nfrom liability.\n\n## Acceptance\n\nIn order to receive this license, you must agree to its\nrules. The rules of this license are both obligations\nunder that agreement and conditions to your license.\nYou must not do anything with this software that triggers\na rule that you cannot or will not follow.\n\n## Copyright\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe that contributor's\ncopyright in it.\n\n## Notices\n\nYou must ensure that everyone who gets a copy of\nany part of this software from you, with or without\nchanges, also gets the text of this license or a link to\n<https://blueoakcouncil.org/license/1.0.0>.\n\n## Excuse\n\nIf anyone notifies you in writing that you have not\ncomplied with [Notices](#notices), you can keep your\nlicense by taking all practical steps to comply within 30\ndays after the notice. If you do not do so, your license\nends immediately.\n\n## Patent\n\nEach contributor licenses you to do everything with this\nsoftware that would otherwise infringe any patent claims\nthey can license or become able to license.\n\n## Reliability\n\nNo contributor can revoke this license.\n\n## No Liability\n\n**_As far as the law allows, this software comes as is,\nwithout any warranty or condition, and no contributor\nwill be liable to anyone for any damages related to this\nsoftware or this license, under any kind of legal claim._**",
+    "name": "minimatch",
+    "version": "10.2.5",
     "description": "a glob matcher in javascript",
     "copyright": ""
   },
@@ -8282,14 +8489,14 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.7.0",
     "description": "A light-weight module that brings window.fetch to node.js"
   },
-  "node-forge@1.3.1": {
+  "node-forge@1.4.0": {
     "licenses": "(BSD-3-Clause OR GPL-2.0)",
     "repository": "https://github.com/digitalbazaar/forge",
     "publisher": "Digital Bazaar, Inc.",
     "email": "support@digitalbazaar.com",
     "licenseText": "You may use the Forge project under the terms of either the BSD License or the\nGNU General Public License (GPL) Version 2.\n\nThe BSD License is recommended for most projects. It is simple and easy to\nunderstand and it places almost no restrictions on what you can do with the\nForge project.\n\nIf the GPL suits your project better you are also free to use Forge under\nthat license.\n\nYou don't have to do anything special to choose one license or the other and\nyou don't have to notify anyone which license you are using. You are free to\nuse this project in commercial projects as long as the copyright header is\nleft intact.\n\nIf you are a commercial entity and use this set of libraries in your\ncommercial software then reasonable payment to Digital Bazaar, if you can\nafford it, is not required but is expected and would be appreciated. If this\nlibrary saves you time, then it's saving you money. The cost of developing\nthe Forge software was on the order of several hundred hours and tens of\nthousands of dollars. We are attempting to strike a balance between helping\nthe development community while not being taken advantage of by lucrative\ncommercial entities for our efforts.\n\n-------------------------------------------------------------------------------\nNew BSD License (3-clause)\nCopyright (c) 2010, Digital Bazaar, Inc.\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n    * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n    * Redistributions in binary form must reproduce the above copyright\n      notice, this list of conditions and the following disclaimer in the\n      documentation and/or other materials provided with the distribution.\n    * Neither the name of Digital Bazaar, Inc. nor the\n      names of its contributors may be used to endorse or promote products\n      derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL DIGITAL BAZAAR BE LIABLE FOR ANY\nDIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\nON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n-------------------------------------------------------------------------------\n        GNU GENERAL PUBLIC LICENSE\n           Version 2, June 1991\n\n Copyright (C) 1989, 1991 Free Software Foundation, Inc.\n 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n Everyone is permitted to copy and distribute verbatim copies\n of this license document, but changing it is not allowed.\n\n          Preamble\n\n  The licenses for most software are designed to take away your\nfreedom to share and change it.  By contrast, the GNU General Public\nLicense is intended to guarantee your freedom to share and change free\nsoftware--to make sure the software is free for all its users.  This\nGeneral Public License applies to most of the Free Software\nFoundation's software and to any other program whose authors commit to\nusing it.  (Some other Free Software Foundation software is covered by\nthe GNU Lesser General Public License instead.)  You can apply it to\nyour programs, too.\n\n  When we speak of free software, we are referring to freedom, not\nprice.  Our General Public Licenses are designed to make sure that you\nhave the freedom to distribute copies of free software (and charge for\nthis service if you wish), that you receive source code or can get it\nif you want it, that you can change the software or use pieces of it\nin new free programs; and that you know you can do these things.\n\n  To protect your rights, we need to make restrictions that forbid\nanyone to deny you these rights or to ask you to surrender the rights.\nThese restrictions translate to certain responsibilities for you if you\ndistribute copies of the software, or if you modify it.\n\n  For example, if you distribute copies of such a program, whether\ngratis or for a fee, you must give the recipients all the rights that\nyou have.  You must make sure that they, too, receive or can get the\nsource code.  And you must show them these terms so they know their\nrights.\n\n  We protect your rights with two steps: (1) copyright the software, and\n(2) offer you this license which gives you legal permission to copy,\ndistribute and/or modify the software.\n\n  Also, for each author's protection and ours, we want to make certain\nthat everyone understands that there is no warranty for this free\nsoftware.  If the software is modified by someone else and passed on, we\nwant its recipients to know that what they have is not the original, so\nthat any problems introduced by others will not reflect on the original\nauthors' reputations.\n\n  Finally, any free program is threatened constantly by software\npatents.  We wish to avoid the danger that redistributors of a free\nprogram will individually obtain patent licenses, in effect making the\nprogram proprietary.  To prevent this, we have made it clear that any\npatent must be licensed for everyone's free use or not licensed at all.\n\n  The precise terms and conditions for copying, distribution and\nmodification follow.\n\n        GNU GENERAL PUBLIC LICENSE\n   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION\n\n  0. This License applies to any program or other work which contains\na notice placed by the copyright holder saying it may be distributed\nunder the terms of this General Public License.  The \"Program\", below,\nrefers to any such program or work, and a \"work based on the Program\"\nmeans either the Program or any derivative work under copyright law:\nthat is to say, a work containing the Program or a portion of it,\neither verbatim or with modifications and/or translated into another\nlanguage.  (Hereinafter, translation is included without limitation in\nthe term \"modification\".)  Each licensee is addressed as \"you\".\n\nActivities other than copying, distribution and modification are not\ncovered by this License; they are outside its scope.  The act of\nrunning the Program is not restricted, and the output from the Program\nis covered only if its contents constitute a work based on the\nProgram (independent of having been made by running the Program).\nWhether that is true depends on what the Program does.\n\n  1. You may copy and distribute verbatim copies of the Program's\nsource code as you receive it, in any medium, provided that you\nconspicuously and appropriately publish on each copy an appropriate\ncopyright notice and disclaimer of warranty; keep intact all the\nnotices that refer to this License and to the absence of any warranty;\nand give any other recipients of the Program a copy of this License\nalong with the Program.\n\nYou may charge a fee for the physical act of transferring a copy, and\nyou may at your option offer warranty protection in exchange for a fee.\n\n  2. You may modify your copy or copies of the Program or any portion\nof it, thus forming a work based on the Program, and copy and\ndistribute such modifications or work under the terms of Section 1\nabove, provided that you also meet all of these conditions:\n\n    a) You must cause the modified files to carry prominent notices\n    stating that you changed the files and the date of any change.\n\n    b) You must cause any work that you distribute or publish, that in\n    whole or in part contains or is derived from the Program or any\n    part thereof, to be licensed as a whole at no charge to all third\n    parties under the terms of this License.\n\n    c) If the modified program normally reads commands interactively\n    when run, you must cause it, when started running for such\n    interactive use in the most ordinary way, to print or display an\n    announcement including an appropriate copyright notice and a\n    notice that there is no warranty (or else, saying that you provide\n    a warranty) and that users may redistribute the program under\n    these conditions, and telling the user how to view a copy of this\n    License.  (Exception: if the Program itself is interactive but\n    does not normally print such an announcement, your work based on\n    the Program is not required to print an announcement.)\n\nThese requirements apply to the modified work as a whole.  If\nidentifiable sections of that work are not derived from the Program,\nand can be reasonably considered independent and separate works in\nthemselves, then this License, and its terms, do not apply to those\nsections when you distribute them as separate works.  But when you\ndistribute the same sections as part of a whole which is a work based\non the Program, the distribution of the whole must be on the terms of\nthis License, whose permissions for other licensees extend to the\nentire whole, and thus to each and every part regardless of who wrote it.\n\nThus, it is not the intent of this section to claim rights or contest\nyour rights to work written entirely by you; rather, the intent is to\nexercise the right to control the distribution of derivative or\ncollective works based on the Program.\n\nIn addition, mere aggregation of another work not based on the Program\nwith the Program (or with a work based on the Program) on a volume of\na storage or distribution medium does not bring the other work under\nthe scope of this License.\n\n  3. You may copy and distribute the Program (or a work based on it,\nunder Section 2) in object code or executable form under the terms of\nSections 1 and 2 above provided that you also do one of the following:\n\n    a) Accompany it with the complete corresponding machine-readable\n    source code, which must be distributed under the terms of Sections\n    1 and 2 above on a medium customarily used for software interchange; or,\n\n    b) Accompany it with a written offer, valid for at least three\n    years, to give any third party, for a charge no more than your\n    cost of physically performing source distribution, a complete\n    machine-readable copy of the corresponding source code, to be\n    distributed under the terms of Sections 1 and 2 above on a medium\n    customarily used for software interchange; or,\n\n    c) Accompany it with the information you received as to the offer\n    to distribute corresponding source code.  (This alternative is\n    allowed only for noncommercial distribution and only if you\n    received the program in object code or executable form with such\n    an offer, in accord with Subsection b above.)\n\nThe source code for a work means the preferred form of the work for\nmaking modifications to it.  For an executable work, complete source\ncode means all the source code for all modules it contains, plus any\nassociated interface definition files, plus the scripts used to\ncontrol compilation and installation of the executable.  However, as a\nspecial exception, the source code distributed need not include\nanything that is normally distributed (in either source or binary\nform) with the major components (compiler, kernel, and so on) of the\noperating system on which the executable runs, unless that component\nitself accompanies the executable.\n\nIf distribution of executable or object code is made by offering\naccess to copy from a designated place, then offering equivalent\naccess to copy the source code from the same place counts as\ndistribution of the source code, even though third parties are not\ncompelled to copy the source along with the object code.\n\n  4. You may not copy, modify, sublicense, or distribute the Program\nexcept as expressly provided under this License.  Any attempt\notherwise to copy, modify, sublicense or distribute the Program is\nvoid, and will automatically terminate your rights under this License.\nHowever, parties who have received copies, or rights, from you under\nthis License will not have their licenses terminated so long as such\nparties remain in full compliance.\n\n  5. You are not required to accept this License, since you have not\nsigned it.  However, nothing else grants you permission to modify or\ndistribute the Program or its derivative works.  These actions are\nprohibited by law if you do not accept this License.  Therefore, by\nmodifying or distributing the Program (or any work based on the\nProgram), you indicate your acceptance of this License to do so, and\nall its terms and conditions for copying, distributing or modifying\nthe Program or works based on it.\n\n  6. Each time you redistribute the Program (or any work based on the\nProgram), the recipient automatically receives a license from the\noriginal licensor to copy, distribute or modify the Program subject to\nthese terms and conditions.  You may not impose any further\nrestrictions on the recipients' exercise of the rights granted herein.\nYou are not responsible for enforcing compliance by third parties to\nthis License.\n\n  7. If, as a consequence of a court judgment or allegation of patent\ninfringement or for any other reason (not limited to patent issues),\nconditions are imposed on you (whether by court order, agreement or\notherwise) that contradict the conditions of this License, they do not\nexcuse you from the conditions of this License.  If you cannot\ndistribute so as to satisfy simultaneously your obligations under this\nLicense and any other pertinent obligations, then as a consequence you\nmay not distribute the Program at all.  For example, if a patent\nlicense would not permit royalty-free redistribution of the Program by\nall those who receive copies directly or indirectly through you, then\nthe only way you could satisfy both it and this License would be to\nrefrain entirely from distribution of the Program.\n\nIf any portion of this section is held invalid or unenforceable under\nany particular circumstance, the balance of the section is intended to\napply and the section as a whole is intended to apply in other\ncircumstances.\n\nIt is not the purpose of this section to induce you to infringe any\npatents or other property right claims or to contest validity of any\nsuch claims; this section has the sole purpose of protecting the\nintegrity of the free software distribution system, which is\nimplemented by public license practices.  Many people have made\ngenerous contributions to the wide range of software distributed\nthrough that system in reliance on consistent application of that\nsystem; it is up to the author/donor to decide if he or she is willing\nto distribute software through any other system and a licensee cannot\nimpose that choice.\n\nThis section is intended to make thoroughly clear what is believed to\nbe a consequence of the rest of this License.\n\n  8. If the distribution and/or use of the Program is restricted in\ncertain countries either by patents or by copyrighted interfaces, the\noriginal copyright holder who places the Program under this License\nmay add an explicit geographical distribution limitation excluding\nthose countries, so that distribution is permitted only in or among\ncountries not thus excluded.  In such case, this License incorporates\nthe limitation as if written in the body of this License.\n\n  9. The Free Software Foundation may publish revised and/or new versions\nof the General Public License from time to time.  Such new versions will\nbe similar in spirit to the present version, but may differ in detail to\naddress new problems or concerns.\n\nEach version is given a distinguishing version number.  If the Program\nspecifies a version number of this License which applies to it and \"any\nlater version\", you have the option of following the terms and conditions\neither of that version or of any later version published by the Free\nSoftware Foundation.  If the Program does not specify a version number of\nthis License, you may choose any version ever published by the Free Software\nFoundation.\n\n  10. If you wish to incorporate parts of the Program into other free\nprograms whose distribution conditions are different, write to the author\nto ask for permission.  For software which is copyrighted by the Free\nSoftware Foundation, write to the Free Software Foundation; we sometimes\nmake exceptions for this.  Our decision will be guided by the two goals\nof preserving the free status of all derivatives of our free software and\nof promoting the sharing and reuse of software generally.\n\n          NO WARRANTY\n\n  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY\nFOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN\nOTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES\nPROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED\nOR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS\nTO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE\nPROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,\nREPAIR OR CORRECTION.\n\n  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\nWILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR\nREDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,\nINCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING\nOUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED\nTO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY\nYOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER\nPROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\nPOSSIBILITY OF SUCH DAMAGES.",
     "name": "node-forge",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "description": "JavaScript implementations of network transports, cryptography, ciphers, PKI, message digests, and various utilities.",
     "copyright": ""
   },
@@ -8405,6 +8612,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "licenseText": "# ob1\n\nA small library for working with 0- and 1-based offsets in a type-checked way.",
     "name": "ob1",
     "version": "0.83.2",
+    "description": "A small library for working with 0- and 1-based offsets in a type-checked way.",
+    "copyright": "",
+    "publisher": ""
+  },
+  "ob1@0.83.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/metro",
+    "licenseText": "# ob1\n\nA small library for working with 0- and 1-based offsets in a type-checked way.",
+    "name": "ob1",
+    "version": "0.83.3",
     "description": "A small library for working with 0- and 1-based offsets in a type-checked way.",
     "copyright": "",
     "publisher": ""
@@ -8847,16 +9064,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.3.1",
     "description": "Blazing fast and accurate glob matcher written in JavaScript, with no dependencies and full support for standard and extended Bash glob features, including braces, extglobs, POSIX brackets, and regular expressions."
   },
-  "picomatch@3.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/micromatch/picomatch",
-    "publisher": "Jon Schlinkert",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2017-present, Jon Schlinkert.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2017-present, Jon Schlinkert.",
-    "name": "picomatch",
-    "version": "3.0.1",
-    "description": "Blazing fast and accurate glob matcher written in JavaScript, with no dependencies and full support for standard and extended Bash glob features, including braces, extglobs, POSIX brackets, and regular expressions."
-  },
   "picomatch@4.0.3": {
     "licenses": "MIT",
     "repository": "https://github.com/micromatch/picomatch",
@@ -9255,6 +9462,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "5.5.6",
     "description": "Pure javascript autocomplete input for react-native",
     "publisher": ""
+  },
+  "react-native-barcode-creator@0.1.8": {
+    "licenses": "MIT",
+    "repository": "https://github.com/VittoriDavide/react-native-barcode-creator",
+    "publisher": "David Cesar Vittori",
+    "email": "david.vittori@codistica.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2020 David Vittori\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2020 David Vittori",
+    "name": "react-native-barcode-creator",
+    "version": "0.1.8",
+    "description": "Component to generate QRCode, Code128, PDF417, AZTEC, EAN-13 and UPC-A natively for react native."
   },
   "react-native-blob-util@0.19.11": {
     "licenses": "MIT",
@@ -9656,6 +9874,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Tab view component for React Native",
     "publisher": ""
   },
+  "react-native-view-shot@4.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/gre/react-native-view-shot",
+    "publisher": "Gaëtan Renaudeau",
+    "email": "renaudeau.gaetan@gmail.com",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2016 Gaëtan Renaudeau\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2016 Gaëtan Renaudeau",
+    "name": "react-native-view-shot",
+    "version": "4.0.3",
+    "description": "Capture a React Native view to an image"
+  },
   "react-native-web@0.21.1": {
     "licenses": "MIT",
     "repository": "https://github.com/necolas/react-native-web",
@@ -9686,6 +9915,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.5.1",
     "description": "The React Native multithreading library",
     "publisher": ""
+  },
+  "react-native-youtube-iframe@2.4.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/LonelyCpp/react-native-youtube-iframe",
+    "publisher": "Ananthu P Kanive",
+    "licenseText": "MIT License\n\nCopyright (c) 2020 Ananthu Kanive\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2020 Ananthu Kanive",
+    "name": "react-native-youtube-iframe",
+    "version": "2.4.1",
+    "description": "A simple wrapper around the youtube iframe js API for react native"
   },
   "react-native@0.81.5": {
     "licenses": "MIT",
@@ -10845,6 +11084,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "Polyfill for the Encoding Living Standard's API.",
     "copyright": ""
   },
+  "text-segmentation@1.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/niklasvh/text-segmentation",
+    "publisher": "Niklas von Hertzen",
+    "email": "niklasvh@gmail.com",
+    "licenseText": "Copyright (c) 2021 Niklas von Hertzen\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2021 Niklas von Hertzen",
+    "name": "text-segmentation",
+    "version": "1.0.3",
+    "description": "text-segmentation =============="
+  },
   "thenify-all@1.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/thenables/thenify-all",
@@ -11308,6 +11558,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "utils-merge",
     "version": "1.0.1",
     "description": "merge() utility function"
+  },
+  "utrie@1.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/niklasvh/utrie",
+    "publisher": "Niklas von Hertzen",
+    "email": "niklasvh@gmail.com",
+    "licenseText": "Copyright (c) 2021 Niklas von Hertzen\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2021 Niklas von Hertzen",
+    "name": "utrie",
+    "version": "1.0.2",
+    "description": "Unicode Trie"
   },
   "uuid@7.0.3": {
     "licenses": "MIT",
