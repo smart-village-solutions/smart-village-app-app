@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -140,6 +140,18 @@ export const LocationOverview = ({
 
   useEffect(() => updateSelectedPosition(), [updateSelectedPosition]);
 
+  const mapCenterPosition = useMemo(() => {
+    if (alternativePosition) {
+      return getLocationMarker(alternativePosition).position;
+    }
+
+    if (defaultAlternativePosition) {
+      return getLocationMarker(defaultAlternativePosition).position;
+    }
+
+    return {} as LocationObjectCoords;
+  }, [alternativePosition, defaultAlternativePosition]);
+
   const {
     data: overviewData,
     loading,
@@ -226,16 +238,6 @@ export const LocationOverview = ({
   const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
   const mapMarkers = mapToMapMarkers(pointsOfInterest, vehicleStatuses);
 
-  if (!mapMarkers?.length && !showMapFilter) {
-    return (
-      <Wrapper>
-        <RegularText placeholder small center>
-          {texts.map.noGeoLocations}
-        </RegularText>
-      </Wrapper>
-    );
-  }
-
   const item = detailsData
     ? parseListItemsFromQuery(
         QUERY_TYPES.POINT_OF_INTEREST,
@@ -260,14 +262,6 @@ export const LocationOverview = ({
         {!!SelectedIcon && <SelectedIcon color={colors.darkerPrimary} />}
       </View>
     );
-  }
-
-  let mapCenterPosition = {} as LocationObjectCoords;
-
-  if (alternativePosition) {
-    mapCenterPosition = getLocationMarker(alternativePosition).position;
-  } else if (defaultAlternativePosition) {
-    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
   }
 
   return (
