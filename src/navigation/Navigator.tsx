@@ -8,7 +8,12 @@ import { navigationConfig } from '../config/navigation';
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
 
-export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab' }) => {
+export enum NavigationType {
+  DRAWER = 'drawer',
+  TAB = 'tab'
+}
+
+export const Navigator = ({ navigationType }: { navigationType: NavigationType }) => {
   const { linkingConfig } = navigationConfig(navigationType);
 
   return (
@@ -21,7 +26,7 @@ export const Navigator = ({ navigationType }: { navigationType: 'drawer' | 'tab'
       linking={linkingConfig}
     >
       <StatusBar style="dark" translucent backgroundColor="transparent" />
-      {navigationType === 'drawer' ? <DrawerNavigator /> : <MainTabNavigator />}
+      {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
     </NavigationContainer>
   );
 };

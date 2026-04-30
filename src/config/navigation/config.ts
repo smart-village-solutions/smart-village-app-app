@@ -3,10 +3,11 @@ import * as Linking from 'expo-linking';
 
 import { NavigatorConfig, ScreenName } from '../../types';
 import { consts } from '../consts';
+import { NavigationType } from '../../navigation/Navigator';
 
 const { HOST_NAMES } = consts;
 
-export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
+export const navigationConfig = (navigationType: NavigationType) => {
   let navigatorConfig: NavigatorConfig;
   const linkingConfig: LinkingOptions<{}> = {
     prefixes: [Linking.createURL('/')]
@@ -17,12 +18,12 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
     [ScreenName.Home]: '*'
   };
 
-  if (navigationType != 'drawer') {
+  if (navigationType != NavigationType.DRAWER) {
     // TODO: needs to be the index of the tab config where in-app links should navigate in
     const index = 0;
 
     navigatorConfig = {
-      type: 'tab'
+      type: NavigationType.TAB
     };
 
     linkingConfig.config = {
@@ -38,7 +39,7 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
     };
   } else {
     navigatorConfig = {
-      type: 'drawer'
+      type: NavigationType.DRAWER
     };
 
     linkingConfig.config = {
