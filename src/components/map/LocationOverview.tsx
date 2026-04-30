@@ -24,6 +24,7 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
+import { fetchAvailableVehicles, vehiclePropertyKey } from '../screens';
 
 import { ChipFilter } from './ChipFilter';
 import { MapLibre } from './MapLibre';
@@ -61,7 +62,10 @@ const getLocationMarker = (locationObject) => ({
   }
 });
 
-const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
+const mapToMapMarkers = (
+  pointsOfInterest: any,
+  vehicleStatuses: Record<string, string>
+): MapMarker[] | undefined => {
   const markers = pointsOfInterest
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ?.map((item: any) => {
@@ -70,10 +74,22 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 
       if (latitude == null || longitude == null) return undefined;
 
+      let iconName = item.category?.iconName || MAP.DEFAULT_PIN;
+      let activeIconName = `${item.category?.iconName || MAP.DEFAULT_PIN}Active`;
+
+      if (item.payload?.freeStatusUrl) {
+        const status = vehicleStatuses[item.payload.freeStatusUrl];
+
+        if (!!status && status !== 'unbekannt') {
+          iconName = status;
+          activeIconName = `${status}Active`;
+        }
+      }
+
       return {
         [item.category?.iconName || MAP.DEFAULT_PIN]: 1,
-        iconName: item.category?.iconName || MAP.DEFAULT_PIN,
-        activeIconName: `${item.category?.iconName || MAP.DEFAULT_PIN}Active`,
+        iconName,
+        activeIconName,
         id: item.id,
         position: {
           latitude,
@@ -105,6 +121,7 @@ export const LocationOverview = ({
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState();
+  const [vehicleStatuses, setVehicleStatuses] = useState<Record<string, string>>({});
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
 
   const updateSelectedPosition = useCallback(() => {
@@ -138,6 +155,45 @@ export const LocationOverview = ({
 
   let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
 
+  useEffect(() => {
+    if (!isConnected || !pointsOfInterest?.length) return;
+
+    // Collect unique freeStatusUrls from all POIs
+    const uniqueUrls: string[] = [
+      ...new Set(
+        pointsOfInterest
+          .filter((item: any) => item.payload?.freeStatusUrl)
+          .map((item: any) => item.payload.freeStatusUrl as string)
+      )
+    ];
+
+    if (!uniqueUrls.length) return;
+
+    // Fetch all vehicle statuses in parallel
+    Promise.allSettled(
+      uniqueUrls.map(async (url) => {
+        const data = await fetchAvailableVehicles(url);
+        const status = data?.length && data[0]?.properties?.[vehiclePropertyKey];
+        return [url, status || null] as const;
+      })
+    ).then((results) => {
+      const statuses: Record<string, string> = {};
+
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          const [url, status] = result.value;
+          if (status) {
+            statuses[url] = status;
+          }
+        }
+        // Rejected results are ignored so that one failing request
+        // does not prevent processing of the others.
+      });
+
+      setVehicleStatuses(statuses);
+    });
+  }, [isConnected, pointsOfInterest]);
+
   if (filterByOpeningTimes && pointsOfInterest) {
     pointsOfInterest = pointsOfInterest.filter((entry) => isOpen(entry.openingHours)?.open);
   }
@@ -168,7 +224,7 @@ export const LocationOverview = ({
   }
 
   const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
-  const mapMarkers = mapToMapMarkers(pointsOfInterest);
+  const mapMarkers = mapToMapMarkers(pointsOfInterest, vehicleStatuses);
 
   if (!mapMarkers?.length && !showMapFilter) {
     return (

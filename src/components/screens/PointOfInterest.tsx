@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
@@ -20,7 +19,12 @@ import { InfoCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { VoucherListItem } from '../vouchers';
 
-import { AvailableVehicles } from './AvailableVehicles';
+import {
+  AvailableVehicles,
+  VehicleStatusFeature,
+  fetchAvailableVehicles,
+  vehiclePropertyKey
+} from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
@@ -32,12 +36,20 @@ export const INCREMENT_VOUCHER_COUNT = 5;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
+type PointOfInterestProps = {
+  data: any;
+  hideMap?: boolean;
+  navigation?: any;
+  route: any;
+};
+
+export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInterestProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showOpeningTimes = true } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
+  const [availableVehiclesData, setAvailableVehiclesData] = useState<VehicleStatusFeature[]>([]);
   const {
     addresses,
     categories,
@@ -88,6 +100,17 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     );
   }, [vouchers]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (payload?.freeStatusUrl) {
+        const data = await fetchAvailableVehicles(payload.freeStatusUrl);
+        setAvailableVehiclesData(data);
+      }
+    };
+
+    fetchData();
+  }, [payload?.freeStatusUrl]);
+
   const businessAccount = dataProvider?.dataType === 'business_account';
 
   const categoryName = route.params?.queryVariables?.categoryName;
@@ -95,6 +118,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   if (categoryName) {
     nestedCategory = categories.find((category) => category.name === categoryName);
   }
+
+  const status =
+    availableVehiclesData?.length && availableVehiclesData[0]?.properties?.[vehiclePropertyKey];
 
   return (
     <WrapperVertical>
@@ -153,7 +179,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       )}
 
       {!!payload?.freeStatusUrl && (
-        <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />
+        <AvailableVehicles status={status} iconName={category?.iconName} />
       )}
 
       {hasTravelTimes && <TravelTimes id={id} iconName={category?.iconName} />}
@@ -210,7 +236,10 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             locations={[
               {
                 iconName: category?.iconName || MAP.DEFAULT_PIN,
-                activeIconName: `${category?.iconName || MAP.DEFAULT_PIN}Active`,
+                activeIconName:
+                  !!status && status !== 'unbekannt'
+                    ? status
+                    : `${category?.iconName || MAP.DEFAULT_PIN}Active`,
                 id,
                 position: { latitude, longitude }
               }
@@ -242,10 +271,3 @@ const styles = StyleSheet.create({
     width: '100%'
   }
 });
-
-PointOfInterest.propTypes = {
-  data: PropTypes.object.isRequired,
-  hideMap: PropTypes.bool,
-  navigation: PropTypes.object,
-  route: PropTypes.object.isRequired
-};
