@@ -17,12 +17,11 @@ A server-configurable floating action button that appears at a fixed position in
 
 ### Modified Files
 
-| File                                   | Change                                                                                         |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `src/navigation/AppStackNavigator.tsx` | Stack navigator wrapped in a `View`; `FloatingButton` added with absolute positioning          |
-| `src/navigation/Navigator.tsx`         | Added `ref={navigationRef}` to `NavigationContainer`                                           |
-| `src/components/SafeAreaViewFlex.tsx`  | `edges` prop made conditional based on navigation type (`tab` → `[]`, `drawer` → `['bottom']`) |
-| `src/components/index.js`              | Added `FloatingButton` export                                                                  |
+| File                                  | Change                                                                                         |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `src/navigation/Navigator.tsx`        | Added `ref={navigationRef}` to `NavigationContainer`; integrated `FloatingButton` rendering    |
+| `src/components/SafeAreaViewFlex.tsx` | `edges` prop made conditional based on navigation type (`tab` → `[]`, `drawer` → `['bottom']`) |
+| `src/components/index.js`             | Added `FloatingButton` export                                                                  |
 
 ## Data Flow
 
@@ -48,14 +47,14 @@ A `publicJsonFile` record named `floatingButton` must be created on the server. 
 ```json
 [
   {
-    "title": "Create Event",
+    "accessibilityLabel": "Create Event",
     "routeName": "EventCreate",
     "params": {},
     "iconName": "calendar-plus",
     "visibleScreens": ["Index"]
   },
   {
-    "title": "Chatbot",
+    "accessibilityLabel": "Open Chatbot",
     "icon": "url",
     "iconName": "",
     "visibleScreens": ["Home"],
@@ -70,14 +69,14 @@ A `publicJsonFile` record named `floatingButton` must be created on the server. 
 
 #### Field Descriptions
 
-| Field            | Type         | Required | Description                                                                                    |
-| ---------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------- |
-| `title`          | `string`     | Yes      | Accessibility label for the button                                                             |
-| `routeName`      | `ScreenName` | Yes      | Target screen name (one of the `ScreenName` enum values in `src/types/Navigation.ts`)          |
-| `params`         | `object`     | No       | Navigation parameters to pass to the target screen                                             |
-| `iconName`       | `string`     | No       | Icon name from the `tabler-icons` set (e.g. `calendar-plus`)                                   |
-| `icon`           | `string`     | No       | Remote icon URL (used instead of `iconName`)                                                   |
-| `visibleScreens` | `string[]`   | No       | Screens on which the button is visible. If omitted or empty, the button appears on all screens |
+| Field                | Type         | Required | Description                                                                                    |
+| -------------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------- |
+| `accessibilityLabel` | `string`     | Yes      | Accessibility label used by screen readers and as the button identifier                        |
+| `routeName`          | `ScreenName` | Yes      | Target screen name (one of the `ScreenName` enum values in `src/types/Navigation.ts`)          |
+| `params`             | `object`     | No       | Navigation parameters to pass to the target screen                                             |
+| `iconName`           | `string`     | No       | Icon name from the `tabler-icons` set (e.g. `calendar-plus`)                                   |
+| `icon`               | `string`     | No       | Remote icon URL (used instead of `iconName`)                                                   |
+| `visibleScreens`     | `string[]`   | No       | Screens on which the button is visible. If omitted or empty, the button appears on all screens |
 
 > **Note:** If both `icon` and `iconName` are provided, `icon` (URL) takes priority.
 
@@ -96,9 +95,11 @@ The changes on this branch add the following integrations to the app:
 
 1. **`navigationRef`** — Created via `createNavigationContainerRef()` and attached to the `NavigationContainer`. This allows accessing the active route via `navigationRef.getCurrentRoute()` from anywhere outside the component tree.
 
-2. **`FloatingButton`** — Rendered as a sibling of `Stack.Navigator` inside `AppStackNavigator`. Positioned in the bottom-right corner using `position: 'absolute'`.
+2. **`FloatingButton` in `Navigator`** — Rendered in `src/navigation/Navigator.tsx` as a sibling of the active navigator (`DrawerNavigator` or `MainTabNavigator`) inside the `NavigationContainer`.
 
-3. **`SafeAreaViewFlex`** — In tab navigation, `edges` is set to an empty array (`[]`) to prevent the FloatingButton from overlapping with the tab bar at the bottom.
+3. **Tab-bar clearance in `Navigator`** — For tab navigation, `Navigator` computes `bottomOffset` using tab bar height + safe-area bottom inset and passes it to `FloatingButton`, so the FAB stays above the tab bar.
+
+4. **`SafeAreaViewFlex` behavior** — In tab navigation, `edges` is set to an empty array (`[]`); in drawer navigation, `edges` remains `['bottom']`. This keeps screen safe-area behavior aligned with the selected navigation type.
 
 ### 3. Visibility Control
 
@@ -111,8 +112,8 @@ The FloatingButton component subscribes to navigation state changes via the `use
 
 The component supports both `drawer` and `tab` navigation types:
 
-- **Tab:** Button is positioned just above the tab bar (`bottom: normalize(16)`)
-- **Drawer:** Button is positioned at the bottom 5% of the screen (`bottom: '5%'`)
+- **Tab:** Button uses `bottom: normalize(16) + bottomOffset`, where `bottomOffset` is computed in `Navigator` from tab bar height + bottom safe area
+- **Drawer:** Button uses `bottom: '5%'`
 
 ## Styling and Appearance
 

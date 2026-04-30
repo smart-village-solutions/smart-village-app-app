@@ -1,11 +1,11 @@
 import { NavigationState, PartialState, useNavigationState } from '@react-navigation/native';
 import _filter from 'lodash/filter';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize } from '../config';
 import { useHomeRefresh, useStaticContent } from '../hooks';
-import { navigationRef } from '../navigation/navigationRef';
+import { navigationRef, type RootNavigationParamList } from '../navigation/navigationRef';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
@@ -14,7 +14,7 @@ import { Image } from './Image';
 type TButton = {
   icon?: string;
   iconName?: string;
-  params?: Record<string, unknown>;
+  params?: RootNavigationParamList[ScreenName];
   accessibilityLabel?: string;
   routeName: ScreenName;
   visibleScreens?: string[];
@@ -39,6 +39,10 @@ export const FloatingButton = ({
   // root NavigationContainer ref and always returns the focused leaf route.
   useNavigationState((state: NavigationState | PartialState<NavigationState>) => state);
   const activeRouteName = navigationRef.getCurrentRoute()?.name ?? '';
+  const positionStyle = useMemo(
+    () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
+    [bottomOffset, navigationType]
+  );
 
   const { data, loading, refetch } = useStaticContent<TButton[]>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
@@ -60,7 +64,7 @@ export const FloatingButton = ({
   if (!visibleItems.length) return null;
 
   return (
-    <View style={[styles.container, stylesWithProps({ bottomOffset, navigationType }).position]}>
+    <View style={[styles.container, positionStyle]}>
       {visibleItems.map((item, index) => (
         <TouchableOpacity
           activeOpacity={0.8}
@@ -72,7 +76,7 @@ export const FloatingButton = ({
               return;
             }
 
-            navigationRef.navigate(item.routeName as never, item.params as never);
+            navigationRef.navigate(item.routeName, item.params);
           }}
           style={styles.button}
         >
@@ -121,20 +125,3 @@ const styles = StyleSheet.create({
     width: normalize(24)
   }
 });
-
-/* eslint-disable react-native/no-unused-styles */
-/* this works properly, we do not want that warning */
-const stylesWithProps = ({
-  bottomOffset,
-  navigationType
-}: {
-  bottomOffset: number;
-  navigationType: string;
-}) => {
-  return StyleSheet.create({
-    position: {
-      bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset
-    }
-  });
-};
-/* eslint-enable react-native/no-unused-styles */
