@@ -101,6 +101,9 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   const dataProviderLogo = dataProvider?.logo?.url;
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
 
+  // hide quota when more than 10% is still available (show only when 90%+ has been used)
+  const shouldHideQuota = !!maxQuantity && availableQuantity / maxQuantity > 0.1;
+
   return (
     <ScrollView
       refreshControl={
@@ -115,7 +118,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
       <ImageSection mediaContents={mediaContents} />
 
       <Wrapper>
-        {!!quota && (
+        {!!quota && !shouldHideQuota && (
           <>
             {maxQuantity && frequency ? (
               <>
@@ -135,13 +138,14 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
                 {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
               </BoldText>
             )}
-
-            {!!availabilityText && (
-              <RegularText small primary={availableQuantity} placeholder={!availableQuantity}>
-                {availabilityText}
-              </RegularText>
-            )}
           </>
+        )}
+
+        {/* always show availability dates regardless of quota visibility */}
+        {!!availabilityText && (
+          <RegularText small primary={availableQuantity} placeholder={!availableQuantity}>
+            {availabilityText}
+          </RegularText>
         )}
       </Wrapper>
 

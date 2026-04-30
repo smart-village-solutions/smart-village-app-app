@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -6,21 +8,46 @@ import { mainImageOfMediaContents } from '../imageHelper';
 const { ROOT_ROUTE_NAMES } = consts;
 
 export const parseVouchersData = (data, skipLastDivider) => {
-  return data?.map((voucher, index) => ({
-    routeName: ScreenName.VoucherDetail,
-    params: {
-      query: QUERY_TYPES.VOUCHER,
-      queryVariables: { id: `${voucher.id}` },
-      title: texts.detailTitles.voucher,
-      rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
-      details: voucher
-    },
-    picture: {
-      url: mainImageOfMediaContents(voucher.mediaContents)
-    },
-    ...voucher,
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+  return data
+    ?.filter((voucher) => {
+      // filter out vouchers with no remaining quota
+      if (
+        voucher.quota &&
+        voucher.quota.availableQuantity !== null &&
+        voucher.quota.availableQuantity <= 0
+      ) {
+        return false;
+      }
+
+      // keep vouchers with no dates (no expiry defined)
+      if (!voucher.dates?.length) return true;
+
+      // keep if at least one date entry where today falls within [dateStart, dateEnd]
+      // missing dateStart → treat as already started; missing dateEnd → treat as never expiring
+      // use moment to avoid UTC-parsing issues with 'YYYY-MM-DD' strings (matches isActive pattern)
+      return voucher.dates.some((date) => {
+        const now = moment();
+        const hasStarted = !date.dateStart || moment(date.dateStart).startOf('day').isBefore(now);
+        const notExpired = !date.dateEnd || moment(date.dateEnd).endOf('day').isAfter(now);
+
+        return hasStarted && notExpired;
+      });
+    })
+    .map((voucher, index, filteredData) => ({
+      routeName: ScreenName.VoucherDetail,
+      params: {
+        query: QUERY_TYPES.VOUCHER,
+        queryVariables: { id: `${voucher.id}` },
+        title: texts.detailTitles.voucher,
+        rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
+        details: voucher
+      },
+      picture: {
+        url: mainImageOfMediaContents(voucher.mediaContents)
+      },
+      ...voucher,
+      bottomDivider: !skipLastDivider || index !== filteredData.length - 1
+    }));
 };
 
 export const parseVouchersCategories = (data, skipLastDivider) => {
