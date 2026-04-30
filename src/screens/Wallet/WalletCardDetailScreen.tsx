@@ -114,7 +114,8 @@ export const WalletCardDetailScreen = ({
   const [isCapturing, setIsCapturing] = useState(false);
   const [isPinVisible, setIsPinVisible] = useState(false);
 
-  const viewShotRef = useRef(null);
+  // Ref to access the ViewShot instance for capturing the card as an image
+  const viewShotRef = useRef<ViewShot | null>(null);
 
   const fetchCardDetails = useCallback(async () => {
     try {
@@ -128,7 +129,6 @@ export const WalletCardDetailScreen = ({
     } catch (error) {
       console.error('Error fetching card details:', error);
     } finally {
-      setFirstLoading(false);
       setIsLoading(false);
     }
   }, [apiConnection, cardNumber, pinCode]);
@@ -166,11 +166,26 @@ export const WalletCardDetailScreen = ({
   };
 
   useEffect(() => {
+    let isActive = true;
+
+    const loadInitialCardDetails = async () => {
+      setFirstLoading(true);
+      await fetchCardDetails();
+
+      if (isActive) {
+        setFirstLoading(false);
+      }
+    };
+
     if (cardType === CardType.COUPON) {
-      fetchCardDetails();
+      loadInitialCardDetails();
     } else {
       setFirstLoading(false);
     }
+
+    return () => {
+      isActive = false;
+    };
   }, [cardType, fetchCardDetails]);
 
   const refresh = useCallback(async () => {
@@ -191,7 +206,10 @@ export const WalletCardDetailScreen = ({
     <>
       <WalletTransactionList
         items={
-          cardType === CardType.COUPON && !!cardData?.transactions?.length
+          cardType === CardType.COUPON &&
+          cardData &&
+          'transactions' in cardData &&
+          !!cardData.transactions?.length
             ? cardData.transactions.slice(0, 10)
             : []
         }

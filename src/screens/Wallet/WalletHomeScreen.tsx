@@ -101,8 +101,25 @@ export const WalletHomeScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchCards();
-      setSavedCardsLoading(false);
+      let isActive = true;
+
+      const loadCards = async () => {
+        setSavedCardsLoading(true);
+
+        try {
+          await fetchCards();
+        } finally {
+          if (isActive) {
+            setSavedCardsLoading(false);
+          }
+        }
+      };
+
+      loadCards();
+
+      return () => {
+        isActive = false;
+      };
     }, [fetchCards])
   );
 
@@ -141,6 +158,7 @@ export const WalletHomeScreen = () => {
       const iconColor = serverCardType?.iconColor ?? savedCard.iconColor;
 
       return {
+        id: savedCard.cardNumber,
         leftIcon: (
           <Wrapper style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
             <Icon.NamedIcon name={savedCard.iconName} color={iconColor} />
