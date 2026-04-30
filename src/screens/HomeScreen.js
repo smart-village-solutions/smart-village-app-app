@@ -38,6 +38,18 @@ import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
+const DEFAULT_HOME_SCREEN_SECTIONS = {
+  LIVE_TICKER: 'liveTicker',
+  CAROUSEL: 'carousel',
+  WIDGETS: 'widgets',
+  DISTURBER: 'disturber',
+  POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
+  EVENTS: 'events',
+  HOME_SERVICE: 'homeService',
+  HOME_BUTTONS: 'homeButtons',
+  ABOUT: 'about'
+};
+
 /* eslint-disable complexity */
 const renderItem = ({ item }) => {
   const {
@@ -64,27 +76,27 @@ const renderItem = ({ item }) => {
     if (!item.show) return null;
 
     switch (type) {
-      case 'liveTicker':
+      case DEFAULT_HOME_SCREEN_SECTIONS.LIVE_TICKER:
         return <LiveTicker publicJsonFile={publicJsonFile || 'homeLiveTicker'} />;
-      case 'carousel':
+      case DEFAULT_HOME_SCREEN_SECTIONS.CAROUSEL:
         return (
           <ConnectedImagesCarousel
             navigation={navigation}
             publicJsonFile={publicJsonFile || 'homeCarousel'}
           />
         );
-      case 'widgets':
+      case DEFAULT_HOME_SCREEN_SECTIONS.WIDGETS:
         return <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />;
-      case 'disturber':
+      case DEFAULT_HOME_SCREEN_SECTIONS.DISTURBER:
         return (
           <Disturber navigation={navigation} publicJsonFile={publicJsonFile || 'homeDisturber'} />
         );
-      case 'homeService':
+      case DEFAULT_HOME_SCREEN_SECTIONS.HOME_SERVICE:
         if (!isDrawer) return null;
         return <HomeService publicJsonFile={publicJsonFile || 'homeService'} />;
-      case 'homeButtons':
+      case DEFAULT_HOME_SCREEN_SECTIONS.HOME_BUTTONS:
         return <HomeButtons publicJsonFile={publicJsonFile || 'homeButtons'} />;
-      case 'about':
+      case DEFAULT_HOME_SCREEN_SECTIONS.ABOUT:
         if (!isDrawer) return null;
         return (
           <About
@@ -316,10 +328,10 @@ export const HomeScreen = ({ navigation, route }) => {
   const isDrawer = route.params?.isDrawer;
 
   const defaultData = [
-    { type: 'liveTicker', show: true },
-    { type: 'carousel', show: true, navigation },
-    { type: 'widgets', show: true, widgetConfigs, widgetStyle },
-    { type: 'disturber', show: true, navigation },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.LIVE_TICKER, show: true },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.CAROUSEL, show: true, navigation },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.WIDGETS, show: true, widgetConfigs, widgetStyle },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.DISTURBER, show: true, navigation },
     {
       categoriesNews,
       fetchPolicy,
@@ -352,9 +364,9 @@ export const HomeScreen = ({ navigation, route }) => {
       showVolunteerEvents,
       title: headlineEvents
     },
-    { type: 'homeService', show: true, isDrawer },
-    { type: 'homeButtons', show: true },
-    { type: 'about', show: true, isDrawer, navigation }
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.HOME_SERVICE, show: true, isDrawer },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.HOME_BUTTONS, show: true },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.ABOUT, show: true, isDrawer, navigation }
   ];
 
   const configuredData = homeScreenConfig?.length
