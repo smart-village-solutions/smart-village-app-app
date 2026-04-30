@@ -84,6 +84,7 @@ export const GET_TOUR = gql`
     tour(id: $id) {
       id
       title: name
+      payload
       category {
         id
         name
@@ -100,6 +101,14 @@ export const GET_TOUR = gql`
           geoLocation {
             latitude
             longitude
+          }
+        }
+        mediaContents {
+          contentType
+          id
+          sourceUrl {
+            id
+            url
           }
         }
         payload

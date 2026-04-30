@@ -18,49 +18,60 @@ const addressOnPress = (address) => {
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const TourCard = ({ lengthKm, tourAddresses }) => (
-  <View>
-    <SectionHeader title={texts.tour.tour} />
-    <Wrapper>
-      {!!lengthKm && (
-        <InfoBox>
-          <RNEIcon name="map" type="material" color={colors.primary} iconStyle={styles.margin} />
-          <RegularText>{lengthKm} km</RegularText>
-        </InfoBox>
-      )}
+export const TourCard = ({ lengthKm, tourAddresses, payload }) => {
+  const { duration = '' } = payload || {};
 
-      {tourAddresses?.map((item, index) => {
-        const { city, street, zip, kind } = item;
-        let address = '';
-
-        if (!city && !street && !zip) return null;
-
-        // build the address in multiple steps to check every data before rendering
-        if (street) {
-          address += `${street},${'\n'}`;
-        }
-        if (zip) {
-          address += `${zip} `;
-        }
-        if (city) {
-          address += city;
-        }
-
-        return (
-          <InfoBox key={index}>
-            <Icon.Location style={styles.margin} />
-            <View>
-              <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
-              <TouchableOpacity onPress={() => addressOnPress(address)}>
-                <RegularText primary>{address}</RegularText>
-              </TouchableOpacity>
-            </View>
+  return (
+    <View>
+      <SectionHeader title={texts.tour.tour} />
+      <Wrapper>
+        {!!lengthKm && (
+          <InfoBox>
+            <RNEIcon name="map" type="material" color={colors.primary} iconStyle={styles.margin} />
+            <RegularText>{lengthKm} km</RegularText>
           </InfoBox>
-        );
-      })}
-    </Wrapper>
-  </View>
-);
+        )}
+
+        {tourAddresses?.map((item, index) => {
+          const { city, street, zip, kind } = item;
+          let address = '';
+
+          if (!city && !street && !zip) return null;
+
+          // build the address in multiple steps to check every data before rendering
+          if (street) {
+            address += `${street},${'\n'}`;
+          }
+          if (zip) {
+            address += `${zip} `;
+          }
+          if (city) {
+            address += city;
+          }
+
+          return (
+            <InfoBox key={index}>
+              <Icon.Location style={styles.margin} />
+              <View>
+                <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
+                <TouchableOpacity onPress={() => addressOnPress(address)}>
+                  <RegularText primary>{address}</RegularText>
+                </TouchableOpacity>
+              </View>
+            </InfoBox>
+          );
+        })}
+
+        {!!duration && (
+          <InfoBox>
+            <Icon.Clock style={styles.margin} />
+            <RegularText>{duration}</RegularText>
+          </InfoBox>
+        )}
+      </Wrapper>
+    </View>
+  );
+};
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
@@ -71,5 +82,8 @@ const styles = StyleSheet.create({
 
 TourCard.propTypes = {
   lengthKm: PropTypes.number,
-  tourAddresses: PropTypes.array
+  tourAddresses: PropTypes.array,
+  payload: PropTypes.shape({
+    duration: PropTypes.string
+  })
 };

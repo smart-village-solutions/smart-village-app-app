@@ -9,6 +9,7 @@ export type MapMarker = {
   iconColor?: string;
   iconName?: string;
   id?: string;
+  label?: string;
   position: LocationObjectCoords;
   serviceName?: string;
   title?: string;

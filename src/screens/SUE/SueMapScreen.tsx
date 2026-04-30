@@ -55,7 +55,7 @@ type ItemProps = {
 
 export const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
   items
-    ?.filter((item) => item.lat && item.long)
+    ?.filter((item) => item.lat != null && item.long != null)
     ?.map((item: ItemProps) => ({
       ...item,
       iconName: `Sue${_upperFirst(item.iconName)}`,

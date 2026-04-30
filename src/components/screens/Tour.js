@@ -6,15 +6,15 @@ import { View } from 'react-native';
 import { consts, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { AugmentedReality } from '../augmentedReality';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { Wrapper } from '../Wrapper';
 import { SectionHeader } from '../SectionHeader';
+import { TourStops } from '../TourStops';
+import { Wrapper } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
@@ -31,11 +31,12 @@ export const Tour = ({ data, navigation, route }) => {
     contact,
     dataProvider,
     description,
-    id,
     geometryTourData,
+    id,
     lengthKm,
     mediaContents,
     operatingCompany,
+    payload,
     title,
     tourStops,
     webUrls
@@ -78,7 +79,7 @@ export const Tour = ({ data, navigation, route }) => {
       </Wrapper>
 
       {(!!tourAddresses.length || !!lengthKm) && (
-        <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
+        <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} payload={payload} />
       )}
 
       {!!description && (
@@ -91,7 +92,10 @@ export const Tour = ({ data, navigation, route }) => {
       )}
 
       {!!tourStops?.length && (
-        <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />
+        <TourStops
+          {...{ geometryTourData, id, navigation, tourStops, payload }}
+          rootRouteName={route.params?.rootRouteName}
+        />
       )}
 
       <OperatingCompany

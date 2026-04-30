@@ -81,6 +81,7 @@ export enum ScreenName {
   SurveyDetail = 'SurveyDetail',
   SurveyOverview = 'SurveyOverview',
   TilesScreen = 'TilesScreen',
+  TourStopDetail = 'TourStopDetail',
   VolunteerDetail = 'VolunteerDetail',
   VolunteerForm = 'VolunteerForm',
   VolunteerGroupSearch = 'VolunteerGroupSearch',

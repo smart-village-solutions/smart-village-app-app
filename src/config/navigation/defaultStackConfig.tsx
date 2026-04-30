@@ -1,7 +1,7 @@
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import React from 'react';
 
-import { HeaderLeft } from '../../components';
+import { HeaderLeft, TourStopDetail } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import { QUERY_TYPES } from '../../queries';
 import {
@@ -545,6 +545,12 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.TilesScreen,
       screenComponent: TilesScreen,
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
+    },
+    {
+      initialParams,
+      routeName: ScreenName.TourStopDetail,
+      screenComponent: TourStopDetail,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withInfo: true })
     },
     {

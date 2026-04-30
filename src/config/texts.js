@@ -1421,10 +1421,29 @@ export const texts = {
   },
   tour: {
     description: 'Beschreibung',
+    direction: 'Richtung',
+    directions: {
+      east: 'Osten',
+      north: 'Norden',
+      northEast: 'Nordosten',
+      northWest: 'Nordwesten',
+      south: 'Süden',
+      southEast: 'Südosten',
+      southWest: 'Südwesten',
+      west: 'Westen'
+    },
+    distance: 'Entfernung',
     end: 'Tourende',
+    next: 'Nächster',
     operatingCompany: 'Veranstalter',
+    overview: 'Übersicht',
+    previous: 'Vorheriger',
+    showOnMap: 'Auf Karte anzeigen',
     start: 'Tourbeginn',
-    tour: 'Tourverlauf'
+    stop: 'Stopp',
+    tour: 'Tourverlauf',
+    tourStart: 'Tour starten',
+    tourStop: 'Tourstopp'
   },
   updateAlert: {
     later: 'Später',

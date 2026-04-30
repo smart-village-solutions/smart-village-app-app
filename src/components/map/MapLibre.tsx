@@ -115,6 +115,7 @@ type Props = {
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
   setPinEnabled?: boolean;
+  showMarkerLabels?: boolean;
   showsUserLocation?: boolean;
   preserveZoomOnSelectedPosition?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -145,6 +146,7 @@ export const MapLibre = ({
   selectedMarker = '',
   selectedPosition,
   setPinEnabled,
+  showMarkerLabels = false,
   preserveZoomOnSelectedPosition = false,
   style,
   ...otherProps
@@ -159,6 +161,7 @@ export const MapLibre = ({
     clusterMinPoints = 2,
     clusterProperties,
     clusterTextColor,
+    labelStyles = {},
     layerStyles = {},
     loading,
     markerImages,
@@ -167,6 +170,21 @@ export const MapLibre = ({
   const initialZoomLevel = isMultipleMarkersMap
     ? zoomLevel.multipleMarkers
     : zoomLevel.singleMarker;
+
+  // Build a MapLibre `case` expression for label halo color:
+  // active pins (iconName contains 'Active') get labelBackgroundActiveColor, others get labelBackgroundColor.
+  const markerLabelHaloColor = useMemo(() => {
+    if (!showMarkerLabels) return undefined;
+
+    const { labelBackgroundColor: bg, labelBackgroundActiveColor: bgActive } = labelStyles as {
+      labelBackgroundColor?: string;
+      labelBackgroundActiveColor?: string;
+    };
+
+    if (!bg && !bgActive) return undefined;
+
+    return ['case', ['in', 'Active', ['get', 'iconName']], bgActive ?? bg, bg ?? bgActive];
+  }, [showMarkerLabels, labelStyles]);
 
   const { locationSettings = {} } = useLocationSettings();
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
@@ -236,7 +254,9 @@ export const MapLibre = ({
     };
   }
 
+  // Only center on the user's position when no explicit mapCenterPosition is provided.
   if (
+    !mapCenterPosition &&
     showsUserLocation &&
     otherProps.currentPosition?.coords.latitude &&
     otherProps.currentPosition?.coords.longitude
@@ -247,6 +267,27 @@ export const MapLibre = ({
       longitude: otherProps.currentPosition.coords.longitude
     };
   }
+
+  // Re-center the camera whenever mapCenterPosition changes after initial mount
+  // (e.g. next/previous stop navigation within the same screen instance).
+  const isFirstMapCenterMountRef = useRef(true);
+  useEffect(() => {
+    if (isFirstMapCenterMountRef.current) {
+      isFirstMapCenterMountRef.current = false;
+      return;
+    }
+
+    if (!mapReady || !mapCenterPosition || !cameraRef.current) return;
+
+    const { latitude, longitude } = mapCenterPosition;
+    if (latitude == null || longitude == null) return;
+
+    cameraRef.current.setCamera({
+      animationDuration: 800,
+      animationMode: 'easeTo',
+      centerCoordinate: [longitude, latitude]
+    });
+  }, [mapCenterPosition, mapReady]);
 
   useEffect(() => {
     if (suppressAutoFitRef.current || hasInitialFitRef.current) {
@@ -600,6 +641,29 @@ export const MapLibre = ({
 
         {!!shape && !_isEmpty(layerStyles) && (
           <>
+            {!!geometryTourData?.length && (
+              <ShapeSource
+                id="polyline"
+                shape={{
+                  type: 'Feature',
+                  properties: {},
+                  geometry: {
+                    type: 'LineString',
+                    coordinates: geometryTourData.map((point) => [point.longitude, point.latitude])
+                  }
+                }}
+              >
+                <LineLayer
+                  id="polyline-layer"
+                  style={{
+                    lineColor: colors.primary,
+                    lineWidth: 4,
+                    lineOpacity: 0.8
+                  }}
+                />
+              </ShapeSource>
+            )}
+
             <ShapeSource
               id="pois"
               ref={shapeSourceRef}
@@ -644,7 +708,22 @@ export const MapLibre = ({
                     layerStyles.singleIcon.iconAnchor
                   ],
                   iconAllowOverlap: true,
-                  iconIgnorePlacement: true
+                  iconIgnorePlacement: true,
+                  ...(showMarkerLabels && {
+                    textField: ['get', 'label'],
+                    textFont: ['Noto Sans Bold', 'Open Sans Bold'],
+                    textSize: (labelStyles as any)?.labelSize ?? 12,
+                    textColor: (labelStyles as any)?.labelColor ?? '#ffffff',
+                    // offset from pin anchor (bottom of icon) upward into pin head
+                    textOffset: [0, -2.0],
+                    textAnchor: 'center',
+                    textAllowOverlap: true,
+                    textIgnorePlacement: true,
+                    ...(markerLabelHaloColor && {
+                      textHaloColor: markerLabelHaloColor,
+                      textHaloWidth: 7
+                    })
+                  })
                 }}
               />
 
@@ -715,29 +794,6 @@ export const MapLibre = ({
               )}
             </ShapeSource>
 
-            {!!geometryTourData?.length && (
-              <ShapeSource
-                id="polyline"
-                shape={{
-                  type: 'Feature',
-                  properties: {},
-                  geometry: {
-                    type: 'LineString',
-                    coordinates: geometryTourData.map((point) => [point.longitude, point.latitude])
-                  }
-                }}
-              >
-                <LineLayer
-                  id="polyline-layer"
-                  style={{
-                    lineColor: colors.primary,
-                    lineWidth: 4,
-                    lineOpacity: 0.8
-                  }}
-                />
-              </ShapeSource>
-            )}
-
             <ShapeSource id="new-pins" shape={featureCollection(newPins)}>
               <SymbolLayer
                 id="pin-single-icon"
@@ -777,7 +833,21 @@ export const MapLibre = ({
                       layerStyles.singleIcon.iconAnchor
                     ],
                     iconAllowOverlap: true,
-                    iconIgnorePlacement: true
+                    iconIgnorePlacement: true,
+                    ...(showMarkerLabels && {
+                      textField: ['get', 'label'],
+                      textFont: ['Noto Sans Bold', 'Open Sans Bold'],
+                      textSize: (labelStyles as any)?.labelSizeActive ?? 14,
+                      textColor: (labelStyles as any)?.labelColorActive ?? '#ffffff',
+                      textOffset: [0, -2.0],
+                      textAnchor: 'center',
+                      textAllowOverlap: true,
+                      textIgnorePlacement: true,
+                      ...(markerLabelHaloColor && {
+                        textHaloColor: markerLabelHaloColor,
+                        textHaloWidth: 7
+                      })
+                    })
                   }}
                 />
               </ShapeSource>
