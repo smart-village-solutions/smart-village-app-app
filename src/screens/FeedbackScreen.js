@@ -1,9 +1,9 @@
+import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 import {
   Button,
@@ -20,9 +20,16 @@ import { QUERY_TYPES, createQuery } from '../queries';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
-export const FeedbackScreen = () => {
+export const FeedbackScreen = ({ route }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const {
+    link,
+    linkDescription,
+    params = {},
+    routeName,
+    title = texts.feedbackScreen.inputsLabel.checkbox + ' *'
+  } = route.params?.checkbox || {};
 
   const {
     control,
@@ -145,8 +152,11 @@ export const FeedbackScreen = () => {
                 <Checkbox
                   checked={value}
                   checkedIcon={<Icon.SquareCheckFilled />}
+                  link={link}
+                  linkDescription={linkDescription}
+                  navigate={routeName ? () => navigation.navigate(routeName, params) : undefined}
                   onPress={() => onChange(!value)}
-                  title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
+                  title={title}
                   uncheckedIcon={<Icon.Square color={colors.placeholder} />}
                 />
               )}
@@ -183,5 +193,6 @@ const styles = StyleSheet.create({
 });
 
 FeedbackScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object
 };
