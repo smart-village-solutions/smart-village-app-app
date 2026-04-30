@@ -16,6 +16,7 @@ export const colors = {
   blue: '#5C7ADB',
 
   error: 'rgb(174, 0, 29)',
+  errorRgba: 'rgba(174, 0, 29, 0.1)', // error with 0.1 alpha
 
   darkText: black,
   lightestText: white,

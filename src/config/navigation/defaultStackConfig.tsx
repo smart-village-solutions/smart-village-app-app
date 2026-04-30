@@ -89,6 +89,10 @@ import {
   VoucherIndexScreen,
   VoucherLoginScreen,
   VoucherScannerScreen,
+  WalletCardAddScreen,
+  WalletCardDetailScreen,
+  WalletCardsListScreen,
+  WalletHomeScreen,
   WasteCollectionScreen,
   WasteCollectionSettingsScreen,
   WeatherScreen,
@@ -653,6 +657,26 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.voucher.qr },
       routeName: ScreenName.VoucherScanner,
       screenComponent: VoucherScannerScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.wallet.cardAdd },
+      routeName: ScreenName.WalletCardAdd,
+      screenComponent: WalletCardAddScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.wallet.detail },
+      routeName: ScreenName.WalletCardDetail,
+      screenComponent: WalletCardDetailScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.wallet.cardsList },
+      routeName: ScreenName.WalletCardsList,
+      screenComponent: WalletCardsListScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.wallet.home },
+      routeName: ScreenName.WalletHome,
+      screenComponent: WalletHomeScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.wasteCollection },

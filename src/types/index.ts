@@ -3,6 +3,7 @@ export * from './profile';
 export * from './SUE';
 export * from './volunteer';
 export * from './voucher';
+export * from './wallet';
 export * from './whistleblow';
 
 export * from './Accessibility';

@@ -8,6 +8,7 @@ export * from './profile';
 export * from './SUE';
 export * from './volunteer';
 export * from './Voucher';
+export * from './Wallet';
 export * from './whistleblow';
 
 export * from './AboutScreen';
@@ -35,6 +36,7 @@ export * from './MapScreen';
 export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';
 export * from './PdfScreen';
+export * from './Scanner';
 export * from './SearchScreen';
 export * from './SettingsScreen';
 export * from './SurveyDetailScreen';

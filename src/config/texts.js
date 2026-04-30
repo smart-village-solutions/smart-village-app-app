@@ -1134,6 +1134,12 @@ export const texts = {
       partner: 'Kooperationspartner',
       qr: 'Code scannen'
     },
+    wallet: {
+      cardAdd: 'Karte hinzufügen',
+      cardsList: 'Kartenliste',
+      detail: 'Kartendetails',
+      home: 'Wallet'
+    },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -1713,6 +1719,71 @@ export const texts = {
       scannerTitle: 'QR-Code scannen'
     },
     secret: 'Vertragskonto-Nr.'
+  },
+  wallet: {
+    add: {
+      button: 'Karte hinzufügen',
+      cardAddDescription: 'Geben Sie Ihre Kartendaten ein und speichern Sie sie.',
+      cardAddTitle: 'Karte hinzufügen',
+      cardScan: 'Karte scannen',
+      noCardsAvailable: 'Keine Kartentypen verfügbar',
+      selectCardType: 'Kartentyp auswählen',
+      inputs: {
+        cardNameInputPlaceholder: 'Kartenname eingeben',
+        cardNameInputTitle: 'Kartenname',
+        cardNumberHint: 'Bitte Nummer eingeben oder per Kamera scannen.',
+        cardNumberInputPlaceholder: 'Kartennummer eingeben',
+        cardNumberInputTitle: 'Kartennummer',
+        cardPinInputPlaceholder: 'PIN eingeben',
+        cardPinInputTitle: 'PIN',
+        errors: {
+          cardNumberRequired: (cardType) => `${cardType} muss ausgefüllt werden`,
+          cardPinRequired: (cardType) => `${cardType} muss ausgefüllt werden`,
+          lengthExceeded: (cardType, maxLength) => `${cardType} muss ${maxLength}-stellig sein`
+        }
+      }
+    },
+    alert: {
+      duplicateCardMessage: 'Diese Karte wurde bereits hinzugefügt.',
+      duplicateCardTitle: 'Karte existiert bereits',
+      invalidCardMessage:
+        'Die eingegebenen Kartendaten sind ungültig. Bitte überprüfen und erneut versuchen.',
+      invalidCardTitle: 'Ungültige Karte'
+    },
+    detail: {
+      balance: 'Guthaben',
+      bonusNumber: 'Bonuskartennummer',
+      cancel: 'Abbrechen',
+      close: 'Schließen',
+      code: 'Code',
+      couponNumber: 'Gutschein-Nummer',
+      deleteAnywayButton: 'Trotzdem löschen',
+      deleteButton: 'Löschen',
+      deleteConfirmationMessage: (value) =>
+        `Es ist noch ein Restguthaben von ${value} € vorhanden.`,
+      deleteConfirmationTitle: 'Karte wirklich löschen?',
+      deleteErrorMessage:
+        'Beim Löschen der Karte ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      deleteSuccessMessage: 'Die Karte wurde erfolgreich gelöscht.',
+      errorTitle: 'Fehler',
+      expandCode: 'Code vergrößern',
+      lastTransactions: 'Ihre letzten 10 Buchungen',
+      noCardsAvailable: 'Keine Kartendaten verfügbar.',
+      pin: 'PIN',
+      share: 'Teilen',
+      shareErrorMessage:
+        'Beim Teilen der Kartendaten ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      togglePinShow: 'PIN anzeigen',
+      togglePinHide: 'PIN verbergen',
+      updateBalance: 'Guthaben aktualisieren'
+    },
+    home: {
+      buttonText: 'Karte Hinzufügen',
+      description: 'Füge deine erste Karte hinzu und habe alle wichtigen Dokumente immer dabei',
+      infoText:
+        '<h2 style="color: #008000;">Wichtiger Hinweis zum Datenschutz</h2><p>Deine Karten werden sicher auf dem lokalen Gerät gespeichert. Es findet keine Übertragung an den Appbetreiber statt.</p><p><strong>Achtung: Wenn du die App löschst, werden auch deine Kartenunwiderruflich entfernt.</strong></p>',
+      title: 'Deine digitalen Karten'
+    }
   },
   wasteCalendar: {
     calendarIntro:

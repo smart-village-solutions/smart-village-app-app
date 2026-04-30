@@ -3,10 +3,17 @@ import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../config';
+import { colors, consts, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
 import { DiagonalGradient } from './DiagonalGradient';
+
+export const ButtonVariants = {
+  ACCEPT: 'accept',
+  DEFAULT: 'default',
+  DELETE: 'delete',
+  REJECT: 'reject'
+};
 
 /* eslint-disable complexity */
 export const Button = ({
@@ -18,19 +25,18 @@ export const Button = ({
   lightest = false,
   notFullWidth = false,
   onPress,
-  small = false,
-  smallest = false,
-  title
+  small,
+  smallest,
+  title,
+  variant = ButtonVariants.DEFAULT
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     notFullWidth ||
     orientation === 'landscape' ||
     dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
-  const isAccept = title === texts.volunteer.accept;
-  const isReject = title === texts.volunteer.reject;
 
-  if (isAccept || isReject) {
+  if (variant === ButtonVariants.ACCEPT || variant === ButtonVariants.REJECT) {
     return (
       <RNEButton
         onPress={onPress}
@@ -38,8 +44,8 @@ export const Button = ({
         titleStyle={[styles.title, needLandscapeStyle && styles.titleLandscape]}
         buttonStyle={[
           styles.button,
-          isAccept && styles.acceptButton,
-          isReject && styles.rejectButton
+          variant === ButtonVariants.ACCEPT && styles.acceptButton,
+          variant === ButtonVariants.REJECT && styles.rejectButton
         ]}
         containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
@@ -47,8 +53,6 @@ export const Button = ({
       />
     );
   }
-
-  const isDelete = title === texts.volunteer.delete;
 
   return (
     <RNEButton
@@ -62,7 +66,8 @@ export const Button = ({
         big && styles.bigTitle,
         small && styles.smallTitle,
         smallest && styles.smallestTitle,
-        lightest && styles.titleLightest
+        lightest && styles.titleLightest,
+        invert && variant === ButtonVariants.DELETE && styles.titleInvertReject
       ]}
       disabledStyle={styles.buttonDisabled}
       disabledTitleStyle={styles.title}
@@ -70,14 +75,17 @@ export const Button = ({
         styles.button,
         styles.buttonRadius,
         invert && styles.buttonInvert,
-        !invert && isDelete && styles.rejectButton,
+        !invert && variant === ButtonVariants.DELETE && styles.rejectButton,
+        invert && variant === ButtonVariants.DELETE && styles.invertRejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
         smallest && [styles.smallestButton, styles.smallestButtonRadius],
         lightest && styles.lightestBorderColor
       ]}
       containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
-      ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
+      ViewComponent={
+        invert || variant === ButtonVariants.DELETE || disabled ? undefined : DiagonalGradient
+      }
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
@@ -142,6 +150,11 @@ const styles = StyleSheet.create({
   iconRight: {
     paddingLeft: normalize(8)
   },
+  invertRejectButton: {
+    borderColor: colors.error,
+    borderStyle: 'solid',
+    borderWidth: normalize(1)
+  },
   landscapeIconLeft: {
     marginRight: normalize(-14),
     paddingLeft: normalize(14)
@@ -183,6 +196,9 @@ const styles = StyleSheet.create({
   titleInvert: {
     color: colors.primary
   },
+  titleInvertReject: {
+    color: colors.error
+  },
   titleLandscape: {
     paddingHorizontal: normalize(14)
   },
@@ -202,5 +218,11 @@ Button.propTypes = {
   onPress: PropTypes.func.isRequired,
   small: PropTypes.bool,
   smallest: PropTypes.bool,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  variant: PropTypes.oneOf([
+    ButtonVariants.ACCEPT,
+    ButtonVariants.DEFAULT,
+    ButtonVariants.DELETE,
+    ButtonVariants.REJECT
+  ])
 };
