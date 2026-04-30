@@ -53,6 +53,7 @@ export * from './EditHeader';
 export * from './EmptyMessage';
 export * from './EventSuggestionButton';
 export * from './FavoritesHeader';
+export * from './FloatingButton';
 export * from './GroupedListItem';
 export * from './GroupedSectionHeader';
 export * from './GroupHeader';

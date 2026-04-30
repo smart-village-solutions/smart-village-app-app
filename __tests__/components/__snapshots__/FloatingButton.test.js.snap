@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FloatingButton filters items by active route and keeps global items 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "flex-end",
+        "position": "absolute",
+        "right": 16,
+      },
+      {
+        "bottom": 16,
+      },
+    ]
+  }
+>
+  <View
+    accessibilityLabel="Visible on Home"
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "borderRadius": 28,
+        "height": 56,
+        "justifyContent": "center",
+        "marginTop": 8,
+        "opacity": 1,
+        "shadowColor": "#000000",
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.4,
+        "shadowRadius": 4,
+        "width": 56,
+      }
+    }
+  />
+  <View
+    accessibilityLabel="Visible everywhere"
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "borderRadius": 28,
+        "height": 56,
+        "justifyContent": "center",
+        "marginTop": 8,
+        "opacity": 1,
+        "shadowColor": "#000000",
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.4,
+        "shadowRadius": 4,
+        "width": 56,
+      }
+    }
+  />
+</View>
+`;

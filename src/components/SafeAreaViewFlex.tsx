@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { SettingsContext } from '../SettingsProvider';
 
 export const SafeAreaViewFlex = ({
   children,
@@ -11,8 +13,15 @@ export const SafeAreaViewFlex = ({
   style?: ViewStyle;
   [key: string]: any;
 }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation = 'tab' } = globalSettings;
+
   return (
-    <SafeAreaView style={[styles.flex, style]} edges={['bottom']} {...props}>
+    <SafeAreaView
+      style={[styles.flex, style]}
+      edges={navigation === 'tab' ? [] : ['bottom']}
+      {...props}
+    >
       {children}
     </SafeAreaView>
   );
