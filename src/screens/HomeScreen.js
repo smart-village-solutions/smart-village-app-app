@@ -41,20 +41,77 @@ import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
+const DEFAULT_HOME_SCREEN_SECTIONS = {
+  LIVE_TICKER: 'liveTicker',
+  CAROUSEL: 'carousel',
+  WIDGETS: 'widgets',
+  DISTURBER: 'disturber',
+  POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
+  EVENTS: 'events',
+  HOME_SERVICE: 'homeService',
+  HOME_BUTTONS: 'homeButtons',
+  ABOUT: 'about'
+};
+
+/* eslint-disable complexity */
 const renderItem = ({ item }) => {
   const {
     buttonTitle,
     categoriesNews,
     fetchPolicy,
+    isDrawer,
     limit,
     navigate,
     navigation,
+    publicJsonFile,
     query,
     queryVariables,
     showData,
     showVolunteerEvents,
-    title
+    title,
+    type,
+    widgetConfigs,
+    widgetStyle
   } = item;
+
+  // Static component types (LiveTicker, Carousel, Widgets, Disturber, HomeService, HomeButtons, About)
+  if (type) {
+    if (!item.show) return null;
+
+    switch (type) {
+      case DEFAULT_HOME_SCREEN_SECTIONS.LIVE_TICKER:
+        return <LiveTicker publicJsonFile={publicJsonFile || 'homeLiveTicker'} />;
+      case DEFAULT_HOME_SCREEN_SECTIONS.CAROUSEL:
+        return (
+          <ConnectedImagesCarousel
+            navigation={navigation}
+            publicJsonFile={publicJsonFile || 'homeCarousel'}
+          />
+        );
+      case DEFAULT_HOME_SCREEN_SECTIONS.WIDGETS:
+        return <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />;
+      case DEFAULT_HOME_SCREEN_SECTIONS.DISTURBER:
+        return (
+          <Disturber navigation={navigation} publicJsonFile={publicJsonFile || 'homeDisturber'} />
+        );
+      case DEFAULT_HOME_SCREEN_SECTIONS.HOME_SERVICE:
+        if (!isDrawer) return null;
+        return <HomeService publicJsonFile={publicJsonFile || 'homeService'} />;
+      case DEFAULT_HOME_SCREEN_SECTIONS.HOME_BUTTONS:
+        return <HomeButtons publicJsonFile={publicJsonFile || 'homeButtons'} />;
+      case DEFAULT_HOME_SCREEN_SECTIONS.ABOUT:
+        if (!isDrawer) return null;
+        return (
+          <About
+            navigation={navigation}
+            publicJsonFile={publicJsonFile || 'homeAbout'}
+            withHomeRefresh
+          />
+        );
+      default:
+        return null;
+    }
+  }
 
   const NAVIGATION = {
     CATEGORIES_INDEX: {
@@ -170,7 +227,12 @@ export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
+  const {
+    hdvt = {},
+    homeScreenConfig = [],
+    sections = {},
+    widgets: widgetConfigs = []
+  } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,
@@ -267,7 +329,13 @@ export const HomeScreen = ({ navigation, route }) => {
     }, [])
   );
 
-  const data = [
+  const isDrawer = route.params?.isDrawer;
+
+  const defaultData = [
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.LIVE_TICKER, show: true },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.CAROUSEL, show: true, navigation },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.WIDGETS, show: true, widgetConfigs, widgetStyle },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.DISTURBER, show: true, navigation },
     {
       categoriesNews,
       fetchPolicy,
@@ -299,39 +367,89 @@ export const HomeScreen = ({ navigation, route }) => {
       showData: showEvents,
       showVolunteerEvents,
       title: headlineEvents
-    }
+    },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.HOME_SERVICE, show: true, isDrawer },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.HOME_BUTTONS, show: true },
+    { type: DEFAULT_HOME_SCREEN_SECTIONS.ABOUT, show: true, isDrawer, navigation }
   ];
+
+  const configuredData = homeScreenConfig?.length
+    ? homeScreenConfig
+        .map((section) => {
+          // Handle static component type entries (liveTicker, carousel, widgets, etc.)
+          if (section.type) {
+            return {
+              ...section,
+              show: section.show !== false,
+              isDrawer,
+              navigation,
+              widgetConfigs,
+              widgetStyle
+            };
+          }
+
+          switch (section.query) {
+            case QUERY_TYPES.NEWS_ITEMS:
+              return {
+                categoriesNews: section.categoriesNews || categoriesNews,
+                fetchPolicy,
+                limit: section.limitNews ?? limitNews,
+                navigation,
+                query: section.query,
+                queryVariables: {
+                  limit: 3,
+                  excludeDataProviderIds,
+                  excludeMowasRegionalKeys,
+                  ...section.queryVariables
+                },
+                showData: section.show !== false
+              };
+            case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
+              return {
+                buttonTitle: section.buttonTitle || buttonPointsOfInterestAndTours,
+                fetchPolicy,
+                limit: section.limitPointsOfInterestAndTours ?? limitPointsOfInterestAndTours,
+                navigate: 'CATEGORIES_INDEX',
+                navigation,
+                query: section.query,
+                queryVariables: {
+                  limit: 10,
+                  orderPoi: 'RAND',
+                  orderTour: 'RAND',
+                  onlyWithImage: true,
+                  ...section.queryVariables
+                },
+                showData: section.show !== false,
+                title: section.title || headlinePointsOfInterestAndTours
+              };
+            case QUERY_TYPES.EVENT_RECORDS:
+              return {
+                buttonTitle: section.buttonTitle || buttonEvents,
+                fetchPolicy,
+                limit: section.limitEvents ?? limitEvents,
+                navigate: 'EVENT_RECORDS_INDEX',
+                navigation,
+                query: section.query,
+                queryVariables: {
+                  limit: 3,
+                  order: 'listDate_ASC',
+                  ...section.queryVariables
+                },
+                showData: section.show !== false,
+                showVolunteerEvents,
+                title: section.title || headlineEvents
+              };
+            default:
+              return null;
+          }
+        })
+        .filter((item) => item !== null)
+    : defaultData;
 
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={data}
-        ListHeaderComponent={
-          <>
-            <LiveTicker publicJsonFile="homeLiveTicker" />
-
-            <ConnectedImagesCarousel
-              navigation={navigation}
-              publicJsonFile="homeCarousel"
-              refreshTimeKey="publicJsonFile-homeCarousel"
-            />
-
-            <Widgets widgetConfigs={widgetConfigs} widgetStyle={widgetStyle} />
-
-            <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
-          </>
-        }
-        ListFooterComponent={
-          route.params?.isDrawer ? (
-            <>
-              <HomeService publicJsonFile="homeService" />
-              <HomeButtons publicJsonFile="homeButtons" />
-              <About navigation={navigation} publicJsonFile="homeAbout" withHomeRefresh />
-            </>
-          ) : (
-            <HomeButtons publicJsonFile="homeButtons" />
-          )
-        }
+        data={configuredData}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
