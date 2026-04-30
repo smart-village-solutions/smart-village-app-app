@@ -13,7 +13,8 @@ export type SubQuery = {
   ];
   buttonTitle: string;
   isExternal?: boolean;
-  params: { rootRouteName: string; routeName: string; title: string; webUrl: string };
+  params?: { rootRouteName: string; routeName: string; title: string; webUrl: string };
+  pdfUrl?: string;
   routeName: string;
   title?: string;
   webUrl?: string;
