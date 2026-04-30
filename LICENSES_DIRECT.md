@@ -48,9 +48,9 @@
     - publisher: Brent Vatne
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/vector-icons
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/@expo/vector-icons/LICENSE
-- **[@maplibre/maplibre-react-native@10.4.2](https://github.com/maplibre/maplibre-react-native)**
+- **[@maplibre/maplibre-react-native@11.0.0](https://github.com/maplibre/maplibre-react-native)**
     - name: @maplibre/maplibre-react-native
-    - version: 10.4.2
+    - version: 11.0.0
     - description: React Native library for creating maps with MapLibre Native for Android & iOS
     - copyright: Copyright (c) 2022 MapLibre contributors*
     - licenses: MIT

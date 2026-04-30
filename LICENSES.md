@@ -11,9 +11,9 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 | License | Packages count |
 |---------|---------------:|
 | [MIT](https://spdx.org/licenses/MIT.html) | 986 |
-| [ISC](https://spdx.org/licenses/ISC.html) | 70 |
-| [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 23 |
-| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
+| [ISC](https://spdx.org/licenses/ISC.html) | 73 |
+| [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 24 |
+| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 24 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 22 |
 | [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 11 |
 | [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 5 |
@@ -26,6 +26,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 | [GPL-3.0](https://spdx.org/licenses/GPL-3.0.html) | 1 |
 | [Public-Domain](https://en.wikipedia.org/wiki/Public_domain) | 1 |
 | [Python-2.0](https://spdx.org/licenses/Python-2.0.html) | 1 |
+| [UNKNOWN](https://spdx.org/licenses/UNKNOWN.html) | 1 |
 
 ## Licenses details
 
@@ -2237,14 +2238,45 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "A pure JavaScript React Native component to render CSS3 compliant ordered and unordered lists.",
     "copyright": ""
   },
-  "@maplibre/maplibre-react-native@10.4.2": {
+  "@mapbox/jsonlint-lines-primitives@2.0.2": {
+    "licenses": "UNKNOWN",
+    "repository": "https://github.com/mapbox/jsonlint",
+    "publisher": "Zach Carter",
+    "email": "zach@carter.name",
+    "licenseText": "JSON Lint\n=========\n\nA fork of the `lines-primitive` branch of [tmcw/jsonlint](https://github.com/tmcw/jsonlint), which is a fork of [zaach/jsonlint](https://github.com/zaach/jsonlint) that adds line number annotations to the parsed JSON.\n\nThis fork is used by Mapbox GL JS, specifically for providing helpful error messages when validating Mapbox GL style JSON documents.",
+    "name": "@mapbox/jsonlint-lines-primitives",
+    "version": "2.0.2",
+    "description": "Validate JSON",
+    "copyright": ""
+  },
+  "@mapbox/unitbezier@0.0.1": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/mapbox/unitbezier",
+    "licenseText": "BSD-2-Clause\n\nCopyright (C) 2008 Apple Inc. All Rights Reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions\nare met:\n\n1. Redistributions of source code must retain the above copyright\n   notice, this list of conditions and the following disclaimer.\n2. Redistributions in binary form must reproduce the above copyright\n   notice, this list of conditions and the following disclaimer in the\n   documentation and/or other materials provided with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY APPLE INC. ``AS IS'' AND ANY\nEXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\nPURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL APPLE INC. OR\nCONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\nEXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\nPROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\nPROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY\nOF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nPorted from Webkit\nhttp://svn.webkit.org/repository/webkit/trunk/Source/WebCore/platform/graphics/UnitBezier.h",
+    "copyright": "Copyright (C) 2008 Apple Inc. All Rights Reserved.",
+    "name": "@mapbox/unitbezier",
+    "version": "0.0.1",
+    "description": "unit bezier curve interpolation",
+    "publisher": ""
+  },
+  "@maplibre/maplibre-gl-style-spec@24.8.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/maplibre/maplibre-style-spec",
+    "publisher": "MapLibre",
+    "licenseText": "Copyright (c) 2020, MapLibre contributors\n\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification,\nare permitted provided that the following conditions are met:\n\n    * Redistributions of source code must retain the above copyright notice,\n      this list of conditions and the following disclaimer.\n    * Redistributions in binary form must reproduce the above copyright notice,\n      this list of conditions and the following disclaimer in the documentation\n      and/or other materials provided with the distribution.\n    * Neither the name of MapLibre GL JS nor the names of its contributors\n      may be used to endorse or promote products derived from this software\n      without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\nLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\nA PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\nCONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\nEXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\nPROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\nPROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\nLIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\nNEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\n-------------------------------------------------------------------------------\n\nContains code from mapbox-gl-js v1.13 and earlier\n\nVersion v1.13 of mapbox-gl-js and earlier are licensed under a BSD-3-Clause license\n\nCopyright (c) 2020, Mapbox\nRedistribution and use in source and binary forms, with or without modification,\nare permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice,\n  this list of conditions and the following disclaimer.\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n* Neither the name of Mapbox GL JS nor the names of its contributors\n  may be used to endorse or promote products derived from this software\n  without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\nLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\nA PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\nCONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\nEXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\nPROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\nPROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\nLIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\nNEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,\nEVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\n-------------------------------------------------------------------------------\n\nContains code from glfx.js\n\nCopyright (C) 2011 by Evan Wallace\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n\n--------------------------------------------------------------------------------\n\nContains a portion of d3-color https://github.com/d3/d3-color\n\nCopyright 2010-2016 Mike Bostock\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification,\nare permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\n* Neither the name of the author nor the names of contributors may be used to\n  endorse or promote products derived from this software without specific prior\n  written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR\nANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\nANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+    "copyright": "Copyright (c) 2020, MapLibre contributors*",
+    "name": "@maplibre/maplibre-gl-style-spec",
+    "version": "24.8.1",
+    "description": "a specification for maplibre styles"
+  },
+  "@maplibre/maplibre-react-native@11.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/maplibre/maplibre-react-native",
     "publisher": "MapLibre",
     "licenseText": "Copyright (c) 2022 MapLibre contributors\n\nCopyright (c) 2015-2020 Mapbox\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
     "copyright": "Copyright (c) 2022 MapLibre contributors*",
     "name": "@maplibre/maplibre-react-native",
-    "version": "10.4.2",
+    "version": "11.0.0",
     "description": "React Native library for creating maps with MapLibre Native for Android & iOS"
   },
   "@native-html/css-processor@1.11.0": {
@@ -4834,16 +4866,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.11.19",
     "description": "2KB immutable date time library alternative to Moment.js with the same modern API "
   },
-  "debounce@2.2.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/debounce",
-    "licenseText": "MIT License\n\nCoprighht (c) Jeremy Ashkenas, Julian Gonggrijp, DocumentCloud, Investigative Reporters & Editors\nCopyright (c) Ben Carpenter, Billy Moon, Josh Goldberg, Julian Gruber, Kristofer Selbekk, Matthew Mueller, Nathan Rajlich, Oleg Pudeyev, Stephen Mathieson, TJ Holowaychuk, suhaotian, ven\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "name": "debounce",
-    "version": "2.2.0",
-    "description": "Delay function calls until a set time elapses after the last invocation",
-    "copyright": "",
-    "publisher": ""
-  },
   "debug@2.6.9": {
     "licenses": "MIT",
     "repository": "https://github.com/visionmedia/debug",
@@ -7316,6 +7338,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.2.1",
     "description": "deterministic JSON.stringify() with custom sorting to get deterministic hashes from stringified results"
   },
+  "json-stringify-pretty-compact@4.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lydell/json-stringify-pretty-compact",
+    "publisher": "Simon Lydell",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014, 2016, 2017, 2019, 2021, 2022 Simon Lydell\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
+    "copyright": "Copyright (c) 2014, 2016, 2017, 2019, 2021, 2022 Simon Lydell",
+    "name": "json-stringify-pretty-compact",
+    "version": "4.0.0",
+    "description": "The best of both `JSON.stringify(obj)` and `JSON.stringify(obj, null, indent)`."
+  },
   "json5@2.2.3": {
     "licenses": "MIT",
     "repository": "https://github.com/json5/json5",
@@ -9328,6 +9360,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "asynchronous function queue with adjustable concurrency",
     "copyright": ""
   },
+  "quickselect@3.0.0": {
+    "licenses": "ISC",
+    "repository": "https://github.com/mourner/quickselect",
+    "publisher": "Vladimir Agafonkin",
+    "licenseText": "ISC License\n\nCopyright (c) 2024, Vladimir Agafonkin\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.",
+    "copyright": "Copyright (c) 2024, Vladimir Agafonkin",
+    "name": "quickselect",
+    "version": "3.0.0",
+    "description": "A tiny and fast selection algorithm in JavaScript."
+  },
   "ramda@0.27.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ramda/ramda",
@@ -10257,6 +10299,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.2",
     "description": "Library will help you to detect if the locale is right-to-left language."
   },
+  "rw@1.3.3": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/mbostock/rw",
+    "publisher": "Mike Bostock",
+    "licenseText": "Copyright (c) 2014-2016, Michael Bostock\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\n* The name Michael Bostock may not be used to endorse or promote products\n  derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL MICHAEL BOSTOCK BE LIABLE FOR ANY DIRECT,\nINDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,\nBUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\nDATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY\nOF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\nNEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,\nEVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+    "copyright": "Copyright (c) 2014-2016, Michael Bostock. All rights reserved.",
+    "name": "rw",
+    "version": "1.3.3",
+    "description": "Now stdin and stdout are files."
+  },
   "safe-buffer@5.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/feross/safe-buffer",
@@ -11136,6 +11188,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "tinyglobby",
     "version": "0.2.15",
     "description": "A fast and minimal alternative to globby and fast-glob"
+  },
+  "tinyqueue@3.0.0": {
+    "licenses": "ISC",
+    "repository": "https://github.com/mourner/tinyqueue",
+    "licenseText": "ISC License\n\nCopyright (c) 2017, Vladimir Agafonkin\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.",
+    "copyright": "Copyright (c) 2017, Vladimir Agafonkin",
+    "name": "tinyqueue",
+    "version": "3.0.0",
+    "description": "The smallest and simplest JavaScript priority queue",
+    "publisher": ""
   },
   "tmp@0.0.33": {
     "licenses": "MIT",
