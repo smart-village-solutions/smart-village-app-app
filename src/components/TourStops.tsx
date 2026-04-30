@@ -38,11 +38,13 @@ export const TourStops = ({
   geometryTourData,
   id,
   navigation,
+  rootRouteName,
   tourStops
 }: {
   geometryTourData: any;
   id: number | string;
   navigation: any;
+  rootRouteName?: string;
   tourStops: any[];
 }) => {
   const { globalSettings } = useContext(SettingsContext);
@@ -86,6 +88,7 @@ export const TourStops = ({
           geometryTourData,
           headline: tourStop.title,
           id: tourStop.id,
+          rootRouteName,
           subtitle: texts.tour.tourStop,
           title: texts.tour.stop + ' ' + (index + 1),
           tourStopData: tourStop,
@@ -127,6 +130,7 @@ export const TourStops = ({
               geometryTourData,
               headline: selectedTourStop?.title,
               id: tourId,
+              rootRouteName,
               subtitle: texts.tour.tourStop,
               title: texts.tour.stop + ' ' + (index + 1),
               tourStopData: selectedTourStop,
@@ -144,6 +148,7 @@ export const TourStops = ({
               geometryTourData,
               headline: tourStops[0]?.title,
               id: tourStops[0]?.id,
+              rootRouteName,
               subtitle: texts.tour.tourStop,
               title: texts.tour.stop + ' 1',
               tourStopData: tourStops[0],
@@ -176,7 +181,7 @@ export const mapToMapMarkers = (
       const latitude = item.location?.geoLocation?.latitude;
       const longitude = item.location?.geoLocation?.longitude;
 
-      if (!latitude || !longitude) return undefined;
+      if (latitude == null || longitude == null) return undefined;
 
       return {
         iconName:

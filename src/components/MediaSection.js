@@ -52,7 +52,21 @@ const MOBILE_USER_AGENT = Platform.select({
 const isSafeHttpUrl = (url) => /^https?:\/\//i.test(url);
 
 // SoundCloud widget and CDN domains that must be allowed to navigate freely.
-const isSoundCloudDomain = (url) => url?.includes('soundcloud.com') || url?.includes('sndcdn.com');
+// Parses the hostname and requires an exact match or a proper subdomain suffix
+// to prevent hosts like "soundcloud.com.evil.example" from matching.
+const isSoundCloudDomain = (url) => {
+  try {
+    const { hostname } = new URL(url);
+    return (
+      hostname === 'soundcloud.com' ||
+      hostname.endsWith('.soundcloud.com') ||
+      hostname === 'sndcdn.com' ||
+      hostname.endsWith('.sndcdn.com')
+    );
+  } catch {
+    return false;
+  }
+};
 
 // SoundCloud-specific navigation handler:
 // allows all soundcloud.com / sndcdn.com navigation (widget, API, CDN),
@@ -83,14 +97,8 @@ const handleShouldStartLoadWithRequest = (request) => {
 // inside the WebView to evade bot/automation detection for some embeds.
 // This kind of fingerprint spoofing is brittle, can violate third‑party ToS,
 // and may break embeds in unexpected ways, so it has been intentionally
-// disabled and kept as a no‑op to preserve the existing API shape.
-const ANTI_BOT_JS = `
-  (function() {
-    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-    Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
-  })();
-  true;
-`;
+// disabled. The constant is kept as a no‑op to preserve the existing API shape.
+const ANTI_BOT_JS = 'true;';
 
 // Wraps raw iframe HTML in a complete document so third-party players
 // (e.g. SoundCloud) load correctly. The viewport meta tag is placed in

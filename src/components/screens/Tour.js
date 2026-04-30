@@ -92,7 +92,10 @@ export const Tour = ({ data, navigation, route }) => {
       )}
 
       {!!tourStops?.length && (
-        <TourStops {...{ geometryTourData, id, navigation, tourStops, payload }} />
+        <TourStops
+          {...{ geometryTourData, id, navigation, tourStops, payload }}
+          rootRouteName={route.params?.rootRouteName}
+        />
       )}
 
       <OperatingCompany

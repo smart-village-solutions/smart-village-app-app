@@ -68,7 +68,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
       const latitude = item.addresses?.[0]?.geoLocation?.latitude;
       const longitude = item.addresses?.[0]?.geoLocation?.longitude;
 
-      if (!latitude || !longitude) return undefined;
+      if (latitude == null || longitude == null) return undefined;
 
       return {
         [item.category?.iconName || MAP.DEFAULT_PIN]: 1,

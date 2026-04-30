@@ -28,7 +28,7 @@ import { SectionHeader } from './../SectionHeader';
 
 /* eslint-disable complexity */
 export const TourStopDetail = ({ route, navigation }: { route: any; navigation: any }) => {
-  const { geometryTourData, id, tourStops, tourStopData, subtitle } = route.params;
+  const { geometryTourData, id, rootRouteName, tourStops, tourStopData, subtitle } = route.params;
   const { description, mediaContents, title } = tourStopData || {};
 
   const openWebScreen = useOpenWebScreen(
@@ -69,6 +69,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
         geometryTourData,
         id: nextStop.id,
         headline: nextStop.title,
+        rootRouteName,
         subtitle: texts.tour.tourStop,
         title: texts.tour.stop + ' ' + (currentIndex + 2),
         tourStopData: nextStop,
@@ -89,6 +90,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
         geometryTourData,
         id: previousStop.id,
         headline: previousStop.title,
+        rootRouteName,
         subtitle: texts.tour.tourStop,
         title: texts.tour.stop + ' ' + currentIndex,
         tourStopData: previousStop,
@@ -177,6 +179,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
               geometryTourData,
               headline: selectedTourStop?.title,
               id: tourId,
+              rootRouteName,
               subtitle: texts.tour.tourStop,
               title: texts.tour.stop + ' ' + (index + 1),
               tourStopData: selectedTourStop,

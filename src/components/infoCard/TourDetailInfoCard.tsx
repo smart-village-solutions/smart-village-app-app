@@ -55,6 +55,9 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
 
   // Tracks the device's current compass heading in degrees (0 = North).
   const [deviceHeading, setDeviceHeading] = useState<number>(0);
+  // True only after the first successful heading callback — prevents showing a
+  // direction based on the default 0° heading when heading is unavailable.
+  const [headingAvailable, setHeadingAvailable] = useState<boolean>(false);
 
   // Stores the cumulative rotation to always animate along the shortest arc.
   const cumulativeRotation = useRef<number>(0);
@@ -71,6 +74,7 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
           const heading =
             headingData.trueHeading >= 0 ? headingData.trueHeading : headingData.magHeading;
           setDeviceHeading(heading);
+          setHeadingAvailable(true);
         });
       } catch {
         // Heading unavailable (missing permissions or unsupported hardware) — arrow stays hidden.
@@ -120,11 +124,13 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
 
   // Relative bearing: how many degrees the arrow must rotate from "straight up"
   // (= device's forward direction) to point at the destination.
+  // Only computed when heading data is confirmed available, so the default 0°
+  // heading never silently produces a misleading direction.
   const relativeBearing = useMemo(() => {
-    if (absoluteBearing == null) return null;
+    if (absoluteBearing == null || !headingAvailable) return null;
 
     return (absoluteBearing - deviceHeading + 360) % 360;
-  }, [absoluteBearing, deviceHeading]);
+  }, [absoluteBearing, deviceHeading, headingAvailable]);
 
   // Animate arrow along the shortest arc whenever relativeBearing changes.
   useEffect(() => {

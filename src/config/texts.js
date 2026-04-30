@@ -1440,7 +1440,7 @@ export const texts = {
     previous: 'Vorheriger',
     showOnMap: 'Auf Karte anzeigen',
     start: 'Tourbeginn',
-    stop: 'Stop',
+    stop: 'Stopp',
     tour: 'Tourverlauf',
     tourStart: 'Tour starten',
     tourStop: 'Tourstopp'
