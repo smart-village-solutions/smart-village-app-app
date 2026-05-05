@@ -192,6 +192,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
                   }
 
                   navigation.push(ScreenName.Detail, {
+                    bookmarkable: false,
                     details,
                     query: targetQuery,
                     queryVariables: { id: serviceRequestId },
