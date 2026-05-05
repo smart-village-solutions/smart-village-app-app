@@ -1,15 +1,13 @@
 /* eslint-disable complexity */
-import moment from 'moment';
 import React, { useContext, useRef, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
 
-import appJson from '../../../../app.json';
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { colors, device, normalize, texts } from '../../../config';
-import { useKeyboardHeight } from '../../../hooks';
+import { useAppInfo, useKeyboardHeight } from '../../../hooks';
 import { QUERY_TYPES, createQuery } from '../../../queries';
 import { ScreenName } from '../../../types';
 import { Button } from '../../Button';
@@ -48,6 +46,7 @@ export const SueReportSend = ({
   const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
   const [rating, setRating] = useState(defaultRating);
 
+  const appInfo = useAppInfo();
   const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
 
@@ -73,8 +72,7 @@ export const SueReportSend = ({
       dataSource: 'form',
       content: JSON.stringify({
         action: 'notify_and_destroy',
-        appVersion: appJson.expo.version,
-        created_At: moment().format('YYYY-MM-DD HH:mm:ss'),
+        appInfo,
         ...createAppUserContentNewData
       })
     };
