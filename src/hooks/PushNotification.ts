@@ -12,6 +12,11 @@ import {
 type NotificationHandler = (arg: Notifications.Notification) => void;
 type ResponseHandler = (arg: Notifications.NotificationResponse) => void;
 
+// Module-level variable to track the last handled cold-start notification.
+// Persists across hook remounts within the same app session so the same tap
+// cannot trigger duplicate navigation after a remount or navigator reset.
+let lastHandledNotificationId: string | undefined;
+
 export const usePushNotifications = (
   notificationHandler?: NotificationHandler,
   interactionHandler?: ResponseHandler,
@@ -68,12 +73,28 @@ export const usePushNotifications = (
       : null;
 
     // This listener is fired whenever a user taps on or interacts with a notification
-    // (works when app is foregrounded, backgrounded, or killed)
+    // while the app is foregrounded or backgrounded.
     responseListener.current = interactionHandler
       ? Notifications.addNotificationResponseReceivedListener((response) => {
           interactionHandler(response);
         })
       : null;
+
+    // Handle the cold-start case: when the app was killed and the user tapped a notification
+    // to open it. In this case the response listener above never fires because the tap
+    // happened before the listener was registered. getLastNotificationResponseAsync returns
+    // the response that caused the app to open.
+    if (interactionHandler) {
+      const lastResponse = Notifications.getLastNotificationResponse();
+      if (lastResponse) {
+        const id = lastResponse.notification.request.identifier;
+
+        if (id !== lastHandledNotificationId) {
+          lastHandledNotificationId = id;
+          interactionHandler(lastResponse);
+        }
+      }
+    }
 
     return () => {
       notificationListener.current && notificationListener.current.remove();
