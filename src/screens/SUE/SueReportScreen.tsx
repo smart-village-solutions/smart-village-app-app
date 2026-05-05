@@ -193,6 +193,7 @@ const Content = ({
           selectedPosition={selectedPosition}
           setIsFullscreenMap={setIsFullscreenMap}
           setSelectedPosition={setSelectedPosition}
+          setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}
           updateRegionFromImage={updateRegionFromImage}
@@ -272,7 +273,13 @@ export const SueReportScreen = ({
   const errorMessage =
     configuredErrorMessage || texts.sue.report.alerts.limitOfArea(limitOfAreaCity);
 
-  const [showCoordinatesFromImageAlert, setShowCoordinatesFromImageAlert] = useState(false);
+  // useRef instead of useState: the flag must be read synchronously inside
+  // alertTextGeneratorForMissingData to prevent React async-batching from
+  // causing the "coordinates from image" alert to fire more than once.
+  const showCoordinatesFromImageAlertRef = useRef(false);
+  const setShowCoordinatesFromImageAlert = useCallback((value: boolean) => {
+    showCoordinatesFromImageAlertRef.current = value;
+  }, []);
   const [currentProgress, setCurrentProgress] = useState(0);
   const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -395,7 +402,7 @@ export const SueReportScreen = ({
             alertText = texts.sue.report.alerts.imagesTotalSizeError(
               formatSizeStandard(totalSizeLimit, 0)
             );
-          } else if (selectedPosition && !showCoordinatesFromImageAlert) {
+          } else if (selectedPosition && !showCoordinatesFromImageAlertRef.current) {
             setShowCoordinatesFromImageAlert(true);
             Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
           }
