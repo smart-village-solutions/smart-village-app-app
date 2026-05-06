@@ -452,6 +452,9 @@ export const texts = {
   errors: {
     image: {
       body: 'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.',
+      cancel: 'Abbrechen',
+      openSettings: 'Einstellungen öffnen',
+      saveBody: 'Es fehlt die Berechtigung zum Speichern in der Medienbibliothek.',
       title: 'Hinweis'
     },
     errorTitle: 'Fehler',
