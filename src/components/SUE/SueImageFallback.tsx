@@ -5,6 +5,8 @@ import { Icon, colors, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 
 export const SueImageFallback = ({ style }: { style?: any }) => {
+  // HINT: This component has been disabled upon request. It has not been deleted so that it can be quickly reintegrated if needed.
+  return null;
   return (
     <View style={[styles.container, stylesForImage().defaultStyle, style]}>
       <Icon.SueBroom color={colors.placeholder} size={normalize(32)} />
