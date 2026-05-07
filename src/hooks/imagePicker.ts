@@ -33,12 +33,16 @@ const saveImageToGallery = async (uri: string) => {
   const { status: existingStatus, canAskAgain } = await getPermissionsAsync();
   const appName = appJson.expo.name;
 
-  let status = existingStatus;
-
-  if (status !== PermissionStatus.GRANTED) {
-    if (canAskAgain) {
-      ({ status } = await requestPermissionsAsync(undefined, ['photo']));
+  if (existingStatus !== PermissionStatus.GRANTED) {
+    if (!canAskAgain) {
+      Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
+      return;
     }
+
+    const { status } = await requestPermissionsAsync(undefined, ['photo']);
 
     if (status !== PermissionStatus.GRANTED) {
       Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
