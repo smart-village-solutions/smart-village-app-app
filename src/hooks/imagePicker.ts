@@ -10,10 +10,11 @@ import {
   createAlbumAsync,
   createAssetAsync,
   getAlbumAsync,
+  getPermissionsAsync,
   requestPermissionsAsync
 } from 'expo-media-library';
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import appJson from '../../app.json';
 import { device, texts } from '../config';
@@ -27,11 +28,29 @@ export const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOpt
 };
 
 const saveImageToGallery = async (uri: string) => {
-  const { status } = await requestPermissionsAsync(undefined, ['photo']);
+  // Check existing permission status first to avoid triggering the iOS photo
+  // picker overlay when the user previously granted only limited access.
+  const { status: existingStatus, canAskAgain } = await getPermissionsAsync();
   const appName = appJson.expo.name;
 
-  if (status !== PermissionStatus.GRANTED) {
-    return;
+  if (existingStatus !== PermissionStatus.GRANTED) {
+    if (!canAskAgain) {
+      Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
+      return;
+    }
+
+    const { status } = await requestPermissionsAsync(undefined, ['photo']);
+
+    if (status !== PermissionStatus.GRANTED) {
+      Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
+      return;
+    }
   }
 
   try {

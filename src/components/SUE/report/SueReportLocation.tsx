@@ -88,6 +88,7 @@ export const SueReportLocation = ({
   selectedPosition,
   setIsFullscreenMap,
   setSelectedPosition,
+  setShowCoordinatesFromImageAlert,
   setUpdateRegionFromImage,
   setValue
 }: {
@@ -106,6 +107,7 @@ export const SueReportLocation = ({
   selectedPosition?: Location.LocationObjectCoords;
   setIsFullscreenMap: (value: boolean) => void;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
   updateRegionFromImage: boolean;
@@ -223,6 +225,7 @@ export const SueReportLocation = ({
 
     latestReverseGeocodeRequestRef.current = requestId;
     setSelectedPosition(position);
+    setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
     clearAddressFields();
 

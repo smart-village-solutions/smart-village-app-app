@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
@@ -22,7 +22,7 @@ import {
   SueLoadingIndicator,
   WrapperVertical
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
@@ -97,31 +97,37 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const [isOpening, setIsOpening] = useState(true);
   const [viewType, setViewType] = useState(route.params?.viewType || SueViewType.List);
 
-  const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    [
-      query,
-      {
-        ...queryVariables,
-        sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME
-      }
-    ],
-    ({ pageParam = 0 }) =>
-      getQuery(query)({
-        ...queryVariables,
-        sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME,
-        offset: pageParam
-      }),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < limit) {
-          return undefined;
-        }
+  // Separate search from the rest so it does not become part of the React Query
+  // cache key or get sent to the API (which does not support server-side search).
+  // Filtering is done client-side over all loaded pages.
+  const { search: searchTerm, ...queryVariablesWithoutSearch } = queryVariables;
 
-        return allPages.length * limit;
-      },
-      cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
-    }
-  );
+  const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      [
+        query,
+        {
+          ...queryVariablesWithoutSearch,
+          sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME
+        }
+      ],
+      ({ pageParam = 0 }) =>
+        getQuery(query)({
+          ...queryVariablesWithoutSearch,
+          sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME,
+          offset: pageParam
+        }),
+      {
+        getNextPageParam: (lastPage, allPages) => {
+          if (lastPage.length < limit) {
+            return undefined;
+          }
+
+          return allPages.length * limit;
+        },
+        cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
+      }
+    );
 
   const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
     getQuery(QUERY_TYPES.SUE.SERVICES)()
@@ -160,6 +166,16 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     setDataCountQueryVariables(rest);
   }, [queryVariables]);
 
+  // When a search term is active, automatically load all remaining pages so that
+  // client-side filtering covers the full data set, not just the already-loaded pages.
+  // Guard against a retry loop: stop auto-fetching when offline or after a fetch error.
+  // Auto-fetching resumes once the search term or filters change (which resets isError).
+  useEffect(() => {
+    if (searchTerm && hasNextPage && !isFetchingNextPage && isConnected && !isError) {
+      fetchNextPage();
+    }
+  }, [searchTerm, hasNextPage, isFetchingNextPage, isConnected, isError, fetchNextPage]);
+
   const listItems = useMemo(() => {
     if (!data?.pages?.length) return [];
 
@@ -172,24 +188,26 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       }
     );
 
-    if (queryVariables.search) {
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+
       parsedListItem = _filter(
         parsedListItem,
         (item) =>
-          item.title?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
-          item.description?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
-          item.address?.toLowerCase().includes(queryVariables.search.toLowerCase())
+          item.title?.toLowerCase().includes(lowerSearch) ||
+          item.description?.toLowerCase().includes(lowerSearch) ||
+          item.address?.toLowerCase().includes(lowerSearch)
       );
     }
 
     return parsedListItem;
-  }, [appDesignSystem, data, query, queryVariables]);
+  }, [appDesignSystem, data, query, searchTerm]);
 
   const displayCount = useMemo(() => {
-    return queryVariables.search || query === QUERY_TYPES.SUE.MY_REQUESTS
+    return searchTerm || query === QUERY_TYPES.SUE.MY_REQUESTS
       ? listItems.length
       : dataCount?.length;
-  }, [queryVariables.search, query, listItems.length, dataCount?.length]);
+  }, [searchTerm, query, listItems.length, dataCount?.length]);
 
   const refresh = async () => {
     setRefreshing(true);
@@ -293,10 +311,21 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                 </>
               )}
 
-              {!!displayCount && (
-                <RegularText small>
-                  {displayCount} {displayCount === 1 ? texts.filter.result : texts.filter.results}
-                </RegularText>
+              {displayCount != null && (
+                <View style={styles.countRow}>
+                  <RegularText small>
+                    {displayCount} {displayCount === 1 ? texts.filter.result : texts.filter.results}
+                  </RegularText>
+                  {/* Show a spinner next to the count while we are still auto-fetching
+                      all pages to cover the full data set for client-side search. */}
+                  {!!searchTerm && (hasNextPage || isFetchingNextPage) && (
+                    <ActivityIndicator
+                      color={colors.refreshControl}
+                      size="small"
+                      style={styles.countSpinner}
+                    />
+                  )}
+                </View>
               )}
             </>
           }
@@ -314,3 +343,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  countRow: {
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  countSpinner: {
+    marginLeft: normalize(8)
+  }
+});
