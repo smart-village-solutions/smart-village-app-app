@@ -93,7 +93,10 @@ export const useSelectImage = ({
     const { status } = await requestMediaLibraryPermissionsAsync();
 
     if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body);
+      Alert.alert(texts.errors.image.title, texts.errors.image.body, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
       return;
     }
 
@@ -143,7 +146,10 @@ export const useCaptureImage = ({
     const { status } = await requestCameraPermissionsAsync();
 
     if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body);
+      Alert.alert(texts.errors.image.title, texts.errors.image.cameraBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
       return;
     }
 
@@ -162,7 +168,17 @@ export const useCaptureImage = ({
       onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
 
       if (saveImage) {
-        await saveImageToGallery(uri);
+        const { status: mediaStatus } = await getPermissionsAsync();
+
+        if (mediaStatus !== PermissionStatus.GRANTED) {
+          // Ask user before requesting gallery save permission
+          Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
+            { text: texts.errors.image.cancel, style: 'cancel' },
+            { text: texts.errors.image.save, onPress: () => saveImageToGallery(uri) }
+          ]);
+        } else {
+          await saveImageToGallery(uri);
+        }
       }
 
       return result.assets[0];
