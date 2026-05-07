@@ -452,9 +452,12 @@ export const texts = {
   errors: {
     image: {
       body: 'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.',
+      cameraBody: 'Es fehlt die Berechtigung, die Kamera zu nutzen.',
       cancel: 'Abbrechen',
       openSettings: 'Einstellungen öffnen',
+      save: 'Speichern',
       saveBody: 'Es fehlt die Berechtigung zum Speichern in der Medienbibliothek.',
+      saveConfirmBody: 'Möchten Sie das aufgenommene Foto in Ihrer Medienbibliothek speichern?',
       title: 'Hinweis'
     },
     errorTitle: 'Fehler',
