@@ -17,7 +17,6 @@ import {
   MapLibre,
   RegularText,
   SafeAreaViewFlex,
-  SueImageFallback,
   SueStatus,
   Touchable,
   Wrapper,
@@ -184,7 +183,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
               </>
             ) : (
               <>
-                <SueImageFallback style={[styles.imageContainer, styles.image]} />
+                <View style={styles.imagePlaceholder} />
                 <CloseButton onPress={() => setSelectedRequestId(undefined)} />
               </>
             )}
@@ -248,6 +247,10 @@ const styles = StyleSheet.create({
   image: {
     height: normalize(120),
     width: normalize(120)
+  },
+  imagePlaceholder: {
+    height: normalize(120),
+    width: normalize(30)
   },
   imageContainer: {
     alignSelf: 'flex-start',
