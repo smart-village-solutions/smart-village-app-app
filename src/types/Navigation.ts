@@ -1,6 +1,7 @@
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationOptions } from '@react-navigation/stack';
+import { ComponentType } from 'react';
 import { ViewStyle } from 'react-native';
 
 import { Icon } from '../config';
@@ -10,6 +11,7 @@ export enum ScreenName {
   ARShow = 'ARShow',
   ARInfo = 'ARInfo',
   ArtworkDetail = 'ArtworkDetail',
+  BusCategory = 'BusCategory',
   BusDetail = 'BusDetail',
   BusDetailFallback = 'BBBUSDetail',
   BusIndex = 'BusIndex',
@@ -135,7 +137,7 @@ export type TabOptions =
 
 export type ScreenConfig = {
   routeName: ScreenName;
-  screenComponent: (props: { navigation: any; route: any }) => JSX.Element | null;
+  screenComponent: ComponentType<any>;
   screenOptions?: ScreenOptions;
   // eslint-disable-next-line @typescript-eslint/ban-types
   initialParams?: Object;
@@ -155,12 +157,12 @@ export type CustomTab = {
   iconSize?: number;
   iconStyle?: ViewStyle;
   label: string;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   screen: ScreenName;
   strokeColor?: string;
   strokeWidth?: number;
   tabBarLabelStyle?: ViewStyle;
-  tilesScreenParams?: Record<string, any>;
+  tilesScreenParams?: Record<string, unknown>;
 };
 
 export type TabConfig = {

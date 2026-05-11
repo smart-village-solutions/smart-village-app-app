@@ -101,7 +101,11 @@ import {
   WhistleblowFormScreen,
   getTilesScreen
 } from '../../screens';
-import { DetailScreen as BusDetailScreen, IndexScreen as BusIndexScreen } from '../../screens/BUS';
+import {
+  CategoryScreen as BusCategoryScreen,
+  DetailScreen as BusDetailScreen,
+  IndexScreen as BusIndexScreen
+} from '../../screens/BUS';
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
@@ -115,10 +119,10 @@ export const defaultStackConfig = ({
   isDrawer,
   tilesScreenParams
 }: {
-  initialParams?: Record<string, any>;
+  initialParams?: Record<string, unknown>;
   initialRouteName: ScreenName;
   isDrawer: boolean;
-  tilesScreenParams?: Record<string, any>;
+  tilesScreenParams?: Record<string, unknown>;
 }): StackConfig => ({
   initialRouteName,
   screenOptions: getScreenOptions({ withDrawer: isDrawer }),
@@ -153,6 +157,11 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.BusIndexFallback,
       screenComponent: BusIndexScreen
+    },
+    {
+      initialParams,
+      routeName: ScreenName.BusCategory,
+      screenComponent: BusCategoryScreen
     },
     {
       initialParams,

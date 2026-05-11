@@ -91,7 +91,10 @@ const parseTextBlocks = (service) => {
       return (
         textBlock.type.name.toUpperCase() === 'TEASER' ||
         textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
-        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
+        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM' ||
+        textBlock.type.name.toUpperCase() === 'TYPISIERUNG' ||
+        textBlock.type.name.toUpperCase() === 'STATUS KATALOGEINTRAG' ||
+        textBlock.type.name.toUpperCase() === 'STATUS BIBLIOTHEKSEINTRAG'
       );
     });
   }
