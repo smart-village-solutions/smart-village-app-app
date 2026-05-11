@@ -1,20 +1,24 @@
 import _filter from 'lodash/filter';
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
   IndexFilterWrapperAndList,
-  LoadingSpinner,
   SafeAreaViewFlex
 } from '../../components';
 import { ServiceList } from '../../components/BUS/ServiceList';
 import { colors, consts, texts } from '../../config';
 import { runAsyncTasksSafely } from '../../helpers';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
-import { useBusAreas, useBusServices, useBusTop10, useMatomoTrackScreenView } from '../../hooks';
+import {
+  useBusInitialArea,
+  useBusServices,
+  useBusTop10,
+  useMatomoTrackScreenView
+} from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
@@ -59,7 +63,11 @@ export const IndexScreen = ({ navigation }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { bus = {} } = settings;
-  const [areaId, setAreaId] = useState(bus?.areaId?.toString());
+  const initialAreaId = bus?.areaId?.toString();
+  const { data: initialArea } = useBusInitialArea(initialAreaId);
+  const initialAreaName = initialArea?.label || '';
+  const [areaId, setAreaId] = useState(initialAreaId);
+  const [areaName, setAreaName] = useState('');
   const [filter, setFilter] = useState(
     bus?.initialFilter?.map((entry, index) => ({
       id: FILTER_IDS[entry.toUpperCase()],
@@ -72,10 +80,9 @@ export const IndexScreen = ({ navigation }) => {
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BUS);
 
-  const { data: areas = [], isLoading: isLoadingAreas } = useBusAreas(areaId);
-
   const {
     data: services = [],
+    isFetching: isFetchingServices,
     isLoading: isLoadingServices,
     refetch: refetchServices
   } = useBusServices(areaId);
@@ -84,6 +91,12 @@ export const IndexScreen = ({ navigation }) => {
     isLoading: isLoadingTop10,
     refetch: refetchTop10
   } = useBusTop10(services);
+  // areaName is '' on first render while initialAreaName loads asynchronously.
+  // Only use initialAreaName as a fallback when we are still on the configured default area.
+  const resolvedAreaName = useMemo(
+    () => areaName || (`${areaId}` === `${initialAreaId}` ? initialAreaName : ''),
+    [areaId, areaName, initialAreaId, initialAreaName]
+  );
 
   const refresh = async () => {
     setRefreshing(true);
@@ -95,45 +108,39 @@ export const IndexScreen = ({ navigation }) => {
   };
 
   const top10 = getListItems(areaId, top10Services);
-  const loading =
-    isLoadingAreas ||
+  const isListLoading =
     isLoadingServices ||
+    isFetchingServices ||
     (selectedFilter?.id === FILTER_IDS.TOP10 && isLoadingTop10);
-  const shouldShowInitialLoading = loading && !services.length && !top10.length;
-  const shouldShowLoadingOverlay = loading && selectedFilter?.id !== FILTER_IDS.TOP10;
-
-  if (shouldShowInitialLoading) {
-    return <LoadingSpinner loading />;
-  }
-
   const results = getListItems(areaId, services);
 
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
-        {shouldShowLoadingOverlay ? (
-          <LoadingSpinner loading />
-        ) : (
-          <ServiceList
-            navigation={navigation}
-            selectedFilter={selectedFilter}
-            results={results}
-            areaId={areaId}
-            setAreaId={setAreaId}
-            areas={areas}
-            top10={top10}
-            loading={loading}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={refresh}
-                colors={[colors.refreshControl]}
-                tintColor={colors.refreshControl}
-              />
-            }
-          />
-        )}
+        <ServiceList
+          navigation={navigation}
+          selectedFilter={selectedFilter}
+          results={results}
+          areaId={areaId}
+          areaName={resolvedAreaName}
+          initialAreaId={initialAreaId}
+          initialAreaName={initialAreaName}
+          setArea={(area) => {
+            setAreaId(area.id);
+            setAreaName(area.label);
+          }}
+          top10={top10}
+          isListLoading={isListLoading}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refresh}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        />
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );

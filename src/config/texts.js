@@ -91,8 +91,13 @@ export const texts = {
       search: 'Suche'
     },
     locationFilter: {
+      error: 'Die Ortssuche ist derzeit nicht verfügbar.',
       label: 'Ort',
-      searchPlaceholder: 'Suche'
+      loading: 'Orte werden geladen...',
+      minSearchLength: 'Bitte gib mindestens 3 Zeichen ein.',
+      noResults: 'Keine Orte gefunden.',
+      resetTo: (areaName) => `Auf ${areaName} zurücksetzen`,
+      searchPlaceholder: 'Ort suchen'
     },
     textSearch: {
       label: 'Dienstleistung',

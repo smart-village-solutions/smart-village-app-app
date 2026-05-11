@@ -2,8 +2,23 @@ import _sortBy from 'lodash/sortBy';
 import { useContext } from 'react';
 import { useQuery } from 'react-query';
 
-import { findPublicServices, getPublicService } from '../queries/bus';
+import {
+  findPublicServices,
+  getPoliticalArea,
+  getPublicService,
+  searchPoliticalAreas
+} from '../queries/bus';
 import { SettingsContext } from '../SettingsProvider';
+import type {
+  AreaId,
+  BusAreaSearchResult,
+  BusServiceArgs,
+  BusServiceDetail,
+  BusServiceListItem,
+  BusSettings,
+  BusSettingsContextValue,
+  PoliticalArea
+} from '../types';
 
 import { useStaticContent } from './staticContent';
 
@@ -12,43 +27,9 @@ const BUS_QUERY_KEYS = {
   ROOT: 'bus',
   SERVICE: 'service',
   SERVICES: 'services',
+  INITIAL_AREA: 'initial-area',
   TOP10: 'top10'
 } as const;
-
-type AreaId = string | number | undefined | null;
-
-type BusSettings = {
-  apiKey?: string;
-  areaId?: string | number;
-  initialFilter?: string[];
-  uri?: string;
-};
-
-type BusService = {
-  externalId?: string | number;
-  id?: string | number;
-  name?: string | null;
-  teaser?: string | null;
-};
-
-type SettingsValue = {
-  globalSettings?: {
-    settings?: {
-      bus?: BusSettings;
-    };
-  };
-};
-
-type BusArea = {
-  areaId: string;
-  selected: boolean;
-  value: string;
-};
-
-type BusServiceArgs = {
-  areaId?: AreaId;
-  id?: string | number | null;
-};
 
 // Avoid leaking the raw API key into React Query devtools while still changing the cache key
 // when credentials change.
@@ -74,24 +55,35 @@ export const getBusQueryConfigKey = (bus: Pick<BusSettings, 'apiKey' | 'uri'> = 
 };
 
 const useBusSettings = (): BusSettings => {
-  const { globalSettings } = useContext(SettingsContext) as SettingsValue;
+  const { globalSettings } = useContext(SettingsContext) as BusSettingsContextValue;
   return globalSettings?.settings?.bus ?? {};
 };
 
-// TODO: query political areas
-export const useBusAreas = (areaId: AreaId) => {
-  const normalizedAreaId = `${areaId}`;
+export const useBusAreas = (searchTerm: string = '', isEnabled: boolean = true) => {
+  const bus = useBusSettings();
+  const hasBusConfig = !!bus.uri;
+  const isQueryEnabled = isEnabled && hasBusConfig && searchTerm.trim().length >= 3;
+
+  const { data, error, isError, isFetching, isLoading, refetch } = useQuery<
+    BusAreaSearchResult[],
+    Error
+  >(
+    [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.AREAS, searchTerm],
+    () => searchPoliticalAreas({ searchTerm, bus }),
+    {
+      enabled: isQueryEnabled,
+      keepPreviousData: true
+    }
+  );
 
   return {
-    data: [
-      {
-        areaId: normalizedAreaId,
-        selected: true,
-        value: normalizedAreaId
-      }
-    ] satisfies BusArea[],
-    isLoading: false as const,
-    queryKey: [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.AREAS, areaId] as const
+    data,
+    error,
+    hasBusConfig,
+    isError,
+    isFetching,
+    isLoading,
+    refetch
   };
 };
 
@@ -100,16 +92,38 @@ export const useBusServices = (areaId: AreaId) => {
   const hasBusConfig = !!bus.uri && !!areaId;
   const busQueryConfigKey = getBusQueryConfigKey(bus);
 
-  const { data, isLoading, refetch } = useQuery<BusService[]>(
+  const { data, isFetching, isLoading, refetch } = useQuery<BusServiceListItem[]>(
     [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.SERVICES, areaId, busQueryConfigKey],
     () => findPublicServices({ areaId, bus }),
+    {
+      enabled: hasBusConfig,
+      keepPreviousData: true
+    }
+  );
+
+  return {
+    data: _sortBy(data ?? [], (item) => item.name?.toUpperCase()),
+    isFetching,
+    isLoading,
+    refetch
+  };
+};
+
+export const useBusInitialArea = (areaId: AreaId) => {
+  const bus = useBusSettings();
+  const hasBusConfig = !!bus?.uri && !!areaId;
+
+  const { data, isFetching, isLoading, refetch } = useQuery<PoliticalArea | null, Error>(
+    [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.INITIAL_AREA, areaId],
+    () => getPoliticalArea({ areaId, bus }),
     {
       enabled: hasBusConfig
     }
   );
 
   return {
-    data: _sortBy(data ?? [], (item) => item.name?.toUpperCase()),
+    data,
+    isFetching,
     isLoading,
     refetch
   };
@@ -120,7 +134,7 @@ export const useBusService = ({ areaId, id }: BusServiceArgs) => {
   const hasBusConfig = !!bus.uri && !!areaId;
   const busQueryConfigKey = getBusQueryConfigKey(bus);
 
-  const { data, isLoading, refetch } = useQuery<BusService | undefined>(
+  const { data, isLoading, refetch } = useQuery<BusServiceDetail | undefined, Error>(
     [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.SERVICE, areaId, id, busQueryConfigKey],
     () => getPublicService({ areaId, bus, id }),
     {
@@ -135,7 +149,7 @@ export const useBusService = ({ areaId, id }: BusServiceArgs) => {
   };
 };
 
-export const useBusTop10 = (services: BusService[] = []) => {
+export const useBusTop10 = (services: BusServiceListItem[] = []) => {
   const {
     data: top10Ids = [],
     loading: top10IdsLoading,
@@ -150,7 +164,7 @@ export const useBusTop10 = (services: BusService[] = []) => {
 
   const top10 = top10Ids
     .map((id) => services.find((service) => `${service.id}` === `${id}`))
-    .filter((service): service is BusService => !!service);
+    .filter((service): service is BusServiceListItem => !!service);
 
   return {
     data: top10,

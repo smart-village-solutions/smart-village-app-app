@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { VerticalList } from '../VerticalList';
 
@@ -7,17 +7,27 @@ import { IndexFilter } from './IndexFilter';
 
 export const ServiceList = ({
   areaId,
-  areas,
-  loading,
+  areaName,
+  initialAreaId,
+  initialAreaName,
+  isListLoading,
   navigation,
   refreshControl,
   results = [],
   selectedFilter,
-  setAreaId,
+  setArea,
   top10
 }) => {
   const activeFilter = selectedFilter || { id: 3 };
   const [listItems, setListItems] = useState(activeFilter.id === 1 ? top10 : []);
+  const previousAreaId = useRef(areaId);
+
+  useEffect(() => {
+    if (previousAreaId.current !== areaId) {
+      previousAreaId.current = areaId;
+      setListItems([]);
+    }
+  }, [areaId]);
 
   useEffect(() => {
     if (activeFilter.id === 1) {
@@ -37,11 +47,14 @@ export const ServiceList = ({
           listItems={listItems}
           setListItems={setListItems}
           areaId={areaId}
-          setAreaId={setAreaId}
-          areas={areas}
-          loading={loading}
+          areaName={areaName}
+          initialAreaId={initialAreaId}
+          initialAreaName={initialAreaName}
+          setArea={setArea}
+          loading={isListLoading}
         />
       }
+      isLoading={isListLoading}
       showBackToTop
       refreshControl={refreshControl}
     />
@@ -50,12 +63,14 @@ export const ServiceList = ({
 
 ServiceList.propTypes = {
   areaId: PropTypes.string.isRequired,
-  areas: PropTypes.array,
-  loading: PropTypes.bool.isRequired,
+  areaName: PropTypes.string,
+  initialAreaId: PropTypes.string,
+  initialAreaName: PropTypes.string,
+  isListLoading: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
   refreshControl: PropTypes.object,
   results: PropTypes.array,
   selectedFilter: PropTypes.object.isRequired,
-  setAreaId: PropTypes.func.isRequired,
+  setArea: PropTypes.func.isRequired,
   top10: PropTypes.array.isRequired
 };
