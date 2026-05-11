@@ -31,13 +31,13 @@ export const Authority = ({ data, bottomDivider, openWebScreen }) => {
         <Wrapper style={styles.wrapperWithoutTopPadding}>
           {!!openingHours && (
             <View>
-              <BoldText>{texts.bbBus.authority.openingTime}:</BoldText>
+              <BoldText>{texts.bus.authority.openingTime}:</BoldText>
               <HtmlView html={trimNewLines(openingHours)} openWebScreen={openWebScreen} />
             </View>
           )}
           {elevator !== undefined && (
             <View>
-              <BoldText>{texts.bbBus.authority.elevator}:</BoldText>
+              <BoldText>{texts.bus.authority.elevator}:</BoldText>
               <RegularText>{elevator ? 'ja' : 'nein'}</RegularText>
             </View>
           )}
@@ -48,7 +48,7 @@ export const Authority = ({ data, bottomDivider, openWebScreen }) => {
           )}
           {wheelchairAccessible !== undefined && (
             <View>
-              <BoldText>{texts.bbBus.authority.wheelchairAccessible}:</BoldText>
+              <BoldText>{texts.bus.authority.wheelchairAccessible}:</BoldText>
               <RegularText>{wheelchairAccessible ? 'ja' : 'nein'}</RegularText>
             </View>
           )}

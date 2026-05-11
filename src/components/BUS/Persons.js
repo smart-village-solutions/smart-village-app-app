@@ -15,7 +15,7 @@ export const Persons = ({ data, openWebScreen }) => {
   const { persons } = data;
 
   return (
-    <Block title={texts.bbBus.employees}>
+    <Block title={texts.bus.employees}>
       {persons.map((person) => {
         const {
           id,

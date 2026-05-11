@@ -12,13 +12,6 @@ export const useOParlQuery: typeof useQuery = (query, options) => {
   return useQuery(query, { client, fetchPolicy: 'network-only', ...options });
 };
 
-export const useBBBusQuery: typeof useQuery = (query, options) => {
-  const { globalSettings } = useContext(SettingsContext);
-  const [client] = useState(OParlClient(globalSettings?.settings?.busBb?.uri));
-
-  return useQuery(query, { client, fetchPolicy: 'network-only', ...options });
-};
-
 export const useConsulQuery: typeof useQuery = (query, options) => {
   return useQuery(query, { client: ConsulClient, fetchPolicy: 'network-only', ...options });
 };
