@@ -11,7 +11,7 @@ describe('BUS queries', () => {
   });
 
   it('does not call the autocomplete endpoint below the minimum search length', async () => {
-    const fetchSpy = jest.spyOn(global, 'fetch');
+    const fetchSpy = jest.spyOn(globalThis, 'fetch');
 
     const result = await searchPoliticalAreas({ searchTerm: 'ab', bus });
 
@@ -20,7 +20,7 @@ describe('BUS queries', () => {
   });
 
   it('returns political-area search results as an array', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       json: async () => ({
         values: [
           {
@@ -36,7 +36,7 @@ describe('BUS queries', () => {
 
     const result = await searchPoliticalAreas({ searchTerm: 'zirk', bus });
 
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toHaveBeenCalledWith(
       'https://server.int-development.smart-village.app/api/v1/political-area/search?searchWords=zirk*',
       expect.objectContaining({
         headers: expect.objectContaining({
@@ -58,7 +58,7 @@ describe('BUS queries', () => {
   });
 
   it('forwards multiple words as repeated wildcard searchWords params', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       json: async () => ({
         values: [
           {
@@ -74,7 +74,7 @@ describe('BUS queries', () => {
 
     await searchPoliticalAreas({ searchTerm: 'bad bel', bus });
 
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toHaveBeenCalledWith(
       'https://server.int-development.smart-village.app/api/v1/political-area/search?searchWords=bad*&searchWords=bel*',
       expect.objectContaining({
         headers: expect.objectContaining({
@@ -85,7 +85,7 @@ describe('BUS queries', () => {
   });
 
   it('loads a political area detail by id and maps it into an area result', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       json: async () => ({
         id: '10004',
         name: 'Bad Belzig',
@@ -98,7 +98,7 @@ describe('BUS queries', () => {
 
     const result = await getPoliticalArea({ areaId: '10004', bus });
 
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toHaveBeenCalledWith(
       'https://server.int-development.smart-village.app/api/v1/political-area/10004',
       expect.objectContaining({
         headers: expect.objectContaining({
@@ -117,7 +117,7 @@ describe('BUS queries', () => {
   });
 
   it('returns null when the political area detail is invalid', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       json: async () => ({}),
       ok: true
     });
@@ -128,7 +128,7 @@ describe('BUS queries', () => {
   });
 
   it('returns an empty list for unexpected political-area search payloads', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       json: async () => ({
         suggestions: [
           {
@@ -149,7 +149,7 @@ describe('BUS queries', () => {
   });
 
   it('returns an empty list when the political-area response has no values', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       json: async () => ({}),
       ok: true
     });

@@ -80,7 +80,7 @@ export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
   if (!sanitizedSearchWords.length) return [];
 
   const searchWordsQuery = sanitizedSearchWords
-    .map((word) => `searchWords=${encodeURIComponent(`${word}*`)}`)
+    .map((word) => `searchWords=${encodeURIComponent(word + '*')}`)
     .join('&');
   const payload = await requestJson(`${baseUrl}/political-area/search?${searchWordsQuery}`, apiKey);
 
