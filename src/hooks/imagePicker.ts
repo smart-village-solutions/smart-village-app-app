@@ -116,7 +116,7 @@ export const useSelectImage = ({
 
       return result.assets[0];
     }
-  }, [onChange]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality]);
 
   return { imageUri, selectImage };
 };
@@ -174,7 +174,7 @@ export const useCaptureImage = ({
           // Ask user before requesting gallery save permission
           Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
             { text: texts.errors.image.cancel, style: 'cancel' },
-            { text: texts.errors.image.save, onPress: () => saveImageToGallery(uri) }
+            { text: texts.errors.image.save, onPress: async () => await saveImageToGallery(uri) }
           ]);
         } else {
           await saveImageToGallery(uri);
@@ -183,7 +183,7 @@ export const useCaptureImage = ({
 
       return result.assets[0];
     }
-  }, [onChange]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality, saveImage]);
 
   return { imageUri, captureImage };
 };
