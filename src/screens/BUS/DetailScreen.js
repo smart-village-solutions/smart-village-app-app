@@ -130,6 +130,8 @@ export const DetailScreen = ({ route }) => {
     setRefreshing(true);
     try {
       await refetch();
+    } catch (error) {
+      console.warn('BUS detail refresh failed', error);
     } finally {
       setRefreshing(false);
     }

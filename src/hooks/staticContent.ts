@@ -105,7 +105,7 @@ export const useStaticContent = <T>({
       data: undefined,
       parseError: nextParseError
     };
-  }, [data, parseFromJson]);
+  }, [data, loading, parseFromJson, type]);
 
   return {
     data: publicFileData,

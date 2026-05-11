@@ -41,7 +41,7 @@ type SettingsValue = {
 
 type BusArea = {
   areaId: string;
-  selected: true;
+  selected: boolean;
   value: string;
 };
 

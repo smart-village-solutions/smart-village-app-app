@@ -12,6 +12,7 @@ import {
 } from '../../components';
 import { ServiceList } from '../../components/BUS/ServiceList';
 import { colors, consts, texts } from '../../config';
+import { runAsyncTasksSafely } from '../../helpers';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
 import { useBusAreas, useBusServices, useBusTop10, useMatomoTrackScreenView } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
@@ -84,9 +85,13 @@ export const IndexScreen = ({ navigation }) => {
     refetch: refetchTop10
   } = useBusTop10(services);
 
-  const refresh = () => {
+  const refresh = async () => {
     setRefreshing(true);
-    Promise.all([refetchServices?.(), refetchTop10?.()]).finally(() => setRefreshing(false));
+    try {
+      await runAsyncTasksSafely([refetchServices, refetchTop10]);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const top10 = getListItems(areaId, top10Services);
@@ -135,8 +140,5 @@ export const IndexScreen = ({ navigation }) => {
 };
 
 IndexScreen.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  data: PropTypes.object,
-  loading: PropTypes.bool,
-  error: PropTypes.object
+  navigation: PropTypes.object.isRequired
 };
