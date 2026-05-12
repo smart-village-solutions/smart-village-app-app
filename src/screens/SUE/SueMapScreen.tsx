@@ -91,6 +91,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
+  const currentPosition = position || lastKnownPosition;
 
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
@@ -149,16 +150,15 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
       <MapLibre
         clusterDistance={geoMap?.clusterDistance}
         clusterThreshold={geoMap?.clusterThreshold}
+        currentPosition={currentPosition}
         isMultipleMarkersMap
         isMyLocationButtonVisible={isMyLocationButtonVisible}
         locations={mapMarkers}
         mapStyle={styles.map}
         onMarkerPress={setSelectedRequestId}
         onMyLocationButtonPress={() => {
-          const location = position || lastKnownPosition;
-
           locationServiceEnabledAlert({
-            currentPosition: location,
+            currentPosition: currentPosition,
             locationServiceEnabled,
             navigation
           });

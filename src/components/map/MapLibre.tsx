@@ -822,6 +822,8 @@ export const MapLibre = ({
   const maximizeFullscreenStyle = isFullscreenMap
     ? { bottom: normalize(15) + (safeAreaBottom ? 0 : bottomTabBarHeight), right: 0 as const }
     : undefined;
+  const hasCurrentPosition =
+    currentPosition?.coords?.latitude != null && currentPosition?.coords?.longitude != null;
 
   return (
     <View style={[styles.container, style]}>
@@ -1011,12 +1013,13 @@ export const MapLibre = ({
       {isMyLocationButtonVisible && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
-          onPress={() => {
-            if (showsUserLocation) {
+          onPress={async () => {
+            await onMyLocationButtonPress?.({ isFullScreenMap: isFullscreenMap });
+
+            // Android can crash when user tracking is enabled before a valid
+            // runtime-granted location is available on the native layer.
+            if (showsUserLocation && hasCurrentPosition) {
               setFollowsUserLocation(true);
-            }
-            onMyLocationButtonPress?.({});
-            if (showsUserLocation) {
               setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
             }
           }}
