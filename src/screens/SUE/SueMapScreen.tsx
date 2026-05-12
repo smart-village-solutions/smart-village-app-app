@@ -81,6 +81,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
   const { locationService } = settings;
+  const isMyLocationButtonVisible = locationService !== false;
   const { sueListItem = {} } = appDesignSystem;
   const { showViewSwitcherButton = false } = sueListItem;
   const { geoMap = {} } = sueConfig;
@@ -148,7 +149,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
         clusterDistance={geoMap?.clusterDistance}
         clusterThreshold={geoMap?.clusterThreshold}
         isMultipleMarkersMap
-        isMyLocationButtonVisible={!!locationService}
+        isMyLocationButtonVisible={isMyLocationButtonVisible}
         locations={mapMarkers}
         mapStyle={styles.map}
         onMarkerPress={setSelectedRequestId}

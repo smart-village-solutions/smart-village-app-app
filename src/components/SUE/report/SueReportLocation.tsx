@@ -119,6 +119,7 @@ export const SueReportLocation = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { locationService } = settings;
+  const isMyLocationButtonVisible = locationService !== false;
   const systemPermission = useSystemPermission();
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
@@ -328,7 +329,7 @@ export const SueReportLocation = ({
           clusterThreshold={configuration.geoMap?.clusterThreshold}
           currentPosition={currentPosition}
           isMultipleMarkersMap
-          isMyLocationButtonVisible={!!locationService}
+          isMyLocationButtonVisible={isMyLocationButtonVisible}
           locations={locations}
           mapStyle={[
             styles.map,
