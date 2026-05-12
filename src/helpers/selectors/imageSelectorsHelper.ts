@@ -177,12 +177,13 @@ export const onImageSelect = async ({
 
   if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
     const extension = mimeType.split('/')[1];
+    const allowedAttachmentTypes = configuration?.limitation?.allowedAttachmentTypes?.value || '';
 
-    if (!configuration.limitation.allowedAttachmentTypes.value.includes(extension)) {
+    if (!allowedAttachmentTypes.includes(extension)) {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageType);
     }
 
-    if (!!location.latitude && !!location.longitude) {
+    if (Number.isFinite(location.latitude) && Number.isFinite(location.longitude)) {
       try {
         await reverseGeocode({
           areaServiceData,
@@ -195,6 +196,12 @@ export const onImageSelect = async ({
         coordinateCheck.setUpdateRegionFromImage(true);
         coordinateCheck.setShowCoordinatesFromImageAlert(false);
       } catch (error) {
+        coordinateCheck.setSelectedPosition(undefined);
+        coordinateCheck.setUpdateRegionFromImage(false);
+        setValue('city', '');
+        setValue('houseNumber', '');
+        setValue('street', '');
+        setValue('postalCode', '');
         console.error(error);
       }
     }

@@ -167,7 +167,9 @@ export const useCaptureImage = ({
       const uri = result.assets[0].uri;
       onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
 
-      if (saveImage) {
+      // Android camera flow should not block SUE image selection with an extra
+      // gallery-permission prompt after taking a photo.
+      if (saveImage && device.platform !== 'android') {
         const { status: mediaStatus } = await getPermissionsAsync();
 
         if (mediaStatus !== PermissionStatus.GRANTED) {

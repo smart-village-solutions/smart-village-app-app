@@ -127,28 +127,32 @@ export const MultiImageSelector = ({
     imageFunction: () => Promise<ImagePickerAsset | undefined>,
     from?: string
   ) => {
-    await onBeforeNativeImagePicker?.();
+    try {
+      await onBeforeNativeImagePicker?.();
 
-    setLoading(true);
-    await onImageSelect({
-      configuration,
-      coordinateCheck,
-      errorType,
-      from,
-      imageFunction,
-      imagesAttributes,
-      infoAndErrorText,
-      lastKnownPosition,
-      maxFileSize,
-      position,
-      reverseGeocode,
-      selectorType,
-      setImagesAttributes,
-      setInfoAndErrorText
-    });
-
-    setIsModalVisible(false);
-    setLoading(false);
+      setLoading(true);
+      await onImageSelect({
+        configuration,
+        coordinateCheck,
+        errorType,
+        from,
+        imageFunction,
+        imagesAttributes,
+        infoAndErrorText,
+        lastKnownPosition,
+        maxFileSize,
+        position,
+        reverseGeocode,
+        selectorType,
+        setImagesAttributes,
+        setInfoAndErrorText
+      });
+    } catch (error) {
+      Alert.alert(texts.sue.report.alerts.hint, texts.defectReport.alerts.error);
+    } finally {
+      setIsModalVisible(false);
+      setLoading(false);
+    }
   };
 
   const imageDelete = async (index: number) => {

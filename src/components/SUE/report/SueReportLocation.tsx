@@ -114,7 +114,7 @@ export const SueReportLocation = ({
 }) => {
   const reverseGeocode = useReverseGeocode();
   const navigation = useNavigation();
-  const { locationSettings = {}, setAndSyncLocationSettings } = useLocationSettings();
+  const { locationSettings = {} } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -225,19 +225,29 @@ export const SueReportLocation = ({
     const requestId = latestReverseGeocodeRequestRef.current + 1;
 
     latestReverseGeocodeRequestRef.current = requestId;
-    setSelectedPosition(position);
     setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
     clearAddressFields();
 
     try {
-      await reverseGeocode({
+      const reverseGeocodeResult = await reverseGeocode({
         areaServiceData,
         errorMessage,
         isLatestRequest: () => latestReverseGeocodeRequestRef.current === requestId,
         position,
         setValue
       });
+
+      if (reverseGeocodeResult?.isStale) {
+        return;
+      }
+
+      if (reverseGeocodeResult?.isWithinArea) {
+        setSelectedPosition(position);
+        return;
+      }
+
+      setSelectedPosition(undefined);
     } catch (error) {
       if (latestReverseGeocodeRequestRef.current !== requestId) {
         return;
@@ -261,17 +271,6 @@ export const SueReportLocation = ({
         return fallbackPosition;
       }
 
-      const permissionResponse = await Location.requestForegroundPermissionsAsync();
-      const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
-
-      await setAndSyncLocationSettings({
-        locationService: hasPermission
-      });
-
-      if (!hasPermission) {
-        return undefined;
-      }
-
       try {
         const current = await Location.getCurrentPositionAsync({
           accuracy: Platform.select({
@@ -287,12 +286,33 @@ export const SueReportLocation = ({
     };
 
     const applyCurrentPosition = async () => {
+      if (!locationServiceEnabled) {
+        locationServiceEnabledAlert({
+          currentPosition: undefined,
+          locationServiceEnabled: false,
+          navigation
+        });
+        return;
+      }
+
+      const permissionResponse = await Location.getForegroundPermissionsAsync();
+      const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
+
+      if (!hasPermission) {
+        locationServiceEnabledAlert({
+          currentPosition: undefined,
+          locationServiceEnabled: true,
+          navigation
+        });
+        return;
+      }
+
       const resolvedPosition = await resolvePosition();
 
       if (!resolvedPosition?.coords) {
         locationServiceEnabledAlert({
           currentPosition: undefined,
-          locationServiceEnabled,
+          locationServiceEnabled: true,
           navigation
         });
         return;
