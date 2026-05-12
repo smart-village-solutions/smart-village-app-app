@@ -90,6 +90,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     start_date: INITIAL_START_DATE
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
+  const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
+    start_date: INITIAL_START_DATE
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
   const [viewType, setViewType] = useState(route.params?.viewType || SueViewType.List);
@@ -131,30 +134,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   );
 
   const { data: dataCount } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS, 'count', queryVariablesWithoutSearch],
-    async () => {
-      let offset = 0;
-      let totalCount = 0;
-      let hasMorePages = true;
-
-      while (hasMorePages) {
-        const page = await getQuery(QUERY_TYPES.SUE.REQUESTS)({
-          ...queryVariablesWithoutSearch,
-          limit,
-          offset,
-          sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME
-        });
-
-        const pageLength = Array.isArray(page) ? page.length : 0;
-        totalCount += pageLength;
-        hasMorePages = pageLength === limit;
-        offset += limit;
-      }
-
-      return totalCount;
-    },
+    [QUERY_TYPES.SUE.LOCATION, { dataCountQueryVariables }],
+    () => getQuery(QUERY_TYPES.SUE.LOCATION)(dataCountQueryVariables),
     {
-      enabled: query === QUERY_TYPES.SUE.REQUESTS && !searchTerm
+      enabled: query !== QUERY_TYPES.SUE.MY_REQUESTS
     }
   );
 
@@ -176,6 +159,12 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       setIsOpening(false);
     }, 50);
   }, []);
+
+  useEffect(() => {
+    const { limit, offset, search, ...rest } = queryVariables;
+
+    setDataCountQueryVariables(rest);
+  }, [queryVariables]);
 
   // When a search term is active, automatically load all remaining pages so that
   // client-side filtering covers the full data set, not just the already-loaded pages.
@@ -217,8 +206,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const displayCount = useMemo(() => {
     return searchTerm || query === QUERY_TYPES.SUE.MY_REQUESTS
       ? listItems.length
-      : dataCount;
-  }, [searchTerm, query, listItems.length, dataCount]);
+      : dataCount?.length;
+  }, [searchTerm, query, listItems.length, dataCount?.length]);
 
   const refresh = async () => {
     setRefreshing(true);
