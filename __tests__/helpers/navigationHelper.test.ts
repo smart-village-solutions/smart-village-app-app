@@ -82,12 +82,27 @@ describe('navigateToRoute', () => {
         navigate,
         push
       },
-      params: { query: 'myRequests' },
+      params: { query: 'requests' },
       routeName: 'SueList',
       targetTabIndex: 3
     });
 
     expect(getParent).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith('SueList', { query: 'requests' });
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it('stays on the current stack for SUE my requests even when a target tab index is provided', () => {
+    const { navigation, parentNavigate, navigate, push } = createNavigation();
+
+    navigateToRoute({
+      navigation,
+      params: { query: 'myRequests' },
+      routeName: 'SueList',
+      targetTabIndex: 3
+    });
+
+    expect(parentNavigate).not.toHaveBeenCalled();
     expect(navigate).toHaveBeenCalledWith('SueList', { query: 'myRequests' });
     expect(push).not.toHaveBeenCalled();
   });
