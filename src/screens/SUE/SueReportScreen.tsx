@@ -503,7 +503,7 @@ export const SueReportScreen = ({
     }
   };
 
-  const readReportValuesFromStore = async () => {
+  async function readReportValuesFromStore() {
     const savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
 
     if (savedValues) {
@@ -519,7 +519,7 @@ export const SueReportScreen = ({
     }
 
     setIsLoadingStoredData(false);
-  };
+  }
 
   const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
