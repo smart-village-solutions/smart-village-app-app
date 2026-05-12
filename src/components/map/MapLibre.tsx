@@ -1008,13 +1008,17 @@ export const MapLibre = ({
         )}
       </Map>
 
-      {isMyLocationButtonVisible && showsUserLocation && (
+      {isMyLocationButtonVisible && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
           onPress={() => {
-            setFollowsUserLocation(true);
+            if (showsUserLocation) {
+              setFollowsUserLocation(true);
+            }
             onMyLocationButtonPress?.({});
-            setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
+            if (showsUserLocation) {
+              setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
+            }
           }}
           style={[
             styles.buttonsContainer,
