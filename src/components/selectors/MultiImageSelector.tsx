@@ -62,6 +62,7 @@ export const MultiImageSelector = ({
   field,
   imageId,
   item,
+  onBeforeNativeImagePicker,
   selectorType
 }: {
   authToken: string | null;
@@ -72,6 +73,7 @@ export const MultiImageSelector = ({
   field: any;
   imageId?: number | string;
   item: any;
+  onBeforeNativeImagePicker?: () => Promise<void>;
   selectorType: string;
 }) => {
   const reverseGeocode = useReverseGeocode();
@@ -125,6 +127,8 @@ export const MultiImageSelector = ({
     imageFunction: () => Promise<ImagePickerAsset | undefined>,
     from?: string
   ) => {
+    await onBeforeNativeImagePicker?.();
+
     setLoading(true);
     await onImageSelect({
       configuration,
