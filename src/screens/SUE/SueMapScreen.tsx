@@ -249,8 +249,11 @@ const styles = StyleSheet.create({
     width: normalize(120)
   },
   imagePlaceholder: {
+    backgroundColor: colors.placeholder,
+    borderBottomLeftRadius: normalize(8),
+    borderTopLeftRadius: normalize(8),
     height: normalize(120),
-    width: normalize(30)
+    width: normalize(120)
   },
   imageContainer: {
     alignSelf: 'flex-start',
