@@ -478,9 +478,9 @@ export const SueReportScreen = ({
     [requiredFields, geoMap, sueProgress]
   );
 
-  const storeReportValues = useCallback(async () => {
+  const storeReportValues = useCallback(async (progress = currentProgress) => {
     await addToStore(SUE_REPORT_VALUES, {
-      currentProgress,
+      currentProgress: progress,
       selectedPosition,
       service,
       ...getValues()
@@ -561,12 +561,13 @@ export const SueReportScreen = ({
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    await storeReportValues();
+    const nextProgress = Math.min(currentProgress + 1, sueProgressWithConfig.length - 1);
+    await storeReportValues(nextProgress);
 
     if (currentProgress < sueProgressWithConfig.length - 1) {
-      setCurrentProgress(currentProgress + 1);
+      setCurrentProgress(nextProgress);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentProgress + 1),
+        x: device.width * nextProgress,
         y: 0,
         animated: true
       });
@@ -581,14 +582,16 @@ export const SueReportScreen = ({
   const handlePrevPage = useCallback(() => {
     Keyboard.dismiss();
     if (currentProgress > 0) {
-      setCurrentProgress(currentProgress - 1);
+      const prevProgress = currentProgress - 1;
+      void storeReportValues(prevProgress);
+      setCurrentProgress(prevProgress);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentProgress - 1),
+        x: device.width * prevProgress,
         y: 0,
         animated: true
       });
     }
-  }, [currentProgress]);
+  }, [currentProgress, storeReportValues]);
 
   // Ensure map fullscreen mode is exited when navigating between steps
   useEffect(() => {
