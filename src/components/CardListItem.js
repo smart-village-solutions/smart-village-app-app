@@ -7,7 +7,7 @@ import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth, momentFormat, navigateToRoute, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { SueCategory, SueImageFallback, SueStatus } from './SUE';
+import { SueCategory, SueStatus } from './SUE';
 import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
@@ -56,11 +56,6 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
           key={keyExtractor(picture.url, index)}
           placeholderStyle={styles.placeholderStyle}
           source={{ uri: picture.url }}
-        />
-      ) : isSue ? (
-        <SueImageFallback
-          key={keyExtractor('fallbackImage', index)}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
         />
       ) : null,
     overtitle: () =>
