@@ -151,7 +151,18 @@ export const defaultStackConfig = ({
     },
     {
       initialParams,
+      routeName: ScreenName.BusIndexFallback,
+      screenComponent: BusIndexScreen
+    },
+    {
+      initialParams,
       routeName: ScreenName.BusDetail,
+      screenComponent: BusDetailScreen,
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
+    },
+    {
+      initialParams,
+      routeName: ScreenName.BusDetailFallback,
       screenComponent: BusDetailScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
     },
