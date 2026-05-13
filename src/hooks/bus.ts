@@ -1,11 +1,12 @@
 import _sortBy from 'lodash/sortBy';
 import { useContext } from 'react';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
 
 import {
+  DEFAULT_LIST_LIMIT,
   findBusCategoryChildren,
   findBusCategoryRoot,
-  findPublicServices,
+  findPublicServicesPage,
   getPoliticalArea,
   getPublicService,
   searchPoliticalAreas
@@ -31,6 +32,7 @@ const BUS_QUERY_KEYS = {
   LIFE_SITUATIONS_ROOT: 'life-situations-root',
   ROOT: 'bus',
   SERVICE: 'service',
+  SERVICE_SEARCH: 'service-search',
   SERVICES: 'services',
   INITIAL_AREA: 'initial-area',
   TOP10: 'top10'
@@ -40,6 +42,13 @@ export const DEFAULT_BUS_LIFE_SITUATIONS_ROOT_SEARCH_WORD =
   'Lebenslagen für Bürgerinnen und Bürger';
 export const BUS_MIN_SEARCH_LENGTH = 3;
 export const BUS_SEARCH_DEBOUNCE_MS = 400;
+const BUS_QUERY_RETRY_COUNT = 0;
+
+const flattenServicePages = (pages?: { items?: BusServiceListItem[] }[]) =>
+  _sortBy(
+    (pages ?? []).flatMap((page) => page?.items ?? []),
+    (item) => item.name?.toUpperCase()
+  );
 
 // Avoid leaking the raw API key into React Query devtools while still changing the cache key
 // when credentials change.
@@ -78,6 +87,7 @@ const useBusSettings = (): BusSettings => {
 export const useBusAreas = (searchTerm: string = '', isEnabled: boolean = true) => {
   const bus = useBusSettings();
   const hasBusConfig = !!bus.uri;
+  const busQueryConfigKey = getBusQueryConfigKey(bus);
   const isQueryEnabled =
     isEnabled && hasBusConfig && searchTerm.trim().length >= BUS_MIN_SEARCH_LENGTH;
 
@@ -85,7 +95,7 @@ export const useBusAreas = (searchTerm: string = '', isEnabled: boolean = true) 
     BusAreaSearchResult[],
     Error
   >(
-    [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.AREAS, searchTerm],
+    [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.AREAS, searchTerm, busQueryConfigKey],
     () => searchPoliticalAreas({ searchTerm, bus }),
     {
       enabled: isQueryEnabled,
@@ -166,17 +176,107 @@ export const useBusServices = (areaId: AreaId) => {
   const hasBusConfig = !!bus.uri && !!areaId;
   const busQueryConfigKey = getBusQueryConfigKey(bus);
 
-  const { data, isFetching, isLoading, refetch } = useQuery<BusServiceListItem[]>(
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetching,
+    isFetchingNextPage,
+    isLoading,
+    refetch
+  } = useInfiniteQuery(
     [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.SERVICES, areaId, busQueryConfigKey],
-    () => findPublicServices({ areaId, bus }),
+    ({ pageParam = 0 }) =>
+      findPublicServicesPage({
+        areaId,
+        bus,
+        limit: DEFAULT_LIST_LIMIT,
+        offset: pageParam
+      }),
     {
-      enabled: hasBusConfig
+      enabled: hasBusConfig,
+      retry: BUS_QUERY_RETRY_COUNT,
+      getNextPageParam: (lastPage, pages) => {
+        const loadedItemsCount = pages.reduce(
+          (count, page) => count + (page?.items?.length ?? 0),
+          0
+        );
+
+        return loadedItemsCount < lastPage.totalItemCount ? loadedItemsCount : undefined;
+      }
     }
   );
 
   return {
-    data: _sortBy(data ?? [], (item) => item.name?.toUpperCase()),
+    data: flattenServicePages(data?.pages),
+    error,
+    fetchNextPage,
+    hasNextPage: !!hasNextPage,
+    isError,
     isFetching,
+    isFetchingNextPage,
+    isLoading,
+    refetch
+  };
+};
+
+export const useBusServiceSearch = (areaId: AreaId, searchTerm: string = '') => {
+  const bus = useBusSettings();
+  const trimmedSearchTerm = searchTerm.trim();
+  const hasBusConfig = !!bus.uri && !!areaId;
+  const isQueryEnabled = hasBusConfig && trimmedSearchTerm.length >= BUS_MIN_SEARCH_LENGTH;
+  const busQueryConfigKey = getBusQueryConfigKey(bus);
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetching,
+    isFetchingNextPage,
+    isLoading,
+    refetch
+  } = useInfiniteQuery(
+    [
+      BUS_QUERY_KEYS.ROOT,
+      BUS_QUERY_KEYS.SERVICE_SEARCH,
+      areaId,
+      trimmedSearchTerm,
+      busQueryConfigKey
+    ],
+    ({ pageParam = 0 }) =>
+      findPublicServicesPage({
+        areaId,
+        bus,
+        limit: DEFAULT_LIST_LIMIT,
+        offset: pageParam,
+        searchWord: trimmedSearchTerm
+      }),
+    {
+      enabled: isQueryEnabled,
+      retry: BUS_QUERY_RETRY_COUNT,
+      getNextPageParam: (lastPage, pages) => {
+        const loadedItemsCount = pages.reduce(
+          (count, page) => count + (page?.items?.length ?? 0),
+          0
+        );
+
+        return loadedItemsCount < lastPage.totalItemCount ? loadedItemsCount : undefined;
+      }
+    }
+  );
+
+  return {
+    data: flattenServicePages(data?.pages),
+    error,
+    fetchNextPage,
+    hasNextPage: !!hasNextPage,
+    isError,
+    isFetching,
+    isFetchingNextPage,
     isLoading,
     refetch
   };

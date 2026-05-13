@@ -80,12 +80,22 @@ export type BusAddress = {
 };
 
 export type BusFormLink = {
+  name?: string;
   url?: string;
 };
 
 export type BusForm = {
   links?: BusFormLink[];
   name?: string;
+};
+
+export type BusOnlineService = {
+  communications?: BusCommunication[];
+  links?: BusFormLink[];
+  name?: string;
+  publicName?: string;
+  title?: string;
+  url?: string;
 };
 
 export type BusOrganisationalUnit = {
@@ -110,6 +120,7 @@ export type BusPerson = {
 };
 
 export type BusServiceDetail = BusServiceListItem & {
+  onlineServices?: BusOnlineService[];
   organisationalUnits?: BusOrganisationalUnit[];
   persons?: BusPerson[];
   textBlocks?: BusTextBlockContainer[];

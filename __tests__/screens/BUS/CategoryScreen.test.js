@@ -11,6 +11,7 @@ import { SettingsContext } from '../../../src/SettingsProvider';
 import { ScreenName } from '../../../src/types/Navigation';
 
 const mockIndexFilterWrapperAndList = jest.fn();
+const mockBusIndexFilter = jest.fn();
 const mockVerticalList = jest.fn();
 const getLatestVerticalListProps = () =>
   mockVerticalList.mock.calls[mockVerticalList.mock.calls.length - 1][0];
@@ -19,6 +20,7 @@ jest.mock('../../../src/hooks', () => ({
   useBusCategoryChildren: jest.fn(),
   useBusInitialArea: jest.fn(),
   useBusLifeSituationsRoot: jest.fn(),
+  useBusServiceSearch: jest.fn(),
   useBusServices: jest.fn(),
   useBusTop10: jest.fn(),
   useMatomoTrackScreenView: jest.fn()
@@ -135,7 +137,11 @@ jest.mock('../../../src/components/BUS/LifeSituationListItem', () => {
 jest.mock('../../../src/components/BUS/IndexFilter', () => {
   const { View: RNView } = jest.requireActual('react-native');
 
-  const IndexFilter = () => <RNView />;
+  const IndexFilter = (props) => {
+    mockBusIndexFilter(props);
+
+    return <RNView />;
+  };
 
   IndexFilter.propTypes = {};
 
@@ -436,7 +442,7 @@ describe('BUS CategoryScreen', () => {
     });
   });
 
-  it('does not render unresolved direct service refs for the current area', () => {
+  it('renders direct service refs even when they are not part of the currently loaded area services', () => {
     hooks.useBusCategoryChildren.mockReturnValue({
       data: [],
       isError: false,
@@ -453,11 +459,11 @@ describe('BUS CategoryScreen', () => {
 
     const component = renderScreen();
 
-    expect(() =>
+    expect(
       component.root.findByProps({
         accessibilityLabel: '(Meldebescheinigung) button'
       })
-    ).toThrow();
+    ).toBeTruthy();
   });
 
   it('keeps the refreshable container mounted for the empty state', () => {
@@ -721,9 +727,20 @@ describe('BUS IndexScreen', () => {
     });
     hooks.useBusServices.mockReturnValue({
       data: [],
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
       isFetching: false,
+      isFetchingNextPage: false,
       isLoading: false,
       refetch: servicesRefetch
+    });
+    hooks.useBusServiceSearch.mockReturnValue({
+      data: [],
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetching: false,
+      isFetchingNextPage: false,
+      isLoading: false
     });
     hooks.useBusTop10.mockReturnValue({
       data: [],
@@ -1018,7 +1035,7 @@ describe('BUS IndexScreen', () => {
     );
   });
 
-  it('omits unresolved root direct service refs for the current area', () => {
+  it('keeps unresolved root direct service refs visible in the list', () => {
     hooks.useBusLifeSituationsRoot.mockReturnValue({
       data: {
         ...rootCategory,
@@ -1042,52 +1059,104 @@ describe('BUS IndexScreen', () => {
 
     expect(
       verticalListProps.data.find((item) => item.routeName === 'BusDetail' && item.title === 'Nicht verfuegbar')
-    ).toBeUndefined();
+    ).toEqual(
+      expect.objectContaining({
+        id: 'missing-root-service',
+        routeName: 'BusDetail',
+        title: 'Nicht verfuegbar'
+      })
+    );
   });
 });
 
 describe('BUS ServiceList', () => {
   const navigation = { navigate: jest.fn(), push: jest.fn() };
   const setArea = jest.fn();
+  const LIFE_SITUATIONS_EMPTY_STATE_MESSAGE =
+    'Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar.';
+  const SEARCH_FILTER = { id: 3, title: 'Suche', selected: true };
+  const A_Z_FILTER = { id: 4, title: 'A-Z', selected: true };
+  const LIFE_SITUATIONS_FILTER = { id: 2, title: 'Lebenslagen', selected: true };
+  const TOP10_FILTER = { id: 1, title: 'Meistgesucht', selected: true };
+  const TEST_FILTER = { id: 999, title: 'Test', selected: true };
+  const DEFAULT_TOP10 = [
+    {
+      id: 'service-a',
+      title: 'Altes Top10',
+      routeName: 'BusDetail',
+      params: { areaId: '09162000' }
+    }
+  ];
+  const createAZSelection = (value = 'A') => [{ id: 1, value, selected: true }];
+  const flushAtoZImport = async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await Promise.resolve();
+  };
 
   beforeEach(() => {
+    mockBusIndexFilter.mockClear();
     mockVerticalList.mockClear();
     navigation.navigate.mockClear();
     navigation.push.mockClear();
     setArea.mockClear();
+    hooks.useBusServiceSearch.mockReturnValue({
+      data: [],
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isError: false,
+      isFetchingNextPage: false,
+      isLoading: false
+    });
+  });
+
+  const createServiceListProps = (props = {}) => ({
+    areaId: '09162000',
+    areaName: 'Testort',
+    initialAreaId: '09162000',
+    initialAreaName: 'Testort',
+    isListLoading: false,
+    lifeSituationsEmptyStateMessage: LIFE_SITUATIONS_EMPTY_STATE_MESSAGE,
+    lifeSituations: [],
+    navigation,
+    results: [],
+    selectedFilter: TOP10_FILTER,
+    setArea,
+    top10: DEFAULT_TOP10,
+    ...props
   });
 
   const renderServiceList = (props = {}) => {
     let component;
 
     renderer.act(() => {
-      component = renderer.create(
-        <ServiceList
-          areaId="09162000"
-          areaName="Testort"
-          initialAreaId="09162000"
-          initialAreaName="Testort"
-          isListLoading={false}
-          lifeSituationsEmptyStateMessage="Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar."
-          lifeSituations={[]}
-          navigation={navigation}
-          results={[]}
-          selectedFilter={{ id: 1, title: 'Meistgesucht', selected: true }}
-          setArea={setArea}
-          top10={[
-            {
-              id: 'service-a',
-              title: 'Altes Top10',
-              routeName: 'BusDetail',
-              params: { areaId: '09162000' }
-            }
-          ]}
-          {...props}
-        />
-      );
+      component = renderer.create(<ServiceList {...createServiceListProps(props)} />);
     });
 
     return component;
+  };
+
+  const updateServiceList = (component, props = {}) => {
+    renderer.act(() => {
+      component.update(<ServiceList {...createServiceListProps(props)} />);
+    });
+  };
+
+  const getLatestIndexFilterProps = () =>
+    mockBusIndexFilter.mock.calls[mockBusIndexFilter.mock.calls.length - 1][0];
+
+  const setSearchInput = (value) => {
+    renderer.act(() => {
+      getLatestIndexFilterProps().setSearchData(value);
+    });
+  };
+
+  const selectAZFilter = (value = 'A') => {
+    renderer.act(() => {
+      getLatestIndexFilterProps().setAZFilterData(createAZSelection(value));
+    });
   };
 
   it('does not show stale TOP10 data after an area switch while the new area is still loading', () => {
@@ -1101,30 +1170,10 @@ describe('BUS ServiceList', () => {
       })
     ]);
 
-    renderer.act(() => {
-      component.update(
-        <ServiceList
-          areaId="11000000"
-          areaName="Neuort"
-          initialAreaId="09162000"
-          initialAreaName="Testort"
-          isListLoading
-          lifeSituationsEmptyStateMessage="Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar."
-          lifeSituations={[]}
-          navigation={navigation}
-          results={[]}
-          selectedFilter={{ id: 1, title: 'Meistgesucht', selected: true }}
-          setArea={setArea}
-          top10={[
-            {
-              id: 'service-a',
-              title: 'Altes Top10',
-              routeName: 'BusDetail',
-              params: { areaId: '09162000' }
-            }
-          ]}
-        />
-      );
+    updateServiceList(component, {
+      areaId: '11000000',
+      areaName: 'Neuort',
+      isListLoading: true
     });
 
     [verticalListProps] = mockVerticalList.mock.calls[mockVerticalList.mock.calls.length - 1];
@@ -1146,7 +1195,7 @@ describe('BUS ServiceList', () => {
           params: { areaId: '09162000' }
         }
       ],
-      selectedFilter: { id: 4, title: 'A-Z', selected: true }
+      selectedFilter: A_Z_FILTER
     });
 
     const verticalListProps = getLatestVerticalListProps();
@@ -1167,7 +1216,7 @@ describe('BUS ServiceList', () => {
           params: { areaId: '09162000' }
         }
       ],
-      selectedFilter: { id: 2, title: 'Lebenslagen', selected: true }
+      selectedFilter: LIFE_SITUATIONS_FILTER
     });
 
     const verticalListProps = getLatestVerticalListProps();
@@ -1187,7 +1236,7 @@ describe('BUS ServiceList', () => {
           params: { areaId: '09162000' }
         }
       ],
-      selectedFilter: { id: 3, title: 'Suche', selected: true }
+      selectedFilter: SEARCH_FILTER
     });
 
     const verticalListProps = getLatestVerticalListProps();
@@ -1195,18 +1244,335 @@ describe('BUS ServiceList', () => {
     expect(verticalListProps.data).toEqual([]);
   });
 
+  it('maps backend BUS search results to clickable list items', () => {
+    jest.useFakeTimers();
+    hooks.useBusServiceSearch.mockReturnValue({
+      data: [
+        {
+          id: 'service-search-1',
+          name: 'Gewerbe anmelden'
+        }
+      ],
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isError: false,
+      isFetchingNextPage: false,
+      isLoading: false
+    });
+
+    renderServiceList({ selectedFilter: SEARCH_FILTER });
+
+    setSearchInput('Gewerbe');
+
+    renderer.act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    const verticalListProps = getLatestVerticalListProps();
+
+    expect(verticalListProps.data).toEqual([
+      expect.objectContaining({
+        id: 'service-search-1',
+        routeName: 'BusDetail',
+        title: 'Gewerbe anmelden',
+        params: expect.objectContaining({
+          areaId: '09162000',
+          title: 'Gewerbe anmelden'
+        })
+      })
+    ]);
+    renderer.act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
+  });
+
+  it('debounces BUS search input before updating the backend query term', () => {
+    jest.useFakeTimers();
+    renderServiceList({ selectedFilter: SEARCH_FILTER });
+
+    expect(hooks.useBusServiceSearch).toHaveBeenLastCalledWith('09162000', '');
+
+    setSearchInput('Unternehmen');
+
+    expect(hooks.useBusServiceSearch).toHaveBeenLastCalledWith('09162000', '');
+
+    renderer.act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    expect(hooks.useBusServiceSearch).toHaveBeenLastCalledWith('09162000', 'Unternehmen');
+    renderer.act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
+  });
+
+  it('does not show the BUS search spinner while the input is still debouncing', () => {
+    jest.useFakeTimers();
+    renderServiceList({ selectedFilter: SEARCH_FILTER });
+
+    setSearchInput('Unternehmen');
+
+    expect(getLatestVerticalListProps().isLoading).toBe(false);
+
+    renderer.act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    renderer.act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
+  });
+
+  it('clears a pending BUS search term when the selected area changes', () => {
+    jest.useFakeTimers();
+    let component = renderServiceList({
+      selectedFilter: SEARCH_FILTER
+    });
+
+    setSearchInput('Unternehmen');
+
+    renderer.act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    expect(hooks.useBusServiceSearch).toHaveBeenLastCalledWith('09162000', 'Unternehmen');
+
+    updateServiceList(component, {
+      areaId: '11000000',
+      areaName: 'Neuort',
+      selectedFilter: SEARCH_FILTER,
+      top10: []
+    });
+
+    expect(hooks.useBusServiceSearch).toHaveBeenLastCalledWith('11000000', '');
+    renderer.act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
+  });
+
+  it('keeps the previous BUS search results visible while a new input is still debouncing', () => {
+    jest.useFakeTimers();
+    hooks.useBusServiceSearch.mockReturnValue({
+      data: [
+        {
+          id: 'service-search-1',
+          name: 'Gewerbe anmelden'
+        }
+      ],
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isError: false,
+      isFetchingNextPage: false,
+      isLoading: false
+    });
+
+    renderServiceList({ selectedFilter: SEARCH_FILTER });
+
+    setSearchInput('Gewerbe');
+
+    renderer.act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    expect(getLatestVerticalListProps().data).toEqual([
+      expect.objectContaining({
+        id: 'service-search-1',
+        title: 'Gewerbe anmelden'
+      })
+    ]);
+
+    setSearchInput('Gewerbe a');
+
+    expect(getLatestVerticalListProps().data).toEqual([
+      expect.objectContaining({
+        id: 'service-search-1',
+        title: 'Gewerbe anmelden'
+      })
+    ]);
+
+    renderer.act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
+  });
+
+  it('continues the A-Z import after a temporary next-page fetch is already in flight', async () => {
+    const fetchNextServicesPage = jest.fn().mockResolvedValue({
+      data: {
+        pages: [
+          {
+            items: [{ id: 'service-a', name: 'Anmeldung' }],
+            totalItemCount: 1
+          }
+        ]
+      }
+    });
+
+    let component = renderServiceList({
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      isFetchingNextServicesPage: true,
+      selectedFilter: A_Z_FILTER
+    });
+
+    selectAZFilter();
+
+    await renderer.act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(fetchNextServicesPage).not.toHaveBeenCalled();
+
+    updateServiceList(component, {
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      isFetchingNextServicesPage: false,
+      selectedFilter: A_Z_FILTER,
+      top10: []
+    });
+
+    await renderer.act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not restart the A-Z import loop after a failed page load', async () => {
+    const fetchNextServicesPage = jest.fn().mockRejectedValue(new Error('timeout'));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const component = renderServiceList({
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      selectedFilter: A_Z_FILTER
+    });
+
+    selectAZFilter();
+
+    await renderer.act(async () => {
+      await flushAtoZImport();
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(1);
+    updateServiceList(component, {
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      selectedFilter: A_Z_FILTER,
+      top10: []
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(1);
+    warnSpy.mockRestore();
+  });
+
+  it('stops the A-Z import when the backend reports no loading progress anymore', async () => {
+    const fetchNextServicesPage = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: {
+          pages: [
+            {
+              items: [{ id: 'service-a', name: 'Anmeldung' }],
+              totalItemCount: 2
+            }
+          ]
+        }
+      })
+      .mockResolvedValueOnce({
+        data: {
+          pages: [
+            {
+              items: [{ id: 'service-a', name: 'Anmeldung' }],
+              totalItemCount: 2
+            }
+          ]
+        }
+      })
+      .mockRejectedValueOnce(new Error('should not request more pages without progress'));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderServiceList({
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      selectedFilter: A_Z_FILTER
+    });
+
+    selectAZFilter();
+
+    await renderer.act(async () => {
+      await flushAtoZImport();
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(2);
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
   it('does not render the life situations empty state when no area is selected', () => {
     renderServiceList({
       areaId: undefined,
       areaName: '',
-      lifeSituationsEmptyStateMessage:
-        'Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar.',
-      selectedFilter: { id: 2, title: 'Lebenslagen', selected: true }
+      lifeSituationsEmptyStateMessage: LIFE_SITUATIONS_EMPTY_STATE_MESSAGE,
+      selectedFilter: LIFE_SITUATIONS_FILTER
     });
 
     const verticalListProps = getLatestVerticalListProps();
 
     expect(verticalListProps.data).toEqual([]);
     expect(verticalListProps.ListEmptyComponent).toBeNull();
+  });
+
+  it('updates filtered items when the title changes for the same service id', () => {
+    jest.useFakeTimers();
+    renderServiceList({
+      selectedFilter: TEST_FILTER
+    });
+
+    renderer.act(() => {
+      getLatestIndexFilterProps().setListItems([
+        {
+          id: 'service-a',
+          title: 'Anmeldung Alt',
+          routeName: 'BusDetail',
+          params: { areaId: '09162000', data: { name: 'Anmeldung Alt' } }
+        }
+      ]);
+    });
+
+    expect(getLatestVerticalListProps().data).toEqual([
+      expect.objectContaining({
+        id: 'service-a',
+        title: 'Anmeldung Alt'
+      })
+    ]);
+
+    renderer.act(() => {
+      getLatestIndexFilterProps().setListItems([
+        {
+          id: 'service-a',
+          title: 'Anmeldung Aktualisiert',
+          routeName: 'BusDetail',
+          params: { areaId: '09162000', data: { name: 'Anmeldung Aktualisiert' } }
+        }
+      ]);
+    });
+
+    expect(getLatestVerticalListProps().data).toEqual([
+      expect.objectContaining({
+        id: 'service-a',
+        title: 'Anmeldung Aktualisiert'
+      })
+    ]);
+
+    renderer.act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
   });
 });

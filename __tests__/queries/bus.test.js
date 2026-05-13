@@ -1,7 +1,10 @@
 import {
+  BUS_REQUEST_TIMEOUT_MS,
   findBusCategoryChildren,
   findBusCategoryRoot,
+  findPublicServicesPage,
   getPoliticalArea,
+  getPublicService,
   searchPoliticalAreas
 } from '../../src/queries/bus';
 
@@ -34,6 +37,7 @@ const expectBusFetch = (url, options = {}) => {
 describe('BUS queries', () => {
   afterEach(() => {
     jest.restoreAllMocks();
+    jest.useRealTimers();
   });
 
   it('does not call the autocomplete endpoint below the minimum search length', async () => {
@@ -144,6 +148,190 @@ describe('BUS queries', () => {
     });
   });
 
+  it('loads the extended public service detail to include online services', async () => {
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      json: async () => ({
+        object: {
+          id: 'service-1',
+          name: 'Gewerbe Anmeldung',
+          onlineServices: [{ id: 'os-1', name: 'Digital beantragen' }]
+        }
+      }),
+      ok: true
+    });
+
+    const result = await getPublicService({ areaId: '10004', bus, id: 'service-1' });
+
+    expectBusFetch(
+      'https://server.int-development.smart-village.app/api/v1/pstExtended/service-1?areaId=10004',
+      {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Language': 'de-DE'
+        },
+        method: 'GET'
+      }
+    );
+    expect(result).toEqual({
+      id: 'service-1',
+      name: 'Gewerbe Anmeldung',
+      onlineServices: [{ id: 'os-1', name: 'Digital beantragen' }]
+    });
+  });
+
+  it('falls back to pst detail when pstExtended is not available on the BUS backend', async () => {
+    jest
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404
+      })
+      .mockResolvedValueOnce({
+        json: async () => ({
+          object: {
+            id: 'service-1',
+            name: 'Gewerbe Anmeldung',
+            organisationalUnits: [{ id: 'ou-1', name: 'Amt' }]
+          }
+        }),
+        ok: true
+      });
+
+    const result = await getPublicService({ areaId: '10004', bus, id: 'service-1' });
+
+    expect(globalThis.fetch).toHaveBeenNthCalledWith(
+      1,
+      'https://server.int-development.smart-village.app/api/v1/pstExtended/service-1?areaId=10004',
+      expect.any(Object)
+    );
+    expect(globalThis.fetch).toHaveBeenNthCalledWith(
+      2,
+      'https://server.int-development.smart-village.app/api/v1/pst/service-1?areaId=10004',
+      expect.any(Object)
+    );
+    expect(result).toEqual({
+      id: 'service-1',
+      name: 'Gewerbe Anmeldung',
+      organisationalUnits: [{ id: 'ou-1', name: 'Amt' }]
+    });
+  });
+
+  it('loads a paginated public service page and reads total-item-count from response headers', async () => {
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      headers: {
+        get: (headerName) =>
+          headerName.toLowerCase() === 'total-item-count' ? '2357' : undefined
+      },
+      json: async () => ({
+        results: [
+          {
+            object: {
+              id: 'service-1',
+              name: 'Gewerbe Anmeldung'
+            }
+          }
+        ]
+      }),
+      ok: true
+    });
+
+    const result = await findPublicServicesPage({
+      areaId: '10004',
+      bus,
+      limit: 500,
+      offset: 500,
+      searchWord: 'unternehmen'
+    });
+
+    expectBusFetch(
+      'https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=500&searchWord=unternehmen&selectAttributes=id,name,teaser',
+      {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Language': 'de-DE'
+        },
+        method: 'GET'
+      }
+    );
+    expect(result).toEqual({
+      items: [
+        {
+          id: 'service-1',
+          name: 'Gewerbe Anmeldung'
+        }
+      ],
+      totalItemCount: 2357
+    });
+  });
+
+  it('uses pstExtended/find for free BUS search terms including phrases with spaces', async () => {
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      headers: {
+        get: (headerName) =>
+          headerName.toLowerCase() === 'total-item-count' ? '1' : undefined
+      },
+      json: async () => ({
+        results: [
+          {
+            object: {
+              id: 'service-2',
+              name: 'Neues Unternehmen anmelden'
+            }
+          }
+        ]
+      }),
+      ok: true
+    });
+
+    const result = await findPublicServicesPage({
+      areaId: '10004',
+      bus,
+      searchWord: 'Neues Unternehmen oder'
+    });
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=0&searchWord=Neues%20Unternehmen%20oder&selectAttributes=id,name,teaser',
+      expect.any(Object)
+    );
+    expect(result).toEqual({
+      items: [
+        {
+          id: 'service-2',
+          name: 'Neues Unternehmen anmelden'
+        }
+      ],
+      totalItemCount: 1
+    });
+  });
+
+  it('aborts BUS requests that exceed the client timeout', async () => {
+    jest.useFakeTimers();
+    jest.spyOn(globalThis, 'fetch').mockImplementation((_, options = {}) => {
+      const { signal } = options;
+
+      return new Promise((_, reject) => {
+        signal?.addEventListener('abort', () => {
+          const abortError = new Error('Request aborted');
+          abortError.name = 'AbortError';
+          reject(abortError);
+        });
+      });
+    });
+
+    const requestPromise = findPublicServicesPage({
+      areaId: '10004',
+      bus,
+      searchWord: 'unternehmen'
+    });
+
+    jest.advanceTimersByTime(BUS_REQUEST_TIMEOUT_MS);
+
+    await expect(requestPromise).rejects.toThrow(
+      'BUS API request timed out for https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=0&searchWord=unternehmen&selectAttributes=id,name,teaser'
+    );
+  });
+
   it('returns null when the political area detail is invalid', async () => {
     mockFetchJson({});
 
@@ -201,7 +389,7 @@ describe('BUS queries', () => {
     });
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?searchWord=Lebenslagen%20f%C3%BCr%20B%C3%BCrgerinnen%20und%20B%C3%BCrger&limit=1000&areaId=09162000&selectAttributes[]=id&selectAttributes[]=name',
+      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?searchWord=Lebenslagen%20f%C3%BCr%20B%C3%BCrgerinnen%20und%20B%C3%BCrger&limit=500&areaId=09162000&selectAttributes[]=id&selectAttributes[]=name',
       expect.any(Object)
     );
     expect(result).toEqual({
@@ -241,7 +429,7 @@ describe('BUS queries', () => {
     });
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?parentId=247228741&limit=1000&areaId=09162000&selectAttributes[]=id&selectAttributes[]=name&selectAttributes[]=description&selectAttributes[]=parentId&selectAttributes[]=position&selectAttributes[]=image&selectAttributes[]=publicServiceTypes',
+      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?parentId=247228741&limit=500&areaId=09162000&selectAttributes[]=id&selectAttributes[]=name&selectAttributes[]=description&selectAttributes[]=parentId&selectAttributes[]=position&selectAttributes[]=image&selectAttributes[]=publicServiceTypes',
       expect.any(Object)
     );
     expect(result).toEqual([
@@ -294,10 +482,38 @@ describe('BUS queries', () => {
 
     const result = await findBusCategoryRoot({
       bus,
-      searchWord: ' Lebenslagen für Bürgerinnen und Bürger '
+      searchWord: 'Lebenslagen für Bürgerinnen und Bürger'
     });
 
     expect(result).toBeNull();
+  });
+
+  it('matches the lebenslagen root when the searchWord contains surrounding whitespace', async () => {
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      json: async () => ({
+        results: [
+          {
+            object: {
+              id: '247228741',
+              name: 'Lebenslagen für Bürgerinnen und Bürger',
+              publicServiceTypes: []
+            }
+          }
+        ]
+      }),
+      ok: true
+    });
+
+    const result = await findBusCategoryRoot({
+      bus,
+      searchWord: ' Lebenslagen für Bürgerinnen und Bürger '
+    });
+
+    expect(result).toEqual({
+      id: '247228741',
+      name: 'Lebenslagen für Bürgerinnen und Bürger',
+      publicServiceTypes: []
+    });
   });
 
   it('returns null when lebenslagen root results are malformed', async () => {

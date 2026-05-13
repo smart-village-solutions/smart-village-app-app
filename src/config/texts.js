@@ -88,7 +88,9 @@ export const texts = {
       lifeSituations:
         'Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar.',
       lifeSituationsNested: 'Diese Lebenslage konnte derzeit nicht geladen werden.',
-      lifeSituationsRoot: 'Die Lebenslagen konnten derzeit nicht geladen werden.'
+      lifeSituationsRoot: 'Die Lebenslagen konnten derzeit nicht geladen werden.',
+      search: 'Die Suchergebnisse konnten derzeit nicht geladen werden.',
+      services: 'Die Dienstleistungen konnten derzeit nicht geladen werden.'
     },
     employees: 'Ansprechpartner',
     initialFilter: {

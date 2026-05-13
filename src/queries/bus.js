@@ -1,4 +1,5 @@
-const DEFAULT_LIST_LIMIT = 1000;
+export const DEFAULT_LIST_LIMIT = 500;
+export const BUS_REQUEST_TIMEOUT_MS = 15000;
 const ROOT_CATEGORY_SELECT_ATTRIBUTES = ['id', 'name']
   .map((attribute) => `&selectAttributes[]=${attribute}`)
   .join('');
@@ -24,13 +25,74 @@ const createRequestOptions = (apiKey) => ({
 });
 
 const requestJson = async (url, apiKey) => {
-  const response = await fetch(url, createRequestOptions(apiKey));
+  const controller = new AbortController();
+  let timeoutId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      controller.abort();
+      const timeoutError = new Error(`BUS API request timed out for ${url}`);
+      timeoutError.code = 'BUS_API_TIMEOUT';
+      reject(timeoutError);
+    }, BUS_REQUEST_TIMEOUT_MS);
+  });
 
-  if (!response.ok) {
-    throw new Error(`BUS API request failed (${response.status}) for ${url}`);
+  try {
+    const response = await Promise.race([
+      fetch(url, {
+        ...createRequestOptions(apiKey),
+        signal: controller.signal
+      }),
+      timeoutPromise
+    ]);
+
+    if (!response.ok) {
+      const requestError = new Error(`BUS API request failed (${response.status}) for ${url}`);
+      requestError.status = response.status;
+      throw requestError;
+    }
+
+    return {
+      headers: response.headers,
+      payload: await response.json()
+    };
+  } catch (error) {
+    if (error?.name === 'AbortError' && error?.code !== 'BUS_API_TIMEOUT') {
+      const abortError = new Error(`BUS API request timed out for ${url}`);
+      abortError.code = 'BUS_API_TIMEOUT';
+      throw abortError;
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
+};
 
-  return response.json();
+const BUS_LEGACY_DETAIL_FALLBACK_STATUSES = new Set([404, 405, 501]);
+
+const normalizePublicServiceSearchWord = (searchWord) =>
+  `${searchWord ?? ''}`.trim().replace(/\s+/g, ' ');
+
+const buildPublicServiceFindUrl = ({
+  areaId,
+  baseUrl,
+  limit,
+  offset,
+  searchWord,
+  endpoint,
+  useCommaSeparatedSelectAttributes = false
+}) => {
+  const encodedSearchWord = encodeURIComponent(normalizePublicServiceSearchWord(searchWord));
+  const encodedOffset = encodeURIComponent(offset);
+  const encodedLimit = encodeURIComponent(limit);
+  const commonQuery = `?areaId=${encodeURIComponent(
+    areaId
+  )}&limit=${encodedLimit}&offset=${encodedOffset}`;
+  const selectAttributes = useCommaSeparatedSelectAttributes
+    ? '&selectAttributes=id,name,teaser'
+    : ['&selectAttributes[]=id', '&selectAttributes[]=name', '&selectAttributes[]=teaser'].join('');
+
+  return `${baseUrl}/${endpoint}${commonQuery}&searchWord=${encodedSearchWord}${selectAttributes}`;
 };
 
 const mapPoliticalArea = (area) => {
@@ -44,23 +106,35 @@ const mapPoliticalArea = (area) => {
 };
 
 export const findPublicServices = async ({ areaId, bus, searchWord = '' }) => {
+  const { items } = await findPublicServicesPage({ areaId, bus, searchWord });
+
+  return items;
+};
+
+export const findPublicServicesPage = async ({
+  areaId,
+  bus,
+  limit = DEFAULT_LIST_LIMIT,
+  offset = 0,
+  searchWord = ''
+}) => {
   const { apiKey, uri: baseUrl } = bus;
-  const encodedSearchWord = encodeURIComponent(searchWord);
-  const commonQuery = `?areaId=${encodeURIComponent(areaId)}&limit=${DEFAULT_LIST_LIMIT}`;
-  const selectAttributes = [
-    '&selectAttributes[]=id',
-    '&selectAttributes[]=externalId',
-    '&selectAttributes[]=name',
-    '&selectAttributes[]=teaser'
-  ].join('');
+  const normalizedSearchWord = normalizePublicServiceSearchWord(searchWord);
+  const endpoint = normalizedSearchWord ? 'pstExtended/find' : 'pst/find';
+  const requestUrl = buildPublicServiceFindUrl({
+    areaId,
+    baseUrl,
+    endpoint,
+    limit,
+    offset,
+    searchWord: normalizedSearchWord,
+    useCommaSeparatedSelectAttributes: !!normalizedSearchWord
+  });
+  const { headers, payload } = await requestJson(requestUrl, apiKey);
+  const items = (payload?.results || []).map((item) => item?.object).filter(Boolean);
+  const totalItemCount = Number(headers?.get?.('total-item-count')) || items.length;
 
-  const payload = await requestJson(
-    `${baseUrl}/pst/find${commonQuery}&searchWord=${encodedSearchWord}${selectAttributes}`,
-    apiKey
-  );
-  const services = (payload?.results || []).map((item) => item?.object);
-
-  return services;
+  return { items, totalItemCount };
 };
 
 export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
@@ -71,7 +145,7 @@ export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
 
   const encodedSearchWord = encodeURIComponent(normalizedSearchWord);
   const areaIdQuery = areaId ? `&areaId=${encodeURIComponent(areaId)}` : '';
-  const payload = await requestJson(
+  const { payload } = await requestJson(
     `${baseUrl}/pstCategory/find?searchWord=${encodedSearchWord}&limit=${DEFAULT_LIST_LIMIT}${areaIdQuery}${ROOT_CATEGORY_SELECT_ATTRIBUTES}`,
     apiKey
   );
@@ -88,7 +162,7 @@ export const findBusCategoryChildren = async ({ areaId, bus, parentId }) => {
   const { apiKey, uri: baseUrl } = bus;
   const encodedParentId = encodeURIComponent(parentId);
   const areaIdQuery = areaId ? `&areaId=${encodeURIComponent(areaId)}` : '';
-  const payload = await requestJson(
+  const { payload } = await requestJson(
     `${baseUrl}/pstCategory/find?parentId=${encodedParentId}&limit=${DEFAULT_LIST_LIMIT}${areaIdQuery}${CHILD_CATEGORY_SELECT_ATTRIBUTES}`,
     apiKey
   );
@@ -101,7 +175,20 @@ export const getPublicService = async ({ areaId, bus, id }) => {
   const { apiKey, uri: baseUrl } = bus;
   const encodedAreaId = encodeURIComponent(areaId);
   const encodedId = encodeURIComponent(id);
-  const payload = await requestJson(`${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`, apiKey);
+  let payload;
+
+  try {
+    ({ payload } = await requestJson(
+      `${baseUrl}/pstExtended/${encodedId}?areaId=${encodedAreaId}`,
+      apiKey
+    ));
+  } catch (error) {
+    if (!BUS_LEGACY_DETAIL_FALLBACK_STATUSES.has(error?.status)) {
+      throw error;
+    }
+
+    ({ payload } = await requestJson(`${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`, apiKey));
+  }
 
   return payload?.object || payload;
 };
@@ -109,7 +196,7 @@ export const getPublicService = async ({ areaId, bus, id }) => {
 export const getPoliticalArea = async ({ areaId, bus }) => {
   const { apiKey, uri: baseUrl } = bus;
   const encodedAreaId = encodeURIComponent(areaId);
-  const payload = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, apiKey);
+  const { payload } = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, apiKey);
 
   return mapPoliticalArea(payload);
 };
@@ -130,7 +217,10 @@ export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
   const searchWordsQuery = sanitizedSearchWords
     .map((word) => `searchWords=${encodeURIComponent(word + '*')}`)
     .join('&');
-  const payload = await requestJson(`${baseUrl}/political-area/search?${searchWordsQuery}`, apiKey);
+  const { payload } = await requestJson(
+    `${baseUrl}/political-area/search?${searchWordsQuery}`,
+    apiKey
+  );
 
   return Array.isArray(payload?.values) ? payload.values : [];
 };
