@@ -449,13 +449,23 @@ export const WasteCollectionSettingsScreen = () => {
                   height={normalize(70)}
                   popover={
                     <View>
-                      <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
+                      <TouchableOpacity
+                        accessibilityLabel={`(${wasteTexts.sameDay}) ${consts.a11yLabel.button}`}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: !onDayBefore }}
+                        onPress={() => onPressUpdateOnDayBefore(false)}
+                      >
                         <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
                           {wasteTexts.sameDay}
                         </RegularText>
                       </TouchableOpacity>
                       <Divider style={styles.dividerSmall} />
-                      <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
+                      <TouchableOpacity
+                        accessibilityLabel={`(${wasteTexts.oneDayBefore}) ${consts.a11yLabel.button}`}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: onDayBefore }}
+                        onPress={() => onPressUpdateOnDayBefore(true)}
+                      >
                         <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
                           {wasteTexts.oneDayBefore}
                         </RegularText>
@@ -486,7 +496,11 @@ export const WasteCollectionSettingsScreen = () => {
                 <ListItem.Content>
                   <BoldText small>{wasteTexts.timeOfDay}</BoldText>
                 </ListItem.Content>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                <TouchableOpacity
+                  accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
+                  accessibilityRole="button"
+                  onPress={() => setShowDatePicker(true)}
+                >
                   <View style={[styles.smallBorderRadius, styles.timeContainer]}>
                     <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
                   </View>
@@ -496,6 +510,7 @@ export const WasteCollectionSettingsScreen = () => {
                     animationType="none"
                     transparent={true}
                     visible={showDatePicker}
+                    accessibilityViewIsModal
                     supportedOrientations={['landscape', 'portrait']}
                   >
                     <View style={styles.modalContainer}>
@@ -503,10 +518,18 @@ export const WasteCollectionSettingsScreen = () => {
                         <SafeAreaView>
                           <WrapperHorizontal style={styles.paddingTop}>
                             <WrapperRow spaceBetween>
-                              <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                              <TouchableOpacity
+                                accessibilityLabel={`${texts.dateTimePicker.cancel} ${consts.a11yLabel.button}`}
+                                accessibilityRole="button"
+                                onPress={() => setShowDatePicker(false)}
+                              >
                                 <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
                               </TouchableOpacity>
-                              <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                              <TouchableOpacity
+                                accessibilityLabel={`${texts.dateTimePicker.ok} ${consts.a11yLabel.button}`}
+                                accessibilityRole="button"
+                                onPress={() => setShowDatePicker(false)}
+                              >
                                 <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
                               </TouchableOpacity>
                             </WrapperRow>

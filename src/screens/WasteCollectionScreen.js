@@ -330,6 +330,8 @@ export const WasteCollectionScreen = ({ navigation }) => {
                       <BoldText>{momentFormat(selectedDay, 'dddd, DD.MM.YYYY')}</BoldText>
 
                       <TouchableOpacity
+                        accessibilityLabel={consts.a11yLabel.closeIcon}
+                        accessibilityRole="button"
                         onPress={() => setIsDayOverlayVisible(false)}
                         style={styles.overlayCloseButton}
                       >

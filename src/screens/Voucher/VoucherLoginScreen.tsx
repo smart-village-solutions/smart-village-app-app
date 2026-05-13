@@ -15,7 +15,7 @@ import {
   SectionHeader,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import {
   storeVoucherAuthToken,
   storeVoucherMemberId,
@@ -129,7 +129,11 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
               disabled={isLoading}
               notFullWidth
             />
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              accessibilityLabel={`${texts.voucher.abort} ${consts.a11yLabel.button}`}
+              accessibilityRole="button"
+              onPress={() => navigation.goBack()}
+            >
               <RegularText primary center>
                 {texts.voucher.abort}
               </RegularText>
