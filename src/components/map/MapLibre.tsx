@@ -262,7 +262,11 @@ type Props = {
   }) => void | Promise<void>;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
-  onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
+  onMyLocationButtonPress?: ({
+    isFullScreenMap
+  }: {
+    isFullScreenMap?: boolean;
+  }) => void | Promise<void>;
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
   setPinEnabled?: boolean;
@@ -1014,11 +1018,21 @@ export const MapLibre = ({
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
           onPress={async () => {
-            await onMyLocationButtonPress?.({ isFullScreenMap: isFullscreenMap });
+            try {
+              await onMyLocationButtonPress?.({ isFullScreenMap: isFullscreenMap });
+            } catch (error) {
+              console.error('My location button press failed', error);
+            }
+
+            if (!showsUserLocation) {
+              return;
+            }
 
             // Android can crash when user tracking is enabled before a valid
             // runtime-granted location is available on the native layer.
-            if (showsUserLocation && hasCurrentPosition) {
+            const canFollowUserLocation = hasCurrentPosition || !onMyLocationButtonPress;
+
+            if (canFollowUserLocation) {
               setFollowsUserLocation(true);
               setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
             }

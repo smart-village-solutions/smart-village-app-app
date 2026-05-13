@@ -89,6 +89,17 @@ const sueProgressWithRequiredInputs = (
   });
 };
 
+const clampProgress = (progress: unknown, maxProgress: number) => {
+  const numericProgress = typeof progress === 'number' ? progress : Number(progress);
+  const normalizedProgress = Number.isFinite(numericProgress) ? Math.trunc(numericProgress) : 0;
+
+  if (maxProgress < 0) {
+    return 0;
+  }
+
+  return Math.min(Math.max(normalizedProgress, 0), maxProgress);
+};
+
 export type TValues = {
   city: string;
   description: string;
@@ -478,14 +489,17 @@ export const SueReportScreen = ({
     [requiredFields, geoMap, sueProgress]
   );
 
-  const storeReportValues = useCallback(async (progress = currentProgress) => {
-    await addToStore(SUE_REPORT_VALUES, {
-      currentProgress: progress,
-      selectedPosition,
-      service,
-      ...getValues()
-    });
-  }, [currentProgress, selectedPosition, service, getValues]);
+  const storeReportValues = useCallback(
+    async (progress = currentProgress) => {
+      await addToStore(SUE_REPORT_VALUES, {
+        currentProgress: progress,
+        selectedPosition,
+        service,
+        ...getValues()
+      });
+    },
+    [currentProgress, selectedPosition, service, getValues]
+  );
 
   const storeMyReportsValues = async (newReport: any) => {
     try {
@@ -507,10 +521,14 @@ export const SueReportScreen = ({
     const savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
 
     if (savedValues) {
+      const restoredProgress = clampProgress(
+        savedValues.currentProgress,
+        sueProgressWithConfig.length - 1
+      );
       setStoredValues(savedValues);
       setService(savedValues.service);
       setSelectedPosition(savedValues.selectedPosition);
-      setCurrentProgress(savedValues.currentProgress || 0);
+      setCurrentProgress(restoredProgress);
       Object.entries(savedValues).forEach(([key, value]) => {
         if (key !== 'currentProgress' && key !== 'service' && key !== 'selectedPosition') {
           setValue(key as keyof TValues, value);

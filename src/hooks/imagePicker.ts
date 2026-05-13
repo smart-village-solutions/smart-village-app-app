@@ -170,16 +170,23 @@ export const useCaptureImage = ({
       // Run gallery save flow without blocking the image selection result.
       if (saveImage) {
         void (async () => {
-          const { status: mediaStatus } = await getPermissionsAsync();
+          try {
+            const { status: mediaStatus } = await getPermissionsAsync();
 
-          if (mediaStatus !== PermissionStatus.GRANTED) {
-            // Ask user before requesting gallery save permission.
-            Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
-              { text: texts.errors.image.cancel, style: 'cancel' },
-              { text: texts.errors.image.save, onPress: async () => await saveImageToGallery(uri) }
-            ]);
-          } else {
-            await saveImageToGallery(uri);
+            if (mediaStatus !== PermissionStatus.GRANTED) {
+              // Ask user before requesting gallery save permission.
+              Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
+                { text: texts.errors.image.cancel, style: 'cancel' },
+                {
+                  text: texts.errors.image.save,
+                  onPress: async () => await saveImageToGallery(uri)
+                }
+              ]);
+            } else {
+              await saveImageToGallery(uri);
+            }
+          } catch (error) {
+            console.error('Non-blocking gallery save flow failed', error);
           }
         })();
       }
