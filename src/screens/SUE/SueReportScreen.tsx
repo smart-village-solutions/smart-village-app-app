@@ -89,6 +89,17 @@ const sueProgressWithRequiredInputs = (
   });
 };
 
+const clampProgress = (progress: unknown, maxProgress: number) => {
+  const numericProgress = typeof progress === 'number' ? progress : Number(progress);
+  const normalizedProgress = Number.isFinite(numericProgress) ? Math.trunc(numericProgress) : 0;
+
+  if (maxProgress < 0) {
+    return 0;
+  }
+
+  return Math.min(Math.max(normalizedProgress, 0), maxProgress);
+};
+
 export type TValues = {
   city: string;
   description: string;
@@ -135,6 +146,7 @@ type TContent = {
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   service?: TService;
+  storeReportValues: () => Promise<void>;
   setIsFullscreenMap: (value: boolean) => void;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setService: any;
@@ -156,6 +168,7 @@ const Content = ({
   requiredInputs,
   selectedPosition,
   service,
+  storeReportValues,
   setIsFullscreenMap,
   setSelectedPosition,
   setService,
@@ -174,6 +187,7 @@ const Content = ({
           errorMessage={errorMessage}
           requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
+          storeReportValues={storeReportValues}
           setSelectedPosition={setSelectedPosition}
           setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
@@ -227,6 +241,12 @@ type TReports = {
   street: string;
   termsOfService: string;
   title: string;
+};
+
+type TStoredValues = Partial<TReports> & {
+  currentProgress?: number;
+  selectedPosition?: Location.LocationObjectCoords;
+  service?: TService;
 };
 
 type TProgress = {
@@ -286,7 +306,7 @@ export const SueReportScreen = ({
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
-  const [storedValues, setStoredValues] = useState<TReports>();
+  const [storedValues, setStoredValues] = useState<TStoredValues>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
   const [contentHeights, setContentHeights] = useState([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
@@ -302,6 +322,7 @@ export const SueReportScreen = ({
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef([]);
+  const hasAppliedInitialProgressRef = useRef(false);
 
   const keyboardHeight = useKeyboardHeight();
 
@@ -468,13 +489,17 @@ export const SueReportScreen = ({
     [requiredFields, geoMap, sueProgress]
   );
 
-  const storeReportValues = useCallback(async () => {
-    await addToStore(SUE_REPORT_VALUES, {
-      selectedPosition,
-      service,
-      ...getValues()
-    });
-  }, [selectedPosition, service, getValues]);
+  const storeReportValues = useCallback(
+    async (progress = currentProgress) => {
+      await addToStore(SUE_REPORT_VALUES, {
+        currentProgress: progress,
+        selectedPosition,
+        service,
+        ...getValues()
+      });
+    },
+    [currentProgress, selectedPosition, service, getValues]
+  );
 
   const storeMyReportsValues = async (newReport: any) => {
     try {
@@ -492,22 +517,27 @@ export const SueReportScreen = ({
     }
   };
 
-  const readReportValuesFromStore = async () => {
-    const storedValues = await readFromStore(SUE_REPORT_VALUES);
+  async function readReportValuesFromStore() {
+    const savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
 
-    if (storedValues) {
-      setStoredValues(storedValues);
-      setService(storedValues.service);
-      setSelectedPosition(storedValues.selectedPosition);
-      Object.entries(storedValues).forEach(([key, value]) => {
-        if (key !== 'service' && key !== 'selectedPosition') {
-          setValue(key, value);
+    if (savedValues) {
+      const restoredProgress = clampProgress(
+        savedValues.currentProgress,
+        sueProgressWithConfig.length - 1
+      );
+      setStoredValues(savedValues);
+      setService(savedValues.service);
+      setSelectedPosition(savedValues.selectedPosition);
+      setCurrentProgress(restoredProgress);
+      Object.entries(savedValues).forEach(([key, value]) => {
+        if (key !== 'currentProgress' && key !== 'service' && key !== 'selectedPosition') {
+          setValue(key as keyof TValues, value);
         }
       });
     }
 
     setIsLoadingStoredData(false);
-  };
+  }
 
   const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
@@ -522,8 +552,25 @@ export const SueReportScreen = ({
       animated: true
     });
     setCurrentProgress(0);
+    hasAppliedInitialProgressRef.current = false;
     setIsLoadingStoredData(false);
   }, [reset]);
+
+  useEffect(() => {
+    if (isLoadingStoredData || hasAppliedInitialProgressRef.current) {
+      return;
+    }
+
+    if (currentProgress > 0) {
+      scrollViewRef?.current?.scrollTo({
+        x: device.width * currentProgress,
+        y: 0,
+        animated: false
+      });
+    }
+
+    hasAppliedInitialProgressRef.current = true;
+  }, [isLoadingStoredData, currentProgress]);
 
   const handleNextPage = useCallback(async () => {
     Keyboard.dismiss();
@@ -532,12 +579,13 @@ export const SueReportScreen = ({
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    await storeReportValues();
+    const nextProgress = Math.min(currentProgress + 1, sueProgressWithConfig.length - 1);
+    await storeReportValues(nextProgress);
 
     if (currentProgress < sueProgressWithConfig.length - 1) {
-      setCurrentProgress(currentProgress + 1);
+      setCurrentProgress(nextProgress);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentProgress + 1),
+        x: device.width * nextProgress,
         y: 0,
         animated: true
       });
@@ -552,14 +600,16 @@ export const SueReportScreen = ({
   const handlePrevPage = useCallback(() => {
     Keyboard.dismiss();
     if (currentProgress > 0) {
-      setCurrentProgress(currentProgress - 1);
+      const prevProgress = currentProgress - 1;
+      void storeReportValues(prevProgress);
+      setCurrentProgress(prevProgress);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentProgress - 1),
+        x: device.width * prevProgress,
         y: 0,
         animated: true
       });
     }
-  }, [currentProgress]);
+  }, [currentProgress, storeReportValues]);
 
   // Ensure map fullscreen mode is exited when navigating between steps
   useEffect(() => {
@@ -758,6 +808,7 @@ export const SueReportScreen = ({
                   requiredInputs={item.requiredInputs}
                   selectedPosition={selectedPosition}
                   service={service}
+                  storeReportValues={storeReportValues}
                   setIsFullscreenMap={setIsFullscreenMap}
                   setSelectedPosition={setSelectedPosition}
                   setService={setService}

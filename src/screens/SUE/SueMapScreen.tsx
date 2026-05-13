@@ -17,6 +17,7 @@ import {
   MapLibre,
   RegularText,
   SafeAreaViewFlex,
+  SueImageFallback,
   SueStatus,
   Touchable,
   Wrapper,
@@ -81,6 +82,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {} } = globalSettings;
   const { locationService } = settings;
+  const isMyLocationButtonVisible = locationService !== false;
   const { sueListItem = {} } = appDesignSystem;
   const { showViewSwitcherButton = false } = sueListItem;
   const { geoMap = {} } = sueConfig;
@@ -89,6 +91,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
+  const currentPosition = position || lastKnownPosition;
 
   const queryVariables = route.params?.queryVariables ?? {
     start_date: '1900-01-01T00:00:00+01:00'
@@ -147,16 +150,15 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
       <MapLibre
         clusterDistance={geoMap?.clusterDistance}
         clusterThreshold={geoMap?.clusterThreshold}
+        currentPosition={currentPosition}
         isMultipleMarkersMap
-        isMyLocationButtonVisible={!!locationService}
+        isMyLocationButtonVisible={isMyLocationButtonVisible}
         locations={mapMarkers}
         mapStyle={styles.map}
         onMarkerPress={setSelectedRequestId}
         onMyLocationButtonPress={() => {
-          const location = position || lastKnownPosition;
-
           locationServiceEnabledAlert({
-            currentPosition: location,
+            currentPosition: currentPosition,
             locationServiceEnabled,
             navigation
           });
@@ -183,7 +185,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
               </>
             ) : (
               <>
-                <View style={styles.imagePlaceholder} />
+                <SueImageFallback style={styles.mapPreviewFallback} />
                 <CloseButton onPress={() => setSelectedRequestId(undefined)} />
               </>
             )}
@@ -248,9 +250,11 @@ const styles = StyleSheet.create({
     height: normalize(120),
     width: normalize(120)
   },
-  imagePlaceholder: {
+  mapPreviewFallback: {
+    borderBottomLeftRadius: normalize(8),
+    borderTopLeftRadius: normalize(8),
     height: normalize(120),
-    width: normalize(30)
+    width: normalize(120)
   },
   imageContainer: {
     alignSelf: 'flex-start',

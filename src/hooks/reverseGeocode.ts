@@ -14,6 +14,9 @@ const CITY_FALLBACK_KEYS = [
   'county'
 ] as const;
 
+const normalizePostalCode = (postalCode?: string) =>
+  (postalCode || '').replace(/\s+/g, '').trim();
+
 export const useReverseGeocode = () => {
   return useCallback(
     async ({
@@ -58,7 +61,12 @@ export const useReverseGeocode = () => {
         const houseNumber = response?.address?.house_number || '';
         const street = response?.address?.road || '';
         const postalCode = response?.address?.postcode || '';
-        const isWithinArea = !!areaServiceData?.postalCodes?.includes(postalCode);
+        const normalizedPostalCode = normalizePostalCode(postalCode);
+        const isWithinArea =
+          !!normalizedPostalCode &&
+          !!areaServiceData?.postalCodes?.some(
+            (value) => normalizePostalCode(value) === normalizedPostalCode
+          );
 
         if (!shouldApplyResult()) {
           return staleResult;
