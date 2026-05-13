@@ -95,11 +95,16 @@ export const Input = forwardRef(
             accessibilityLabel ||
             `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
           }
+          accessibilityState={inputAccessibilityState}
         />
       );
     }
 
     const isValid = !disabled && validate && !!field.value && !errorMessage;
+    const inputAccessibilityState = {
+      disabled,
+      ...(!!errorMessage ? { invalid: true } : {})
+    };
 
     return (
       <RNEInput
@@ -159,6 +164,7 @@ export const Input = forwardRef(
           accessibilityLabel ||
           `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
         }
+        accessibilityState={inputAccessibilityState}
       />
     );
   }

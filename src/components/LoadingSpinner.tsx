@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { colors } from '../config';
 
@@ -12,7 +12,13 @@ type Props = {
 export const LoadingSpinner = ({ loading }: Props) => {
   return loading ? (
     <LoadingContainer>
-      <ActivityIndicator color={colors.refreshControl} />
+      <View
+        accessibilityLabel="Wird geladen"
+        accessibilityRole="progressbar"
+        accessible
+      >
+        <ActivityIndicator color={colors.refreshControl} />
+      </View>
     </LoadingContainer>
   ) : null;
 };

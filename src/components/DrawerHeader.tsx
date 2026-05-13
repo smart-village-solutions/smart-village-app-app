@@ -17,6 +17,7 @@ export const DrawerHeader = ({ navigation, style }: Props) => {
       onPress={() => navigation.openDrawer()}
       accessibilityLabel={a11yLabel.openMenuIcon}
       accessibilityHint={a11yLabel.openMenuHint}
+      accessibilityRole="button"
     >
       <Icon.DrawerMenu color={colors.darkText} style={style} />
     </TouchableOpacity>

@@ -35,6 +35,7 @@ export const HeaderLeft = ({
       onPress={onPress}
       accessibilityLabel={text ? text : consts.a11yLabel.backIcon}
       accessibilityHint={consts.a11yLabel.backIconHint}
+      accessibilityRole="button"
     >
       {backImage ? (
         backImage({ tintColor: colors.darkText })

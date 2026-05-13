@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
 import { Icon, IconUrl, colors, consts, normalize } from './../config';
@@ -63,6 +63,7 @@ export const InfoHeader = ({ route, style }: Props) => {
         onPress={() => setIsVisible(!isVisible)}
         accessibilityLabel={a11yLabel.informationIcon}
         accessibilityHint={a11yLabel.informationHint}
+        accessibilityRole="button"
       >
         <IconUrl iconName={iconName} color={colors.darkText} style={style} />
       </TouchableOpacity>
@@ -75,9 +76,14 @@ export const InfoHeader = ({ route, style }: Props) => {
         statusBarTranslucent
         supportedOrientations={['portrait', 'landscape']}
       >
-        <ScrollView style={[styles.containerRadius, { backgroundColor }]}>
-          <>
-            <TouchableOpacity onPress={() => setIsVisible(false)} style={styles.closeButton}>
+        <View accessibilityViewIsModal importantForAccessibility="yes">
+          <ScrollView style={[styles.containerRadius, { backgroundColor }]}>
+            <TouchableOpacity
+              accessibilityLabel={a11yLabel.closeIcon}
+              accessibilityRole="button"
+              onPress={() => setIsVisible(false)}
+              style={styles.closeButton}
+            >
               <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
             </TouchableOpacity>
 
@@ -98,8 +104,8 @@ export const InfoHeader = ({ route, style }: Props) => {
                 </WrapperHorizontal>
               </Wrapper>
             )}
-          </>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </Overlay>
     </>
   );

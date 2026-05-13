@@ -200,6 +200,8 @@ export const MultiImageSelector = ({
             {values?.map((item, index) => (
               <View key={`image-${index}`} style={{ marginRight: normalize(10) }}>
                 <TouchableOpacity
+                  accessibilityLabel={`${texts.consul.startNew.deleteAttributesButtonText} ${consts.a11yLabel.button}`}
+                  accessibilityRole="button"
                   style={styles.sueDeleteImageButton}
                   onPress={() => deleteImageAlert(() => imageDelete(index))}
                 >
@@ -219,6 +221,9 @@ export const MultiImageSelector = ({
         <Modal
           closeButton={
             <TouchableOpacity
+              accessibilityLabel={consts.a11yLabel.closeIcon}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: loading }}
               disabled={loading}
               onPress={() => setIsModalVisible(false)}
               style={styles.overlayCloseButton}
@@ -316,7 +321,11 @@ export const MultiImageSelector = ({
                 </RegularText>
               )}
 
-              <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(index))}>
+              <TouchableOpacity
+                accessibilityLabel={`${texts.consul.startNew.deleteAttributesButtonText} ${consts.a11yLabel.button}`}
+                accessibilityRole="button"
+                onPress={() => deleteImageAlert(() => imageDelete(index))}
+              >
                 <Icon.Trash color={colors.darkText} size={normalize(16)} />
               </TouchableOpacity>
             </View>

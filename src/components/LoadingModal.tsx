@@ -10,9 +10,15 @@ export const LoadingModal = ({ loading }: { loading?: boolean }) => (
     animationType="none"
     transparent={true}
     visible={loading}
+    accessibilityViewIsModal
     supportedOrientations={['landscape', 'portrait']}
   >
-    <View style={styles.modalContainer}>
+    <View
+      accessibilityLabel="Ladevorgang"
+      accessibilityRole="alert"
+      accessible
+      style={styles.modalContainer}
+    >
       <LoadingSpinner loading />
     </View>
   </Modal>

@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
-import { normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';
@@ -39,17 +39,21 @@ export const Modal = ({
       statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
     >
-      <>
+      <View accessibilityViewIsModal importantForAccessibility="yes">
         {children}
 
         {closeButton || (
-          <Touchable onPress={onModalVisible}>
+          <Touchable
+            accessibilityLabel={consts.a11yLabel.closeIcon}
+            accessibilityRole="button"
+            onPress={onModalVisible}
+          >
             <BoldText center underline primary>
               {modalHiddenButtonName}
             </BoldText>
           </Touchable>
         )}
-      </>
+      </View>
     </Overlay>
   );
 };

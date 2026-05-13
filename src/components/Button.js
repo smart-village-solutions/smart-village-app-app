@@ -17,6 +17,8 @@ export const ButtonVariants = {
 
 /* eslint-disable complexity */
 export const Button = ({
+  accessibilityHint,
+  accessibilityLabel,
   big = false,
   disabled = false,
   icon = undefined,
@@ -35,6 +37,8 @@ export const Button = ({
     notFullWidth ||
     orientation === 'landscape' ||
     dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+  const buttonAccessibilityLabel = accessibilityLabel || `${title} ${consts.a11yLabel.button}`;
+  const buttonAccessibilityState = { disabled };
 
   if (variant === ButtonVariants.ACCEPT || variant === ButtonVariants.REJECT) {
     return (
@@ -49,7 +53,10 @@ export const Button = ({
         ]}
         containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
-        accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={buttonAccessibilityLabel}
+        accessibilityRole="button"
+        accessibilityState={buttonAccessibilityState}
       />
     );
   }
@@ -87,7 +94,10 @@ export const Button = ({
         invert || variant === ButtonVariants.DELETE || disabled ? undefined : DiagonalGradient
       }
       useForeground={!invert}
-      accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={buttonAccessibilityLabel}
+      accessibilityRole="button"
+      accessibilityState={buttonAccessibilityState}
       disabled={disabled}
       icon={
         !!icon && (
@@ -208,6 +218,8 @@ const styles = StyleSheet.create({
 });
 
 Button.propTypes = {
+  accessibilityHint: PropTypes.string,
+  accessibilityLabel: PropTypes.string,
   big: PropTypes.bool,
   disabled: PropTypes.bool,
   icon: PropTypes.node,

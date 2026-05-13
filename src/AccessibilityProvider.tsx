@@ -17,7 +17,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
   const [accessibility, setAccessibility] = useState(defaultAccessibility);
 
   useEffect(() => {
-    accessibilityListeners(setAccessibility);
+    return accessibilityListeners(setAccessibility);
   }, []);
 
   return (

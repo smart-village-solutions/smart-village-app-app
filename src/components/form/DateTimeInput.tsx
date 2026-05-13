@@ -5,7 +5,7 @@ import CommunityDateTimePicker, {
 import React, { useCallback, useState } from 'react';
 import { Keyboard, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, device, texts } from '../../config';
+import { colors, consts, device, texts } from '../../config';
 import { formatDate, formatTime } from '../../helpers';
 import { Label } from '../Label';
 import { BoldText } from '../Text';
@@ -69,18 +69,27 @@ const DateTimePicker = ({
         animationType="none"
         transparent
         visible
+        accessibilityViewIsModal
         supportedOrientations={['landscape', 'portrait']}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <SafeAreaView>
               <WrapperRow spaceBetween>
-                <TouchableOpacity onPress={onDismissCallback}>
+                <TouchableOpacity
+                  accessibilityLabel={`${texts.dateTimePicker.cancel} ${consts.a11yLabel.button}`}
+                  accessibilityRole="button"
+                  onPress={onDismissCallback}
+                >
                   <Wrapper style={styles.noPaddingBottom}>
                     <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
                   </Wrapper>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onAcceptIOS}>
+                <TouchableOpacity
+                  accessibilityLabel={`${texts.dateTimePicker.ok} ${consts.a11yLabel.button}`}
+                  accessibilityRole="button"
+                  onPress={onAcceptIOS}
+                >
                   <Wrapper style={styles.noPaddingBottom}>
                     <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
                   </Wrapper>
@@ -148,6 +157,8 @@ export const DateTimeInput = ({
     <>
       <Label bold={boldLabel}>{label}</Label>
       <PickerInput
+        accessibilityHint={consts.a11yLabel.birthDateHint}
+        accessibilityLabel={`${label} ${consts.a11yLabel.dropDownMenu}`}
         value={pickerInput}
         onPress={() => {
           setDateTimePickerVisible(true);

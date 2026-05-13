@@ -33,6 +33,7 @@ export const CalendarHeader = ({ navigation, style }: Props) => {
       }
       accessibilityLabel={a11yLabel.calendarIcon}
       accessibilityHint={a11yLabel.calendarHint}
+      accessibilityRole="button"
     >
       <Icon.Plus color={colors.darkText} style={[style, styles.icon]} size={normalize(28)} />
     </TouchableOpacity>

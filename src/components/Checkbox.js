@@ -50,6 +50,7 @@ export const Checkbox = ({
   checked = false,
   checkedIcon,
   containerStyle = {},
+  disabled = false,
   lightest = false,
   link = '',
   linkDescription = '',
@@ -68,17 +69,18 @@ export const Checkbox = ({
 
   return (
     <CheckBox
-      accessibilityRole="button"
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked, disabled }}
       accessibilityLabel={`${a11yLabel.checkbox} (${
         checked
           ? texts.accessibilityLabels.checkbox.active
           : texts.accessibilityLabels.checkbox.inactive
       }) ${title}`}
-      accessibilityValue={
-        checked
+      accessibilityValue={{
+        text: checked
           ? texts.accessibilityLabels.checkbox.active
           : texts.accessibilityLabels.checkbox.inactive
-      }
+      }}
       size={normalize(21)}
       center={center}
       title={renderTitleContent({
@@ -102,6 +104,7 @@ export const Checkbox = ({
       textStyle={styles.titleStyle}
       checkedColor={colors.primary}
       uncheckedColor={colors.placeholder}
+      disabled={disabled}
       {...props}
     />
   );

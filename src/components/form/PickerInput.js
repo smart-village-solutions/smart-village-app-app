@@ -5,8 +5,20 @@ import { Pressable, StyleSheet } from 'react-native';
 import { colors, device, Icon, normalize } from '../../config';
 import { RegularText } from '../Text';
 
-export const PickerInput = ({ errorMessage, isPlaceholder = false, onPress, value }) => (
+export const PickerInput = ({
+  accessibilityHint,
+  accessibilityLabel,
+  errorMessage,
+  isPlaceholder = false,
+  onPress,
+  value
+}) => (
   <Pressable
+    accessibilityHint={accessibilityHint}
+    accessibilityLabel={accessibilityLabel}
+    accessibilityRole="button"
+    accessibilityState={{ expanded: false }}
+    accessible
     style={({ pressed }) => [
       styles.pickerInput,
       device.platform === 'ios' && pressed && styles.pickerInputPressed,
@@ -21,6 +33,8 @@ export const PickerInput = ({ errorMessage, isPlaceholder = false, onPress, valu
       {value}
     </RegularText>
     <Pressable
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
       style={styles.icon}
       onPress={onPress}
       android_ripple={{
@@ -70,6 +84,8 @@ const styles = StyleSheet.create({
 });
 
 PickerInput.propTypes = {
+  accessibilityHint: PropTypes.string,
+  accessibilityLabel: PropTypes.string,
   errorMessage: PropTypes.string,
   isPlaceholder: PropTypes.bool,
   onPress: PropTypes.func,

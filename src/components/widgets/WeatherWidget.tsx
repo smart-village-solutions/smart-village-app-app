@@ -43,7 +43,14 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
   useHomeRefresh(refetch);
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.widget, normalizedWidgetStyle]}>
+    <TouchableOpacity
+      accessibilityLabel={`${text ?? texts.widgets.weather}: ${
+        temperature?.toFixed(0) ?? '—'
+      } Grad ${consts.a11yLabel.button}`}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={[styles.widget, normalizedWidgetStyle]}
+    >
       <WrapperVertical>
         <WrapperRow center>
           <View style={[styles.iconContainer, normalizedIconStyle]}>

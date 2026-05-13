@@ -22,6 +22,7 @@ export const ShareHeader = ({ shareContent, style }: Props) => {
         onPress={() => openShare(shareContent)}
         accessibilityLabel={a11yLabel.shareIcon}
         accessibilityHint={a11yLabel.shareHint}
+        accessibilityRole="button"
       >
         <Icon.Share color={colors.darkText} style={style} hasNoHitSlop />
       </TouchableOpacity>
