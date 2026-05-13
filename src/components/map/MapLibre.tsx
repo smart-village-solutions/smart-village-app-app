@@ -1004,6 +1004,8 @@ export const MapLibre = ({
                 lngLat={selectedLocationFeature?.geometry?.coordinates as [number, number]}
               >
                 <Pressable
+                  accessibilityLabel={`Markierung schließen ${a11yLabel.button}`}
+                  accessibilityRole="button"
                   onPress={() => {
                     clearSelection(true, 'marker-view-press');
                   }}
@@ -1031,6 +1033,7 @@ export const MapLibre = ({
       {isMyLocationButtonVisible && showsUserLocation && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
+          accessibilityRole="button"
           onPress={() => {
             setFollowsUserLocation(true);
             onMyLocationButtonPress?.({});
@@ -1051,7 +1054,11 @@ export const MapLibre = ({
 
       {!!onMaximizeButtonPress && (
         <TouchableOpacity
-          accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          accessibilityLabel={`${
+            isFullscreenMap ? 'Karte verkleinern' : 'Karte vergrößern'
+          } ${a11yLabel.button}`}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: isFullscreenMap }}
           onPress={() => {
             setIsFullscreenMap((prev) => !prev);
             onMaximizeButtonPress();

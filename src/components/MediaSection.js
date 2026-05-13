@@ -5,7 +5,7 @@ import { ActivityIndicator, Linking, Platform, StyleSheet } from 'react-native';
 import WebView from 'react-native-webview';
 import YoutubeIframe from 'react-native-youtube-iframe';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import { trimNewLines } from '../helpers';
 
 import { LoadingContainer } from './LoadingContainer';
@@ -136,6 +136,7 @@ export const MediaItem = ({ mediaContent }) => {
 
     return (
       <WebView
+        accessibilityLabel={`SoundCloud ${consts.a11yLabel.webViewHint}`}
         source={{ uri: classicUrl }}
         style={[styles.iframeWebView, { height: normalize(166) }]}
         userAgent={MOBILE_USER_AGENT}
@@ -165,6 +166,7 @@ export const MediaItem = ({ mediaContent }) => {
 
   return (
     <WebView
+      accessibilityLabel={`Medieninhalt ${consts.a11yLabel.webViewHint}`}
       source={{ html: buildHtmlDocument(trimNewLines(rawUrl)) }}
       style={[styles.iframeWebView, { height: normalize(iframeHeight) }]}
       userAgent={MOBILE_USER_AGENT}

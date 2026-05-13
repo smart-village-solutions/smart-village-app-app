@@ -2,7 +2,7 @@ import { BarcodeScanningResult } from 'expo-camera';
 import React, { useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { Scanner } from '../../screens';
 import { Touchable } from '../Touchable';
 
@@ -41,7 +41,11 @@ export const WalletCardScanner = ({
     <>
       <Scanner isScanning={isScanning} handleBarCodeScanned={handleBarCodeScanned} />
 
-      <Touchable onPress={() => setIsScannerOpen(false)} style={styles.closeButton}>
+      <Touchable
+        accessibilityLabel={consts.a11yLabel.closeIcon}
+        onPress={() => setIsScannerOpen(false)}
+        style={styles.closeButton}
+      >
         <Icon.Close size={24} color={colors.surface} />
       </Touchable>
     </>
