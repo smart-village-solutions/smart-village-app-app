@@ -24,6 +24,7 @@
     "maestro": "maestro test __maestro__ -e APP_ID=de.dev.smartvillage.app",
     "maestro:clear": "maestro test __maestro__ -e APP_ID=de.dev.smartvillage.app -e CLEAR_STATE=true",
     "test": "./node_modules/.bin/jest",
+    "test:accessibility": "./node_modules/.bin/jest --runTestsByPath __tests__/components/AccessibilityPrimitives.test.js --runInBand",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
     "test:coverage": "node_modules/.bin/jest --coverage",
     "postinstall": "patch-package"
