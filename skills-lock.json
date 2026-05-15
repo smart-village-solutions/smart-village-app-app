@@ -15,6 +15,12 @@
       "source": "/Users/daniel/Development/smart-village-app/vendor/agent-skills/react-native-best-practices-callstack",
       "sourceType": "local",
       "computedHash": "57297c0ef4b963b2bc696c3159d4268337fff0ea38d0962ae7168e893852ca9f"
+    },
+    "serve-sim": {
+      "source": "evanbacon/serve-sim",
+      "sourceType": "github",
+      "skillPath": "skills/serve-sim/SKILL.md",
+      "computedHash": "a3af1193766f32db0732b8d9af8aaead2a7a1aa5c623640ce1076296c7f32cf5"
     }
   }
 }
