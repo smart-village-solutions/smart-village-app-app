@@ -7074,6 +7074,11 @@ inline-style-prefixer@^7.0.1:
   dependencies:
     css-in-js-utils "^3.1.0"
 
+inspect-webkit@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/inspect-webkit/-/inspect-webkit-0.0.3.tgz#8fd28b209d7df8a195545eba5275f00b20ccf6e6"
+  integrity sha512-UCU5yjLiWyZxYh9pbZ41dz5fVMDqpluunkPersmi7bhiLCSZifATXSrISopRArafSVX3RcN6hGvRfV5BAyOpjw==
+
 internal-slot@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/internal-slot/-/internal-slot-1.1.0.tgz#1eac91762947d2f7056bc838d93e13b2e9604961"
@@ -11649,6 +11654,13 @@ serialize-error@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/serialize-error/-/serialize-error-2.1.0.tgz#50b679d5635cdf84667bdc8e59af4e5b81d5f60a"
   integrity sha512-ghgmKt5o4Tly5yEG/UJp8qTd0AN7Xalw4XBtDEKP655B699qMEtra1WlXeE6WIvdEG481JvRxULKsInq/iNysw==
+
+serve-sim@^0.1.31:
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/serve-sim/-/serve-sim-0.1.31.tgz#55e04c0b48879bf23447c03aa74716ec4aae1fd9"
+  integrity sha512-9EopuO1COtZRowX2P/drEirULiHUYR/fZWDqsWGVY8U16nscI/Zc1nUMkXyQJAJA81ElMO86VEeEEUCUGynqig==
+  dependencies:
+    inspect-webkit "^0.0.3"
 
 serve-static@^1.16.2:
   version "1.16.2"
