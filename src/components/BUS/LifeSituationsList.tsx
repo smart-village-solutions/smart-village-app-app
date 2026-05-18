@@ -1,9 +1,9 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, type RefreshControlProps } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, View, type RefreshControlProps } from 'react-native';
 
 import { device, normalize, texts } from '../../config';
-import { resolveBusCategoryServices } from '../../helpers/busListHelper';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
+import { resolveBusCategoryServices } from '../../helpers/busListHelper';
 import type { AreaId, BusCategory, BusServiceListItem } from '../../types';
 import { ScreenName } from '../../types/Navigation';
 import { BackToTop } from '../BackToTop';
@@ -168,14 +168,16 @@ export const LifeSituationsList = ({
               imageUrl={childCategory?.image?.url ?? undefined}
               title={childCategory?.name ?? ''}
               subtitle={childCategory?.description ?? undefined}
-              onPress={() =>
+              onPress={() => {
+                Keyboard.dismiss();
+
                 navigation.push(ScreenName.BusCategory, {
                   areaId,
                   category: childCategory,
                   isRootCategory: false,
                   title: childCategory?.name ?? ''
-                })
-              }
+                });
+              }}
             />
           );
         }
@@ -187,7 +189,9 @@ export const LifeSituationsList = ({
             key={`${item.type}-${service?.id ?? index}`}
             bottomDivider={bottomDivider}
             title={service?.name ?? ''}
-            onPress={() =>
+            onPress={() => {
+              Keyboard.dismiss();
+
               navigation.push(ScreenName.BusDetail, {
                 areaId,
                 title: service?.name ?? '',
@@ -198,8 +202,8 @@ export const LifeSituationsList = ({
                   message: shareMessage(service)
                 },
                 data: service
-              })
-            }
+              });
+            }}
           />
         );
       })}

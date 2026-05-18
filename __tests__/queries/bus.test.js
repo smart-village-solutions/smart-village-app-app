@@ -1,11 +1,11 @@
 import {
-  BUS_REQUEST_TIMEOUT_MS,
-  findBusCategoryChildren,
-  findBusCategoryRoot,
-  findPublicServicesPage,
-  getPoliticalArea,
-  getPublicService,
-  searchPoliticalAreas
+    BUS_REQUEST_TIMEOUT_MS,
+    findBusCategoryChildren,
+    findBusCategoryRoot,
+    findPublicServicesPage,
+    getPoliticalArea,
+    getPublicService,
+    searchPoliticalAreas
 } from '../../src/queries/bus';
 
 const bus = {
@@ -219,8 +219,7 @@ describe('BUS queries', () => {
   it('loads a paginated public service page and reads total-item-count from response headers', async () => {
     jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       headers: {
-        get: (headerName) =>
-          headerName.toLowerCase() === 'total-item-count' ? '2357' : undefined
+        get: (headerName) => (headerName.toLowerCase() === 'total-item-count' ? '2357' : undefined)
       },
       json: async () => ({
         results: [
@@ -244,7 +243,7 @@ describe('BUS queries', () => {
     });
 
     expectBusFetch(
-      'https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=500&searchWord=unternehmen&selectAttributes=id,name,teaser',
+      'https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=500&searchWord=unternehmen&selectAttributes=id,name',
       {
         headers: {
           Accept: 'application/json',
@@ -264,11 +263,47 @@ describe('BUS queries', () => {
     });
   });
 
+  it('uses the same attribute set for the unfiltered BUS base list import', async () => {
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      headers: {
+        get: (headerName) => (headerName.toLowerCase() === 'total-item-count' ? '2357' : undefined)
+      },
+      json: async () => ({
+        results: [
+          {
+            object: {
+              id: 'service-1',
+              name: 'Gewerbe Anmeldung'
+            }
+          }
+        ]
+      }),
+      ok: true
+    });
+
+    await findPublicServicesPage({
+      areaId: '10004',
+      bus,
+      limit: 500,
+      offset: 0
+    });
+
+    expectBusFetch(
+      'https://server.int-development.smart-village.app/api/v1/pst/find?areaId=10004&limit=500&offset=0&searchWord=&selectAttributes=id,name',
+      {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Language': 'de-DE'
+        },
+        method: 'GET'
+      }
+    );
+  });
+
   it('uses pstExtended/find for free BUS search terms including phrases with spaces', async () => {
     jest.spyOn(globalThis, 'fetch').mockResolvedValue({
       headers: {
-        get: (headerName) =>
-          headerName.toLowerCase() === 'total-item-count' ? '1' : undefined
+        get: (headerName) => (headerName.toLowerCase() === 'total-item-count' ? '1' : undefined)
       },
       json: async () => ({
         results: [
@@ -291,7 +326,7 @@ describe('BUS queries', () => {
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=0&searchWord=Neues%20Unternehmen%20oder&selectAttributes=id,name,teaser',
+      'https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=0&searchWord=Neues%20Unternehmen%20oder&selectAttributes=id,name',
       expect.any(Object)
     );
     expect(result).toEqual({
@@ -328,7 +363,7 @@ describe('BUS queries', () => {
     jest.advanceTimersByTime(BUS_REQUEST_TIMEOUT_MS);
 
     await expect(requestPromise).rejects.toThrow(
-      'BUS API request timed out for https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=0&searchWord=unternehmen&selectAttributes=id,name,teaser'
+      'BUS API request timed out for https://server.int-development.smart-village.app/api/v1/pstExtended/find?areaId=10004&limit=500&offset=0&searchWord=unternehmen&selectAttributes=id,name'
     );
   });
 
@@ -389,7 +424,7 @@ describe('BUS queries', () => {
     });
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?searchWord=Lebenslagen%20f%C3%BCr%20B%C3%BCrgerinnen%20und%20B%C3%BCrger&limit=500&areaId=09162000&selectAttributes[]=id&selectAttributes[]=name',
+      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?searchWord=Lebenslagen%20f%C3%BCr%20B%C3%BCrgerinnen%20und%20B%C3%BCrger&limit=500&areaId=09162000&selectAttributes=id,name',
       expect.any(Object)
     );
     expect(result).toEqual({
@@ -429,7 +464,7 @@ describe('BUS queries', () => {
     });
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?parentId=247228741&limit=500&areaId=09162000&selectAttributes[]=id&selectAttributes[]=name&selectAttributes[]=description&selectAttributes[]=parentId&selectAttributes[]=position&selectAttributes[]=image&selectAttributes[]=publicServiceTypes',
+      'https://server.int-development.smart-village.app/api/v1/pstCategory/find?parentId=247228741&limit=500&areaId=09162000&selectAttributes=id,name,description,parentId,position,image,publicServiceTypes',
       expect.any(Object)
     );
     expect(result).toEqual([

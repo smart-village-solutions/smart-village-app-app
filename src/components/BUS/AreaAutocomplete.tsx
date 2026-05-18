@@ -20,6 +20,7 @@ type SelectionArea = {
 type AreaAutocompleteProps = {
   areaId?: string;
   areaName?: string;
+  blurSignal?: number;
   initialAreaId?: string;
   initialAreaName?: string;
   onSelectArea: (area: SelectionArea) => void;
@@ -141,6 +142,7 @@ const SearchBarSearchIcon = ({ inputValue }: SearchIconProps) =>
 export const AreaAutocomplete = memo(function AreaAutocomplete({
   areaId,
   areaName,
+  blurSignal = 0,
   initialAreaId,
   initialAreaName,
   onSelectArea
@@ -214,6 +216,13 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
 
     return () => clearTimeout(timeoutId);
   }, [areaName]);
+
+  useEffect(() => {
+    if (!blurSignal) return;
+
+    setIsFocused(false);
+    searchBarRef.current?.blur?.();
+  }, [blurSignal]);
 
   const shouldHideResults = !isFocused || !shouldSearch;
   const hasDifferentSelection = !!initialAreaId && `${areaId}` !== `${initialAreaId}`;

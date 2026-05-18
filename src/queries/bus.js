@@ -1,9 +1,10 @@
 export const DEFAULT_LIST_LIMIT = 500;
 export const BUS_REQUEST_TIMEOUT_MS = 15000;
-const ROOT_CATEGORY_SELECT_ATTRIBUTES = ['id', 'name']
-  .map((attribute) => `&selectAttributes[]=${attribute}`)
-  .join('');
-const CHILD_CATEGORY_SELECT_ATTRIBUTES = [
+const buildSelectAttributesQuery = (attributes) =>
+  attributes.length ? `&selectAttributes=${attributes.join(',')}` : '';
+
+const ROOT_CATEGORY_SELECT_ATTRIBUTES = buildSelectAttributesQuery(['id', 'name']);
+const CHILD_CATEGORY_SELECT_ATTRIBUTES = buildSelectAttributesQuery([
   'id',
   'name',
   'description',
@@ -11,9 +12,7 @@ const CHILD_CATEGORY_SELECT_ATTRIBUTES = [
   'position',
   'image',
   'publicServiceTypes'
-]
-  .map((attribute) => `&selectAttributes[]=${attribute}`)
-  .join('');
+]);
 
 const createRequestOptions = (apiKey) => ({
   headers: {
@@ -73,24 +72,14 @@ const BUS_LEGACY_DETAIL_FALLBACK_STATUSES = new Set([404, 405, 501]);
 const normalizePublicServiceSearchWord = (searchWord) =>
   `${searchWord ?? ''}`.trim().replace(/\s+/g, ' ');
 
-const buildPublicServiceFindUrl = ({
-  areaId,
-  baseUrl,
-  limit,
-  offset,
-  searchWord,
-  endpoint,
-  useCommaSeparatedSelectAttributes = false
-}) => {
+const buildPublicServiceFindUrl = ({ areaId, baseUrl, limit, offset, searchWord, endpoint }) => {
   const encodedSearchWord = encodeURIComponent(normalizePublicServiceSearchWord(searchWord));
   const encodedOffset = encodeURIComponent(offset);
   const encodedLimit = encodeURIComponent(limit);
   const commonQuery = `?areaId=${encodeURIComponent(
     areaId
   )}&limit=${encodedLimit}&offset=${encodedOffset}`;
-  const selectAttributes = useCommaSeparatedSelectAttributes
-    ? '&selectAttributes=id,name,teaser'
-    : ['&selectAttributes[]=id', '&selectAttributes[]=name', '&selectAttributes[]=teaser'].join('');
+  const selectAttributes = buildSelectAttributesQuery(['id', 'name']);
 
   return `${baseUrl}/${endpoint}${commonQuery}&searchWord=${encodedSearchWord}${selectAttributes}`;
 };
@@ -127,8 +116,7 @@ export const findPublicServicesPage = async ({
     endpoint,
     limit,
     offset,
-    searchWord: normalizedSearchWord,
-    useCommaSeparatedSelectAttributes: !!normalizedSearchWord
+    searchWord: normalizedSearchWord
   });
   const { headers, payload } = await requestJson(requestUrl, apiKey);
   const items = (payload?.results || []).map((item) => item?.object).filter(Boolean);
@@ -187,7 +175,10 @@ export const getPublicService = async ({ areaId, bus, id }) => {
       throw error;
     }
 
-    ({ payload } = await requestJson(`${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`, apiKey));
+    ({ payload } = await requestJson(
+      `${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`,
+      apiKey
+    ));
   }
 
   return payload?.object || payload;

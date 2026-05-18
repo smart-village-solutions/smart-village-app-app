@@ -3,10 +3,10 @@ import { ScrollView, Text } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { ServiceList } from '../../../src/components/BUS/ServiceList';
-import * as hooks from '../../../src/hooks';
 import { shareMessage } from '../../../src/helpers/BUS/shareHelper';
-import { IndexScreen } from '../../../src/screens/BUS/IndexScreen';
+import * as hooks from '../../../src/hooks';
 import { CategoryScreen } from '../../../src/screens/BUS/CategoryScreen';
+import { IndexScreen } from '../../../src/screens/BUS/IndexScreen';
 import { SettingsContext } from '../../../src/SettingsProvider';
 import { ScreenName } from '../../../src/types/Navigation';
 
@@ -1058,7 +1058,9 @@ describe('BUS IndexScreen', () => {
     const [verticalListProps] = mockVerticalList.mock.calls[0];
 
     expect(
-      verticalListProps.data.find((item) => item.routeName === 'BusDetail' && item.title === 'Nicht verfuegbar')
+      verticalListProps.data.find(
+        (item) => item.routeName === 'BusDetail' && item.title === 'Nicht verfuegbar'
+      )
     ).toEqual(
       expect.objectContaining({
         id: 'missing-root-service',
@@ -1072,6 +1074,7 @@ describe('BUS IndexScreen', () => {
 describe('BUS ServiceList', () => {
   const navigation = { navigate: jest.fn(), push: jest.fn() };
   const setArea = jest.fn();
+  const mountedComponents = [];
   const LIFE_SITUATIONS_EMPTY_STATE_MESSAGE =
     'Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar.';
   const SEARCH_FILTER = { id: 3, title: 'Suche', selected: true };
@@ -1097,6 +1100,7 @@ describe('BUS ServiceList', () => {
   };
 
   beforeEach(() => {
+    mountedComponents.length = 0;
     mockBusIndexFilter.mockClear();
     mockVerticalList.mockClear();
     navigation.navigate.mockClear();
@@ -1109,6 +1113,15 @@ describe('BUS ServiceList', () => {
       isError: false,
       isFetchingNextPage: false,
       isLoading: false
+    });
+  });
+
+  afterEach(() => {
+    renderer.act(() => {
+      while (mountedComponents.length) {
+        const component = mountedComponents.pop();
+        component.unmount();
+      }
     });
   });
 
@@ -1134,6 +1147,7 @@ describe('BUS ServiceList', () => {
     renderer.act(() => {
       component = renderer.create(<ServiceList {...createServiceListProps(props)} />);
     });
+    mountedComponents.push(component);
 
     return component;
   };
@@ -1201,6 +1215,42 @@ describe('BUS ServiceList', () => {
     const verticalListProps = getLatestVerticalListProps();
 
     expect(verticalListProps).toEqual(expect.objectContaining({ data: [], isLoading: true }));
+  });
+
+  it('clears previous A-Z results after an area change when the new area has no matching letter entries', () => {
+    const component = renderServiceList({
+      selectedFilter: A_Z_FILTER
+    });
+
+    selectAZFilter('A');
+
+    renderer.act(() => {
+      getLatestIndexFilterProps().setListItems([
+        {
+          id: 'service-a',
+          title: 'Anmeldung',
+          routeName: 'BusDetail',
+          params: { areaId: '09162000', data: { name: 'Anmeldung' } }
+        }
+      ]);
+    });
+
+    expect(getLatestVerticalListProps().data).toEqual([
+      expect.objectContaining({
+        id: 'service-a',
+        title: 'Anmeldung'
+      })
+    ]);
+
+    updateServiceList(component, {
+      areaId: '11000000',
+      areaName: 'Neuort',
+      results: [],
+      selectedFilter: A_Z_FILTER,
+      top10: []
+    });
+
+    expect(getLatestVerticalListProps().data).toEqual([]);
   });
 
   it('does not show stale life situations while the new area is still loading', () => {
@@ -1431,6 +1481,7 @@ describe('BUS ServiceList', () => {
       fetchNextServicesPage,
       hasNextServicesPage: true,
       isFetchingNextServicesPage: false,
+      isServicesLoading: false,
       selectedFilter: A_Z_FILTER,
       top10: []
     });
@@ -1469,6 +1520,48 @@ describe('BUS ServiceList', () => {
 
     expect(fetchNextServicesPage).toHaveBeenCalledTimes(1);
     warnSpy.mockRestore();
+  });
+
+  it('does not mark the A-Z import complete before the first service page for the area has loaded', async () => {
+    const fetchNextServicesPage = jest.fn().mockResolvedValue({
+      data: {
+        pages: [
+          {
+            items: [{ id: 'service-a', name: 'Anmeldung' }],
+            totalItemCount: 1
+          }
+        ]
+      }
+    });
+
+    const component = renderServiceList({
+      fetchNextServicesPage,
+      hasNextServicesPage: false,
+      isServicesLoading: true,
+      selectedFilter: A_Z_FILTER
+    });
+
+    selectAZFilter('A');
+
+    await renderer.act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(fetchNextServicesPage).not.toHaveBeenCalled();
+
+    updateServiceList(component, {
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      isServicesLoading: false,
+      selectedFilter: A_Z_FILTER,
+      top10: []
+    });
+
+    await renderer.act(async () => {
+      await flushAtoZImport();
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(1);
   });
 
   it('stops the A-Z import when the backend reports no loading progress anymore', async () => {
@@ -1512,6 +1605,42 @@ describe('BUS ServiceList', () => {
     expect(fetchNextServicesPage).toHaveBeenCalledTimes(2);
     expect(warnSpy).not.toHaveBeenCalled();
     warnSpy.mockRestore();
+  });
+
+  it('restarts the A-Z full import after switching to another letter in the same area', async () => {
+    const fetchNextServicesPage = jest.fn().mockResolvedValue({
+      data: {
+        pages: [
+          {
+            items: [{ id: 'service-a', name: 'Anmeldung' }],
+            totalItemCount: 1
+          }
+        ]
+      }
+    });
+
+    renderServiceList({
+      fetchNextServicesPage,
+      hasNextServicesPage: true,
+      selectedFilter: A_Z_FILTER
+    });
+
+    selectAZFilter('A');
+
+    await renderer.act(async () => {
+      await flushAtoZImport();
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(1);
+
+    selectAZFilter('B');
+
+    await renderer.act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(fetchNextServicesPage).toHaveBeenCalledTimes(2);
   });
 
   it('does not render the life situations empty state when no area is selected', () => {

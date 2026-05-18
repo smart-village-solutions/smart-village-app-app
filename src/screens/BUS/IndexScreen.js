@@ -1,7 +1,7 @@
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useMemo, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { Keyboard, RefreshControl } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
@@ -10,9 +10,9 @@ import {
 } from '../../components';
 import { ServiceList } from '../../components/BUS/ServiceList';
 import { colors, consts, texts } from '../../config';
-import { mapBusServicesToListItems, resolveBusCategoryServices } from '../../helpers/busListHelper';
 import { runAsyncTasksSafely, spaceNewLines } from '../../helpers';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
+import { mapBusServicesToListItems, resolveBusCategoryServices } from '../../helpers/busListHelper';
 import {
   useBusCategoryChildren,
   useBusInitialArea,
@@ -22,6 +22,7 @@ import {
   useMatomoTrackScreenView
 } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
+import { ScreenName } from '../../types';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -103,6 +104,15 @@ const getLifeSituationsItems = (areaId, category, childCategories = [], services
     ]
   ).map((childCategory) => ({
     id: childCategory.id,
+    onPress: (navigation) => {
+      Keyboard.dismiss();
+      navigation?.push(ScreenName.BusCategory, {
+        areaId,
+        category: childCategory,
+        isRootCategory: false,
+        title: childCategory.name
+      });
+    },
     picture: childCategory?.image?.url ? { url: childCategory.image.url } : undefined,
     subtitle: spaceNewLines(childCategory.description),
     title: childCategory.name,
@@ -118,8 +128,22 @@ const getLifeSituationsItems = (areaId, category, childCategories = [], services
     .filter((service) => hasValue(service?.id) && hasValue(service?.name))
     .map((service) => ({
       id: service.id,
+      onPress: (navigation) => {
+        Keyboard.dismiss();
+        navigation?.push(ScreenName.BusDetail, {
+          areaId,
+          title: service.name,
+          query: '',
+          queryVariables: {},
+          rootRouteName: 'BUS',
+          shareContent: {
+            message: shareMessage(service)
+          },
+          data: service
+        });
+      },
       title: service.name,
-      routeName: 'BusDetail',
+      routeName: ScreenName.BusDetail,
       params: {
         areaId,
         title: service.name,
@@ -267,6 +291,7 @@ export const IndexScreen = ({ navigation }) => {
           initialAreaId={initialAreaId}
           initialAreaName={initialAreaName}
           isFetchingNextServicesPage={isFetchingNextServicesPage}
+          isServicesLoading={isLoadingServices}
           isServicesError={isServicesError}
           setArea={(area) => {
             setAreaId(area.id);

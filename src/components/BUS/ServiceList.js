@@ -3,12 +3,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { BUS_MIN_SEARCH_LENGTH, BUS_SEARCH_DEBOUNCE_MS, useBusServiceSearch } from '../../hooks';
 import { mapBusServicesToListItems } from '../../helpers/busListHelper';
+import { BUS_MIN_SEARCH_LENGTH, BUS_SEARCH_DEBOUNCE_MS, useBusServiceSearch } from '../../hooks';
 import { EmptyMessage } from '../EmptyMessage';
-import { VerticalList } from '../VerticalList';
 import { IndexFilterWrapper } from '../IndexFilterElement';
 import { RegularText } from '../Text';
+import { VerticalList } from '../VerticalList';
 import { WrapperHorizontal, WrapperVertical } from '../Wrapper';
 
 import { AreaAutocomplete } from './AreaAutocomplete';
@@ -42,8 +42,7 @@ const createAZImportState = () => ({
 const areListItemsEqual = (leftItems = [], rightItems = []) =>
   leftItems.length === rightItems.length &&
   leftItems.every(
-    (item, index) =>
-      item?.id === rightItems[index]?.id && item?.title === rightItems[index]?.title
+    (item, index) => item?.id === rightItems[index]?.id && item?.title === rightItems[index]?.title
   );
 const getActiveAZImportState = ({
   activeFilterId,
@@ -153,6 +152,7 @@ const getFetchMoreData = ({
 const LifeSituationsHeader = ({
   areaId,
   areaName,
+  blurAreaSignal = 0,
   initialAreaId,
   initialAreaName,
   listItemsCount,
@@ -164,6 +164,7 @@ const LifeSituationsHeader = ({
         <AreaAutocomplete
           areaId={areaId}
           areaName={areaName}
+          blurSignal={blurAreaSignal}
           initialAreaId={initialAreaId}
           initialAreaName={initialAreaName}
           onSelectArea={setArea}
@@ -181,6 +182,7 @@ const LifeSituationsHeader = ({
 LifeSituationsHeader.propTypes = {
   areaId: areaIdPropType,
   areaName: PropTypes.string,
+  blurAreaSignal: PropTypes.number,
   initialAreaId: areaIdPropType,
   initialAreaName: PropTypes.string,
   listItemsCount: PropTypes.number.isRequired,
@@ -211,6 +213,7 @@ export const ServiceList = ({
   initialAreaName,
   isFetchingNextServicesPage = false,
   isListLoading,
+  isServicesLoading = false,
   lifeSituationsEmptyStateMessage,
   lifeSituations = [],
   navigation,
@@ -222,10 +225,14 @@ export const ServiceList = ({
   top10
 }) => {
   const activeFilter = selectedFilter || { id: FILTER_IDS.SEARCH };
+  const [areaBlurSignal, setAreaBlurSignal] = useState(0);
   const [searchData, setSearchData] = useState('');
+  const [searchBlurSignal, setSearchBlurSignal] = useState(0);
   const [debouncedSearchData, setDebouncedSearchData] = useState('');
   const [AZFilterData, setAZFilterData] = useState(initialAZFilterData);
   const [AZImportState, setAZImportState] = useState(createAZImportState);
+  // Triggers the async A-Z import effect in a controlled way and guards against stale runs.
+  const [AZImportRequest, setAZImportRequest] = useState(null);
   const [filteredListState, setFilteredListState] = useState({
     areaId,
     filterId: activeFilter.id,
@@ -311,6 +318,23 @@ export const ServiceList = ({
     isSearchDebouncing,
     selectedFilterId: activeFilter.id
   });
+  const handleSetAZFilterData = useCallback((nextData) => {
+    setAreaBlurSignal((currentValue) => currentValue + 1);
+    setAZFilterData(nextData);
+  }, []);
+
+  useEffect(() => {
+    if (typeof navigation?.addListener !== 'function') {
+      return undefined;
+    }
+
+    return navigation.addListener('focus', () => {
+      if (activeFilter.id === FILTER_IDS.SEARCH) {
+        setSearchBlurSignal((currentValue) => currentValue + 1);
+      }
+    });
+  }, [activeFilter.id, navigation]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedSearchData(searchData);
@@ -325,6 +349,16 @@ export const ServiceList = ({
   }, [areaId]);
 
   useEffect(() => {
+    setAZImportState(createAZImportState());
+    setAZImportRequest(null);
+    setFilteredListState((currentState) => ({
+      ...currentState,
+      areaId,
+      items: []
+    }));
+  }, [areaId]);
+
+  useEffect(() => {
     if (!fetchNextServicesPage) {
       return;
     }
@@ -333,28 +367,57 @@ export const ServiceList = ({
       return;
     }
 
+    if (isServicesLoading) {
+      return;
+    }
+
     if (isFetchingNextServicesPage) {
       return;
     }
 
-    const isNewSelection = activeAZImportState.key !== activeAZImportKey;
+    const hasCompletedAreaImport = activeAZImportState.status === AZ_IMPORT_STATUS.COMPLETE;
 
     if (!hasNextServicesPage) {
+      if (!hasCompletedAreaImport) {
+        setAZImportState({
+          key: activeAZImportKey,
+          status: AZ_IMPORT_STATUS.COMPLETE
+        });
+      }
       return;
     }
 
-    if (!isNewSelection && activeAZImportState.status !== AZ_IMPORT_STATUS.IDLE) {
+    if (hasCompletedAreaImport || activeAZImportState.status !== AZ_IMPORT_STATUS.IDLE) {
+      return;
+    }
+
+    setAZImportState({
+      key: activeAZImportKey,
+      status: AZ_IMPORT_STATUS.LOADING
+    });
+    setAZImportRequest((currentRequest) => ({
+      key: activeAZImportKey,
+      sequence: (currentRequest?.sequence ?? 0) + 1
+    }));
+  }, [
+    activeAZImportKey,
+    activeAZImportState.status,
+    activeFilter.id,
+    fetchNextServicesPage,
+    hasNextServicesPage,
+    isFetchingNextServicesPage,
+    isServicesLoading,
+    selectedAZCharacter
+  ]);
+
+  useEffect(() => {
+    if (!AZImportRequest || !fetchNextServicesPage || AZImportRequest.key !== activeAZImportKey) {
       return;
     }
 
     let isCancelled = false;
 
     const loadAllServicePagesForAZ = async () => {
-      setAZImportState({
-        key: activeAZImportKey,
-        status: AZ_IMPORT_STATUS.LOADING
-      });
-
       try {
         let shouldContinue = true;
         let previousLoadedItemsCount = -1;
@@ -382,7 +445,7 @@ export const ServiceList = ({
 
         if (!isCancelled) {
           setAZImportState({
-            key: activeAZImportKey,
+            key: AZImportRequest.key,
             status: AZ_IMPORT_STATUS.COMPLETE
           });
         }
@@ -391,7 +454,7 @@ export const ServiceList = ({
 
         if (!isCancelled) {
           setAZImportState({
-            key: activeAZImportKey,
+            key: AZImportRequest.key,
             status: AZ_IMPORT_STATUS.ERROR
           });
         }
@@ -403,19 +466,14 @@ export const ServiceList = ({
     return () => {
       isCancelled = true;
     };
-  }, [
-    activeFilter.id,
-    activeAZImportKey,
-    fetchNextServicesPage,
-    hasNextServicesPage,
-    isFetchingNextServicesPage
-  ]);
+  }, [AZImportRequest, activeAZImportKey, fetchNextServicesPage]);
 
   const listHeaderComponent =
     activeFilter.id === FILTER_IDS.LIFE_SITUATIONS ? (
       <LifeSituationsHeader
         areaId={areaId}
         areaName={areaName}
+        blurAreaSignal={areaBlurSignal}
         initialAreaId={initialAreaId}
         initialAreaName={initialAreaName}
         listItemsCount={listItems.length}
@@ -425,6 +483,8 @@ export const ServiceList = ({
       <IndexFilter
         AZFilterData={AZFilterData}
         selectedFilter={activeFilter}
+        blurAreaSignal={areaBlurSignal}
+        blurSearchSignal={searchBlurSignal}
         results={results}
         areaId={areaId}
         areaName={areaName}
@@ -434,7 +494,7 @@ export const ServiceList = ({
         setArea={setArea}
         loading={listLoading}
         listItems={listItems}
-        setAZFilterData={setAZFilterData}
+        setAZFilterData={handleSetAZFilterData}
         setSearchData={setSearchData}
         setListItems={setFilteredListItems}
       />
@@ -454,9 +514,7 @@ export const ServiceList = ({
       />
     );
   } else if (hasLifeSituationsEmptyState) {
-    listEmptyComponent = (
-      <LifeSituationsEmptyState message={lifeSituationsEmptyStateMessage} />
-    );
+    listEmptyComponent = <LifeSituationsEmptyState message={lifeSituationsEmptyStateMessage} />;
   }
 
   return (
@@ -487,6 +545,7 @@ ServiceList.propTypes = {
   initialAreaName: PropTypes.string,
   isFetchingNextServicesPage: PropTypes.bool,
   isListLoading: PropTypes.bool.isRequired,
+  isServicesLoading: PropTypes.bool,
   isServicesError: PropTypes.bool,
   lifeSituationsEmptyStateMessage: PropTypes.string,
   lifeSituations: PropTypes.array,

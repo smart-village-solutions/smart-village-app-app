@@ -1,5 +1,8 @@
 import _filter from 'lodash/filter';
 import _sortBy from 'lodash/sortBy';
+import { Keyboard } from 'react-native';
+
+import { ScreenName } from '../types';
 
 import { shareMessage } from './BUS/shareHelper';
 
@@ -42,8 +45,22 @@ export const mapBusServicesToListItems = (areaId, services = []) =>
     (busService) => busService.name.toUpperCase()
   ).map((busService) => ({
     id: busService.id,
+    onPress: (navigation) => {
+      Keyboard.dismiss();
+      navigation?.push(ScreenName.BusDetail, {
+        areaId,
+        title: busService.name,
+        query: '',
+        queryVariables: {},
+        rootRouteName: 'BUS',
+        shareContent: {
+          message: shareMessage(busService)
+        },
+        data: busService
+      });
+    },
     title: busService.name,
-    routeName: 'BusDetail',
+    routeName: ScreenName.BusDetail,
     params: {
       areaId,
       title: busService.name,

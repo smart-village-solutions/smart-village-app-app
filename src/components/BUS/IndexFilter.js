@@ -28,6 +28,8 @@ export const IndexFilter = ({
   AZFilterData,
   areaId,
   areaName,
+  blurAreaSignal = 0,
+  blurSearchSignal = 0,
   initialAreaId,
   initialAreaName,
   listItems,
@@ -46,6 +48,7 @@ export const IndexFilter = ({
     <AreaAutocomplete
       areaId={areaId}
       areaName={areaName}
+      blurSignal={blurAreaSignal}
       initialAreaId={initialAreaId}
       initialAreaName={initialAreaName}
       onSelectArea={setArea}
@@ -70,6 +73,7 @@ export const IndexFilter = ({
         return (
           <WrapperVertical>
             <TextSearch
+              blurSignal={blurSearchSignal}
               data={searchData}
               setData={setSearchData}
               placeholder={texts.bus.textSearch.placeholder}
@@ -159,6 +163,8 @@ IndexFilter.propTypes = {
   AZFilterData: PropTypes.array.isRequired,
   areaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   areaName: PropTypes.string,
+  blurAreaSignal: PropTypes.number,
+  blurSearchSignal: PropTypes.number,
   initialAreaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   initialAreaName: PropTypes.string,
   listItems: PropTypes.array.isRequired,
