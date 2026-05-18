@@ -36,17 +36,18 @@ const cachePointsOfInterestAndToursListData = (cacheKey: number, listData: unkno
 type Props = {
   additionalData?: unknown[];
   buttonTitle?: string;
+  dateTimeFormat?: string;
   horizontal?: boolean;
   isIndexStartingAt1?: boolean;
   isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
+  listType?: string;
   loading?: boolean;
   navigate?: () => void;
   navigateButton?: () => void;
   navigateLink?: () => void;
   navigation: StackNavigationProp<Record<string, object | undefined>>;
-  listType?: string;
   placeholder?: React.ReactElement;
   query: string;
   queryUpdatedAt?: number;
@@ -62,6 +63,7 @@ type Props = {
 export const DataListSection = ({
   additionalData,
   buttonTitle,
+  dateTimeFormat,
   horizontal,
   isIndexStartingAt1,
   isRandom = false,
@@ -108,6 +110,7 @@ export const DataListSection = ({
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
+    dateTimeFormat: dateTimeFormat,
     withTime: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
     queryKey: query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query
   };

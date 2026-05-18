@@ -10,6 +10,7 @@ import { DataListSection } from './DataListSection';
 
 type Props = {
   buttonTitle: string;
+  dateTimeFormat?: string;
   fetchPolicy:
     | 'cache-first'
     | 'network-only'
@@ -30,6 +31,7 @@ type Props = {
 
 export const HomeSection = ({
   buttonTitle,
+  dateTimeFormat,
   isIndexStartingAt1 = false,
   navigate,
   navigation,
@@ -104,6 +106,7 @@ export const HomeSection = ({
     <DataListSection
       additionalData={additionalData}
       buttonTitle={buttonTitle}
+      dateTimeFormat={dateTimeFormat}
       isIndexStartingAt1={isIndexStartingAt1}
       limit={queryVariables?.limit || queryVariables?.take}
       loading={loading}

@@ -20,6 +20,7 @@ const { MATOMO_TRACKING } = consts;
 export const NewsItem = ({ data, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { showImageRights } = globalSettings || {};
+  const { detailDateFormat } = globalSettings?.settings?.news || {};
   const imageRightsPosition = showImageRights?.newsDetail?.imageRightsPosition;
 
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings, categories } =
@@ -70,7 +71,7 @@ export const NewsItem = ({ data, route }) => {
       {!!momentFormatUtcToLocal(publishedAt) && (
         <Wrapper center>
           <WrapperRow center>
-            <RegularText>{momentFormatUtcToLocal(publishedAt)}</RegularText>
+            <RegularText>{momentFormatUtcToLocal(publishedAt, detailDateFormat)}</RegularText>
           </WrapperRow>
         </Wrapper>
       )}
