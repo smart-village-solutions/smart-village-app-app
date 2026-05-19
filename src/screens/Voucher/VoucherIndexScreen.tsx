@@ -56,7 +56,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const requestVariables = useMemo(() => {
     const variables = { ...queryVariables };
 
-    if (query === QUERY_TYPES.VOUCHERS) {
+    if (query === QUERY_TYPES.VOUCHERS || query === QUERY_TYPES.VOUCHERS_REDEEMED) {
       variables.memberId = memberId;
     }
 
