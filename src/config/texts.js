@@ -84,9 +84,16 @@ export const texts = {
     categoryFilter: {
       label: 'Lebenslage'
     },
+    emptyStates: {
+      lifeSituations:
+        'Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar.',
+      lifeSituationsNested: 'Diese Lebenslage konnte derzeit nicht geladen werden.',
+      lifeSituationsRoot: 'Die Lebenslagen konnten derzeit nicht geladen werden.'
+    },
     employees: 'Ansprechpartner',
     initialFilter: {
       aToZ: 'A-Z',
+      lifeSituations: 'Lebenslagen',
       top10: 'Meistgesucht',
       search: 'Suche'
     },

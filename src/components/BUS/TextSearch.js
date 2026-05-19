@@ -1,29 +1,49 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
 
 const { a11yLabel } = consts;
 
+const SearchIcon = () => (
+  <Icon.Search
+    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`}
+    color={colors.primary}
+    size={normalize(28)}
+  />
+);
+
+const ClearIcon = ({ onPress }) => (
+  <TouchableOpacity
+    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`}
+    activeOpacity={1}
+    onPress={onPress}
+  >
+    <Icon.Close color={colors.primary} size={normalize(24)} />
+  </TouchableOpacity>
+);
+
+ClearIcon.propTypes = {
+  onPress: PropTypes.func.isRequired
+};
+
 export const TextSearch = memo(({ data, setData, label, placeholder }) => {
+  const clearSearch = () => setData('');
+
   return (
     <View>
       <WrapperHorizontal>
         <Label>{label}</Label>
       </WrapperHorizontal>
       <SearchBar
-        clearIcon={{
-          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`,
-          color: colors.primary,
-          size: normalize(24)
-        }}
+        clearIcon={() => <ClearIcon onPress={clearSearch} />}
         value={data}
         onChangeText={(value) => setData(value)}
-        onClearText={() => setData('')}
+        onClearText={clearSearch}
         placeholder={placeholder}
         placeholderTextColor={colors.darkText}
         lightTheme
@@ -32,15 +52,7 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
         inputStyle={[styles.inputStyle, data.length && styles.marginLeft]}
         leftIconContainerStyle={styles.leftIconContainerStyle}
         rightIconContainerStyle={styles.rightIconContainerStyle}
-        searchIcon={
-          data.length
-            ? null
-            : {
-                accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`,
-                color: colors.primary,
-                size: normalize(28)
-              }
-        }
+        searchIcon={() => (data.length ? null : <SearchIcon />)}
       />
     </View>
   );

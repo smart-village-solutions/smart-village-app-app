@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, Icon, normalize } from '../config';
 import { openLink } from '../helpers';
@@ -15,7 +15,9 @@ export const Link = ({ url, description, openWebScreen }) => (
   >
     <WrapperRow>
       <Icon.Link color={colors.primary} style={styles.icon} />
-      <RegularText primary>{description}</RegularText>
+      <View style={styles.textContainer}>
+        <RegularText primary>{description}</RegularText>
+      </View>
     </WrapperRow>
   </TouchableOpacity>
 );
@@ -24,6 +26,10 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: normalize(5),
     marginTop: normalize(3)
+  },
+  textContainer: {
+    flex: 1,
+    minWidth: 0
   }
 });
 

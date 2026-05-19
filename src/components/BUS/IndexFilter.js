@@ -52,6 +52,15 @@ export const IndexFilter = ({
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
   const [AZFilterData, setAZFilterData] = useState(initialAZFilterData);
   const listItemsCount = listItems.length;
+  const renderAreaAutocomplete = () => (
+    <AreaAutocomplete
+      areaId={areaId}
+      areaName={areaName}
+      initialAreaId={initialAreaId}
+      initialAreaName={initialAreaName}
+      onSelectArea={setArea}
+    />
+  );
 
   const renderFilterComponents = (selectedFilterId) => {
     switch (selectedFilterId) {
@@ -64,13 +73,7 @@ export const IndexFilter = ({
               label={texts.bus.categoryFilter.label}
             />
             <Divider style={styles.divider} />
-            <AreaAutocomplete
-              areaId={areaId}
-              areaName={areaName}
-              initialAreaId={initialAreaId}
-              initialAreaName={initialAreaName}
-              onSelectArea={setArea}
-            />
+            {renderAreaAutocomplete()}
           </WrapperVertical>
         );
       case 3:
@@ -83,28 +86,14 @@ export const IndexFilter = ({
               label={texts.bus.textSearch.label}
             />
             <Divider style={styles.divider} />
-            <AreaAutocomplete
-              areaId={areaId}
-              areaName={areaName}
-              initialAreaId={initialAreaId}
-              initialAreaName={initialAreaName}
-              onSelectArea={setArea}
-            />
+            {renderAreaAutocomplete()}
           </WrapperVertical>
         );
       case 4:
         return (
           <WrapperVertical>
             <AZFilter data={AZFilterData} setData={setAZFilterData} />
-            <WrapperVertical>
-              <AreaAutocomplete
-                areaId={areaId}
-                areaName={areaName}
-                initialAreaId={initialAreaId}
-                initialAreaName={initialAreaName}
-                onSelectArea={setArea}
-              />
-            </WrapperVertical>
+            <WrapperVertical>{renderAreaAutocomplete()}</WrapperVertical>
           </WrapperVertical>
         );
       default:
@@ -115,53 +104,54 @@ export const IndexFilter = ({
   useEffect(() => {
     if (loading) return;
 
-    if (selectedFilter.id === 2) {
-      const category = categoryFilterData.find((item) => item.selected);
+    switch (selectedFilter.id) {
+      case 2: {
+        const category = categoryFilterData.find((item) => item.selected);
 
-      if (category?.id > 0) {
-        const searchResults = search({
-          results,
-          category: category.value
-        });
-
-        setListItems(searchResults);
-      } else {
-        setListItems([]);
+        setListItems(
+          category?.id > 0
+            ? search({
+                results,
+                category: category.value
+              })
+            : []
+        );
+        break;
       }
-    }
-  }, [areaId, categoryFilterData, loading, results, selectedFilter.id, setListItems]);
+      case 3:
+        setListItems(
+          search({
+            results,
+            keyword: serviceSearchData
+          })
+        );
+        break;
+      case 4: {
+        const character = (AZFilterData.find((item) => item.selected) || {}).value;
 
-  useEffect(() => {
-    if (loading) return;
-
-    if (selectedFilter.id === 3) {
-      const searchResults = search({
-        results,
-        keyword: serviceSearchData
-      });
-
-      setListItems(searchResults);
-    }
-  }, [areaId, loading, results, selectedFilter.id, serviceSearchData, setListItems]);
-
-  useEffect(() => {
-    if (loading) return;
-
-    if (selectedFilter.id === 4) {
-      const character = (AZFilterData.find((item) => item.selected) || {}).value;
-
-      if (character) {
-        const searchResults = search({
-          results,
+        setListItems(
           character
-        });
-
-        setListItems(searchResults);
-      } else {
-        setListItems([]);
+            ? search({
+                results,
+                character
+              })
+            : []
+        );
+        break;
       }
+      default:
+        break;
     }
-  }, [AZFilterData, areaId, loading, results, selectedFilter.id, setListItems]);
+  }, [
+    AZFilterData,
+    areaId,
+    categoryFilterData,
+    loading,
+    results,
+    selectedFilter.id,
+    serviceSearchData,
+    setListItems
+  ]);
 
   return (
     <View>
@@ -191,9 +181,9 @@ const styles = StyleSheet.create({
 });
 
 IndexFilter.propTypes = {
-  areaId: PropTypes.string.isRequired,
+  areaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   areaName: PropTypes.string,
-  initialAreaId: PropTypes.string,
+  initialAreaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   initialAreaName: PropTypes.string,
   listItems: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,

@@ -3,14 +3,13 @@ import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { SearchBar } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../config';
-import { useBusAreas } from '../../hooks';
+import { colors, consts, Icon, normalize, texts } from '../../config';
+import { BUS_MIN_SEARCH_LENGTH, BUS_SEARCH_DEBOUNCE_MS, useBusAreas } from '../../hooks';
 import type { BusAreaSearchResult } from '../../types';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow } from '../Wrapper';
 
-const MIN_SEARCH_LENGTH = 3;
 const { a11yLabel } = consts;
 
 type SelectionArea = {
@@ -55,6 +54,14 @@ type SearchAreaOption = BusAreaSearchResult & {
   label: string;
 };
 
+type ClearIconProps = {
+  clearSelection: () => void;
+};
+
+type SearchIconProps = {
+  inputValue: string;
+};
+
 const getSearchStateText = ({ hasNoResults, isSearching, isUnavailable }: SearchStateTextArgs) => {
   if (isUnavailable) return texts.bus.locationFilter.error;
   if (isSearching) return texts.bus.locationFilter.loading;
@@ -83,7 +90,7 @@ const getHelperText = ({
 }: HelperTextArgs) => {
   const hasInitialAreaName = !!initialAreaName;
   const isEmpty = trimmedInputLength === 0;
-  const isBelowMinLength = trimmedInputLength > 0 && trimmedInputLength < MIN_SEARCH_LENGTH;
+  const isBelowMinLength = trimmedInputLength > 0 && trimmedInputLength < BUS_MIN_SEARCH_LENGTH;
   const isUnavailable = !hasBusConfig || isError;
   const isSearching = isLoading || isFetching;
   const hasNoResults = !normalizedAreasLength;
@@ -101,7 +108,7 @@ const getHelperText = ({
     return texts.bus.locationFilter.minSearchLength;
   }
 
-  if (shouldSearch) {
+  if (shouldSearch && isFocused) {
     return getSearchStateText({ hasNoResults, isSearching, isUnavailable });
   }
 
@@ -112,6 +119,25 @@ const getHelperText = ({
   return '';
 };
 
+const SearchBarClearIcon = ({ clearSelection }: ClearIconProps) => (
+  <TouchableOpacity
+    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`}
+    activeOpacity={1}
+    onPress={clearSelection}
+  >
+    <Icon.Close color={colors.primary} size={normalize(24)} />
+  </TouchableOpacity>
+);
+
+const SearchBarSearchIcon = ({ inputValue }: SearchIconProps) =>
+  inputValue.length ? null : (
+    <Icon.Search
+      accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`}
+      color={colors.primary}
+      size={normalize(28)}
+    />
+  );
+
 export const AreaAutocomplete = memo(function AreaAutocomplete({
   areaId,
   areaName,
@@ -120,18 +146,24 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
   onSelectArea
 }: AreaAutocompleteProps) {
   const [inputValue, setInputValue] = useState(areaName || '');
+  const [debouncedInputValue, setDebouncedInputValue] = useState(areaName || '');
   const [isFocused, setIsFocused] = useState(false);
   const [searchBarRenderKey, setSearchBarRenderKey] = useState(0);
+  const didForceInitialClearIconRender = useRef(false);
   const previousSelection = useRef({ areaId, areaName });
+  const searchBarRef = useRef<any>(null);
   const trimmedInputValue = inputValue.trim();
-  const shouldSearch = trimmedInputValue.length >= MIN_SEARCH_LENGTH;
+  const shouldSearch = trimmedInputValue.length >= BUS_MIN_SEARCH_LENGTH;
+  const trimmedDebouncedInputValue = debouncedInputValue.trim();
+  const shouldFetchAreas = trimmedDebouncedInputValue.length >= BUS_MIN_SEARCH_LENGTH;
+  const isDebouncing = inputValue !== debouncedInputValue;
   const {
     data = [],
     hasBusConfig,
     isError,
     isFetching,
     isLoading
-  } = useBusAreas(inputValue, isFocused && shouldSearch);
+  } = useBusAreas(debouncedInputValue, isFocused && shouldFetchAreas);
   const areas = useMemo(
     () =>
       data.map((item) => ({
@@ -140,6 +172,15 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
       })),
     [data]
   );
+  const visibleAreas = isDebouncing ? [] : areas;
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedInputValue(inputValue);
+    }, BUS_SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [inputValue]);
 
   useEffect(() => {
     const hasSelectionChanged =
@@ -156,10 +197,23 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
     // query briefly reappears and the selected area label gets lost until the next render.
     const timeoutId = setTimeout(() => {
       setInputValue(areaName || '');
+      setDebouncedInputValue(areaName || '');
     }, 0);
 
     return () => clearTimeout(timeoutId);
   }, [areaId, areaName]);
+
+  useEffect(() => {
+    if (didForceInitialClearIconRender.current || !areaName?.length) return;
+
+    didForceInitialClearIconRender.current = true;
+
+    const timeoutId = setTimeout(() => {
+      setSearchBarRenderKey((currentKey) => currentKey + 1);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [areaName]);
 
   const shouldHideResults = !isFocused || !shouldSearch;
   const hasDifferentSelection = !!initialAreaId && `${areaId}` !== `${initialAreaId}`;
@@ -172,9 +226,9 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
         initialAreaName,
         isFocused,
         isError,
-        isFetching,
-        isLoading,
-        normalizedAreasLength: areas.length,
+        isFetching: isFetching || isDebouncing,
+        isLoading: isLoading || isDebouncing,
+        normalizedAreasLength: visibleAreas.length,
         shouldSearch,
         trimmedInputLength: trimmedInputValue.length
       }),
@@ -186,7 +240,8 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
       isError,
       isFetching,
       isLoading,
-      areas.length,
+      isDebouncing,
+      visibleAreas.length,
       shouldSearch,
       trimmedInputValue.length
     ]
@@ -199,6 +254,7 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
       onPress={() => {
         setInputValue(item.label);
         setIsFocused(false);
+        searchBarRef.current?.blur?.();
         onSelectArea({ id: item.id, label: item.label });
       }}
       style={styles.suggestionItem}
@@ -206,6 +262,15 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
       <RegularText>{item.label}</RegularText>
     </TouchableOpacity>
   );
+
+  const clearSelection = () => {
+    setIsFocused(true);
+    setInputValue('');
+    setDebouncedInputValue('');
+    onSelectArea({ id: undefined, label: '' });
+  };
+  const renderClearIcon = () => <SearchBarClearIcon clearSelection={clearSelection} />;
+  const renderSearchIcon = () => <SearchBarSearchIcon inputValue={inputValue} />;
 
   return (
     <View>
@@ -215,7 +280,7 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
       <Autocomplete
         autoCorrect={false}
         containerStyle={styles.autoCompleteContainer}
-        data={areas}
+        data={visibleAreas}
         disableFullscreenUI
         flatListProps={{
           keyboardShouldPersistTaps: 'handled',
@@ -236,11 +301,8 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
         renderTextInput={() => (
           <SearchBar
             key={searchBarRenderKey}
-            clearIcon={{
-              accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`,
-              color: colors.primary,
-              size: normalize(24)
-            }}
+            ref={searchBarRef}
+            clearIcon={renderClearIcon}
             containerStyle={styles.searchBarContainerStyle}
             inputContainerStyle={styles.searchBarInputContainerStyle}
             inputStyle={[
@@ -254,23 +316,12 @@ export const AreaAutocomplete = memo(function AreaAutocomplete({
               setIsFocused(true);
               setInputValue(text);
             }}
-            onClearText={() => {
-              setIsFocused(true);
-              setInputValue('');
-            }}
+            onClearText={clearSelection}
             onFocus={() => setIsFocused(true)}
             placeholder={texts.bus.locationFilter.searchPlaceholder}
             placeholderTextColor={colors.darkText}
             rightIconContainerStyle={styles.searchBarRightIconContainerStyle}
-            searchIcon={
-              inputValue.length
-                ? null
-                : {
-                    accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`,
-                    color: colors.primary,
-                    size: normalize(28)
-                  }
-            }
+            searchIcon={renderSearchIcon}
             value={inputValue}
           />
         )}

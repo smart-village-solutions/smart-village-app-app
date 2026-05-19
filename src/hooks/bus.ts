@@ -3,6 +3,8 @@ import { useContext } from 'react';
 import { useQuery } from 'react-query';
 
 import {
+  findBusCategoryChildren,
+  findBusCategoryRoot,
   findPublicServices,
   getPoliticalArea,
   getPublicService,
@@ -12,6 +14,7 @@ import { SettingsContext } from '../SettingsProvider';
 import type {
   AreaId,
   BusAreaSearchResult,
+  BusCategory,
   BusServiceArgs,
   BusServiceDetail,
   BusServiceListItem,
@@ -24,12 +27,19 @@ import { useStaticContent } from './staticContent';
 
 const BUS_QUERY_KEYS = {
   AREAS: 'areas',
+  CATEGORY_CHILDREN: 'category-children',
+  LIFE_SITUATIONS_ROOT: 'life-situations-root',
   ROOT: 'bus',
   SERVICE: 'service',
   SERVICES: 'services',
   INITIAL_AREA: 'initial-area',
   TOP10: 'top10'
 } as const;
+
+export const DEFAULT_BUS_LIFE_SITUATIONS_ROOT_SEARCH_WORD =
+  'Lebenslagen für Bürgerinnen und Bürger';
+export const BUS_MIN_SEARCH_LENGTH = 3;
+export const BUS_SEARCH_DEBOUNCE_MS = 400;
 
 // Avoid leaking the raw API key into React Query devtools while still changing the cache key
 // when credentials change.
@@ -54,6 +64,12 @@ export const getBusQueryConfigKey = (bus: Pick<BusSettings, 'apiKey' | 'uri'> = 
   return `${bus.uri ?? ''}::${getHashedKeyPart(bus.apiKey)}`;
 };
 
+export const getBusLifeSituationsRootSearchWord = (bus?: BusSettings) => {
+  const trimmedSearchWord = bus?.lifeSituationsRootSearchWord?.trim();
+
+  return trimmedSearchWord || DEFAULT_BUS_LIFE_SITUATIONS_ROOT_SEARCH_WORD;
+};
+
 const useBusSettings = (): BusSettings => {
   const { globalSettings } = useContext(SettingsContext) as BusSettingsContextValue;
   return globalSettings?.settings?.bus ?? {};
@@ -62,7 +78,8 @@ const useBusSettings = (): BusSettings => {
 export const useBusAreas = (searchTerm: string = '', isEnabled: boolean = true) => {
   const bus = useBusSettings();
   const hasBusConfig = !!bus.uri;
-  const isQueryEnabled = isEnabled && hasBusConfig && searchTerm.trim().length >= 3;
+  const isQueryEnabled =
+    isEnabled && hasBusConfig && searchTerm.trim().length >= BUS_MIN_SEARCH_LENGTH;
 
   const { data, error, isError, isFetching, isLoading, refetch } = useQuery<
     BusAreaSearchResult[],
@@ -87,6 +104,63 @@ export const useBusAreas = (searchTerm: string = '', isEnabled: boolean = true) 
   };
 };
 
+export const useBusLifeSituationsRoot = (areaId?: AreaId) => {
+  const bus = useBusSettings();
+  const hasBusConfig = !!bus.uri && !!areaId;
+  const busQueryConfigKey = getBusQueryConfigKey(bus);
+  const searchWord = getBusLifeSituationsRootSearchWord(bus);
+
+  const { data, error, isError, isFetching, isLoading, refetch } = useQuery<BusCategory | null>(
+    [
+      BUS_QUERY_KEYS.ROOT,
+      BUS_QUERY_KEYS.LIFE_SITUATIONS_ROOT,
+      areaId,
+      searchWord,
+      busQueryConfigKey
+    ],
+    () => findBusCategoryRoot({ areaId, bus, searchWord }),
+    {
+      enabled: hasBusConfig
+    }
+  );
+
+  return {
+    data,
+    error,
+    hasBusConfig,
+    isError,
+    isFetching,
+    isLoading,
+    refetch
+  };
+};
+
+export const useBusCategoryChildren = (parentId?: string | number | null, areaId?: AreaId) => {
+  const bus = useBusSettings();
+  const hasValidParentId =
+    parentId !== null && parentId !== undefined && `${parentId}`.trim().length > 0;
+  const hasBusConfig = !!bus.uri && !!areaId && hasValidParentId;
+  const busQueryConfigKey = getBusQueryConfigKey(bus);
+
+  const { data, error, isError, isFetching, isLoading, refetch } = useQuery<BusCategory[], Error>(
+    [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.CATEGORY_CHILDREN, parentId, areaId, busQueryConfigKey],
+    () => findBusCategoryChildren({ areaId, bus, parentId }),
+    {
+      enabled: hasBusConfig
+    }
+  );
+
+  return {
+    data,
+    error,
+    hasBusConfig,
+    isError,
+    isFetching,
+    isLoading,
+    refetch
+  };
+};
+
 export const useBusServices = (areaId: AreaId) => {
   const bus = useBusSettings();
   const hasBusConfig = !!bus.uri && !!areaId;
@@ -96,8 +170,7 @@ export const useBusServices = (areaId: AreaId) => {
     [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.SERVICES, areaId, busQueryConfigKey],
     () => findPublicServices({ areaId, bus }),
     {
-      enabled: hasBusConfig,
-      keepPreviousData: true
+      enabled: hasBusConfig
     }
   );
 

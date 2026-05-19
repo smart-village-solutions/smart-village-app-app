@@ -1,4 +1,18 @@
 const DEFAULT_LIST_LIMIT = 1000;
+const ROOT_CATEGORY_SELECT_ATTRIBUTES = ['id', 'name']
+  .map((attribute) => `&selectAttributes[]=${attribute}`)
+  .join('');
+const CHILD_CATEGORY_SELECT_ATTRIBUTES = [
+  'id',
+  'name',
+  'description',
+  'parentId',
+  'position',
+  'image',
+  'publicServiceTypes'
+]
+  .map((attribute) => `&selectAttributes[]=${attribute}`)
+  .join('');
 
 const createRequestOptions = (apiKey) => ({
   headers: {
@@ -49,6 +63,40 @@ export const findPublicServices = async ({ areaId, bus, searchWord = '' }) => {
   return services;
 };
 
+export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
+  const { apiKey, uri: baseUrl } = bus;
+  const normalizedSearchWord = searchWord?.trim();
+
+  if (!normalizedSearchWord) return null;
+
+  const encodedSearchWord = encodeURIComponent(normalizedSearchWord);
+  const areaIdQuery = areaId ? `&areaId=${encodeURIComponent(areaId)}` : '';
+  const payload = await requestJson(
+    `${baseUrl}/pstCategory/find?searchWord=${encodedSearchWord}&limit=${DEFAULT_LIST_LIMIT}${areaIdQuery}${ROOT_CATEGORY_SELECT_ATTRIBUTES}`,
+    apiKey
+  );
+  const results = Array.isArray(payload?.results) ? payload.results : [];
+
+  return (
+    results
+      .map((item) => item?.object)
+      .find((category) => category?.name === normalizedSearchWord) ?? null
+  );
+};
+
+export const findBusCategoryChildren = async ({ areaId, bus, parentId }) => {
+  const { apiKey, uri: baseUrl } = bus;
+  const encodedParentId = encodeURIComponent(parentId);
+  const areaIdQuery = areaId ? `&areaId=${encodeURIComponent(areaId)}` : '';
+  const payload = await requestJson(
+    `${baseUrl}/pstCategory/find?parentId=${encodedParentId}&limit=${DEFAULT_LIST_LIMIT}${areaIdQuery}${CHILD_CATEGORY_SELECT_ATTRIBUTES}`,
+    apiKey
+  );
+  const results = Array.isArray(payload?.results) ? payload.results : [];
+
+  return results.map((item) => item?.object).filter(Boolean);
+};
+
 export const getPublicService = async ({ areaId, bus, id }) => {
   const { apiKey, uri: baseUrl } = bus;
   const encodedAreaId = encodeURIComponent(areaId);
@@ -73,9 +121,9 @@ export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
   if (query.length < 3) return [];
 
   const sanitizedSearchWords = query
-    .split(/\s+/)
+    .split(/[\s-]+/)
     .map((word) => word.replace(/[^0-9A-Za-zÄÖÜäöüß]/g, ''))
-    .filter(Boolean);
+    .filter((word) => word.length >= 3);
 
   if (!sanitizedSearchWords.length) return [];
 

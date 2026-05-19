@@ -4,7 +4,34 @@ export type BusSettings = {
   apiKey?: string;
   areaId?: string | number;
   initialFilter?: string[];
+  lifeSituationsRootSearchWord?: string;
   uri?: string;
+};
+
+export type BusCategoryServiceReference = {
+  id?: string | number;
+  name?: string | null;
+};
+
+export type BusCategoryImage = {
+  fileSize?: string;
+  mimeType?: string;
+  name?: string;
+  originalFileName?: string;
+  source?: string;
+  url?: string;
+  height?: number;
+  width?: number;
+};
+
+export type BusCategory = {
+  description?: string | null;
+  id?: string | number;
+  image?: BusCategoryImage;
+  name?: string | null;
+  parentId?: string | number;
+  position?: string | number;
+  publicServiceTypes?: BusCategoryServiceReference[];
 };
 
 export type BusServiceListItem = {
