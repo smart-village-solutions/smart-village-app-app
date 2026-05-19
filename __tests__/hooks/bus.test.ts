@@ -4,14 +4,18 @@ jest.mock('react', () => ({
 }));
 
 jest.mock('react-query', () => ({
+  useInfiniteQuery: jest.fn(),
   useQuery: jest.fn()
 }));
 
 jest.mock('../../src/queries/bus', () => ({
+  DEFAULT_LIST_LIMIT: 500,
   findBusCategoryChildren: jest.fn(),
   findBusCategoryRoot: jest.fn(),
+  findPublicServicesPage: jest.fn(),
   findPublicServices: jest.fn(),
-  getPublicService: jest.fn()
+  getPublicService: jest.fn(),
+  searchPoliticalAreas: jest.fn()
 }));
 
 jest.mock('../../src/SettingsProvider', () => ({
@@ -23,22 +27,33 @@ jest.mock('../../src/hooks/staticContent', () => ({
 }));
 
 import * as React from 'react';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import {
   DEFAULT_BUS_LIFE_SITUATIONS_ROOT_SEARCH_WORD,
   getBusLifeSituationsRootSearchWord,
   getBusQueryConfigKey,
+  useBusAreas,
   useBusCategoryChildren,
-  useBusLifeSituationsRoot
+  useBusLifeSituationsRoot,
+  useBusServiceSearch,
+  useBusServices
 } from '../../src/hooks/bus';
-import { findBusCategoryChildren, findBusCategoryRoot } from '../../src/queries/bus';
+import {
+  findBusCategoryChildren,
+  findBusCategoryRoot,
+  findPublicServicesPage,
+  searchPoliticalAreas
+} from '../../src/queries/bus';
 
 const mockedUseContext = jest.mocked(React.useContext);
+const mockedUseInfiniteQuery = jest.mocked(useInfiniteQuery);
 const mockedUseQuery = jest.mocked(useQuery);
 const mockedFindBusCategoryChildren = jest.mocked(findBusCategoryChildren);
 const mockedFindBusCategoryRoot = jest.mocked(findBusCategoryRoot);
+const mockedFindPublicServicesPage = jest.mocked(findPublicServicesPage);
+const mockedSearchPoliticalAreas = jest.mocked(searchPoliticalAreas);
 const defaultBusSettings = {
   uri: 'https://one.example'
 };
@@ -62,7 +77,20 @@ const createUseQueryResult = () =>
     isFetching: false,
     isLoading: false,
     refetch: jest.fn()
-  }) as never;
+  } as never);
+
+const createUseInfiniteQueryResult = (pages: unknown[] = []) =>
+  ({
+    data: { pages },
+    error: null,
+    fetchNextPage: jest.fn(),
+    hasNextPage: false,
+    isError: false,
+    isFetching: false,
+    isFetchingNextPage: false,
+    isLoading: false,
+    refetch: jest.fn()
+  } as never);
 
 const mockEnabledUseQuery = () => {
   mockedUseQuery.mockImplementation((_, queryFn, options) => {
@@ -76,6 +104,18 @@ const mockEnabledUseQuery = () => {
 
 const mockIdleUseQuery = () => {
   mockedUseQuery.mockReturnValue(createUseQueryResult());
+};
+
+const mockEnabledUseInfiniteQuery = () => {
+  mockedUseInfiniteQuery.mockImplementation((_, queryFn) => {
+    queryFn({ pageParam: 0 });
+
+    return createUseInfiniteQueryResult();
+  });
+};
+
+const mockIdleUseInfiniteQuery = (pages: unknown[] = []) => {
+  mockedUseInfiniteQuery.mockReturnValue(createUseInfiniteQueryResult(pages));
 };
 
 const renderHook = async (callback: () => void, shouldAwait = false) => {
@@ -191,6 +231,55 @@ describe('useBusLifeSituationsRoot', () => {
   });
 });
 
+describe('useBusAreas', () => {
+  it('separates area search query keys when BUS credentials change', async () => {
+    mockedUseContext
+      .mockReturnValueOnce(
+        createSettingsContextValue({
+          apiKey: 'alpha'
+        })
+      )
+      .mockReturnValueOnce(
+        createSettingsContextValue({
+          apiKey: 'beta'
+        })
+      );
+    mockIdleUseQuery();
+
+    await renderHook(() => {
+      useBusAreas('berlin');
+      useBusAreas('berlin');
+    });
+
+    expect(mockedUseQuery).toHaveBeenNthCalledWith(
+      1,
+      ['bus', 'areas', 'berlin', 'https://one.example::92909918'],
+      expect.any(Function),
+      expect.objectContaining({ enabled: true, keepPreviousData: true })
+    );
+    expect(mockedUseQuery).toHaveBeenNthCalledWith(
+      2,
+      ['bus', 'areas', 'berlin', 'https://one.example::3020272'],
+      expect.any(Function),
+      expect.objectContaining({ enabled: true, keepPreviousData: true })
+    );
+  });
+
+  it('calls the political area search with the current term when enabled', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockEnabledUseQuery();
+
+    await renderHook(() => useBusAreas('berlin'), true);
+
+    expect(mockedSearchPoliticalAreas).toHaveBeenCalledWith({
+      bus: {
+        uri: 'https://one.example'
+      },
+      searchTerm: 'berlin'
+    });
+  });
+});
+
 describe('useBusCategoryChildren', () => {
   it('calls findBusCategoryChildren for parentId 0 with areaId', async () => {
     mockedUseContext.mockReturnValue(createSettingsContextValue());
@@ -267,5 +356,133 @@ describe('useBusCategoryChildren', () => {
       expect.any(Function),
       expect.objectContaining({ enabled: true })
     );
+  });
+});
+
+describe('useBusServices', () => {
+  it('requests the first paginated BUS service page for the selected area', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockEnabledUseInfiniteQuery();
+
+    await renderHook(() => useBusServices('09162000'), true);
+
+    expect(mockedFindPublicServicesPage).toHaveBeenCalledWith({
+      areaId: '09162000',
+      bus: {
+        uri: 'https://one.example'
+      },
+      limit: 500,
+      offset: 0
+    });
+    expect(mockedUseInfiniteQuery).toHaveBeenCalledWith(
+      ['bus', 'services', '09162000', 'https://one.example::'],
+      expect.any(Function),
+      expect.objectContaining({
+        enabled: true,
+        retry: 0
+      })
+    );
+  });
+
+  it('flattens accumulated BUS service pages and keeps them sorted by name', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockIdleUseInfiniteQuery([
+      {
+        items: [
+          { id: '2', name: 'Zweiter Dienst' },
+          { id: '1', name: 'Alpha Dienst' }
+        ],
+        totalItemCount: 4
+      },
+      {
+        items: [{ id: '3', name: 'Mitte Dienst' }],
+        totalItemCount: 4
+      }
+    ]);
+
+    let result;
+    await renderHook(() => {
+      result = useBusServices('09162000');
+    });
+
+    expect(result?.data).toEqual([
+      { id: '1', name: 'Alpha Dienst' },
+      { id: '3', name: 'Mitte Dienst' },
+      { id: '2', name: 'Zweiter Dienst' }
+    ]);
+  });
+
+  it('exposes BUS service pagination errors to the UI layer', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockedUseInfiniteQuery.mockReturnValue({
+      ...createUseInfiniteQueryResult(),
+      error: new Error('timeout'),
+      isError: true
+    } as never);
+
+    let result;
+    await renderHook(() => {
+      result = useBusServices('09162000');
+    });
+
+    expect(result?.isError).toBe(true);
+    expect(result?.error).toEqual(expect.any(Error));
+  });
+});
+
+describe('useBusServiceSearch', () => {
+  it('does not enable backend BUS search below the minimum search length', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockIdleUseInfiniteQuery();
+
+    await renderHook(() => useBusServiceSearch('09162000', 'ab'));
+
+    expect(mockedUseInfiniteQuery).toHaveBeenCalledWith(
+      ['bus', 'service-search', '09162000', 'ab', 'https://one.example::'],
+      expect.any(Function),
+      expect.objectContaining({ enabled: false })
+    );
+  });
+
+  it('requests backend BUS search pages with the current search term', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockEnabledUseInfiniteQuery();
+
+    await renderHook(() => useBusServiceSearch('09162000', 'unternehmen'), true);
+
+    expect(mockedFindPublicServicesPage).toHaveBeenCalledWith({
+      areaId: '09162000',
+      bus: {
+        uri: 'https://one.example'
+      },
+      limit: 500,
+      offset: 0,
+      searchWord: 'unternehmen'
+    });
+    expect(mockedUseInfiniteQuery).toHaveBeenCalledWith(
+      ['bus', 'service-search', '09162000', 'unternehmen', 'https://one.example::'],
+      expect.any(Function),
+      expect.objectContaining({
+        enabled: true,
+        retry: 0
+      })
+    );
+  });
+
+  it('exposes backend BUS search errors to the UI layer', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockedUseInfiniteQuery.mockReturnValue({
+      ...createUseInfiniteQueryResult(),
+      error: new Error('timeout'),
+      isError: true
+    } as never);
+
+    let result;
+    await renderHook(() => {
+      result = useBusServiceSearch('09162000', 'unternehmen');
+    });
+
+    expect(result?.isError).toBe(true);
+    expect(result?.error).toEqual(expect.any(Error));
   });
 });

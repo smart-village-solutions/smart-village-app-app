@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
@@ -31,8 +31,17 @@ ClearIcon.propTypes = {
   onPress: PropTypes.func.isRequired
 };
 
-export const TextSearch = memo(({ data, setData, label, placeholder }) => {
+export const TextSearch = memo(({ blurSignal = 0, data, setData, label, placeholder }) => {
+  const inputRef = useRef(null);
   const clearSearch = () => setData('');
+
+  useEffect(() => {
+    if (!blurSignal) {
+      return;
+    }
+
+    inputRef.current?.blur?.();
+  }, [blurSignal]);
 
   return (
     <View>
@@ -41,6 +50,7 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
       </WrapperHorizontal>
       <SearchBar
         clearIcon={() => <ClearIcon onPress={clearSearch} />}
+        inputRef={inputRef}
         value={data}
         onChangeText={(value) => setData(value)}
         onClearText={clearSearch}
@@ -92,6 +102,7 @@ const styles = StyleSheet.create({
 
 TextSearch.displayName = 'TextSearch';
 TextSearch.propTypes = {
+  blurSignal: PropTypes.number,
   data: PropTypes.string.isRequired,
   setData: PropTypes.func.isRequired,
   label: PropTypes.string,

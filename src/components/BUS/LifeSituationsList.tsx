@@ -1,8 +1,9 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, type RefreshControlProps } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, View, type RefreshControlProps } from 'react-native';
 
 import { device, normalize, texts } from '../../config';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
+import { resolveBusCategoryServices } from '../../helpers/busListHelper';
 import type { AreaId, BusCategory, BusServiceListItem } from '../../types';
 import { ScreenName } from '../../types/Navigation';
 import { BackToTop } from '../BackToTop';
@@ -39,13 +40,11 @@ type LifeSituationsListProps = {
   isError?: boolean;
   isLoading?: boolean;
   isRootCategory?: boolean;
-  isServicesLoading?: boolean;
   navigation: BusNavigation;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   services?: BusServiceListItem[];
 };
 
-const normalizeName = (value?: string | null) => `${value ?? ''}`.trim().toLowerCase();
 const getSortPosition = (value?: string | number) => {
   const numericValue = Number(value);
 
@@ -54,7 +53,7 @@ const getSortPosition = (value?: string | number) => {
 const hasCategoryListData = (childCategory?: BusCategory) =>
   childCategory?.id !== null &&
   childCategory?.id !== undefined &&
-  !!normalizeName(childCategory?.name);
+  !!`${childCategory?.name ?? ''}`.trim();
 
 const shouldShowLoadingSpinner = ({
   hasListData,
@@ -66,45 +65,13 @@ const shouldShowLoadingSpinner = ({
   isResolvingServices: boolean;
 }) => (isLoading || isResolvingServices) && !hasListData;
 
-const getResolvedServices = ({
-  category,
-  services = []
-}: {
-  category?: BusCategory;
-  services?: BusServiceListItem[];
-}) => {
-  const servicesById = new Map(
-    services
-      .filter((service) => service?.id !== null && service?.id !== undefined)
-      .map((service) => [`${service.id}`, service] as const)
-  );
-  const servicesByName = new Map(
-    services
-      .filter((service) => !!normalizeName(service?.name))
-      .map((service) => [normalizeName(service.name), service] as const)
-  );
-
-  return (category?.publicServiceTypes ?? [])
-    .map((serviceReference) => {
-      const serviceId = serviceReference?.id;
-      const serviceName = serviceReference?.name;
-
-      return (
-        servicesById.get(`${serviceId ?? ''}`) || servicesByName.get(normalizeName(serviceName))
-      );
-    })
-    .filter((service): service is BusServiceListItem => !!service);
-};
-
 const getListData = ({
   category,
   childCategories = [],
-  isServicesLoading = false,
   services = []
 }: {
   category?: BusCategory;
   childCategories?: BusCategory[];
-  isServicesLoading?: boolean;
   services?: BusServiceListItem[];
 }) => {
   const categories: CategoryListItem[] = childCategories
@@ -117,13 +84,16 @@ const getListData = ({
         return positionDifference;
       }
 
-      return normalizeName(firstCategory.name).localeCompare(normalizeName(secondCategory.name));
+      return `${firstCategory.name ?? ''}`
+        .trim()
+        .toLowerCase()
+        .localeCompare(`${secondCategory.name ?? ''}`.trim().toLowerCase());
     })
     .map((childCategory) => ({
       data: childCategory,
       type: ITEM_TYPES.CATEGORY
     }));
-  const resolvedServices = isServicesLoading ? [] : getResolvedServices({ category, services });
+  const resolvedServices = resolveBusCategoryServices(category, services);
   const serviceItems: ServiceListItem[] = resolvedServices.map((service) => ({
     data: service,
     type: ITEM_TYPES.SERVICE
@@ -142,17 +112,15 @@ export const LifeSituationsList = ({
   isError = false,
   isLoading = false,
   isRootCategory = false,
-  isServicesLoading = false,
   navigation,
   refreshControl,
   services = []
 }: LifeSituationsListProps) => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const isResolvingServices = isServicesLoading && !!category?.publicServiceTypes?.length;
   const listData = useMemo(
-    () => getListData({ category, childCategories, services, isServicesLoading }),
-    [category, childCategories, services, isServicesLoading]
+    () => getListData({ category, childCategories, services }),
+    [category, childCategories, services]
   );
   const hasListData = !!listData.length;
   const emptyStateMessage = isError
@@ -162,7 +130,7 @@ export const LifeSituationsList = ({
     : texts.bus.emptyStates.lifeSituations;
   const shouldRenderLoadingSpinner = shouldShowLoadingSpinner({
     isLoading,
-    isResolvingServices,
+    isResolvingServices: false,
     hasListData
   });
 
@@ -179,7 +147,7 @@ export const LifeSituationsList = ({
     >
       {shouldRenderLoadingSpinner ? <LoadingSpinner loading /> : null}
 
-      {!isLoading && !isResolvingServices && !hasListData ? (
+      {!isLoading && !hasListData ? (
         <View style={styles.emptyState}>
           <RegularText placeholder small center>
             {emptyStateMessage}
@@ -200,14 +168,16 @@ export const LifeSituationsList = ({
               imageUrl={childCategory?.image?.url ?? undefined}
               title={childCategory?.name ?? ''}
               subtitle={childCategory?.description ?? undefined}
-              onPress={() =>
+              onPress={() => {
+                Keyboard.dismiss();
+
                 navigation.push(ScreenName.BusCategory, {
                   areaId,
                   category: childCategory,
                   isRootCategory: false,
                   title: childCategory?.name ?? ''
-                })
-              }
+                });
+              }}
             />
           );
         }
@@ -219,7 +189,9 @@ export const LifeSituationsList = ({
             key={`${item.type}-${service?.id ?? index}`}
             bottomDivider={bottomDivider}
             title={service?.name ?? ''}
-            onPress={() =>
+            onPress={() => {
+              Keyboard.dismiss();
+
               navigation.push(ScreenName.BusDetail, {
                 areaId,
                 title: service?.name ?? '',
@@ -230,8 +202,8 @@ export const LifeSituationsList = ({
                   message: shareMessage(service)
                 },
                 data: service
-              })
-            }
+              });
+            }}
           />
         );
       })}

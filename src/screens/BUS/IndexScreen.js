@@ -1,8 +1,7 @@
-import _filter from 'lodash/filter';
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useMemo, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { Keyboard, RefreshControl } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
@@ -13,6 +12,7 @@ import { ServiceList } from '../../components/BUS/ServiceList';
 import { colors, consts, texts } from '../../config';
 import { runAsyncTasksSafely, spaceNewLines } from '../../helpers';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
+import { mapBusServicesToListItems, resolveBusCategoryServices } from '../../helpers/busListHelper';
 import {
   useBusCategoryChildren,
   useBusInitialArea,
@@ -22,6 +22,7 @@ import {
   useMatomoTrackScreenView
 } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
+import { ScreenName } from '../../types';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -50,8 +51,6 @@ const FILTER_SETTING_IDS = {
 };
 
 const hasValue = (value) => value !== null && value !== undefined && `${value}`.trim().length > 0;
-const normalizeName = (value) => `${value ?? ''}`.trim().toLowerCase();
-
 const getFilterEntry = (id) => {
   switch (id) {
     case FILTER_IDS.TOP10:
@@ -86,51 +85,6 @@ const getEffectiveInitialFilter = (configuredFilter = []) => {
     }));
 };
 
-const getListItems = (areaId, data) =>
-  _sortBy(
-    _filter(data, (busService) => !!busService?.name),
-    (busService) => busService.name.toUpperCase()
-  ).map((busService) => ({
-    id: busService.id,
-    title: busService.name,
-    routeName: 'BusDetail',
-    params: {
-      areaId,
-      title: busService.name,
-      query: '',
-      queryVariables: {},
-      rootRouteName: 'BUS',
-      shareContent: {
-        message: shareMessage(busService)
-      },
-      data: busService
-    }
-  }));
-
-const getResolvedLifeSituationServices = (category, services = []) => {
-  const servicesById = new Map(
-    services
-      .filter((service) => service?.id !== null && service?.id !== undefined)
-      .map((service) => [`${service.id}`, service])
-  );
-  const servicesByName = new Map(
-    services
-      .filter((service) => !!normalizeName(service?.name))
-      .map((service) => [normalizeName(service.name), service])
-  );
-
-  return (category?.publicServiceTypes ?? [])
-    .map((serviceReference) => {
-      const serviceId = serviceReference?.id;
-      const serviceName = serviceReference?.name;
-
-      return (
-        servicesById.get(`${serviceId ?? ''}`) || servicesByName.get(normalizeName(serviceName))
-      );
-    })
-    .filter(Boolean);
-};
-
 const getLifeSituationsItems = (areaId, category, childCategories = [], services = []) => {
   const hasValidCategoryId = hasValue(category?.id);
   if (!hasValidCategoryId) {
@@ -150,6 +104,15 @@ const getLifeSituationsItems = (areaId, category, childCategories = [], services
     ]
   ).map((childCategory) => ({
     id: childCategory.id,
+    onPress: (navigation) => {
+      Keyboard.dismiss();
+      navigation?.push(ScreenName.BusCategory, {
+        areaId,
+        category: childCategory,
+        isRootCategory: false,
+        title: childCategory.name
+      });
+    },
     picture: childCategory?.image?.url ? { url: childCategory.image.url } : undefined,
     subtitle: spaceNewLines(childCategory.description),
     title: childCategory.name,
@@ -161,12 +124,26 @@ const getLifeSituationsItems = (areaId, category, childCategories = [], services
       title: childCategory.name
     }
   }));
-  const serviceItems = getResolvedLifeSituationServices(category, services)
+  const serviceItems = resolveBusCategoryServices(category, services)
     .filter((service) => hasValue(service?.id) && hasValue(service?.name))
     .map((service) => ({
       id: service.id,
+      onPress: (navigation) => {
+        Keyboard.dismiss();
+        navigation?.push(ScreenName.BusDetail, {
+          areaId,
+          title: service.name,
+          query: '',
+          queryVariables: {},
+          rootRouteName: 'BUS',
+          shareContent: {
+            message: shareMessage(service)
+          },
+          data: service
+        });
+      },
       title: service.name,
-      routeName: 'BusDetail',
+      routeName: ScreenName.BusDetail,
       params: {
         areaId,
         title: service.name,
@@ -242,7 +219,11 @@ export const IndexScreen = ({ navigation }) => {
   } = useBusCategoryChildren(lifeSituationsRoot?.id, areaId);
   const {
     data: services = [],
+    fetchNextPage: fetchNextServicesPage,
+    hasNextPage: hasNextServicesPage,
+    isError: isServicesError,
     isFetching: isFetchingServices,
+    isFetchingNextPage: isFetchingNextServicesPage,
     isLoading: isLoadingServices,
     refetch: refetchServices
   } = useBusServices(areaId);
@@ -279,19 +260,19 @@ export const IndexScreen = ({ navigation }) => {
   const lifeSituationsEmptyStateMessage = isLifeSituationsError
     ? texts.bus.emptyStates.lifeSituationsRoot
     : texts.bus.emptyStates.lifeSituations;
-  const top10 = getListItems(areaId, top10Services);
+  const top10 = mapBusServicesToListItems(areaId, top10Services);
   const isListLoading = getIsListLoading({
     hasLifeSituationsRoot,
     isFetchingLifeSituationChildren,
     isFetchingLifeSituationsRoot,
-    isFetchingServices,
+    isFetchingServices: isFetchingServices && !services.length,
     isLoadingLifeSituationChildren,
     isLoadingLifeSituationsRoot,
     isLoadingServices,
     isLoadingTop10,
     selectedFilterId: selectedFilter?.id
   });
-  const results = getListItems(areaId, services);
+  const results = mapBusServicesToListItems(areaId, services);
 
   return (
     <SafeAreaViewFlex>
@@ -305,8 +286,13 @@ export const IndexScreen = ({ navigation }) => {
           results={results}
           areaId={areaId}
           areaName={resolvedAreaName}
+          fetchNextServicesPage={fetchNextServicesPage}
+          hasNextServicesPage={hasNextServicesPage}
           initialAreaId={initialAreaId}
           initialAreaName={initialAreaName}
+          isFetchingNextServicesPage={isFetchingNextServicesPage}
+          isServicesLoading={isLoadingServices}
+          isServicesError={isServicesError}
           setArea={(area) => {
             setAreaId(area.id);
             setAreaName(area.label);

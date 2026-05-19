@@ -24,38 +24,31 @@ const initialCategoryFilterData = [
 ];
 /* *** */
 
-/* A-Z filter initial data */
-const alphabet = [...Array(26)].map((value, index) => String.fromCharCode(index + 65));
-const umlauts = ['Ä', 'Ö', 'Ü'];
-const alphabetWithUmlauts = [...alphabet, ...umlauts];
-
-const initialAZFilterData = alphabetWithUmlauts.map((value, index) => ({
-  id: index + 1,
-  value,
-  selected: false
-}));
-/* *** */
-
 export const IndexFilter = ({
+  AZFilterData,
   areaId,
   areaName,
+  blurAreaSignal = 0,
+  blurSearchSignal = 0,
   initialAreaId,
   initialAreaName,
   listItems,
   loading,
   results,
+  searchData,
   selectedFilter,
   setArea,
-  setListItems
+  setAZFilterData,
+  setListItems,
+  setSearchData
 }) => {
-  const [serviceSearchData, setServiceSearchData] = useState('');
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
-  const [AZFilterData, setAZFilterData] = useState(initialAZFilterData);
   const listItemsCount = listItems.length;
   const renderAreaAutocomplete = () => (
     <AreaAutocomplete
       areaId={areaId}
       areaName={areaName}
+      blurSignal={blurAreaSignal}
       initialAreaId={initialAreaId}
       initialAreaName={initialAreaName}
       onSelectArea={setArea}
@@ -80,8 +73,9 @@ export const IndexFilter = ({
         return (
           <WrapperVertical>
             <TextSearch
-              data={serviceSearchData}
-              setData={setServiceSearchData}
+              blurSignal={blurSearchSignal}
+              data={searchData}
+              setData={setSearchData}
               placeholder={texts.bus.textSearch.placeholder}
               label={texts.bus.textSearch.label}
             />
@@ -119,12 +113,6 @@ export const IndexFilter = ({
         break;
       }
       case 3:
-        setListItems(
-          search({
-            results,
-            keyword: serviceSearchData
-          })
-        );
         break;
       case 4: {
         const character = (AZFilterData.find((item) => item.selected) || {}).value;
@@ -142,16 +130,7 @@ export const IndexFilter = ({
       default:
         break;
     }
-  }, [
-    AZFilterData,
-    areaId,
-    categoryFilterData,
-    loading,
-    results,
-    selectedFilter.id,
-    serviceSearchData,
-    setListItems
-  ]);
+  }, [AZFilterData, areaId, categoryFilterData, loading, results, selectedFilter.id, setListItems]);
 
   return (
     <View>
@@ -181,14 +160,20 @@ const styles = StyleSheet.create({
 });
 
 IndexFilter.propTypes = {
+  AZFilterData: PropTypes.array.isRequired,
   areaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   areaName: PropTypes.string,
+  blurAreaSignal: PropTypes.number,
+  blurSearchSignal: PropTypes.number,
   initialAreaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   initialAreaName: PropTypes.string,
   listItems: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   results: PropTypes.array.isRequired,
+  searchData: PropTypes.string.isRequired,
   selectedFilter: PropTypes.object.isRequired,
   setArea: PropTypes.func.isRequired,
-  setListItems: PropTypes.func.isRequired
+  setAZFilterData: PropTypes.func.isRequired,
+  setListItems: PropTypes.func.isRequired,
+  setSearchData: PropTypes.func.isRequired
 };
