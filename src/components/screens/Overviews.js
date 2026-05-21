@@ -66,6 +66,29 @@ const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
   topFilter.find((entry) => entry.selected).id === FILTER_TYPES.MAP;
 
+const hasNestedPointsOfInterestCategories = (categories = []) =>
+  categories.some((category) => {
+    if ((category?.pointsOfInterestTreeCount || 0) > 0) {
+      return true;
+    }
+
+    return hasNestedPointsOfInterestCategories(category?.params?.categories || []);
+  });
+
+const collectNestedPointsOfInterestCategoryIds = (categories = []) => {
+  const ids = [];
+
+  categories.forEach((category) => {
+    if ((category?.pointsOfInterestTreeCount || 0) > 0 && category?.id) {
+      ids.push(String(category.id));
+    }
+
+    ids.push(...collectNestedPointsOfInterestCategoryIds(category?.params?.categories || []));
+  });
+
+  return [...new Set(ids)];
+};
+
 const keyForSelectedValueByQuery = (query) => {
   const QUERIES = {
     [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
@@ -348,6 +371,35 @@ export const Overviews = ({ navigation, route }) => {
     !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
     !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
 
+  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST;
+  const hasNestedPoiCategories = hasNestedPointsOfInterestCategories(categories);
+  const canShowFloatingMapSwitch =
+    isShowMapSwitchButton && (!!listItems?.length || hasNestedPoiCategories);
+
+  const locationOverviewQueryVariables = useMemo(() => {
+    if (
+      query !== QUERY_TYPES.POINTS_OF_INTEREST ||
+      !hasNestedPoiCategories ||
+      !!listItems?.length ||
+      (queryVariables?.categoryIds?.length || 0) > 0
+    ) {
+      return queryVariables;
+    }
+
+    const categoryIds = collectNestedPointsOfInterestCategoryIds(categories);
+
+    if (!categoryIds.length) {
+      return queryVariables;
+    }
+
+    return {
+      ...queryVariables,
+      category: undefined,
+      categoryId: undefined,
+      categoryIds
+    };
+  }, [categories, hasNestedPoiCategories, listItems?.length, query, queryVariables]);
+
   if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
       <LoadingContainer>
@@ -370,19 +422,19 @@ export const Overviews = ({ navigation, route }) => {
         />
       )}
 
-      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+      {isShowMapSwitchButton &&
         switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
           <>
             <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
             <Divider />
           </>
         )}
-      {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
+      {isShowMapSwitchButton && showMap ? (
         <LocationOverview
           currentPosition={currentPosition}
           navigation={navigation}
           position={position}
-          queryVariables={queryVariables}
+          queryVariables={locationOverviewQueryVariables}
           route={route}
         />
       ) : (
@@ -465,8 +517,7 @@ export const Overviews = ({ navigation, route }) => {
         </>
       )}
       {!loading &&
-        !!listItems?.length &&
-        query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        canShowFloatingMapSwitch &&
         switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON &&
         filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
           <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
