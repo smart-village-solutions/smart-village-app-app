@@ -50,6 +50,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   const { showOpeningTimes = true } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const [availableVehiclesData, setAvailableVehiclesData] = useState<VehicleStatusFeature[]>([]);
+  const [availableVehiclesLoading, setAvailableVehiclesLoading] = useState(true);
   const {
     addresses,
     categories,
@@ -101,10 +102,21 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   }, [vouchers]);
 
   useEffect(() => {
+    // Reset state immediately so the previous POI's status is never shown for the new one
+    setAvailableVehiclesLoading(true);
+    setAvailableVehiclesData([]);
+
+    if (!payload?.freeStatusUrl) {
+      setAvailableVehiclesLoading(false);
+      return;
+    }
+
     const fetchData = async () => {
-      if (payload?.freeStatusUrl) {
+      try {
         const data = await fetchAvailableVehicles(payload.freeStatusUrl);
         setAvailableVehiclesData(data);
+      } finally {
+        setAvailableVehiclesLoading(false);
       }
     };
 
@@ -119,8 +131,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
     nestedCategory = categories.find((category) => category.name === categoryName);
   }
 
-  const status =
-    availableVehiclesData?.length && availableVehiclesData[0]?.properties?.[vehiclePropertyKey];
+  const status = availableVehiclesData?.length
+    ? availableVehiclesData[0]?.properties?.[vehiclePropertyKey]
+    : undefined;
 
   return (
     <WrapperVertical>
@@ -179,7 +192,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
       )}
 
       {!!payload?.freeStatusUrl && (
-        <AvailableVehicles status={status} iconName={category?.iconName} />
+        <AvailableVehicles
+          iconName={category?.iconName}
+          isSpecialForParkHaus={availableVehiclesData[0]?.isSpecialForParkHaus}
+          loading={availableVehiclesLoading}
+          status={status}
+        />
       )}
 
       {hasTravelTimes && <TravelTimes id={id} iconName={category?.iconName} />}
@@ -237,7 +255,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
               {
                 iconName: category?.iconName || MAP.DEFAULT_PIN,
                 activeIconName:
-                  !!status && status !== 'unbekannt'
+                  typeof status === 'string' && status !== 'unbekannt'
                     ? status
                     : `${category?.iconName || MAP.DEFAULT_PIN}Active`,
                 id,

@@ -6,13 +6,18 @@ import { IconUrl, colors, normalize, texts } from '../../config';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { WrapperHorizontal } from '../Wrapper';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
 
 export type VehicleStatusFeature = {
   properties: {
-    [vehiclePropertyKey]: string;
+    // The raw API value may be a status string ('frei', 'belegt', 'unbekannt') or a
+    // numeric/percentage occupancy figure (e.g. Parkhaus), so we keep it broad here
+    // and let the UI decide how to format/interpret it.
+    [vehiclePropertyKey]: string | number | undefined;
   };
+  isSpecialForParkHaus?: boolean;
 };
 
 export const fetchAvailableVehicles = async (
@@ -45,18 +50,45 @@ export const fetchAvailableVehicles = async (
 };
 
 export const AvailableVehicles = ({
-  status,
-  iconName
+  iconName,
+  isSpecialForParkHaus,
+  loading,
+  status
 }: {
-  status: 'frei' | 'belegt' | 'unbekannt' | null;
   iconName: string;
+  isSpecialForParkHaus?: boolean;
+  loading: boolean;
+  // Widened to match VehicleStatusFeature – string for named statuses, number for occupancy
+  status: string | number | undefined;
 }) => {
+  if (loading) {
+    return <LoadingSpinner loading={loading} />;
+  }
+
   const statusCircle =
     status === 'frei' ? (
       <RegularText style={{ color: '#7cbb4d' }}> ⬤</RegularText>
     ) : status === 'belegt' ? (
       <RegularText style={{ color: '#e60041' }}> ⬤</RegularText>
     ) : null;
+
+  if (isSpecialForParkHaus) {
+    return (
+      <>
+        <SectionHeader title={texts.pointOfInterest.status} />
+
+        <ListItem containerStyle={styles.container}>
+          <ListItem.Content style={styles.contentContainer}>
+            <RegularText>{status}</RegularText>
+          </ListItem.Content>
+        </ListItem>
+
+        <WrapperHorizontal>
+          <Divider />
+        </WrapperHorizontal>
+      </>
+    );
+  }
   return (
     <>
       <SectionHeader title={texts.pointOfInterest.availableVehicles} />
