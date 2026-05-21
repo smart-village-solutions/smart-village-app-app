@@ -84,6 +84,67 @@ const buildPublicServiceFindUrl = ({ areaId, baseUrl, limit, offset, searchWord,
   return `${baseUrl}/${endpoint}${commonQuery}&searchWord=${encodedSearchWord}${selectAttributes}`;
 };
 
+const buildRelatedEntityFindUrl = ({ areaId, baseUrl, endpoint, id, limit, offset }) => {
+  return `${baseUrl}/${endpoint}?areaId=${encodeURIComponent(areaId)}&pstId=${encodeURIComponent(
+    id
+  )}&limit=${encodeURIComponent(limit)}&offset=${encodeURIComponent(offset)}`;
+};
+
+const mapPagedResults = ({ headers, payload }) => {
+  const items = (payload?.results || []).map((item) => item?.object).filter(Boolean);
+  const totalItemCount =
+    Number(headers?.get?.('total-item-count')) || Number(payload?.totalCount) || items.length;
+
+  return { items, totalItemCount };
+};
+
+const findPagedRelatedEntityItemsPage = async ({ areaId, bus, endpoint, id, limit, offset }) => {
+  const { apiKey, uri: baseUrl } = bus;
+  const requestUrl = buildRelatedEntityFindUrl({
+    areaId,
+    baseUrl,
+    endpoint,
+    id,
+    limit,
+    offset
+  });
+
+  return mapPagedResults(await requestJson(requestUrl, apiKey));
+};
+
+const findAllPagedRelatedEntityItems = async ({
+  areaId,
+  bus,
+  endpoint,
+  id,
+  limit = DEFAULT_LIST_LIMIT
+}) => {
+  const aggregatedItems = [];
+  let offset = 0;
+  let totalItemCount = 0;
+
+  do {
+    const page = await findPagedRelatedEntityItemsPage({
+      areaId,
+      bus,
+      endpoint,
+      id,
+      limit,
+      offset
+    });
+
+    aggregatedItems.push(...page.items);
+    totalItemCount = page.totalItemCount;
+    offset = aggregatedItems.length;
+
+    if (!page.items.length) {
+      break;
+    }
+  } while (offset < totalItemCount);
+
+  return aggregatedItems;
+};
+
 const mapPoliticalArea = (area) => {
   if (!area?.id && !area?.ags && !(area?.displayName || area?.name || area?.nameShort)) return null;
 
@@ -118,12 +179,36 @@ export const findPublicServicesPage = async ({
     offset,
     searchWord: normalizedSearchWord
   });
-  const { headers, payload } = await requestJson(requestUrl, apiKey);
-  const items = (payload?.results || []).map((item) => item?.object).filter(Boolean);
-  const totalItemCount = Number(headers?.get?.('total-item-count')) || items.length;
 
-  return { items, totalItemCount };
+  return mapPagedResults(await requestJson(requestUrl, apiKey));
 };
+
+export const getBusServiceOrganisationalUnits = async ({ areaId, bus, id, limit }) =>
+  findAllPagedRelatedEntityItems({
+    areaId,
+    bus,
+    endpoint: 'ou/findByCompetence',
+    id,
+    limit
+  });
+
+export const getBusServicePersons = async ({ areaId, bus, id, limit }) =>
+  findAllPagedRelatedEntityItems({
+    areaId,
+    bus,
+    endpoint: 'person/find',
+    id,
+    limit
+  });
+
+export const getBusServiceForms = async ({ areaId, bus, id, limit }) =>
+  findAllPagedRelatedEntityItems({
+    areaId,
+    bus,
+    endpoint: 'form/find',
+    id,
+    limit
+  });
 
 export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
   const { apiKey, uri: baseUrl } = bus;

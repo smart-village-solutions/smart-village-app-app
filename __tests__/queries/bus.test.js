@@ -1,11 +1,14 @@
 import {
-    BUS_REQUEST_TIMEOUT_MS,
-    findBusCategoryChildren,
-    findBusCategoryRoot,
-    findPublicServicesPage,
-    getPoliticalArea,
-    getPublicService,
-    searchPoliticalAreas
+  BUS_REQUEST_TIMEOUT_MS,
+  findBusCategoryChildren,
+  findBusCategoryRoot,
+  findPublicServicesPage,
+  getBusServiceForms,
+  getBusServiceOrganisationalUnits,
+  getBusServicePersons,
+  getPoliticalArea,
+  getPublicService,
+  searchPoliticalAreas
 } from '../../src/queries/bus';
 
 const bus = {
@@ -13,11 +16,50 @@ const bus = {
   uri: 'https://server.int-development.smart-village.app/api/v1'
 };
 
-const mockFetchJson = (payload) =>
-  jest.spyOn(globalThis, 'fetch').mockResolvedValue({
-    json: async () => payload,
-    ok: true
+const createTotalCountHeaders = (totalItemCount) => ({
+  get: (headerName) =>
+    headerName.toLowerCase() === 'total-item-count' ? String(totalItemCount) : undefined
+});
+
+const createBusOkResponse = ({ payload, totalItemCount }) => ({
+  headers: totalItemCount === undefined ? undefined : createTotalCountHeaders(totalItemCount),
+  json: async () => payload,
+  ok: true
+});
+
+const createFindPayload = (items, extraPayload = {}) => ({
+  ...extraPayload,
+  results: items.map((object) => ({ object }))
+});
+
+const mockFetchOk = ({ payload, totalItemCount }) =>
+  jest
+    .spyOn(globalThis, 'fetch')
+    .mockResolvedValue(createBusOkResponse({ payload, totalItemCount }));
+
+const mockFetchJson = (payload) => mockFetchOk({ payload });
+
+const mockFindResponse = ({ items, totalItemCount, extraPayload }) =>
+  createBusOkResponse({ payload: createFindPayload(items, extraPayload), totalItemCount });
+
+const mockFetchFindOnce = ({ items, totalItemCount, extraPayload }) =>
+  jest
+    .spyOn(globalThis, 'fetch')
+    .mockResolvedValue(mockFindResponse({ items, totalItemCount, extraPayload }));
+
+const mockFetchFindSequence = ({ pages, totalItemCount }) => {
+  const fetchSpy = jest.spyOn(globalThis, 'fetch');
+
+  pages.forEach((items) => {
+    fetchSpy.mockResolvedValueOnce(mockFindResponse({ items, totalItemCount }));
   });
+
+  return fetchSpy;
+};
+
+const expectBusFetchNthCall = (callNumber, url) => {
+  expect(globalThis.fetch).toHaveBeenNthCalledWith(callNumber, url, expect.any(Object));
+};
 
 const expectBusFetch = (url, options = {}) => {
   const { headers, ...restOptions } = options;
@@ -217,21 +259,9 @@ describe('BUS queries', () => {
   });
 
   it('loads a paginated public service page and reads total-item-count from response headers', async () => {
-    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
-      headers: {
-        get: (headerName) => (headerName.toLowerCase() === 'total-item-count' ? '2357' : undefined)
-      },
-      json: async () => ({
-        results: [
-          {
-            object: {
-              id: 'service-1',
-              name: 'Gewerbe Anmeldung'
-            }
-          }
-        ]
-      }),
-      ok: true
+    mockFetchFindOnce({
+      items: [{ id: 'service-1', name: 'Gewerbe Anmeldung' }],
+      totalItemCount: 2357
     });
 
     const result = await findPublicServicesPage({
@@ -263,22 +293,135 @@ describe('BUS queries', () => {
     });
   });
 
-  it('uses the same attribute set for the unfiltered BUS base list import', async () => {
-    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
-      headers: {
-        get: (headerName) => (headerName.toLowerCase() === 'total-item-count' ? '2357' : undefined)
+  it('uses totalCount from the payload when the response headers do not provide a total', async () => {
+    mockFetchFindOnce({
+      extraPayload: { count: 1, totalCount: 17 },
+      items: [{ id: 'service-1', name: 'Gewerbe Anmeldung' }]
+    });
+
+    const result = await findPublicServicesPage({
+      areaId: '10004',
+      bus,
+      limit: 500,
+      offset: 0
+    });
+
+    expect(result).toEqual({
+      items: [
+        {
+          id: 'service-1',
+          name: 'Gewerbe Anmeldung'
+        }
+      ],
+      totalItemCount: 17
+    });
+  });
+
+  it('aggregates all paginated organisational units for a BUS service', async () => {
+    mockFetchFindSequence({
+      pages: [[{ id: 'ou-1', name: 'Amt 1' }], [{ id: 'ou-2', name: 'Amt 2' }]],
+      totalItemCount: 2
+    });
+
+    const result = await getBusServiceOrganisationalUnits({
+      areaId: '10004',
+      bus,
+      id: 'service-1'
+    });
+
+    expectBusFetchNthCall(
+      1,
+      'https://server.int-development.smart-village.app/api/v1/ou/findByCompetence?areaId=10004&pstId=service-1&limit=500&offset=0'
+    );
+    expectBusFetchNthCall(
+      2,
+      'https://server.int-development.smart-village.app/api/v1/ou/findByCompetence?areaId=10004&pstId=service-1&limit=500&offset=1'
+    );
+    expect(result).toEqual([
+      {
+        id: 'ou-1',
+        name: 'Amt 1'
       },
-      json: async () => ({
-        results: [
-          {
-            object: {
-              id: 'service-1',
-              name: 'Gewerbe Anmeldung'
-            }
-          }
-        ]
-      }),
-      ok: true
+      {
+        id: 'ou-2',
+        name: 'Amt 2'
+      }
+    ]);
+  });
+
+  it('aggregates all paginated persons for a BUS service', async () => {
+    mockFetchFindSequence({
+      pages: [
+        [
+          { id: 'person-1', firstName: 'Ada' },
+          { id: 'person-2', firstName: 'Linus' }
+        ],
+        [{ id: 'person-3', firstName: 'Grace' }]
+      ],
+      totalItemCount: 3
+    });
+
+    const result = await getBusServicePersons({ areaId: '10004', bus, id: 'service-1', limit: 2 });
+
+    expectBusFetchNthCall(
+      1,
+      'https://server.int-development.smart-village.app/api/v1/person/find?areaId=10004&pstId=service-1&limit=2&offset=0'
+    );
+    expectBusFetchNthCall(
+      2,
+      'https://server.int-development.smart-village.app/api/v1/person/find?areaId=10004&pstId=service-1&limit=2&offset=2'
+    );
+    expect(result).toEqual([
+      {
+        id: 'person-1',
+        firstName: 'Ada'
+      },
+      {
+        id: 'person-2',
+        firstName: 'Linus'
+      },
+      {
+        id: 'person-3',
+        firstName: 'Grace'
+      }
+    ]);
+  });
+
+  it('aggregates all paginated forms for a BUS service', async () => {
+    mockFetchFindSequence({
+      pages: [
+        [{ id: 'form-1', name: 'PDF Formular' }],
+        [{ id: 'form-2', name: 'Online Formular' }]
+      ],
+      totalItemCount: 2
+    });
+
+    const result = await getBusServiceForms({ areaId: '10004', bus, id: 'service-1' });
+
+    expectBusFetchNthCall(
+      1,
+      'https://server.int-development.smart-village.app/api/v1/form/find?areaId=10004&pstId=service-1&limit=500&offset=0'
+    );
+    expectBusFetchNthCall(
+      2,
+      'https://server.int-development.smart-village.app/api/v1/form/find?areaId=10004&pstId=service-1&limit=500&offset=1'
+    );
+    expect(result).toEqual([
+      {
+        id: 'form-1',
+        name: 'PDF Formular'
+      },
+      {
+        id: 'form-2',
+        name: 'Online Formular'
+      }
+    ]);
+  });
+
+  it('uses the same attribute set for the unfiltered BUS base list import', async () => {
+    mockFetchFindOnce({
+      items: [{ id: 'service-1', name: 'Gewerbe Anmeldung' }],
+      totalItemCount: 2357
     });
 
     await findPublicServicesPage({
@@ -301,21 +444,9 @@ describe('BUS queries', () => {
   });
 
   it('uses pstExtended/find for free BUS search terms including phrases with spaces', async () => {
-    jest.spyOn(globalThis, 'fetch').mockResolvedValue({
-      headers: {
-        get: (headerName) => (headerName.toLowerCase() === 'total-item-count' ? '1' : undefined)
-      },
-      json: async () => ({
-        results: [
-          {
-            object: {
-              id: 'service-2',
-              name: 'Neues Unternehmen anmelden'
-            }
-          }
-        ]
-      }),
-      ok: true
+    mockFetchFindOnce({
+      items: [{ id: 'service-2', name: 'Neues Unternehmen anmelden' }],
+      totalItemCount: 1
     });
 
     const result = await findPublicServicesPage({
