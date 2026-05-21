@@ -7,6 +7,9 @@ import {
   findBusCategoryChildren,
   findBusCategoryRoot,
   findPublicServicesPage,
+  getBusServiceForms,
+  getBusServiceOrganisationalUnits,
+  getBusServicePersons,
   getPoliticalArea,
   getPublicService,
   searchPoliticalAreas
@@ -43,6 +46,10 @@ export const DEFAULT_BUS_LIFE_SITUATIONS_ROOT_SEARCH_WORD =
 export const BUS_MIN_SEARCH_LENGTH = 3;
 export const BUS_SEARCH_DEBOUNCE_MS = 400;
 const BUS_QUERY_RETRY_COUNT = 0;
+
+const getSettledValueOrFallback = <T>(result: PromiseSettledResult<T>, fallback: T): T => {
+  return result.status === 'fulfilled' ? result.value : fallback;
+};
 
 const flattenServicePages = (pages?: { items?: BusServiceListItem[] }[]) =>
   _sortBy(
@@ -309,7 +316,26 @@ export const useBusService = ({ areaId, id }: BusServiceArgs) => {
 
   const { data, isLoading, refetch } = useQuery<BusServiceDetail | undefined, Error>(
     [BUS_QUERY_KEYS.ROOT, BUS_QUERY_KEYS.SERVICE, areaId, id, busQueryConfigKey],
-    () => getPublicService({ areaId, bus, id }),
+    async () => {
+      const service = await getPublicService({ areaId, bus, id });
+
+      if (service == null) {
+        return;
+      }
+
+      const [formsResult, organisationalUnitsResult, personsResult] = await Promise.allSettled([
+        getBusServiceForms({ areaId, bus, id }),
+        getBusServiceOrganisationalUnits({ areaId, bus, id }),
+        getBusServicePersons({ areaId, bus, id })
+      ]);
+
+      return {
+        ...service,
+        forms: getSettledValueOrFallback(formsResult, []),
+        organisationalUnits: getSettledValueOrFallback(organisationalUnitsResult, []),
+        persons: getSettledValueOrFallback(personsResult, [])
+      };
+    },
     {
       enabled: hasBusConfig && !!id
     }

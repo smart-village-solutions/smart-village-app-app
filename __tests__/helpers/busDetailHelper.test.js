@@ -52,14 +52,10 @@ describe('busDetailHelper', () => {
           name: 'Status prüfen'
         }
       ],
-      organisationalUnits: [
+      forms: [
         {
-          forms: [
-            {
-              links: [{ url: 'https://example.org/form-1' }],
-              name: 'PDF Formular'
-            }
-          ]
+          links: [{ url: 'https://example.org/form-1' }],
+          name: 'PDF Formular'
         }
       ]
     };
@@ -85,13 +81,9 @@ describe('busDetailHelper', () => {
 
   it('keeps form actions even when a form has no explicit name', () => {
     const service = {
-      organisationalUnits: [
+      forms: [
         {
-          forms: [
-            {
-              links: [{ name: 'PDF herunterladen', url: 'https://example.org/form-1' }]
-            }
-          ]
+          links: [{ name: 'PDF herunterladen', url: 'https://example.org/form-1' }]
         }
       ]
     };
@@ -136,10 +128,7 @@ describe('busDetailHelper', () => {
   it('keeps the Formulare text block visible in the accordion', () => {
     const textBlocks = [KURZTEXT_BLOCK, FORMULARE_BLOCK, TEASER_BLOCK];
 
-    expect(getBusVisibleTextBlocks({ textBlocks })).toEqual([
-      KURZTEXT_BLOCK,
-      FORMULARE_BLOCK
-    ]);
+    expect(getBusVisibleTextBlocks({ textBlocks })).toEqual([KURZTEXT_BLOCK, FORMULARE_BLOCK]);
   });
 
   it('keeps legacy hidden BUS metadata blocks hidden after unwrapping nested text blocks', () => {
@@ -163,10 +152,9 @@ describe('busDetailHelper', () => {
       text: 'Freitext ohne Typ'
     };
 
-    expect(getBusVisibleTextBlocks({ textBlocks: [KURZTEXT_BLOCK, textBlockWithoutTypeName] })).toEqual([
-      KURZTEXT_BLOCK,
-      textBlockWithoutTypeName
-    ]);
+    expect(
+      getBusVisibleTextBlocks({ textBlocks: [KURZTEXT_BLOCK, textBlockWithoutTypeName] })
+    ).toEqual([KURZTEXT_BLOCK, textBlockWithoutTypeName]);
   });
 
   it('keeps Kurztext and Volltext as the first two accordion blocks', () => {

@@ -77,8 +77,12 @@ export const texts = {
   backToTop: 'zurück nach oben',
   bus: {
     authority: {
+      accessibility: 'Barrierefreiheit',
       elevator: 'Aufzug vorhanden',
       openingTime: 'Öffnungszeiten',
+      paymentMethod: 'Zahlungsweise',
+      paymentMethods: 'Zahlungsdaten',
+      transportation: 'Verkehrsanbindung',
       wheelchairAccessible: 'Rollstuhlgerecht'
     },
     categoryFilter: {

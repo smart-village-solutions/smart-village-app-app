@@ -94,8 +94,7 @@ export const getBusTopActions = (service = {}) => {
   const onlineServices = getTopLevelOnlineServices(service)
     .map((onlineService) => normalizeTopAction(onlineService, 'onlineService'))
     .filter(Boolean);
-  const forms = toArray(service.organisationalUnits)
-    .flatMap((organisationalUnit) => toArray(organisationalUnit?.forms))
+  const forms = toArray(service.forms)
     .map((form) => normalizeTopAction(form, 'form'))
     .filter(Boolean);
 
@@ -108,12 +107,11 @@ export const getBusVisibleTextBlocks = (service = {}) => {
     (textBlock) => {
       return TEXT_BLOCKS_SORTER[textBlock?.type?.name];
     }
-  )
-    .filter((textBlock) => {
-      const typeName = textBlock?.type?.name?.toUpperCase();
+  ).filter((textBlock) => {
+    const typeName = textBlock?.type?.name?.toUpperCase();
 
-      return !typeName || !HIDDEN_TEXT_BLOCKS.has(typeName);
-    });
+    return !typeName || !HIDDEN_TEXT_BLOCKS.has(typeName);
+  });
 };
 
 export const splitBusTextBlocks = (service = {}) => {

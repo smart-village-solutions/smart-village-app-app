@@ -68,6 +68,24 @@ export type BusCommunication = {
   value?: string;
 };
 
+export type BusPaymentMethod = {
+  description?: string;
+  id?: string | number;
+  key?: string;
+  name?: string;
+  notPublic?: boolean;
+};
+
+export type BusTransportationLine = {
+  name?: string;
+  type?: BusType;
+};
+
+export type BusTransportationStop = {
+  lines?: BusTransportationLine[];
+  name?: string;
+};
+
 export type BusAddress = {
   area?: {
     name?: string;
@@ -75,6 +93,7 @@ export type BusAddress = {
   elevator?: boolean;
   houseNumber?: string;
   street?: string;
+  transportationStops?: BusTransportationStop[];
   wheelchairAccessible?: boolean;
   zipcode?: string;
 };
@@ -105,6 +124,8 @@ export type BusOrganisationalUnit = {
   id?: string | number;
   name?: string;
   openingHours?: string;
+  paymentMethods?: BusPaymentMethod[];
+  transportationStops?: BusTransportationStop[];
 };
 
 export type BusPerson = {
@@ -120,6 +141,7 @@ export type BusPerson = {
 };
 
 export type BusServiceDetail = BusServiceListItem & {
+  forms?: BusForm[];
   onlineServices?: BusOnlineService[];
   organisationalUnits?: BusOrganisationalUnit[];
   persons?: BusPerson[];

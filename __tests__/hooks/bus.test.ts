@@ -14,6 +14,9 @@ jest.mock('../../src/queries/bus', () => ({
   findBusCategoryRoot: jest.fn(),
   findPublicServicesPage: jest.fn(),
   findPublicServices: jest.fn(),
+  getBusServiceForms: jest.fn(),
+  getBusServiceOrganisationalUnits: jest.fn(),
+  getBusServicePersons: jest.fn(),
   getPublicService: jest.fn(),
   searchPoliticalAreas: jest.fn()
 }));
@@ -37,6 +40,7 @@ import {
   useBusAreas,
   useBusCategoryChildren,
   useBusLifeSituationsRoot,
+  useBusService,
   useBusServiceSearch,
   useBusServices
 } from '../../src/hooks/bus';
@@ -44,6 +48,10 @@ import {
   findBusCategoryChildren,
   findBusCategoryRoot,
   findPublicServicesPage,
+  getBusServiceForms,
+  getBusServiceOrganisationalUnits,
+  getBusServicePersons,
+  getPublicService,
   searchPoliticalAreas
 } from '../../src/queries/bus';
 
@@ -53,6 +61,10 @@ const mockedUseQuery = jest.mocked(useQuery);
 const mockedFindBusCategoryChildren = jest.mocked(findBusCategoryChildren);
 const mockedFindBusCategoryRoot = jest.mocked(findBusCategoryRoot);
 const mockedFindPublicServicesPage = jest.mocked(findPublicServicesPage);
+const mockedGetBusServiceForms = jest.mocked(getBusServiceForms);
+const mockedGetBusServiceOrganisationalUnits = jest.mocked(getBusServiceOrganisationalUnits);
+const mockedGetBusServicePersons = jest.mocked(getBusServicePersons);
+const mockedGetPublicService = jest.mocked(getPublicService);
 const mockedSearchPoliticalAreas = jest.mocked(searchPoliticalAreas);
 const defaultBusSettings = {
   uri: 'https://one.example'
@@ -484,5 +496,80 @@ describe('useBusServiceSearch', () => {
 
     expect(result?.isError).toBe(true);
     expect(result?.error).toEqual(expect.any(Error));
+  });
+});
+
+describe('useBusService', () => {
+  it('loads and enriches the BUS service detail with organisational units and persons', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockEnabledUseQuery();
+
+    mockedGetPublicService.mockResolvedValue({
+      id: 'service-1',
+      name: 'Gewerbe Anmeldung'
+    } as never);
+    mockedGetBusServiceForms.mockResolvedValue([{ id: 'form-1', name: 'PDF Formular' }] as never);
+    mockedGetBusServiceOrganisationalUnits.mockResolvedValue([
+      { id: 'ou-1', name: 'Amt 1' }
+    ] as never);
+    mockedGetBusServicePersons.mockResolvedValue([{ id: 'person-1', firstName: 'Ada' }] as never);
+
+    await renderHook(() => useBusService({ areaId: '09162000', id: 'service-1' }), true);
+
+    expect(mockedGetPublicService).toHaveBeenCalledWith({
+      areaId: '09162000',
+      bus: {
+        uri: 'https://one.example'
+      },
+      id: 'service-1'
+    });
+    expect(mockedGetBusServiceForms).toHaveBeenCalledWith({
+      areaId: '09162000',
+      bus: {
+        uri: 'https://one.example'
+      },
+      id: 'service-1'
+    });
+    expect(mockedGetBusServiceOrganisationalUnits).toHaveBeenCalledWith({
+      areaId: '09162000',
+      bus: {
+        uri: 'https://one.example'
+      },
+      id: 'service-1'
+    });
+    expect(mockedGetBusServicePersons).toHaveBeenCalledWith({
+      areaId: '09162000',
+      bus: {
+        uri: 'https://one.example'
+      },
+      id: 'service-1'
+    });
+  });
+
+  it('returns empty arrays for organisational units and persons when the BUS endpoints are empty', async () => {
+    mockedUseContext.mockReturnValue(createSettingsContextValue());
+    mockedUseQuery.mockReturnValue({
+      ...createUseQueryResult(),
+      data: {
+        forms: [],
+        id: 'service-1',
+        name: 'Gewerbe Anmeldung',
+        organisationalUnits: [],
+        persons: []
+      }
+    } as never);
+
+    let result;
+    await renderHook(() => {
+      result = useBusService({ areaId: '09162000', id: 'service-1' });
+    });
+
+    expect(result?.data).toEqual({
+      forms: [],
+      id: 'service-1',
+      name: 'Gewerbe Anmeldung',
+      organisationalUnits: [],
+      persons: []
+    });
   });
 });
