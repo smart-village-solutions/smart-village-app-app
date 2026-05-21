@@ -131,9 +131,20 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
     nestedCategory = categories.find((category) => category.name === categoryName);
   }
 
+  const iconName = payload?.iconName || category?.iconName || MAP.DEFAULT_PIN;
+
   const status = availableVehiclesData?.length
     ? availableVehiclesData[0]?.properties?.[vehiclePropertyKey]
     : undefined;
+
+  // Use payload.activeIconName when provided; fall back to the conventional "Active" suffix only
+  // for icons that come from the category or the default pin (where the asset is guaranteed to
+  // exist). When the icon originates from the payload and no activeIconName is supplied, pass
+  // undefined so MapLibre falls back to iconName instead of trying a missing asset.
+  const activeIconName =
+    typeof status === 'string' && status !== 'unbekannt'
+      ? status
+      : payload?.activeIconName ?? (payload?.iconName ? undefined : `${iconName}Active`);
 
   return (
     <WrapperVertical>
@@ -193,14 +204,14 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
 
       {!!payload?.freeStatusUrl && (
         <AvailableVehicles
-          iconName={category?.iconName}
+          iconName={iconName}
           isSpecialForParkHaus={availableVehiclesData[0]?.isSpecialForParkHaus}
           loading={availableVehiclesLoading}
           status={status}
         />
       )}
 
-      {hasTravelTimes && <TravelTimes id={id} iconName={category?.iconName} />}
+      {hasTravelTimes && <TravelTimes id={id} iconName={iconName} />}
 
       {!!openingHours?.length && (
         <WrapperVertical>
@@ -253,11 +264,8 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
             isMyLocationButtonVisible={false}
             locations={[
               {
-                iconName: category?.iconName || MAP.DEFAULT_PIN,
-                activeIconName:
-                  typeof status === 'string' && status !== 'unbekannt'
-                    ? status
-                    : `${category?.iconName || MAP.DEFAULT_PIN}Active`,
+                iconName: iconName,
+                activeIconName,
                 id,
                 position: { latitude, longitude }
               }

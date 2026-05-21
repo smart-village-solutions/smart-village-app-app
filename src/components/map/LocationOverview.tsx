@@ -86,8 +86,13 @@ const mapToMapMarkers = (
         }
       }
 
+      if (item.payload?.iconName) {
+        iconName = item.payload.iconName;
+        activeIconName = item.payload.activeIconName ?? `${item.payload.iconName}Active`;
+      }
+
       return {
-        [item.category?.iconName || MAP.DEFAULT_PIN]: 1,
+        [iconName]: 1,
         iconName,
         activeIconName,
         id: item.id,

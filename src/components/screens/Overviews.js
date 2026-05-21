@@ -380,7 +380,6 @@ export const Overviews = ({ navigation, route }) => {
     if (
       query !== QUERY_TYPES.POINTS_OF_INTEREST ||
       !hasNestedPoiCategories ||
-      !!listItems?.length ||
       (queryVariables?.categoryIds?.length || 0) > 0
     ) {
       return queryVariables;
@@ -398,7 +397,7 @@ export const Overviews = ({ navigation, route }) => {
       categoryId: undefined,
       categoryIds
     };
-  }, [categories, hasNestedPoiCategories, listItems?.length, query, queryVariables]);
+  }, [categories, hasNestedPoiCategories, query, queryVariables]);
 
   if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
@@ -408,11 +407,14 @@ export const Overviews = ({ navigation, route }) => {
     );
   }
 
-  const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
+  const hasMultipleMapCategories =
+    (locationOverviewQueryVariables?.categoryIds?.length || 0) > 1;
+  const hideModalFilter =
+    isShowMapSwitchButton && showMap && hasMultipleMapCategories;
 
   return (
     <SafeAreaViewFlex>
-      {!showMapFilter && (
+      {!hideModalFilter && (
         <Filter
           filterTypes={filterTypes}
           initialQueryVariables={initialQueryVariables}
