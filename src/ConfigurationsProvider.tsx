@@ -16,7 +16,7 @@ import {
   defaultResourceFiltersConfig
 } from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
-import { storageHelper } from './helpers';
+import { getSueApiConfig, storageHelper } from './helpers';
 import { useHomeRefresh, useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 import { GenericType } from './types';
@@ -56,10 +56,19 @@ const defaultConfiguration = {
 
 export const ConfigurationsContext = createContext(defaultConfiguration);
 
+const hasSueApiConfiguration = (sueConfig: Record<string, any> = {}) => {
+  const { apiConfig = {} } = sueConfig;
+  const selectedApiConfig = getSueApiConfig(apiConfig);
+
+  return !!(selectedApiConfig?.apiKey && selectedApiConfig?.serverUrl);
+};
+
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = {} } = globalSettings;
   const { sue = {} } = settings || {};
+  const hasSueSettings = !!Object.keys(sue).length;
+  const hasCompleteSueApiConfiguration = hasSueApiConfiguration(sue);
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,14 +76,14 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const { data: sueConfigData, refetch: refetchSueConfig } = useQuery(
     [QUERY_TYPES.SUE.CONFIGURATIONS],
     () => getQuery(QUERY_TYPES.SUE.CONFIGURATIONS)(),
-    { enabled: !!Object.keys(sue).length }
+    { enabled: hasSueSettings, retry: false }
   );
 
   const { data: sueProgress, refetch: refetchSueProgress } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
     type: 'json',
-    skip: !Object.keys(sue).length
+    skip: !hasSueSettings
   });
 
   const { data: resourceFiltersData } = useQueryWithApollo(getQuery(QUERY_TYPES.RESOURCE_FILTERS), {
@@ -105,13 +114,15 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     setIsLoading(true);
 
     try {
-      await refetchSueConfig();
+      if (hasCompleteSueApiConfiguration) {
+        await refetchSueConfig();
+      }
       await refetchSueProgress();
     } catch (e) {
       console.warn(e);
     }
     setIsLoading(false);
-  }, []);
+  }, [hasCompleteSueApiConfiguration, refetchSueConfig, refetchSueProgress]);
 
   useHomeRefresh(reloadCallback);
 
