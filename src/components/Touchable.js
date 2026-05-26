@@ -6,10 +6,10 @@ import { device } from '../config';
 
 const getAccessibilityState = ({ accessibilityState, checked, disabled, expanded, selected }) => ({
   ...accessibilityState,
-  ...(disabled !== undefined ? { disabled } : {}),
-  ...(selected !== undefined ? { selected } : {}),
-  ...(checked !== undefined ? { checked } : {}),
-  ...(expanded !== undefined ? { expanded } : {})
+  ...(disabled === undefined ? {} : { disabled }),
+  ...(selected === undefined ? {} : { selected }),
+  ...(checked === undefined ? {} : { checked }),
+  ...(expanded === undefined ? {} : { expanded })
 });
 
 export const Touchable = ({
