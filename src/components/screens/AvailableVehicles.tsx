@@ -10,6 +10,11 @@ import { LoadingSpinner } from '../LoadingSpinner';
 
 export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
 
+// Status strings that are guaranteed to map to a named map-marker icon asset.
+// Any other status value (e.g. numeric occupancy, 'unbekannt') must NOT be used
+// as an icon name because no matching asset exists.
+export const KNOWN_ICON_STATUS_NAMES = new Set(['frei', 'belegt']);
+
 export type VehicleStatusFeature = {
   properties: {
     // The raw API value may be a status string ('frei', 'belegt', 'unbekannt') or a
@@ -25,12 +30,13 @@ export type VehicleStatusFeature = {
 };
 
 export const fetchAvailableVehicles = async (
-  freeStatusUrl: string
+  freeStatusUrl: string,
+  signal?: AbortSignal
 ): Promise<VehicleStatusFeature[]> => {
   let availableVehiclesData: VehicleStatusFeature[] = [];
 
   try {
-    const response = await fetch(freeStatusUrl);
+    const response = await fetch(freeStatusUrl, { signal });
 
     const data = await response.json();
     const status = response.status;
@@ -47,6 +53,10 @@ export const fetchAvailableVehicles = async (
       availableVehiclesData = availableVehicles;
     }
   } catch (error) {
+    // Re-throw AbortError so callers can detect request cancellation and skip state updates.
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('There was a problem with the fetch operation:', error);
   }
 
@@ -87,7 +97,7 @@ export const AvailableVehicles = ({
 
         <ListItem containerStyle={styles.container}>
           <ListItem.Content style={styles.contentContainer}>
-            <RegularText>{status}</RegularText>
+            <RegularText>{status ?? texts.pointOfInterest.noAvailableVehicles}</RegularText>
           </ListItem.Content>
         </ListItem>
 

@@ -25,6 +25,7 @@ import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
 import {
+  KNOWN_ICON_STATUS_NAMES,
   VehicleStatusFeature,
   fetchAvailableVehicles,
   vehiclePropertyKey
@@ -102,8 +103,7 @@ const mapToMapMarkers = (
         if (
           !vehicleStatus?.iconName &&
           typeof status === 'string' &&
-          !!status &&
-          status !== 'unbekannt'
+          KNOWN_ICON_STATUS_NAMES.has(status)
         ) {
           iconName = status;
           activeIconName = `${status}Active`;
@@ -112,7 +112,10 @@ const mapToMapMarkers = (
 
       if (item.payload?.iconName) {
         iconName = item.payload.iconName;
-        activeIconName = item.payload.activeIconName ?? `${item.payload.iconName}Active`;
+        // Do not fall back to `${iconName}Active` when the icon comes from payload,
+        // as the Active asset is not guaranteed to exist. Leave activeIconName undefined
+        // so MapLibre falls back to iconName instead of trying a missing asset.
+        activeIconName = item.payload.activeIconName;
       }
 
       return {

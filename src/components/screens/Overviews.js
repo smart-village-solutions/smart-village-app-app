@@ -364,7 +364,10 @@ export const Overviews = ({ navigation, route }) => {
     });
   }, [data, query, queryVariables]);
 
-  const hasNestedPoiCategories = hasNestedPointsOfInterestCategories(categories);
+  const hasNestedPoiCategories = useMemo(
+    () => hasNestedPointsOfInterestCategories(categories),
+    [categories]
+  );
 
   const locationOverviewQueryVariables = useMemo(() => {
     if (

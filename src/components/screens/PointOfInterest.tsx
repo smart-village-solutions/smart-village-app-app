@@ -22,6 +22,7 @@ import { VoucherListItem } from '../vouchers';
 
 import {
   AvailableVehicles,
+  KNOWN_ICON_STATUS_NAMES,
   VehicleStatusFeature,
   fetchAvailableVehicles,
   vehiclePropertyKey
@@ -112,16 +113,27 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
       return;
     }
 
+    const controller = new AbortController();
+
     const fetchData = async () => {
       try {
-        const data = await fetchAvailableVehicles(payload.freeStatusUrl);
+        const data = await fetchAvailableVehicles(payload.freeStatusUrl, controller.signal);
         setAvailableVehiclesData(data);
-      } finally {
         setAvailableVehiclesLoading(false);
+      } catch (error) {
+        // AbortError is expected when freeStatusUrl changes or the component unmounts before
+        // the request completes. Skip state updates so stale data is never written.
+        if (!(error instanceof Error && error.name === 'AbortError')) {
+          setAvailableVehiclesLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      controller.abort();
+    };
   }, [payload?.freeStatusUrl]);
 
   const businessAccount = dataProvider?.dataType === 'business_account';
@@ -149,16 +161,19 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   const vehicleActiveIconName =
     availableVehiclesData[0]?.activeIconName || availableVehiclesData[0]?.iconNameActive;
 
-  // Use payload.activeIconName when provided; fall back to the conventional "Active" suffix only
-  // for icons that come from the category or the default pin (where the asset is guaranteed to
-  // exist). When the icon originates from payload/freeStatus response and no active icon is
-  // supplied, pass undefined so MapLibre falls back to iconName instead of trying a missing asset.
+  // Fall back to the "Active" suffix only for icons that come from the category or the default
+  // pin (where the asset is guaranteed to exist). When the icon originates from payload or
+  // freeStatus response and no active icon is supplied, pass undefined so MapLibre falls back
+  // to iconName instead of trying a missing asset.
+  const fallbackActiveIconName =
+    payload?.iconName || availableVehiclesData[0]?.iconName ? undefined : `${iconName}Active`;
+
+  // Use payload.activeIconName when provided; if status signals occupancy/availability use that;
+  // otherwise fall back through vehicle data and finally to the computed fallback.
   const activeIconName =
-    typeof status === 'string' && (status === 'belegt' || status === 'frei')
+    typeof status === 'string' && KNOWN_ICON_STATUS_NAMES.has(status)
       ? status
-      : payload?.activeIconName ||
-        vehicleActiveIconName ||
-        (payload?.iconName || availableVehiclesData[0]?.iconName ? undefined : `${iconName}Active`);
+      : payload?.activeIconName || vehicleActiveIconName || fallbackActiveIconName;
 
   return (
     <WrapperVertical>
