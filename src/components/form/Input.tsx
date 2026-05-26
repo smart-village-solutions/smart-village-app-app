@@ -78,7 +78,7 @@ export const Input = forwardRef(
 
     const inputAccessibilityState = {
       disabled,
-      ...(!!errorMessage ? { invalid: true } : {})
+      ...(errorMessage ? { invalid: true } : {})
     };
 
     if (chat) {

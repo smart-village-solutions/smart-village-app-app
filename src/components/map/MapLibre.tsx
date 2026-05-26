@@ -633,7 +633,7 @@ export const MapLibre = ({
   };
 
   const selectedMarkerId =
-    selectedMarker || (selectedFeature?.properties?.id as string | undefined);
+    selectedMarker || selectedFeature?.properties?.id;
 
   const clusteredLocations = useMemo(() => {
     if (!selectedMarkerId) return locations;
@@ -675,10 +675,7 @@ export const MapLibre = ({
     if (!feature) {
       clearSelection(true, 'shape-source-press-empty');
       if (nativeEvent?.lngLat) {
-        // Cast event geometry to match onMapPress expected type
-        onMapPress?.({
-          geometry: { coordinates: nativeEvent.lngLat }
-        } as { geometry: { coordinates: number[] } });
+        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
       }
       return;
     }
