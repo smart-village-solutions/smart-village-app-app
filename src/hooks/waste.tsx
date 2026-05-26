@@ -235,9 +235,8 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
   const renderSuggestionCities = useCallback(
     ({ item }) => (
       <TouchableOpacity
+        accessibilityLabel={item.city}
         onPress={() => {
-          setInputValue('');
-          setInputValueCity(item.city);
           setInputValueCitySelected(true);
           Keyboard.dismiss();
         }}
@@ -257,6 +256,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
 
       return (
         <TouchableOpacity
+          accessibilityLabel={streetString}
           onPress={() => {
             setInputValue(streetString);
             selectionCallback?.(item);

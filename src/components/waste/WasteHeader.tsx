@@ -31,7 +31,10 @@ export const WasteHeader = ({ locationData, onPress }: WasteHeaderProps) => {
       <RegularText>{wasteTexts.myLocation}:</RegularText>
       <WrapperRow>
         <BoldText>{getStreetString(locationData)}</BoldText>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity
+          accessibilityLabel={texts.accessibilityLabels.actions.editLocation}
+          onPress={onPress}
+        >
           <Icon.Pen size={normalize(20)} style={styles.icon} />
         </TouchableOpacity>
       </WrapperRow>

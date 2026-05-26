@@ -187,7 +187,10 @@ export const NoticeboardMessageForm = ({
           disabled={loading}
         />
 
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.noticeboard.abort}
           </RegularText>

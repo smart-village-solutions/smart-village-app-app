@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { colors, device, Icon, normalize } from '../../config';
 import { RegularText } from '../Text';
@@ -33,23 +33,20 @@ export const PickerInput = ({
     <RegularText style={styles.pickerText} placeholder={isPlaceholder} numberOfLines={1}>
       {value}
     </RegularText>
-    <Pressable
+    {/* Icon is non-interactive; pointer events are disabled so the outer
+        Pressable handles the full tap area, avoiding nested touchables. */}
+    <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
+      pointerEvents="none"
       style={styles.icon}
-      onPress={onPress}
-      android_ripple={{
-        color: colors.placeholder,
-        radius: normalize(22),
-        borderless: true
-      }}
     >
       {errorMessage ? (
         <Icon.AlertHexagonFilled color={colors.error} size={normalize(16)} />
       ) : (
         <Icon.Calendar />
       )}
-    </Pressable>
+    </View>
   </Pressable>
 );
 

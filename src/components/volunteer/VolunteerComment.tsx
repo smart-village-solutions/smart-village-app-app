@@ -12,7 +12,10 @@ export const VolunteerComment = ({
   commentsCount: number;
   onPress: () => void;
 }) => (
-  <TouchableOpacity onPress={onPress}>
+  <TouchableOpacity
+    accessibilityLabel={texts.accessibilityLabels.actions.createNewComment}
+    onPress={onPress}
+  >
     <WrapperRow>
       <RegularText small>
         {texts.volunteer.commentNew}

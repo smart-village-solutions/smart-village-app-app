@@ -19,7 +19,7 @@ import {
   Wrapper,
   WrapperRow
 } from '../../components';
-import { colors, Icon, normalize } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 
@@ -101,7 +101,11 @@ export const WhistleblowFormScreen = ({
             <Wrapper>
               <WrapperRow center>
                 <RegularText style={styles.reportCode}>{reportCode}</RegularText>
-                <TouchableOpacity onPress={copyToClipboard} disabled={isCopied}>
+                <TouchableOpacity
+                  accessibilityLabel={texts.accessibilityLabels.actions.copy}
+                  onPress={copyToClipboard}
+                  disabled={isCopied}
+                >
                   {isCopied ? (
                     <Icon.Check color={colors.darkText} />
                   ) : (

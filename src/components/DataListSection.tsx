@@ -147,7 +147,7 @@ export const DataListSection = ({
 
         {!!linkTitle && !!navigateLink && showLink && (
           <Wrapper>
-            <Touchable onPress={navigateLink}>
+            <Touchable accessibilityLabel={linkTitle} onPress={navigateLink}>
               <BoldText center primary underline>
                 {linkTitle}
               </BoldText>

@@ -75,6 +75,7 @@ export const Body = ({ data, navigation }: Props) => {
     (url, index) => (
       <Touchable
         key={index}
+        accessibilityLabel={texts.accessibilityLabels.actions.openLink}
         onPress={() => navigation.push('Web', { webUrl: url, title: shortName ?? name })}
       >
         <RegularText numberOfLines={1} primary>

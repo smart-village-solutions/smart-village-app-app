@@ -19,44 +19,62 @@ expect.extend(toHaveNoViolations);
 jest.mock('react-native-elements', () => {
   const React = require('react');
   return {
-    Button: (props: any) => React.createElement('View', {
-      accessibilityRole: props.accessibilityRole,
-      accessibilityLabel: props.accessibilityLabel,
-      accessibilityState: props.accessibilityState,
-      accessibilityHint: props.accessibilityHint,
-    }),
-    CheckBox: (props: any) => React.createElement('View', {
-      accessibilityRole: props.accessibilityRole,
-      accessibilityState: props.accessibilityState,
-    }),
-    Input: (props: any) => React.createElement('TextInput', {
-      accessibilityLabel: props.accessibilityLabel,
-      accessibilityState: props.accessibilityState,
-      ...props,
-    }),
+    Button: (props: any) =>
+      React.createElement('View', {
+        accessibilityRole: props.accessibilityRole,
+        accessibilityLabel: props.accessibilityLabel,
+        accessibilityState: props.accessibilityState,
+        accessibilityHint: props.accessibilityHint
+      }),
+    CheckBox: (props: any) =>
+      React.createElement('View', {
+        accessibilityRole: props.accessibilityRole,
+        accessibilityState: props.accessibilityState
+      }),
+    Input: (props: any) =>
+      React.createElement('TextInput', {
+        accessibilityLabel: props.accessibilityLabel,
+        accessibilityState: props.accessibilityState,
+        ...props
+      })
   };
 });
 
 jest.mock('../../src/config', () => ({
-  colors: { darkText: '#141414', error: '#ae001d', primary: '#107821', refreshControl: '#107821', surface: '#fff', overlayRgba: 'rgba(0,0,0,0.5)', gray40: '#dbdbe6', placeholder: '#a2a2a2', transparent: 'transparent' },
+  colors: {
+    darkText: '#141414',
+    error: '#ae001d',
+    primary: '#107821',
+    refreshControl: '#107821',
+    surface: '#fff',
+    overlayRgba: 'rgba(0,0,0,0.5)',
+    gray40: '#dbdbe6',
+    placeholder: '#a2a2a2',
+    transparent: 'transparent'
+  },
   consts: {
     a11yLabel: {
       button: '(Taste)',
       checkbox: '(Checkbox)',
       textInput: 'Texteingabe',
       loading: 'Wird geladen',
-      loadingModal: 'Ladevorgang',
+      loadingModal: 'Ladevorgang'
     },
-    DIMENSIONS: { FULL_SCREEN_MAX_WIDTH: 504 },
+    DIMENSIONS: { FULL_SCREEN_MAX_WIDTH: 504 }
   },
   device: { isTablet: false, platform: 'ios' },
-  Icon: { AlertHexagonFilled: () => null, Ok: () => null, Visible: () => null, Unvisible: () => null },
+  Icon: {
+    AlertHexagonFilled: () => null,
+    Ok: () => null,
+    Visible: () => null,
+    Unvisible: () => null
+  },
   normalize: (v: number) => v,
   texts: {
     accessibilityLabels: {
-      secureInputIcons: { visible: 'Passwort anzeigen', invisible: 'Passwort verbergen' },
-    },
-  },
+      secureInputIcons: { visible: 'Passwort anzeigen', invisible: 'Passwort verbergen' }
+    }
+  }
 }));
 
 jest.mock('../../src/AccessibilityProvider', () => {
@@ -68,17 +86,17 @@ jest.mock('../../src/AccessibilityProvider', () => {
       isInvertColorsEnabled: false,
       isReduceMotionEnabled: false,
       isReduceTransparencyEnabled: false,
-      isScreenReaderEnabled: false,
+      isScreenReaderEnabled: false
     }),
-    AccessibilityProvider: ({ children }: any) => children,
+    AccessibilityProvider: ({ children }: any) => children
   };
 });
 
 jest.mock('react-hook-form', () => ({
   useController: () => ({
     field: { value: '', onChange: jest.fn(), onBlur: jest.fn() },
-    fieldState: { error: undefined },
-  }),
+    fieldState: { error: undefined }
+  })
 }));
 
 // ---------------------------------------------------------------------------
@@ -90,17 +108,13 @@ import { InputSecureTextIcon } from '../../src/components/form/InputSecureTextIc
 
 describe('Accessibility violations (axe)', () => {
   it('Button has no violations', async () => {
-    const { container } = render(
-      <Button onPress={() => {}} title="Speichern" />
-    );
+    const { container } = render(<Button onPress={() => {}} title="Speichern" />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
   it('Button (disabled) has no violations', async () => {
-    const { container } = render(
-      <Button disabled onPress={() => {}} title="Löschen" />
-    );
+    const { container } = render(<Button disabled onPress={() => {}} title="Löschen" />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });

@@ -15,7 +15,10 @@ export const VolunteerGroupSearchField = ({ onPress }: { onPress: () => void }) 
 
   return (
     <WrapperVertical>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        accessibilityLabel={texts.accessibilityLabels.actions.search}
+        onPress={onPress}
+      >
         <WrapperRow pointerEvents="none">
           <Input
             disabled

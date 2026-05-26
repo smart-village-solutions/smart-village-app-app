@@ -39,6 +39,7 @@ export const VolunteerEventAttending = ({
   return (
     <Wrapper>
       <TouchableOpacity
+        accessibilityLabel={texts.accessibilityLabels.actions.showParticipants}
         onPress={() =>
           navigation.push(ScreenName.VolunteerIndex, {
             title: texts.volunteer.participants,

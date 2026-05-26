@@ -374,6 +374,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                 {item.category.map((items, indexs) => (
                   <TouchableOpacity
                     key={indexs}
+                    accessibilityLabel={items.name}
                     activeOpacity={1}
                     style={[styles.tagContainer, !!items.selected && styles.tagContainerSelected]}
                     onPress={() => {

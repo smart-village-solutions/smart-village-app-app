@@ -92,7 +92,10 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
         return (
           <View key={index}>
             {isPressable ? (
-              <TouchableOpacity onPress={() => addressOnPress(filteredAddress, item.geoLocation)}>
+              <TouchableOpacity
+                accessibilityLabel={texts.accessibilityLabels.actions.openAddress}
+                onPress={() => addressOnPress(filteredAddress, item.geoLocation)}
+              >
                 {innerComponent}
               </TouchableOpacity>
             ) : (
@@ -110,6 +113,7 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
                     <WrapperRow centerVertical style={styles.wrap}>
                       <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
                       <TouchableOpacity
+                        accessibilityLabel={texts.accessibilityLabels.actions.openRoutePlanner}
                         onPress={() =>
                           openWebScreen(
                             getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),

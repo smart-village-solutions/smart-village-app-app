@@ -2,7 +2,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Icon, colors, normalize } from '../config';
+import { Icon, colors, normalize, texts } from '../config';
 import { addToStore, findClosestItem, isActive, readFromStore } from '../helpers';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 
@@ -105,7 +105,11 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
         {!!closestItem && (
           <>
             {showButtonToClose && (
-              <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
+              <TouchableOpacity
+                accessibilityLabel={texts.accessibilityLabels.actions.close}
+                onPress={setDisturberComplete}
+                style={styles.closeButton}
+              >
                 <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
               </TouchableOpacity>
             )}

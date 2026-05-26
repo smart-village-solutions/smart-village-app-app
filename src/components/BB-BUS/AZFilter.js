@@ -18,6 +18,7 @@ export const AZFilter = memo(({ data, setData }) => {
       data={data}
       renderItem={({ item, index }) => (
         <TouchableOpacity
+          accessibilityLabel={item.value}
           onPress={() => {
             // only trigger onPress if a new selection is made
             if (selectedData.id === item.id) return;

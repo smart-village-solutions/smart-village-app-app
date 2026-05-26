@@ -23,7 +23,8 @@ const EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
 
 // Matches the OPENING of a JSX interactive element tag (< followed by name)
 // We require `<` immediately before the component name to skip imports/types.
-const INTERACTIVE_OPEN_TAG = /^[\s]*<(TouchableOpacity|TouchableNativeFeedback|TouchableHighlight|Pressable|Touchable)\b/;
+const INTERACTIVE_OPEN_TAG =
+  /^[\s]*<(TouchableOpacity|TouchableNativeFeedback|TouchableHighlight|Pressable|Touchable)\b/;
 
 const IGNORE_DIRS = ['node_modules', '__tests__', '__mocks__'];
 
@@ -37,7 +38,11 @@ const threshold = thresholdIdx !== -1 ? parseInt(args[thresholdIdx + 1], 10) : n
 
 function getAllFiles(dir, files = []) {
   let entries;
-  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return files; }
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return files;
+  }
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (IGNORE_DIRS.some((d) => entry.name === d)) continue;
@@ -61,8 +66,12 @@ function extractInteractiveElements(source, filePath) {
     let j = i;
     while (j < lines.length && j < i + 20) {
       block += lines[j] + '\n';
-      // Stop when the opening tag is closed
-      if (/\/?>/.test(lines[j])) break;
+      // Stop only on a real JSX tag close: `/>` anywhere, or `>` at end of
+      // the trimmed line that is NOT an arrow function `=>`.
+      const trimmed = lines[j].trimEnd();
+      const isSelfClose = trimmed.includes('/>');
+      const isTagClose = trimmed.endsWith('>') && !trimmed.endsWith('=>');
+      if (isSelfClose || isTagClose) break;
       j++;
     }
 
@@ -73,7 +82,7 @@ function extractInteractiveElements(source, filePath) {
       line: i + 1,
       element: elementName,
       hasLabel,
-      snippet: lines[i].trim().slice(0, 90),
+      snippet: lines[i].trim().slice(0, 90)
     });
   }
   return results;

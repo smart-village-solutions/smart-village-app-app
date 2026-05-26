@@ -98,7 +98,14 @@ export const Service = ({
   );
   const toggler = isPersonalizable && (
     <View style={styles.toggler}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        accessibilityLabel={
+          isEditMode
+            ? texts.accessibilityLabels.actions.finishEditing
+            : texts.accessibilityLabels.actions.edit
+        }
+        onPress={onPress}
+      >
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>
           {isEditMode ? texts.serviceTiles.done : texts.serviceTiles.edit}
         </RegularText>

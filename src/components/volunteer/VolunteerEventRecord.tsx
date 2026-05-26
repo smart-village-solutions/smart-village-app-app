@@ -201,7 +201,10 @@ export const VolunteerEventRecord = ({
       {!!documents?.length &&
         documents.map((document) => (
           <WrapperHorizontal key={document.guid}>
-            <Touchable onPress={() => openLink(document.url)}>
+            <Touchable
+              accessibilityLabel={texts.accessibilityLabels.actions.openDocument}
+              onPress={() => openLink(document.url)}
+            >
               <View style={styles.volunteerUploadPreview}>
                 <Icon.Document color={colors.darkText} size={normalize(16)} />
 

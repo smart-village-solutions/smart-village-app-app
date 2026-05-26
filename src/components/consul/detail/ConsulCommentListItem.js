@@ -129,7 +129,10 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
           ) : null}
           <>
             {responses && responses.length > 0 ? (
-              <Touchable onPress={() => setShowResponse(!showResponse)}>
+              <Touchable
+                accessibilityLabel={texts.accessibilityLabels.actions.showAnswers}
+                onPress={() => setShowResponse(!showResponse)}
+              >
                 <RegularText primary smallest>
                   {responses.length}{' '}
                   {responses.length > 1 ? texts.consul.responses : texts.consul.response}
@@ -145,7 +148,10 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
 
           {commentUserId === userId && (
             <>
-              <Touchable onPress={() => deleteCommentAlert(onDelete)}>
+              <Touchable
+                accessibilityLabel={texts.accessibilityLabels.actions.deleteComment}
+                onPress={() => deleteCommentAlert(onDelete)}
+              >
                 <View style={styles.deleteButton}>
                   <Icon.Trash size={normalize(12)} color={colors.error} />
                   <RegularText error smallest>
@@ -158,7 +164,10 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
             </>
           )}
 
-          <Touchable onPress={() => setShowReply(!showReply)}>
+          <Touchable
+            accessibilityLabel={texts.accessibilityLabels.actions.answers}
+            onPress={() => setShowReply(!showReply)}
+          >
             <RegularText primary smallest>
               {texts.consul.answer}
             </RegularText>
@@ -227,6 +236,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
             chat
           />
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.sendComment}
             onPress={handleSubmit(onSubmit)}
             style={styles.button}
             disabled={isLoading}
@@ -242,7 +252,12 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
 
 const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPress, color }) => {
   return (
-    <Touchable onPress={onPress}>
+    <Touchable
+      accessibilityLabel={
+        like ? texts.accessibilityLabels.actions.unlike : texts.accessibilityLabels.actions.like
+      }
+      onPress={onPress}
+    >
       <View style={styles.iconButton}>
         <Icon.Like
           color={color}

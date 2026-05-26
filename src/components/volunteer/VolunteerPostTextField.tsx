@@ -15,7 +15,10 @@ export const VolunteerPostTextField = ({ onPress }: { onPress: () => void }) => 
 
   return (
     <WrapperVertical>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        accessibilityLabel={texts.accessibilityLabels.actions.createNewPost}
+        onPress={onPress}
+      >
         <WrapperRow pointerEvents="none">
           <Input
             disabled

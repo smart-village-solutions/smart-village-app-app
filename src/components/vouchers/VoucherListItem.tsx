@@ -37,6 +37,7 @@ export const VoucherListItem = memo(
 
     return (
       <TouchableOpacity
+        accessibilityLabel={title}
         onPress={() => navigation && navigation.push(name, params)}
         disabled={!navigation}
       >
