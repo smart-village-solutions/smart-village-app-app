@@ -13,13 +13,23 @@ import { Wrapper, WrapperRow } from './Wrapper';
 
 type Props = {
   initialTime?: Date;
+  maximumDate?: Date;
+  minimumDate?: Date;
   mode: (IOSNativeProps | AndroidNativeProps)['mode'];
   onUpdate: (date: Date) => void;
   setVisible: (newValue: boolean) => void;
   visible: boolean;
 };
 
-export const DateTimePicker = ({ initialTime, mode, onUpdate, setVisible, visible }: Props) => {
+export const DateTimePicker = ({
+  initialTime,
+  maximumDate,
+  minimumDate,
+  mode,
+  onUpdate,
+  setVisible,
+  visible
+}: Props) => {
   const [localSelectedTime, setLocalSelectedTime] = useState<Date>(initialTime ?? new Date());
 
   const onDismissCallback = useCallback(() => {
@@ -87,9 +97,12 @@ export const DateTimePicker = ({ initialTime, mode, onUpdate, setVisible, visibl
 
                 <CommunityDateTimePicker
                   display="spinner"
-                  textColor={colors.darkText}
+                  maximumDate={maximumDate}
+                  minimumDate={minimumDate}
                   mode={mode}
                   onChange={onDatePickerChange}
+                  style={styles.picker}
+                  textColor={colors.darkText}
                   value={localSelectedTime || new Date()}
                 />
               </SafeAreaView>
@@ -99,6 +112,8 @@ export const DateTimePicker = ({ initialTime, mode, onUpdate, setVisible, visibl
       )}
       {device.platform === 'android' && visible && (
         <CommunityDateTimePicker
+          maximumDate={maximumDate}
+          minimumDate={minimumDate}
           mode={mode}
           onChange={onDatePickerChange}
           value={localSelectedTime || new Date()}
@@ -119,6 +134,9 @@ const styles = StyleSheet.create({
   },
   noPaddingBottom: {
     paddingBottom: 0
+  },
+  picker: {
+    alignSelf: 'center'
   },
   radioContainer: {
     backgroundColor: colors.transparent

@@ -1,121 +1,17 @@
-import CommunityDateTimePicker, {
+import React, { useState } from 'react';
+import { Keyboard } from 'react-native';
+import {
   AndroidNativeProps,
   IOSNativeProps
 } from '@react-native-community/datetimepicker';
-import React, { useCallback, useState } from 'react';
-import { Keyboard, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, device, texts } from '../../config';
+import { consts } from '../../config';
 import { formatDate, formatTime } from '../../helpers';
+import { DateTimePicker } from '../DateTimePicker';
 import { Label } from '../Label';
-import { BoldText } from '../Text';
-import { Wrapper, WrapperRow } from '../Wrapper';
 
 import { Input } from './Input';
 import { PickerInput } from './PickerInput';
-
-type DateTimePickerProps = {
-  value?: Date;
-  maximumDate?: Date;
-  minimumDate?: Date;
-  mode: (IOSNativeProps | AndroidNativeProps)['mode'];
-  onChange: (date?: Date) => void;
-  dateTimePickerVisible: boolean;
-  setDateTimePickerVisible: (newValue: boolean) => void;
-};
-
-const DateTimePicker = ({
-  value = new Date(),
-  maximumDate,
-  minimumDate,
-  mode,
-  onChange,
-  dateTimePickerVisible,
-  setDateTimePickerVisible
-}: DateTimePickerProps) => {
-  const onDismissCallback = useCallback(() => {
-    setDateTimePickerVisible(false);
-  }, []);
-
-  const onAcceptIOS = useCallback(() => {
-    onChange(value);
-    setDateTimePickerVisible(false);
-  }, [value]);
-
-  const onDatePickerChange = useCallback(
-    (_, selectedDate?: Date) => {
-      device.platform === 'android' && setDateTimePickerVisible(false);
-      onChange(selectedDate);
-    },
-    [onChange]
-  );
-
-  if (!dateTimePickerVisible) return null;
-
-  if (device.platform === 'android') {
-    return (
-      <CommunityDateTimePicker
-        maximumDate={maximumDate}
-        minimumDate={minimumDate}
-        mode={mode}
-        onChange={onDatePickerChange}
-        textColor={colors.darkText}
-        value={value}
-      />
-    );
-  } else if (device.platform === 'ios') {
-    return (
-      <Modal
-        animationType="none"
-        transparent
-        visible
-        accessibilityViewIsModal
-        supportedOrientations={['landscape', 'portrait']}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <SafeAreaView>
-              <WrapperRow spaceBetween>
-                <TouchableOpacity
-                  accessibilityLabel={`${texts.dateTimePicker.cancel} ${consts.a11yLabel.button}`}
-                  accessibilityRole="button"
-                  onPress={onDismissCallback}
-                >
-                  <Wrapper style={styles.noPaddingBottom}>
-                    <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
-                  </Wrapper>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  accessibilityLabel={`${texts.dateTimePicker.ok} ${consts.a11yLabel.button}`}
-                  accessibilityRole="button"
-                  onPress={onAcceptIOS}
-                >
-                  <Wrapper style={styles.noPaddingBottom}>
-                    <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
-                  </Wrapper>
-                </TouchableOpacity>
-              </WrapperRow>
-              <Wrapper>
-                <CommunityDateTimePicker
-                  display="spinner"
-                  maximumDate={maximumDate}
-                  minimumDate={minimumDate}
-                  mode={mode}
-                  onChange={onDatePickerChange}
-                  style={styles.DateTimePicker}
-                  textColor={colors.darkText}
-                  value={value}
-                />
-              </Wrapper>
-            </SafeAreaView>
-          </View>
-        </View>
-      </Modal>
-    );
-  }
-
-  return null;
-};
 
 type DateTimeInputProps = {
   boldLabel?: boolean;
@@ -126,7 +22,7 @@ type DateTimeInputProps = {
   minimumDate?: Date;
   mode?: (IOSNativeProps | AndroidNativeProps)['mode'];
   name: string;
-  onChange: () => void;
+  onChange: (date: Date) => void;
   placeholder: string;
   required?: boolean;
   rules?: any;
@@ -177,33 +73,15 @@ export const DateTimeInput = ({
         control={control}
       />
       <DateTimePicker
-        {...{
-          value,
-          maximumDate,
-          minimumDate,
-          mode,
-          onChange,
-          dateTimePickerVisible,
-          setDateTimePickerVisible
-        }}
+        initialTime={value ? new Date(value) : undefined}
+        maximumDate={maximumDate}
+        minimumDate={minimumDate}
+        mode={mode}
+        onUpdate={onChange}
+        setVisible={setDateTimePickerVisible}
+        visible={dateTimePickerVisible}
       />
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  DateTimePicker: {
-    alignSelf: 'center'
-  },
-  modalContainer: {
-    backgroundColor: colors.overlayRgba,
-    flex: 1,
-    justifyContent: 'flex-end'
-  },
-  modalContent: {
-    backgroundColor: colors.surface
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  }
-});
