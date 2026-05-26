@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import { colors } from '../config';
+import { colors, consts } from '../config';
 
 import { LoadingContainer } from './LoadingContainer';
 
@@ -13,7 +13,7 @@ export const LoadingSpinner = ({ loading }: Props) => {
   return loading ? (
     <LoadingContainer>
       <View
-        accessibilityLabel="Wird geladen"
+        accessibilityLabel={consts.a11yLabel.loading}
         accessibilityRole="progressbar"
         accessible
       >

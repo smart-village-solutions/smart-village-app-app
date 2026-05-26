@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Keyboard } from 'react-native';
-import {
-  AndroidNativeProps,
-  IOSNativeProps
-} from '@react-native-community/datetimepicker';
+import { AndroidNativeProps, IOSNativeProps } from '@react-native-community/datetimepicker';
 
 import { consts } from '../../config';
 import { formatDate, formatTime } from '../../helpers';
@@ -53,7 +50,9 @@ export const DateTimeInput = ({
     <>
       <Label bold={boldLabel}>{label}</Label>
       <PickerInput
-        accessibilityHint={consts.a11yLabel.birthDateHint}
+        accessibilityHint={
+          mode === 'date' ? consts.a11yLabel.birthDateHint : consts.a11yLabel.timePickerHint
+        }
         accessibilityLabel={`${label} ${consts.a11yLabel.dropDownMenu}`}
         expanded={dateTimePickerVisible}
         value={pickerInput}
@@ -84,4 +83,3 @@ export const DateTimeInput = ({
     </>
   );
 };
-

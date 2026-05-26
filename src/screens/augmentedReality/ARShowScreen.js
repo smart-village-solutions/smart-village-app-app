@@ -124,7 +124,7 @@ export const ARShowScreen = ({ navigation, route }) => {
               isStartAnimationAndSound ? 'Animation pausieren' : 'Animation starten'
             } ${consts.a11yLabel.button}`}
             accessibilityRole="button"
-            accessibilityState={{ checked: isStartAnimationAndSound }}
+            accessibilityState={{ selected: isStartAnimationAndSound }}
             style={[styles.animationButton, styles.generalButtonStyle]}
             onPress={() => setIsStartAnimationAndSound(!isStartAnimationAndSound)}
           >
