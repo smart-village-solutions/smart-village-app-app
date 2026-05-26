@@ -17,6 +17,10 @@ export type VehicleStatusFeature = {
     // and let the UI decide how to format/interpret it.
     [vehiclePropertyKey]: string | number | undefined;
   };
+  iconName?: string;
+  activeIconName?: string;
+  // Legacy key kept for backwards compatibility with older freeStatusUrl payloads.
+  iconNameActive?: string;
   isSpecialForParkHaus?: boolean;
 };
 
@@ -65,6 +69,10 @@ export const AvailableVehicles = ({
     return <LoadingSpinner loading={loading} />;
   }
 
+  if (status == null || (typeof status === 'string' && !status.length)) {
+    return null;
+  }
+
   const statusCircle =
     status === 'frei' ? (
       <RegularText style={{ color: '#7cbb4d' }}> ⬤</RegularText>
@@ -89,6 +97,7 @@ export const AvailableVehicles = ({
       </>
     );
   }
+
   return (
     <>
       <SectionHeader title={texts.pointOfInterest.availableVehicles} />

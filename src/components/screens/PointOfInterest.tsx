@@ -12,6 +12,7 @@ import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
@@ -131,20 +132,33 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
     nestedCategory = categories.find((category) => category.name === categoryName);
   }
 
-  const iconName = payload?.iconName || category?.iconName || MAP.DEFAULT_PIN;
-
   const status = availableVehiclesData?.length
     ? availableVehiclesData[0]?.properties?.[vehiclePropertyKey]
     : undefined;
 
+  if (availableVehiclesLoading) {
+    return <LoadingSpinner loading={availableVehiclesLoading} />;
+  }
+
+  const iconName =
+    payload?.iconName ||
+    category?.iconName ||
+    availableVehiclesData[0]?.iconName ||
+    MAP.DEFAULT_PIN;
+
+  const vehicleActiveIconName =
+    availableVehiclesData[0]?.activeIconName || availableVehiclesData[0]?.iconNameActive;
+
   // Use payload.activeIconName when provided; fall back to the conventional "Active" suffix only
   // for icons that come from the category or the default pin (where the asset is guaranteed to
-  // exist). When the icon originates from the payload and no activeIconName is supplied, pass
-  // undefined so MapLibre falls back to iconName instead of trying a missing asset.
+  // exist). When the icon originates from payload/freeStatus response and no active icon is
+  // supplied, pass undefined so MapLibre falls back to iconName instead of trying a missing asset.
   const activeIconName =
-    typeof status === 'string' && status !== 'unbekannt'
+    typeof status === 'string' && (status === 'belegt' || status === 'frei')
       ? status
-      : payload?.activeIconName ?? (payload?.iconName ? undefined : `${iconName}Active`);
+      : payload?.activeIconName ||
+        vehicleActiveIconName ||
+        (payload?.iconName || availableVehiclesData[0]?.iconName ? undefined : `${iconName}Active`);
 
   return (
     <WrapperVertical>
@@ -264,7 +278,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
             isMyLocationButtonVisible={false}
             locations={[
               {
-                iconName: iconName,
+                iconName,
                 activeIconName,
                 id,
                 position: { latitude, longitude }

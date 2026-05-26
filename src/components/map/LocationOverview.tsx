@@ -24,12 +24,25 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
-import { fetchAvailableVehicles, vehiclePropertyKey } from '../screens';
+import {
+  VehicleStatusFeature,
+  fetchAvailableVehicles,
+  vehiclePropertyKey
+} from '../screens/AvailableVehicles';
 
 import { ChipFilter } from './ChipFilter';
 import { MapLibre } from './MapLibre';
 
 const { MAP } = consts;
+
+type VehicleStatusByUrl = Record<
+  string,
+  {
+    activeIconName?: string;
+    iconName?: string;
+    status?: string | number;
+  }
+>;
 
 type Props = {
   currentPosition?: LocationObject;
@@ -64,7 +77,7 @@ const getLocationMarker = (locationObject) => ({
 
 const mapToMapMarkers = (
   pointsOfInterest: any,
-  vehicleStatuses: Record<string, string>
+  vehicleStatuses: VehicleStatusByUrl
 ): MapMarker[] | undefined => {
   const markers = pointsOfInterest
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,9 +91,20 @@ const mapToMapMarkers = (
       let activeIconName = `${item.category?.iconName || MAP.DEFAULT_PIN}Active`;
 
       if (item.payload?.freeStatusUrl) {
-        const status = vehicleStatuses[item.payload.freeStatusUrl];
+        const vehicleStatus = vehicleStatuses[item.payload.freeStatusUrl];
+        const status = vehicleStatus?.status;
 
-        if (!!status && status !== 'unbekannt') {
+        if (vehicleStatus?.iconName) {
+          iconName = vehicleStatus.iconName;
+          activeIconName = vehicleStatus.activeIconName ?? `${vehicleStatus.iconName}Active`;
+        }
+
+        if (
+          !vehicleStatus?.iconName &&
+          typeof status === 'string' &&
+          !!status &&
+          status !== 'unbekannt'
+        ) {
           iconName = status;
           activeIconName = `${status}Active`;
         }
@@ -126,7 +150,7 @@ export const LocationOverview = ({
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState();
-  const [vehicleStatuses, setVehicleStatuses] = useState<Record<string, string>>({});
+  const [vehicleStatuses, setVehicleStatuses] = useState<VehicleStatusByUrl>({});
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
 
   const updateSelectedPosition = useCallback(() => {
@@ -190,17 +214,26 @@ export const LocationOverview = ({
     Promise.allSettled(
       uniqueUrls.map(async (url) => {
         const data = await fetchAvailableVehicles(url);
-        const status = data?.length && data[0]?.properties?.[vehiclePropertyKey];
-        return [url, status || null] as const;
+        const feature = data?.[0] as VehicleStatusFeature | undefined;
+        const status = feature?.properties?.[vehiclePropertyKey];
+        const iconName = feature?.iconName;
+        const activeIconName = feature?.activeIconName || feature?.iconNameActive;
+
+        return [url, { activeIconName, iconName, status }] as const;
       })
     ).then((results) => {
-      const statuses: Record<string, string> = {};
+      const statuses: VehicleStatusByUrl = {};
 
       results.forEach((result) => {
         if (result.status === 'fulfilled') {
-          const [url, status] = result.value;
-          if (status) {
-            statuses[url] = status;
+          const [url, vehicleStatus] = result.value;
+
+          if (
+            vehicleStatus.status != null ||
+            !!vehicleStatus.iconName ||
+            !!vehicleStatus.activeIconName
+          ) {
+            statuses[url] = vehicleStatus;
           }
         }
         // Rejected results are ignored so that one failing request
