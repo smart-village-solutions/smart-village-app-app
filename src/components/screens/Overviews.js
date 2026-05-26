@@ -364,17 +364,7 @@ export const Overviews = ({ navigation, route }) => {
     });
   }, [data, query, queryVariables]);
 
-  if (!query) return null;
-
-  const initialNewsItemsFetch =
-    query === QUERY_TYPES.NEWS_ITEMS &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
-
-  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST;
   const hasNestedPoiCategories = hasNestedPointsOfInterestCategories(categories);
-  const canShowFloatingMapSwitch =
-    isShowMapSwitchButton && (!!listItems?.length || hasNestedPoiCategories);
 
   const locationOverviewQueryVariables = useMemo(() => {
     if (
@@ -399,6 +389,17 @@ export const Overviews = ({ navigation, route }) => {
     };
   }, [categories, hasNestedPoiCategories, query, queryVariables]);
 
+  if (!query) return null;
+
+  const initialNewsItemsFetch =
+    query === QUERY_TYPES.NEWS_ITEMS &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST;
+  const canShowFloatingMapSwitch =
+    isShowMapSwitchButton && (!!listItems?.length || hasNestedPoiCategories);
+
   if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
       <LoadingContainer>
@@ -407,10 +408,8 @@ export const Overviews = ({ navigation, route }) => {
     );
   }
 
-  const hasMultipleMapCategories =
-    (locationOverviewQueryVariables?.categoryIds?.length || 0) > 1;
-  const hideModalFilter =
-    isShowMapSwitchButton && showMap && hasMultipleMapCategories;
+  const hasMultipleMapCategories = (locationOverviewQueryVariables?.categoryIds?.length || 0) > 1;
+  const hideModalFilter = isShowMapSwitchButton && showMap && hasMultipleMapCategories;
 
   return (
     <SafeAreaViewFlex>
