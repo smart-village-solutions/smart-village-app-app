@@ -23,5 +23,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Run accessibility tests
-        run: npm run test:accessibility
+      - name: Run accessibility unit tests
+        run: yarn test:accessibility
+
+      - name: Run axe accessibility violation tests
+        run: yarn test:accessibility:axe
+
+      - name: Run accessibility coverage check
+        run: yarn a11y:coverage:ci
