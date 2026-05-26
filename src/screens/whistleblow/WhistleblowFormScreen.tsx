@@ -103,6 +103,8 @@ export const WhistleblowFormScreen = ({
                 <RegularText style={styles.reportCode}>{reportCode}</RegularText>
                 <TouchableOpacity
                   accessibilityLabel={texts.accessibilityLabels.actions.copy}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: isCopied }}
                   onPress={copyToClipboard}
                   disabled={isCopied}
                 >

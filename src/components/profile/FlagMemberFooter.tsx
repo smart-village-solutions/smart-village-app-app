@@ -12,6 +12,7 @@ export const FlagMemberFooter = ({ onPress }: { onPress: () => void }) => {
     <View style={styles.container}>
       <Pressable
         accessibilityLabel={texts.accessibilityLabels.actions.reportProfile}
+        accessibilityRole="button"
         onPress={onPress}
         style={styles.button}
       >

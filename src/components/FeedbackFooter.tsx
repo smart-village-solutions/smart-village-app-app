@@ -22,6 +22,7 @@ export const FeedbackFooter = ({ containerStyle }: { containerStyle?: StyleProp<
     <View style={[styles.container, containerStyle]}>
       <Pressable
         accessibilityLabel={texts.accessibilityLabels.actions.sendFeedback}
+        accessibilityRole="button"
         onPress={() => navigation.navigate(ScreenName.Feedback)}
         style={styles.button}
       >

@@ -160,7 +160,8 @@ export const WhistleblowReportForm = ({
 
         <Touchable
           accessibilityLabel={texts.accessibilityLabels.actions.back}
-          onPress={() => (isLoading ? null : navigation.goBack())}
+          disabled={isLoading}
+          onPress={() => navigation.goBack()}
         >
           <RegularText primary center>
             {texts.whistleblow.abort}

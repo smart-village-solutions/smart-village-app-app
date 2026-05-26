@@ -116,7 +116,9 @@ export const useWasteMarkedDates = ({ streetData, selectedTypes }) =>
 
           const previousEntry = dates[pickupDate] ?? { marked: true, note: null, dots: [] };
           const colorExists = previousEntry.dots.some((dot) => dot.color === color);
-          const nextDots = colorExists ? previousEntry.dots : [...previousEntry.dots, { color, selectedColor }];
+          const nextDots = colorExists
+            ? previousEntry.dots
+            : [...previousEntry.dots, { color, selectedColor }];
           const nextNote = previousEntry.note ?? (typeof date.note === 'string' ? date.note : null);
 
           dates[pickupDate] = {
@@ -237,6 +239,8 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
       <TouchableOpacity
         accessibilityLabel={item.city}
         onPress={() => {
+          setInputValueCity(item.city);
+          setInputValue('');
           setInputValueCitySelected(true);
           Keyboard.dismiss();
         }}

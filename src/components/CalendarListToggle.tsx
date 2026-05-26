@@ -15,6 +15,8 @@ export const CalendarListToggle = ({ showCalendar, setShowCalendar }: TCalendarL
   <WrapperRow style={styles.paddingLeft}>
     <TouchableOpacity
       accessibilityLabel={texts.accessibilityLabels.actions.listView}
+      accessibilityRole="button"
+      accessibilityState={{ selected: !showCalendar }}
       onPress={() => setShowCalendar(false)}
     >
       <WrapperRow style={[styles.calendarListToggle, !showCalendar && styles.underline]}>
@@ -24,6 +26,8 @@ export const CalendarListToggle = ({ showCalendar, setShowCalendar }: TCalendarL
     </TouchableOpacity>
     <TouchableOpacity
       accessibilityLabel={texts.accessibilityLabels.actions.calendarView}
+      accessibilityRole="button"
+      accessibilityState={{ selected: showCalendar }}
       onPress={() => setShowCalendar(true)}
     >
       <WrapperRow style={[styles.calendarListToggle, showCalendar && styles.underline]}>

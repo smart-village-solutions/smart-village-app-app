@@ -32,7 +32,12 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image, widgetStyle }
   const normalizedWidgetStyle = normalizeStyleValues(customWidgetStyle);
 
   return (
-    <TouchableOpacity accessibilityLabel={text} onPress={onPress} style={normalizedWidgetStyle}>
+    <TouchableOpacity
+      accessibilityLabel={text}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={normalizedWidgetStyle}
+    >
       <WrapperVertical style={styles.container}>
         <WrapperRow center>
           {image?.uri ? (

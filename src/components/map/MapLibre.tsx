@@ -130,8 +130,8 @@ const splitLayerStyle = (
       type === 'symbol'
         ? !SYMBOL_PAINT_KEYS.has(key)
         : type === 'circle'
-          ? CIRCLE_LAYOUT_KEYS.has(key)
-          : LINE_LAYOUT_KEYS.has(key);
+        ? CIRCLE_LAYOUT_KEYS.has(key)
+        : LINE_LAYOUT_KEYS.has(key);
 
     if (isLayout) {
       layout[kebab] = value;
@@ -632,8 +632,9 @@ export const MapLibre = ({
     }, MAP_PRESS_DEBOUNCE);
   };
 
-  const selectedMarkerId =
-    selectedMarker || selectedFeature?.properties?.id;
+  const selectedFeatureId =
+    selectedFeature?.properties?.id != null ? String(selectedFeature.properties.id) : undefined;
+  const selectedMarkerId = selectedMarker ?? selectedFeatureId;
 
   const clusteredLocations = useMemo(() => {
     if (!selectedMarkerId) return locations;
@@ -1048,9 +1049,9 @@ export const MapLibre = ({
 
       {!!onMaximizeButtonPress && (
         <TouchableOpacity
-          accessibilityLabel={`${
-            isFullscreenMap ? 'Karte verkleinern' : 'Karte vergrößern'
-          } ${a11yLabel.button}`}
+          accessibilityLabel={`${isFullscreenMap ? 'Karte verkleinern' : 'Karte vergrößern'} ${
+            a11yLabel.button
+          }`}
           accessibilityRole="button"
           accessibilityState={{ expanded: isFullscreenMap }}
           onPress={() => {

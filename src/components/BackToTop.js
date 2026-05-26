@@ -11,6 +11,7 @@ export const BackToTop = ({ onPress }) => {
   return (
     <TouchableOpacity
       accessibilityLabel={texts.accessibilityLabels.actions.scrollToTop}
+      accessibilityRole="button"
       onPress={onPress}
     >
       <Wrapper>

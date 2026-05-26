@@ -24,7 +24,7 @@ const EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
 // Matches the OPENING of a JSX interactive element tag (< followed by name)
 // We require `<` immediately before the component name to skip imports/types.
 const INTERACTIVE_OPEN_TAG =
-  /^[\s]*<(TouchableOpacity|TouchableNativeFeedback|TouchableHighlight|Pressable|Touchable)\b/;
+  /<(TouchableOpacity|TouchableNativeFeedback|TouchableHighlight|Pressable|Touchable)\b/;
 
 const IGNORE_DIRS = ['node_modules', '__tests__', '__mocks__'];
 
