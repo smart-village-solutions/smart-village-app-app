@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /**
  * Automated accessibility violation tests using jest-axe.
  *
@@ -9,9 +10,78 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { configureAxe, toHaveNoViolations } from 'jest-axe';
 
 expect.extend(toHaveNoViolations);
+
+const axe = configureAxe({
+  rules: {
+    // Component-level tests usually don't include full page landmark structure.
+    region: { enabled: false }
+  }
+});
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const jsonTreeToHtml = (node: any): string => {
+  if (node === null || node === undefined) return '';
+
+  if (Array.isArray(node)) {
+    return node.map((entry) => jsonTreeToHtml(entry)).join('');
+  }
+
+  if (typeof node === 'string' || typeof node === 'number') {
+    return escapeHtml(String(node));
+  }
+
+  const props = node.props || {};
+  const role = props.accessibilityRole;
+  const label = props.accessibilityLabel;
+  const isDisabled = props.accessibilityState?.disabled;
+  const isChecked = props.accessibilityState?.checked;
+
+  let tag = 'div';
+  if (role === 'button') tag = 'button';
+  if (role === 'link') tag = 'a';
+  if (node.type === 'TextInput') tag = 'input';
+
+  const attributes: string[] = [];
+  if (tag !== 'button' && tag !== 'a' && role) {
+    attributes.push(`role="${escapeHtml(String(role))}"`);
+  }
+  if (label) {
+    attributes.push(`aria-label="${escapeHtml(String(label))}"`);
+  }
+  if (isDisabled) {
+    attributes.push('aria-disabled="true"');
+  }
+  if (typeof isChecked === 'boolean') {
+    attributes.push(`aria-checked="${isChecked}"`);
+  }
+  if (tag === 'input') {
+    attributes.push('type="text"');
+  }
+
+  const attributeString = attributes.length > 0 ? ` ${attributes.join(' ')}` : '';
+  const children = jsonTreeToHtml(node.children || []);
+
+  if (tag === 'input') {
+    return `<input${attributeString} />`;
+  }
+
+  return `<${tag}${attributeString}>${children}</${tag}>`;
+};
+
+const renderToAxeHtml = (element: React.ReactElement) => {
+  const tree = render(element).toJSON();
+  return `<main>${jsonTreeToHtml(tree)}</main>`;
+};
 
 // ---------------------------------------------------------------------------
 // Mocks required to isolate components from native modules
@@ -108,40 +178,40 @@ import { InputSecureTextIcon } from '../../src/components/form/InputSecureTextIc
 
 describe('Accessibility violations (axe)', () => {
   it('Button has no violations', async () => {
-    const { container } = render(<Button onPress={() => {}} title="Speichern" />);
-    const results = await axe(container);
+    const html = renderToAxeHtml(<Button onPress={() => {}} title="Speichern" />);
+    const results = await axe(html);
     expect(results).toHaveNoViolations();
   });
 
   it('Button (disabled) has no violations', async () => {
-    const { container } = render(<Button disabled onPress={() => {}} title="Löschen" />);
-    const results = await axe(container);
+    const html = renderToAxeHtml(<Button disabled onPress={() => {}} title="Löschen" />);
+    const results = await axe(html);
     expect(results).toHaveNoViolations();
   });
 
   it('Touchable has no violations', async () => {
-    const { container } = render(
+    const html = renderToAxeHtml(
       <Touchable accessibilityLabel="Aktion ausführen" onPress={() => {}}>
         {null}
       </Touchable>
     );
-    const results = await axe(container);
+    const results = await axe(html);
     expect(results).toHaveNoViolations();
   });
 
   it('InputSecureTextIcon (hidden) has no violations', async () => {
-    const { container } = render(
+    const html = renderToAxeHtml(
       <InputSecureTextIcon isSecureTextEntry setIsSecureTextEntry={() => {}} />
     );
-    const results = await axe(container);
+    const results = await axe(html);
     expect(results).toHaveNoViolations();
   });
 
   it('InputSecureTextIcon (visible) has no violations', async () => {
-    const { container } = render(
+    const html = renderToAxeHtml(
       <InputSecureTextIcon isSecureTextEntry={false} setIsSecureTextEntry={() => {}} />
     );
-    const results = await axe(container);
+    const results = await axe(html);
     expect(results).toHaveNoViolations();
   });
 });
