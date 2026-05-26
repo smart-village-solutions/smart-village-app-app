@@ -72,7 +72,7 @@ export const Scanner = ({
     <SafeAreaViewFlex>
       {isScanning ? (
         <CameraView
-          accessibilityLabel={`${texts.voucher.scannerScreen.scannerTitle} ${consts.a11yLabel.textInput}`}
+          accessibilityLabel={`${texts.voucher.scannerScreen.scannerTitle} ${consts.a11yLabel.cameraScanner}`}
           onBarcodeScanned={handleBarCodeScanned}
           style={styles.scanner}
         />

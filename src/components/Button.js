@@ -53,6 +53,7 @@ export const Button = ({
         ]}
         containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
+        disabled={disabled}
         accessibilityHint={accessibilityHint}
         accessibilityLabel={buttonAccessibilityLabel}
         accessibilityRole="button"

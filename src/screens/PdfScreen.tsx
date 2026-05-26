@@ -52,7 +52,7 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
   return (
     <SafeAreaViewFlex>
       <Pdf
-        accessibilityLabel={`${title || 'PDF'} ${consts.a11yLabel.website}`}
+        accessibilityLabel={`${title || 'PDF'} ${consts.a11yLabel.pdf}`}
         onPageChanged={(page, numberOfPages) => setPageCount(`${page}/${numberOfPages}`)}
         source={{ uri: pdfUrl, cache: true }}
         style={styles.pdf}

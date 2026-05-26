@@ -69,6 +69,8 @@ export const consts = {
     shareHint: 'Inhalte auf der Seite teilen',
     shareIcon: 'Teilen (Taste)',
     tabs: 'Tabs',
+    cameraScanner: '(Kamerascanner)',
+    pdf: '(PDF-Dokument)',
     textInput: 'Texteingabe',
     username: 'Benutzername',
     verified: 'Verifiziert',

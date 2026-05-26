@@ -159,6 +159,7 @@ export const DateTimeInput = ({
       <PickerInput
         accessibilityHint={consts.a11yLabel.birthDateHint}
         accessibilityLabel={`${label} ${consts.a11yLabel.dropDownMenu}`}
+        expanded={dateTimePickerVisible}
         value={pickerInput}
         onPress={() => {
           setDateTimePickerVisible(true);

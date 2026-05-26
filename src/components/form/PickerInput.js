@@ -9,6 +9,7 @@ export const PickerInput = ({
   accessibilityHint,
   accessibilityLabel,
   errorMessage,
+  expanded = false,
   isPlaceholder = false,
   onPress,
   value
@@ -17,7 +18,7 @@ export const PickerInput = ({
     accessibilityHint={accessibilityHint}
     accessibilityLabel={accessibilityLabel}
     accessibilityRole="button"
-    accessibilityState={{ expanded: false }}
+    accessibilityState={{ expanded }}
     accessible
     style={({ pressed }) => [
       styles.pickerInput,
@@ -87,6 +88,7 @@ PickerInput.propTypes = {
   accessibilityHint: PropTypes.string,
   accessibilityLabel: PropTypes.string,
   errorMessage: PropTypes.string,
+  expanded: PropTypes.bool,
   isPlaceholder: PropTypes.bool,
   onPress: PropTypes.func,
   value: PropTypes.string

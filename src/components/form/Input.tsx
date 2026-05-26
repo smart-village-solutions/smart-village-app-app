@@ -76,6 +76,11 @@ export const Input = forwardRef(
       }
     }, []);
 
+    const inputAccessibilityState = {
+      disabled,
+      ...(!!errorMessage ? { invalid: true } : {})
+    };
+
     if (chat) {
       return (
         <RNEInput
@@ -101,10 +106,6 @@ export const Input = forwardRef(
     }
 
     const isValid = !disabled && validate && !!field.value && !errorMessage;
-    const inputAccessibilityState = {
-      disabled,
-      ...(!!errorMessage ? { invalid: true } : {})
-    };
 
     return (
       <RNEInput
