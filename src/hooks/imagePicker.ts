@@ -2,8 +2,7 @@ import {
   launchCameraAsync,
   launchImageLibraryAsync,
   PermissionStatus,
-  requestCameraPermissionsAsync,
-  requestMediaLibraryPermissionsAsync
+  requestCameraPermissionsAsync
 } from 'expo-image-picker';
 import {
   addAssetsToAlbumAsync,
@@ -11,7 +10,8 @@ import {
   createAssetAsync,
   getAlbumAsync,
   getPermissionsAsync,
-  requestPermissionsAsync
+  requestPermissionsAsync,
+  saveToLibraryAsync
 } from 'expo-media-library';
 import { useCallback, useState } from 'react';
 import { Alert, Linking } from 'react-native';
@@ -28,6 +28,25 @@ export const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOpt
 };
 
 const saveImageToGallery = async (uri: string) => {
+  if (device.platform === 'android') {
+    try {
+      await saveToLibraryAsync(uri);
+    } catch (error) {
+      try {
+        const { status } = await requestPermissionsAsync(true);
+
+        if (status === PermissionStatus.GRANTED) {
+          await saveToLibraryAsync(uri);
+        }
+      } catch (permissionError) {
+        console.error(permissionError);
+      }
+
+      console.error(error);
+    }
+    return;
+  }
+
   // Check existing permission status first to avoid triggering the iOS photo
   // picker overlay when the user previously granted only limited access.
   const { status: existingStatus, canAskAgain } = await getPermissionsAsync();
@@ -55,9 +74,6 @@ const saveImageToGallery = async (uri: string) => {
 
   try {
     const asset = await createAssetAsync(uri);
-
-    if (device.platform === 'android') return;
-
     const album = await getAlbumAsync(appName);
 
     if (!album) {
@@ -90,16 +106,6 @@ export const useSelectImage = ({
   const [imageUri, setImageUri] = useState<string>();
 
   const selectImage = useCallback(async () => {
-    const { status } = await requestMediaLibraryPermissionsAsync();
-
-    if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body, [
-        { text: texts.errors.image.cancel, style: 'cancel' },
-        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
-      ]);
-      return;
-    }
-
     // this allows for proper selecting and cropping to 1:1 images (and not videos)
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
@@ -168,16 +174,29 @@ export const useCaptureImage = ({
       onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
 
       if (saveImage) {
-        const { status: mediaStatus } = await getPermissionsAsync();
-
-        if (mediaStatus !== PermissionStatus.GRANTED) {
-          // Ask user before requesting gallery save permission
-          Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
-            { text: texts.errors.image.cancel, style: 'cancel' },
-            { text: texts.errors.image.save, onPress: async () => await saveImageToGallery(uri) }
-          ]);
+        if (device.platform === 'android') {
+          void saveImageToGallery(uri);
         } else {
-          await saveImageToGallery(uri);
+          void (async () => {
+            try {
+              const { status: mediaStatus } = await getPermissionsAsync();
+
+              if (mediaStatus !== PermissionStatus.GRANTED) {
+                // Ask user before requesting gallery save permission.
+                Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
+                  { text: texts.errors.image.cancel, style: 'cancel' },
+                  {
+                    text: texts.errors.image.save,
+                    onPress: async () => await saveImageToGallery(uri)
+                  }
+                ]);
+              } else {
+                await saveImageToGallery(uri);
+              }
+            } catch (error) {
+              console.error('Non-blocking gallery save flow failed', error);
+            }
+          })();
         }
       }
 
