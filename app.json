@@ -68,14 +68,10 @@
       },
       "package": "de.dev.smartvillage.app",
       "versionCode": 1,
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
-      ],
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "WRITE_EXTERNAL_STORAGE"],
       "blockedPermissions": [
         "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "READ_EXTERNAL_STORAGE",
         "READ_MEDIA_IMAGES",
         "READ_MEDIA_VIDEO"
       ],
