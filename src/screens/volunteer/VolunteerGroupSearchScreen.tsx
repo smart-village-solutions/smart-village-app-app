@@ -9,6 +9,7 @@ import {
   Filter,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Search,
@@ -150,6 +151,10 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
     <>
       {!!dataGroupSearchIntroText && (
         <WrapperVertical>
+          <ReadAloudContent
+            content={dataGroupSearchIntroText}
+            contentId="volunteer-group-search-intro-content"
+          />
           <HtmlView html={dataGroupSearchIntroText} />
         </WrapperVertical>
       )}

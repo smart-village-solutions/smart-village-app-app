@@ -16,6 +16,7 @@ import {
   ImageSection,
   LoadingContainer,
   MapLibre,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   SueCategory,
@@ -126,6 +127,10 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             <>
               <Wrapper>
                 <BoldText>{texts.sue.description}</BoldText>
+                <ReadAloudContent
+                  content={description}
+                  contentId="sue-detail-description-content"
+                />
                 <HtmlView big={false} html={description} />
               </Wrapper>
 
@@ -204,6 +209,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
               <Wrapper>
                 <BoldText>{texts.sue.answer}</BoldText>
+                <ReadAloudContent content={serviceNotice} contentId="sue-detail-answer-content" />
                 <HtmlView big={false} html={serviceNotice} />
               </Wrapper>
             </>

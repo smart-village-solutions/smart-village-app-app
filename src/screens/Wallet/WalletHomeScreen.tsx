@@ -7,6 +7,7 @@ import {
   Button,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   WalletHeader,
   WalletList,
@@ -47,6 +48,7 @@ const footer = ({
           <Icon.NamedIcon name={infoIcon} style={styles.infoIcon} />
 
           <View style={styles.infoTextContainer}>
+            <ReadAloudContent content={infoText as string} contentId="wallet-home-info-content" />
             <HtmlView html={infoText as string} />
           </View>
         </WrapperRow>

@@ -6,6 +6,7 @@ import {
   Button,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Wrapper
@@ -50,6 +51,7 @@ export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
         <Wrapper>
+          <ReadAloudContent content={registeredHtml} contentId="volunteer-registered-content" />
           <HtmlView html={registeredHtml} />
         </Wrapper>
         <Wrapper>

@@ -15,6 +15,7 @@ import {
   HtmlView,
   ListComponent,
   LoadingSpinner,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Search,
@@ -210,6 +211,10 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                 <>
                   {!!dataGroupsIntroText && (
                     <WrapperVertical>
+                      <ReadAloudContent
+                        content={dataGroupsIntroText}
+                        contentId="volunteer-groups-intro-content"
+                      />
                       <HtmlView html={dataGroupsIntroText} />
                     </WrapperVertical>
                   )}
