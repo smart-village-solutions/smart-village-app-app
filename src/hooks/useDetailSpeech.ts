@@ -10,6 +10,8 @@ type SpeechChunk = {
   text: string;
 };
 
+const DEFAULT_TTS_LANGUAGE = 'de-DE';
+
 type ChunkPart = {
   start: number;
   text: string;
@@ -145,6 +147,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
         }
 
         Speech.speak(currentChunk.text, {
+          language: DEFAULT_TTS_LANGUAGE,
           rate: speechRate,
           onBoundary: (event: { charIndex?: number; charLength?: number }) => {
             if (generationRef.current !== generation || !mountedRef.current) return;
