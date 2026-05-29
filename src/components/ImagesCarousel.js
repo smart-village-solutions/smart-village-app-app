@@ -8,6 +8,7 @@ import Carousel from 'react-native-snap-carousel';
 import { colors, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { getQuery } from '../queries';
@@ -27,6 +28,7 @@ export const ImagesCarousel = ({
 }) => {
   const { dimensions } = useContext(OrientationContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { sliderPauseButton = {}, sliderSettings = {} } = settings;
@@ -38,22 +40,30 @@ export const ImagesCarousel = ({
   } = sliderPauseButton;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
-  const [carouselImageIndex, setCarouselImageIndex] = useState(0);
+  const [, setCarouselImageIndex] = useState(0);
 
   const carouselRef = useRef();
   const isFocused = useIsFocused();
 
-  if (isFocused) {
+  useEffect(() => {
+    if (!isFocused || isReduceMotionEnabled) {
+      carouselRef.current?.stopAutoplay();
+      return;
+    }
+
     carouselRef.current?.startAutoplay();
-  } else {
-    carouselRef.current?.stopAutoplay();
-  }
+  }, [isFocused, isReduceMotionEnabled]);
 
   useEffect(() => {
-    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
-  }, [isPaused]);
+    if (isReduceMotionEnabled) {
+      carouselRef.current?.stopAutoplay();
+      return;
+    }
 
-  const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
+    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
+  }, [isPaused, isReduceMotionEnabled]);
+
+  const shouldShowPauseButton = showSliderPauseButton && !isDisturber && !isReduceMotionEnabled;
 
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
@@ -130,7 +140,7 @@ export const ImagesCarousel = ({
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio]
+    [navigation, fetchPolicy, aspectRatio, isImageFullWidth]
   );
 
   if (!data || data.length === 0) return null;
@@ -150,7 +160,7 @@ export const ImagesCarousel = ({
   return (
     <View>
       <Carousel
-        autoplay
+        autoplay={!isReduceMotionEnabled}
         autoplayDelay={0}
         autoplayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
         containerCustomStyle={styles.center}
