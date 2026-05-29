@@ -17,7 +17,7 @@ import { RegularText } from './Text';
 
 const { HTML_REGEX } = consts;
 
-const cssRules =
+const getCssRules = (textScaleMultiplier = 1) =>
   cssRulesFromSpecs({
     ...defaultTableStylesSpecs,
     linkColor: colors.primary,
@@ -32,7 +32,7 @@ const cssRules =
   }) +
   `
 :root {
-  font-size: ${normalize(13)}px;
+  font-size: ${normalize(13) * textScaleMultiplier}px;
 }
 th {
   border-bottom: 1px solid ${'#3f5c7a'};
@@ -116,7 +116,7 @@ export const HtmlView = memo(
     tagsStyles = {},
     width
   }) => {
-    const { isBoldTextEnabled } = useContext(AccessibilityContext);
+    const { isBoldTextEnabled, textScaleMultiplier = 1 } = useContext(AccessibilityContext);
 
     let calculatedWidth =
       width !== undefined
@@ -153,14 +153,14 @@ export const HtmlView = memo(
               style: { opacity: 0.99 }
             }
           },
-          table: { cssRules }
+          table: { cssRules: getCssRules(textScaleMultiplier) }
         }}
         tagsStyles={{
           ...styles.html,
           ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
           ...tagsStyles
         }}
-        emSize={normalize(16)}
+        emSize={normalize(16) * textScaleMultiplier}
         baseStyle={styles.baseFontStyle}
         ignoredStyles={['width', 'height']}
         contentWidth={maxWidth}

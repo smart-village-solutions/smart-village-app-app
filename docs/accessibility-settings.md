@@ -1,0 +1,188 @@
+# Accessibility Settings
+
+## Overview
+
+This document describes the app-level accessibility settings introduced on top of the existing system accessibility support.
+
+The feature has three goals:
+
+1. Allow app operators to enable/disable accessibility capabilities globally via `globalSettings`.
+2. Allow users to manage accessibility preferences from:
+   - the **Settings** screen, and
+   - the **header accessibility modal**.
+3. Persist user preferences locally so selections survive app restarts.
+
+In addition, pull requests are validated with a PR-scoped accessibility workflow that reports missing accessibility requirements per changed component.
+
+## PR Accessibility Workflow (Component-Scoped)
+
+The CI workflow is defined in:
+
+- `.github/workflows/accessibility-checks.yml`
+
+PR behavior:
+
+1. Detect changed files in the PR diff.
+2. Scope accessibility checks to changed files under:
+   - `src/components`
+   - `src/screens`
+   - `src/navigation`
+   - `src/config/navigation`
+3. Run ESLint accessibility rules on scoped files.
+4. Publish a Markdown/JSON report as build artifacts.
+5. Post or update a PR comment with component-level findings.
+6. Fail the PR only when scoped component checks fail.
+
+Full accessibility tests still run for visibility, but PR gate/fail status is determined by scoped component findings.
+
+## Configuration Source
+
+Accessibility configuration is read from:
+
+- `globalSettings.settings.accessibility`
+
+If no configuration is provided, all accessibility features are enabled by default.
+
+## Global Configuration Schema
+
+Use the following JSON shape in `globalSettings`:
+
+```json
+{
+  "settings": {
+    "accessibility": {
+      "enabledFeatures": {
+        "settingsEntry": true,
+        "headerEntry": true,
+        "textScaling": true,
+        "boldText": true,
+        "highContrast": true,
+        "reduceMotion": true,
+        "reduceTransparency": true,
+        "readAloud": true
+      },
+      "defaults": {
+        "textScaleLevel": 2,
+        "highContrastEnabled": false,
+        "reduceMotionEnabled": false,
+        "reduceTransparencyEnabled": false,
+        "readAloudEnabled": false
+      }
+    }
+  }
+}
+```
+
+## Configuration Keys
+
+### `enabledFeatures`
+
+Controls which accessibility capabilities are available in the UI and behavior layer.
+
+- `settingsEntry`
+  - `true`: show Accessibility section in the Settings screen.
+  - `false`: hide Accessibility section from Settings.
+- `headerEntry`
+  - `true`: show accessibility icon in screen headers.
+  - `false`: hide header accessibility icon and modal entry.
+- `textScaling`
+  - Enables/disables text size controls (`A-`, slider, `A+`) in Settings and Header modal.
+  - `boldText` is still read as a backward-compatible alias when `textScaling` is not provided.
+- `boldText`
+  - Backward-compatible alias for `textScaling`.
+- `highContrast`
+  - Enables/disables the in-app higher-contrast preference.
+- `reduceMotion`
+  - Enables/disables in-app reduced-motion preference.
+- `reduceTransparency`
+  - Enables/disables in-app reduced-transparency preference.
+- `readAloud`
+  - Enables/disables read-aloud capability toggle (used as a feature gate for detail TTS behavior).
+
+### `defaults`
+
+Defines default user preference values applied when a user has no stored accessibility preferences yet.
+
+- `textScaleLevel` (0..6, where `2` is default/normal size)
+- `highContrastEnabled`
+- `reduceMotionEnabled`
+- `reduceTransparencyEnabled`
+- `readAloudEnabled`
+
+## Precedence and Persistence
+
+## Runtime precedence
+
+For motion/transparency/text-scaling-related behavior, effective runtime values are resolved from:
+
+1. system accessibility state (OS),
+2. app-level user preference,
+3. feature availability (`enabledFeatures`).
+
+This means OS accessibility still works even if the app-level preference is off.
+
+## Local persistence
+
+User selections are stored in local storage under:
+
+- `accessibilityUserSettings`
+
+Behavior:
+
+- If stored settings exist, they are reused.
+- If no stored settings exist, `defaults` from `globalSettings` are applied.
+- Changes in the Settings screen and header modal update the same stored state.
+
+## User-Facing Behavior
+
+## Settings screen
+
+- Accessibility appears as a dedicated Settings entry when `enabledFeatures.settingsEntry !== false`.
+- The screen exposes toggles only for features enabled by `enabledFeatures`.
+- A reset action restores values to global defaults (`defaults`).
+
+## Header modal
+
+- Header accessibility icon is shown when `enabledFeatures.headerEntry !== false`.
+- Tapping the icon opens a modal with the same toggle set as the Settings screen.
+- Changes made in the modal are applied immediately and persisted.
+
+## Feature Behavior Summary
+
+- **Text Size (A- / Slider / A+)**
+  - Controls app typography scale level and persists user preference.
+  - Applied to app text components and HTML rendering (`Text`, `HtmlView`).
+- **High Contrast**
+  - Replaces low-contrast text colors in app text rendering with stronger contrast where applicable.
+- **Reduce Motion**
+  - Exposes reduced-motion state in accessibility context.
+  - No app-level animation suppression is wired yet.
+- **Reduce Transparency**
+  - Exposes reduced-transparency state for app-level transparency handling.
+  - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
+- **Read Aloud (Feature Gate)**
+  - Provides a persisted toggle and feature gate.
+  - Detail page TTS playback integration is not wired yet.
+
+## Rollout Checklist
+
+1. Add `settings.accessibility` to your `globalSettings` payload.
+2. Enable only the features you want to release.
+3. Set defaults according to your accessibility policy.
+4. Verify:
+   - Settings entry visibility,
+   - header icon visibility,
+   - persistence after app restart,
+   - expected behavior on iOS and Android.
+
+## Troubleshooting
+
+- Accessibility entry does not appear in Settings:
+  - Check `enabledFeatures.settingsEntry` is not `false`.
+- Header icon does not appear:
+  - Check `enabledFeatures.headerEntry` is not `false`.
+- User settings are not persisted:
+  - Verify local storage availability and inspect `accessibilityUserSettings`.
+- Feature toggle visible but no effect:
+  - Confirm the related feature key in `enabledFeatures` is `true`.
+  - Confirm target components consume accessibility context values.
