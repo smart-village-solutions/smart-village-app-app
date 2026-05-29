@@ -26,6 +26,8 @@
     "test": "./node_modules/.bin/jest",
     "test:accessibility": "./node_modules/.bin/jest --runTestsByPath __tests__/components/AccessibilityPrimitives.test.js --runInBand",
     "test:accessibility:axe": "./node_modules/.bin/jest --runTestsByPath __tests__/components/AccessibilityAxe.test.tsx --runInBand",
+    "a11y:pr:diff": "node scripts/a11y-pr-diff.js",
+    "a11y:pr:check": "node scripts/check-a11y-pr-components.js",
     "a11y:coverage": "node scripts/check-a11y-coverage.js",
     "a11y:coverage:ci": "node scripts/check-a11y-coverage.js --threshold 35",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
