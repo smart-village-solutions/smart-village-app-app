@@ -5,6 +5,7 @@ export * from './volunteer';
 
 export * from './apollo';
 export * from './appInfo';
+export * from './useAccessibilityPreferences';
 export * from './Bookmarks';
 export * from './Chatbot';
 export * from './constructionSites';
