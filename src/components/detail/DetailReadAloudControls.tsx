@@ -1,14 +1,18 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { AccessibilityContext } from '../../AccessibilityProvider';
 import { colors, normalize, texts } from '../../config';
 import { Button } from '../Button';
 import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
+  activeItemId?: string;
+  activeWordRange?: { length: number; start: number } | null;
   canStart: boolean;
   currentItemIndex: number;
+  currentItemText: string;
   isPaused: boolean;
   isSpeaking: boolean;
   onPause: () => void | Promise<void>;
@@ -21,8 +25,11 @@ type Props = {
 };
 
 export const DetailReadAloudControls = ({
+  activeItemId,
+  activeWordRange,
   canStart,
   currentItemIndex,
+  currentItemText,
   isPaused,
   isSpeaking,
   onPause,
@@ -33,6 +40,9 @@ export const DetailReadAloudControls = ({
   speechRate,
   totalItems
 }: Props) => {
+  const [showReadAlongText, setShowReadAlongText] = React.useState(false);
+  const { isHighContrastEnabled } = React.useContext(AccessibilityContext);
+
   if (!canStart || totalItems < 1) return null;
 
   const primaryTitle = isSpeaking
@@ -50,6 +60,37 @@ export const DetailReadAloudControls = ({
     { label: texts.settingsContents.accessibility.readAloud.speedNormal, value: 1.0 },
     { label: texts.settingsContents.accessibility.readAloud.speedFast, value: 1.2 }
   ];
+  const shouldHighlightActiveWord =
+    isHighContrastEnabled &&
+    isSpeaking &&
+    !!activeItemId &&
+    !!activeWordRange &&
+    activeWordRange.length > 0 &&
+    activeWordRange.start >= 0;
+
+  const renderCurrentText = () => {
+    if (!currentItemText?.length) return null;
+
+    if (!shouldHighlightActiveWord || !activeWordRange) {
+      return <RegularText small>{currentItemText}</RegularText>;
+    }
+
+    const safeStart = Math.min(activeWordRange.start, currentItemText.length);
+    const safeEnd = Math.min(safeStart + activeWordRange.length, currentItemText.length);
+    const before = currentItemText.slice(0, safeStart);
+    const active = currentItemText.slice(safeStart, safeEnd);
+    const after = currentItemText.slice(safeEnd);
+
+    return (
+      <RegularText small>
+        {before}
+        <RegularText small style={styles.activeWord}>
+          {active}
+        </RegularText>
+        {after}
+      </RegularText>
+    );
+  };
 
   return (
     <WrapperHorizontal>
@@ -60,6 +101,27 @@ export const DetailReadAloudControls = ({
             {progress}
           </RegularText>
         </WrapperVertical>
+
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => setShowReadAlongText((prev) => !prev)}
+          style={styles.readAlongToggle}
+        >
+          <RegularText small style={styles.readAlongToggleText}>
+            {showReadAlongText
+              ? texts.settingsContents.accessibility.readAloud.hideReadAlong
+              : texts.settingsContents.accessibility.readAloud.showReadAlong}
+          </RegularText>
+        </Pressable>
+
+        {showReadAlongText && !!currentItemText?.length && (
+          <View style={styles.currentTextSection}>
+            <RegularText small style={styles.currentTextTitle}>
+              {texts.settingsContents.accessibility.readAloud.currentTextLabel}
+            </RegularText>
+            {renderCurrentText()}
+          </View>
+        )}
 
         <View style={styles.speedSection}>
           <RegularText small style={styles.speedTitle}>
@@ -114,6 +176,10 @@ export const DetailReadAloudControls = ({
 };
 
 const styles = StyleSheet.create({
+  activeWord: {
+    backgroundColor: colors.darkText,
+    color: colors.lightestText
+  },
   buttonsRow: {
     marginTop: normalize(4)
   },
@@ -125,6 +191,21 @@ const styles = StyleSheet.create({
     marginTop: normalize(8),
     marginBottom: normalize(12),
     padding: normalize(12)
+  },
+  currentTextSection: {
+    marginBottom: normalize(8)
+  },
+  currentTextTitle: {
+    color: colors.placeholder,
+    marginBottom: normalize(4)
+  },
+  readAlongToggle: {
+    alignSelf: 'flex-start',
+    marginBottom: normalize(8)
+  },
+  readAlongToggleText: {
+    color: colors.primary,
+    textDecorationLine: 'underline'
   },
   primaryButton: {
     flex: 1,

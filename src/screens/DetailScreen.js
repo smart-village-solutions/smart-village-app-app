@@ -150,8 +150,11 @@ export const DetailScreen = ({ navigation, route }) => {
     [detailData, query]
   );
   const {
+    activeItemId,
+    activeWordRange,
     canStart: canStartReadAloud,
     currentItemIndex,
+    currentItemText,
     isPaused: isReadAloudPaused,
     isSpeaking: isReadAloudSpeaking,
     pause: pauseReadAloud,
@@ -162,8 +165,11 @@ export const DetailScreen = ({ navigation, route }) => {
   } = useDetailSpeech(detailSpeechItems, isReadAloudEnabled, speechRate);
   const readAloudControls = isReadAloudEnabled ? (
     <DetailReadAloudControls
+      activeItemId={activeItemId}
+      activeWordRange={activeWordRange}
       canStart={canStartReadAloud}
       currentItemIndex={currentItemIndex}
+      currentItemText={currentItemText}
       isPaused={isReadAloudPaused}
       isSpeaking={isReadAloudSpeaking}
       onPause={pauseReadAloud}

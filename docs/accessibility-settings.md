@@ -167,6 +167,8 @@ Behavior:
   - Adds detail page TTS playback controls (start, pause, resume, stop).
   - Displays read-aloud controls directly below the media slider/image area on supported detail screens.
   - Supports in-screen speech speed selection (`0.8x`, `1.0x`, `1.2x`).
+  - The read-along text panel can be toggled on/off by the user.
+  - When **High Contrast** is enabled, the currently spoken word is highlighted in the read-aloud panel (dark background / light text).
   - Reads detail content block-by-block in display order.
   - Uses `expo-speech` and automatically chunks long strings according to `Speech.maxSpeechInputLength`.
   - Stops playback when app goes to background or when leaving the screen.

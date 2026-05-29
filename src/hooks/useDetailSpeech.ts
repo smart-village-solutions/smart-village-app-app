@@ -5,17 +5,24 @@ import * as Speech from 'expo-speech';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 
 type SpeechChunk = {
+  sourceCharStart: number;
   sourceIndex: number;
   text: string;
 };
 
-const splitIntoChunks = (text: string, maxLength: number): string[] => {
+type ChunkPart = {
+  start: number;
+  text: string;
+};
+
+const splitIntoChunks = (text: string, maxLength: number): ChunkPart[] => {
   const normalized = text.replace(/\s+/g, ' ').trim();
   if (!normalized) return [];
-  if (normalized.length <= maxLength) return [normalized];
+  if (normalized.length <= maxLength) return [{ start: 0, text: normalized }];
 
-  const chunks: string[] = [];
+  const chunks: ChunkPart[] = [];
   let remaining = normalized;
+  let consumedChars = 0;
 
   while (remaining.length > maxLength) {
     const rawPart = remaining.slice(0, maxLength);
@@ -31,13 +38,25 @@ const splitIntoChunks = (text: string, maxLength: number): string[] => {
     const boundary = splitIndex > 0 ? splitIndex + 1 : maxLength;
     const part = remaining.slice(0, boundary).trim();
     if (part.length) {
-      chunks.push(part);
+      const relativeStart = remaining.indexOf(part);
+      chunks.push({
+        start: consumedChars + Math.max(relativeStart, 0),
+        text: part
+      });
     }
+    consumedChars += boundary;
     remaining = remaining.slice(boundary).trim();
+    while (normalized.charAt(consumedChars) === ' ') {
+      consumedChars += 1;
+    }
   }
 
   if (remaining.length) {
-    chunks.push(remaining);
+    const relativeStart = normalized.indexOf(remaining, consumedChars);
+    chunks.push({
+      start: Math.max(relativeStart, consumedChars),
+      text: remaining
+    });
   }
 
   return chunks;
@@ -49,7 +68,11 @@ const buildQueue = (items: DetailSpeechItem[]) => {
   return items.reduce<SpeechChunk[]>((acc, item, index) => {
     const chunks = splitIntoChunks(item.text, maxLength);
     chunks.forEach((chunk) => {
-      acc.push({ sourceIndex: index, text: chunk });
+      acc.push({
+        sourceCharStart: chunk.start,
+        sourceIndex: index,
+        text: chunk.text
+      });
     });
     return acc;
   }, []);
@@ -67,6 +90,9 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [activeWordRange, setActiveWordRange] = useState<{ length: number; start: number } | null>(
+    null
+  );
 
   const stop = useCallback(async () => {
     generationRef.current += 1;
@@ -84,6 +110,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     setIsSpeaking(false);
     setIsPaused(false);
     setCurrentItemIndex(0);
+    setActiveWordRange(null);
   }, []);
 
   const playFromIndex = useCallback(
@@ -94,6 +121,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
           setIsSpeaking(false);
           setIsPaused(false);
           setCurrentItemIndex(items.length ? items.length - 1 : 0);
+          setActiveWordRange(null);
         }
         resumeChunkIndexRef.current = 0;
         activeChunkIndexRef.current = 0;
@@ -118,6 +146,24 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
 
         Speech.speak(currentChunk.text, {
           rate: speechRate,
+          onBoundary: (event: { charIndex?: number; charLength?: number }) => {
+            if (generationRef.current !== generation || !mountedRef.current) return;
+
+            const localStart = typeof event?.charIndex === 'number' ? event.charIndex : 0;
+            const candidateLength =
+              typeof event?.charLength === 'number' ? event.charLength : undefined;
+            const fallbackLength = Math.max(
+              currentChunk.text.slice(localStart).search(/\s|$/),
+              1
+            );
+            const localLength =
+              candidateLength && candidateLength > 0 ? candidateLength : fallbackLength;
+
+            setActiveWordRange({
+              length: localLength,
+              start: currentChunk.sourceCharStart + Math.max(localStart, 0)
+            });
+          },
           onDone: () => {
             if (generationRef.current !== generation || pausedByUserRef.current) return;
 
@@ -135,10 +181,12 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
             if (!mountedRef.current) return;
             setIsSpeaking(false);
             setIsPaused(false);
+            setActiveWordRange(null);
           },
           onStart: () => {
             if (generationRef.current !== generation || !mountedRef.current) return;
             setIsSpeaking(true);
+            setActiveWordRange(null);
           }
         });
       };
@@ -183,6 +231,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     setIsSpeaking(false);
     setIsPaused(true);
     setCurrentItemIndex(queue[resumeChunkIndexRef.current]?.sourceIndex || 0);
+    setActiveWordRange(null);
   }, [isSpeaking, queue]);
 
   const resume = useCallback(() => {
@@ -204,6 +253,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
       setIsSpeaking(false);
       setIsPaused(false);
       setCurrentItemIndex(0);
+      setActiveWordRange(null);
       resumeChunkIndexRef.current = 0;
       activeChunkIndexRef.current = 0;
       return;
@@ -258,8 +308,11 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   }, []);
 
   return {
+    activeItemId: items[currentItemIndex]?.id,
+    activeWordRange,
     canStart: enabled && queue.length > 0,
     currentItemIndex,
+    currentItemText: items[currentItemIndex]?.text || '',
     isPaused,
     isSpeaking,
     pause,
