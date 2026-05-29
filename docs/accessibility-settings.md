@@ -97,7 +97,7 @@ Controls which accessibility capabilities are available in the UI and behavior l
 - `reduceTransparency`
   - Enables/disables in-app reduced-transparency preference.
 - `readAloud`
-  - Enables/disables read-aloud capability toggle (used as a feature gate for detail TTS behavior).
+  - Enables/disables read-aloud capability toggle (feature gate for detail and HTML-page TTS behavior).
 
 ### `defaults`
 
@@ -165,6 +165,7 @@ Behavior:
 - **Read Aloud (Feature Gate)**
   - Provides a persisted toggle and feature gate.
   - Adds detail page TTS playback controls (start, pause, resume, stop).
+  - Adds TTS playback controls to static HTML screens (`HtmlScreen`).
   - Displays read-aloud controls directly below the media slider/image area on supported detail screens.
   - Supports in-screen speech speed selection (`0.8x`, `1.0x`, `1.2x`).
   - The read-along text panel can be toggled on/off by the user.
@@ -172,6 +173,53 @@ Behavior:
   - Reads detail content block-by-block in display order.
   - Uses `expo-speech` and automatically chunks long strings according to `Speech.maxSpeechInputLength`.
   - Stops playback when app goes to background or when leaving the screen.
+
+### Read Aloud Coverage (Screen-by-Screen)
+
+When `enabledFeatures.readAloud` is enabled and user preference `readAloudEnabled` is on, TTS controls are available on the following screens:
+
+1. Core detail and HTML foundations
+   - `DetailScreen` (detail content blocks, media/detail layout flow)
+   - `HtmlScreen` (generic static HTML pages)
+   - `NestedInfoScreen` (header HTML section)
+   - `MultiButtonScreen` (per-item HTML intro blocks)
+2. City and onboarding-related informational content
+   - `CitySelectionScreen` (city intro HTML)
+3. Voucher flow
+   - `VoucherHomeScreen` (home intro HTML)
+   - `VoucherLoginScreen` (login intro HTML)
+   - `VoucherDetailScreen` (content block bodies, per block)
+4. Wallet flow
+   - `WalletHomeScreen` (wallet info/help HTML)
+5. Reporting and forms
+   - `DefectReportFormScreen` (intro HTML)
+   - `NoticeboardFormScreen` (form/detail HTML)
+   - `EventSuggestionScreen` (intro HTML)
+   - `WhistleblowFormScreen` (intro HTML)
+   - `WhistleblowCodeScreen` (edit info + code page HTML)
+6. Volunteer flow
+   - `VolunteerIndexScreen` (groups intro HTML)
+   - `VolunteerGroupSearchScreen` (group search intro HTML)
+   - `VolunteerRegisteredScreen` (registration success HTML)
+7. Profile flow
+   - `ProfileSignupScreen` (signup intro HTML)
+   - `ProfileDeleteScreen` (top + bottom informational HTML)
+   - `ProfileEditMailScreen` (top + bottom informational HTML)
+   - `ProfileEditPasswordScreen` (top + bottom informational HTML)
+   - `ProfileUpdateScreen` (top + bottom informational HTML)
+8. AR and SUE flow
+   - `ARInfoScreen` (AR info HTML)
+   - `ArtworkDetailScreen` (artwork description HTML)
+   - `SueDetailScreen` (description + service notice HTML)
+9. Other informational screens
+   - `EncounterHomeScreen` (additional info HTML)
+   - `ConsulRegisteredScreen` (registration success HTML)
+
+Implementation notes:
+
+- All HTML-based integrations use the reusable `ReadAloudContent` component to avoid code duplication.
+- Each placement uses a stable `contentId` so playback/highlight state is isolated per content block.
+- Controls are rendered close to the corresponding content area so users can start/stop playback in context.
 
 ## Rollout Checklist
 
