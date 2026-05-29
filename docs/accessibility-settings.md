@@ -164,7 +164,12 @@ Behavior:
   - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
 - **Read Aloud (Feature Gate)**
   - Provides a persisted toggle and feature gate.
-  - Detail page TTS playback integration is not wired yet.
+  - Adds detail page TTS playback controls (start, pause, resume, stop).
+  - Displays read-aloud controls directly below the media slider/image area on supported detail screens.
+  - Supports in-screen speech speed selection (`0.8x`, `1.0x`, `1.2x`).
+  - Reads detail content block-by-block in display order.
+  - Uses `expo-speech` and automatically chunks long strings according to `Speech.maxSpeechInputLength`.
+  - Stops playback when app goes to background or when leaving the screen.
 
 ## Rollout Checklist
 
