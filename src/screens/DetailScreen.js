@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import {
+  DetailReadAloudControls,
   EmptyMessage,
   EventRecord,
   LoadingContainer,
@@ -17,7 +19,8 @@ import {
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
-import { useRefreshTime } from '../hooks';
+import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
+import { useDetailSpeech, useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
@@ -85,6 +88,7 @@ const useRootRouteByCategory = (details, navigation) => {
 
 /* eslint-disable complexity */
 export const DetailScreen = ({ navigation, route }) => {
+  const { isReadAloudEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { conversations = false } = settings;
@@ -95,6 +99,7 @@ export const DetailScreen = ({ navigation, route }) => {
   const details = route.params?.details ?? {};
 
   const [refreshing, setRefreshing] = useState(false);
+  const [speechRate, setSpeechRate] = useState(1);
 
   if (!query || !queryVariables || !queryVariables.id) return null;
 
@@ -139,6 +144,37 @@ export const DetailScreen = ({ navigation, route }) => {
       enabled: !!refreshTime
     }
   );
+  const detailData = (data && data[query]) || details;
+  const detailSpeechItems = useMemo(
+    () => getDetailSpeechItems({ detail: detailData, query }),
+    [detailData, query]
+  );
+  const {
+    canStart: canStartReadAloud,
+    currentItemIndex,
+    isPaused: isReadAloudPaused,
+    isSpeaking: isReadAloudSpeaking,
+    pause: pauseReadAloud,
+    resume: resumeReadAloud,
+    start: startReadAloud,
+    stop: stopReadAloud,
+    totalItems: readAloudTotalItems
+  } = useDetailSpeech(detailSpeechItems, isReadAloudEnabled, speechRate);
+  const readAloudControls = isReadAloudEnabled ? (
+    <DetailReadAloudControls
+      canStart={canStartReadAloud}
+      currentItemIndex={currentItemIndex}
+      isPaused={isReadAloudPaused}
+      isSpeaking={isReadAloudSpeaking}
+      onPause={pauseReadAloud}
+      onResume={resumeReadAloud}
+      onStart={startReadAloud}
+      onStop={stopReadAloud}
+      onSpeechRateChange={setSpeechRate}
+      speechRate={speechRate}
+      totalItems={readAloudTotalItems}
+    />
+  ) : null;
 
   if (!refreshTime) {
     return (
@@ -180,6 +216,7 @@ export const DetailScreen = ({ navigation, route }) => {
         navigation={navigation}
         fetchPolicy={fetchPolicy}
         refetch={refetch}
+        readAloudControls={readAloudControls}
         route={route}
       />
     );
@@ -203,10 +240,11 @@ export const DetailScreen = ({ navigation, route }) => {
         }
       >
         <Component
-          data={(data && data[query]) || details}
+          data={detailData}
           navigation={navigation}
           fetchPolicy={fetchPolicy}
           refetch={refetch}
+          readAloudControls={readAloudControls}
           route={route}
         />
         <FeedbackFooter />

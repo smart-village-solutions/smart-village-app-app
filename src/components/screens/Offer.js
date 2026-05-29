@@ -21,7 +21,7 @@ import { OperatingCompany } from './OperatingCompany';
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
-export const Offer = ({ data, route }) => {
+export const Offer = ({ data, readAloudControls, route }) => {
   const {
     categories,
     companies,
@@ -65,6 +65,7 @@ export const Offer = ({ data, route }) => {
     <View>
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection mediaContents={mediaContents?.filter(isImage)} />
+      {readAloudControls}
 
       {!!title && <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />}
       {!!dataProviderLogo && (
@@ -137,5 +138,6 @@ export const Offer = ({ data, route }) => {
 Offer.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };
