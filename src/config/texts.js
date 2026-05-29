@@ -12,6 +12,7 @@ export const texts = {
       createNewComment: 'Neuen Kommentar verfassen',
       createNewPost: 'Neuen Beitrag verfassen',
       decreaseQuantity: 'Anzahl verringern',
+      decreaseTextSize: 'Textgröße verkleinern',
       deleteAll: 'Alle löschen',
       deleteComment: 'Kommentar löschen',
       deleteDocument: 'Dokument löschen',
@@ -23,12 +24,14 @@ export const texts = {
       enterActivationCode: 'Aktivierungscode eingeben',
       finishEditing: 'Bearbeitung beenden',
       increaseQuantity: 'Anzahl erhöhen',
+      increaseTextSize: 'Textgröße vergrößern',
       like: 'Gefällt mir',
       listView: 'Listenansicht',
       loadMore: 'Mehr laden',
       loadPreviousComments: 'Frühere Kommentare laden',
       nextDay: 'Nächster Tag',
       openAddress: 'Adresse öffnen',
+      openAccessibilitySettings: 'Barrierefreiheit öffnen',
       openDocument: 'Dokument öffnen',
       openLink: 'Link öffnen',
       openPdf: 'PDF öffnen',
@@ -88,6 +91,11 @@ export const texts = {
       active: 'geöffnet',
       inactive: 'geschlossen'
     }
+  },
+  accessibilityModal: {
+    description:
+      'Passe die Barrierefreiheits-Optionen direkt im aktuellen Bildschirm an. Die Änderungen werden sofort gespeichert.',
+    title: 'Barrierefreiheit'
   },
   appIntro: {
     continue: 'Weiter',
@@ -1223,6 +1231,43 @@ export const texts = {
     edit: 'Kacheln bearbeiten'
   },
   settingsContents: {
+    accessibility: {
+      intro:
+        'Diese Einstellungen erweitern die systemweiten Bedienungshilfen um app-interne Optionen.',
+      reset: 'Auf Standardwerte zurücksetzen',
+      setting: 'Barrierefreiheit',
+      textSize: {
+        title: 'Textgröße',
+        description: 'Passe die Schriftgröße in der App stufenweise an.',
+        sliderLabel: 'Textgrößenregler',
+        decreaseLabel: 'A-',
+        increaseLabel: 'A+',
+        currentValue: 'Aktuelle Größe: {{value}}',
+        levelSmallest: 'Sehr klein',
+        levelSmall: 'Klein',
+        levelDefault: 'Standard',
+        levelLarge: 'Groß',
+        levelLarger: 'Sehr groß',
+        levelLargest: 'Extra groß',
+        levelMaximum: 'Maximum'
+      },
+      highContrast: {
+        title: 'Höherer Kontrast',
+        description: 'Reduziert kontrastarme Textfarben für bessere Lesbarkeit.'
+      },
+      readAloud: {
+        title: 'Lesemodus in Details',
+        description: 'Ermöglicht das Vorlesen von Detailinhalten per Sprachausgabe.'
+      },
+      reduceMotion: {
+        title: 'Bewegung reduzieren',
+        description: 'Verringert Bewegungs- und Übergangseffekte in der App.'
+      },
+      reduceTransparency: {
+        title: 'Transparenz reduzieren',
+        description: 'Verwendet stärker deckende Oberflächen und Hervorhebungen.'
+      }
+    },
     analytics: {
       no: 'Nein',
       onActivate:
@@ -1282,6 +1327,7 @@ export const texts = {
     intro: ''
   },
   settingsTitles: {
+    accessibility: 'Barrierefreiheit',
     analytics: 'Matomo Analytics',
     arListLayouts: {
       alertTitle: 'Hinweis',
