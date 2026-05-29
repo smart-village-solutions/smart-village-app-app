@@ -156,7 +156,9 @@ Behavior:
   - Replaces low-contrast text colors in app text rendering with stronger contrast where applicable.
 - **Reduce Motion**
   - Exposes reduced-motion state in accessibility context.
-  - No app-level animation suppression is wired yet.
+  - Stack navigation transitions are disabled in reduced-motion mode.
+  - Image/media carousel autoplay and pause controls are disabled in reduced-motion mode.
+  - Onboarding terms modal switches to `animationType="none"` in reduced-motion mode.
 - **Reduce Transparency**
   - Exposes reduced-transparency state for app-level transparency handling.
   - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
