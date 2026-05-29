@@ -7,6 +7,7 @@ import {
   HtmlView,
   Label,
   LoadingContainer,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   WhistleblowReportCode,
@@ -110,6 +111,7 @@ export const WhistleblowCodeScreen = ({
 
               {!!editInfo && (
                 <Wrapper>
+                  <ReadAloudContent content={editInfo} contentId="whistleblow-edit-info-content" />
                   {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
                   <HtmlView html={editInfo} />
                 </Wrapper>
@@ -119,6 +121,7 @@ export const WhistleblowCodeScreen = ({
             <>
               {!!html && (
                 <Wrapper>
+                  <ReadAloudContent content={html} contentId="whistleblow-code-content" />
                   {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
                   <HtmlView html={html} />
                 </Wrapper>

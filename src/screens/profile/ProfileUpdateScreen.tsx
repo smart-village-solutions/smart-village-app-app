@@ -14,6 +14,7 @@ import {
   Input,
   LOGIN_MODAL,
   LoadingModal,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -148,6 +149,10 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           {!!dataProfileUpdateScreenTop && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileUpdateScreenTop}
+                contentId="profile-update-top-content"
+              />
               <HtmlView html={dataProfileUpdateScreenTop} />
             </WrapperHorizontal>
           )}
@@ -285,6 +290,10 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           {!!dataProfileUpdateScreenBottom && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileUpdateScreenBottom}
+                contentId="profile-update-bottom-content"
+              />
               <HtmlView html={dataProfileUpdateScreenBottom} />
             </WrapperHorizontal>
           )}

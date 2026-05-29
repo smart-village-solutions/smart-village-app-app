@@ -10,6 +10,7 @@ import {
   HtmlView,
   Input,
   LoadingModal,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -88,6 +89,10 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
 
           {!!dataProfileEditPasswordScreenTop && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileEditPasswordScreenTop}
+                contentId="profile-edit-password-top-content"
+              />
               <HtmlView html={dataProfileEditPasswordScreenTop} />
             </WrapperHorizontal>
           )}
@@ -113,6 +118,10 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
 
           {!!dataProfileEditPasswordScreenBottom && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileEditPasswordScreenBottom}
+                contentId="profile-edit-password-bottom-content"
+              />
               <HtmlView html={dataProfileEditPasswordScreenBottom} />
             </WrapperHorizontal>
           )}

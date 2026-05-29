@@ -13,6 +13,7 @@ import {
   DefaultKeyboardAvoidingView,
   HtmlView,
   LoadingContainer,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   WhistleblowReportForm,
@@ -92,6 +93,7 @@ export const WhistleblowFormScreen = ({
         >
           {!!html && (
             <Wrapper>
+              <ReadAloudContent content={html} contentId="whistleblow-form-content" />
               {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
               <HtmlView html={html} />
             </Wrapper>

@@ -10,6 +10,7 @@ import {
   HtmlView,
   Input,
   LoadingModal,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -122,6 +123,10 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 
           {!!dataProfileEditMailScreenTop && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileEditMailScreenTop}
+                contentId="profile-edit-mail-top-content"
+              />
               <HtmlView html={dataProfileEditMailScreenTop} />
             </WrapperHorizontal>
           )}
@@ -190,6 +195,10 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 
           {!!dataProfileEditMailScreenBottom && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileEditMailScreenBottom}
+                contentId="profile-edit-mail-bottom-content"
+              />
               <HtmlView html={dataProfileEditMailScreenBottom} />
             </WrapperHorizontal>
           )}

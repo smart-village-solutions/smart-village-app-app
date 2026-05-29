@@ -10,6 +10,7 @@ import {
   DefaultKeyboardAvoidingView,
   HtmlView,
   LoadingModal,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -115,6 +116,10 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
 
           {!!dataProfileDeleteScreenTop && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileDeleteScreenTop}
+                contentId="profile-delete-top-content"
+              />
               <HtmlView html={dataProfileDeleteScreenTop} />
             </WrapperHorizontal>
           )}
@@ -137,6 +142,10 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
 
           {!!dataProfileDeleteScreenBottom && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileDeleteScreenBottom}
+                contentId="profile-delete-bottom-content"
+              />
               <HtmlView html={dataProfileDeleteScreenBottom} />
             </WrapperHorizontal>
           )}

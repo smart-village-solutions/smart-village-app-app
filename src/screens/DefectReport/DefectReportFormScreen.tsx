@@ -10,6 +10,7 @@ import {
   DefectReportLocationForm,
   HtmlView,
   LoadingContainer,
+  ReadAloudContent,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
@@ -97,6 +98,7 @@ export const DefectReportFormScreen = ({
         >
           {!!html && (
             <Wrapper>
+              <ReadAloudContent content={html} contentId="defect-report-intro-content" />
               {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
               <HtmlView html={html} />
             </Wrapper>
