@@ -1,0 +1,415 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DetailReadAloudControls renders snapshot with default state 1`] = `
+<View>
+  <View
+    style={
+      {
+        "backgroundColor": "#ffffff",
+        "borderColor": "#cccccc",
+        "borderRadius": 8,
+        "borderWidth": 1,
+        "marginBottom": 12,
+        "marginTop": 8,
+        "padding": 12,
+      }
+    }
+  >
+    <View>
+      <Text
+        small={true}
+      >
+        Lesemodus in Details
+      </Text>
+      <Text
+        small={true}
+        style={
+          {
+            "color": "#999999",
+          }
+        }
+      >
+        Abschnitt 1 von 3
+      </Text>
+    </View>
+    <View
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": false,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "alignSelf": "flex-start",
+          "marginBottom": 8,
+        }
+      }
+    >
+      <Text
+        small={true}
+        style={
+          {
+            "color": "#2288cc",
+            "textDecorationLine": "underline",
+          }
+        }
+      >
+        Mitlese-Text anzeigen
+      </Text>
+    </View>
+    <View
+      style={
+        {
+          "marginBottom": 8,
+          "marginTop": 8,
+        }
+      }
+    >
+      <Text
+        small={true}
+        style={
+          {
+            "color": "#999999",
+          }
+        }
+      >
+        Vorlesegeschwindigkeit
+      </Text>
+      <View
+        style={
+          {
+            "marginTop": 6,
+            "width": "100%",
+          }
+        }
+      >
+        <View
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": false,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderColor": "#cccccc",
+                "borderRadius": 14,
+                "borderWidth": 1,
+                "flex": 1,
+                "justifyContent": "center",
+                "minWidth": 0,
+                "paddingHorizontal": 8,
+                "paddingVertical": 6,
+              },
+              {
+                "marginRight": 8,
+              },
+              false,
+            ]
+          }
+        >
+          <Text
+            ignoreTextScale={true}
+            small={true}
+            style={
+              [
+                {
+                  "color": "#111111",
+                },
+                false,
+              ]
+            }
+          >
+            0.8x
+          </Text>
+        </View>
+        <View
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": true,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderColor": "#cccccc",
+                "borderRadius": 14,
+                "borderWidth": 1,
+                "flex": 1,
+                "justifyContent": "center",
+                "minWidth": 0,
+                "paddingHorizontal": 8,
+                "paddingVertical": 6,
+              },
+              {
+                "marginRight": 8,
+              },
+              {
+                "backgroundColor": "#2288cc",
+                "borderColor": "#2288cc",
+              },
+            ]
+          }
+        >
+          <Text
+            ignoreTextScale={true}
+            small={true}
+            style={
+              [
+                {
+                  "color": "#111111",
+                },
+                {
+                  "color": "#ffffff",
+                },
+              ]
+            }
+          >
+            1.0x
+          </Text>
+        </View>
+        <View
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": false,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderColor": "#cccccc",
+                "borderRadius": 14,
+                "borderWidth": 1,
+                "flex": 1,
+                "justifyContent": "center",
+                "minWidth": 0,
+                "paddingHorizontal": 8,
+                "paddingVertical": 6,
+              },
+              false,
+              false,
+            ]
+          }
+        >
+          <Text
+            ignoreTextScale={true}
+            small={true}
+            style={
+              [
+                {
+                  "color": "#111111",
+                },
+                false,
+              ]
+            }
+          >
+            1.2x
+          </Text>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "marginTop": 4,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "flex": 1,
+            "marginRight": 8,
+          }
+        }
+      >
+        <View
+          accessibilityLabel="Vorlesen starten"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": false,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+        >
+          <Text>
+            Vorlesen starten
+          </Text>
+        </View>
+      </View>
+      <View
+        style={
+          {
+            "flex": 1,
+          }
+        }
+      >
+        <View
+          accessibilityLabel="Vorlesen stoppen"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": true,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+        >
+          <Text>
+            Vorlesen stoppen
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;
