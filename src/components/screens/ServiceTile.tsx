@@ -4,7 +4,7 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, device, Icon, IconSet, IconUrl, normalize } from '../../config';
+import { colors, consts, Icon, IconSet, IconUrl, normalize } from '../../config';
 import { normalizeStyleValues } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
@@ -37,12 +37,44 @@ export type TServiceTile = {
   title: string;
 };
 
+const resolveColumns = ({
+  item,
+  layoutColumns,
+  orientation
+}: {
+  item: TServiceTile;
+  layoutColumns: number;
+  orientation: string;
+}) => {
+  const itemColumns =
+    orientation === 'landscape' ? item?.numberOfTiles?.landscape : item?.numberOfTiles?.portrait;
+
+  if (typeof itemColumns === 'number' && itemColumns > 0) return itemColumns;
+
+  return layoutColumns;
+};
+
+const omitTileDimensionOverrides = (style: { [key: string]: any } = {}) => {
+  const sanitizedStyle = { ...style };
+
+  delete sanitizedStyle.width;
+  delete sanitizedStyle.height;
+  delete sanitizedStyle.minWidth;
+  delete sanitizedStyle.minHeight;
+  delete sanitizedStyle.maxWidth;
+  delete sanitizedStyle.maxHeight;
+  delete sanitizedStyle.aspectRatio;
+
+  return sanitizedStyle;
+};
+
 /* eslint-disable complexity */
 export const ServiceTile = ({
   draggableId,
   hasDiagonalGradientBackground = false,
   isEditMode = false,
   item,
+  layoutColumns = 3,
   onToggleVisibility,
   serviceTiles,
   shouldAddMargin = false,
@@ -52,6 +84,7 @@ export const ServiceTile = ({
   hasDiagonalGradientBackground?: boolean;
   isEditMode?: boolean;
   item: TServiceTile;
+  layoutColumns?: number;
   onToggleVisibility: (
     toggleableId: string,
     isVisible: boolean,
@@ -64,13 +97,14 @@ export const ServiceTile = ({
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
+  const columns = resolveColumns({ item, layoutColumns, orientation });
   const [isVisible, setIsVisible] = useState(item.isVisible ?? true);
   const onPress = useCallback(
     () =>
       isEditMode
         ? onToggleVisibility(draggableId, isVisible, setIsVisible)
         : navigation.push(item.routeName, item.params),
-    [isEditMode, onToggleVisibility, draggableId, isVisible, item]
+    [isEditMode, onToggleVisibility, draggableId, isVisible, item, navigation]
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
   const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;
@@ -90,21 +124,21 @@ export const ServiceTile = ({
   const normalizedIconStyle = normalizeStyleValues(
     Object.keys(itemIconStyle).length ? itemIconStyle : iconStyle
   );
-  const normalizedTileStyle = normalizeStyleValues(
-    Object.keys(itemTileStyle).length ? itemTileStyle : tileStyle
+  const normalizedTileStyle = omitTileDimensionOverrides(
+    normalizeStyleValues(Object.keys(itemTileStyle).length ? itemTileStyle : tileStyle)
   );
 
   return (
     <ServiceBox
       bigTile={!!item.tile}
-      dimensions={dimensions}
+      columns={columns}
       hasTileStyle={hasTileStyle}
-      numberOfTiles={item?.numberOfTiles}
       orientation={orientation}
       style={[
         normalizedTileStyle,
         isEditMode && styles.editableTile,
-        !isEditMode && shouldAddMargin && styles.marginLeft
+        !isEditMode && shouldAddMargin && styles.marginLeft,
+        styles.squareTile
       ]}
     >
       <TouchableOpacity
@@ -164,8 +198,8 @@ export const ServiceTile = ({
                 },
                 !!item.tile &&
                   stylesWithProps({
-                    item,
-                    orientation,
+                    columns,
+                    dimensions,
                     safeAreaInsets,
                     tileSizeFactor
                   }).bigTile
@@ -189,8 +223,8 @@ export const ServiceTile = ({
                 normalizedFontStyle,
                 !!item.tile &&
                   stylesWithProps({
-                    item,
-                    orientation,
+                    columns,
+                    dimensions,
                     safeAreaInsets,
                     tileSizeFactor
                   }).bigTileTitle
@@ -221,6 +255,9 @@ const styles = StyleSheet.create({
   marginLeft: {
     marginLeft: normalize(8)
   },
+  squareTile: {
+    aspectRatio: 1
+  },
   serviceIcon: {
     alignSelf: 'center',
     paddingVertical: normalize(7.5)
@@ -248,35 +285,34 @@ const styles = StyleSheet.create({
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
-  item,
-  orientation,
+  columns,
+  dimensions,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
-  item: TServiceTile;
-  orientation: string;
+  columns: number;
+  dimensions: { width: number; height: number };
   safeAreaInsets: EdgeInsets;
   tileSizeFactor?: number;
 }) => {
   const containerPadding = normalize(14);
-  const { numberOfTiles: { landscape = 5, portrait = 3 } = {} } = item;
-  const numberOfTiles = orientation === 'landscape' ? landscape : portrait;
-  const deviceHeight = device.height - safeAreaInsets.left - safeAreaInsets.right;
+  const safeColumns = Math.max(1, columns);
+  const availableWidth =
+    dimensions.width - safeAreaInsets.left - safeAreaInsets.right - 2 * containerPadding;
 
-  // calculate tile sizes based on device orientation, safe area insets and padding
-  const tileSize =
-    ((orientation === 'landscape' ? deviceHeight : device.width) - 2 * containerPadding) /
-    numberOfTiles;
+  // calculate tile sizes based on live window dimensions, safe area insets and padding
+  const tileSize = Math.max(0, availableWidth) / safeColumns;
+  const bigTileSize = Math.min(tileSize, (tileSize - containerPadding / 2) * tileSizeFactor);
 
   return StyleSheet.create({
     bigTile: {
-      height: tileSize * tileSizeFactor,
+      height: bigTileSize,
       marginBottom: 0,
-      width: tileSize - containerPadding / 2
+      width: bigTileSize
     },
     bigTileTitle: {
       marginBottom: 0,
-      width: tileSize - containerPadding / 2
+      width: bigTileSize
     }
   });
 };
