@@ -6,17 +6,19 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { device, normalize } from '../../config';
+import { normalize } from '../../config';
+import { getGridContentHeight } from '../../helpers/draggableGrid';
 import { OrientationContext } from '../../OrientationProvider';
 
 import { DraggableItem, Positions } from './DraggableItem';
 
 type Props = {
   children: ReactElement<{ draggableId: string; draggableKey: string }>[];
+  columns?: number;
   onDragEnd: (diff: Positions) => void;
 };
 
-export const DraggableGrid = ({ children, onDragEnd }: Props) => {
+export const DraggableGrid = ({ children, columns = 3, onDragEnd }: Props) => {
   const scrollY = useSharedValue(0);
   const scrollView = useAnimatedRef<Animated.ScrollView>();
   const positions = useSharedValue<Positions>(
@@ -31,24 +33,23 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
     }
   });
 
-  const { orientation } = useContext(OrientationContext);
+  const { dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
 
   const containerPadding = normalize(14);
-  const numberOfTiles = orientation === 'landscape' ? 5 : 3;
-  const deviceHeight = device.height - safeAreaInsets.left - safeAreaInsets.right;
+  const numberOfTiles = Math.max(1, columns);
+  const availableWidth =
+    dimensions.width - safeAreaInsets.left - safeAreaInsets.right - 2 * containerPadding;
 
-  // calculate tile sizes based on device orientation, safe are insets and padding
-  const tileSize =
-    ((orientation === 'landscape' ? deviceHeight : device.width) - 2 * containerPadding) /
-    numberOfTiles;
+  // calculate tile sizes based on live window dimensions, safe area insets and padding
+  const tileSize = Math.max(0, availableWidth) / numberOfTiles;
 
   return (
     <Animated.ScrollView
       onScroll={onScroll}
       ref={scrollView}
       contentContainerStyle={{
-        height: Math.ceil(children.length / numberOfTiles) * tileSize,
+        height: getGridContentHeight(children.length, numberOfTiles, tileSize),
         marginHorizontal: normalize(14)
       }}
       showsVerticalScrollIndicator={false}
