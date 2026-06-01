@@ -41,7 +41,8 @@ Accessibility configuration is read from:
 
 - `globalSettings.settings.accessibility`
 
-If no configuration is provided, all accessibility features are enabled by default.
+If no configuration is provided, all app-level accessibility features are disabled by default.
+Enable each feature explicitly in `globalSettings.settings.accessibility.enabledFeatures`.
 
 ## Global Configuration Schema
 
@@ -52,17 +53,20 @@ Use the following JSON shape in `globalSettings`:
   "settings": {
     "accessibility": {
       "enabledFeatures": {
-        "settingsEntry": true,
-        "headerEntry": true,
-        "textScaling": true,
-        "boldText": true,
-        "highContrast": true,
-        "reduceMotion": true,
-        "reduceTransparency": true,
-        "readAloud": true
+        "settingsEntry": false,
+        "headerEntry": false,
+        "textScaling": false,
+        "boldText": false,
+        "isGrayscaleEnabled": false,
+        "highContrast": false,
+        "reduceMotion": false,
+        "reduceTransparency": false,
+        "readAloud": false
       },
       "defaults": {
         "textScaleLevel": 2,
+        "boldTextEnabled": false,
+        "isGrayscaleEnabled": false,
         "highContrastEnabled": false,
         "reduceMotionEnabled": false,
         "reduceTransparencyEnabled": false,
@@ -78,18 +82,22 @@ Use the following JSON shape in `globalSettings`:
 ### `enabledFeatures`
 
 Controls which accessibility capabilities are available in the UI and behavior layer.
+Any omitted key in `enabledFeatures` defaults to `false`.
 
 - `settingsEntry`
   - `true`: show Accessibility section in the Settings screen.
   - `false`: hide Accessibility section from Settings.
+  - If omitted, defaults to `false`.
 - `headerEntry`
   - `true`: show accessibility icon in screen headers.
   - `false`: hide header accessibility icon and modal entry.
+  - If omitted, defaults to `false`.
 - `textScaling`
   - Enables/disables text size controls (`A-`, slider, `A+`) in Settings and Header modal.
-  - `boldText` is still read as a backward-compatible alias when `textScaling` is not provided.
 - `boldText`
-  - Backward-compatible alias for `textScaling`.
+  - Enables/disables an in-app bold text toggle.
+- `isGrayscaleEnabled`
+  - Enables/disables the in-app grayscale preference and filter behavior.
 - `highContrast`
   - Enables/disables the in-app higher-contrast preference.
 - `reduceMotion`
@@ -104,6 +112,8 @@ Controls which accessibility capabilities are available in the UI and behavior l
 Defines default user preference values applied when a user has no stored accessibility preferences yet.
 
 - `textScaleLevel` (0..6, where `2` is default/normal size)
+- `boldTextEnabled`
+- `isGrayscaleEnabled`
 - `highContrastEnabled`
 - `reduceMotionEnabled`
 - `reduceTransparencyEnabled`
@@ -113,7 +123,7 @@ Defines default user preference values applied when a user has no stored accessi
 
 ## Runtime precedence
 
-For motion/transparency/text-scaling-related behavior, effective runtime values are resolved from:
+For bold text, motion, transparency, and text-scaling-related behavior, effective runtime values are resolved from:
 
 1. system accessibility state (OS),
 2. app-level user preference,
@@ -137,13 +147,13 @@ Behavior:
 
 ## Settings screen
 
-- Accessibility appears as a dedicated Settings entry when `enabledFeatures.settingsEntry !== false`.
+- Accessibility appears as a dedicated Settings entry when `enabledFeatures.settingsEntry === true`.
 - The screen exposes toggles only for features enabled by `enabledFeatures`.
 - A reset action restores values to global defaults (`defaults`).
 
 ## Header modal
 
-- Header accessibility icon is shown when `enabledFeatures.headerEntry !== false`.
+- Header accessibility icon is shown when `enabledFeatures.headerEntry === true`.
 - Tapping the icon opens a modal with the same toggle set as the Settings screen.
 - Changes made in the modal are applied immediately and persisted.
 
@@ -152,8 +162,13 @@ Behavior:
 - **Text Size (A- / Slider / A+)**
   - Controls app typography scale level and persists user preference.
   - Applied to app text components and HTML rendering (`Text`, `HtmlView`).
+- **Bold Text**
+  - Applies app-level bold text rendering.
+  - System-level bold text (OS accessibility) continues to take precedence when active.
 - **High Contrast**
   - Replaces low-contrast text colors in app text rendering with stronger contrast where applicable.
+- **Grayscale**
+  - Applies app-wide grayscale rendering when enabled.
 - **Reduce Motion**
   - Exposes reduced-motion state in accessibility context.
   - Stack navigation transitions are disabled in reduced-motion mode.
@@ -235,9 +250,9 @@ Implementation notes:
 ## Troubleshooting
 
 - Accessibility entry does not appear in Settings:
-  - Check `enabledFeatures.settingsEntry` is not `false`.
+  - Check `enabledFeatures.settingsEntry` is explicitly set to `true`.
 - Header icon does not appear:
-  - Check `enabledFeatures.headerEntry` is not `false`.
+  - Check `enabledFeatures.headerEntry` is explicitly set to `true`.
 - User settings are not persisted:
   - Verify local storage availability and inspect `accessibilityUserSettings`.
 - Feature toggle visible but no effect:
