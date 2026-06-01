@@ -53,7 +53,16 @@ export const SectionHeader = ({
   return (
     <>
       <TitleContainer flat={flat} style={containerStyle}>
-        {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+        {onPress ? (
+          <Touchable
+            accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
+            onPress={onPress}
+          >
+            {innerComponent}
+          </Touchable>
+        ) : (
+          innerComponent
+        )}
       </TitleContainer>
       {!flat && device.platform === 'ios' && <TitleShadow />}
     </>

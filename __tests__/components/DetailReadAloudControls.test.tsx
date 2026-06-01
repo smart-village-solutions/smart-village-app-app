@@ -22,6 +22,11 @@ jest.mock('../../src/config', () => ({
     primary: '#2288cc',
     surface: '#ffffff'
   },
+  consts: {
+    a11yLabel: {
+      button: '(Taste)'
+    }
+  },
   normalize: (value: number) => value,
   texts: {
     settingsContents: {

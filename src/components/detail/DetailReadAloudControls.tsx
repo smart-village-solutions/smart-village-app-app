@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
-import { colors, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { Button } from '../Button';
 import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
@@ -67,6 +67,9 @@ export const DetailReadAloudControls = ({
     !!activeWordRange &&
     activeWordRange.length > 0 &&
     activeWordRange.start >= 0;
+  const readAlongToggleTitle = showReadAlongText
+    ? texts.settingsContents.accessibility.readAloud.hideReadAlong
+    : texts.settingsContents.accessibility.readAloud.showReadAlong;
 
   const renderCurrentText = () => {
     if (!currentItemText?.length) return null;
@@ -103,15 +106,14 @@ export const DetailReadAloudControls = ({
         </WrapperVertical>
 
         <Pressable
+          accessibilityLabel={`${readAlongToggleTitle} ${consts.a11yLabel.button}`}
           accessibilityRole="button"
           accessibilityState={{ expanded: showReadAlongText }}
           onPress={() => setShowReadAlongText((prev) => !prev)}
           style={styles.readAlongToggle}
         >
           <RegularText small style={styles.readAlongToggleText}>
-            {showReadAlongText
-              ? texts.settingsContents.accessibility.readAloud.hideReadAlong
-              : texts.settingsContents.accessibility.readAloud.showReadAlong}
+            {readAlongToggleTitle}
           </RegularText>
         </Pressable>
 
@@ -135,6 +137,7 @@ export const DetailReadAloudControls = ({
 
               return (
                 <Pressable
+                  accessibilityLabel={`${option.label} ${consts.a11yLabel.button}`}
                   accessibilityRole="button"
                   accessibilityState={{ selected: isSelected }}
                   key={option.value}

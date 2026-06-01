@@ -33,6 +33,7 @@ exports[`DetailReadAloudControls renders snapshot with default state 1`] = `
       </Text>
     </View>
     <View
+      accessibilityLabel="Mitlese-Text anzeigen (Taste)"
       accessibilityRole="button"
       accessibilityState={
         {
@@ -109,6 +110,7 @@ exports[`DetailReadAloudControls renders snapshot with default state 1`] = `
         }
       >
         <View
+          accessibilityLabel="0.8x (Taste)"
           accessibilityRole="button"
           accessibilityState={
             {
@@ -175,6 +177,7 @@ exports[`DetailReadAloudControls renders snapshot with default state 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="1.0x (Taste)"
           accessibilityRole="button"
           accessibilityState={
             {
@@ -246,6 +249,7 @@ exports[`DetailReadAloudControls renders snapshot with default state 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="1.2x (Taste)"
           accessibilityRole="button"
           accessibilityState={
             {
