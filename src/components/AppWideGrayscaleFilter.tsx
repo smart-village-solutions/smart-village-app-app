@@ -14,6 +14,9 @@ export const AppWideGrayscaleFilter = ({
     return <View style={styles.flex}>{children}</View>;
   }
 
+  // Android supports grayscale via style filter, but iOS does not.
+  // On iOS we use a saturation blend overlay in an isolated stacking context
+  // and keep pointer events disabled so touch interaction passes through.
   if (Platform.OS === 'android') {
     return <View style={[styles.flex, styles.androidGrayscale]}>{children}</View>;
   }

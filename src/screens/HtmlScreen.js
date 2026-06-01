@@ -57,7 +57,7 @@ export const HtmlScreen = ({ navigation, route }) => {
     return <LoadingSpinner loading />;
   }
 
-  if (!data) return null;
+  if (data === null || data === undefined) return null;
 
   return (
     <SafeAreaViewFlex>

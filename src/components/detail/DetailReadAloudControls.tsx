@@ -104,6 +104,7 @@ export const DetailReadAloudControls = ({
 
         <Pressable
           accessibilityRole="button"
+          accessibilityState={{ expanded: showReadAlongText }}
           onPress={() => setShowReadAlongText((prev) => !prev)}
           style={styles.readAlongToggle}
         >
@@ -135,6 +136,7 @@ export const DetailReadAloudControls = ({
               return (
                 <Pressable
                   accessibilityRole="button"
+                  accessibilityState={{ selected: isSelected }}
                   key={option.value}
                   onPress={() => onSpeechRateChange(option.value)}
                   style={[

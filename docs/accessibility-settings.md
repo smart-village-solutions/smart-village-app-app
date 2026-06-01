@@ -184,6 +184,7 @@ Behavior:
   - Displays read-aloud controls directly below the media slider/image area on supported detail screens.
   - Supports in-screen speech speed selection (`0.8x`, `1.0x`, `1.2x`).
   - The read-along text panel can be toggled on/off by the user.
+  - Read-along panel availability is independent from High Contrast.
   - When **High Contrast** is enabled, the currently spoken word is highlighted in the read-aloud panel (dark background / light text).
   - Reads detail content block-by-block in display order.
   - Uses `expo-speech` and automatically chunks long strings according to `Speech.maxSpeechInputLength`.
