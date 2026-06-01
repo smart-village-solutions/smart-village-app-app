@@ -1,63 +1,94 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
-import { TServiceTile, umlautSwitcher } from '../components';
-import { Positions } from '../components/screens/DraggableItem';
-import { addToStore, readFromStore } from '../helpers';
+import type { Positions } from '../components/screens/DraggableItem';
+import type { TServiceTile } from '../components/screens/ServiceTile';
+import { umlautSwitcher } from '../helpers/umlautSwitcher';
+import { addToStore, readFromStore } from '../helpers/storageHelper';
 
 const PERSONALIZED_TILES_SETTINGS = 'PERSONALIZED_TILES_SETTINGS';
 
+type PersonalizedTilesSettings = {
+  sorter?: Positions;
+  toggles?: Positions;
+};
+
+const getTileId = (item: TServiceTile) =>
+  umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel);
+
+export const applyPersonalizedTilesSettings = ({
+  data,
+  isEditMode = false,
+  settings
+}: {
+  data: TServiceTile[];
+  isEditMode?: boolean;
+  settings?: PersonalizedTilesSettings;
+}) => {
+  const toggles = settings?.toggles;
+  const sorter = settings?.sorter;
+  const orderMap = new Map<string, number>();
+
+  data.forEach((item, index) => {
+    const id = getTileId(item);
+
+    if (id) {
+      orderMap.set(id, index);
+    }
+  });
+
+  let personalizedTiles = [...data];
+
+  if (sorter) {
+    personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
+      const idA = getTileId(a);
+      const idB = getTileId(b);
+
+      const sortA = idA && typeof sorter[idA] === 'number' ? sorter[idA] : orderMap.get(idA) ?? 0;
+      const sortB = idB && typeof sorter[idB] === 'number' ? sorter[idB] : orderMap.get(idB) ?? 0;
+
+      return sortA - sortB;
+    });
+  }
+
+  if (!toggles) {
+    return personalizedTiles;
+  }
+
+  const isVisible = (item: TServiceTile) => {
+    const id = getTileId(item);
+    const toggleValue = id ? toggles[id] : undefined;
+
+    return typeof toggleValue === 'number' ? toggleValue !== 0 : true;
+  };
+
+  if (isEditMode) {
+    return personalizedTiles.map((item: TServiceTile) => ({
+      ...item,
+      isVisible: isVisible(item)
+    }));
+  }
+
+  return personalizedTiles.filter(isVisible);
+};
+
 export const usePersonalizedTiles = (
   isPersonalizable = false,
-  data: any,
+  data: TServiceTile[],
   isEditMode = false,
   staticJsonName: string
 ) => {
   const [isLoading, setIsLoading] = useState(isPersonalizable);
-  const [tiles, setTiles] = useState<any[]>(!isPersonalizable ? data : []);
+  const [tiles, setTiles] = useState<TServiceTile[]>(!isPersonalizable ? data : []);
 
   const getPersonalizedTiles = useCallback(async () => {
     setIsLoading(true);
     const storedPersonalizedTilesSettings = await readFromStore(PERSONALIZED_TILES_SETTINGS);
-    const toggles = storedPersonalizedTilesSettings?.[staticJsonName]?.toggles;
-    const sorter = storedPersonalizedTilesSettings?.[staticJsonName]?.sorter;
-
-    let personalizedTiles = [...data];
-
-    if (sorter) {
-      personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
-        const sortTitles = {
-          a: umlautSwitcher(a.title) || umlautSwitcher(a.accessibilityLabel),
-          b: umlautSwitcher(b.title) || umlautSwitcher(b.accessibilityLabel)
-        };
-        const sortA =
-          sorter?.[sortTitles.a] ??
-          personalizedTiles.findIndex((d: TServiceTile) => d.title === a.title);
-        const sortB =
-          sorter?.[sortTitles.b] ??
-          personalizedTiles.findIndex((d: TServiceTile) => d.title === b.title);
-
-        return sortA - sortB;
-      });
-    }
-
-    if (toggles) {
-      // in edit mode we want to show all tiles but with visual difference.
-      // if we are not in edit mode we want to filter out tiles entirely.
-      // if there is no entry in `toggles`, it means that the tile is new or never toggled, so we
-      // want to show it.
-      const isVisible = (item: TServiceTile) =>
-        toggles[umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)] ?? 1;
-
-      if (isEditMode) {
-        personalizedTiles = personalizedTiles.map((item: TServiceTile) => ({
-          ...item,
-          isVisible: isVisible(item)
-        }));
-      } else {
-        personalizedTiles = personalizedTiles.filter(isVisible);
-      }
-    }
+    const personalizedTiles = applyPersonalizedTilesSettings({
+      data,
+      isEditMode,
+      settings: storedPersonalizedTilesSettings?.[staticJsonName]
+    });
 
     setTiles(personalizedTiles);
     setIsLoading(false);
@@ -110,16 +141,16 @@ export const usePersonalizedTiles = (
       setIsVisible(newVisibility);
       storePersonalizedTilesSettings({ personalizedTilesToggle: visibility });
     },
-    [staticJsonName]
+    [storePersonalizedTilesSettings]
   );
 
   const onDragEnd = useCallback(
     (positions: Positions) =>
       storePersonalizedTilesSettings({ personalizedTilesSorter: positions }),
-    [staticJsonName]
+    [storePersonalizedTilesSettings]
   );
 
-  const refreshTiles = useCallback(getPersonalizedTiles, [getPersonalizedTiles]);
+  const refreshTiles = useCallback(() => getPersonalizedTiles(), [getPersonalizedTiles]);
 
   useFocusEffect(
     useCallback(() => {
