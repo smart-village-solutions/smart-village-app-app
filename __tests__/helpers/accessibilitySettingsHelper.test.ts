@@ -12,7 +12,7 @@ import {
 
 describe('accessibilitySettingsHelper', () => {
   it('returns helper defaults when accessibility config is missing', () => {
-    const resolved = resolveAccessibilityConfiguration(undefined);
+    const resolved = resolveAccessibilityConfiguration();
 
     expect(resolved.features).toEqual(DEFAULT_ACCESSIBILITY_FEATURES);
     expect(resolved.defaults).toEqual(DEFAULT_ACCESSIBILITY_USER_SETTINGS);

@@ -52,16 +52,15 @@ jest.mock('../../src/config', () => ({
 }));
 
 jest.mock('../../src/AccessibilityProvider', () => {
-  const React = require('react');
+  const { createContext } = require('react');
   return {
-    AccessibilityContext: React.createContext({
+    AccessibilityContext: createContext({
       isHighContrastEnabled: false
     })
   };
 });
 
 jest.mock('../../src/components/Button', () => {
-  const React = require('react');
   const { Pressable, Text } = require('react-native');
 
   return {
@@ -80,7 +79,6 @@ jest.mock('../../src/components/Button', () => {
 });
 
 jest.mock('../../src/components/Text', () => {
-  const React = require('react');
   const { Text } = require('react-native');
 
   return {
@@ -89,7 +87,6 @@ jest.mock('../../src/components/Text', () => {
 });
 
 jest.mock('../../src/components/Wrapper', () => {
-  const React = require('react');
   const { View } = require('react-native');
 
   return {

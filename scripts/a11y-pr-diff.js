@@ -13,7 +13,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execFileSync } = require('child_process');
+const { execFileSync } = require('node:child_process');
 
 const EXTENSIONS = new Set(['.js', '.jsx', '.ts', '.tsx']);
 const TRUSTED_GIT_EXECUTABLE = '/usr/bin/git';
@@ -72,11 +72,17 @@ const validateGitRef = (refName, value) => {
     throw new Error(`Invalid git ref for ${refName}: value is empty.`);
   }
 
-  if (!GIT_REF_REGEX.test(value)) {
+  const normalizedValue = value.trim();
+
+  if (normalizedValue.startsWith('-')) {
     throw new Error(`Invalid git ref for ${refName}: "${value}"`);
   }
 
-  return value;
+  if (!GIT_REF_REGEX.test(normalizedValue)) {
+    throw new Error(`Invalid git ref for ${refName}: "${value}"`);
+  }
+
+  return normalizedValue;
 };
 
 const runDiff = () => {
@@ -89,7 +95,7 @@ const runDiff = () => {
 
   const output = execFileSync(
     TRUSTED_GIT_EXECUTABLE,
-    ['diff', '--name-only', '--diff-filter=ACMRTUXB', `${safeBase}...${safeHead}`],
+    ['diff', '--name-only', '--diff-filter=ACMRTUXB', `${safeBase}...${safeHead}`, '--'],
     { encoding: 'utf8' }
   );
   return output

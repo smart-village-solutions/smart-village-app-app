@@ -81,6 +81,38 @@ export const normalizeTextScaleLevel = (value: unknown) => {
 export const getTextScaleMultiplier = (textScaleLevel: number) =>
   ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS[normalizeTextScaleLevel(textScaleLevel)];
 
+type AccessibilityDefaultsInput = Partial<AccessibilityUserSettings> & {
+  boldText?: unknown;
+  textScaling?: unknown;
+};
+
+const getBooleanSetting = (value: unknown, fallback: boolean) =>
+  typeof value === 'boolean' ? value : fallback;
+
+const getBoldTextDefault = (defaultSettings: AccessibilityDefaultsInput) => {
+  if (typeof defaultSettings.boldTextEnabled === 'boolean') {
+    return defaultSettings.boldTextEnabled;
+  }
+
+  if (typeof defaultSettings.boldText === 'boolean') {
+    return defaultSettings.boldText;
+  }
+
+  return DEFAULT_ACCESSIBILITY_USER_SETTINGS.boldTextEnabled;
+};
+
+const getTextScaleDefault = (defaultSettings: AccessibilityDefaultsInput) => {
+  if (typeof defaultSettings.textScaleLevel === 'number') {
+    return normalizeTextScaleLevel(defaultSettings.textScaleLevel);
+  }
+
+  if (typeof defaultSettings.textScaling === 'number') {
+    return normalizeTextScaleLevel(defaultSettings.textScaling);
+  }
+
+  return DEFAULT_ACCESSIBILITY_USER_SETTINGS.textScaleLevel;
+};
+
 /* eslint-disable complexity */
 export const resolveAccessibilityConfiguration = (
   globalSettings?: AccessibilityGlobalSettings | null
@@ -96,38 +128,28 @@ export const resolveAccessibilityConfiguration = (
 
   const defaults: AccessibilityUserSettings = {
     ...DEFAULT_ACCESSIBILITY_USER_SETTINGS,
-    boldTextEnabled:
-      typeof defaultSettings.boldTextEnabled === 'boolean'
-        ? defaultSettings.boldTextEnabled
-        : typeof defaultSettings.boldText === 'boolean'
-        ? defaultSettings.boldText
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.boldTextEnabled,
-    isGrayscaleEnabled:
-      typeof defaultSettings.isGrayscaleEnabled === 'boolean'
-        ? defaultSettings.isGrayscaleEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.isGrayscaleEnabled,
-    highContrastEnabled:
-      typeof defaultSettings.highContrastEnabled === 'boolean'
-        ? defaultSettings.highContrastEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.highContrastEnabled,
-    readAloudEnabled:
-      typeof defaultSettings.readAloudEnabled === 'boolean'
-        ? defaultSettings.readAloudEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.readAloudEnabled,
-    reduceMotionEnabled:
-      typeof defaultSettings.reduceMotionEnabled === 'boolean'
-        ? defaultSettings.reduceMotionEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceMotionEnabled,
-    reduceTransparencyEnabled:
-      typeof defaultSettings.reduceTransparencyEnabled === 'boolean'
-        ? defaultSettings.reduceTransparencyEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceTransparencyEnabled,
-    textScaleLevel:
-      typeof defaultSettings.textScaleLevel === 'number'
-        ? normalizeTextScaleLevel(defaultSettings.textScaleLevel)
-        : typeof defaultSettings.textScaling === 'number'
-        ? normalizeTextScaleLevel(defaultSettings.textScaling)
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.textScaleLevel
+    boldTextEnabled: getBoldTextDefault(defaultSettings),
+    isGrayscaleEnabled: getBooleanSetting(
+      defaultSettings.isGrayscaleEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.isGrayscaleEnabled
+    ),
+    highContrastEnabled: getBooleanSetting(
+      defaultSettings.highContrastEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.highContrastEnabled
+    ),
+    readAloudEnabled: getBooleanSetting(
+      defaultSettings.readAloudEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.readAloudEnabled
+    ),
+    reduceMotionEnabled: getBooleanSetting(
+      defaultSettings.reduceMotionEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceMotionEnabled
+    ),
+    reduceTransparencyEnabled: getBooleanSetting(
+      defaultSettings.reduceTransparencyEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceTransparencyEnabled
+    ),
+    textScaleLevel: getTextScaleDefault(defaultSettings)
   };
 
   return {
