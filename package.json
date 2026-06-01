@@ -135,6 +135,7 @@
     "react-native-calendars": "^1.1313.0",
     "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-collapsible": "1.6.1",
+    "react-native-color-matrix-image-filters": "8.0.2",
     "react-native-elements": "^3.4.3",
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~2.28.0",

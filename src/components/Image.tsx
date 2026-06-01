@@ -1,7 +1,9 @@
 import { Image as ExpoImage } from 'expo-image';
+import { Grayscale } from 'react-native-color-matrix-image-filters';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device } from '../config';
@@ -57,6 +59,7 @@ export const Image = ({
   const [source, setSource] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const timestamp = useInterval(refreshInterval);
   const { sueConfig = {} } = useContext(ConfigurationsContext);
@@ -103,19 +106,23 @@ export const Image = ({
     [style, defaultImageStyle, borderRadius]
   );
 
+  const imageElement = (
+    <ExpoImage
+      source={source}
+      style={imageStyle}
+      contentFit={resizeMode}
+      accessible={!!sourceProp?.captionText}
+      accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
+        device.platform === 'ios' ? consts.a11yLabel.image : ''
+      }`}
+      onLoadStart={() => setLoading(true)}
+      onLoadEnd={() => setLoading(false)}
+    />
+  );
+
   return (
     <View style={[containerStyle, placeholderStyle]}>
-      <ExpoImage
-        source={source}
-        style={imageStyle}
-        contentFit={resizeMode}
-        accessible={!!sourceProp?.captionText}
-        accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
-          device.platform === 'ios' ? consts.a11yLabel.image : ''
-        }`}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-      />
+      {isGrayscaleEnabled ? <Grayscale>{imageElement}</Grayscale> : imageElement}
 
       {(loading || showChildren) && (
         <View style={styles.overlayFill} pointerEvents="box-none">
