@@ -302,7 +302,11 @@ const stylesWithProps = ({
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
   const tileSize = Math.max(0, availableWidth) / safeColumns;
-  const bigTileSize = Math.min(tileSize, (tileSize - containerPadding / 2) * tileSizeFactor);
+  const computedBigTileSize = Math.min(
+    tileSize,
+    (tileSize - containerPadding / 2) * tileSizeFactor
+  );
+  const bigTileSize = Math.max(0, computedBigTileSize);
 
   return StyleSheet.create({
     bigTile: {
