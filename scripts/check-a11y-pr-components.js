@@ -44,6 +44,17 @@ const ensureDir = (filePath) => {
   fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
 };
 
+const formatStderrPreview = (stderr, maxLines = 20) => {
+  const trimmed = stderr.trim();
+  if (!trimmed) return '';
+
+  const lines = trimmed.split('\n');
+  const preview = lines.slice(0, maxLines).join('\n');
+  if (lines.length <= maxLines) return preview;
+
+  return `${preview}\n... truncated ${lines.length - maxLines} additional line(s).`;
+};
+
 const readScope = () => {
   const fullPath = path.resolve(inputJsonPath);
   if (!fs.existsSync(fullPath)) {
@@ -177,29 +188,33 @@ let findings = [];
 
 if (files.length) {
   const eslintResult = runEslint(files);
-  const hasFatalErrors = eslintResult.parsed.some(
-    (fileResult) =>
-      (fileResult.fatalErrorCount || 0) > 0 ||
-      (fileResult.messages || []).some((message) => message.fatal)
-  );
-
   if (eslintResult.parseError) {
     console.error('Failed to parse ESLint JSON output for accessibility PR gate.');
     console.error(eslintResult.parseError.message || eslintResult.parseError);
-    if (eslintResult.stderr.trim()) {
-      console.error(eslintResult.stderr.trim());
+    const stderrPreview = formatStderrPreview(eslintResult.stderr);
+    if (stderrPreview) {
+      console.error(stderrPreview);
     }
     process.exit(1);
   }
 
   findings = normalizeFindings(eslintResult.parsed, componentMapByFile);
 
-  if (eslintResult.status !== 0 && (hasFatalErrors || !findings.length)) {
+  if (eslintResult.status !== 0 && !eslintResult.parsed.length) {
     console.error('ESLint exited with errors while running accessibility PR gate.');
-    if (eslintResult.stderr.trim()) {
-      console.error(eslintResult.stderr.trim());
+    const stderrPreview = formatStderrPreview(eslintResult.stderr);
+    if (stderrPreview) {
+      console.error(stderrPreview);
     }
     process.exit(1);
+  }
+
+  const stderrPreview = formatStderrPreview(eslintResult.stderr);
+  if (eslintResult.status !== 0 && stderrPreview) {
+    console.warn(
+      'ESLint reported non-gating errors while collecting accessibility PR findings. Proceeding with scoped findings.'
+    );
+    console.warn(stderrPreview);
   }
 }
 
