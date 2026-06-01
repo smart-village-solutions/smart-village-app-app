@@ -184,12 +184,14 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
   backgroundColor,
   hasAcceptedTerms,
   item,
-  onTermsAcceptanceChange
+  onTermsAcceptanceChange,
+  reduceMotion
 }: {
   backgroundColor?: string;
   hasAcceptedTerms: boolean;
   item: AppIntroSlide;
   onTermsAcceptanceChange: (value: boolean) => void;
+  reduceMotion: boolean;
 }) => {
   const ImageComponent = () => (
     <Image
@@ -239,6 +241,7 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
           contentName={item.contentName}
           hasAcceptedTerms={hasAcceptedTerms}
           onTermsAcceptanceChange={onTermsAcceptanceChange}
+          reduceMotion={reduceMotion}
         />
       )}
     </ScrollView>
@@ -374,7 +377,7 @@ export const AppIntroScreen = ({
               styles.sliderButtonContainer,
               isPrimaryActionDisabled && styles.sliderButtonDisabled
             ]}
-            isDisabled={false}
+            isDisabled={isPrimaryActionDisabled}
             isLightest={!isPrimaryActionDisabled}
           />
         )}
@@ -388,7 +391,7 @@ export const AppIntroScreen = ({
               styles.sliderButtonContainer,
               isPrimaryActionDisabled && styles.sliderButtonDisabled
             ]}
-            isDisabled={false}
+            isDisabled={isPrimaryActionDisabled}
             isLightest={!isPrimaryActionDisabled}
           />
         )}

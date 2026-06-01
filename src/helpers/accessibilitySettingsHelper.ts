@@ -45,7 +45,10 @@ export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
 type AccessibilityGlobalSettings = {
   settings?: {
     accessibility?: {
-      defaults?: Partial<AccessibilityUserSettings>;
+      defaults?: Partial<AccessibilityUserSettings> & {
+        boldText?: boolean;
+        textScaling?: number;
+      };
       enabledFeatures?: Partial<AccessibilityFeatureAvailability>;
     };
   };
@@ -96,6 +99,8 @@ export const resolveAccessibilityConfiguration = (
     boldTextEnabled:
       typeof defaultSettings.boldTextEnabled === 'boolean'
         ? defaultSettings.boldTextEnabled
+        : typeof defaultSettings.boldText === 'boolean'
+        ? defaultSettings.boldText
         : DEFAULT_ACCESSIBILITY_USER_SETTINGS.boldTextEnabled,
     isGrayscaleEnabled:
       typeof defaultSettings.isGrayscaleEnabled === 'boolean'
@@ -120,6 +125,8 @@ export const resolveAccessibilityConfiguration = (
     textScaleLevel:
       typeof defaultSettings.textScaleLevel === 'number'
         ? normalizeTextScaleLevel(defaultSettings.textScaleLevel)
+        : typeof defaultSettings.textScaling === 'number'
+        ? normalizeTextScaleLevel(defaultSettings.textScaling)
         : DEFAULT_ACCESSIBILITY_USER_SETTINGS.textScaleLevel
   };
 

@@ -133,14 +133,12 @@ export const WasteCollectionScreen = ({ navigation }) => {
     });
   }, [markedDates, query, selectedTypes]);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (
       !!selectedStreetId &&
       _isArray(streetData?.wasteAddresses) &&
       !streetData.wasteAddresses.length
     ) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedStreetId(undefined);
       setInputValue('');
       setInputValueCity('');
@@ -159,11 +157,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
   // If `selectedTypeKeys` is present, it maps the keys to the corresponding values in `usedTypes`.
   // Otherwise, it defaults to selecting all available types.
   // The effect triggers whenever `usedTypes` or `waste.selectedTypeKeys` change.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!usedTypes) return;
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedTypes(
       Object.fromEntries(
         (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
