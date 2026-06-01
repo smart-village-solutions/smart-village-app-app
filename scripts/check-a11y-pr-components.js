@@ -81,11 +81,21 @@ const runEslint = (files) => {
   }
 
   let parsed = [];
+  let parseError = null;
   if (result.stdout && result.stdout.trim().length) {
-    parsed = JSON.parse(result.stdout);
+    try {
+      parsed = JSON.parse(result.stdout);
+    } catch (error) {
+      parseError = error;
+    }
   }
 
-  return { parsed, status: result.status || 0, stderr: result.stderr || '' };
+  return {
+    parsed,
+    parseError,
+    status: result.status || 0,
+    stderr: result.stderr || ''
+  };
 };
 
 const normalizeFindings = (eslintResults, componentMapByFile) => {
@@ -167,7 +177,30 @@ let findings = [];
 
 if (files.length) {
   const eslintResult = runEslint(files);
+  const hasFatalErrors = eslintResult.parsed.some(
+    (fileResult) =>
+      (fileResult.fatalErrorCount || 0) > 0 ||
+      (fileResult.messages || []).some((message) => message.fatal)
+  );
+
+  if (eslintResult.parseError) {
+    console.error('Failed to parse ESLint JSON output for accessibility PR gate.');
+    console.error(eslintResult.parseError.message || eslintResult.parseError);
+    if (eslintResult.stderr.trim()) {
+      console.error(eslintResult.stderr.trim());
+    }
+    process.exit(1);
+  }
+
   findings = normalizeFindings(eslintResult.parsed, componentMapByFile);
+
+  if (eslintResult.status !== 0 && (hasFatalErrors || !findings.length)) {
+    console.error('ESLint exited with errors while running accessibility PR gate.');
+    if (eslintResult.stderr.trim()) {
+      console.error(eslintResult.stderr.trim());
+    }
+    process.exit(1);
+  }
 }
 
 const report = {
