@@ -79,7 +79,7 @@ export const usePersonalizedTiles = (
   staticJsonName: string
 ) => {
   const [isLoading, setIsLoading] = useState(isPersonalizable);
-  const [tiles, setTiles] = useState<TServiceTile[]>(!isPersonalizable ? data : []);
+  const [tiles, setTiles] = useState<TServiceTile[]>(isPersonalizable ? [] : data);
 
   const getPersonalizedTiles = useCallback(async () => {
     setIsLoading(true);
