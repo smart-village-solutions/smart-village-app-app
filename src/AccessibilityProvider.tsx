@@ -28,6 +28,7 @@ const defaultSystemAccessibility: AccessibilitySystemState = {
 const defaultAccessibility: AccessibilityContextValue = {
   ...defaultSystemAccessibility,
   defaults: {
+    isGrayscaleEnabled: false,
     highContrastEnabled: false,
     readAloudEnabled: false,
     reduceMotionEnabled: false,
@@ -38,6 +39,7 @@ const defaultAccessibility: AccessibilityContextValue = {
     boldText: true,
     headerEntry: true,
     highContrast: true,
+    isGrayscaleEnabled: true,
     readAloud: true,
     reduceMotion: true,
     reduceTransparency: true,
@@ -47,6 +49,7 @@ const defaultAccessibility: AccessibilityContextValue = {
   isHighContrastEnabled: false,
   isReadAloudEnabled: false,
   preferences: {
+    isGrayscaleEnabled: false,
     highContrastEnabled: false,
     readAloudEnabled: false,
     reduceMotionEnabled: false,
@@ -215,6 +218,9 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
 
   const accessibility = useMemo<AccessibilityContextValue>(() => {
     const isBoldTextEnabled = systemAccessibility.isBoldTextEnabled;
+    const isGrayscaleEnabled =
+      systemAccessibility.isGrayscaleEnabled ||
+      (features.isGrayscaleEnabled && preferences.isGrayscaleEnabled);
     const isReduceMotionEnabled =
       systemAccessibility.isReduceMotionEnabled ||
       (features.reduceMotion && preferences.reduceMotionEnabled);
@@ -230,6 +236,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
       defaults,
       features,
       isBoldTextEnabled,
+      isGrayscaleEnabled,
       isHighContrastEnabled: features.highContrast && preferences.highContrastEnabled,
       isReadAloudEnabled: features.readAloud && preferences.readAloudEnabled,
       isReduceMotionEnabled,

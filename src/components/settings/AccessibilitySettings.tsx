@@ -28,6 +28,12 @@ type Definition = {
 
 const SETTINGS_DEFINITIONS: Definition[] = [
   {
+    key: 'isGrayscaleEnabled',
+    featureKey: 'isGrayscaleEnabled',
+    title: texts.settingsContents.accessibility.isGrayscaleEnabled.title,
+    description: texts.settingsContents.accessibility.isGrayscaleEnabled.description
+  },
+  {
     key: 'highContrastEnabled',
     featureKey: 'highContrast',
     title: texts.settingsContents.accessibility.highContrast.title,

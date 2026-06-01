@@ -1251,6 +1251,10 @@ export const texts = {
         levelLargest: 'Extra groß',
         levelMaximum: 'Maximum'
       },
+      isGrayscaleEnabled: {
+        title: 'Graustufenmodus',
+        description: 'Stellt die App-Inhalte in Graustufen dar.'
+      },
       highContrast: {
         title: 'Höherer Kontrast',
         description: 'Reduziert kontrastarme Textfarben für bessere Lesbarkeit.'
