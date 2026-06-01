@@ -1251,6 +1251,10 @@ export const texts = {
         levelLargest: 'Extra groß',
         levelMaximum: 'Maximum'
       },
+      boldText: {
+        title: 'Fetter Text',
+        description: 'Stellt App-Texte in fetter Schrift dar.'
+      },
       isGrayscaleEnabled: {
         title: 'Graustufenmodus',
         description: 'Stellt die App-Inhalte in Graustufen dar.'

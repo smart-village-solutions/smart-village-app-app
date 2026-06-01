@@ -28,6 +28,12 @@ type Definition = {
 
 const SETTINGS_DEFINITIONS: Definition[] = [
   {
+    key: 'boldTextEnabled',
+    featureKey: 'boldText',
+    title: texts.settingsContents.accessibility.boldText.title,
+    description: texts.settingsContents.accessibility.boldText.description
+  },
+  {
     key: 'isGrayscaleEnabled',
     featureKey: 'isGrayscaleEnabled',
     title: texts.settingsContents.accessibility.isGrayscaleEnabled.title,

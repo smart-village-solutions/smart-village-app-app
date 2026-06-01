@@ -9,6 +9,7 @@ export const ACCESSIBILITY_FEATURE_BY_PREFERENCE: Record<
   AccessibilityTogglePreferenceKey,
   AccessibilityFeatureKey
 > = {
+  boldTextEnabled: 'boldText',
   isGrayscaleEnabled: 'isGrayscaleEnabled',
   highContrastEnabled: 'highContrast',
   readAloudEnabled: 'readAloud',
@@ -20,18 +21,19 @@ export const ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS = [0.9, 0.95, 1, 1.1, 1.2, 1.3
 export const DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL = 2;
 
 export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = {
-  boldText: true,
-  headerEntry: true,
-  highContrast: true,
-  isGrayscaleEnabled: true,
-  readAloud: true,
-  reduceMotion: true,
-  reduceTransparency: true,
-  settingsEntry: true,
-  textScaling: true
+  boldText: false,
+  headerEntry: false,
+  highContrast: false,
+  isGrayscaleEnabled: false,
+  readAloud: false,
+  reduceMotion: false,
+  reduceTransparency: false,
+  settingsEntry: false,
+  textScaling: false
 };
 
 export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
+  boldTextEnabled: false,
   isGrayscaleEnabled: false,
   highContrastEnabled: false,
   readAloudEnabled: false,
@@ -43,9 +45,7 @@ export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
 type AccessibilityGlobalSettings = {
   settings?: {
     accessibility?: {
-      defaults?: Partial<AccessibilityUserSettings> & {
-        boldTextEnabled?: boolean;
-      };
+      defaults?: Partial<AccessibilityUserSettings>;
       enabledFeatures?: Partial<AccessibilityFeatureAvailability>;
     };
   };
@@ -75,14 +75,6 @@ export const normalizeTextScaleLevel = (value: unknown) => {
   return Math.min(maxLevel, Math.max(minLevel, Math.round(value)));
 };
 
-const getLegacyTextScaleLevel = (legacyBoldTextEnabled: unknown) => {
-  if (typeof legacyBoldTextEnabled !== 'boolean') return DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL;
-
-  return legacyBoldTextEnabled
-    ? DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL + 2
-    : DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL;
-};
-
 export const getTextScaleMultiplier = (textScaleLevel: number) =>
   ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS[normalizeTextScaleLevel(textScaleLevel)];
 
@@ -99,22 +91,12 @@ export const resolveAccessibilityConfiguration = (
     DEFAULT_ACCESSIBILITY_FEATURES
   );
 
-  if (
-    typeof featureSettings.textScaling !== 'boolean' &&
-    typeof featureSettings.boldText === 'boolean'
-  ) {
-    enabledFeatures.textScaling = featureSettings.boldText;
-  }
-
-  if (
-    typeof featureSettings.boldText !== 'boolean' &&
-    typeof featureSettings.textScaling === 'boolean'
-  ) {
-    enabledFeatures.boldText = featureSettings.textScaling;
-  }
-
   const defaults: AccessibilityUserSettings = {
     ...DEFAULT_ACCESSIBILITY_USER_SETTINGS,
+    boldTextEnabled:
+      typeof defaultSettings.boldTextEnabled === 'boolean'
+        ? defaultSettings.boldTextEnabled
+        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.boldTextEnabled,
     isGrayscaleEnabled:
       typeof defaultSettings.isGrayscaleEnabled === 'boolean'
         ? defaultSettings.isGrayscaleEnabled
@@ -138,7 +120,7 @@ export const resolveAccessibilityConfiguration = (
     textScaleLevel:
       typeof defaultSettings.textScaleLevel === 'number'
         ? normalizeTextScaleLevel(defaultSettings.textScaleLevel)
-        : getLegacyTextScaleLevel(defaultSettings.boldTextEnabled)
+        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.textScaleLevel
   };
 
   return {
