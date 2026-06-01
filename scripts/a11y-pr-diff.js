@@ -16,6 +16,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 
 const EXTENSIONS = new Set(['.js', '.jsx', '.ts', '.tsx']);
+const TRUSTED_GIT_EXECUTABLE = '/usr/bin/git';
 const TARGET_ROOTS = [
   'src/components/',
   'src/screens/',
@@ -81,8 +82,13 @@ const validateGitRef = (refName, value) => {
 const runDiff = () => {
   const safeBase = validateGitRef('base', base);
   const safeHead = validateGitRef('head', head);
+
+  if (!fs.existsSync(TRUSTED_GIT_EXECUTABLE)) {
+    throw new Error(`Trusted git executable not found at "${TRUSTED_GIT_EXECUTABLE}".`);
+  }
+
   const output = execFileSync(
-    'git',
+    TRUSTED_GIT_EXECUTABLE,
     ['diff', '--name-only', '--diff-filter=ACMRTUXB', `${safeBase}...${safeHead}`],
     { encoding: 'utf8' }
   );
