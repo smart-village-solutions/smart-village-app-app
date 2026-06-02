@@ -1,21 +1,24 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
+  Button,
+  ConnectedImagesCarousel,
   EmptyMessage,
   HtmlView,
-  ListComponent,
   LoadingSpinner,
   ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
+  TextListItem,
+  Wrapper,
   WrapperVertical
 } from '../../components';
-import { colors, consts, texts } from '../../config';
-import { matomoTrackingString } from '../../helpers';
-import { useMatomoTrackScreenView, useStaticContent } from '../../hooks';
+import { colors, consts, normalize, texts } from '../../config';
+import { mainImageOfMediaContents, matomoTrackingString, trimNewLines } from '../../helpers';
+import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { GenericItem, GenericType, ScreenName } from '../../types';
@@ -27,14 +30,22 @@ type ParticipationProjectHomeParamList = Record<string, object | undefined> & {
 type CategoryOrderEntry = string | number | { id: string | number; title?: string };
 
 type ParticipationProjectHomeConfig = {
+  allButtonTitle: string;
+  carouselPublicJsonFile: string;
   categoryOrder: CategoryOrderEntry[];
   categoryTitle: string;
+  featuredLimit: number;
+  featuredTitle: string;
   fallbackCategoryTitle: string;
   hiddenCategoryIds: Array<string | number>;
   homeLimit: number;
   indexLimit: number;
   indexOrder: string;
+  isCarouselImageFullWidth: boolean;
+  showAllButton: boolean;
+  showCarousel: boolean;
   introHtmlName: string;
+  showFeatured: boolean;
   showEmptyCategories: boolean;
   showIntro: boolean;
   title: string;
@@ -49,19 +60,28 @@ type ParticipationProjectItemsResponse = {
 type ParticipationProjectPayload = {
   category?: string;
   categoryName?: string;
+  type?: string;
   theme?: string;
 };
 
 const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
+  allButtonTitle: texts.participationProject.showAll,
+  carouselPublicJsonFile: 'participationProjectHomeCarousel',
   categoryOrder: [],
   categoryTitle: texts.participationProject.categories,
+  featuredLimit: 3,
+  featuredTitle: texts.participationProject.featuredProjects,
   fallbackCategoryTitle: texts.participationProject.participationProjects,
   hiddenCategoryIds: [],
   homeLimit: 100,
   indexLimit: 15,
   indexOrder: 'publicationDate_DESC',
   introHtmlName: 'participationProjectHomeText',
+  isCarouselImageFullWidth: true,
+  showAllButton: true,
+  showCarousel: true,
   showEmptyCategories: false,
+  showFeatured: true,
   showIntro: true,
   title: texts.screenTitles.participationProject.home
 };
@@ -108,6 +128,70 @@ const getItemCategories = (item: GenericItem, fallbackCategoryTitle: string) => 
 
   return [{ name: payloadCategoryName || fallbackCategoryTitle }];
 };
+
+const getPayloadType = (payload: unknown) => {
+  if (!payload || typeof payload !== 'object') return;
+
+  return (payload as ParticipationProjectPayload).type;
+};
+
+const getContentBlockText = (item: GenericItem) => {
+  const body = item.contentBlocks?.[0]?.body;
+
+  if (!body) return;
+
+  return trimNewLines(body.replace(/<[^>]*>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+const getProjectSubtitle = (item: GenericItem) =>
+  item.teaser || item.description || getContentBlockText(item);
+
+const getProjectImageUrl = (item: GenericItem) =>
+  mainImageOfMediaContents(item.mediaContents) ||
+  mainImageOfMediaContents(item.contentBlocks?.[0]?.mediaContents);
+
+const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
+  const type = getPayloadType(item.payload);
+  const subtitle = getProjectSubtitle(item);
+
+  const accessibilityLabel = [type, item.title, subtitle]
+    .filter(Boolean)
+    .map((text) => `(${text})`)
+    .join(' ');
+
+  return {
+    accessibilityLabel: `${accessibilityLabel} ${consts.a11yLabel.button}`.trim(),
+    bottomDivider,
+    id: item.id,
+    overtitle: type,
+    params: {
+      title: texts.participationProject.participationProject,
+      query: QUERY_TYPES.GENERIC_ITEM,
+      queryVariables: { id: `${item.id}` },
+      rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS,
+      details: item
+    },
+    picture: {
+      url: getProjectImageUrl(item)
+    },
+    routeName: ScreenName.Detail,
+    subtitle,
+    title: item.title || texts.participationProject.participationProject
+  };
+};
+
+const buildAllProjectsParams = (homeConfig: ParticipationProjectHomeConfig) => ({
+  title: texts.screenTitles.participationProject.index,
+  query: QUERY_TYPES.GENERIC_ITEMS,
+  queryVariables: {
+    genericType: GenericType.ParticipationProject,
+    limit: homeConfig.indexLimit,
+    order: homeConfig.indexOrder
+  },
+  rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
+});
 
 const buildCategoryItems = ({
   config,
@@ -214,6 +298,8 @@ export const ParticipationProjectHomeScreen = ({
     }
   );
 
+  const allProjectsParams = useMemo(() => buildAllProjectsParams(homeConfig), [homeConfig]);
+
   const categoryItems = useMemo(() => {
     const genericItems = data?.[QUERY_TYPES.GENERIC_ITEMS] || [];
     const categoryGroups = buildCategoryItems({ config: homeConfig, items: genericItems });
@@ -250,13 +336,33 @@ export const ParticipationProjectHomeScreen = ({
     });
   }, [data, homeConfig]);
 
+  const genericItems = useMemo(() => data?.[QUERY_TYPES.GENERIC_ITEMS] || [], [data]);
+
+  const featuredItems = useMemo(() => {
+    if (!homeConfig.showFeatured) return [];
+
+    return genericItems
+      .slice(0, homeConfig.featuredLimit)
+      .map((item, index, items) => buildProjectListItem(item, index !== items.length - 1));
+  }, [genericItems, homeConfig.featuredLimit, homeConfig.showFeatured]);
+
   const refreshHome = useCallback(async () => {
     setRefreshing(true);
 
     await Promise.all([refetchHomeConfig(), refetchIntro(), refetchProjects()]);
+    DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
 
     setRefreshing(false);
   }, [refetchHomeConfig, refetchIntro, refetchProjects]);
+
+  const renderCategoryItem = useCallback(
+    ({ item }) => <TextListItem item={item} navigation={navigation} />,
+    [navigation]
+  );
+
+  const openAllProjects = useCallback(() => {
+    navigation.navigate(ScreenName.Index, allProjectsParams);
+  }, [allProjectsParams, navigation]);
 
   useMatomoTrackScreenView(
     matomoTrackingString([consts.MATOMO_TRACKING.SCREEN_VIEW.PARTICIPATION_PROJECTS])
@@ -268,11 +374,19 @@ export const ParticipationProjectHomeScreen = ({
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent
+      <FlatList
         data={categoryItems}
         ListEmptyComponent={<EmptyMessage title={texts.participationProject.empty} showIcon />}
         ListHeaderComponent={
           <>
+            {homeConfig.showCarousel && (
+              <ConnectedImagesCarousel
+                isImageFullWidth={homeConfig.isCarouselImageFullWidth}
+                navigation={navigation}
+                publicJsonFile={homeConfig.carouselPublicJsonFile}
+              />
+            )}
+
             {!!introHtml && (
               <WrapperVertical>
                 <ReadAloudContent
@@ -282,12 +396,38 @@ export const ParticipationProjectHomeScreen = ({
                 <HtmlView html={introHtml} />
               </WrapperVertical>
             )}
+
             <SectionHeader title={homeConfig.categoryTitle} containerStyle={styles.sectionHeader} />
           </>
         }
-        listType={consts.LIST_TYPES.TEXT_LIST}
-        navigation={navigation}
-        query={QUERY_TYPES.GENERIC_ITEMS}
+        ListFooterComponent={
+          <>
+            {!!featuredItems.length && (
+              <WrapperVertical>
+                <SectionHeader
+                  title={homeConfig.featuredTitle}
+                  containerStyle={styles.sectionHeader}
+                />
+                {featuredItems.map((item) => (
+                  <TextListItem
+                    item={item}
+                    key={item.id}
+                    leftImage
+                    navigation={navigation}
+                    withCard
+                  />
+                ))}
+              </WrapperVertical>
+            )}
+
+            {homeConfig.showAllButton && (
+              <Button title={homeConfig.allButtonTitle} onPress={openAllProjects} />
+            )}
+          </>
+        }
+        contentContainerStyle={styles.contentContainer}
+        keyExtractor={(item) => item.id}
+        renderItem={renderCategoryItem}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -302,8 +442,13 @@ export const ParticipationProjectHomeScreen = ({
 };
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    flexGrow: 1,
+    paddingHorizontal: normalize(16)
+  },
   sectionHeader: {
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
+    paddingTop: normalize(8)
   }
 });
