@@ -701,6 +701,17 @@ export const texts = {
     },
     writeMessage: 'Unterhaltung starten'
   },
+  participationProject: {
+    categories: 'Kategorien',
+    categoryCount: (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'}`,
+    empty: 'Keine Beteiligungsprojekte gefunden.',
+    openProject: 'Projekt öffnen',
+    participationProject: 'Beteiligungsprojekt',
+    participationProjects: 'Beteiligungsprojekte',
+    showAll: 'Alle anzeigen',
+    updatedAt: 'Aktualisiert am',
+    publishedAt: 'Veröffentlicht am'
+  },
   oparl: {
     agendaItem: {
       agendaItem: 'Tagesordnungspunkt',
@@ -1116,6 +1127,10 @@ export const texts = {
     },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
+    participationProject: {
+      home: 'Beteiligung',
+      index: 'Beteiligungsprojekte'
+    },
     search: 'Suche',
     service: 'Service',
     settings: 'Einstellungen',

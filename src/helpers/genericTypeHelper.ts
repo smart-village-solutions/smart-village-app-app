@@ -15,6 +15,8 @@ export const getGenericItemSectionTitle = (genericType: GenericType): string => 
       return texts.job.jobs;
     case GenericType.Noticeboard:
       return texts.noticeboard.noticeboard;
+    case GenericType.ParticipationProject:
+      return texts.participationProject.participationProjects;
     default:
       return '';
   }
@@ -45,6 +47,8 @@ export const getGenericItemDetailTitle = (
 
       return texts.noticeboard.noticeboard;
     }
+    case GenericType.ParticipationProject:
+      return texts.participationProject.participationProject;
     default:
       return '';
   }
@@ -62,6 +66,8 @@ export const getGenericItemRootRouteName = (genericType: GenericType): string =>
       return ROOT_ROUTE_NAMES.JOBS;
     case GenericType.Noticeboard:
       return ROOT_ROUTE_NAMES.NOTICEBOARD;
+    case GenericType.ParticipationProject:
+      return ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS;
     default:
       return '';
   }
@@ -79,6 +85,8 @@ export const getGenericItemMatomoName = (genericType: GenericType): string => {
       return MATOMO_TRACKING.SCREEN_VIEW.JOB_OFFER;
     case GenericType.Noticeboard:
       return MATOMO_TRACKING.SCREEN_VIEW.NOTICEBOARD;
+    case GenericType.ParticipationProject:
+      return MATOMO_TRACKING.SCREEN_VIEW.PARTICIPATION_PROJECT;
     default:
       return '';
   }
@@ -94,6 +102,8 @@ export const getGenericItemSubtitle = (genericItem: {
       return genericItem.categories?.[0]?.name;
     case GenericType.Noticeboard:
       return '';
+    case GenericType.ParticipationProject:
+      return genericItem.dataProvider?.name;
     default:
       return genericItem.dataProvider?.name;
   }

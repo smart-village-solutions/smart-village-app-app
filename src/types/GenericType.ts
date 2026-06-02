@@ -5,5 +5,6 @@ export enum GenericType {
   DefectReport = 'DefectReport',
   Job = 'Job',
   Noticeboard = 'Noticeboard',
+  ParticipationProject = 'ParticipationProject',
   Voucher = 'Voucher'
 }
