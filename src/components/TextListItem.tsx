@@ -14,6 +14,7 @@ import { WrapperRow } from './Wrapper';
 
 export type ItemData = {
   id: string;
+  accessibilityLabel?: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
   count?: number;
@@ -74,6 +75,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   }) => {
     const {
       badge,
+      accessibilityLabel,
       bottomDivider,
       count,
       isHeadlineTitle = true,

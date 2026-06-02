@@ -25,8 +25,11 @@ export const GET_GENERIC_ITEMS = gql`
     ) {
       id
       createdAt
+      updatedAt
+      description
       genericType
       title
+      teaser
       externalId
       visible
       categories {
@@ -114,6 +117,11 @@ export const GET_GENERIC_ITEMS = gql`
         dateTo: dateEnd
       }
       publicationDate
+      webUrls {
+        id
+        url
+        description
+      }
       payload
       memberId
     }
@@ -129,8 +137,11 @@ export const GET_GENERIC_ITEM = gql`
         name
       }
       createdAt
+      updatedAt
+      description
       genericType
       title
+      teaser
       externalId
       companies {
         id
@@ -213,6 +224,11 @@ export const GET_GENERIC_ITEM = gql`
         dateTo: dateEnd
       }
       publicationDate
+      webUrls {
+        id
+        url
+        description
+      }
       payload
       priceInformations {
         description
