@@ -153,6 +153,17 @@ const parseNoticeboard = (items: DetailSpeechItem[], detail: DetailRecord) => {
   pushText(items, 'destinationAddress', asString(payload?.destinationAddress));
 };
 
+const parseParticipationProject = (items: DetailSpeechItem[], detail: DetailRecord) => {
+  const dataProvider = asRecord(detail.dataProvider);
+
+  pushText(items, 'title', asString(detail.title));
+  pushText(items, 'dataProvider', asString(dataProvider?.name));
+  pushText(items, 'publishedAt', asString(detail.publicationDate) || asString(detail.createdAt));
+  pushText(items, 'teaser', asString(detail.teaser));
+  pushText(items, 'description', asString(detail.description));
+  parseContentBlocks(items, detail.contentBlocks);
+};
+
 export const getDetailSpeechItems = ({
   detail,
   query
@@ -177,6 +188,8 @@ export const getDetailSpeechItems = ({
     case QUERY_TYPES.GENERIC_ITEM:
       if (detail.genericType === GenericType.Noticeboard) {
         parseNoticeboard(items, detail);
+      } else if (detail.genericType === GenericType.ParticipationProject) {
+        parseParticipationProject(items, detail);
       } else {
         parseOffer(items, detail);
       }
