@@ -10,6 +10,7 @@ import {
   NewsItem,
   NoticeboardDetail,
   Offer,
+  ParticipationProjectDetail,
   PointOfInterest,
   SafeAreaViewFlex,
   Tour
@@ -37,6 +38,8 @@ const getGenericComponent = (genericType) => {
       return Offer;
     case GenericType.Noticeboard:
       return NoticeboardDetail;
+    case GenericType.ParticipationProject:
+      return ParticipationProjectDetail;
   }
 };
 

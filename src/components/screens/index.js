@@ -11,6 +11,7 @@ export * from './Offer';
 export * from './OpeningTimesCard';
 export * from './OperatingCompany';
 export * from './Overviews';
+export * from './ParticipationProjectDetail';
 export * from './PointOfInterest';
 export * from './PriceCard';
 export * from './Service';
