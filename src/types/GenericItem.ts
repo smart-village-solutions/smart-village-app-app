@@ -9,11 +9,12 @@ import { WebUrl } from './WebUrl';
 // HINT: This type is not complete. Only the currently used fields have been added.
 export type GenericItem<T = unknown> = {
   author?: string;
-  categories: Array<{ name?: string }>;
+  categories: Array<{ id?: string | number; name?: string }>;
   contentBlocks: ContentBlock[];
   createdAt?: string;
   dataProvider?: DataProvider;
   dates: SVA_Date[];
+  description?: string;
   externalId?: string;
   genericType?: string;
   id: string;
@@ -25,7 +26,9 @@ export type GenericItem<T = unknown> = {
   payload: T;
   publicationDate?: string;
   publishedAt?: string;
+  teaser?: string;
   title?: string;
+  updatedAt?: string;
   webUrls: WebUrl[];
 };
 
