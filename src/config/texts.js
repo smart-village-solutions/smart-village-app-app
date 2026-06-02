@@ -772,10 +772,11 @@ export const texts = {
     categories: 'Kategorien',
     categoryCount: (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'}`,
     empty: 'Keine Beteiligungsprojekte gefunden.',
+    featuredProjects: 'Besonders interessant',
     openProject: 'Projekt öffnen',
     participationProject: 'Beteiligungsprojekt',
     participationProjects: 'Beteiligungsprojekte',
-    showAll: 'Alle anzeigen',
+    showAll: 'Alle Beteiligungen ansehen',
     updatedAt: 'Aktualisiert am',
     publishedAt: 'Veröffentlicht am'
   },
