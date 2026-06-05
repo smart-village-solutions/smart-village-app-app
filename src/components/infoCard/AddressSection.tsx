@@ -22,10 +22,15 @@ type Props = {
   address?: Address;
   addresses?: Address[];
   openWebScreen?: (link: string, specificTitle?: string) => void;
+  title?: string;
 };
 
-const addressOnPress = (address?: string, geoLocation?: LocationObjectCoords) => {
-  const mapsString = locationString(address);
+const addressOnPress = (
+  address?: string,
+  geoLocation?: LocationObjectCoords,
+  fallbackTitle?: string
+) => {
+  const mapsString = locationString(address || fallbackTitle);
   const mapsLink = locationLink(mapsString, geoLocation);
 
   openLink(mapsLink);
@@ -48,7 +53,7 @@ const getBBNaviUrl = (baseUrl: string, address: Address, currentPosition?: Locat
   return `${baseUrl}${currentParam}/${destinationParam}/`;
 };
 
-export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
+export const AddressSection = ({ address, addresses, openWebScreen, title }: Props) => {
   // @ts-expect-error global settings are not properly typed
   const bbNaviBaseUrl = useContext(SettingsContext).globalSettings?.settings?.['bbnavi'];
   const isAddress = address || addresses?.length;
@@ -70,34 +75,35 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
     <>
       {filteredAddresses.map((item, index) => {
         const filteredAddress = formatAddress(item);
+        const hasGeoCoordinates =
+          item.geoLocation?.latitude != null && item.geoLocation?.longitude != null;
+        const addressText =
+          filteredAddress ||
+          (hasGeoCoordinates ? texts.pointOfInterest.navigationWithoutAddress : '');
+        const isNavigationPressable = !!filteredAddress?.length || hasGeoCoordinates;
 
-        if (!filteredAddress?.length) return null;
-
-        const isPressable = item.city?.length || item.street?.length || item.zip?.length;
+        if (!addressText.length) return null;
 
         const innerComponent = (
           <WrapperVertical>
             <WrapperRow centerVertical style={styles.wrap}>
               <Icon.Flag style={styles.margin} />
-              <RegularText
-                accessibilityLabel={`${a11yText.address} (${filteredAddress}) ${a11yText.button} ${a11yText.mapHint}`}
-                primary
-              >
-                {filteredAddress}
-              </RegularText>
+              <RegularText primary>{addressText}</RegularText>
             </WrapperRow>
           </WrapperVertical>
         );
 
         return (
           <View key={index}>
-            {isPressable ? (
-              <TouchableOpacity onPress={() => addressOnPress(filteredAddress, item.geoLocation)}>
-                {innerComponent}
-              </TouchableOpacity>
-            ) : (
-              innerComponent
-            )}
+            <TouchableOpacity
+              accessibilityLabel={`${a11yText.address} (${addressText}) ${a11yText.button} ${a11yText.mapHint}`}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: !isNavigationPressable }}
+              disabled={!isNavigationPressable}
+              onPress={() => addressOnPress(filteredAddress, item.geoLocation, title)}
+            >
+              {innerComponent}
+            </TouchableOpacity>
 
             <Divider style={styles.divider} />
 
@@ -110,6 +116,8 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
                     <WrapperRow centerVertical style={styles.wrap}>
                       <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
                       <TouchableOpacity
+                        accessibilityLabel={texts.pointOfInterest.routePlanner}
+                        accessibilityRole="button"
                         onPress={() =>
                           openWebScreen(
                             getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),

@@ -138,7 +138,7 @@ export const VolunteerUser = ({
       <Wrapper>
         <ContactSection contact={contact} />
 
-        <AddressSection address={address} openWebScreen={openWebScreen} />
+        <AddressSection address={address} openWebScreen={openWebScreen} title={name} />
 
         <UrlSection openWebScreen={openWebScreen} webUrls={webUrls} />
       </Wrapper>

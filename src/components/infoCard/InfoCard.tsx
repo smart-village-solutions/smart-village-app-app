@@ -67,7 +67,12 @@ export const InfoCard = ({
 
     {showOpeningTimes && <OpenStatus openingHours={openingHours} />}
 
-    <AddressSection address={address} addresses={addresses} openWebScreen={openWebScreen} />
+    <AddressSection
+      address={address}
+      addresses={addresses}
+      openWebScreen={openWebScreen}
+      title={name}
+    />
 
     <ContactSection contact={contact} contacts={contacts} />
 
