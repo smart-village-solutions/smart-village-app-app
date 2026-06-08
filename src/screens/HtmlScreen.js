@@ -9,7 +9,8 @@ import {
   ReadAloudContent,
   navigateWithSubQuery,
   SafeAreaViewFlex,
-  Wrapper
+  Wrapper,
+  WrapperVertical
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, texts } from '../config';
@@ -74,8 +75,10 @@ export const HtmlScreen = ({ navigation, route }) => {
           />
         }
       >
-        <Wrapper>
+        <WrapperVertical noPaddingBottom>
           <ReadAloudContent content={htmlContent} contentId="html-screen-content" />
+        </WrapperVertical>
+        <Wrapper>
           <HtmlView
             html={trimNewLines(htmlContent)}
             openWebScreen={
