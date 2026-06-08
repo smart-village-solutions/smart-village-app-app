@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -13,7 +13,6 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   TextListItem,
-  Wrapper,
   WrapperVertical
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
@@ -389,11 +388,15 @@ export const ParticipationProjectHomeScreen = ({
 
             {!!introHtml && (
               <WrapperVertical>
-                <ReadAloudContent
-                  content={introHtml}
-                  contentId="participation-project-home-content"
-                />
-                <HtmlView html={introHtml} />
+                <View style={styles.readAloudContainer}>
+                  <ReadAloudContent
+                    content={introHtml}
+                    contentId="participation-project-home-content"
+                  />
+                </View>
+                <WrapperVertical noPaddingBottom>
+                  <HtmlView html={introHtml} />
+                </WrapperVertical>
               </WrapperVertical>
             )}
 
@@ -445,6 +448,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     paddingHorizontal: normalize(16)
+  },
+  readAloudContainer: {
+    marginHorizontal: normalize(-16)
   },
   sectionHeader: {
     paddingLeft: 0,

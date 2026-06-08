@@ -5,7 +5,7 @@ import { AccessibilityContext } from '../../AccessibilityProvider';
 import { colors, consts, normalize, texts } from '../../config';
 import { Button } from '../Button';
 import { RegularText } from '../Text';
-import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
   activeItemId?: string;
@@ -96,7 +96,7 @@ export const DetailReadAloudControls = ({
   };
 
   return (
-    <WrapperHorizontal>
+    <Wrapper noPaddingBottom>
       <View style={styles.container}>
         <WrapperVertical noPaddingBottom noPaddingTop>
           <RegularText small>{texts.settingsContents.accessibility.readAloud.title}</RegularText>
@@ -176,7 +176,7 @@ export const DetailReadAloudControls = ({
           </View>
         </WrapperRow>
       </View>
-    </WrapperHorizontal>
+    </Wrapper>
   );
 };
 
@@ -193,8 +193,6 @@ const styles = StyleSheet.create({
     borderColor: colors.gray40,
     borderRadius: normalize(8),
     borderWidth: normalize(1),
-    marginTop: normalize(8),
-    marginBottom: normalize(12),
     padding: normalize(12)
   },
   currentTextSection: {
