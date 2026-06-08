@@ -36,6 +36,19 @@ export const GET_GENERIC_ITEMS = gql`
         id
         name
       }
+      addresses {
+        id
+        city
+        street
+        zip
+        kind
+        addition
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
+      }
       companies {
         id
         name
@@ -98,6 +111,7 @@ export const GET_GENERIC_ITEMS = gql`
         }
         name
         dataType
+        notice
       }
       mediaContents {
         id
@@ -115,6 +129,32 @@ export const GET_GENERIC_ITEMS = gql`
         dateStart
         dateFrom: dateStart
         dateTo: dateEnd
+        timeDescription
+        timeEnd
+        timeStart
+        timeFrom: timeStart
+        timeTo: timeEnd
+        weekday
+      }
+      locations {
+        id
+        name
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
+      }
+      openingHours {
+        id
+        dateFrom
+        dateTo
+        description
+        open
+        timeFrom
+        timeTo
+        useYear
+        weekday
       }
       publicationDate
       webUrls {
@@ -123,6 +163,10 @@ export const GET_GENERIC_ITEMS = gql`
         description
       }
       payload
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
+      }
       memberId
     }
   }
@@ -135,6 +179,19 @@ export const GET_GENERIC_ITEM = gql`
       categories {
         id
         name
+      }
+      addresses {
+        id
+        city
+        street
+        zip
+        kind
+        addition
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
       }
       createdAt
       updatedAt
@@ -205,6 +262,7 @@ export const GET_GENERIC_ITEM = gql`
         }
         name
         dataType
+        notice
       }
       mediaContents {
         id
@@ -222,6 +280,32 @@ export const GET_GENERIC_ITEM = gql`
         dateStart
         dateFrom: dateStart
         dateTo: dateEnd
+        timeDescription
+        timeEnd
+        timeStart
+        timeFrom: timeStart
+        timeTo: timeEnd
+        weekday
+      }
+      locations {
+        id
+        name
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
+      }
+      openingHours {
+        id
+        dateFrom
+        dateTo
+        description
+        open
+        timeFrom
+        timeTo
+        useYear
+        weekday
       }
       publicationDate
       webUrls {
@@ -230,6 +314,10 @@ export const GET_GENERIC_ITEM = gql`
         description
       }
       payload
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
+      }
       priceInformations {
         description
       }

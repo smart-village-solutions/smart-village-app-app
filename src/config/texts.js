@@ -771,14 +771,36 @@ export const texts = {
   participationProject: {
     categories: 'Kategorien',
     categoryCount: (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'}`,
+    calendarExport: 'In Kalender exportieren',
+    capacity: 'Kapazität',
+    contact: 'Kontakt',
+    date: 'Zeitraum',
+    email: 'E-Mail',
     empty: 'Keine Beteiligungsprojekte gefunden.',
     featuredProjects: 'Besonders interessant',
+    instance: 'Mandant',
+    location: 'Ort',
+    no: 'Nein',
     openProject: 'Projekt öffnen',
+    openStreetMap: 'Auf OpenStreetMap anzeigen',
+    organizer: 'Veranstalter',
+    overview: 'Übersicht',
     participationProject: 'Beteiligungsprojekt',
     participationProjects: 'Beteiligungsprojekte',
+    phone: 'Telefon',
+    portalHint:
+      'Weitere Informationen und Beteiligungsmöglichkeiten finden Sie im Beteiligungsportal.',
+    registrationRequired: 'Anmeldung erforderlich',
     showAll: 'Alle Beteiligungen ansehen',
+    statistics: 'Statistik',
+    status: 'Status',
+    tags: 'Schlagworte',
+    theme: 'Thema',
+    time: 'Uhrzeit',
+    type: 'Beteiligungsart',
     updatedAt: 'Aktualisiert am',
-    publishedAt: 'Veröffentlicht am'
+    publishedAt: 'Veröffentlicht am',
+    yes: 'Ja'
   },
   oparl: {
     agendaItem: {

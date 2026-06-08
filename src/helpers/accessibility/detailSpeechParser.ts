@@ -28,8 +28,30 @@ const asRecordArray = (value: unknown): DetailRecord[] => {
 const asString = (value: unknown): string | undefined =>
   typeof value === 'string' ? value : undefined;
 
+const asDisplayString = (value: unknown): string | undefined => {
+  if (value === undefined || value === null) return;
+
+  const text = `${value}`.trim();
+
+  if (!text || text === 'null' || text === 'undefined') return;
+
+  return text;
+};
+
 const normalizeText = (value?: string) => {
   return normalizeSpeechText(value);
+};
+
+const withLabel = (label: string, value?: string) => (value ? `${label}: ${value}` : undefined);
+
+const formatRegistrationRequired = (value: unknown) => {
+  const text = asDisplayString(value);
+
+  if (!text) return;
+  if (text === 'true') return texts.participationProject.yes;
+  if (text === 'false') return texts.participationProject.no;
+
+  return text;
 };
 
 const pushText = (items: DetailSpeechItem[], id: string, value?: string) => {
@@ -38,24 +60,24 @@ const pushText = (items: DetailSpeechItem[], id: string, value?: string) => {
   items.push({ id, text: normalized });
 };
 
-const joinAddress = (address: DetailRecord) =>
+const joinAddress = (address?: DetailRecord) =>
   [
-    asString(address.street),
-    asString(address.houseNumber),
-    asString(address.zip),
-    asString(address.city)
+    asString(address?.street),
+    asString(address?.houseNumber),
+    asString(address?.zip),
+    asString(address?.city)
   ]
     .filter(Boolean)
     .join(' ');
 
-const joinContact = (contact: DetailRecord) =>
+const joinContact = (contact?: DetailRecord) =>
   [
-    asString(contact.firstName),
-    asString(contact.lastName),
-    asString(contact.phone),
-    asString(contact.mobile),
-    asString(contact.email),
-    asString(contact.fax)
+    asString(contact?.firstName),
+    asString(contact?.lastName),
+    asString(contact?.phone),
+    asString(contact?.mobile),
+    asString(contact?.email),
+    asString(contact?.fax)
   ]
     .filter(Boolean)
     .join(' ');
@@ -155,10 +177,112 @@ const parseNoticeboard = (items: DetailSpeechItem[], detail: DetailRecord) => {
 
 const parseParticipationProject = (items: DetailSpeechItem[], detail: DetailRecord) => {
   const dataProvider = asRecord(detail.dataProvider);
+  const payload = asRecord(detail.payload);
+  const firstDate = asRecordArray(detail.dates)[0];
+  const firstAddress = asRecordArray(detail.addresses)[0];
+  const firstContact = asRecordArray(detail.contacts)[0];
+  const firstLocation = asRecordArray(detail.locations)[0];
+  const tags = Array.isArray(payload?.tags)
+    ? payload.tags.map(asDisplayString).filter(Boolean).join(', ')
+    : asDisplayString(payload?.tags);
 
   pushText(items, 'title', asString(detail.title));
   pushText(items, 'dataProvider', asString(dataProvider?.name));
   pushText(items, 'publishedAt', asString(detail.publicationDate) || asString(detail.createdAt));
+  pushText(
+    items,
+    'type',
+    withLabel(texts.participationProject.type, asDisplayString(payload?.type))
+  );
+  pushText(
+    items,
+    'theme',
+    withLabel(texts.participationProject.theme, asDisplayString(payload?.theme))
+  );
+  pushText(
+    items,
+    'status',
+    withLabel(texts.participationProject.status, asDisplayString(payload?.status))
+  );
+  pushText(
+    items,
+    'instance',
+    withLabel(texts.participationProject.instance, asDisplayString(payload?.instance))
+  );
+  pushText(
+    items,
+    'dateStart',
+    withLabel(texts.participationProject.date, asDisplayString(firstDate?.dateStart))
+  );
+  pushText(items, 'dateEnd', asDisplayString(firstDate?.dateEnd));
+  pushText(
+    items,
+    'time',
+    withLabel(
+      texts.participationProject.time,
+      [asDisplayString(payload?.startTime), asDisplayString(payload?.endTime)]
+        .filter(Boolean)
+        .join(' - ')
+    )
+  );
+  pushText(
+    items,
+    'location',
+    withLabel(
+      texts.participationProject.location,
+      asDisplayString(payload?.location) ||
+        asDisplayString(firstLocation?.name) ||
+        joinAddress(firstAddress)
+    )
+  );
+  pushText(
+    items,
+    'organizer',
+    withLabel(texts.participationProject.organizer, asDisplayString(payload?.organizer))
+  );
+  pushText(
+    items,
+    'contact',
+    withLabel(
+      texts.participationProject.contact,
+      asDisplayString(payload?.contact) || joinContact(firstContact)
+    )
+  );
+  pushText(
+    items,
+    'email',
+    withLabel(
+      texts.participationProject.email,
+      asDisplayString(payload?.email) || asDisplayString(firstContact?.email)
+    )
+  );
+  pushText(
+    items,
+    'phone',
+    withLabel(
+      texts.participationProject.phone,
+      asDisplayString(payload?.phone) || asDisplayString(firstContact?.phone)
+    )
+  );
+  pushText(
+    items,
+    'capacity',
+    withLabel(texts.participationProject.capacity, asDisplayString(payload?.capacity))
+  );
+  pushText(
+    items,
+    'registrationRequired',
+    withLabel(
+      texts.participationProject.registrationRequired,
+      formatRegistrationRequired(payload?.registrationRequired)
+    )
+  );
+  pushText(
+    items,
+    'statistics',
+    withLabel(texts.participationProject.statistics, asDisplayString(payload?.statistics))
+  );
+  pushText(items, 'tags', withLabel(texts.participationProject.tags, tags));
   pushText(items, 'teaser', asString(detail.teaser));
   pushText(items, 'description', asString(detail.description));
   parseContentBlocks(items, detail.contentBlocks);
