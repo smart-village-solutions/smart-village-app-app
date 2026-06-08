@@ -34,6 +34,7 @@ export * from './matomoHelper';
 export * from './momentHelper';
 export * from './normalizeStyleValues';
 export * from './openingHoursHelper';
+export * from './participationProjectHelper';
 export * from './personNameHelper';
 export * from './positionHelper';
 export * from './priceHelper';
