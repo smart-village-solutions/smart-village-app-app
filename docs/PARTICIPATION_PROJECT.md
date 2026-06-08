@@ -74,6 +74,19 @@ Recommended fields for a good first test:
     }
   ],
   "payload": {
+    "capacity": "120",
+    "contact": "Participation office",
+    "email": "participation@example.org",
+    "endTime": "18:00",
+    "instance": "Landeshauptstadt Magdeburg",
+    "location": "Rathaus Magdeburg",
+    "organizer": "City planning department",
+    "phone": "+49 391 000000",
+    "registrationRequired": false,
+    "startTime": "16:00",
+    "statistics": "42 submissions",
+    "status": "Aktiv",
+    "tags": ["Stadtentwicklung", "Dialog"],
     "theme": "Stadtentwicklung und Ländlicher Raum",
     "type": "Veranstaltung"
   }
@@ -103,6 +116,8 @@ createGenericItem(
     theme: "{{ $json.thema }}"
     instance: "{{ $json.mandant }}"
     statistics: "{{ $json.statistik }}"
+    status: "{{ $json.status }}"
+    tags: "{{ $json.tags }}"
   }
   # ...
 )
@@ -113,6 +128,10 @@ In this mapping:
 - `categoryName` creates or assigns the server-side category used by the home screen.
 - `payload.type` keeps the participation type available in the detail/list payload.
 - `payload.theme` keeps the source theme as metadata. It is not the home-screen category.
+- Optional structured fields such as `payload.status`, `payload.tags`, `payload.organizer`,
+  `payload.contact`, `payload.email`, `payload.phone`, `payload.capacity`,
+  `payload.registrationRequired`, `payload.startTime` and `payload.endTime` improve the
+  detail overview but are not required for the module to render.
 
 If `categories` is empty, the app can fall back to one of these payload fields for
 home-screen grouping:
@@ -436,18 +455,47 @@ Selecting an item in `IndexScreen` opens `DetailScreen`.
 
 The detail screen displays:
 
+- participation type from `payload.type` or the first category as the same uppercase
+  overtitle pattern used by Event and POI details
+- title with the shared big `SectionHeader` pattern
 - image media content, when available
-- title
-- data provider
 - publication date or created date
 - updated date, when different from the displayed publication date
-- teaser
-- description HTML
-- content blocks
+- a shared `InfoCard` overview section for addresses, contacts and web URLs
+- theme from `payload.theme`
+- status from `payload.status`
+- instance, organizer, contact, email, phone, capacity, registration state and statistics
+- tags from `payload.tags`
+- appointment/date information through the shared `OpeningTimesCard`
+- description content through `contentBlocks`; `teaser` and `description` are only fallback
+  sources when no content blocks exist
+- a `MapLibre` location section when `locations[]` or `addresses[]` contains `geoLocation`
 - first web URL as an action button
-- data provider button
+- an explicit hint below the external portal button
+- calendar export when a title and start date exist
+- operating company information, when company data or an organizer fallback exists
+- data provider notice
+- data provider button for business account providers
 
 If no content fields are available, the detail screen shows the module empty text.
+
+The GenericItem detail query must provide these optional relation fields when they
+exist on the server, because the detail screen reuses the same shared blocks as Event
+and POI details:
+
+- `addresses.geoLocation` and `locations.geoLocation` for the map section
+- `contacts` and `webUrls` for the `InfoCard` overview
+- `dates.timeStart`, `dates.timeEnd`, `dates.timeDescription` for appointments and calendar export
+- `openingHours` as a fallback for the shared appointment card
+- `companies` for the operating company section
+- `dataProvider.notice` for the provider notice section
+- `settings.displayOnlySummary` and `settings.onlySummaryLinkText` for content block rendering
+
+The calendar export uses the existing app calendar helper. It creates an all-day
+entry when no start or end time exists. If times are present, the app combines them
+with the first date range. The time fallback order is `dates[0].timeStart`,
+`dates[0].timeFrom`, `payload.startTime` for the start time and `dates[0].timeEnd`,
+`dates[0].timeTo`, `payload.endTime`, start time for the end time.
 
 ## Bookmark Support
 
@@ -463,15 +511,23 @@ genericItems::ParticipationProject
 The bookmark screen renders a dedicated Participation Projects section using the
 same generic item list and detail behavior.
 
+## Share Support
+
+Participation Projects use the existing generic item share flow. The list parser
+adds `shareContent` to the detail route params, and the default detail stack enables
+the share header action through `withShare: true`.
+
 ## Accessibility
 
 The implementation includes:
 
 - category row accessibility labels with category title and count
 - static intro HTML read-aloud registration
-- Participation Project detail speech parsing for title, data provider, date, teaser,
-  description and content blocks
+- Participation Project detail speech parsing for title, data provider, overview
+  fields, tags, teaser, description and content blocks
 - existing accessible list item and button components
+- shared accessible detail components such as `InfoCard`, `OpeningTimesCard` and `MapLibre`
+- explicit accessibility labels for tag text and the calendar export action
 
 After changing this module, run:
 
@@ -499,13 +555,18 @@ the correct base ref.
 11. Open a category and verify that `IndexScreen` lists only that category.
 12. Verify that `Alle Beteiligungen ansehen` opens `IndexScreen` without a category filter.
 13. Verify that the list is sorted by `publicationDate_DESC` when `publicationDate` is populated.
-14. Open a project detail and verify teaser, description, web URL and data provider.
-15. Bookmark a project and verify that it appears in the bookmark screen.
-16. Run the accessibility workflow and verify that there are no findings and coverage does not drop.
+14. Open a project detail and verify overview, tags, teaser, content block description,
+    web URL and data provider notice.
+15. Verify the map section appears when coordinates exist.
+16. Verify calendar export appears only when a start date exists.
+17. Verify share and bookmark actions are available from the detail header.
+18. Bookmark a project and verify that it appears in the bookmark screen.
+19. Run the accessibility workflow and verify that there are no findings and coverage does not drop.
 
 ## Known First-Version Limitations
 
 - Filter UI is intentionally not enabled for this module.
+- Map view and map filtering are intentionally not enabled for this module.
 - Server-side resource filter configuration for `ParticipationProject` is not required.
 - Featured project rows are limited to the first `featuredLimit` records returned by the home query.
 - Category counts are based on the first `homeLimit` records returned by the server.
