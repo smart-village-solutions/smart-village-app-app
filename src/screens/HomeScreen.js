@@ -343,6 +343,7 @@ export const HomeScreen = ({ navigation, route }) => {
     { type: DEFAULT_HOME_SCREEN_SECTIONS.DISTURBER, show: true, navigation },
     {
       categoriesNews,
+      dateTimeFormat: listDateFormat,
       fetchPolicy,
       limit: limitNews,
       navigation,
