@@ -2,7 +2,6 @@ import _isNumber from 'lodash/isNumber';
 
 import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
-import { momentFormat } from '../../helpers/momentHelper';
 import {
   volunteerApiV1Url,
   volunteerApiV2Url,
@@ -25,12 +24,42 @@ export const calendarAll = async (queryVariables?: {
   };
 
   const id = queryVariables?.contentContainerId;
+  const baseUrl =
+    id && _isNumber(id)
+      ? `${volunteerApiV2Url}calendar/container/${id}`
+      : `${volunteerApiV2Url}calendar`;
 
-  if (id && _isNumber(id)) {
-    return (await fetch(`${volunteerApiV2Url}calendar/container/${id}`, fetchObj)).json();
+  const fetchPage = async (page?: number) => {
+    const searchParams = new URLSearchParams();
+
+    if (page && page > 1) {
+      searchParams.append('page', String(page));
+    }
+
+    const queryString = searchParams.toString();
+    const requestUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+    return (await fetch(requestUrl, fetchObj)).json();
+  };
+
+  const firstPage = await fetchPage();
+  const totalPages = Number(firstPage?.pages) || 1;
+
+  if (totalPages <= 1) {
+    return firstPage;
   }
 
-  return (await fetch(`${volunteerApiV2Url}calendar`, fetchObj)).json();
+  const additionalPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, index) => fetchPage(index + 2))
+  );
+
+  return {
+    ...firstPage,
+    results: [
+      ...(firstPage?.results || []),
+      ...additionalPages.flatMap((page) => page?.results || [])
+    ]
+  };
 };
 
 export const calendar = async ({ id }: { id: number }) => {
@@ -131,7 +160,7 @@ export const calendarNew = async ({
   ).json();
 };
 
-export const calendarDelete = async (entryId: any) => {
+export const calendarDelete = async (entryId: number | string) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
