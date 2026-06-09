@@ -1,5 +1,6 @@
 import * as Location from 'expo-location';
 import _camelCase from 'lodash/camelCase';
+import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
@@ -229,6 +230,15 @@ export const Overviews = ({ navigation, route }) => {
         queryVariables,
         setIsLocationAlertShow
       });
+    }
+    if (
+      queryVariables?.genericType === GenericType.ParticipationProject &&
+      !!queryVariables.participationOrder
+    ) {
+      parsedListItems = _sortBy(
+        parsedListItems,
+        (entry) => entry.params?.details?.payload?.[queryVariables.participationOrder]
+      );
     }
 
     return parsedListItems;

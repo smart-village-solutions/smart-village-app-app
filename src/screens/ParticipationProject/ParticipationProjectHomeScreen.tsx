@@ -59,8 +59,9 @@ type ParticipationProjectItemsResponse = {
 type ParticipationProjectPayload = {
   category?: string;
   categoryName?: string;
-  type?: string;
+  itemIndex?: number | string;
   theme?: string;
+  type?: string;
 };
 
 const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
@@ -74,7 +75,7 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
   hiddenCategoryIds: [],
   homeLimit: 100,
   indexLimit: 15,
-  indexOrder: 'publicationDate_DESC',
+  indexOrder: 'itemIndex',
   introHtmlName: 'participationProjectHomeText',
   isCarouselImageFullWidth: true,
   showAllButton: true,
@@ -107,6 +108,31 @@ const getCategoryOrderEntry = (
 
 const sortByTitle = (items: CategoryGroup[]) =>
   [...items].sort((first, second) => first.title.localeCompare(second.title));
+
+const getProjectItemIndex = (item: GenericItem) => {
+  const payload = item.payload as ParticipationProjectPayload | undefined;
+  const itemIndex = Number(payload?.itemIndex);
+
+  return Number.isFinite(itemIndex) ? itemIndex : undefined;
+};
+
+const sortProjectsByItemIndex = (items: GenericItem[]) =>
+  items
+    .map((item, index) => ({ index, item, itemIndex: getProjectItemIndex(item) }))
+    .sort((first, second) => {
+      const firstHasItemIndex = first.itemIndex !== undefined;
+      const secondHasItemIndex = second.itemIndex !== undefined;
+
+      if (firstHasItemIndex && secondHasItemIndex) {
+        return Number(first.itemIndex) - Number(second.itemIndex);
+      }
+
+      if (firstHasItemIndex) return -1;
+      if (secondHasItemIndex) return 1;
+
+      return first.index - second.index;
+    })
+    .map(({ item }) => item);
 
 const getPayloadCategoryName = (payload: unknown) => {
   if (!payload || typeof payload !== 'object') return;
@@ -144,8 +170,7 @@ const getContentBlockText = (item: GenericItem) => {
     .trim();
 };
 
-const getProjectSubtitle = (item: GenericItem) =>
-  item.teaser || item.description || getContentBlockText(item);
+const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
 
 const getProjectImageUrl = (item: GenericItem) =>
   mainImageOfMediaContents(item.mediaContents) ||
@@ -187,7 +212,7 @@ const buildAllProjectsParams = (homeConfig: ParticipationProjectHomeConfig) => (
   queryVariables: {
     genericType: GenericType.ParticipationProject,
     limit: homeConfig.indexLimit,
-    order: homeConfig.indexOrder
+    participationOrder: homeConfig.indexOrder
   },
   rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
 });
@@ -276,7 +301,7 @@ export const ParticipationProjectHomeScreen = ({
     () => ({
       genericType: GenericType.ParticipationProject,
       limit: homeConfig.homeLimit,
-      order: homeConfig.indexOrder
+      participationOrder: homeConfig.indexOrder
     }),
     [homeConfig.homeLimit, homeConfig.indexOrder]
   );
@@ -310,13 +335,13 @@ export const ParticipationProjectHomeScreen = ({
             genericType: GenericType.ParticipationProject,
             categoryId: category.categoryId,
             limit: homeConfig.indexLimit,
-            order: homeConfig.indexOrder
+            participationOrder: homeConfig.indexOrder
           }
         : {
             genericType: GenericType.ParticipationProject,
             ids: category.itemIds,
             limit: homeConfig.indexLimit,
-            order: homeConfig.indexOrder
+            participationOrder: homeConfig.indexOrder
           };
 
       return {
@@ -340,7 +365,7 @@ export const ParticipationProjectHomeScreen = ({
   const featuredItems = useMemo(() => {
     if (!homeConfig.showFeatured) return [];
 
-    return genericItems
+    return sortProjectsByItemIndex(genericItems)
       .slice(0, homeConfig.featuredLimit)
       .map((item, index, items) => buildProjectListItem(item, index !== items.length - 1));
   }, [genericItems, homeConfig.featuredLimit, homeConfig.showFeatured]);

@@ -38,9 +38,7 @@ const normalizeParticipationProjectText = (text) =>
     .trim();
 
 const getParticipationProjectSubtitle = (genericItem) =>
-  normalizeParticipationProjectText(
-    genericItem.teaser || genericItem.description || genericItem.contentBlocks?.[0]?.body
-  );
+  normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);
 
 const getParticipationProjectImageUrl = (genericItem) =>
   mainImageOfMediaContents(genericItem.mediaContents) ||
