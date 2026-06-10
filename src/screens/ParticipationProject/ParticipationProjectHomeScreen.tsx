@@ -34,21 +34,23 @@ type ParticipationProjectHomeConfig = {
   carouselPublicJsonFile: string;
   categoryOrder: CategoryOrderEntry[];
   categoryTitle: string;
+  fallbackCategoryTitle: string;
   featuredLimit: number;
   featuredTitle: string;
-  fallbackCategoryTitle: string;
   hiddenCategoryIds: Array<string | number>;
   homeLimit: number;
   indexLimit: number;
   indexOrder: string;
+  introHtmlName: string;
   isCarouselImageFullWidth: boolean;
   showAllButton: boolean;
   showCarousel: boolean;
-  introHtmlName: string;
-  showFeatured: boolean;
   showEmptyCategories: boolean;
+  showFeatured: boolean;
   showIntro: boolean;
+  subtitleNumberOfLines: number;
   title: string;
+  titleNumberOfLines: number;
 };
 
 type ParticipationProjectStaticConfig = Partial<ParticipationProjectHomeConfig>;
@@ -70,9 +72,9 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
   carouselPublicJsonFile: 'participationProjectHomeCarousel',
   categoryOrder: [],
   categoryTitle: texts.participationProject.categories,
+  fallbackCategoryTitle: texts.participationProject.participationProjects,
   featuredLimit: 3,
   featuredTitle: texts.participationProject.featuredProjects,
-  fallbackCategoryTitle: texts.participationProject.participationProjects,
   hiddenCategoryIds: [],
   homeLimit: 100,
   indexLimit: 15,
@@ -84,7 +86,9 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
   showEmptyCategories: false,
   showFeatured: true,
   showIntro: true,
-  title: texts.screenTitles.participationProject.home
+  subtitleNumberOfLines: 2,
+  title: texts.screenTitles.participationProject.home,
+  titleNumberOfLines: 2
 };
 
 type CategoryGroup = {
@@ -173,10 +177,6 @@ const getContentBlockText = (item: GenericItem) => {
 
 const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
 
-const getProjectImageUrl = (item: GenericItem) =>
-  mainImageOfMediaContents(item.mediaContents) ||
-  mainImageOfMediaContents(item.contentBlocks?.[0]?.mediaContents);
-
 const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
   const type = getPayloadType(item.payload);
   const subtitle = getProjectSubtitle(item);
@@ -199,7 +199,7 @@ const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
       details: item
     },
     picture: {
-      url: getProjectImageUrl(item)
+      url: mainImageOfMediaContents(item.mediaContents)
     },
     routeName: ScreenName.Detail,
     subtitle,
@@ -333,16 +333,20 @@ export const ParticipationProjectHomeScreen = ({
       const countText = texts.participationProject.categoryCount(category.count);
       const categoryQueryVariables = category.categoryId
         ? {
-            genericType: GenericType.ParticipationProject,
             categoryId: category.categoryId,
+            genericType: GenericType.ParticipationProject,
             limit: homeConfig.indexLimit,
-            participationOrder: homeConfig.indexOrder
+            participationOrder: homeConfig.indexOrder,
+            subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
+            titleNumberOfLines: homeConfig.titleNumberOfLines
           }
         : {
             genericType: GenericType.ParticipationProject,
             ids: category.itemIds,
             limit: homeConfig.indexLimit,
-            participationOrder: homeConfig.indexOrder
+            participationOrder: homeConfig.indexOrder,
+            subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
+            titleNumberOfLines: homeConfig.titleNumberOfLines
           };
 
       return {
@@ -439,6 +443,8 @@ export const ParticipationProjectHomeScreen = ({
                     key={item.id}
                     leftImage
                     navigation={navigation}
+                    subtitleNumberOfLines={homeConfig.subtitleNumberOfLines}
+                    titleNumberOfLines={homeConfig.titleNumberOfLines}
                     withCard
                   />
                 ))}

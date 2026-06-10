@@ -40,10 +40,6 @@ const normalizeParticipationProjectText = (text) =>
 const getParticipationProjectSubtitle = (genericItem) =>
   normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);
 
-const getParticipationProjectImageUrl = (genericItem) =>
-  mainImageOfMediaContents(genericItem.mediaContents) ||
-  mainImageOfMediaContents(genericItem.contentBlocks?.[0]?.mediaContents);
-
 /* eslint-disable complexity */
 export const filterGenericItems = (item, queryVariables, filterTypes) => {
   // INIT ALL WITH TRUE AND FILTER OUT WITH COMING CONDITIONS
@@ -143,7 +139,7 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
       title: genericItem.title,
       picture: {
         url: isParticipationProject
-          ? getParticipationProjectImageUrl(genericItem)
+          ? mainImageOfMediaContents(genericItem.mediaContents)
           : genericItem.contentBlocks?.[0]?.mediaContents?.length &&
             _filter(
               genericItem.contentBlocks[0].mediaContents,
