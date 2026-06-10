@@ -48,6 +48,8 @@ type Props = {
   noSubtitle?: boolean;
   rightImage?: boolean;
   showOpenStatus?: boolean;
+  subtitleNumberOfLines?: number;
+  titleNumberOfLines?: number;
   withCard?: boolean;
 };
 
@@ -71,6 +73,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
     noSubtitle = false,
     rightImage = false,
     showOpenStatus,
+    subtitleNumberOfLines,
+    titleNumberOfLines,
     withCard = false
   }) => {
     const {
@@ -95,11 +99,17 @@ export const TextListItem: NamedExoticComponent<Props> & {
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
     let titleText = isHeadlineTitle ? (
-      <HeadlineText small>{trimNewLines(title)}</HeadlineText>
+      <HeadlineText small numberOfLines={titleNumberOfLines}>
+        {trimNewLines(title)}
+      </HeadlineText>
     ) : withCard ? (
-      <BoldText style={styles.topMargin}>{trimNewLines(title)}</BoldText>
+      <BoldText style={styles.topMargin} numberOfLines={titleNumberOfLines}>
+        {trimNewLines(title)}
+      </BoldText>
     ) : (
-      <BoldText small>{trimNewLines(title)}</BoldText>
+      <BoldText small numberOfLines={titleNumberOfLines}>
+        {trimNewLines(title)}
+      </BoldText>
     );
 
     let status = '';
@@ -115,7 +125,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
       titleText = (
         <>
           {titleText}
-          <RegularText small>{teaserTitle}</RegularText>
+          <RegularText small numberOfLines={subtitleNumberOfLines}>
+            {teaserTitle}
+          </RegularText>
         </>
       );
     }
@@ -126,7 +138,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           {titleText}
           <WrapperRow style={styles.statustitleWrapper}>
             {!!statustitleIcon && statustitleIcon}
-            <RegularText small placeholder>
+            <RegularText small placeholder numberOfLines={subtitleNumberOfLines}>
               {statustitle}
             </RegularText>
           </WrapperRow>
@@ -169,7 +181,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             {noSubtitle || !subtitle ? (
               titleText
             ) : (
-              <RegularText small style={styles.subtitle}>
+              <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
               </RegularText>
             )}
@@ -185,7 +197,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             {noSubtitle || !subtitle ? (
               titleText
             ) : (
-              <RegularText small style={styles.subtitle}>
+              <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
               </RegularText>
             )}
