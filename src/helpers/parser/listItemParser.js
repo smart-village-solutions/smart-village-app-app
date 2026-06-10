@@ -128,7 +128,12 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
       id: genericItem.id,
       categories: genericItem.categories,
       overtitle: isParticipationProject
-        ? genericItem.payload?.type
+        ? subtitle(
+            genericItem.dates?.[0]?.dateStart
+              ? momentFormatUtcToLocal(genericItem.dates[0].dateStart)
+              : undefined,
+            genericItem.payload?.type
+          )
         : genericItem.genericType !== GenericType.Deadline &&
           subtitle(
             (isCarpool && genericItem?.payload?.departureDate) ||
