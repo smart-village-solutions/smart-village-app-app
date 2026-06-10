@@ -781,7 +781,7 @@ export const texts = {
     instance: 'Mandant',
     location: 'Ort',
     no: 'Nein',
-    openProject: 'Projekt öffnen',
+    openProject: 'Beteiligung öffnen',
     openStreetMap: 'Auf OpenStreetMap anzeigen',
     organizer: 'Veranstalter',
     overview: 'Übersicht',
