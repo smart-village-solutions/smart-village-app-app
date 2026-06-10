@@ -179,6 +179,8 @@ Behavior:
   - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
 - **Read Aloud (Feature Gate)**
   - Provides a persisted toggle and feature gate.
+  - Adds a floating read-aloud toggle on supported screens when `enabledFeatures.readAloud` is enabled.
+  - The floating toggle updates the same persisted `readAloudEnabled` user preference as Settings and the header modal.
   - Adds detail page TTS playback controls (start, pause, resume, stop).
   - Adds TTS playback controls to static HTML screens (`HtmlScreen`).
   - Displays read-aloud controls directly below the media slider/image area on supported detail screens.

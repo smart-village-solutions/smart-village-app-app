@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FloatingButton } from '../components/FloatingButton';
 import { colors } from '../config';
 import { navigationConfig } from '../config/navigation';
+import { ReadAloudAvailabilityProvider } from '../ReadAloudAvailabilityProvider';
 
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
@@ -38,11 +39,13 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
       }}
       linking={linkingConfig}
     >
-      <View style={styles.flex}>
-        <StatusBar style="dark" translucent backgroundColor="transparent" />
-        {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
-        <FloatingButton publicJsonFile="floatingButton" bottomOffset={tabBottomOffset} />
-      </View>
+      <ReadAloudAvailabilityProvider>
+        <View style={styles.flex}>
+          <StatusBar style="dark" translucent backgroundColor="transparent" />
+          {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
+          <FloatingButton publicJsonFile="floatingButton" bottomOffset={tabBottomOffset} />
+        </View>
+      </ReadAloudAvailabilityProvider>
     </NavigationContainer>
   );
 };

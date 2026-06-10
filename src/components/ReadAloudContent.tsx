@@ -3,6 +3,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { removeHtml, trimNewLines } from '../helpers';
 import { useDetailSpeech } from '../hooks';
+import { useRegisterReadAloudContent } from '../ReadAloudAvailabilityProvider';
 
 import { DetailReadAloudControls } from './detail/DetailReadAloudControls';
 
@@ -17,7 +18,7 @@ const normalizeContent = (content?: string | null) => {
 };
 
 export const ReadAloudContent = ({ content, contentId = 'content' }: Props) => {
-  const { isReadAloudEnabled } = useContext(AccessibilityContext);
+  const { features, isReadAloudEnabled } = useContext(AccessibilityContext);
   const [speechRate, setSpeechRate] = useState(1);
 
   const normalizedContent = useMemo(() => normalizeContent(content), [content]);
@@ -25,6 +26,7 @@ export const ReadAloudContent = ({ content, contentId = 'content' }: Props) => {
     () => (normalizedContent.length ? [{ id: contentId, text: normalizedContent }] : []),
     [contentId, normalizedContent]
   );
+  useRegisterReadAloudContent(contentId, features.readAloud && speechItems.length > 0);
 
   const {
     activeItemId,

@@ -3,9 +3,10 @@ import _filter from 'lodash/filter';
 import React, { useContext, useMemo } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize } from '../config';
-import { useHomeRefresh, useStaticContent } from '../hooks';
+import { colors, Icon, normalize, texts } from '../config';
+import { useAccessibilityPreferences, useHomeRefresh, useStaticContent } from '../hooks';
 import { navigationRef, type RootNavigationParamList } from '../navigation/navigationRef';
+import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
@@ -29,6 +30,8 @@ export const FloatingButton = ({
 }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+  const { features, preferences, setPreference } = useAccessibilityPreferences();
+  const { isRouteAvailable } = useReadAloudAvailability();
 
   // Subscribe to navigation state to trigger re-renders on every route change.
   // We intentionally do NOT use the returned value because on the initial render
@@ -39,6 +42,12 @@ export const FloatingButton = ({
   // root NavigationContainer ref and always returns the focused leaf route.
   useNavigationState((state: NavigationState | PartialState<NavigationState>) => state);
   const activeRouteName = navigationRef.getCurrentRoute()?.name ?? '';
+  const activeRouteKey = navigationRef.getCurrentRoute()?.key;
+  const isReadAloudQuickToggleEnabled = preferences.readAloudEnabled;
+  const showReadAloudQuickToggle = features.readAloud && isRouteAvailable(activeRouteKey);
+  const readAloudQuickToggleLabel = isReadAloudQuickToggleEnabled
+    ? texts.settingsContents.accessibility.readAloud.disableQuickToggle
+    : texts.settingsContents.accessibility.readAloud.enableQuickToggle;
   const positionStyle = useMemo(
     () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
     [bottomOffset, navigationType]
@@ -52,19 +61,39 @@ export const FloatingButton = ({
 
   useHomeRefresh(refetch);
 
-  if (loading || !data?.length) return null;
-
   // Filter items whose `visibleScreens` list includes the current screen.
   // Items without a `visibleScreens` array are shown on every screen.
-  const visibleItems = _filter(
-    data,
-    ({ visibleScreens }) => !visibleScreens?.length || visibleScreens.includes(activeRouteName)
-  );
+  const visibleItems = loading
+    ? []
+    : _filter(
+        data || [],
+        ({ visibleScreens }) => !visibleScreens?.length || visibleScreens.includes(activeRouteName)
+      );
 
-  if (!visibleItems.length) return null;
+  if (!showReadAloudQuickToggle && !visibleItems.length) return null;
 
   return (
     <View style={[styles.container, positionStyle]}>
+      {showReadAloudQuickToggle && (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          accessibilityLabel={readAloudQuickToggleLabel}
+          accessibilityRole="switch"
+          accessibilityState={{ checked: isReadAloudQuickToggleEnabled }}
+          onPress={() => setPreference('readAloudEnabled', !isReadAloudQuickToggleEnabled)}
+          style={[
+            styles.button,
+            isReadAloudQuickToggleEnabled ? styles.buttonEnabled : styles.buttonDisabled
+          ]}
+        >
+          <Icon.NamedIcon
+            name={isReadAloudQuickToggleEnabled ? 'volume' : 'volume-off'}
+            color={colors.lightestText}
+            size={normalize(24)}
+          />
+        </TouchableOpacity>
+      )}
+
       {visibleItems.map((item, index) => (
         <TouchableOpacity
           activeOpacity={0.8}
@@ -78,7 +107,7 @@ export const FloatingButton = ({
 
             navigationRef.navigate(item.routeName, item.params);
           }}
-          style={styles.button}
+          style={[styles.button, styles.buttonEnabled]}
         >
           {item.icon ? (
             <Image source={{ uri: item.icon }} style={styles.icon} />
@@ -96,7 +125,6 @@ const BUTTON_SIZE = normalize(56);
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
     borderRadius: BUTTON_SIZE / 2,
     height: BUTTON_SIZE,
     justifyContent: 'center',
@@ -113,6 +141,12 @@ const styles = StyleSheet.create({
         elevation: 6
       }
     })
+  },
+  buttonDisabled: {
+    backgroundColor: colors.darkText
+  },
+  buttonEnabled: {
+    backgroundColor: colors.primary
   },
   container: {
     alignItems: 'flex-end',
