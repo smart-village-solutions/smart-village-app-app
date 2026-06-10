@@ -47,6 +47,40 @@ function afterAction(text) {
   return removeBrInLists(text);
 }
 
+function decodeHtmlEntities(text) {
+  if (!text) return;
+
+  const namedEntities = {
+    amp: '&',
+    apos: String.fromCharCode(39),
+    gt: '>',
+    lt: '<',
+    nbsp: ' ',
+    quot: '"'
+  };
+
+  return text.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (match, entity) => {
+    if (entity[0] === '#') {
+      const isHex = entity[1]?.toLowerCase() === 'x';
+      const rawCode = isHex ? entity.slice(2) : entity.slice(1);
+      const codePoint = Number.parseInt(rawCode, isHex ? 16 : 10);
+
+      if (!Number.isNaN(codePoint)) {
+        try {
+          return String.fromCodePoint(codePoint);
+        } catch {
+          return match;
+        }
+      }
+
+      return match;
+    }
+
+    const normalizedEntity = entity.toLowerCase();
+    return namedEntities[normalizedEntity] ?? match;
+  });
+}
+
 export function trimNewLines(text) {
   if (!text) return;
   text = beforeAction(text).replace(/(\r\n|\n|\r)/gm, '');
@@ -69,5 +103,5 @@ export function containsHtml(text) {
 export function removeHtml(text) {
   if (!text) return;
   const pattern = /<[^>]*>/g;
-  return trimNewLines(text.replace(pattern, ''));
+  return trimNewLines(decodeHtmlEntities(text.replace(pattern, '')));
 }
