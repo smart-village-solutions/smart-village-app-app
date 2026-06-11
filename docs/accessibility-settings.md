@@ -181,13 +181,14 @@ Behavior:
   - Provides a persisted toggle and feature gate.
   - Adds a floating read-aloud toggle on supported screens when `enabledFeatures.readAloud` is enabled.
   - The floating toggle updates the same persisted `readAloudEnabled` user preference as Settings and the header modal.
-  - Adds detail page TTS playback controls (start, pause, resume, stop).
-  - Adds TTS playback controls to static HTML screens (`HtmlScreen`).
-  - Displays read-aloud controls directly below the media slider/image area on supported detail screens.
-  - Supports in-screen speech speed selection (`0.8x`, `1.0x`, `1.2x`).
-  - The read-along text panel can be toggled on/off by the user.
+  - Displays playback controls in a floating media player that opens from the floating read-aloud toggle.
+  - Provides start/pause, resume, stop, expand, and collapse controls in the floating media player.
+  - Shows the currently read text in the compact player.
+  - Shows speech speed selection (`0.8x`, `1.0x`, `1.2x`) and a scrollable read-along text area in the expanded player.
+  - Automatically scrolls the expanded read-along text while speech playback advances.
+  - Adds bottom spacing to supported screens while the floating player is visible so page content is not covered by the player.
   - Read-along panel availability is independent from High Contrast.
-  - When **High Contrast** is enabled, the currently spoken word is highlighted in the read-aloud panel (dark background / light text).
+  - When **High Contrast** is enabled, the currently spoken word is highlighted in the expanded read-aloud player (dark background / light text).
   - Reads detail content block-by-block in display order.
   - Uses `expo-speech` and automatically chunks long strings according to `Speech.maxSpeechInputLength`.
   - Stops playback when app goes to background or when leaving the screen.

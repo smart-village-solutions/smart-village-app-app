@@ -1266,8 +1266,10 @@ export const texts = {
       readAloud: {
         title: 'Lesemodus in Details',
         description: 'Ermöglicht das Vorlesen von Detailinhalten per Sprachausgabe.',
+        collapsePlayer: 'Lesemodus-Player verkleinern',
         disableQuickToggle: 'Lesemodus ausschalten',
         enableQuickToggle: 'Lesemodus einschalten',
+        expandPlayer: 'Lesemodus-Player vergrößern',
         pause: 'Vorlesen pausieren',
         progress: 'Abschnitt {{current}} von {{total}}',
         currentTextLabel: 'Aktuell gelesen',

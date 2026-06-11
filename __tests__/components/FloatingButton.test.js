@@ -14,6 +14,7 @@ const renderFloatingButton = (props) => {
   return testRenderer;
 };
 
+const mockUseAccessibilityPreferences = jest.fn();
 const mockUseStaticContent = jest.fn();
 const mockUseHomeRefresh = jest.fn();
 const mockGetCurrentRoute = jest.fn();
@@ -21,6 +22,7 @@ const mockIsReady = jest.fn();
 const mockNavigate = jest.fn();
 
 jest.mock('../../src/hooks', () => ({
+  useAccessibilityPreferences: (...args) => mockUseAccessibilityPreferences(...args),
   useHomeRefresh: (...args) => mockUseHomeRefresh(...args),
   useStaticContent: (...args) => mockUseStaticContent(...args)
 }));
@@ -33,6 +35,17 @@ jest.mock('../../src/navigation/navigationRef', () => ({
   }
 }));
 
+jest.mock('../../src/ReadAloudAvailabilityProvider', () => ({
+  useReadAloudAvailability: () => ({
+    getRouteItems: () => [],
+    isRouteAvailable: () => false
+  })
+}));
+
+jest.mock('../../src/components/FloatingReadAloudPlayer', () => ({
+  FloatingReadAloudPlayer: () => null
+}));
+
 jest.mock('@react-navigation/native', () => ({
   useNavigationState: (selector) => selector({})
 }));
@@ -40,10 +53,21 @@ jest.mock('@react-navigation/native', () => ({
 jest.mock('../../src/config', () => ({
   colors: {
     primary: '#000000',
+    darkText: '#111111',
     lightestText: '#ffffff',
     shadow: '#000000'
   },
   normalize: (value) => value,
+  texts: {
+    settingsContents: {
+      accessibility: {
+        readAloud: {
+          disableQuickToggle: 'Disable read aloud',
+          enableQuickToggle: 'Enable read aloud'
+        }
+      }
+    }
+  },
   Icon: {
     NamedIcon: () => null
   }
@@ -61,6 +85,11 @@ describe('FloatingButton', () => {
       data: [],
       loading: false,
       refetch: jest.fn()
+    });
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: false },
+      preferences: { readAloudEnabled: false },
+      setPreference: jest.fn()
     });
 
     mockGetCurrentRoute.mockReturnValue({ name: 'Home' });

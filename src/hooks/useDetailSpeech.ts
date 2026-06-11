@@ -82,9 +82,12 @@ const buildQueue = (items: DetailSpeechItem[]) => {
 
 export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speechRate = 1) => {
   const queue = useMemo(() => (enabled ? buildQueue(items) : []), [enabled, items]);
+  const queueKey = useMemo(() => items.map((item) => `${item.id}:${item.text}`).join('|'), [items]);
   const generationRef = useRef(0);
   const activeChunkIndexRef = useRef(0);
+  const activeChunkResumeOffsetRef = useRef(0);
   const resumeChunkIndexRef = useRef(0);
+  const resumeChunkOffsetRef = useRef(0);
   const previousSpeechRateRef = useRef(speechRate);
   const mountedRef = useRef(true);
   const pausedByUserRef = useRef(false);
@@ -100,7 +103,9 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     generationRef.current += 1;
     pausedByUserRef.current = false;
     resumeChunkIndexRef.current = 0;
+    resumeChunkOffsetRef.current = 0;
     activeChunkIndexRef.current = 0;
+    activeChunkResumeOffsetRef.current = 0;
 
     try {
       await Speech.stop();
@@ -116,7 +121,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   }, []);
 
   const playFromIndex = useCallback(
-    (startIndex: number) => {
+    (startIndex: number, startOffset = 0) => {
       const generation = generationRef.current;
       const finishPlayback = () => {
         if (mountedRef.current) {
@@ -126,10 +131,14 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
           setActiveWordRange(null);
         }
         resumeChunkIndexRef.current = 0;
+        resumeChunkOffsetRef.current = 0;
         activeChunkIndexRef.current = 0;
+        activeChunkResumeOffsetRef.current = 0;
       };
 
-      const speakChunk = (chunkIndex: number) => {
+      const speakChunk = (chunkIndex: number, chunkOffset = 0) => {
+        if (!mountedRef.current) return;
+
         if (!queue.length || chunkIndex >= queue.length) {
           finishPlayback();
           return;
@@ -139,6 +148,23 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
         if (!currentChunk) return;
 
         activeChunkIndexRef.current = chunkIndex;
+        activeChunkResumeOffsetRef.current = Math.min(
+          Math.max(chunkOffset, 0),
+          currentChunk.text.length
+        );
+        const trimmedTextStart = currentChunk.text
+          .slice(activeChunkResumeOffsetRef.current)
+          .search(/\S/);
+        const speechOffset =
+          trimmedTextStart > 0
+            ? activeChunkResumeOffsetRef.current + trimmedTextStart
+            : activeChunkResumeOffsetRef.current;
+        const speechText = currentChunk.text.slice(speechOffset);
+
+        if (!speechText.trim().length) {
+          speakChunk(chunkIndex + 1);
+          return;
+        }
 
         if (mountedRef.current) {
           setIsSpeaking(true);
@@ -146,7 +172,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
           setCurrentItemIndex(currentChunk.sourceIndex);
         }
 
-        Speech.speak(currentChunk.text, {
+        Speech.speak(speechText, {
           language: DEFAULT_TTS_LANGUAGE,
           rate: speechRate,
           onBoundary: (event: { charIndex?: number; charLength?: number }) => {
@@ -155,20 +181,26 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
             const localStart = typeof event?.charIndex === 'number' ? event.charIndex : 0;
             const candidateLength =
               typeof event?.charLength === 'number' ? event.charLength : undefined;
-            const fallbackLength = Math.max(
-              currentChunk.text.slice(localStart).search(/\s|$/),
-              1
-            );
+            const fallbackLength = Math.max(speechText.slice(localStart).search(/\s|$/), 1);
             const localLength =
               candidateLength && candidateLength > 0 ? candidateLength : fallbackLength;
+            const sourceStart = speechOffset + Math.max(localStart, 0);
+
+            activeChunkResumeOffsetRef.current = sourceStart;
 
             setActiveWordRange({
               length: localLength,
-              start: currentChunk.sourceCharStart + Math.max(localStart, 0)
+              start: currentChunk.sourceCharStart + sourceStart
             });
           },
           onDone: () => {
-            if (generationRef.current !== generation || pausedByUserRef.current) return;
+            if (
+              generationRef.current !== generation ||
+              pausedByUserRef.current ||
+              !mountedRef.current
+            ) {
+              return;
+            }
 
             const nextIndex = chunkIndex + 1;
             if (nextIndex < queue.length) {
@@ -194,7 +226,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
         });
       };
 
-      speakChunk(startIndex);
+      speakChunk(startIndex, startOffset);
     },
     [items.length, queue, speechRate]
   );
@@ -205,6 +237,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     generationRef.current += 1;
     pausedByUserRef.current = false;
     resumeChunkIndexRef.current = 0;
+    resumeChunkOffsetRef.current = 0;
 
     try {
       await Speech.stop();
@@ -223,6 +256,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     generationRef.current += 1;
     pausedByUserRef.current = true;
     resumeChunkIndexRef.current = activeChunkIndexRef.current;
+    resumeChunkOffsetRef.current = activeChunkResumeOffsetRef.current;
 
     try {
       await Speech.stop();
@@ -242,23 +276,27 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
 
     generationRef.current += 1;
     pausedByUserRef.current = false;
-    playFromIndex(resumeChunkIndexRef.current);
+    playFromIndex(resumeChunkIndexRef.current, resumeChunkOffsetRef.current);
   }, [enabled, isPaused, playFromIndex, queue.length]);
 
   useEffect(() => {
     if (enabled) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void stop();
   }, [enabled, stop]);
 
   useEffect(() => {
     if (!queue.length) {
       void Speech.stop();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSpeaking(false);
       setIsPaused(false);
       setCurrentItemIndex(0);
       setActiveWordRange(null);
       resumeChunkIndexRef.current = 0;
+      resumeChunkOffsetRef.current = 0;
       activeChunkIndexRef.current = 0;
+      activeChunkResumeOffsetRef.current = 0;
       return;
     }
 
@@ -266,6 +304,14 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
       setCurrentItemIndex(0);
     }
   }, [isPaused, isSpeaking, queue.length]);
+
+  useEffect(() => {
+    return () => {
+      generationRef.current += 1;
+      pausedByUserRef.current = true;
+      void Speech.stop();
+    };
+  }, [queueKey]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState) => {
@@ -289,6 +335,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
       generationRef.current += 1;
       pausedByUserRef.current = false;
       const restartIndex = Math.min(activeChunkIndexRef.current, queue.length - 1);
+      const restartOffset = activeChunkResumeOffsetRef.current;
 
       try {
         await Speech.stop();
@@ -297,7 +344,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
       }
 
       if (!mountedRef.current) return;
-      playFromIndex(restartIndex);
+      playFromIndex(restartIndex, restartOffset);
     };
 
     void restartWithNewRate();
@@ -305,6 +352,8 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
 
   useEffect(() => {
     return () => {
+      generationRef.current += 1;
+      pausedByUserRef.current = true;
       mountedRef.current = false;
       void Speech.stop();
     };

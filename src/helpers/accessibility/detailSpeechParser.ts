@@ -1,6 +1,7 @@
 import { QUERY_TYPES } from '../../queries';
 import { GenericType } from '../../types';
-import { removeHtml, trimNewLines } from '../htmlViewHelper';
+
+import { normalizeSpeechText } from './speechTextFormatter';
 
 type DetailRecord = Record<string, unknown>;
 
@@ -26,8 +27,7 @@ const asString = (value: unknown): string | undefined =>
   typeof value === 'string' ? value : undefined;
 
 const normalizeText = (value?: string) => {
-  if (!value) return '';
-  return trimNewLines(removeHtml(value))?.replace(/\s+/g, ' ').trim();
+  return normalizeSpeechText(value);
 };
 
 const pushText = (items: DetailSpeechItem[], id: string, value?: string) => {

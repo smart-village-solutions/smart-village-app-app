@@ -10,6 +10,7 @@ import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
+import { FloatingReadAloudPlayer } from './FloatingReadAloudPlayer';
 import { Image } from './Image';
 
 type TButton = {
@@ -21,6 +22,7 @@ type TButton = {
   visibleScreens?: string[];
 };
 
+// eslint-disable-next-line complexity
 export const FloatingButton = ({
   bottomOffset = 0,
   publicJsonFile
@@ -31,7 +33,7 @@ export const FloatingButton = ({
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const { features, preferences, setPreference } = useAccessibilityPreferences();
-  const { isRouteAvailable } = useReadAloudAvailability();
+  const { getRouteItems, isRouteAvailable } = useReadAloudAvailability();
 
   // Subscribe to navigation state to trigger re-renders on every route change.
   // We intentionally do NOT use the returned value because on the initial render
@@ -44,6 +46,7 @@ export const FloatingButton = ({
   const activeRouteName = navigationRef.getCurrentRoute()?.name ?? '';
   const activeRouteKey = navigationRef.getCurrentRoute()?.key;
   const isReadAloudQuickToggleEnabled = preferences.readAloudEnabled;
+  const readAloudItems = getRouteItems(activeRouteKey);
   const showReadAloudQuickToggle = features.readAloud && isRouteAvailable(activeRouteKey);
   const readAloudQuickToggleLabel = isReadAloudQuickToggleEnabled
     ? texts.settingsContents.accessibility.readAloud.disableQuickToggle
@@ -75,23 +78,30 @@ export const FloatingButton = ({
   return (
     <View style={[styles.container, positionStyle]}>
       {showReadAloudQuickToggle && (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          accessibilityLabel={readAloudQuickToggleLabel}
-          accessibilityRole="switch"
-          accessibilityState={{ checked: isReadAloudQuickToggleEnabled }}
-          onPress={() => setPreference('readAloudEnabled', !isReadAloudQuickToggleEnabled)}
-          style={[
-            styles.button,
-            isReadAloudQuickToggleEnabled ? styles.buttonEnabled : styles.buttonDisabled
-          ]}
-        >
-          <Icon.NamedIcon
-            name={isReadAloudQuickToggleEnabled ? 'volume' : 'volume-off'}
-            color={colors.lightestText}
-            size={normalize(24)}
-          />
-        </TouchableOpacity>
+        <View style={styles.readAloudRow}>
+          {isReadAloudQuickToggleEnabled && (
+            <FloatingReadAloudPlayer key={activeRouteKey} items={readAloudItems} />
+          )}
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            accessibilityLabel={readAloudQuickToggleLabel}
+            accessibilityRole="switch"
+            accessibilityState={{ checked: isReadAloudQuickToggleEnabled }}
+            onPress={() => setPreference('readAloudEnabled', !isReadAloudQuickToggleEnabled)}
+            style={[
+              styles.button,
+              styles.readAloudButton,
+              isReadAloudQuickToggleEnabled ? styles.buttonEnabled : styles.buttonDisabled
+            ]}
+          >
+            <Icon.NamedIcon
+              name={isReadAloudQuickToggleEnabled ? 'volume' : 'volume-off'}
+              color={colors.lightestText}
+              size={normalize(24)}
+            />
+          </TouchableOpacity>
+        </View>
       )}
 
       {visibleItems.map((item, index) => (
@@ -157,5 +167,13 @@ const styles = StyleSheet.create({
   icon: {
     height: normalize(24),
     width: normalize(24)
+  },
+  readAloudButton: {
+    marginTop: 0
+  },
+  readAloudRow: {
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    marginTop: normalize(8)
   }
 });

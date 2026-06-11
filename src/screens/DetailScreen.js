@@ -5,7 +5,6 @@ import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import {
-  DetailReadAloudControls,
   EmptyMessage,
   EventRecord,
   LoadingContainer,
@@ -20,12 +19,15 @@ import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
-import { useDetailSpeech, useRefreshTime } from '../hooks';
+import { useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
-import { useRegisterReadAloudContent } from '../ReadAloudAvailabilityProvider';
+import {
+  useReadAloudScrollContentContainerStyle,
+  useRegisterReadAloudContent
+} from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
@@ -89,7 +91,7 @@ const useRootRouteByCategory = (details, navigation) => {
 
 /* eslint-disable complexity, react-hooks/static-components */
 export const DetailScreen = ({ navigation, route }) => {
-  const { features, isReadAloudEnabled } = useContext(AccessibilityContext);
+  const { features } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { conversations = false } = settings;
@@ -102,9 +104,8 @@ export const DetailScreen = ({ navigation, route }) => {
   const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
 
   const [refreshing, setRefreshing] = useState(false);
-  const [speechRate, setSpeechRate] = useState(1);
-
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
 
@@ -147,40 +148,9 @@ export const DetailScreen = ({ navigation, route }) => {
   );
   useRegisterReadAloudContent(
     `detail-${queryVariables.id}`,
+    detailSpeechItems,
     features.readAloud && detailSpeechItems.length > 0
   );
-  const {
-    activeItemId,
-    activeWordRange,
-    canStart: canStartReadAloud,
-    currentItemIndex,
-    currentItemText,
-    isPaused: isReadAloudPaused,
-    isSpeaking: isReadAloudSpeaking,
-    pause: pauseReadAloud,
-    resume: resumeReadAloud,
-    start: startReadAloud,
-    stop: stopReadAloud,
-    totalItems: readAloudTotalItems
-  } = useDetailSpeech(detailSpeechItems, isReadAloudEnabled, speechRate);
-  const readAloudControls = isReadAloudEnabled ? (
-    <DetailReadAloudControls
-      activeItemId={activeItemId}
-      activeWordRange={activeWordRange}
-      canStart={canStartReadAloud}
-      currentItemIndex={currentItemIndex}
-      currentItemText={currentItemText}
-      isPaused={isReadAloudPaused}
-      isSpeaking={isReadAloudSpeaking}
-      onPause={pauseReadAloud}
-      onResume={resumeReadAloud}
-      onStart={startReadAloud}
-      onStop={stopReadAloud}
-      onSpeechRateChange={setSpeechRate}
-      speechRate={speechRate}
-      totalItems={readAloudTotalItems}
-    />
-  ) : null;
 
   if (!hasValidDetailParams) return null;
 
@@ -229,7 +199,6 @@ export const DetailScreen = ({ navigation, route }) => {
         navigation={navigation}
         fetchPolicy={fetchPolicy}
         refetch={refetch}
-        readAloudControls={readAloudControls}
         route={route}
       />
     );
@@ -243,6 +212,7 @@ export const DetailScreen = ({ navigation, route }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -257,7 +227,6 @@ export const DetailScreen = ({ navigation, route }) => {
           navigation={navigation}
           fetchPolicy={fetchPolicy}
           refetch={refetch}
-          readAloudControls={readAloudControls}
           route={route}
         />
         <FeedbackFooter />
