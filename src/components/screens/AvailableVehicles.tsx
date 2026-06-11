@@ -2,11 +2,14 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { IconUrl, colors, normalize, texts } from '../../config';
+import { IconUrl, colors, consts, normalize, texts } from '../../config';
+import { HtmlView } from '../HtmlView';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { WrapperHorizontal } from '../Wrapper';
-import { LoadingSpinner } from '../LoadingSpinner';
+
+const { HTML_REGEX } = consts;
 
 export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
 
@@ -63,6 +66,7 @@ export const fetchAvailableVehicles = async (
   return availableVehiclesData;
 };
 
+/* eslint-disable complexity */
 export const AvailableVehicles = ({
   iconName,
   isSpecialForParkHaus,
@@ -97,7 +101,11 @@ export const AvailableVehicles = ({
 
         <ListItem containerStyle={styles.container}>
           <ListItem.Content style={styles.contentContainer}>
-            <RegularText>{status ?? texts.pointOfInterest.noAvailableVehicles}</RegularText>
+            {typeof status === 'string' && HTML_REGEX.test(status) ? (
+              <HtmlView html={status} />
+            ) : (
+              <RegularText>{status ?? texts.pointOfInterest.noAvailableVehicles}</RegularText>
+            )}
           </ListItem.Content>
         </ListItem>
 
@@ -129,6 +137,7 @@ export const AvailableVehicles = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
@@ -138,8 +147,5 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
-  },
-  divider: {
-    backgroundColor: colors.placeholder
   }
 });
