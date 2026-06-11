@@ -203,9 +203,11 @@ export const VoucherRedeem = ({
 
                   <CircularProgress
                     activeStrokeColor={colors.lighterPrimary}
+                    activeStrokeWidth={normalize(10)}
                     inActiveStrokeColor={colors.primary}
+                    inActiveStrokeWidth={normalize(10)}
                     maxValue={100}
-                    radius={120}
+                    radius={normalize(110)}
                     showProgressValue={false}
                     subtitle={texts.voucher.detailScreen.progressSubtitle}
                     subtitleColor={colors.surface}
@@ -215,7 +217,7 @@ export const VoucherRedeem = ({
                       '0'
                     )}`}
                     titleColor={colors.surface}
-                    titleFontSize={normalize(50)}
+                    titleFontSize={normalize(45)}
                     titleStyle={styles.progressTitle}
                     value={((defaultTime - remainingTime) / defaultTime) * 100}
                   />
