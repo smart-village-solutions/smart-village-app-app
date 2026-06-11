@@ -23,6 +23,7 @@ import { colors, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
@@ -33,6 +34,7 @@ export const NoticeboardFormScreen = ({
   route: any;
 }) => {
   const { isConnected } = useContext(NetworkContext);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
 
   const name = route?.params?.name ?? '';
@@ -80,6 +82,7 @@ export const NoticeboardFormScreen = ({
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

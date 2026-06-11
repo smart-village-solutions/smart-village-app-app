@@ -25,11 +25,13 @@ import { colors, texts } from '../../config';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { memberId } = useVoucher();
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
 
@@ -107,6 +109,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
   return (
     <ScrollView
+      contentContainerStyle={scrollContentContainerStyle}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}

@@ -11,6 +11,7 @@ import {
   Wrapper
 } from '../components';
 import { usePullToRefetch, useStaticContent } from '../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 
 type EntryData = {
   text?: string;
@@ -21,6 +22,7 @@ type EntryData = {
 
 export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const name = route.params?.name;
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { data, error, loading, refetch } = useStaticContent<EntryData[]>({
     name,
     skip: !name,
@@ -57,6 +59,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
   return (
     <SafeAreaViewFlex>
       <FlatList
+        contentContainerStyle={listContentContainerStyle}
         refreshControl={RefreshControl}
         data={data}
         renderItem={renderItem}

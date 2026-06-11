@@ -18,6 +18,7 @@ import { colors } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_CATEGORIES } from '../../queries/categories';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
 
 /* eslint-disable complexity */
@@ -30,6 +31,7 @@ export const DefectReportFormScreen = ({
 }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [isLocationSelect, setIsLocationSelect] = useState(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
@@ -86,6 +88,7 @@ export const DefectReportFormScreen = ({
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

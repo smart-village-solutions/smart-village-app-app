@@ -29,6 +29,7 @@ import {
 } from '../../components';
 import { colors, device, normalize, texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -37,6 +38,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {};
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
@@ -92,6 +94,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

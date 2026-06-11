@@ -19,6 +19,7 @@ import {
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import { createQuery, QUERY_TYPES } from '../queries';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 
 const { EMAIL_REGEX } = consts;
 
@@ -39,6 +40,7 @@ export const EventSuggestionScreen = ({
   navigation: NavigationProp<any>;
   route: { params: { formIntroText: string } };
 }) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [loading, setLoading] = useState(false);
   const introText = route.params.formIntroText || '';
 
@@ -107,7 +109,10 @@ export const EventSuggestionScreen = ({
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
+          keyboardShouldPersistTaps="handled"
+        >
           <Wrapper>
             <ReadAloudContent content={introText} contentId="event-suggestion-intro-content" />
             <HtmlView html={introText} />

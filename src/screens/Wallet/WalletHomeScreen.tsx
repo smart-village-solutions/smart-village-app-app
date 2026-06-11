@@ -18,6 +18,10 @@ import {
 import { colors, Icon, normalize, texts } from '../../config';
 import { getSavedCards } from '../../helpers';
 import { useStaticContent } from '../../hooks';
+import {
+  useReadAloudPlayerBottomSpacing,
+  useReadAloudScrollContentContainerStyle
+} from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, TCard } from '../../types';
 
@@ -59,6 +63,8 @@ const footer = ({
 
 export const WalletHomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<Record<string, any>>>();
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
+  const readAloudPlayerBottomSpacing = useReadAloudPlayerBottomSpacing();
   const walletHomeTexts = texts.wallet.home;
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -131,7 +137,7 @@ export const WalletHomeScreen = () => {
 
   if (!savedCards?.length) {
     return (
-      <SafeAreaViewFlex>
+      <SafeAreaViewFlex style={{ paddingBottom: readAloudPlayerBottomSpacing }}>
         <WrapperVertical>
           <WalletHeader
             description={description}
@@ -175,6 +181,7 @@ export const WalletHomeScreen = () => {
 
   return (
     <WalletList
+      contentContainerStyle={listContentContainerStyle}
       items={listItem}
       ListFooterComponent={() => (
         <WrapperVertical>{footer({ buttonText, infoIcon, infoText, navigation })}</WrapperVertical>

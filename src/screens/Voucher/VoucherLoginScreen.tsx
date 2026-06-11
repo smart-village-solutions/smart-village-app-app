@@ -24,6 +24,7 @@ import {
 } from '../../helpers/voucherHelper';
 import { useStaticContent } from '../../hooks';
 import { profileLogIn as logIn } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VoucherLogin } from '../../types';
 
 const showLoginFailAlert = () =>
@@ -32,6 +33,7 @@ const showLoginFailAlert = () =>
 // eslint-disable-next-line complexity
 export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const imageUri = route?.params?.imageUri;
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   const {
     control,
@@ -81,6 +83,7 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

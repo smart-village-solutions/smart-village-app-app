@@ -17,6 +17,7 @@ import { useStaticContent } from '../hooks';
 import { useRenderItem } from '../hooks/listHooks';
 import { NetworkContext } from '../NetworkProvider';
 import { QUERY_TYPES } from '../queries';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 import { SubQuery } from '../types';
 
 type NestedInfo = {
@@ -71,6 +72,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   const name = route.params?.name;
   const rootRouteName = route.params?.rootRouteName;
   const subQuery = route.params?.subQuery ?? undefined;
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   const { data, loading, refetch } = useStaticContent<NestedInfo>({ name, type: 'json' });
   const {
@@ -128,6 +130,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   return (
     <SafeAreaViewFlex>
       <SectionList
+        contentContainerStyle={listContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

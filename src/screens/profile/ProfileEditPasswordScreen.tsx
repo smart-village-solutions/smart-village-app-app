@@ -20,11 +20,13 @@ import {
 import { colors, consts, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { profileResetPassword } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileResetPassword } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
 export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     control,
     formState: { errors },
@@ -70,6 +72,7 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
