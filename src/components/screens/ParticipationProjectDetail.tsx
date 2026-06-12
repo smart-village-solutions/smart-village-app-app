@@ -13,9 +13,7 @@ import {
   getParticipationProjectType,
   hasParticipationProjectContent,
   matomoTrackingString,
-  momentFormat,
   normalizeParticipationProjectDates,
-  normalizeParticipationProjectTags,
   normalizeParticipationProjectValue,
   ParticipationProject
 } from '../../helpers';
@@ -28,8 +26,8 @@ import { DataProviderNotice } from '../DataProviderNotice';
 import { ImageSection } from '../ImageSection';
 import { SectionHeader } from '../SectionHeader';
 import { StorySection } from '../StorySection';
-import { BoldText, HeadlineText, RegularText } from '../Text';
-import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical, WrapperWrap } from '../Wrapper';
+import { HeadlineText, RegularText } from '../Text';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { MapLibre } from '../map';
 
@@ -50,40 +48,6 @@ type Props = {
 const { MAP } = consts;
 
 const isImage = (mediaContent: { contentType?: string }) => mediaContent.contentType === 'image';
-
-type MetaProps = Pick<
-  ParticipationProject,
-  'createdAt' | 'publicationDate' | 'publishedAt' | 'updatedAt'
->;
-
-const ParticipationProjectMeta = ({
-  createdAt,
-  publicationDate,
-  publishedAt,
-  updatedAt
-}: MetaProps) => {
-  const displayDate = publicationDate || publishedAt || createdAt;
-
-  if (!displayDate && !updatedAt) return null;
-
-  return (
-    <Wrapper noPaddingTop>
-      {!!displayDate && (
-        <WrapperRow>
-          <BoldText>{texts.participationProject.publishedAt}: </BoldText>
-          <RegularText>{momentFormat(displayDate)}</RegularText>
-        </WrapperRow>
-      )}
-
-      {!!updatedAt && updatedAt !== displayDate && (
-        <WrapperRow>
-          <BoldText>{texts.participationProject.updatedAt}: </BoldText>
-          <RegularText>{momentFormat(updatedAt)}</RegularText>
-        </WrapperRow>
-      )}
-    </Wrapper>
-  );
-};
 
 const getPayloadContact = ({ payload }: ParticipationProject) => {
   const contact = normalizeParticipationProjectValue(payload?.contact);
@@ -113,10 +77,10 @@ const ParticipationProjectInfo = ({
   data: ParticipationProject;
   openWebScreen: (link: string) => void;
 }) => {
-  const { addresses, contacts, webUrls } = data;
+  const { addresses, contacts } = data;
   const payloadContact = getPayloadContact(data);
   const infoContacts = contacts?.length ? contacts : payloadContact ? [payloadContact] : undefined;
-  const hasInfo = hasInfoCardAddress(data) || !!infoContacts?.length || !!webUrls?.length;
+  const hasInfo = hasInfoCardAddress(data) || !!infoContacts?.length;
 
   if (!hasInfo) return null;
 
@@ -129,81 +93,9 @@ const ParticipationProjectInfo = ({
           contacts={infoContacts}
           openWebScreen={openWebScreen}
           showOpeningTimes={false}
-          webUrls={webUrls}
         />
       </Wrapper>
     </>
-  );
-};
-
-const ParticipationProjectMetaRows = ({ data }: { data: ParticipationProject }) => {
-  const { payload = {} } = data;
-  const rows = [
-    {
-      label: texts.participationProject.theme,
-      value: normalizeParticipationProjectValue(payload.theme)
-    },
-    {
-      label: texts.participationProject.status,
-      value: normalizeParticipationProjectValue(payload.status)
-    },
-    {
-      label: texts.participationProject.instance,
-      value: normalizeParticipationProjectValue(payload.instance)
-    },
-    {
-      label: texts.participationProject.organizer,
-      value: normalizeParticipationProjectValue(payload.organizer)
-    },
-    {
-      label: texts.participationProject.capacity,
-      value: normalizeParticipationProjectValue(payload.capacity)
-    },
-    {
-      label: texts.participationProject.registrationRequired,
-      value:
-        typeof payload.registrationRequired === 'boolean'
-          ? payload.registrationRequired
-            ? texts.participationProject.yes
-            : texts.participationProject.no
-          : normalizeParticipationProjectValue(payload.registrationRequired)
-    },
-    {
-      label: texts.participationProject.statistics,
-      value: normalizeParticipationProjectValue(payload.statistics)
-    }
-  ].filter(({ value }) => !!value);
-  const tags = normalizeParticipationProjectTags(payload.tags);
-
-  if (!rows.length && !tags.length) return null;
-
-  return (
-    <Wrapper noPaddingTop>
-      {rows.map(({ label, value }) => (
-        <WrapperRow key={label} style={styles.metaRow}>
-          <BoldText>{label}: </BoldText>
-          <RegularText style={styles.metaValue}>{value}</RegularText>
-        </WrapperRow>
-      ))}
-
-      {!!tags.length && (
-        <WrapperRow style={styles.metaRow}>
-          <BoldText>{texts.participationProject.tags}: </BoldText>
-          <WrapperWrap style={styles.tagWrapper}>
-            {tags.map((tag) => (
-              <RegularText
-                key={tag}
-                small
-                accessibilityLabel={`(${texts.participationProject.tags}) (${tag})`}
-                style={styles.tag}
-              >
-                {tag}
-              </RegularText>
-            ))}
-          </WrapperWrap>
-        </WrapperRow>
-      )}
-    </Wrapper>
   );
 };
 
@@ -259,7 +151,7 @@ const ParticipationProjectMap = ({ data }: { data: ParticipationProject }) => {
   if (!geoLocation || !isConnected || !isMainserverUp) return null;
 
   return (
-    <WrapperVertical>
+    <WrapperVertical noPaddingTop>
       <SectionHeader title={texts.pointOfInterest.location} />
       <MapLibre
         isMultipleMarkersMap={false}
@@ -291,7 +183,7 @@ const ParticipationProjectLink = ({
   if (!link) return null;
 
   return (
-    <Wrapper>
+    <Wrapper noPaddingBottom>
       <Button
         title={description || texts.participationProject.openProject}
         onPress={() => openWebScreen(link)}
@@ -331,19 +223,8 @@ const ParticipationProjectCalendarExport = ({ data }: { data: ParticipationProje
 };
 
 /* eslint-disable complexity */
-export const ParticipationProjectDetail = ({ data, readAloudControls, route }: Props) => {
-  const {
-    companies,
-    createdAt,
-    dataProvider,
-    genericType,
-    mediaContents,
-    publicationDate,
-    publishedAt,
-    title,
-    updatedAt,
-    webUrls
-  } = data;
+export const ParticipationProjectDetail = ({ data, route }: Props) => {
+  const { companies, dataProvider, genericType, mediaContents, title, webUrls } = data;
   const link = webUrls?.[0]?.url;
   const imageMediaContents = mediaContents?.filter(isImage) || [];
   const rootRouteName = route.params?.rootRouteName ?? '';
@@ -385,32 +266,25 @@ export const ParticipationProjectDetail = ({ data, readAloudControls, route }: P
           <ImageSection mediaContents={imageMediaContents} />
         </WrapperVertical>
       )}
-      {readAloudControls}
-
-      <ParticipationProjectMeta
-        createdAt={createdAt}
-        publicationDate={publicationDate}
-        publishedAt={publishedAt}
-        updatedAt={updatedAt}
-      />
 
       <ParticipationProjectInfo data={data} openWebScreen={openWebScreen} />
-      <ParticipationProjectMetaRows data={data} />
       <ParticipationProjectAppointments data={data} />
       <ParticipationProjectContent data={data} openWebScreen={openWebScreen} />
-      <ParticipationProjectMap data={data} />
 
-      <ParticipationProjectLink
-        description={webUrls?.[0]?.description}
-        link={link}
-        openWebScreen={openWebScreen}
-      />
       {!!link && (
         <Wrapper noPaddingTop>
           <RegularText>{texts.participationProject.portalHint}</RegularText>
         </Wrapper>
       )}
+      <ParticipationProjectLink
+        description={webUrls?.[0]?.description}
+        link={link}
+        openWebScreen={openWebScreen}
+      />
+
       <ParticipationProjectCalendarExport data={data} />
+
+      <ParticipationProjectMap data={data} />
 
       {!hasParticipationProjectContent(data) && (
         <Wrapper>
