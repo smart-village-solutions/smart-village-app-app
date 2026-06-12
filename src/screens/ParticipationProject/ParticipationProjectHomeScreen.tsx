@@ -16,7 +16,15 @@ import {
   WrapperVertical
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
-import { mainImageOfMediaContents, matomoTrackingString, trimNewLines } from '../../helpers';
+import {
+  getParticipationProjectDatePrefix,
+  mainImageOfMediaContents,
+  matomoTrackingString,
+  momentFormatUtcToLocal,
+  removeHtml,
+  subtitle as formatSubtitle,
+  trimNewLines
+} from '../../helpers';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
@@ -169,18 +177,32 @@ const getContentBlockText = (item: GenericItem) => {
 
   if (!body) return;
 
-  return trimNewLines(body.replace(/<[^>]*>/g, ' '))
+  return trimNewLines(removeHtml(body) || '')
     .replace(/\s+/g, ' ')
     .trim();
 };
 
 const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
 
+const getProjectListDate = (item: GenericItem) => {
+  const date = item.dates?.[0];
+  const dateStart = date?.dateStart;
+
+  if (!dateStart) return;
+
+  return [getParticipationProjectDatePrefix(date), momentFormatUtcToLocal(dateStart)]
+    .filter(Boolean)
+    .join(' ');
+};
+
 const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
   const type = getPayloadType(item.payload);
   const subtitle = getProjectSubtitle(item);
+  const listDate = getProjectListDate(item);
 
-  const accessibilityLabel = [type, item.title, subtitle]
+  const overtitle = formatSubtitle(listDate, type);
+
+  const accessibilityLabel = [overtitle, item.title, subtitle]
     .filter(Boolean)
     .map((text) => `(${text})`)
     .join(' ');
@@ -189,7 +211,7 @@ const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
     accessibilityLabel: `${accessibilityLabel} ${consts.a11yLabel.button}`.trim(),
     bottomDivider,
     id: item.id,
-    overtitle: type,
+    overtitle,
     params: {
       title: texts.participationProject.participationProject,
       query: QUERY_TYPES.GENERIC_ITEM,
