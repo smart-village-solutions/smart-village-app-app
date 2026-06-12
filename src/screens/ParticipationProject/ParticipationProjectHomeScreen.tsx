@@ -17,17 +17,18 @@ import {
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
 import {
+  subtitle as formatSubtitle,
   getParticipationProjectDatePrefix,
   mainImageOfMediaContents,
   matomoTrackingString,
   momentFormatUtcToLocal,
   removeHtml,
-  subtitle as formatSubtitle,
   trimNewLines
 } from '../../helpers';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { GenericItem, GenericType, ScreenName } from '../../types';
 
 type ParticipationProjectHomeParamList = Record<string, object | undefined> & {
@@ -293,6 +294,9 @@ export const ParticipationProjectHomeScreen = ({
   navigation
 }: StackScreenProps<ParticipationProjectHomeParamList, ScreenName.ParticipationProjectHome>) => {
   const [refreshing, setRefreshing] = useState(false);
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle(
+    styles.contentContainer
+  );
 
   const {
     data: homeConfigData,
@@ -481,7 +485,7 @@ export const ParticipationProjectHomeScreen = ({
             )}
           </>
         }
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={listContentContainerStyle}
         keyExtractor={(item) => item.id}
         renderItem={renderCategoryItem}
         refreshControl={
