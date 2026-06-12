@@ -261,7 +261,7 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
           >
             <Icon.NamedIcon
               color={colors.lightestText}
-              name={isSpeaking ? 'player-pause-filled' : 'player-play-filled'}
+              name={isSpeaking ? 'player-pause' : 'player-play'}
               size={normalize(22)}
             />
           </Pressable>
@@ -437,14 +437,14 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(6)
   },
   speedChipSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary
+    backgroundColor: colors.gray20,
+    borderColor: colors.darkText
   },
   speedChipText: {
     color: colors.darkText
   },
   speedChipTextSelected: {
-    color: colors.lightestText
+    color: colors.darkText
   },
   speedOptions: {
     alignItems: 'center',
