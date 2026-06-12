@@ -1,6 +1,6 @@
 import { LocationObjectCoords } from 'expo-location';
 
-import { GenericItem, OpeningHour } from '../types';
+import { GenericItem, OpeningHour, SVA_Date } from '../types';
 
 import { formatAddress } from './addressHelper';
 import { removeHtml, trimNewLines } from './htmlViewHelper';
@@ -37,6 +37,16 @@ export const normalizeParticipationProjectValue = (value?: unknown) => {
   if (!text || text === 'null' || text === 'undefined') return;
 
   return text;
+};
+
+export const PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX = 'ab';
+
+export const getParticipationProjectDatePrefix = (date?: SVA_Date) => {
+  const timeDescription = normalizeParticipationProjectValue(date?.timeDescription)?.toLowerCase();
+
+  return timeDescription === PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX
+    ? PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX
+    : undefined;
 };
 
 export const normalizeParticipationProjectTags = (tags?: string[] | string) => {
@@ -98,13 +108,18 @@ export const normalizeParticipationProjectDates = ({
       const timeTo = normalizeParticipationProjectValue(date.timeTo || date.timeEnd);
       const fallbackTimeFrom = normalizeParticipationProjectValue(payload?.startTime);
       const fallbackTimeTo = normalizeParticipationProjectValue(payload?.endTime);
+      const datePrefix = getParticipationProjectDatePrefix(date);
+      const description = normalizeParticipationProjectValue(
+        date.description || (datePrefix ? undefined : date.timeDescription)
+      );
 
       if (!dateFrom && !dateTo) return;
 
       return {
         dateFrom,
+        datePrefix,
         dateTo,
-        description: normalizeParticipationProjectValue(date.description || date.timeDescription),
+        description,
         open: true,
         timeFrom: timeFrom || fallbackTimeFrom,
         timeTo: timeTo || fallbackTimeTo,
