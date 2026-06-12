@@ -43,6 +43,7 @@ export const OpeningTimesCard = ({
             timeFrom,
             timeTo,
             dateFrom,
+            datePrefix,
             dateTo,
             description,
             open,
@@ -84,7 +85,7 @@ export const OpeningTimesCard = ({
                     <DateBox>
                       {!!dateFrom && (
                         <RegularText>
-                          <RegularText small />
+                          {!!datePrefix && <RegularText small>{datePrefix} </RegularText>}
                           {momentFormat(dateFrom, returnFormatDate)}
                         </RegularText>
                       )}
@@ -147,5 +148,19 @@ const styles = StyleSheet.create({
 });
 
 OpeningTimesCard.propTypes = {
-  openingHours: PropTypes.array
+  appointmentsShowMoreButton: PropTypes.string,
+  MAX_INITIAL_NUM_TO_RENDER: PropTypes.number,
+  openingHours: PropTypes.arrayOf(
+    PropTypes.shape({
+      dateFrom: PropTypes.string,
+      datePrefix: PropTypes.string,
+      dateTo: PropTypes.string,
+      description: PropTypes.string,
+      open: PropTypes.bool,
+      timeFrom: PropTypes.string,
+      timeTo: PropTypes.string,
+      useYear: PropTypes.bool,
+      weekday: PropTypes.string
+    })
+  )
 };
