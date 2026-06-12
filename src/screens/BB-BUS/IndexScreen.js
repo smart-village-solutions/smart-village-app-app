@@ -47,11 +47,13 @@ export const IndexScreen = ({ navigation }) => {
   const { busBb = {} } = settings;
   const [areaId, setAreaId] = useState(busBb?.v2?.areaId?.toString());
   const [filter, setFilter] = useState(
-    busBb?.initialFilter?.map((entry, index) => ({
-      id: FILTER_IDS[entry.toUpperCase()],
-      title: texts.bbBus.initialFilter[entry],
-      selected: index === 0
-    })) || INITIAL_FILTER
+    busBb?.initialFilter?.length
+      ? busBb.initialFilter.map((entry, index) => ({
+          id: FILTER_IDS[entry.toUpperCase()],
+          title: texts.bbBus.initialFilter[entry],
+          selected: index === 0
+        }))
+      : INITIAL_FILTER.map((entry, index) => ({ ...entry, selected: index === 0 }))
   );
   const [refreshing, setRefreshing] = useState(false);
   const [client] = useState(BBBusClient(busBb?.uri));
