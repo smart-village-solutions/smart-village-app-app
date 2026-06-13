@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
+import { ActivityIndicator, Alert, SectionList, StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
   AugmentedReality,
@@ -39,6 +39,7 @@ import {
   setInAppPermission,
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
+import { clearPersistentCaches } from '../ReactQueryProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
@@ -189,6 +190,41 @@ export const onDeactivatePushNotifications = (revert) => {
       console.warn('An error occurred while deactivating push notifications:', error);
       revert();
     });
+};
+
+export const confirmResetPersistentCaches = () => {
+  Alert.alert(
+    texts.settingsScreen.resetPersistentCaches,
+    texts.settingsScreen.resetPersistentCachesContent,
+    [
+      {
+        text: texts.settingsScreen.resetPersistentCachesAbort,
+        style: 'cancel'
+      },
+      {
+        text: texts.settingsScreen.resetPersistentCachesConfirm,
+        onPress: clearPersistentCaches
+      }
+    ],
+    { cancelable: true }
+  );
+};
+
+const SettingsDevelopmentFooter = () => {
+  if (!__DEV__) return null;
+
+  return (
+    <Wrapper>
+      <TouchableOpacity
+        onPress={confirmResetPersistentCaches}
+        accessibilityLabel={texts.settingsScreen.resetPersistentCaches}
+      >
+        <RegularText small underline center>
+          {texts.settingsScreen.resetPersistentCaches}
+        </RegularText>
+      </TouchableOpacity>
+    </Wrapper>
+  );
 };
 
 export const SettingsScreen = ({ navigation, route }) => {
@@ -446,6 +482,7 @@ export const SettingsScreen = ({ navigation, route }) => {
               </Wrapper>
             )
           }
+          ListFooterComponent={SettingsDevelopmentFooter}
           style={styles.container}
         />
       );
