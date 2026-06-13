@@ -91,6 +91,28 @@ describe('FloatingButton', () => {
     expect(tree).toBeNull();
   });
 
+  it('does not read the current route before navigation is ready', () => {
+    mockIsReady.mockReturnValue(false);
+    mockGetCurrentRoute.mockImplementation(() => {
+      throw new Error('navigation is not ready');
+    });
+    mockUseStaticContent.mockReturnValue({
+      data: [
+        {
+          accessibilityLabel: 'Visible everywhere',
+          routeName: 'Search'
+        }
+      ],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const tree = renderFloatingButton({ bottomOffset: 0 }).toJSON();
+
+    expect(tree).not.toBeNull();
+    expect(mockGetCurrentRoute).not.toHaveBeenCalled();
+  });
+
   it('filters items by active route and keeps global items', () => {
     mockUseStaticContent.mockReturnValue({
       data: [
