@@ -262,7 +262,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       {!hasHeaderSearchBarOption ? (
         !selectedStreetId ? (
-          <DefaultKeyboardAvoidingView>
+          <DefaultKeyboardAvoidingView enabled={device.platform === 'ios'}>
             <Wrapper>
               <RegularText small>
                 {hasWasteAddressesTwoStep ? wasteTexts.hintCityAndStreet : wasteTexts.hintStreet}

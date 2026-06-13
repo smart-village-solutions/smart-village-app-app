@@ -9,6 +9,12 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
 import { Wrapper } from '../Wrapper';
 
+import {
+  getAutocompleteKeyboardMarginBottom,
+  getAutocompleteListContainerHeight,
+  getAutocompleteMaxKeyboardHeight
+} from './autocompleteLayout';
+
 type Props = {
   isFocused: boolean;
   renderSuggestions: {
@@ -94,8 +100,22 @@ export const WasteCityInput = ({
         listContainerStyle={[
           styles.autoCompleteListContainer,
           {
-            height: inputValueCitySelected ? undefined : listContainerHeight,
-            marginBottom: keyboardHeight
+            height: inputValueCitySelected
+              ? undefined
+              : getAutocompleteListContainerHeight({
+                  height: listContainerHeight,
+                  keyboardHeight,
+                  maxKeyboardHeight: getAutocompleteMaxKeyboardHeight({
+                    androidMaxHeight: normalize(250),
+                    iosMaxHeight: normalize(220),
+                    platform: device.platform
+                  }),
+                  platform: device.platform
+                }),
+            marginBottom: getAutocompleteKeyboardMarginBottom({
+              keyboardHeight,
+              platform: device.platform
+            })
           }
         ]}
         onBlur={() => setIsFocused(false)}

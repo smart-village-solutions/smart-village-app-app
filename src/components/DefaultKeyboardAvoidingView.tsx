@@ -4,12 +4,19 @@ import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 
 import { device } from '../config';
 
-export const DefaultKeyboardAvoidingView = ({ children }: { children: React.ReactNode }) => {
+export const DefaultKeyboardAvoidingView = ({
+  children,
+  enabled
+}: {
+  children: React.ReactNode;
+  enabled?: boolean;
+}) => {
   const headerHeight = useHeaderHeight();
 
   return (
     <KeyboardAvoidingView
       behavior={device.platform === 'ios' ? 'padding' : 'height'}
+      enabled={enabled ?? true}
       keyboardVerticalOffset={headerHeight}
       style={styles.flex}
     >
