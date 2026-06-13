@@ -27,16 +27,14 @@ export const usePushNotifications = (
   // like this enabling or disabling the pushNotifications requires an app restart.
   const [isActive] = useState(active);
 
-  if (isActive === false) return;
-
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
-  const [currentAppState, setCurrentAppState] = useState<AppStateStatus>();
+  const currentAppState = useRef<AppStateStatus>();
 
   const onGetActive = useCallback(async (nextState: AppStateStatus) => {
-    if (currentAppState !== nextState) {
-      setCurrentAppState(nextState);
+    if (currentAppState.current !== nextState) {
+      currentAppState.current = nextState;
 
       // timeout is needed due to ios system push permission popup triggering appstate change
       // no timeout causes the onGetActive to fire an additional request to our server
@@ -52,32 +50,46 @@ export const usePushNotifications = (
   }, []); // empty dependencies because it will only used once in the "mountEffect" below
 
   useEffect(() => {
-    Notifications.setNotificationHandler({
-      handleNotification: async () =>
-        behavior ?? {
-          shouldShowAlert: true,
-          shouldPlaySound: false,
-          shouldSetBadge: false,
-          shouldShowBanner: false,
-          shouldShowList: false
-        }
-    });
+    const shouldHandlePushNotifications = isActive !== false;
+    let subscription: ReturnType<typeof AppState.addEventListener> | undefined;
 
-    const subscription = AppState.addEventListener('change', onGetActive);
+    const handleNotificationResponse = (response: Notifications.NotificationResponse) => {
+      const id = response.notification.request.identifier;
 
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = notificationHandler
-      ? Notifications.addNotificationReceivedListener((notification) => {
-          notificationHandler(notification);
-        })
-      : null;
+      if (id === lastHandledNotificationId) {
+        return;
+      }
+
+      lastHandledNotificationId = id;
+      interactionHandler?.(response);
+    };
+
+    if (shouldHandlePushNotifications) {
+      Notifications.setNotificationHandler({
+        handleNotification: async () =>
+          behavior ?? {
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+            shouldShowBanner: __DEV__,
+            shouldShowList: __DEV__
+          }
+      });
+
+      subscription = AppState.addEventListener('change', onGetActive);
+
+      // This listener is fired whenever a notification is received while the app is foregrounded
+      notificationListener.current = notificationHandler
+        ? Notifications.addNotificationReceivedListener((notification) => {
+            notificationHandler(notification);
+          })
+        : null;
+    }
 
     // This listener is fired whenever a user taps on or interacts with a notification
-    // while the app is foregrounded or backgrounded.
+    // while the app is foregrounded or backgrounded. This must stay active even when
+    // remote push handling is disabled, because local notifications can still exist.
     responseListener.current = interactionHandler
-      ? Notifications.addNotificationResponseReceivedListener((response) => {
-          interactionHandler(response);
-        })
+      ? Notifications.addNotificationResponseReceivedListener(handleNotificationResponse)
       : null;
 
     // Handle the cold-start case: when the app was killed and the user tapped a notification
@@ -87,12 +99,7 @@ export const usePushNotifications = (
     if (interactionHandler) {
       const lastResponse = Notifications.getLastNotificationResponse();
       if (lastResponse) {
-        const id = lastResponse.notification.request.identifier;
-
-        if (id !== lastHandledNotificationId) {
-          lastHandledNotificationId = id;
-          interactionHandler(lastResponse);
-        }
+        handleNotificationResponse(lastResponse);
       }
     }
 
@@ -100,7 +107,7 @@ export const usePushNotifications = (
       notificationListener.current && notificationListener.current.remove();
       responseListener.current && responseListener.current.remove();
 
-      subscription.remove();
+      subscription?.remove();
     };
   }, []);
 };

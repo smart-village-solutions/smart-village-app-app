@@ -10,7 +10,7 @@ import { navigationConfig } from '../config/navigation';
 
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
-import { navigationRef } from './navigationRef';
+import { flushPendingNavigationActions, navigationRef } from './navigationRef';
 
 // Default bottom tab bar heights from React Navigation bottom-tabs.
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 49 : 56;
@@ -31,6 +31,7 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
   return (
     <NavigationContainer
       ref={navigationRef}
+      onReady={flushPendingNavigationActions}
       theme={{
         dark: DefaultTheme.dark,
         colors: { ...DefaultTheme.colors, background: colors.surface },

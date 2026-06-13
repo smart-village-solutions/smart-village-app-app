@@ -3,13 +3,16 @@ import * as SecureStore from 'expo-secure-store';
 import * as appJson from '../../app.json';
 import { device, secrets, staticRestSuffix, texts } from '../config';
 
+import { ensurePushNotificationToken } from './PermissionHandling';
 import {
   getPushTokenFromStorage,
   PushNotificationStorageKeys,
   serverConnectionAlert
 } from './TokenHandling';
+import { WasteReminderServerSyncPayload } from './WasteReminderLocalStorage';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
+const DEV_WASTE_REMINDER_PUSH_TOKEN = 'ExponentPushToken[dev-waste-reminder]';
 
 type LocationData =
   | {
@@ -20,14 +23,72 @@ type LocationData =
   | undefined;
 
 type SettingInfo = {
-  onDayBefore?: boolean;
+  localCoverageUntil?: Date;
+  notifyDaysBefore?: number;
+  reminderSlotId?: string;
   reminderTime: Date;
   wasteType?: string;
 } & Partial<LocationData>;
 
+type SyncActiveTypes = {
+  [key: string]: {
+    active: boolean;
+    storeId?: string | number;
+  };
+};
+
+type WasteReminderServerSyncActiveRegistration = NonNullable<
+  WasteReminderServerSyncPayload['activeReminderRegistrations']
+>[number];
+
+const logWasteReminderServerRequest = (method: 'DELETE' | 'POST', payload: unknown) => {
+  if (!__DEV__) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.info(`[WasteReminder][server ${method}]`, JSON.stringify(payload, null, 2));
+};
+
+const logWasteReminderServerDebug = (message: string, payload?: unknown) => {
+  if (!__DEV__) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.info(
+    `[WasteReminder][server] ${message}`,
+    payload ? JSON.stringify(payload, null, 2) : ''
+  );
+};
+
+const getStoredWasteReminderPushToken = () => getPushTokenFromStorage();
+
+const getWasteReminderPushToken = async () => {
+  const pushToken = await getPushTokenFromStorage();
+
+  if (pushToken) {
+    return pushToken;
+  }
+
+  const registeredToken = await ensurePushNotificationToken();
+
+  if (registeredToken) {
+    return registeredToken;
+  }
+
+  if (__DEV__) {
+    logWasteReminderServerDebug('using generated DEV push token fallback');
+
+    return DEV_WASTE_REMINDER_PUSH_TOKEN;
+  }
+
+  return undefined;
+};
+
 export const getReminderSettings = async () => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
-  const pushToken = await getPushTokenFromStorage();
+  const pushToken = await getStoredWasteReminderPushToken();
   const requestPath =
     secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister + `?token=${pushToken}`;
 
@@ -55,7 +116,9 @@ export const getReminderSettings = async () => {
 };
 
 const updateReminderSettings = async ({
-  onDayBefore,
+  localCoverageUntil,
+  notifyDaysBefore = 0,
+  reminderSlotId,
   reminderTime,
   wasteType,
   city,
@@ -63,10 +126,26 @@ const updateReminderSettings = async ({
   zip
 }: SettingInfo) => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
-  const pushToken = await getPushTokenFromStorage();
+  const pushToken = await getWasteReminderPushToken();
   const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister;
   const os =
     device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
+  const requestBody = {
+    waste_registration: {
+      ...(localCoverageUntil ? { local_coverage_until: localCoverageUntil.toISOString() } : {}),
+      ...(reminderSlotId ? { reminder_slot_id: reminderSlotId } : {}),
+      notify_at: formatTimeOfDay(reminderTime),
+      notify_for_waste_type: wasteType,
+      street,
+      city,
+      zip,
+      notify_days_before: `${notifyDaysBefore}`
+    },
+    notification_device: {
+      token: pushToken,
+      device_type: os
+    }
+  };
 
   const fetchObj: RequestInit = {
     method: 'POST',
@@ -75,24 +154,19 @@ const updateReminderSettings = async ({
       Authorization: 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      waste_registration: {
-        notify_at: `${reminderTime.getHours()}:${reminderTime.getMinutes()}+01:00`,
-        notify_for_waste_type: wasteType,
-        street,
-        city,
-        zip,
-        notify_days_before: onDayBefore ? '1' : '0'
-      },
-      notification_device: {
-        token: pushToken,
-        device_type: os
-      }
-    }),
+    body: JSON.stringify(requestBody),
     cache: 'no-cache'
   };
 
   if (accessToken && pushToken) {
+    logWasteReminderServerRequest('POST', {
+      ...requestBody,
+      notification_device: {
+        ...requestBody.notification_device,
+        token: '[present]'
+      }
+    });
+
     try {
       const response = await fetch(requestPath, fetchObj);
       const json = await response.json();
@@ -103,11 +177,17 @@ const updateReminderSettings = async ({
       return undefined;
     }
   }
+
+  logWasteReminderServerDebug('POST skipped: missing credentials', {
+    hasAccessToken: !!accessToken,
+    hasPushToken: !!pushToken,
+    wasteType
+  });
 };
 
 const deleteReminderSetting = async (id: number | string) => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
-  const pushToken = await getPushTokenFromStorage();
+  const pushToken = await getWasteReminderPushToken();
   const requestPath =
     secrets[namespace].serverUrl +
     staticRestSuffix.wasteReminderDelete +
@@ -123,9 +203,11 @@ const deleteReminderSetting = async (id: number | string) => {
   };
 
   if (accessToken && pushToken) {
+    logWasteReminderServerRequest('DELETE', { id });
+
     try {
       const response = await fetch(requestPath, fetchObj);
-      const isSuccess = response.ok;
+      const isSuccess = response.ok || response.status === 404;
 
       if (!isSuccess) {
         serverConnectionAlert(isSuccess);
@@ -134,9 +216,16 @@ const deleteReminderSetting = async (id: number | string) => {
       return isSuccess;
     } catch (error) {
       console.warn('An error occurred while deleting a reminder setting:', error);
+
       serverConnectionAlert(false, texts.errors.noData);
     }
   }
+
+  logWasteReminderServerDebug('DELETE skipped: missing credentials', {
+    hasAccessToken: !!accessToken,
+    hasPushToken: !!pushToken,
+    id
+  });
 
   return false;
 };
@@ -145,9 +234,11 @@ export const updateWasteReminderSettings = async (
   isActive: boolean,
   reminderTime: Date,
   typeKey?: string,
-  onDayBefore?: boolean,
+  onDayBefore?: boolean | number,
   locationData?: LocationData,
-  storeId?: number | string
+  storeId?: number | string,
+  localCoverageUntil?: Date,
+  reminderSlotId?: string
 ) => {
   if (!isActive && storeId) {
     return await deleteReminderSetting(storeId);
@@ -155,10 +246,173 @@ export const updateWasteReminderSettings = async (
 
   if (isActive) {
     return await updateReminderSettings({
-      onDayBefore,
+      localCoverageUntil,
+      notifyDaysBefore: getNotifyDaysBefore(onDayBefore),
+      reminderSlotId,
       reminderTime,
       wasteType: typeKey,
       ...locationData
     });
   }
+};
+
+export const syncWasteReminderSettingsWithServer = async (
+  payload: WasteReminderServerSyncPayload,
+  localCoverageUntil?: Date
+) => {
+  logWasteReminderServerDebug('sync started', {
+    activeReminderRegistrationsCount: payload.activeReminderRegistrations?.length,
+    hasLocalCoverageUntil: !!localCoverageUntil,
+    mode: payload.activeReminderRegistrations ? 'flexible' : 'legacy',
+    usedTypeKeys: payload.usedTypeKeys
+  });
+
+  let errorOccurred = false;
+  const resettedActiveTypes: SyncActiveTypes = {};
+  const legacyReminderTime =
+    payload.reminderTime instanceof Date ? payload.reminderTime : new Date(payload.reminderTime);
+
+  if (payload.activeReminderRegistrations) {
+    const syncResults = await Promise.all(
+      payload.activeReminderRegistrations.map((registration) =>
+        syncFlexibleReminderRegistration(registration, payload.locationData, localCoverageUntil)
+      )
+    );
+    const activeReminderRegistrations = syncResults.map(({ registration }) => registration);
+    errorOccurred = syncResults.some((result) => result.errorOccurred);
+
+    activeReminderRegistrations.forEach((registration) => {
+      const currentTypeState = resettedActiveTypes[registration.typeKey];
+
+      if (registration.active) {
+        resettedActiveTypes[registration.typeKey] = {
+          active: true,
+          storeId: registration.storeId ?? currentTypeState?.storeId
+        };
+
+        return;
+      }
+
+      if (!currentTypeState) {
+        resettedActiveTypes[registration.typeKey] = { active: false };
+      }
+    });
+
+    return {
+      activeTypes: resettedActiveTypes,
+      serverSyncPayload: {
+        ...payload,
+        activeReminderRegistrations
+      },
+      success: !errorOccurred
+    };
+  }
+
+  await Promise.all(
+    payload.usedTypeKeys.map(async (typeKey) => {
+      const isActive = !!payload.notificationSettings[typeKey];
+      const storeId = payload.activeTypes[typeKey]?.storeId;
+      const newIdToStore = (await updateWasteReminderSettings(
+        isActive,
+        legacyReminderTime,
+        typeKey,
+        payload.onDayBefore,
+        payload.locationData,
+        storeId,
+        localCoverageUntil
+      )) as string | number | boolean | undefined;
+
+      resettedActiveTypes[typeKey] = { active: isActive };
+
+      if (isActive && newIdToStore) {
+        resettedActiveTypes[typeKey].storeId = newIdToStore as string | number;
+      }
+
+      if (isActive && !newIdToStore) {
+        errorOccurred = true;
+      }
+
+      if (!isActive && storeId && newIdToStore !== true) {
+        errorOccurred = true;
+      }
+    })
+  );
+
+  return {
+    activeTypes: resettedActiveTypes,
+    serverSyncPayload: {
+      ...payload,
+      activeTypes: resettedActiveTypes
+    },
+    success: !errorOccurred
+  };
+};
+
+const syncFlexibleReminderRegistration = async (
+  registration: WasteReminderServerSyncActiveRegistration,
+  locationData: LocationData,
+  localCoverageUntil?: Date
+) => {
+  if (registration.active && registration.storeId) {
+    const deletedOldRegistration = await deleteReminderSetting(registration.storeId);
+
+    if (!deletedOldRegistration) {
+      return { errorOccurred: true, registration };
+    }
+  }
+
+  const newIdToStore = (await updateWasteReminderSettings(
+    registration.active,
+    buildReminderTimeDate(registration.time),
+    registration.typeKey,
+    registration.leadDays,
+    locationData,
+    registration.active ? undefined : registration.storeId,
+    localCoverageUntil,
+    registration.slotId
+  )) as string | number | boolean | undefined;
+
+  return buildFlexibleReminderSyncResult(registration, newIdToStore);
+};
+
+const buildFlexibleReminderSyncResult = (
+  registration: WasteReminderServerSyncActiveRegistration,
+  newIdToStore: string | number | boolean | undefined
+) => {
+  const updatedRegistration = { ...registration };
+
+  if (registration.active && newIdToStore) {
+    updatedRegistration.storeId = newIdToStore as string | number;
+  }
+
+  if (!registration.active && newIdToStore === true) {
+    delete updatedRegistration.storeId;
+  }
+
+  return {
+    errorOccurred:
+      (registration.active && !newIdToStore) ||
+      (!registration.active && !!registration.storeId && newIdToStore !== true),
+    registration: updatedRegistration
+  };
+};
+
+const getNotifyDaysBefore = (onDayBefore?: boolean | number) => {
+  if (typeof onDayBefore === 'number') {
+    return Math.max(0, Math.floor(onDayBefore));
+  }
+
+  return onDayBefore ? 1 : 0;
+};
+
+const formatTimeOfDay = (date: Date) =>
+  [date.getHours(), date.getMinutes()].map((value) => String(value).padStart(2, '0')).join(':');
+
+const buildReminderTimeDate = (time: string) => {
+  const [hours = '0', minutes = '0'] = time.split(':');
+  const reminderTime = new Date('2000-01-01T00:00:00.000+01:00');
+
+  reminderTime.setHours(Number(hours) || 0, Number(minutes) || 0, 0, 0);
+
+  return reminderTime;
 };
