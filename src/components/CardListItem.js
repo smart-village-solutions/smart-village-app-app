@@ -41,7 +41,11 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
   const cardContent = [];
 
   const titleComponent = (
-    <HeadlineText small={!bigTitle} style={[generalStyle, titleStyle]}>
+    <HeadlineText
+      key={keyExtractor(title, index)}
+      small={!bigTitle}
+      style={[generalStyle, titleStyle]}
+    >
       {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
     </HeadlineText>
   );
