@@ -1218,6 +1218,10 @@ export const texts = {
     }
   },
   settingsScreen: {
+    resetPersistentCaches: 'Persistente Caches zurücksetzen',
+    resetPersistentCachesAbort: 'Abbrechen',
+    resetPersistentCachesConfirm: 'Zurücksetzen',
+    resetPersistentCachesContent: 'Sollen die persistenten Caches zurückgesetzt werden?',
     intro: ''
   },
   settingsTitles: {
