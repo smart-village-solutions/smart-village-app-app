@@ -25,6 +25,7 @@ import {
   rootRouteName,
   routeNameFromQuery
 } from '../helpers';
+import { homeSectionKeyExtractor } from '../helpers/homeSectionKeyExtractor';
 import {
   useMatomoTrackScreenView,
   usePermanentFilter,
@@ -449,6 +450,7 @@ export const HomeScreen = ({ navigation, route }) => {
   return (
     <SafeAreaViewFlex>
       <FlatList
+        keyExtractor={homeSectionKeyExtractor}
         data={configuredData}
         refreshControl={
           <RefreshControl

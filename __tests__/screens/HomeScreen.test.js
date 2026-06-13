@@ -1,6 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
+import { homeSectionKeyExtractor } from '../../src/helpers/homeSectionKeyExtractor';
 import { HomeScreen } from '../../src/screens';
 
 describe('HomeScreen', () => {
@@ -18,5 +19,15 @@ describe('HomeScreen', () => {
     const rightHeaderElement = navigationOptions.headerRight;
 
     expect(rightHeaderElement).toBeTruthy();
+  });
+
+  it('builds stable keys for configured home sections', () => {
+    expect(homeSectionKeyExtractor({ type: 'carousel' }, 0)).toBe('home-section-type-carousel');
+    expect(homeSectionKeyExtractor({ query: 'newsItems', title: 'News' }, 1)).toBe(
+      'home-section-query-newsItems-title-News'
+    );
+    expect(
+      homeSectionKeyExtractor({ categoriesNews: [{ categoryId: 1 }, { categoryId: 2 }] }, 2)
+    ).toBe('home-section-categories-1-2');
   });
 });
