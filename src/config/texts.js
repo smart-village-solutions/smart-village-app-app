@@ -1222,6 +1222,7 @@ export const texts = {
     resetPersistentCachesAbort: 'Abbrechen',
     resetPersistentCachesConfirm: 'Zurücksetzen',
     resetPersistentCachesContent: 'Sollen die persistenten Caches zurückgesetzt werden?',
+    resetPersistentCachesError: 'Persistente Caches konnten nicht zurückgesetzt werden.',
     intro: ''
   },
   settingsTitles: {
@@ -1813,7 +1814,9 @@ export const texts = {
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     oneDayBefore: '1 Tag vorher',
-    reminder: 'Erinnerungen',
+    xDaysBefore: 'Tage vorher',
+    reminder: 'Erinnerung',
+    reminders: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     sameDay: 'selber Tag',
     save: 'Änderungen speichern',

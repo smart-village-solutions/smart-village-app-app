@@ -30,11 +30,88 @@ jest.mock('../../src/hooks', () => ({
   useMatomoTrackScreenView: jest.fn()
 }));
 
+jest.mock('../../src/config', () => ({
+  colors: { refreshControl: '#000000' },
+  consts: { MATOMO_TRACKING: { SCREEN_VIEW: { SETTINGS: 'Settings' } } },
+  normalize: (value) => value,
+  texts: {
+    errors: {
+      errorTitle: 'Fehler'
+    },
+    profile: {
+      termsAndConditionsAlertTitle: 'Datenschutzhinweise'
+    },
+    settingsContents: {
+      analytics: {
+        no: 'Nein',
+        onActivate: '',
+        onDeactivate: '',
+        yes: 'Ja'
+      },
+      ar: { setting: 'AR' },
+      list: { setting: 'Liste' },
+      locationService: { setting: 'Standort' },
+      mowasRegion: { setting: 'Mowas' },
+      onboarding: {
+        ok: 'OK',
+        onActivate: '',
+        onDeactivate: ''
+      },
+      permanentFilter: { setting: 'Filter' },
+      personalizedPush: { setting: 'Push' },
+      termsAndConditions: {
+        abort: 'Abbrechen',
+        ok: 'OK',
+        onDeactivate: ''
+      }
+    },
+    settingsScreen: {
+      intro: '',
+      resetPersistentCaches: 'Persistente Caches zurücksetzen',
+      resetPersistentCachesAbort: 'Abbrechen',
+      resetPersistentCachesConfirm: 'Zurücksetzen',
+      resetPersistentCachesContent: 'Sollen die persistenten Caches zurückgesetzt werden?',
+      resetPersistentCachesError: 'Persistente Caches konnten nicht zurückgesetzt werden.'
+    },
+    settingsTitles: {
+      analytics: 'Matomo Analytics',
+      onboarding: 'Onboarding',
+      pushNotifications: 'Push-Benachrichtigungen',
+      termsAndConditions: 'Datenschutzhinweise'
+    }
+  }
+}));
+
+jest.mock('../../src/helpers', () => ({
+  addToStore: jest.fn(),
+  createMatomoUserId: jest.fn(),
+  matomoSettings: jest.fn(),
+  readFromStore: jest.fn(),
+  removeMatomoUserId: jest.fn()
+}));
+
+jest.mock('../../src/pushNotifications', () => ({
+  handleSystemPermissions: jest.fn(),
+  PushNotificationStorageKeys: {},
+  setInAppPermission: jest.fn(),
+  showSystemPermissionMissingDialog: jest.fn()
+}));
+
+jest.mock('../../src/OnboardingManager', () => ({
+  HAS_TERMS_AND_CONDITIONS_STORE_KEY: 'hasTermsAndConditions',
+  ONBOARDING_STORE_KEY: 'onboarding',
+  TERMS_AND_CONDITIONS_STORE_KEY: 'termsAndConditions'
+}));
+
+jest.mock('../../src/types', () => ({
+  ScreenName: { Settings: 'Settings' }
+}));
+
 jest.mock('../../src/ReactQueryProvider', () => ({
   clearPersistentCaches: jest.fn()
 }));
 
-import { SettingsScreen } from '../../src/screens/SettingsScreen';
+import { SettingsScreen, confirmResetPersistentCaches } from '../../src/screens/SettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
 
@@ -93,6 +170,33 @@ describe('SettingsScreen', () => {
     });
 
     expect(clearPersistentCaches).toHaveBeenCalledTimes(1);
+    alertSpy.mockRestore();
+  });
+
+  it('surfaces persistent cache reset failures from the confirm action', async () => {
+    const error = new Error('cache reset failed');
+    jest.mocked(clearPersistentCaches).mockRejectedValue(error);
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    confirmResetPersistentCaches();
+
+    const confirmButton = alertSpy.mock.calls[0][2][1];
+
+    await act(async () => {
+      await confirmButton.onPress();
+    });
+
+    expect(clearPersistentCaches).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'An error occurred while resetting persistent caches:',
+      error
+    );
+    expect(alertSpy).toHaveBeenLastCalledWith(
+      'Fehler',
+      'Persistente Caches konnten nicht zurückgesetzt werden.'
+    );
+    warnSpy.mockRestore();
     alertSpy.mockRestore();
   });
 });

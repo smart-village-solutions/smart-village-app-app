@@ -203,11 +203,20 @@ export const confirmResetPersistentCaches = () => {
       },
       {
         text: texts.settingsScreen.resetPersistentCachesConfirm,
-        onPress: clearPersistentCaches
+        onPress: resetPersistentCaches
       }
     ],
     { cancelable: true }
   );
+};
+
+export const resetPersistentCaches = async () => {
+  try {
+    await clearPersistentCaches();
+  } catch (error) {
+    console.warn('An error occurred while resetting persistent caches:', error);
+    Alert.alert(texts.errors.errorTitle, texts.settingsScreen.resetPersistentCachesError);
+  }
 };
 
 const SettingsDevelopmentFooter = () => {

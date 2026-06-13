@@ -7,7 +7,11 @@ import { colors, device, texts } from '../config';
 import { parseColorToHex } from '../helpers/colorHelper';
 import { addToStore, readFromStore } from '../helpers/storageHelper';
 
-import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
+import {
+  getPushTokenFromStorage,
+  handleIncomingToken,
+  PushNotificationStorageKeys
+} from './TokenHandling';
 
 const PermissionStatus = {
   DENIED: 'denied',
@@ -52,6 +56,84 @@ const registerForPushNotificationsAsync = async () => {
   return token;
 };
 
+const ensureDefaultNotificationChannel = async () => {
+  if (device.platform === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: __DEV__
+        ? Notifications.AndroidImportance.HIGH
+        : Notifications.AndroidImportance.DEFAULT,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
+    });
+  }
+};
+
+const hasGrantedNotificationPermission = (
+  settings: Notifications.NotificationPermissionsStatus
+) => {
+  return (
+    settings.granted ||
+    settings.status === PermissionStatus.GRANTED ||
+    settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+  );
+};
+
+export const getLocalNotificationPermission = async (): Promise<boolean> => {
+  await ensureDefaultNotificationChannel();
+
+  if (!__DEV__ && !Device.isDevice) {
+    return false;
+  }
+
+  const settings = await Notifications.getPermissionsAsync();
+
+  return hasGrantedNotificationPermission(settings);
+};
+
+export const requestLocalNotificationPermission = async (): Promise<boolean> => {
+  await ensureDefaultNotificationChannel();
+
+  if (!__DEV__ && !Device.isDevice) {
+    return false;
+  }
+
+  const existingSettings = await Notifications.getPermissionsAsync();
+
+  if (hasGrantedNotificationPermission(existingSettings)) {
+    return true;
+  }
+
+  const requestedSettings = await Notifications.requestPermissionsAsync();
+
+  return hasGrantedNotificationPermission(requestedSettings);
+};
+
+export const ensurePushNotificationToken = async () => {
+  const storedToken = await getPushTokenFromStorage();
+
+  if (storedToken) {
+    return storedToken;
+  }
+
+  if (!Device.isDevice) {
+    return undefined;
+  }
+
+  await ensureDefaultNotificationChannel();
+
+  const { status } = await Notifications.getPermissionsAsync();
+
+  if (status !== PermissionStatus.GRANTED) {
+    return undefined;
+  }
+
+  const token = await registerForPushNotificationsAsync();
+  const successfullyHandled = await handleIncomingToken(token);
+
+  return successfullyHandled ? token : undefined;
+};
+
 export const handleSystemPermissions = async (
   shouldSetInAppPermission = true
 ): Promise<boolean> => {
@@ -60,14 +142,7 @@ export const handleSystemPermissions = async (
     return false;
   }
 
-  if (device.platform === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.DEFAULT,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
-    });
-  }
+  await ensureDefaultNotificationChannel();
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;

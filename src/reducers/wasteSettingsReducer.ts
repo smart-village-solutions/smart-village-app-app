@@ -18,6 +18,23 @@ export type WasteSettingsState = {
   showNotificationSettings: boolean;
   onDayBefore: boolean;
   reminderTime: Date;
+  reminderSettingsByType: WasteReminderSettingsByType;
+};
+
+export type WasteReminderSlotState = {
+  enabled: boolean;
+  leadDays: number;
+  storeId?: number | string;
+  time: string;
+};
+
+export type WasteReminderSettingsByType = {
+  [typeKey: string]: {
+    enabled: boolean;
+    reminders: {
+      [slotId: string]: WasteReminderSlotState;
+    };
+  };
 };
 
 export enum WasteSettingsActions {
@@ -29,7 +46,11 @@ export enum WasteSettingsActions {
   setNotificationSetting = 'setNotificationSetting',
   toggleNotifications = 'toggleNotifications',
   setOnDayBefore = 'setOnDayBefore',
-  setReminderTime = 'setReminderTime'
+  setReminderTime = 'setReminderTime',
+  setReminderSettingsByType = 'setReminderSettingsByType',
+  setReminderSlotEnabled = 'setReminderSlotEnabled',
+  setReminderSlotLeadDays = 'setReminderSlotLeadDays',
+  setReminderSlotTime = 'setReminderSlotTime'
 }
 
 type WasteSettingsAction =
@@ -58,7 +79,23 @@ type WasteSettingsAction =
       payload: { key: string; value: boolean };
     }
   | { type: WasteSettingsActions.setOnDayBefore; payload: boolean }
-  | { type: WasteSettingsActions.setReminderTime; payload: Date };
+  | { type: WasteSettingsActions.setReminderTime; payload: Date }
+  | {
+      type: WasteSettingsActions.setReminderSettingsByType;
+      payload: WasteReminderSettingsByType;
+    }
+  | {
+      type: WasteSettingsActions.setReminderSlotEnabled;
+      payload: { slotId: string; typeKey: string; value: boolean };
+    }
+  | {
+      type: WasteSettingsActions.setReminderSlotLeadDays;
+      payload: { slotId: string; typeKey: string; value: number };
+    }
+  | {
+      type: WasteSettingsActions.setReminderSlotTime;
+      payload: { slotId: string; typeKey: string; value: string };
+    };
 
 /* eslint-disable complexity */
 export const wasteSettingsReducer = (
@@ -97,6 +134,7 @@ export const wasteSettingsReducer = (
 
       // Update notificationSettings: If a type is deactivated, also deactivate its notifications
       const updatedNotificationSettings = { ...state.notificationSettings };
+      const updatedReminderSettingsByType = { ...state.reminderSettingsByType };
 
       Object.keys(updatedNotificationSettings).forEach((typeKey) => {
         if (updatedTypeSettings[typeKey] === false) {
@@ -104,11 +142,19 @@ export const wasteSettingsReducer = (
         }
       });
 
+      if (updatedReminderSettingsByType[key]) {
+        updatedReminderSettingsByType[key] = {
+          ...updatedReminderSettingsByType[key],
+          enabled: value
+        };
+      }
+
       return {
         ...state,
         typeSettings: updatedTypeSettings,
         selectedTypeKeys,
-        notificationSettings: updatedNotificationSettings
+        notificationSettings: updatedNotificationSettings,
+        reminderSettingsByType: updatedReminderSettingsByType
       };
     }
     case WasteSettingsActions.setInitialWasteSettings: {
@@ -133,6 +179,7 @@ export const wasteSettingsReducer = (
         typeSettings,
         selectedTypeKeys: usedTypeKeys,
         notificationSettings,
+        reminderSettingsByType: {},
         showNotificationSettings: false
       };
     }
@@ -206,10 +253,20 @@ export const wasteSettingsReducer = (
         },
         {}
       );
+      const updatedReminderSettingsByType = Object.fromEntries(
+        Object.entries(state.reminderSettingsByType).map(([typeKey, setting]) => [
+          typeKey,
+          {
+            ...setting,
+            enabled: updatedShowNotificationSettings
+          }
+        ])
+      );
 
       return {
         ...state,
         notificationSettings: updatedNotificationSettings,
+        reminderSettingsByType: updatedReminderSettingsByType,
         showNotificationSettings: updatedShowNotificationSettings
       };
     }
@@ -237,8 +294,53 @@ export const wasteSettingsReducer = (
       return { ...state, onDayBefore: action.payload };
     case WasteSettingsActions.setReminderTime:
       return { ...state, reminderTime: action.payload };
+    case WasteSettingsActions.setReminderSettingsByType:
+      return { ...state, reminderSettingsByType: action.payload };
+    case WasteSettingsActions.setReminderSlotEnabled:
+      return updateReminderSlotState(state, action.payload.typeKey, action.payload.slotId, {
+        enabled: action.payload.value
+      });
+    case WasteSettingsActions.setReminderSlotLeadDays:
+      return updateReminderSlotState(state, action.payload.typeKey, action.payload.slotId, {
+        leadDays: action.payload.value
+      });
+    case WasteSettingsActions.setReminderSlotTime:
+      return updateReminderSlotState(state, action.payload.typeKey, action.payload.slotId, {
+        time: action.payload.value
+      });
     default:
       return state;
   }
 };
 /* eslint-enable complexity */
+
+const updateReminderSlotState = (
+  state: WasteSettingsState,
+  typeKey: string,
+  slotId: string,
+  slotUpdate: Partial<WasteReminderSlotState>
+): WasteSettingsState => {
+  const typeSetting = state.reminderSettingsByType[typeKey];
+  const slotSetting = typeSetting?.reminders[slotId];
+
+  if (!typeSetting || !slotSetting) {
+    return state;
+  }
+
+  return {
+    ...state,
+    reminderSettingsByType: {
+      ...state.reminderSettingsByType,
+      [typeKey]: {
+        ...typeSetting,
+        reminders: {
+          ...typeSetting.reminders,
+          [slotId]: {
+            ...slotSetting,
+            ...slotUpdate
+          }
+        }
+      }
+    }
+  };
+};
