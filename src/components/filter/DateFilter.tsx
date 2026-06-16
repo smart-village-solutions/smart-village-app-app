@@ -145,6 +145,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
           return (
             <View key={item.name} style={[styles.container, containerStyle]}>
               <TouchableOpacity
+                accessibilityLabel={texts.accessibilityLabels.actions.selectDate}
                 style={styles.button}
                 onPress={() => {
                   setIsCollapsed((prev) =>

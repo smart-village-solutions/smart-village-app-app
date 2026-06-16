@@ -111,7 +111,10 @@ export const OpeningTimesCard = ({
 
       {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
         <WrapperVertical style={styles.noPaddingBottom}>
-          <Touchable onPress={loadMoreItems}>
+          <Touchable
+            accessibilityLabel={texts.accessibilityLabels.actions.loadMore}
+            onPress={loadMoreItems}
+          >
             <BoldText primary underline center>
               {appointmentsShowMoreButton}
             </BoldText>

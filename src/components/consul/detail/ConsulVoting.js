@@ -3,7 +3,7 @@ import React from 'react';
 import { useMutation } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../config';
+import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CAST_VOTE_ON_DEBATE } from '../../../queries/consul';
 import { SectionHeader } from '../../SectionHeader';
@@ -40,7 +40,11 @@ export const ConsulVoting = ({ votesData, refetch, id }) => {
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <Touchable onPress={() => onVoting('up')}>
+            <Touchable
+              accessibilityLabel={`Positiv bewerten ${consts.a11yLabel.button}`}
+              selected={votesFor !== undefined && votesFor}
+              onPress={() => onVoting('up')}
+            >
               <View style={styles.iconButton}>
                 <Icon.Like
                   color={votesFor !== undefined && votesFor ? colors.primary : colors.darkText}
@@ -51,7 +55,11 @@ export const ConsulVoting = ({ votesData, refetch, id }) => {
               </View>
             </Touchable>
 
-            <Touchable onPress={() => onVoting('down')}>
+            <Touchable
+              accessibilityLabel={`Negativ bewerten ${consts.a11yLabel.button}`}
+              selected={votesFor !== undefined && !votesFor}
+              onPress={() => onVoting('down')}
+            >
               <View style={styles.iconButton}>
                 <Icon.Like
                   color={votesFor !== undefined && !votesFor ? colors.error : colors.darkText}

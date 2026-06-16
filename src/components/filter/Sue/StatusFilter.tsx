@@ -22,6 +22,7 @@ export const StatusFilter = ({ containerStyle, data, filters, label, name, setFi
     <WrapperRow spaceBetween>
       {data?.map((item: StatusProps, index: number) => (
         <TouchableOpacity
+          accessibilityLabel={item.status}
           onPress={() =>
             setFilters(
               updateFilters({

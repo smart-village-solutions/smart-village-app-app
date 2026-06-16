@@ -115,6 +115,7 @@ export const PollDetail = ({ data, refetch, route, navigation }) => {
             chat
           />
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.sendComment}
             onPress={handleSubmit(onSubmit)}
             style={styles.button}
             disabled={isLoading}

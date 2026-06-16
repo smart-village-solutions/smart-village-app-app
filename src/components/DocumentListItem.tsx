@@ -16,6 +16,7 @@ export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
 
   return (
     <TouchableOpacity
+      accessibilityLabel={title || `${id}.pdf`}
       style={styles.container}
       onPress={() =>
         navigation.navigate(ScreenName.Pdf, {

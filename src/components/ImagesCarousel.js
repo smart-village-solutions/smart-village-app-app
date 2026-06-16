@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 
-import { colors, Icon, normalize } from '../config';
+import { colors, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -194,6 +194,11 @@ const pauseButton = (
 ) => (
   <TouchableOpacity
     activeOpacity={0.8}
+    accessibilityLabel={
+      isPaused
+        ? texts.accessibilityLabels.actions.startPlayback
+        : texts.accessibilityLabels.actions.pausePlayback
+    }
     style={[
       styles.pauseButton,
       {

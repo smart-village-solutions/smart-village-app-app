@@ -221,6 +221,7 @@ export const Chat = ({
       renderCustomView={(props) =>
         props?.currentMessage?.pdf?.map(({ uri }, index) => (
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.openPdf}
             key={`pdf-${index}`}
             onPress={() => openLink(uri)}
             style={styles.pdfBubble}
@@ -389,6 +390,7 @@ const renderFooter = (medias, setMedias) => (
           )}
           {type === 'pdf' && (
             <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.openPdf}
               onPress={() => openLink(uri)}
               style={[styles.mediaBorder, styles.mediaPreview, styles.pdfPreview]}
             >
@@ -396,7 +398,10 @@ const renderFooter = (medias, setMedias) => (
             </TouchableOpacity>
           )}
           <View style={styles.mediaDeleteButton}>
-            <TouchableOpacity onPress={() => setMedias(deleteArrayItem(medias, index))}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.deleteMedium}
+              onPress={() => setMedias(deleteArrayItem(medias, index))}
+            >
               <Icon.CloseCircleOutline color={colors.surface} />
             </TouchableOpacity>
           </View>

@@ -1,0 +1,33 @@
+name: Accessibility Checks
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  accessibility-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run accessibility unit tests
+        run: yarn test:accessibility
+
+      - name: Run axe accessibility violation tests
+        run: yarn test:accessibility:axe
+
+      - name: Run accessibility coverage check
+        run: yarn a11y:coverage:ci

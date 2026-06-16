@@ -267,7 +267,10 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               disabled={isLoading}
               notFullWidth
             />
-            <TouchableOpacity onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.enterActivationCode}
+              onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}
+            >
               <RegularText small center>
                 {texts.volunteer.enterCodeInfo}
               </RegularText>
@@ -276,7 +279,10 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               </RegularText>
             </TouchableOpacity>
             <RegularText />
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.back}
+              onPress={() => navigation.goBack()}
+            >
               <RegularText primary center>
                 {texts.volunteer.abort}
               </RegularText>

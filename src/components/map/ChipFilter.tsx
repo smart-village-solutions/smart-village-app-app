@@ -5,7 +5,7 @@ import { useQuery } from 'react-apollo';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconUrl, colors, normalize } from '../../config';
+import { IconUrl, colors, consts, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
 
@@ -83,7 +83,13 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
           const isActive = categoryIds.includes(item.id.toString());
 
           return (
-            <TouchableOpacity onPress={() => onPress(item, isActive)} activeOpacity={0.8}>
+            <TouchableOpacity
+              accessibilityLabel={`${item.name} ${consts.a11yLabel.button}`}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isActive }}
+              onPress={() => onPress(item, isActive)}
+              activeOpacity={0.8}
+            >
               {/* TODO: Chip from RNE? https://reactnativeelements.com/docs/3.4.2/chip */}
               <View
                 style={[

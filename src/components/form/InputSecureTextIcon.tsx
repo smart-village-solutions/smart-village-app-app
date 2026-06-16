@@ -18,6 +18,8 @@ export const InputSecureTextIcon = ({
         ? `${texts.accessibilityLabels.secureInputIcons.visible} ${a11yLabel.button}`
         : `${texts.accessibilityLabels.secureInputIcons.invisible} ${a11yLabel.button}`
     }
+    accessibilityRole="switch"
+    accessibilityState={{ checked: !isSecureTextEntry }}
     onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}
   >
     {isSecureTextEntry ? (

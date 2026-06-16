@@ -453,7 +453,10 @@ export const VolunteerFormCalendar = ({
             variant={ButtonVariants.DELETE}
           />
         )}
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.volunteer.abort}
           </RegularText>

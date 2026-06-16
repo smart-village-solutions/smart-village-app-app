@@ -280,7 +280,11 @@ export const DefectReportCreateForm = ({
           disabled={isLoading || isLoadingGenericItem}
         />
 
-        <Touchable onPress={() => navigation.goBack()} disabled={isLoading || isLoadingGenericItem}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+          disabled={isLoading || isLoadingGenericItem}
+        >
           <RegularText primary center>
             {texts.defectReport.abort}
           </RegularText>

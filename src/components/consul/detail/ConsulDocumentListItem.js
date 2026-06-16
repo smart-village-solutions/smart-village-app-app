@@ -27,6 +27,7 @@ export const ConsulDocumentListItem = ({ documentItem }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.close}
               style={[styles.button, styles.buttonClose]}
               onPress={() => setIsModalVisible(!isModalVisible)}
             >

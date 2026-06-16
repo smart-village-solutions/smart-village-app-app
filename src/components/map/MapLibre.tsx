@@ -57,7 +57,9 @@ const PROXIMITY_THRESHOLD = 0.0008;
  * Entries with a `uri` field are wrapped as `{ source: { uri } }` per the v11 ImageEntry spec.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buildMarkerImages = (markerImages: Record<string, any> | undefined): Record<string, ImageEntry> | undefined => {
+const buildMarkerImages = (
+  markerImages: Record<string, any> | undefined
+): Record<string, ImageEntry> | undefined => {
   if (!markerImages) return undefined;
 
   return Object.fromEntries(
@@ -615,18 +617,13 @@ export const MapLibre = ({
     if (mapPressTimeoutRef.current) clearTimeout(mapPressTimeoutRef.current);
 
     mapPressTimeoutRef.current = setTimeout(() => {
-      const mapPressPayload = { geometry: { coordinates: nativeEvent?.lngLat ?? [] } };
-
       if (setPinEnabled && nativeEvent?.lngLat) {
-        handleMapPressToSetNewPin(
-          mapPressPayload as {
-            geometry: { coordinates: [number, number] };
-            features?: unknown[];
-          }
-        );
+        handleMapPressToSetNewPin({
+          geometry: { coordinates: nativeEvent.lngLat as [number, number] }
+        });
       } else if (nativeEvent?.lngLat) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.(mapPressPayload as { geometry: { coordinates: number[] } });
+        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
       } else if (!setPinEnabled) {
         clearSelection(true, 'map-press-empty');
         onMapPress?.({ geometry: { coordinates: [] } });
@@ -635,8 +632,9 @@ export const MapLibre = ({
     }, MAP_PRESS_DEBOUNCE);
   };
 
-  const selectedMarkerId =
-    selectedMarker || (selectedFeature?.properties?.id as string | undefined);
+  const selectedFeatureId =
+    selectedFeature?.properties?.id != null ? String(selectedFeature.properties.id) : undefined;
+  const selectedMarkerId = selectedMarker ?? selectedFeatureId;
 
   const clusteredLocations = useMemo(() => {
     if (!selectedMarkerId) return locations;
@@ -678,10 +676,7 @@ export const MapLibre = ({
     if (!feature) {
       clearSelection(true, 'shape-source-press-empty');
       if (nativeEvent?.lngLat) {
-        // Cast event geometry to match onMapPress expected type
-        onMapPress?.({
-          geometry: { coordinates: nativeEvent.lngLat }
-        } as { geometry: { coordinates: number[] } });
+        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
       }
       return;
     }
@@ -1004,6 +999,8 @@ export const MapLibre = ({
                 lngLat={selectedLocationFeature?.geometry?.coordinates as [number, number]}
               >
                 <Pressable
+                  accessibilityLabel={`Markierung schließen ${a11yLabel.button}`}
+                  accessibilityRole="button"
                   onPress={() => {
                     clearSelection(true, 'marker-view-press');
                   }}
@@ -1031,6 +1028,7 @@ export const MapLibre = ({
       {isMyLocationButtonVisible && showsUserLocation && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
+          accessibilityRole="button"
           onPress={() => {
             setFollowsUserLocation(true);
             onMyLocationButtonPress?.({});
@@ -1051,7 +1049,11 @@ export const MapLibre = ({
 
       {!!onMaximizeButtonPress && (
         <TouchableOpacity
-          accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          accessibilityLabel={`${isFullscreenMap ? 'Karte verkleinern' : 'Karte vergrößern'} ${
+            a11yLabel.button
+          }`}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: isFullscreenMap }}
           onPress={() => {
             setIsFullscreenMap((prev) => !prev);
             onMaximizeButtonPress();

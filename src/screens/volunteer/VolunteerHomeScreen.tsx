@@ -18,7 +18,7 @@ import {
   ServiceTiles,
   Wrapper
 } from '../../components';
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
 import { useStaticContent, useVolunteerUser, VOLUNTEER_HOME_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -96,6 +96,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
                 notFullWidth
               />
               <TouchableOpacity
+                accessibilityLabel={texts.accessibilityLabels.actions.registerNow}
                 onPress={() => navigation.navigate(ScreenName.VolunteerRegistration)}
               >
                 <RegularText primary center>

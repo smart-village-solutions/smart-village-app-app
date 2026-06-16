@@ -181,7 +181,10 @@ export const ConsulRegisterScreen = ({ navigation }) => {
               title={texts.consul.next}
               disabled={isLoading}
             />
-            <Touchable onPress={() => navigation.goBack()}>
+            <Touchable
+              accessibilityLabel={texts.accessibilityLabels.actions.back}
+              onPress={() => navigation.goBack()}
+            >
               <BoldText center primary underline>
                 {texts.consul.abort.toUpperCase()}
               </BoldText>

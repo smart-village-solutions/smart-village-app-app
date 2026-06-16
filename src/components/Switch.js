@@ -35,7 +35,8 @@ export const Switch = ({ isDisabled, switchValue, toggleSwitch }) => {
 
   return (
     <RNSwitch
-      accessibilityRole="button"
+      accessibilityRole="switch"
+      accessibilityState={{ checked: switchValue, disabled: isDisabled }}
       disabled={isDisabled}
       ios_backgroundColor={isReduceTransparencyEnabled ? colors.overlayRgba : colors.shadow}
       onValueChange={toggleSwitch}

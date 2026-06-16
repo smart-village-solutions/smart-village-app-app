@@ -74,6 +74,7 @@ export const LunchScreen = ({ navigation, route }) => {
       <Wrapper>
         <WrapperRow>
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.previousDay}
             hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
             onPress={onPressPrevious}
             style={styles.left}
@@ -82,6 +83,7 @@ export const LunchScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.nextDay}
             hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
             onPress={onPressNext}
             style={styles.right}

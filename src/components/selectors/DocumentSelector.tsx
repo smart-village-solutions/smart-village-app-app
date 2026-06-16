@@ -152,6 +152,7 @@ export const DocumentSelector = ({
               )}
 
               <TouchableOpacity
+                accessibilityLabel={texts.accessibilityLabels.actions.deleteDocument}
                 onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
               >
                 <Icon.Trash color={colors.darkText} size={normalize(16)} />
@@ -178,6 +179,7 @@ export const DocumentSelector = ({
             <RegularText>{item.title}</RegularText>
 
             <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.deleteDocument}
               onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
             >
               <Icon.Trash color={colors.error} size={normalize(16)} />

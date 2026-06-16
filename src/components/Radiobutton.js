@@ -14,6 +14,8 @@ export const Radiobutton = ({
   title
 }) => (
   <RNECheckbox
+    accessibilityRole="radio"
+    accessibilityState={{ checked: selected, disabled }}
     accessibilityLabel={`${
       selected
         ? texts.accessibilityLabels.checkbox.active

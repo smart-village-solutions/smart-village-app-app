@@ -301,7 +301,10 @@ export const VolunteerFormProfile = ({
         />
       </Wrapper>
       <Divider style={styles.divider} />
-      <Touchable onPress={onPressContactTitle}>
+      <Touchable
+        accessibilityLabel={texts.accessibilityLabels.actions.toggleCommunication}
+        onPress={onPressContactTitle}
+      >
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
             <BoldText>Kommunikation</BoldText>
@@ -373,7 +376,10 @@ export const VolunteerFormProfile = ({
         </Wrapper>
       </Collapsible>
       <Divider style={styles.divider} />
-      <Touchable onPress={onPressLinksTitle}>
+      <Touchable
+        accessibilityLabel={texts.accessibilityLabels.actions.toggleLinks}
+        onPress={onPressLinksTitle}
+      >
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
             <BoldText>Links</BoldText>
@@ -511,7 +517,10 @@ export const VolunteerFormProfile = ({
           title={texts.volunteer.send}
           disabled={isLoading}
         />
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.volunteer.abort}
           </RegularText>

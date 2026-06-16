@@ -151,6 +151,7 @@ export const VolunteerPosts = ({
       {data?.results?.length > 3 && !!isGroupMember && (
         <Wrapper>
           <Touchable
+            accessibilityLabel={texts.accessibilityLabels.actions.showAllPosts}
             onPress={() =>
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.posts,

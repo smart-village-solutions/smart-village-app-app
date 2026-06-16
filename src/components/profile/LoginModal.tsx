@@ -103,6 +103,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
       <ScrollView style={[styles.containerRadius, { backgroundColor }]}>
         <>
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.close}
             onPress={() => {
               setIsVisible(false);
               navigation.pop();

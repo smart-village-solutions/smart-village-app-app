@@ -3,7 +3,7 @@ import { Alert, StyleSheet } from 'react-native';
 
 import appJson from '../../app.json';
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, consts, device } from '../config';
+import { colors, consts, device, texts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 
 import { RegularText } from './Text.js';
@@ -24,6 +24,7 @@ export const VersionNumber = () => {
     <WrapperVertical>
       <Touchable
         activeOpacity={0.8}
+        accessibilityLabel={texts.accessibilityLabels.actions.showVersionInfo}
         onPress={() => {
           Alert.alert(
             a11yLabel.versionInfos,

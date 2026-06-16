@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 
-import { colors, Icon, normalize } from '../config';
+import { colors, Icon, normalize, texts } from '../config';
 import { imageWidth } from '../helpers';
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
@@ -156,6 +156,11 @@ const pauseButton = (
 ) => (
   <TouchableOpacity
     activeOpacity={0.8}
+    accessibilityLabel={
+      isPaused
+        ? texts.accessibilityLabels.actions.startPlayback
+        : texts.accessibilityLabels.actions.pausePlayback
+    }
     style={[
       styles.pauseButton,
       {

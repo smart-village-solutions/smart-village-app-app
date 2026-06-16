@@ -115,7 +115,10 @@ export const ImageSelector = ({
           <WrapperRow center spaceBetween>
             <Image source={{ uri: values[0].uri }} containerStyle={styles.image} />
 
-            <TouchableOpacity onPress={() => deleteImageAlert(() => imageDelete(0))}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.deleteImage}
+              onPress={() => deleteImageAlert(() => imageDelete(0))}
+            >
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>

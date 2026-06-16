@@ -103,6 +103,7 @@ export const DefectReportLocationForm = ({
           />
 
           <Touchable
+            accessibilityLabel={texts.accessibilityLabels.actions.cancel}
             onPress={() => {
               setSelectedPosition(undefined);
               setShowMap(false);

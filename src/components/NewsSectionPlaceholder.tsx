@@ -28,7 +28,11 @@ export const NewsSectionPlaceholder = ({ navigation, title }: Props) => {
       <RegularText primary center small>
         {texts.placeholder.homeSectionSubtitle}
       </RegularText>
-      <TouchableOpacity onPress={() => navigation.push('Settings')} style={styles.paddingContainer}>
+      <TouchableOpacity
+        accessibilityLabel={texts.accessibilityLabels.actions.openSettings}
+        onPress={() => navigation.push('Settings')}
+        style={styles.paddingContainer}
+      >
         <BoldText center primary underline>
           {texts.placeholder.homeSectionButton.toUpperCase()}
         </BoldText>

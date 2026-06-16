@@ -23,7 +23,7 @@ export const GroupedListItem = ({ item: groupedItem, navigation, options }) => {
         <WrapperHorizontal style={styles.width85}>
           {groupedItem.map((item, index) => (
             <View key={item.id}>
-              <TouchableOpacity onPress={() => navigation.navigate(ScreenName.Detail, item.params)}>
+              <TouchableOpacity accessibilityLabel={item.title} onPress={() => navigation.navigate(ScreenName.Detail, item.params)}>
                 {!!item.topTitle && (
                   <BoldText small lighter>
                     {item.topTitle}

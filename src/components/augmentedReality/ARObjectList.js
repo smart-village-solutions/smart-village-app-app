@@ -113,7 +113,10 @@ export const ARObjectList = ({
         )}
 
         {showDeleteAllButton && (
-          <Touchable onPress={() => deleteAllDataAlert(deleteAll)}>
+          <Touchable
+            accessibilityLabel={texts.accessibilityLabels.actions.deleteAll}
+            onPress={() => deleteAllDataAlert(deleteAll)}
+          >
             <RegularText small primary underline center>
               {texts.settingsTitles.arListLayouts.allDeleteButtonTitle}
             </RegularText>

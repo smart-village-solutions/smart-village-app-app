@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AugmentedRealityView, LoadingSpinner } from '../../components';
-import { colors, Icon, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { objectParser } from '../../helpers';
 
 const errorHandler = (errorCode) => {
@@ -87,6 +87,8 @@ export const ARShowScreen = ({ navigation, route }) => {
       />
 
       <TouchableOpacity
+        accessibilityLabel={consts.a11yLabel.closeIcon}
+        accessibilityRole="button"
         style={[styles.backButton, styles.generalButtonStyle]}
         onPress={() => {
           /*
@@ -109,6 +111,8 @@ export const ARShowScreen = ({ navigation, route }) => {
       {!isObjectLoading && isAnchorFound && (
         <>
           <TouchableOpacity
+            accessibilityLabel={`Screenshot ${consts.a11yLabel.button}`}
+            accessibilityRole="button"
             style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
             onPress={takeScreenshot}
           >
@@ -116,6 +120,11 @@ export const ARShowScreen = ({ navigation, route }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
+            accessibilityLabel={`${
+              isStartAnimationAndSound ? 'Animation pausieren' : 'Animation starten'
+            } ${consts.a11yLabel.button}`}
+            accessibilityRole="button"
+            accessibilityState={{ selected: isStartAnimationAndSound }}
             style={[styles.animationButton, styles.generalButtonStyle]}
             onPress={() => setIsStartAnimationAndSound(!isStartAnimationAndSound)}
           >

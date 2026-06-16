@@ -17,6 +17,7 @@ export const FavoritesHeader = ({ navigation, style }: Props) => {
       onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
       accessibilityLabel={a11yText.bookmarksIcon}
       accessibilityHint={a11yText.bookmarksHint}
+      accessibilityRole="button"
     >
       <Icon.HeartFilled color={colors.darkText} style={style} />
     </TouchableOpacity>

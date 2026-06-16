@@ -194,7 +194,10 @@ export const VolunteerFormGroup = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.volunteer.abort}
           </RegularText>

@@ -213,6 +213,7 @@ export const VolunteerPostModal = ({
 
         {!!isEdit && (
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.deletePost}
             onPress={() => {
               Alert.alert(
                 texts.volunteer.postDelete,

@@ -211,6 +211,7 @@ export const VolunteerCommentModal = ({
 
         {!!isEdit && (
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.deleteComment}
             onPress={() => {
               Alert.alert(
                 texts.volunteer.commentDelete,

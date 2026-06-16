@@ -173,6 +173,7 @@ export const VoucherRedeem = ({
 
                 <Wrapper noPaddingBottom>
                   <Touchable
+                    accessibilityLabel={texts.accessibilityLabels.actions.close}
                     onPress={() => {
                       setIsVisible(false);
                       setIsRedeemingVoucher(false);
@@ -223,6 +224,7 @@ export const VoucherRedeem = ({
 
                 <Wrapper noPaddingBottom>
                   <Touchable
+                    accessibilityLabel={texts.accessibilityLabels.actions.close}
                     onPress={() => {
                       setIsVisible(false);
                       setIsRedeemingVoucher(false);
@@ -268,6 +270,7 @@ export const VoucherRedeem = ({
 
                       <View style={styles.quantityButtonContainer}>
                         <TouchableOpacity
+                          accessibilityLabel={texts.accessibilityLabels.actions.decreaseQuantity}
                           style={styles.quantityButton}
                           onPress={() => {
                             if (quantity > 1) {
@@ -279,6 +282,7 @@ export const VoucherRedeem = ({
                         </TouchableOpacity>
                         <BoldText lightest>{quantity}</BoldText>
                         <TouchableOpacity
+                          accessibilityLabel={texts.accessibilityLabels.actions.increaseQuantity}
                           style={styles.quantityButton}
                           onPress={() => {
                             if (quantity < availableQuantityForMember) {
@@ -295,6 +299,7 @@ export const VoucherRedeem = ({
 
                 <Wrapper noPaddingBottom>
                   <TouchableOpacity
+                    accessibilityLabel={texts.accessibilityLabels.actions.redeemVoucher}
                     disabled={!isChecked}
                     style={[styles.button, !isChecked && styles.buttonDisabled]}
                     onPress={redeemVoucher}
@@ -303,6 +308,7 @@ export const VoucherRedeem = ({
                   </TouchableOpacity>
 
                   <TouchableOpacity
+                    accessibilityLabel={texts.accessibilityLabels.actions.cancel}
                     style={[styles.button, styles.closeButton]}
                     onPress={() => {
                       setIsVisible(false);

@@ -9,7 +9,11 @@ import { Wrapper } from './Wrapper.js';
 
 export const BackToTop = ({ onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity
+      accessibilityLabel={texts.accessibilityLabels.actions.scrollToTop}
+      accessibilityRole="button"
+      onPress={onPress}
+    >
       <Wrapper>
         <Icon.ArrowUp style={styles.icon} />
         <BoldText center primary style={styles.backToTop}>

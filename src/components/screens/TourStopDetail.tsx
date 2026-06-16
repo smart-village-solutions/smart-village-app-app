@@ -139,7 +139,10 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
         <Wrapper>
           <WrapperRow itemsCenter>
             <Icon.Location color={colors.primary} style={styles.margin} />
-            <Touchable onPress={() => scrollViewRef.current?.scrollTo({ y: mapY, animated: true })}>
+            <Touchable
+              accessibilityLabel={texts.accessibilityLabels.actions.showOnMap}
+              onPress={() => scrollViewRef.current?.scrollTo({ y: mapY, animated: true })}
+            >
               <RegularText>{texts.tour.showOnMap}</RegularText>
             </Touchable>
           </WrapperRow>

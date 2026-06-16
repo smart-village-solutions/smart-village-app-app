@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { colors, device, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { addToStore, Initializer } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
@@ -61,7 +61,13 @@ const SliderButton = ({
   const buttonStyle = isDisabled ? [style, styles.sliderButtonDisabled] : style;
 
   return (
-    <TouchableOpacity onPress={onPress} style={buttonStyle}>
+    <TouchableOpacity
+      accessibilityLabel={`${label} ${consts.a11yLabel.button}`}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled }}
+      onPress={onPress}
+      style={buttonStyle}
+    >
       <BoldText lightest={isLightest}>{label.toUpperCase()}</BoldText>
     </TouchableOpacity>
   );
@@ -207,6 +213,8 @@ const TermsAndConditionsSection = ({
         <SafeAreaView style={styles.flex}>
           <View style={styles.spacer}>
             <TouchableOpacity
+              accessibilityLabel={consts.a11yLabel.closeIcon}
+              accessibilityRole="button"
               onPress={() => setModalVisibleDataPrivacy(false)}
               style={styles.termsAndConditionsCloseButton}
             >

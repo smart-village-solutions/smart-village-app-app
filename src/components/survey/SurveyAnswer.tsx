@@ -1,7 +1,7 @@
 import React, { SetStateAction, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, normalize } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { getAnswerLabel } from '../../helpers';
 import { imageWidth } from '../../helpers/imageHelper';
 import { useSurveyLanguages } from '../../hooks';
@@ -58,7 +58,11 @@ export const SurveyAnswer = ({
   if (selected || !faded) opacity = 1;
 
   return (
-    <Touchable disabled={archived} onPress={onPress}>
+    <Touchable
+      accessibilityLabel={texts.accessibilityLabels.actions.selectAnswer}
+      disabled={archived}
+      onPress={onPress}
+    >
       <Wrapper style={[styles.noPaddingBottom, { opacity }]}>
         <View style={styles.border}>
           <WrapperRow>

@@ -55,7 +55,10 @@ export const VolunteerComments = ({
     <>
       {previousCommentsCount > 0 && !hasLoadedPrevious && (
         <ListItem containerStyle={styles.loadPreviousContainer}>
-          <TouchableOpacity onPress={loadPreviousComments}>
+          <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.loadPreviousComments}
+            onPress={loadPreviousComments}
+          >
             <RegularText small>
               {texts.volunteer.showPreviousComments(previousCommentsCount)}
             </RegularText>

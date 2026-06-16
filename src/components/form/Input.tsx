@@ -76,6 +76,11 @@ export const Input = forwardRef(
       }
     }, []);
 
+    const inputAccessibilityState = {
+      disabled,
+      ...(errorMessage ? { invalid: true } : {})
+    };
+
     if (chat) {
       return (
         <RNEInput
@@ -95,6 +100,7 @@ export const Input = forwardRef(
             accessibilityLabel ||
             `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
           }
+          accessibilityState={inputAccessibilityState}
         />
       );
     }
@@ -159,6 +165,7 @@ export const Input = forwardRef(
           accessibilityLabel ||
           `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
         }
+        accessibilityState={inputAccessibilityState}
       />
     );
   }

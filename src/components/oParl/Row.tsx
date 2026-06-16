@@ -44,7 +44,7 @@ export const Row = ({
   const displayText = markdownLink ? markdownLink.text : right;
 
   return (
-    <Touchable onPress={handlePress} disabled={!handlePress}>
+    <Touchable accessibilityLabel={left} onPress={handlePress} disabled={!handlePress}>
       <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
         <Wrapper shrink style={[styles.left, { width: normalize(leftWidth) }]}>
           <RegularText small={smallLeft} numberOfLines={fullText ? undefined : 1}>
@@ -93,7 +93,7 @@ export const SimpleRow = ({ fullText, left, lineThrough, onPress, right, selecta
     <SelectedWrapper style={styles.marginTop}>
       <BoldText>{left}</BoldText>
       {onPress ? (
-        <Touchable style={styles.shrink} onPress={onPress}>
+        <Touchable accessibilityLabel={left} style={styles.shrink} onPress={onPress}>
           {innerComponent}
         </Touchable>
       ) : (

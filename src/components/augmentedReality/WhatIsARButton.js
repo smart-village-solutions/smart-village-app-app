@@ -11,6 +11,7 @@ export const WhatIsARButton = ({ data, isLoading, navigation, refetch }) => {
   return (
     <Wrapper>
       <Touchable
+        accessibilityLabel={texts.accessibilityLabels.actions.whatIsAugmentedReality}
         onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
       >
         <WrapperRow spaceBetween>

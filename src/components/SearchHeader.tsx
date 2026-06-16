@@ -29,6 +29,7 @@ export const SearchHeader = ({ navigation, style }: Props) => {
       }
       accessibilityLabel={a11yLabel.searchIcon}
       accessibilityHint={a11yLabel.searchHint}
+      accessibilityRole="button"
     >
       <Icon.Search
         color={colors.darkerPrimary}

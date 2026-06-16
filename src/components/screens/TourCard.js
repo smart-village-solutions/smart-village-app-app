@@ -54,7 +54,10 @@ export const TourCard = ({ lengthKm, tourAddresses, payload }) => {
               <Icon.Location style={styles.margin} />
               <View>
                 <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
-                <TouchableOpacity onPress={() => addressOnPress(address)}>
+                <TouchableOpacity
+                  accessibilityLabel={texts.accessibilityLabels.actions.openAddress}
+                  onPress={() => addressOnPress(address)}
+                >
                   <RegularText primary>{address}</RegularText>
                 </TouchableOpacity>
               </View>

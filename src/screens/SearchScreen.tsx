@@ -12,7 +12,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, device, Icon, texts } from '../config';
+import { colors, consts, device, Icon, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { useRenderItem } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
@@ -205,7 +205,12 @@ export const SearchScreen = ({ navigation }) => {
           }}
           cancelButtonTitle={searchTexts.abort}
           clearIcon={() => (
-            <TouchableOpacity activeOpacity={1} onPress={() => searchBarRef?.current?.clear?.()}>
+            <TouchableOpacity
+              accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${consts.a11yLabel.button}`}
+              accessibilityRole="button"
+              activeOpacity={1}
+              onPress={() => searchBarRef?.current?.clear?.()}
+            >
               <Icon.Close color={colors.darkerPrimary} />
             </TouchableOpacity>
           )}

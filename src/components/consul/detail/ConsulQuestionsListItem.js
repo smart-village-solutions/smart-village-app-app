@@ -55,6 +55,7 @@ export const ConsulQuestionsListItem = ({
 
       {questionAnswers.map((item, index) => (
         <TouchableOpacity
+          accessibilityLabel={item.title}
           disabled={isLoading || !disabled}
           onPress={() => onAnswer(item.title)}
           key={index}

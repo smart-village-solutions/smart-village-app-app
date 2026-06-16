@@ -13,13 +13,23 @@ type TCalendarListToggle = {
 
 export const CalendarListToggle = ({ showCalendar, setShowCalendar }: TCalendarListToggle) => (
   <WrapperRow style={styles.paddingLeft}>
-    <TouchableOpacity onPress={() => setShowCalendar(false)}>
+    <TouchableOpacity
+      accessibilityLabel={texts.accessibilityLabels.actions.listView}
+      accessibilityRole="button"
+      accessibilityState={{ selected: !showCalendar }}
+      onPress={() => setShowCalendar(false)}
+    >
       <WrapperRow style={[styles.calendarListToggle, !showCalendar && styles.underline]}>
         <Icon.List color={colors.darkText} size={normalize(12)} style={styles.icon} />
         <RegularText>{texts.calendarToggle.list}</RegularText>
       </WrapperRow>
     </TouchableOpacity>
-    <TouchableOpacity onPress={() => setShowCalendar(true)}>
+    <TouchableOpacity
+      accessibilityLabel={texts.accessibilityLabels.actions.calendarView}
+      accessibilityRole="button"
+      accessibilityState={{ selected: showCalendar }}
+      onPress={() => setShowCalendar(true)}
+    >
       <WrapperRow style={[styles.calendarListToggle, showCalendar && styles.underline]}>
         <Icon.CalendarToggle color={colors.darkText} size={normalize(12)} style={styles.icon} />
         <RegularText>{texts.calendarToggle.calendar}</RegularText>

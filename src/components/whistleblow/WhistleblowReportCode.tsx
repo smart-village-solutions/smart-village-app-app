@@ -76,7 +76,11 @@ export const WhistleblowReportCode = ({
           disabled={isLoading}
         />
 
-        <Touchable onPress={() => (isLoading ? null : navigation.goBack())}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          disabled={isLoading}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.whistleblow.abort}
           </RegularText>

@@ -13,7 +13,7 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { colors, Icon, normalize, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { readFromStore, SELECTED_CITY, storeSelectedCity } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
@@ -124,7 +124,11 @@ export const CitySelectionScreen = () => {
         <WrapperRow itemsCenter>
           <Title>{storedCity}</Title>
 
-          <TouchableOpacity onPress={onResetPress}>
+          <TouchableOpacity
+            accessibilityLabel={`${texts.citySelection.alerts.resetAlertTitle} ${consts.a11yLabel.button}`}
+            accessibilityRole="button"
+            onPress={onResetPress}
+          >
             <Icon.Pen color={colors.darkText} size={normalize(18)} style={styles.paddingLeft} />
           </TouchableOpacity>
         </WrapperRow>

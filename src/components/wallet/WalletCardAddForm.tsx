@@ -137,7 +137,10 @@ export const WalletCardAddForm = ({
           name="cardNumber"
           placeholder={cardNumberInputPlaceholder}
           rightIcon={
-            <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.openScanner}
+              onPress={() => setIsScannerOpen(true)}
+            >
               <Icon.NamedIcon name="scan" />
             </TouchableOpacity>
           }
