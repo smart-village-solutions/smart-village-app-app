@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Restore local secrets when switching to a branch where the file is ignored
+# or otherwise absent after checkout.
+
+if [ "$3" != "1" ]; then
+  exit 0
+fi
+
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+target_file="$repo_root/src/config/secrets.js"
+source_file="$repo_root/../secrets.js"
+
+if [ -f "$target_file" ]; then
+  exit 0
+fi
+
+if [ ! -f "$source_file" ]; then
+  echo "post-checkout: skipped restoring src/config/secrets.js because $source_file was not found."
+  exit 0
+fi
+
+cp "$source_file" "$target_file"
+echo "post-checkout: restored src/config/secrets.js from ../secrets.js"
