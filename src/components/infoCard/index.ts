@@ -1,2 +1,2 @@
+export * from './DistanceDirectionCard';
 export * from './InfoCard';
-export * from './TourDetailInfoCard';

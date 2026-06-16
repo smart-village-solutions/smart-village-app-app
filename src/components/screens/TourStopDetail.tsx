@@ -15,7 +15,7 @@ import {
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
-import { TourDetailInfoCard } from '../infoCard';
+import { DistanceDirectionCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { MediaCarousel } from '../MediaCarousel';
 import { locationServiceEnabledAlert } from '../SUE/report/SueReportLocation';
@@ -133,7 +133,13 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 
       <SectionHeader title={texts.tour.overview} />
 
-      <TourDetailInfoCard currentPosition={currentPosition} tourStopData={tourStopData} />
+      {tourStopData?.location?.geoLocation?.latitude != null &&
+        tourStopData?.location?.geoLocation?.longitude != null && (
+          <DistanceDirectionCard
+            currentPosition={currentPosition}
+            targetPosition={tourStopData.location.geoLocation}
+          />
+        )}
 
       <>
         <Wrapper>
