@@ -17,14 +17,21 @@ export function locationString(address) {
  */
 export function locationLink(mapsString, geoLocation) {
   const coords = geoLocation ? `${geoLocation.latitude},${geoLocation.longitude}` : undefined;
+  const query = mapsString || coords;
 
   switch (device.platform) {
     case 'ios':
-      return coords ? `maps:?q=${mapsString}&ll=${coords}` : `maps:?q=${mapsString}`;
+      return coords ? `maps:?q=${query}&ll=${coords}` : `maps:?q=${mapsString}`;
     case 'android':
-      return coords ? `geo:${coords}?q=${coords}(${mapsString})` : `geo:0,0?q=${mapsString}`;
+      if (coords) {
+        return mapsString
+          ? `geo:${coords}?q=${coords}(${mapsString})`
+          : `geo:${coords}?q=${coords}`;
+      }
+
+      return `geo:0,0?q=${mapsString}`;
     default:
-      return `https://maps.google.com/?q=${mapsString}`;
+      return `https://maps.google.com/?q=${query || mapsString}`;
   }
 }
 
