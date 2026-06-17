@@ -204,7 +204,7 @@ export const DistanceDirectionCard = ({ currentPosition, targetPosition }: Props
                   }
                 ]}
               >
-                <Icon.ArrowUp color={colors.primary} />
+                <Icon.ArrowNarrowUp color={colors.primary} />
               </Animated.View>
               <View>
                 <RegularText small>{texts.tour.direction}</RegularText>
