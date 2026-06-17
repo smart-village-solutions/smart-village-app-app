@@ -36,7 +36,7 @@ const GENERIC_TYPES_WITH_DATES = [
 const normalizeParticipationProjectText = (text) =>
   trimNewLines(removeHtml(text || ''))
     ?.replace(/\s+/g, ' ')
-    .trim();
+    ?.trim();
 
 const getParticipationProjectSubtitle = (genericItem) =>
   normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);

@@ -178,9 +178,11 @@ const getContentBlockText = (item: GenericItem) => {
 
   if (!body) return;
 
-  return trimNewLines(removeHtml(body) || '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const normalizedBody = trimNewLines(removeHtml(body) || '');
+
+  if (!normalizedBody) return;
+
+  return normalizedBody.replace(/\s+/g, ' ').trim();
 };
 
 const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
