@@ -17,7 +17,8 @@ all-records button.
 For this module, server-side categories should represent the participation type
 (`Beteiligungsart`), for example `Veranstaltung`, `Umfrage`, `Dialog`,
 `Bauleitplan` or `Terminvereinbarung`. Selecting a category opens `IndexScreen`,
-which fetches and renders the projects in that category sorted by `publicationDate`.
+which fetches and renders the projects in that category sorted by a payload field
+configured through `indexOrder` (default: `itemIndex`).
 
 ## Required App Version
 
@@ -167,7 +168,7 @@ Default values:
   "hiddenCategoryIds": [],
   "homeLimit": 100,
   "indexLimit": 15,
-  "indexOrder": "publicationDate_DESC",
+  "indexOrder": "itemIndex",
   "introHtmlName": "participationProjectHomeText",
   "isCarouselImageFullWidth": true,
   "showAllButton": true,
@@ -195,7 +196,7 @@ Example configuration for testing:
   "fallbackCategoryTitle": "Other projects",
   "homeLimit": 100,
   "indexLimit": 15,
-  "indexOrder": "publicationDate_DESC",
+  "indexOrder": "itemIndex",
   "introHtmlName": "participationProjectHomeText",
   "showIntro": true,
   "categoryOrder": [
@@ -219,26 +220,26 @@ Example configuration for testing:
 
 ### Home Configuration Fields
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `allButtonTitle` | `string` | Text for the row that opens all Participation Project records without a category filter. |
-| `carouselPublicJsonFile` | `string` | Static JSON content name used by `ConnectedImagesCarousel`. |
-| `categoryTitle` | `string` | Section title above the category list. |
-| `fallbackCategoryTitle` | `string` | Category title used when an item has no category. |
-| `featuredLimit` | `number` | Number of records shown in the `Besonders interessant` section. |
-| `featuredTitle` | `string` | Section title for the featured records. |
-| `homeLimit` | `number` | Number of Participation Project records fetched by the home screen for grouping. |
-| `indexLimit` | `number` | Number of records requested by the opened `IndexScreen`. |
-| `indexOrder` | `string` | Sort order passed to `genericItems`; use `publicationDate_DESC` for newest first when imported records have `publicationDate`. |
-| `introHtmlName` | `string` | Static HTML content name used for the optional intro block. |
-| `isCarouselImageFullWidth` | `boolean` | Enables full-width carousel images. |
-| `showAllButton` | `boolean` | Enables or disables the all-records navigation row. |
-| `showCarousel` | `boolean` | Enables or disables the static image carousel. |
-| `showFeatured` | `boolean` | Enables or disables the featured records section. |
-| `showIntro` | `boolean` | Enables or disables the intro HTML block. |
-| `categoryOrder` | `array` | Optional category ordering and optional display title overrides. |
-| `hiddenCategoryIds` | `array` | Category ids that should not be shown on the home screen. |
-| `showEmptyCategories` | `boolean` | If `true`, categories from `categoryOrder` are shown even when count is `0`. |
+| Field                      | Type      | Description                                                                                                                                     |
+| -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `allButtonTitle`           | `string`  | Text for the row that opens all Participation Project records without a category filter.                                                        |
+| `carouselPublicJsonFile`   | `string`  | Static JSON content name used by `ConnectedImagesCarousel`.                                                                                     |
+| `categoryTitle`            | `string`  | Section title above the category list.                                                                                                          |
+| `fallbackCategoryTitle`    | `string`  | Category title used when an item has no category.                                                                                               |
+| `featuredLimit`            | `number`  | Number of records shown in the `Besonders interessant` section.                                                                                 |
+| `featuredTitle`            | `string`  | Section title for the featured records.                                                                                                         |
+| `homeLimit`                | `number`  | Number of Participation Project records fetched by the home screen for grouping.                                                                |
+| `indexLimit`               | `number`  | Number of records requested by the opened `IndexScreen`.                                                                                        |
+| `indexOrder`               | `string`  | Payload field key used for client-side sorting in `IndexScreen` and featured rows (forwarded as `participationOrder`); defaults to `itemIndex`. |
+| `introHtmlName`            | `string`  | Static HTML content name used for the optional intro block.                                                                                     |
+| `isCarouselImageFullWidth` | `boolean` | Enables full-width carousel images.                                                                                                             |
+| `showAllButton`            | `boolean` | Enables or disables the all-records navigation row.                                                                                             |
+| `showCarousel`             | `boolean` | Enables or disables the static image carousel.                                                                                                  |
+| `showFeatured`             | `boolean` | Enables or disables the featured records section.                                                                                               |
+| `showIntro`                | `boolean` | Enables or disables the intro HTML block.                                                                                                       |
+| `categoryOrder`            | `array`   | Optional category ordering and optional display title overrides.                                                                                |
+| `hiddenCategoryIds`        | `array`   | Category ids that should not be shown on the home screen.                                                                                       |
+| `showEmptyCategories`      | `boolean` | If `true`, categories from `categoryOrder` are shown even when count is `0`.                                                                    |
 
 `categoryOrder` accepts either plain ids:
 
@@ -284,7 +285,7 @@ The JSON uses the existing `ImagesCarousel` item format:
         "queryVariables": {
           "genericType": "ParticipationProject",
           "limit": 15,
-          "order": "publicationDate_DESC"
+          "participationOrder": "itemIndex"
         },
         "rootRouteName": "ParticipationProjects"
       }
@@ -389,9 +390,12 @@ The home screen requests:
 {
   "genericType": "ParticipationProject",
   "limit": 100,
-  "order": "publicationDate_DESC"
+  "participationOrder": "itemIndex"
 }
 ```
+
+`participationOrder` is interpreted on the client and mapped to
+`payload[participationOrder]` sorting in the list screen.
 
 It then groups the returned items by `categories`. In the current Participation
 Project integration, these categories are participation types (`Beteiligungsarten`),
@@ -420,7 +424,7 @@ For normal categories, `IndexScreen` receives:
   "genericType": "ParticipationProject",
   "categoryId": "veranstaltung",
   "limit": 15,
-  "order": "publicationDate_DESC"
+  "participationOrder": "itemIndex"
 }
 ```
 
@@ -445,7 +449,7 @@ receives an `ids` query:
   "genericType": "ParticipationProject",
   "ids": ["participation-project-1", "participation-project-2"],
   "limit": 15,
-  "order": "publicationDate_DESC"
+  "participationOrder": "itemIndex"
 }
 ```
 
@@ -554,7 +558,7 @@ the correct base ref.
 10. Verify category names and item counts.
 11. Open a category and verify that `IndexScreen` lists only that category.
 12. Verify that `Alle Beteiligungen ansehen` opens `IndexScreen` without a category filter.
-13. Verify that the list is sorted by `publicationDate_DESC` when `publicationDate` is populated.
+13. Verify that the list is sorted by `payload[indexOrder]` (default: numeric `itemIndex`, ascending).
 14. Open a project detail and verify overview, tags, teaser, content block description,
     web URL and data provider notice.
 15. Verify the map section appears when coordinates exist.
@@ -568,9 +572,10 @@ the correct base ref.
 - Filter UI is intentionally not enabled for this module.
 - Map view and map filtering are intentionally not enabled for this module.
 - Server-side resource filter configuration for `ParticipationProject` is not required.
-- Featured project rows are limited to the first `featuredLimit` records returned by the home query.
+- Featured project rows are sorted by `payload[indexOrder]` (default: `itemIndex`) and limited to `featuredLimit`.
 - Category counts are based on the first `homeLimit` records returned by the server.
-- If imported records have `publicationDate: null`, `publicationDate_DESC` cannot provide a reliable chronological order. Prefer setting `publicationDate` in the importer/server, or configure another supported date order through static content.
+- `indexOrder` currently performs client-side sorting against `payload[indexOrder]` (forwarded as `participationOrder`), not GraphQL `genericItems(order: ...)` sorting.
+- For predictable ordering, provide a numeric payload field such as `payload.itemIndex`; non-numeric values fall back to deterministic text sorting.
 
 ## Related Source Files
 
