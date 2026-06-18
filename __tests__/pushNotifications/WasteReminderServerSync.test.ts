@@ -45,7 +45,7 @@ jest.mock('../../src/pushNotifications/PermissionHandling', () => ({
 describe('updateWasteReminderSettings server sync', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest.fn(async () => ({
+    globalThis.fetch = jest.fn(async () => ({
       json: async () => ({ id: 123 }),
       ok: true,
       status: 201
@@ -53,31 +53,30 @@ describe('updateWasteReminderSettings server sync', () => {
   });
 
   it('sends local coverage when provided', async () => {
-    await updateWasteReminderSettings(
-      true,
-      new Date('2000-01-01T09:00:00.000+01:00'),
-      'paper',
-      true,
-      { city: 'Berlin', street: 'Test Street', zip: '12345' },
-      undefined,
-      new Date('2026-10-15T09:00:00.000+02:00')
-    );
+    await updateWasteReminderSettings({
+      isActive: true,
+      localCoverageUntil: new Date('2026-10-15T09:00:00.000+02:00'),
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+      onDayBefore: true,
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      typeKey: 'paper'
+    });
 
-    const requestBody = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    const requestBody = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
 
     expect(requestBody.waste_registration.local_coverage_until).toBe('2026-10-15T07:00:00.000Z');
   });
 
   it('keeps the old payload shape when local coverage is not provided', async () => {
-    await updateWasteReminderSettings(
-      true,
-      new Date('2000-01-01T10:01:00.000+01:00'),
-      'paper',
-      true,
-      { city: 'Berlin', street: 'Test Street', zip: '12345' }
-    );
+    await updateWasteReminderSettings({
+      isActive: true,
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+      onDayBefore: true,
+      reminderTime: new Date('2000-01-01T10:01:00.000+01:00'),
+      typeKey: 'paper'
+    });
 
-    const requestBody = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    const requestBody = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
 
     expect(requestBody.waste_registration).not.toHaveProperty('local_coverage_until');
     expect(requestBody.waste_registration).not.toHaveProperty('reminder_slot_id');
@@ -88,15 +87,15 @@ describe('updateWasteReminderSettings server sync', () => {
   it('uses a generated push token in dev when no stored token exists', async () => {
     (getPushTokenFromStorage as jest.Mock).mockResolvedValueOnce(undefined);
 
-    await updateWasteReminderSettings(
-      true,
-      new Date('2000-01-01T09:00:00.000+01:00'),
-      'paper',
-      true,
-      { city: 'Berlin', street: 'Test Street', zip: '12345' }
-    );
+    await updateWasteReminderSettings({
+      isActive: true,
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+      onDayBefore: true,
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      typeKey: 'paper'
+    });
 
-    const requestBody = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    const requestBody = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
 
     expect(requestBody.notification_device.token).toBe('ExponentPushToken[dev-waste-reminder]');
   });
@@ -108,11 +107,11 @@ describe('updateWasteReminderSettings server sync', () => {
 
     expect(result).toBeUndefined();
     expect(ensurePushNotificationToken).not.toHaveBeenCalled();
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
   it('reports a failed sync when deleting a disabled server registration fails', async () => {
-    global.fetch = jest.fn(async () => ({
+    globalThis.fetch = jest.fn(async () => ({
       ok: false,
       status: 500
     })) as jest.Mock;
@@ -145,9 +144,9 @@ describe('updateWasteReminderSettings server sync', () => {
       new Date('2026-10-15T09:00:00.000+02:00')
     );
 
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
 
-    const requestBodies = (global.fetch as jest.Mock).mock.calls.map((call) =>
+    const requestBodies = (globalThis.fetch as jest.Mock).mock.calls.map((call) =>
       JSON.parse(call[1].body)
     );
 
@@ -192,11 +191,11 @@ describe('updateWasteReminderSettings server sync', () => {
       usedTypeKeys: ['paper']
     });
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
       'https://example.test/notification/wastes/456.json?token=push-token'
     );
-    expect((global.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
       active: false,
@@ -208,7 +207,7 @@ describe('updateWasteReminderSettings server sync', () => {
   });
 
   it('returns a server sync payload with new flexible registration ids', async () => {
-    global.fetch = jest
+    globalThis.fetch = jest
       .fn()
       .mockResolvedValueOnce({
         json: async () => ({ id: 321 }),
@@ -254,7 +253,7 @@ describe('updateWasteReminderSettings server sync', () => {
   });
 
   it('replaces existing active flexible registrations before creating updated server fallback ids', async () => {
-    global.fetch = jest
+    globalThis.fetch = jest
       .fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -284,12 +283,12 @@ describe('updateWasteReminderSettings server sync', () => {
       usedTypeKeys: ['paper']
     });
 
-    expect(global.fetch).toHaveBeenCalledTimes(2);
-    expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
       'https://example.test/notification/wastes/456.json?token=push-token'
     );
-    expect((global.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
-    expect((global.fetch as jest.Mock).mock.calls[1][1].method).toBe('POST');
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
+    expect((globalThis.fetch as jest.Mock).mock.calls[1][1].method).toBe('POST');
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
       active: true,

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
-import React from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 

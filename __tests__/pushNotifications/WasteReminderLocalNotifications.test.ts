@@ -31,7 +31,7 @@ jest.mock('expo-secure-store', () => ({
 }));
 
 jest.mock('../../src/pushNotifications/TokenHandling', () => ({
-  PushNotificationStorageKeys: { ACCESS_TOKEN: 'ACCESS_TOKEN' }
+  PushNotificationStorageKeys: { ACCESS_TOKEN: 'ACCESS_TOKEN', PUSH_TOKEN: 'PUSH_TOKEN' }
 }));
 
 const createReminder = (
@@ -371,13 +371,13 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).toBeNull();
   });
 
-  it('clears scheduled waste reminders when the stored owner differs from the current token', async () => {
+  it('clears scheduled waste reminders when the stored owner differs from the current push token', async () => {
     await scheduleWasteReminderNotifications({
       reminders: [createReminder()],
       serverSyncPayload: createServerSyncPayload()
     });
 
-    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('different-access-token');
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('different-push-token');
 
     await expect(clearWasteReminderLocalStateForChangedOwner()).resolves.toBe(true);
     expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith(
