@@ -1,10 +1,10 @@
 import {
   getAutocompleteKeyboardMarginBottom,
   getAutocompleteListContainerHeight,
-  getAutocompleteMaxKeyboardHeight
+  getAutocompleteMaxDropdownHeight
 } from '../../src/components/waste/autocompleteLayout';
 
-describe('getAutocompleteKeyboardMarginBottom', () => {
+describe('waste autocomplete layout helpers', () => {
   it('does not add keyboard margin on Android because the window is already resized', () => {
     expect(getAutocompleteKeyboardMarginBottom({ keyboardHeight: 320, platform: 'android' })).toBe(
       0
@@ -20,8 +20,7 @@ describe('getAutocompleteKeyboardMarginBottom', () => {
       getAutocompleteListContainerHeight({
         height: 600,
         keyboardHeight: 320,
-        maxKeyboardHeight: 300,
-        platform: 'android'
+        maxDropdownHeight: 300
       })
     ).toBe(300);
   });
@@ -31,8 +30,7 @@ describe('getAutocompleteKeyboardMarginBottom', () => {
       getAutocompleteListContainerHeight({
         height: 180,
         keyboardHeight: 320,
-        maxKeyboardHeight: 300,
-        platform: 'android'
+        maxDropdownHeight: 300
       })
     ).toBe(180);
   });
@@ -42,8 +40,7 @@ describe('getAutocompleteKeyboardMarginBottom', () => {
       getAutocompleteListContainerHeight({
         height: 600,
         keyboardHeight: 320,
-        maxKeyboardHeight: 300,
-        platform: 'ios'
+        maxDropdownHeight: 300
       })
     ).toBe(300);
   });
@@ -53,15 +50,14 @@ describe('getAutocompleteKeyboardMarginBottom', () => {
       getAutocompleteListContainerHeight({
         height: 600,
         keyboardHeight: 0,
-        maxKeyboardHeight: 300,
-        platform: 'ios'
+        maxDropdownHeight: 300
       })
     ).toBe(600);
   });
 
   it('uses a lower max dropdown height on iOS than on Android', () => {
     expect(
-      getAutocompleteMaxKeyboardHeight({
+      getAutocompleteMaxDropdownHeight({
         androidMaxHeight: 230,
         iosMaxHeight: 200,
         platform: 'ios'
@@ -69,7 +65,7 @@ describe('getAutocompleteKeyboardMarginBottom', () => {
     ).toBe(200);
 
     expect(
-      getAutocompleteMaxKeyboardHeight({
+      getAutocompleteMaxDropdownHeight({
         androidMaxHeight: 230,
         iosMaxHeight: 200,
         platform: 'android'

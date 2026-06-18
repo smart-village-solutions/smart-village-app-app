@@ -3,12 +3,13 @@ type AutocompleteKeyboardMarginBottomParams = {
   platform: string;
 };
 
-type AutocompleteListContainerHeightParams = AutocompleteKeyboardMarginBottomParams & {
+type AutocompleteListContainerHeightParams = {
   height: number | string;
-  maxKeyboardHeight: number;
+  keyboardHeight: number;
+  maxDropdownHeight: number;
 };
 
-type AutocompleteMaxKeyboardHeightParams = {
+type AutocompleteMaxDropdownHeightParams = {
   androidMaxHeight: number;
   iosMaxHeight: number;
   platform: string;
@@ -22,17 +23,17 @@ export const getAutocompleteKeyboardMarginBottom = ({
 export const getAutocompleteListContainerHeight = ({
   height,
   keyboardHeight,
-  maxKeyboardHeight
+  maxDropdownHeight
 }: AutocompleteListContainerHeightParams) => {
   if (!keyboardHeight || typeof height !== 'number') {
     return height;
   }
 
-  return Math.min(height, maxKeyboardHeight);
+  return Math.min(height, maxDropdownHeight);
 };
 
-export const getAutocompleteMaxKeyboardHeight = ({
+export const getAutocompleteMaxDropdownHeight = ({
   androidMaxHeight,
   iosMaxHeight,
   platform
-}: AutocompleteMaxKeyboardHeightParams) => (platform === 'ios' ? iosMaxHeight : androidMaxHeight);
+}: AutocompleteMaxDropdownHeightParams) => (platform === 'ios' ? iosMaxHeight : androidMaxHeight);

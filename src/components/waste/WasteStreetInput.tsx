@@ -13,7 +13,7 @@ import { Wrapper } from '../Wrapper';
 import {
   getAutocompleteKeyboardMarginBottom,
   getAutocompleteListContainerHeight,
-  getAutocompleteMaxKeyboardHeight
+  getAutocompleteMaxDropdownHeight
 } from './autocompleteLayout';
 
 type Props = {
@@ -92,12 +92,11 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
             height: getAutocompleteListContainerHeight({
               height: listContainerHeight,
               keyboardHeight,
-              maxKeyboardHeight: getAutocompleteMaxKeyboardHeight({
+              maxDropdownHeight: getAutocompleteMaxDropdownHeight({
                 androidMaxHeight: normalize(230),
                 iosMaxHeight: normalize(200),
                 platform: device.platform
-              }),
-              platform: device.platform
+              })
             }),
             marginBottom: getAutocompleteKeyboardMarginBottom({
               keyboardHeight,
