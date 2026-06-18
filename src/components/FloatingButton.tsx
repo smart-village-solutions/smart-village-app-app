@@ -43,8 +43,9 @@ export const FloatingButton = ({
   // `navigationRef.getCurrentRoute()` traverses the full navigation tree via the
   // root NavigationContainer ref and always returns the focused leaf route.
   useNavigationState((state: NavigationState | PartialState<NavigationState>) => state);
-  const activeRouteName = navigationRef.getCurrentRoute()?.name ?? '';
-  const activeRouteKey = navigationRef.getCurrentRoute()?.key;
+  const activeRoute = navigationRef.isReady() ? navigationRef.getCurrentRoute() : undefined;
+  const activeRouteName = activeRoute?.name ?? '';
+  const activeRouteKey = activeRoute?.key;
   const isReadAloudQuickToggleEnabled = preferences.readAloudEnabled;
   const readAloudItems = getRouteItems(activeRouteKey);
   const showReadAloudQuickToggle = features.readAloud && isRouteAvailable(activeRouteKey);

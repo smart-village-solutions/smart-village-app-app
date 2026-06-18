@@ -154,6 +154,33 @@ describe('FloatingButton', () => {
     expect(testRenderer.toJSON()).toMatchSnapshot();
   });
 
+  it('does not read the current route before navigation is ready', () => {
+    mockIsReady.mockReturnValue(false);
+    mockUseStaticContent.mockReturnValue({
+      data: [
+        {
+          accessibilityLabel: 'Visible on Home',
+          routeName: 'Home',
+          visibleScreens: ['Home']
+        },
+        {
+          accessibilityLabel: 'Visible everywhere',
+          routeName: 'Search'
+        }
+      ],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+
+    const buttons = testRenderer.root.findAllByType(TouchableOpacity);
+
+    expect(mockGetCurrentRoute).not.toHaveBeenCalled();
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].props.accessibilityLabel).toBe('Visible everywhere');
+  });
+
   it('navigates on press with configured route and params', () => {
     mockUseStaticContent.mockReturnValue({
       data: [
