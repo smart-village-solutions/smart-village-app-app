@@ -3,13 +3,17 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 
 import {
-  WASTE_REMINDER_LOCAL_STORAGE_KEY,
   clearWasteReminderLocalStateForChangedOwner,
-  markWasteReminderServerSyncSynced,
-  readWasteReminderLocalState,
   rescheduleWasteReminderNotificationsFromLocalState,
   scheduleWasteReminderNotifications
-} from '../../src/pushNotifications';
+} from '../../src/pushNotifications/WasteReminderLocalNotifications';
+import {
+  WASTE_REMINDER_LOCAL_STORAGE_KEY,
+  markWasteReminderServerSyncSynced,
+  readWasteReminderLocalState
+} from '../../src/pushNotifications/WasteReminderLocalStorage';
+import type { WasteReminderServerSyncPayload } from '../../src/pushNotifications/WasteReminderLocalStorage';
+import type { WasteReminderOccurrence } from '../../src/pushNotifications/WasteReminderScheduler';
 
 jest.mock('expo-notifications', () => ({
   AndroidImportance: { DEFAULT: 'default' },
@@ -25,6 +29,39 @@ jest.mock('expo-notifications', () => ({
 jest.mock('expo-secure-store', () => ({
   getItemAsync: jest.fn(async () => 'access-token')
 }));
+
+jest.mock('../../src/pushNotifications/TokenHandling', () => ({
+  PushNotificationStorageKeys: { ACCESS_TOKEN: 'ACCESS_TOKEN' }
+}));
+
+const createReminder = (
+  overrides: Partial<WasteReminderOccurrence> = {}
+): WasteReminderOccurrence => ({
+  id: 'waste:key-1',
+  pickupDates: ['2026-06-10'],
+  reminderAt: new Date('2026-06-09T09:00:00.000+02:00'),
+  wasteTypes: ['paper'],
+  ...overrides
+});
+
+const createServerSyncPayload = (
+  overrides: Partial<WasteReminderServerSyncPayload> = {}
+): WasteReminderServerSyncPayload => ({
+  activeTypes: { paper: { active: true, storeId: 12 } },
+  locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+  notificationSettings: { paper: true },
+  onDayBefore: true,
+  reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+  usedTypeKeys: ['paper'],
+  ...overrides
+});
+
+const paperWasteTypesData = {
+  paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
+};
+
+const parseStoredReminderState = async () =>
+  JSON.parse((await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}');
 
 describe('scheduleWasteReminderNotifications', () => {
   beforeEach(async () => {
@@ -44,26 +81,10 @@ describe('scheduleWasteReminderNotifications', () => {
 
     await scheduleWasteReminderNotifications({
       localCoverageUntil: new Date('2026-06-09T09:00:00.000+02:00'),
-      reminders: [
-        {
-          id: 'waste:key-1',
-          pickupDates: ['2026-06-10'],
-          reminderAt: new Date('2026-06-09T09:00:00.000+02:00'),
-          wasteTypes: ['paper']
-        }
-      ],
-      serverSyncPayload: {
-        activeTypes: { paper: { active: true, storeId: 12 } },
-        locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-        notificationSettings: { paper: true },
-        onDayBefore: true,
-        reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-        usedTypeKeys: ['paper']
-      },
+      reminders: [createReminder()],
+      serverSyncPayload: createServerSyncPayload(),
       streetName: 'Test Street',
-      wasteTypesData: {
-        paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
-      }
+      wasteTypesData: paperWasteTypesData
     });
 
     expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('old-1');
@@ -80,9 +101,7 @@ describe('scheduleWasteReminderNotifications', () => {
       })
     );
 
-    const storedState = JSON.parse(
-      (await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}'
-    );
+    const storedState = await parseStoredReminderState();
 
     expect(storedState.scheduledNotificationIds).toEqual(['scheduled-waste:key-1']);
     expect(storedState.scheduledReminderKeys).toEqual(['waste:key-1']);
@@ -96,25 +115,14 @@ describe('scheduleWasteReminderNotifications', () => {
       localCoverageUntil: new Date('2026-08-31T09:00:00.000+02:00'),
       now: new Date('2026-07-01T08:00:00.000+02:00'),
       reminders: [
-        {
-          id: 'waste:key-1',
+        createReminder({
           pickupDates: ['2026-08-31'],
-          reminderAt: new Date('2026-08-31T09:00:00.000+02:00'),
-          wasteTypes: ['paper']
-        }
+          reminderAt: new Date('2026-08-31T09:00:00.000+02:00')
+        })
       ],
-      serverSyncPayload: {
-        activeTypes: { paper: { active: true, storeId: 12 } },
-        locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-        notificationSettings: { paper: true },
-        onDayBefore: true,
-        reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-        usedTypeKeys: ['paper']
-      },
+      serverSyncPayload: createServerSyncPayload(),
       streetName: 'Test Street',
-      wasteTypesData: {
-        paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
-      }
+      wasteTypesData: paperWasteTypesData
     });
 
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(3);
@@ -148,9 +156,7 @@ describe('scheduleWasteReminderNotifications', () => {
       })
     );
 
-    const storedState = JSON.parse(
-      (await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}'
-    );
+    const storedState = await parseStoredReminderState();
 
     expect(storedState.scheduledNotificationIds).toEqual([
       'scheduled-waste:key-1',
@@ -170,21 +176,12 @@ describe('scheduleWasteReminderNotifications', () => {
       localCoverageUntil: new Date('2026-03-31T09:00:00.000+02:00'),
       now: new Date('2026-02-01T08:00:00.000+01:00'),
       reminders: [
-        {
-          id: 'waste:key-1',
+        createReminder({
           pickupDates: ['2026-03-31'],
-          reminderAt: new Date('2026-03-31T09:00:00.000+02:00'),
-          wasteTypes: ['paper']
-        }
+          reminderAt: new Date('2026-03-31T09:00:00.000+02:00')
+        })
       ],
-      serverSyncPayload: {
-        activeTypes: { paper: { active: true, storeId: 12 } },
-        locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-        notificationSettings: { paper: true },
-        onDayBefore: true,
-        reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-        usedTypeKeys: ['paper']
-      }
+      serverSyncPayload: createServerSyncPayload()
     });
 
     expect(Notifications.scheduleNotificationAsync).toHaveBeenNthCalledWith(
@@ -203,21 +200,12 @@ describe('scheduleWasteReminderNotifications', () => {
       localCoverageUntil: new Date('2026-08-31T09:00:00.000+02:00'),
       now: new Date('2026-07-01T08:00:00.000+02:00'),
       reminders: [
-        {
-          id: 'waste:key-1',
+        createReminder({
           pickupDates: ['2026-08-31'],
-          reminderAt: new Date('2026-08-31T09:00:00.000+02:00'),
-          wasteTypes: ['paper']
-        }
+          reminderAt: new Date('2026-08-31T09:00:00.000+02:00')
+        })
       ],
-      serverSyncPayload: {
-        activeTypes: { paper: { active: true, storeId: 12 } },
-        locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-        notificationSettings: { paper: true },
-        onDayBefore: true,
-        reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-        usedTypeKeys: ['paper']
-      }
+      serverSyncPayload: createServerSyncPayload()
     });
 
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
@@ -268,9 +256,7 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('old-month');
     expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('old-week');
 
-    const storedState = JSON.parse(
-      (await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}'
-    );
+    const storedState = await parseStoredReminderState();
 
     expect(storedState.serverSyncStatus).toBe('synced');
     expect(storedState.scheduledCoverageReminderNotificationIds).toHaveLength(2);
@@ -287,26 +273,10 @@ describe('scheduleWasteReminderNotifications', () => {
     await expect(
       scheduleWasteReminderNotifications({
         localCoverageUntil: new Date('2026-06-09T09:00:00.000+02:00'),
-        reminders: [
-          {
-            id: 'waste:key-1',
-            pickupDates: ['2026-06-10'],
-            reminderAt: new Date('2026-06-09T09:00:00.000+02:00'),
-            wasteTypes: ['paper']
-          }
-        ],
-        serverSyncPayload: {
-          activeTypes: { paper: { active: true, storeId: 12 } },
-          locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-          notificationSettings: { paper: true },
-          onDayBefore: true,
-          reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-          usedTypeKeys: ['paper']
-        },
+        reminders: [createReminder()],
+        serverSyncPayload: createServerSyncPayload(),
         streetName: 'Test Street',
-        wasteTypesData: {
-          paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
-        }
+        wasteTypesData: paperWasteTypesData
       })
     ).rejects.toThrow('schedule failed');
 
@@ -329,31 +299,16 @@ describe('scheduleWasteReminderNotifications', () => {
     await expect(
       scheduleWasteReminderNotifications({
         reminders: [
-          {
-            id: 'waste:key-1',
-            pickupDates: ['2026-06-10'],
-            reminderAt: new Date('2026-06-09T09:00:00.000+02:00'),
-            wasteTypes: ['paper']
-          },
-          {
+          createReminder(),
+          createReminder({
             id: 'waste:key-2',
             pickupDates: ['2026-06-11'],
-            reminderAt: new Date('2026-06-10T09:00:00.000+02:00'),
-            wasteTypes: ['paper']
-          }
+            reminderAt: new Date('2026-06-10T09:00:00.000+02:00')
+          })
         ],
-        serverSyncPayload: {
-          activeTypes: { paper: { active: true, storeId: 12 } },
-          locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-          notificationSettings: { paper: true },
-          onDayBefore: true,
-          reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-          usedTypeKeys: ['paper']
-        },
+        serverSyncPayload: createServerSyncPayload(),
         streetName: 'Test Street',
-        wasteTypesData: {
-          paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
-        }
+        wasteTypesData: paperWasteTypesData
       })
     ).rejects.toThrow('schedule failed');
 
@@ -361,9 +316,7 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith('old-2');
     expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('new-1');
 
-    const storedState = JSON.parse(
-      (await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}'
-    );
+    const storedState = await parseStoredReminderState();
 
     expect(storedState.scheduledNotificationIds).toEqual(['old-1', 'old-2']);
     expect(storedState.serverSyncStatus).toBe('synced');
@@ -405,9 +358,7 @@ describe('scheduleWasteReminderNotifications', () => {
       usedTypeKeys: ['paper']
     });
 
-    const storedState = JSON.parse(
-      (await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}'
-    );
+    const storedState = await parseStoredReminderState();
 
     expect(storedState.serverSyncStatus).toBe('synced');
     expect(storedState.serverSyncPayload.activeReminderRegistrations[0].storeId).toBe(789);
@@ -422,22 +373,8 @@ describe('scheduleWasteReminderNotifications', () => {
 
   it('clears scheduled waste reminders when the stored owner differs from the current token', async () => {
     await scheduleWasteReminderNotifications({
-      reminders: [
-        {
-          id: 'waste:key-1',
-          pickupDates: ['2026-06-10'],
-          reminderAt: new Date('2026-06-09T09:00:00.000+02:00'),
-          wasteTypes: ['paper']
-        }
-      ],
-      serverSyncPayload: {
-        activeTypes: { paper: { active: true, storeId: 12 } },
-        locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-        notificationSettings: { paper: true },
-        onDayBefore: true,
-        reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-        usedTypeKeys: ['paper']
-      }
+      reminders: [createReminder()],
+      serverSyncPayload: createServerSyncPayload()
     });
 
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('different-access-token');
