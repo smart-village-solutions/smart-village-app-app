@@ -2,6 +2,23 @@ import { getNotificationNavigationTarget } from '../../src/helpers/notificationN
 import { homeSectionKeyExtractor } from '../../src/helpers/homeSectionKeyExtractor';
 import { ScreenName } from '../../src/types';
 
+jest.mock('../../src/config', () => ({
+  consts: {
+    ROOT_ROUTE_NAMES: {
+      CONVERSATIONS: 'Conversations',
+      EVENT_RECORDS: 'EventRecords',
+      NEWS_ITEMS: 'NewsItems',
+      POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours'
+    }
+  },
+  texts: {
+    detailTitles: {},
+    screenTitles: {
+      wasteCollection: 'Abfallkalender'
+    }
+  }
+}));
+
 describe('HomeScreen', () => {
   const navigation = { navigate: jest.fn() };
 
@@ -14,7 +31,7 @@ describe('HomeScreen', () => {
     const { HomeScreen } = require('../../src/screens');
 
     // skipping because of `Invariant Violation: Could not find "client" in the context or passed in as an option. Wrap the root component in an <ApolloProvider>, or pass an ApolloClient instance in via options.`
-    const tree = renderer.create(<HomeScreen navigation={navigation} />).toJSON();
+    const tree = renderer.create(React.createElement(HomeScreen, { navigation })).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
@@ -63,12 +80,18 @@ describe('HomeScreen', () => {
   });
 
   it('builds stable keys for configured home sections', () => {
-    expect(homeSectionKeyExtractor({ type: 'carousel' }, 0)).toBe('home-section-type-carousel');
+    expect(homeSectionKeyExtractor({ type: 'carousel' }, 0)).toBe('home-section-type-carousel-0');
     expect(homeSectionKeyExtractor({ query: 'newsItems', title: 'News' }, 1)).toBe(
-      'home-section-query-newsItems-title-News'
+      'home-section-query-newsItems-title-News-1'
     );
     expect(
       homeSectionKeyExtractor({ categoriesNews: [{ categoryId: 1 }, { categoryId: 2 }] }, 2)
-    ).toBe('home-section-categories-1-2');
+    ).toBe('home-section-categories-1-2-2');
+  });
+
+  it('keeps home section keys unique for repeated server config entries', () => {
+    expect(homeSectionKeyExtractor({ type: 'carousel' }, 0)).not.toBe(
+      homeSectionKeyExtractor({ type: 'carousel' }, 1)
+    );
   });
 });

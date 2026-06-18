@@ -66,9 +66,9 @@ export const removeWasteReminderLocalState = async () =>
   AsyncStorage.removeItem(WASTE_REMINDER_LOCAL_STORAGE_KEY);
 
 export const getWasteReminderOwnerKey = async () => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
 
-  return accessToken ? `access:${hashString(accessToken)}` : 'anonymous';
+  return pushToken ? `push:${hashString(pushToken)}` : 'anonymous';
 };
 
 export const markWasteReminderServerSyncSynced = async (
@@ -114,12 +114,11 @@ export const buildPendingWasteReminderState = ({
 });
 
 const hashString = (value: string) => {
-  let hash = 0;
+  const hashBuffer = new Int32Array(1);
 
   for (let index = 0; index < value.length; index += 1) {
-    hash = (hash << 5) - hash + value.charCodeAt(index);
-    hash |= 0;
+    hashBuffer[0] = (hashBuffer[0] << 5) - hashBuffer[0] + (value.codePointAt(index) ?? 0);
   }
 
-  return Math.abs(hash).toString(36);
+  return Math.abs(hashBuffer[0]).toString(36);
 };

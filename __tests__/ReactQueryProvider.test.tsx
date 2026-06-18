@@ -15,6 +15,8 @@ jest.mock('react-query', () => {
 
 import { clearPersistentCaches } from '../src/ReactQueryProvider';
 
+const reactQueryMock = ReactQuery as unknown as { __mockClear: jest.Mock };
+
 describe('clearPersistentCaches', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -28,9 +30,7 @@ describe('clearPersistentCaches', () => {
 
     await clearPersistentCaches();
 
-    expect(
-      (ReactQuery as typeof ReactQuery & { __mockClear: jest.Mock }).__mockClear
-    ).toHaveBeenCalledTimes(1);
+    expect(reactQueryMock.__mockClear).toHaveBeenCalledTimes(1);
     await expect(AsyncStorage.getItem('apollo-cache-persist')).resolves.toBeNull();
     await expect(AsyncStorage.getItem('apollo-cache-persist-extra')).resolves.toBeNull();
     await expect(AsyncStorage.getItem('globalSettings')).resolves.toBe('settings');

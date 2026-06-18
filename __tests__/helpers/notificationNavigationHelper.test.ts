@@ -14,6 +14,22 @@ describe('notificationNavigationHelper', () => {
     jest.doMock('@react-navigation/native', () => ({
       createNavigationContainerRef: jest.fn(() => mockNavigationRef)
     }));
+    jest.doMock('../../src/config', () => ({
+      consts: {
+        ROOT_ROUTE_NAMES: {
+          CONVERSATIONS: 'Conversations',
+          EVENT_RECORDS: 'EventRecords',
+          NEWS_ITEMS: 'NewsItems',
+          POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours'
+        }
+      },
+      texts: {
+        detailTitles: {},
+        screenTitles: {
+          wasteCollection: 'Abfallkalender'
+        }
+      }
+    }));
   });
 
   it('queues waste notification navigation until the navigation container is ready', () => {
@@ -40,6 +56,29 @@ describe('notificationNavigationHelper', () => {
     expect(mockNavigationRef.navigate).toHaveBeenCalledWith('Stack0', {
       params: { title: 'Abfallkalender' },
       screen: ScreenName.WasteCollection
+    });
+  });
+
+  it('routes regular push notification targets through the root tab stack', () => {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const {
+      navigateToNotificationTarget
+    } = require('../../src/helpers/notificationNavigationHelper');
+    /* eslint-enable @typescript-eslint/no-var-requires */
+
+    mockNavigationRef.isReady.mockReturnValue(true);
+
+    navigateToNotificationTarget({
+      navigationTarget: {
+        name: ScreenName.Detail,
+        params: { query: 'newsItem', queryVariables: { id: 'news-1' } }
+      },
+      navigationType: 'tab'
+    });
+
+    expect(mockNavigationRef.navigate).toHaveBeenCalledWith('Stack0', {
+      params: { query: 'newsItem', queryVariables: { id: 'news-1' } },
+      screen: ScreenName.Detail
     });
   });
 });

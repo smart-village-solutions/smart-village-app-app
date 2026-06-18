@@ -43,7 +43,7 @@ export const getNotificationNavigationTarget = (
   }
 };
 
-export const navigateToWasteNotificationTarget = ({
+export const navigateToNotificationTarget = ({
   navigationTarget,
   navigationType
 }: {
@@ -68,3 +68,5 @@ export const navigateToWasteNotificationTarget = ({
     navigationRef.navigate(rootRouteName, params);
   });
 };
+
+export const navigateToWasteNotificationTarget = navigateToNotificationTarget;

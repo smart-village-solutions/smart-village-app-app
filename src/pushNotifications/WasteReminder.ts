@@ -37,6 +37,19 @@ type SyncActiveTypes = {
   };
 };
 
+type UpdateWasteReminderSettingsParams = {
+  isActive: boolean;
+  localCoverageUntil?: Date;
+  locationData?: LocationData;
+  onDayBefore?: boolean | number;
+  reminderSlotId?: string;
+  reminderTime: Date;
+  storeId?: number | string;
+  typeKey?: string;
+};
+
+type ReminderSyncResult = string | number | boolean | undefined;
+
 type WasteReminderServerSyncActiveRegistration = NonNullable<
   WasteReminderServerSyncPayload['activeReminderRegistrations']
 >[number];
@@ -230,16 +243,16 @@ const deleteReminderSetting = async (id: number | string) => {
   return false;
 };
 
-export const updateWasteReminderSettings = async (
-  isActive: boolean,
-  reminderTime: Date,
-  typeKey?: string,
-  onDayBefore?: boolean | number,
-  locationData?: LocationData,
-  storeId?: number | string,
-  localCoverageUntil?: Date,
-  reminderSlotId?: string
-) => {
+export const updateWasteReminderSettings = async ({
+  isActive,
+  localCoverageUntil,
+  locationData,
+  onDayBefore,
+  reminderSlotId,
+  reminderTime,
+  storeId,
+  typeKey
+}: UpdateWasteReminderSettingsParams) => {
   if (!isActive && storeId) {
     return await deleteReminderSetting(storeId);
   }
@@ -312,15 +325,15 @@ export const syncWasteReminderSettingsWithServer = async (
     payload.usedTypeKeys.map(async (typeKey) => {
       const isActive = !!payload.notificationSettings[typeKey];
       const storeId = payload.activeTypes[typeKey]?.storeId;
-      const newIdToStore = (await updateWasteReminderSettings(
+      const newIdToStore = (await updateWasteReminderSettings({
         isActive,
-        legacyReminderTime,
-        typeKey,
-        payload.onDayBefore,
-        payload.locationData,
+        localCoverageUntil,
+        locationData: payload.locationData,
+        onDayBefore: payload.onDayBefore,
+        reminderTime: legacyReminderTime,
         storeId,
-        localCoverageUntil
-      )) as string | number | boolean | undefined;
+        typeKey
+      })) as ReminderSyncResult;
 
       resettedActiveTypes[typeKey] = { active: isActive };
 
@@ -361,16 +374,16 @@ const syncFlexibleReminderRegistration = async (
     }
   }
 
-  const newIdToStore = (await updateWasteReminderSettings(
-    registration.active,
-    buildReminderTimeDate(registration.time),
-    registration.typeKey,
-    registration.leadDays,
-    locationData,
-    registration.active ? undefined : registration.storeId,
+  const newIdToStore = (await updateWasteReminderSettings({
+    isActive: registration.active,
     localCoverageUntil,
-    registration.slotId
-  )) as string | number | boolean | undefined;
+    locationData,
+    onDayBefore: registration.leadDays,
+    reminderSlotId: registration.slotId,
+    reminderTime: buildReminderTimeDate(registration.time),
+    storeId: registration.active ? undefined : registration.storeId,
+    typeKey: registration.typeKey
+  })) as ReminderSyncResult;
 
   return buildFlexibleReminderSyncResult(registration, newIdToStore);
 };

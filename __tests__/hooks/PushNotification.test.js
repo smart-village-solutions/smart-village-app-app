@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Notifications from 'expo-notifications';
+import PropTypes from 'prop-types';
 import renderer, { act } from 'react-test-renderer';
 
 import { usePushNotifications } from '../../src/hooks/PushNotification';
@@ -31,6 +32,11 @@ const TestPushNotifications = ({ active, onInteraction }) => {
   usePushNotifications(undefined, onInteraction, undefined, active);
 
   return null;
+};
+
+TestPushNotifications.propTypes = {
+  active: PropTypes.bool.isRequired,
+  onInteraction: PropTypes.func.isRequired
 };
 
 describe('usePushNotifications', () => {

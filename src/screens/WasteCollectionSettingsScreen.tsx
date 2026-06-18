@@ -80,7 +80,6 @@ import { SettingsContext } from '../SettingsProvider';
 import { WasteReminderSettingJson, WasteTypeData } from '../types';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
-const getFlexibleLeadDaysTooltipKey = (typeKey: string, slotId: string) => `${typeKey}:${slotId}`;
 const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
 const renderWasteTypeLabel = (wasteType: WasteTypeData[string]) => (
   <WrapperRow itemsCenter>
@@ -167,7 +166,6 @@ export const WasteCollectionSettingsScreen = () => {
   const streetName = locationData ? getStreetString(locationData) : undefined;
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef<TooltipRef | null>(null);
-  const flexibleLeadDaysTooltipRefs = useRef<Record<string, TooltipRef | null>>({});
 
   const loadStoredSettingsFromServer = useCallback(async () => {
     if (isInitial) return;
@@ -225,33 +223,33 @@ export const WasteCollectionSettingsScreen = () => {
     if (!areValidReminderSettings(storedSettingsOnServer)) {
       setLoadingStoredSettings(false);
       return;
+    }
+
+    if (waste.streetId !== selectedStreetId) {
+      dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+      // Activate notifications if the user has allowed system permissions
+      getLocalNotificationPermission().then((permission) => {
+        if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
+      });
     } else {
-      if (waste.streetId !== selectedStreetId) {
-        dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
-        // Activate notifications if the user has allowed system permissions
-        getLocalNotificationPermission().then((permission) => {
-          if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
-        });
-      } else {
-        const streetSettings = storedSettingsOnServer.filter(
-          (item) => item.street === waste.streetName
-        );
+      const streetSettings = storedSettingsOnServer.filter(
+        (item) => item.street === waste.streetName
+      );
 
-        if (usedTypes && reminderUiMode === 'flexible-per-type') {
-          dispatch({
-            type: WasteSettingsActions.setReminderSettingsByType,
-            payload: buildReminderSettingsFromServerSettings(usedTypes, streetSettings)
-          });
-        }
-
+      if (usedTypes && reminderUiMode === 'flexible-per-type') {
         dispatch({
-          type: WasteSettingsActions.updateWasteSettings,
-          payload: {
-            serverSettings: streetSettings,
-            selectedTypeKeys: waste.selectedTypeKeys
-          }
+          type: WasteSettingsActions.setReminderSettingsByType,
+          payload: buildReminderSettingsFromServerSettings(usedTypes, streetSettings)
         });
       }
+
+      dispatch({
+        type: WasteSettingsActions.updateWasteSettings,
+        payload: {
+          serverSettings: streetSettings,
+          selectedTypeKeys: waste.selectedTypeKeys
+        }
+      });
     }
 
     setLoadingStoredSettings(false);
@@ -505,10 +503,6 @@ export const WasteCollectionSettingsScreen = () => {
   );
 
   const setFlexibleLeadDays = useCallback((typeKey: string, slotId: string, value: number) => {
-    flexibleLeadDaysTooltipRefs.current[
-      getFlexibleLeadDaysTooltipKey(typeKey, slotId)
-    ]?.toggleTooltip();
-
     dispatch({
       type: WasteSettingsActions.setReminderSlotLeadDays,
       payload: {
@@ -872,76 +866,15 @@ export const WasteCollectionSettingsScreen = () => {
                                   <ListItem.Content>
                                     <BoldText small>{wasteTexts.daysBefore}</BoldText>
                                   </ListItem.Content>
-                                  <Tooltip
-                                    ref={(ref: TooltipRef | null) => {
-                                      flexibleLeadDaysTooltipRefs.current[
-                                        getFlexibleLeadDaysTooltipKey(typeKey, slot.id)
-                                      ] = ref;
-                                    }}
-                                    backgroundColor={colors.surface}
-                                    containerStyle={[styles.borderRadius, styles.tooltipContainer]}
-                                    height={tooltipHeight}
-                                    popover={
-                                      <TouchableWithoutFeedback
-                                        onPress={(event) => event.stopPropagation()}
-                                      >
-                                        <View
-                                          onTouchStart={(event) => event.stopPropagation()}
-                                          style={styles.tooltipTouchableArea}
-                                        >
-                                          <ScrollView
-                                            alwaysBounceHorizontal={false}
-                                            bounces
-                                            contentContainerStyle={styles.tooltipContent}
-                                            contentOffset={{
-                                              x: 0,
-                                              y: getFlexibleLeadDaysTooltipScrollY(
-                                                slotSetting.leadDays,
-                                                slot.maxLeadDays,
-                                                tooltipHeight
-                                              )
-                                            }}
-                                            directionalLockEnabled
-                                            horizontal={false}
-                                            showsVerticalScrollIndicator={false}
-                                            style={styles.tooltipScrollView}
-                                          >
-                                            {getLeadDayOptions(slot.maxLeadDays).map((leadDays) => (
-                                              <Fragment key={`${slot.id}-${leadDays}`}>
-                                                <TouchableOpacity
-                                                  key={`${slot.id}-${leadDays}`}
-                                                  onPress={() =>
-                                                    setFlexibleLeadDays(typeKey, slot.id, leadDays)
-                                                  }
-                                                >
-                                                  <RegularText
-                                                    primary={slotSetting.leadDays === leadDays}
-                                                    style={styles.tooltipSelection}
-                                                  >
-                                                    {getLeadDaysLabel(leadDays, wasteTexts)}
-                                                  </RegularText>
-                                                </TouchableOpacity>
-                                                {leadDays < slot.maxLeadDays && (
-                                                  <Divider style={styles.dividerSmall} />
-                                                )}
-                                              </Fragment>
-                                            ))}
-                                          </ScrollView>
-                                        </View>
-                                      </TouchableWithoutFeedback>
-                                    }
-                                    width={normalize(160)}
-                                    withOverlay={device.platform === 'android'}
-                                    overlayColor={colors.shadowRgba}
-                                    withPointer={false}
-                                  >
-                                    <WrapperRow itemsCenter>
-                                      <RegularText small primary>
-                                        {getLeadDaysLabel(slotSetting.leadDays, wasteTexts)}{' '}
-                                      </RegularText>
-                                      <Icon.KeyboardArrowUpDown size={normalize(14)} />
-                                    </WrapperRow>
-                                  </Tooltip>
+                                  <FlexibleLeadDaysTooltip
+                                    maxLeadDays={slot.maxLeadDays}
+                                    onSelectLeadDays={setFlexibleLeadDays}
+                                    selectedLeadDays={slotSetting.leadDays}
+                                    slotId={slot.id}
+                                    tooltipHeight={tooltipHeight}
+                                    typeKey={typeKey}
+                                    wasteTexts={wasteTexts}
+                                  />
                                 </ListItem>
                                 <ListItem
                                   containerStyle={[
@@ -1231,6 +1164,91 @@ const formatReminderTimeString = (time: string) => formatTime(buildReminderTimeD
 
 const getLeadDayOptions = (maxLeadDays: number) =>
   Array.from({ length: maxLeadDays + 1 }, (_, index) => index);
+
+type FlexibleLeadDaysTooltipProps = {
+  maxLeadDays: number;
+  onSelectLeadDays: (typeKey: string, slotId: string, value: number) => void;
+  selectedLeadDays: number;
+  slotId: string;
+  tooltipHeight: number;
+  typeKey: string;
+  wasteTexts: { [key: string]: string };
+};
+
+const FlexibleLeadDaysTooltip = ({
+  maxLeadDays,
+  onSelectLeadDays,
+  selectedLeadDays,
+  slotId,
+  tooltipHeight,
+  typeKey,
+  wasteTexts
+}: FlexibleLeadDaysTooltipProps) => {
+  const tooltipRef = useRef<TooltipRef | null>(null);
+  const selectLeadDays = useCallback(
+    (leadDays: number) => {
+      tooltipRef.current?.toggleTooltip();
+      onSelectLeadDays(typeKey, slotId, leadDays);
+    },
+    [onSelectLeadDays, slotId, typeKey]
+  );
+
+  return (
+    <Tooltip
+      ref={tooltipRef}
+      backgroundColor={colors.surface}
+      containerStyle={[styles.borderRadius, styles.tooltipContainer]}
+      height={tooltipHeight}
+      popover={
+        <TouchableWithoutFeedback onPress={(event) => event.stopPropagation()}>
+          <View
+            onTouchStart={(event) => event.stopPropagation()}
+            style={styles.tooltipTouchableArea}
+          >
+            <ScrollView
+              alwaysBounceHorizontal={false}
+              bounces
+              contentContainerStyle={styles.tooltipContent}
+              contentOffset={{
+                x: 0,
+                y: getFlexibleLeadDaysTooltipScrollY(selectedLeadDays, maxLeadDays, tooltipHeight)
+              }}
+              directionalLockEnabled
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+              style={styles.tooltipScrollView}
+            >
+              {getLeadDayOptions(maxLeadDays).map((leadDays) => (
+                <Fragment key={`${slotId}-${leadDays}`}>
+                  <TouchableOpacity onPress={() => selectLeadDays(leadDays)}>
+                    <RegularText
+                      primary={selectedLeadDays === leadDays}
+                      style={styles.tooltipSelection}
+                    >
+                      {getLeadDaysLabel(leadDays, wasteTexts)}
+                    </RegularText>
+                  </TouchableOpacity>
+                  {leadDays < maxLeadDays && <Divider style={styles.dividerSmall} />}
+                </Fragment>
+              ))}
+            </ScrollView>
+          </View>
+        </TouchableWithoutFeedback>
+      }
+      width={normalize(160)}
+      withOverlay={device.platform === 'android'}
+      overlayColor={colors.shadowRgba}
+      withPointer={false}
+    >
+      <WrapperRow itemsCenter>
+        <RegularText small primary>
+          {getLeadDaysLabel(selectedLeadDays, wasteTexts)}{' '}
+        </RegularText>
+        <Icon.KeyboardArrowUpDown size={normalize(14)} />
+      </WrapperRow>
+    </Tooltip>
+  );
+};
 
 const getLeadDaysLabel = (leadDays: number, wasteTexts: { [key: string]: string }) => {
   if (leadDays === 0) {

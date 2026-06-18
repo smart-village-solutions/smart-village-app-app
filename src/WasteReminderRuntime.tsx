@@ -2,11 +2,9 @@ import * as Notifications from 'expo-notifications';
 import { useCallback, useContext } from 'react';
 
 import { getNotificationNavigationTarget } from './helpers';
-import { navigateToWasteNotificationTarget } from './helpers/notificationNavigationHelper';
+import { navigateToNotificationTarget } from './helpers/notificationNavigationHelper';
 import { usePushNotifications, useWasteReminderSync } from './hooks';
-import { navigationRef, runWhenNavigationReady } from './navigation/navigationRef';
 import { SettingsContext } from './SettingsProvider';
-import { ScreenName } from './types';
 
 export const WasteReminderRuntime = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -29,14 +27,7 @@ export const WasteReminderRuntime = () => {
         return;
       }
 
-      if (navigationTarget.name === ScreenName.WasteCollection) {
-        navigateToWasteNotificationTarget({ navigationTarget, navigationType });
-        return;
-      }
-
-      runWhenNavigationReady(() => {
-        navigationRef.navigate(navigationTarget.name, navigationTarget.params);
-      });
+      navigateToNotificationTarget({ navigationTarget, navigationType });
     },
     [navigationType]
   );
