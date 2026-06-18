@@ -1,5 +1,7 @@
 export const WASTE_REMINDER_MAX_LOCAL_NOTIFICATIONS = 50;
 
+const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
+
 type WastePickUpTime = {
   pickupDate?: string;
 };
@@ -85,8 +87,12 @@ export const buildWasteReminderSchedule = ({
 
         groupedReminders[groupKey] = {
           ...existing,
-          pickupDates: Array.from(new Set([...existing.pickupDates, pickupDate])).sort(),
-          wasteTypes: Array.from(new Set([...existing.wasteTypes, wasteType])).sort()
+          pickupDates: Array.from(new Set([...existing.pickupDates, pickupDate])).sort(
+            compareAlphabetically
+          ),
+          wasteTypes: Array.from(new Set([...existing.wasteTypes, wasteType])).sort(
+            compareAlphabetically
+          )
         };
       });
     });
