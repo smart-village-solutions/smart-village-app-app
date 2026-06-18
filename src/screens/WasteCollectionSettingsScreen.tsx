@@ -628,7 +628,13 @@ export const WasteCollectionSettingsScreen = () => {
                   }
 
                   if (!showNotificationSettings) {
-                    const hasPushToken = await setInAppPermission(true);
+                    let hasPushToken = false;
+
+                    try {
+                      hasPushToken = await setInAppPermission(true);
+                    } catch (error) {
+                      console.warn('Failed to enable in-app waste reminder permission:', error);
+                    }
 
                     if (!hasPushToken) {
                       showSystemPermissionMissingDialog();
