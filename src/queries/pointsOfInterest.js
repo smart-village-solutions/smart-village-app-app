@@ -26,7 +26,10 @@ export const GET_POINTS_OF_INTEREST = gql`
       location: $location
     ) {
       id
+      createdAt
       name
+      payload
+      updatedAt
       categories {
         id
         name

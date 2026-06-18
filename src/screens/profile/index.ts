@@ -1,4 +1,5 @@
 export * from './ProfileConversationsScreen';
+export * from './ProfileContentScreen';
 export * from './ProfileCreateContentFormScreen';
 export * from './ProfileCreateContentHomeScreen';
 export * from './ProfileDeleteScreen';

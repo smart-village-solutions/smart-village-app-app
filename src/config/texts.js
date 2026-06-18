@@ -1161,6 +1161,9 @@ export const texts = {
     loginFailedTitle: 'Fehler bei der Anmeldung',
     loginTitle: 'Login',
     logout: 'Abmelden',
+    myContent: 'Meine Inhalte',
+    myContentEmpty: 'Sie haben noch keine Inhalte erstellt.',
+    myContentNews: 'Nachrichten',
     next: 'Weiter',
     notYetRegistered: 'Sie sind noch nicht registriert? ',
     ok: 'OK',
@@ -1248,6 +1251,7 @@ export const texts = {
     profile: {
       create: 'Neuen Inhalt erstellen',
       home: 'Profil',
+      myContent: 'Meine Inhalte',
       settings: 'Einstellungen'
     },
     routePlanner: 'Routenplaner bbnavi',

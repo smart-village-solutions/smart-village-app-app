@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { colors, normalize } from '../../config';
@@ -33,63 +33,68 @@ export const DropdownFilter = ({
   setFilters,
   showSearch
 }: Props) => {
-  const initiallySelectedItem = !data.some((item) => item.selected)
-    ? {
-        id: 0,
-        index: 0,
-        value: placeholder || '',
-        selected: filters[name] ? false : true
+  const hasFilterValue = (value: FilterProps[keyof FilterProps]) =>
+    Array.isArray(value) ? !!value.length : !!value;
+
+  const dropdownData = useMemo(() => {
+    const shouldShowPlaceholder = multipleSelect || !data.some((item) => item.selected);
+    const initiallySelectedItem = shouldShowPlaceholder
+      ? {
+          id: 0,
+          index: 0,
+          value: placeholder || '',
+          selected: !hasFilterValue(filters[name])
+        }
+      : undefined;
+
+    return [
+      ...(initiallySelectedItem ? [initiallySelectedItem] : []),
+      ...data.map((item) => ({
+        ...item,
+        selected: multipleSelect
+          ? Array.isArray(filters[name]) && filters[name]?.includes(item.id || item.value)
+          : item.filterValue === filters[name] || item.value === filters[name]
+      }))
+    ];
+  }, [data, filters, multipleSelect, name, placeholder]);
+
+  const handleDropdownDataChange = useCallback(
+    (updatedDropdownData: DropdownProps[]) => {
+      const firstItemSelected = !!updatedDropdownData[0]?.selected;
+
+      if (multipleSelect) {
+        const selectedItems = updatedDropdownData
+          ?.filter(
+            (item: { selected: boolean; value: string; id: string | number }) =>
+              item.selected && item.value && parseInt(item?.id?.toString()) !== 0
+          )
+          ?.map((item) => item.id || item.value);
+
+        setFilters(
+          updateFilters({
+            currentFilters: filters,
+            name,
+            removeFromFilter: firstItemSelected,
+            value: selectedItems
+          })
+        );
+      } else {
+        const selectedItem = updatedDropdownData?.find(
+          (item: DropdownProps) => item.selected && item.value
+        );
+
+        setFilters(
+          updateFilters({
+            currentFilters: filters,
+            name,
+            removeFromFilter: firstItemSelected,
+            value: selectedItem?.filterValue || selectedItem?.value || ''
+          })
+        );
       }
-    : undefined;
-
-  const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
-    ...(initiallySelectedItem ? [initiallySelectedItem] : []),
-    ...data.map((item) => ({
-      ...item,
-      selected: multipleSelect
-        ? // TODO: test if this still works for multi select
-          Array.isArray(filters[name]) && filters[name]?.includes(item.id || item.value)
-        : item.filterValue === filters[name] || item.value === filters[name]
-    }))
-  ]);
-
-  useEffect(() => {
-    if (multipleSelect) {
-      const selectedItems = dropdownData
-        ?.filter(
-          (item: { selected: boolean; value: string; id: string | number }) =>
-            item.selected && item.value && parseInt(item?.id?.toString()) !== 0
-        )
-        ?.map((item) => item.id || item.value);
-
-      setFilters(
-        updateFilters({
-          currentFilters: filters,
-          name,
-          removeFromFilter: dropdownData[0].selected,
-          value: selectedItems
-        })
-      );
-    } else {
-      const selectedItem = dropdownData?.find((item: DropdownProps) => item.selected && item.value);
-
-      setFilters(
-        updateFilters({
-          currentFilters: filters,
-          name,
-          removeFromFilter: dropdownData[0].selected,
-          value: selectedItem?.filterValue || selectedItem?.value || ''
-        })
-      );
-    }
-  }, [dropdownData]);
-
-  // added to make the placeholder data appear in the dropdown after resetting the filter
-  useEffect(() => {
-    if (!filters[name]?.length && !dropdownData[0].selected) {
-      setDropdownData([...(initiallySelectedItem ? [initiallySelectedItem] : []), ...data]);
-    }
-  }, [filters]);
+    },
+    [filters, multipleSelect, name, setFilters]
+  );
 
   return (
     <>
@@ -103,7 +108,7 @@ export const DropdownFilter = ({
           placeholder={placeholder}
           searchInputStyle={styles.searchInput}
           searchPlaceholder={searchPlaceholder}
-          setData={setDropdownData}
+          setData={handleDropdownDataChange}
           showSearch={showSearch}
         />
       </View>

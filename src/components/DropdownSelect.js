@@ -44,7 +44,7 @@ export const DropdownSelect = ({
         device.platform === 'android' ? -normalize(24) : isOverlayFilter ? normalize(65) : 0,
       maxHeight: normalize(320)
     }),
-    [marginHorizontal]
+    [isOverlayFilter, marginHorizontal]
   );
 
   const [arrow, setArrow] = useState('down');
@@ -56,9 +56,9 @@ export const DropdownSelect = ({
 
   const renderRow = useCallback(
     (rowData, rowID, highlighted) => {
-      highlighted = multipleSelect
-        ? selectedMultipleValues.includes(rowData)
-        : selectedValue === rowData;
+      const rowIndex = Number(rowID);
+
+      highlighted = multipleSelect ? !!data?.[rowIndex]?.selected : selectedValue === rowData;
 
       return (
         <Wrapper
@@ -72,7 +72,7 @@ export const DropdownSelect = ({
         </Wrapper>
       );
     },
-    [data, selectedMultipleValues, selectedValue, multipleSelect, placeholder]
+    [data, selectedValue, multipleSelect, placeholder]
   );
 
   const preselect = (index) => {
@@ -83,7 +83,7 @@ export const DropdownSelect = ({
 
   useEffect(() => {
     preselect(selectedIndex);
-  }, [selectedData]);
+  }, [selectedData, selectedIndex]);
 
   const accessibilityLabel = multipleSelect ? selectedMultipleValues : selectedValue;
   return (
@@ -116,19 +116,40 @@ export const DropdownSelect = ({
           let updatedData = [...data];
 
           if (multipleSelect) {
-            updatedData = updatedData.map((entry) => {
-              if (entry.value === value) {
-                entry.selected = !entry.selected;
-              }
+            const selectedIndex = Number(index);
 
-              return entry;
-            });
+            if (selectedIndex === 0) {
+              updatedData = updatedData.map((entry, entryIndex) => ({
+                ...entry,
+                selected: entryIndex === 0
+              }));
+            } else {
+              updatedData = updatedData.map((entry) => {
+                if (entry.value === value) {
+                  return {
+                    ...entry,
+                    selected: !entry.selected
+                  };
+                }
 
-            const anyOtherSelected = updatedData.some(
-              (entry, index) => index !== 0 && entry.selected
-            );
+                return entry;
+              });
 
-            updatedData[0].selected = !anyOtherSelected;
+              const anyOtherSelected = updatedData.some(
+                (entry, entryIndex) => entryIndex !== 0 && entry.selected
+              );
+
+              updatedData = updatedData.map((entry, entryIndex) => {
+                if (entryIndex === 0) {
+                  return {
+                    ...entry,
+                    selected: !anyOtherSelected
+                  };
+                }
+
+                return entry;
+              });
+            }
           } else {
             // only trigger onPress if a new selection is made
             if (selectedValue === value) return;

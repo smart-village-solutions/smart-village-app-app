@@ -26,6 +26,7 @@ const getInitialConnectionState = (categoriesNews) => {
   initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Noticeboard)] = true;
   initialState[QUERY_TYPES.POINTS_OF_INTEREST] = true;
   initialState[QUERY_TYPES.TOURS] = true;
+  initialState[QUERY_TYPES.EVENT_RECORDS] = true;
 
   return initialState;
 };
@@ -81,7 +82,7 @@ export const BookmarkScreen = ({ navigation, route }) => {
       );
       // if there are more than three of that category, show "show all" button
     },
-    [navigation, bookmarks, setConnectionState, isLoggedIn]
+    [bookmarks, navigation, query]
   );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARKS);
@@ -89,7 +90,7 @@ export const BookmarkScreen = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       refresh();
-    }, [])
+    }, [refresh])
   );
 
   if (!bookmarks || getBookmarkCount(bookmarks, isLoggedIn) === 0) {

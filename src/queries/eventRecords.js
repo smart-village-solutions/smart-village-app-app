@@ -3,7 +3,9 @@ import gql from 'graphql-tag';
 const defaultFragment = `
   id
   title
+  createdAt
   listDate
+  updatedAt
   mediaContents {
     id
     contentType

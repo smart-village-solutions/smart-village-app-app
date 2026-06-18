@@ -17,7 +17,6 @@ import {
 import { colors, texts } from '../../config';
 import { storeProfileUserData, storeTokens } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
-import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
@@ -33,15 +32,12 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
     }
   ]);
 
-export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+export const ProfileScreen = ({
+  navigation,
+  route
+}: StackScreenProps<Record<string, object | undefined>>) => {
   const { refetch: refetchUnreadMessages, reset: resetUnreadMessages } = useMessagesContext();
-  const { currentUserData } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
-  const isProfileUpdated =
-    !!Object.keys(currentUserData?.member?.preferences || {}).length &&
-    !!currentUserData?.member?.first_name &&
-    !!currentUserData?.member?.last_name;
-
   const { isLoading, data, refetch } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {

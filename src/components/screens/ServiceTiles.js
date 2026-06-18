@@ -47,7 +47,7 @@ export const ServiceTiles = ({
     isConnected && (await refetch?.());
     isConnected && (await htmlRefetch?.());
     setRefreshing(false);
-  }, [isConnected, refetch]);
+  }, [isConnected, refetch, htmlRefetch]);
 
   useVolunteerRefresh(refetch, query);
 

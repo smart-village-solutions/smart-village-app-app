@@ -29,7 +29,9 @@ export const GET_NEWS_ITEMS = gql`
     ) {
       id
       mainTitle: title
+      createdAt
       publishedAt
+      updatedAt
       categories {
         id
         parent {

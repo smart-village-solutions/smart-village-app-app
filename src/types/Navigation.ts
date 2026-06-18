@@ -60,6 +60,7 @@ export enum ScreenName {
   OParlSearch = 'OParlSearch',
   Pdf = 'Pdf',
   Profile = 'Profile',
+  ProfileContent = 'ProfileContent',
   ProfileConversations = 'ProfileConversations',
   ProfileCreateContentForm = 'ProfileCreateContentForm',
   ProfileCreateContentHome = 'ProfileCreateContentHome',
