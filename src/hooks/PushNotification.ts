@@ -30,7 +30,18 @@ export const usePushNotifications = (
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
-  const currentAppState = useRef<AppStateStatus>();
+  // Keep latest values available to listeners installed only once on mount.
+  const notificationHandlerRef = useRef(notificationHandler);
+  const interactionHandlerRef = useRef(interactionHandler);
+  const behaviorRef = useRef(behavior);
+
+  useEffect(() => {
+    notificationHandlerRef.current = notificationHandler;
+    interactionHandlerRef.current = interactionHandler;
+    behaviorRef.current = behavior;
+  }, [notificationHandler, interactionHandler, behavior]);
+
+  const currentAppState = useRef<AppStateStatus | null>(null);
 
   const onGetActive = useCallback(async (nextState: AppStateStatus) => {
     if (currentAppState.current !== nextState) {
@@ -61,13 +72,13 @@ export const usePushNotifications = (
       }
 
       lastHandledNotificationId = id;
-      interactionHandler?.(response);
+      interactionHandlerRef.current?.(response);
     };
 
     if (shouldHandlePushNotifications) {
       Notifications.setNotificationHandler({
         handleNotification: async () =>
-          behavior ?? {
+          behaviorRef.current ?? {
             shouldPlaySound: false,
             shouldSetBadge: false,
             shouldShowBanner: __DEV__,
@@ -78,25 +89,25 @@ export const usePushNotifications = (
       subscription = AppState.addEventListener('change', onGetActive);
 
       // This listener is fired whenever a notification is received while the app is foregrounded
-      notificationListener.current = notificationHandler
-        ? Notifications.addNotificationReceivedListener((notification) => {
-            notificationHandler(notification);
-          })
-        : null;
+      notificationListener.current = Notifications.addNotificationReceivedListener(
+        (notification) => {
+          notificationHandlerRef.current?.(notification);
+        }
+      );
     }
 
     // This listener is fired whenever a user taps on or interacts with a notification
     // while the app is foregrounded or backgrounded. This must stay active even when
     // remote push handling is disabled, because local notifications can still exist.
-    responseListener.current = interactionHandler
-      ? Notifications.addNotificationResponseReceivedListener(handleNotificationResponse)
-      : null;
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      handleNotificationResponse
+    );
 
     // Handle the cold-start case: when the app was killed and the user tapped a notification
     // to open it. In this case the response listener above never fires because the tap
     // happened before the listener was registered. getLastNotificationResponseAsync returns
     // the response that caused the app to open.
-    if (interactionHandler) {
+    if (interactionHandlerRef.current) {
       const lastResponse = Notifications.getLastNotificationResponse();
       if (lastResponse) {
         handleNotificationResponse(lastResponse);
@@ -109,5 +120,5 @@ export const usePushNotifications = (
 
       subscription?.remove();
     };
-  }, []);
+  }, [isActive, onGetActive]);
 };
