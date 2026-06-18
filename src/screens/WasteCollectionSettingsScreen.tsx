@@ -81,6 +81,7 @@ import { WasteReminderSettingJson, WasteTypeData } from '../types';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 const getFlexibleLeadDaysTooltipKey = (typeKey: string, slotId: string) => `${typeKey}:${slotId}`;
+const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
 const renderWasteTypeLabel = (wasteType: WasteTypeData[string]) => (
   <WrapperRow itemsCenter>
     <Dot color={wasteType.color} />
@@ -580,35 +581,29 @@ export const WasteCollectionSettingsScreen = () => {
                 <RegularText big>{wasteTexts.chooseCategory}</RegularText>
               </WrapperVertical>
               <View style={styles.borderRadius}>
-                {[...usedTypeKeys].sort().map((item, index, sortedUsedTypeKeys) => (
-                  <ListItem
-                    key={keyExtractor(item, index)}
-                    bottomDivider={index < sortedUsedTypeKeys.length - 1}
-                    containerStyle={styles.listItemContainer}
-                    accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
-                  >
-                    <ListItem.Content>
-                      <WrapperRow itemsCenter>
-                        <Dot color={usedTypes[item].color} />
-                        {usedTypes[item].color !== usedTypes[item].selected_color && (
-                          <Dot color={usedTypes[item].selected_color} />
-                        )}
-                        <BoldText small> {usedTypes[item].label}</BoldText>
-                      </WrapperRow>
-                    </ListItem.Content>
+                {[...usedTypeKeys]
+                  .sort(compareAlphabetically)
+                  .map((item, index, sortedUsedTypeKeys) => (
+                    <ListItem
+                      key={keyExtractor(item, index)}
+                      bottomDivider={index < sortedUsedTypeKeys.length - 1}
+                      containerStyle={styles.listItemContainer}
+                      accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+                    >
+                      <ListItem.Content>{renderWasteTypeLabel(usedTypes[item])}</ListItem.Content>
 
-                    <Switch
-                      isDisabled={false}
-                      switchValue={typeSettings[item]}
-                      toggleSwitch={() => {
-                        dispatch({
-                          type: WasteSettingsActions.setTypeSetting,
-                          payload: { key: item, value: !typeSettings[item] }
-                        });
-                      }}
-                    />
-                  </ListItem>
-                ))}
+                      <Switch
+                        isDisabled={false}
+                        switchValue={typeSettings[item]}
+                        toggleSwitch={() => {
+                          dispatch({
+                            type: WasteSettingsActions.setTypeSetting,
+                            payload: { key: item, value: !typeSettings[item] }
+                          });
+                        }}
+                      />
+                    </ListItem>
+                  ))}
               </View>
             </WrapperVertical>
           )}
@@ -770,7 +765,7 @@ export const WasteCollectionSettingsScreen = () => {
                     <View style={styles.borderRadius}>
                       {selectedTypeKeys
                         .filter((key) => usedTypes[key])
-                        .sort()
+                        .sort(compareAlphabetically)
                         .map((item, index, filteredSelectedTypeKeys) => (
                           <ListItem
                             key={keyExtractor(item, index)}
@@ -803,7 +798,7 @@ export const WasteCollectionSettingsScreen = () => {
               <WrapperHorizontal>
                 {selectedTypeKeys
                   .filter((key) => usedTypes[key])
-                  .sort()
+                  .sort(compareAlphabetically)
                   .map((typeKey) => {
                     const normalizedSlots = normalizePushReminderSlots(usedTypes[typeKey]);
                     const isPushReminderEnabled = normalizedSlots.slots.length > 0;
