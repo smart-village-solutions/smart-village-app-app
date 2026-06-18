@@ -81,6 +81,13 @@ import { WasteReminderSettingJson, WasteTypeData } from '../types';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 const getFlexibleLeadDaysTooltipKey = (typeKey: string, slotId: string) => `${typeKey}:${slotId}`;
+const renderWasteTypeLabel = (wasteType: WasteTypeData[string]) => (
+  <WrapperRow itemsCenter>
+    <Dot color={wasteType.color} />
+    {wasteType.color !== wasteType.selected_color && <Dot color={wasteType.selected_color} />}
+    <BoldText small> {wasteType.label}</BoldText>
+  </WrapperRow>
+);
 const getFlexibleLeadDaysTooltipScrollY = (
   leadDays: number,
   maxLeadDays: number,
@@ -772,13 +779,7 @@ export const WasteCollectionSettingsScreen = () => {
                             accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
                           >
                             <ListItem.Content>
-                              <WrapperRow itemsCenter>
-                                <Dot color={usedTypes[item].color} />
-                                {usedTypes[item].color !== usedTypes[item].selected_color && (
-                                  <Dot color={usedTypes[item].selected_color} />
-                                )}
-                                <BoldText small> {usedTypes[item].label}</BoldText>
-                              </WrapperRow>
+                              {renderWasteTypeLabel(usedTypes[item])}
                             </ListItem.Content>
 
                             <Switch
@@ -820,13 +821,7 @@ export const WasteCollectionSettingsScreen = () => {
                           topDivider
                         >
                           <ListItem.Content>
-                            <WrapperRow itemsCenter>
-                              <Dot color={usedTypes[typeKey].color} />
-                              {usedTypes[typeKey].color !== usedTypes[typeKey].selected_color && (
-                                <Dot color={usedTypes[typeKey].selected_color} />
-                              )}
-                              <BoldText small> {usedTypes[typeKey].label}</BoldText>
-                            </WrapperRow>
+                            {renderWasteTypeLabel(usedTypes[typeKey])}
                           </ListItem.Content>
                           <Switch
                             isDisabled={!isPushReminderEnabled}
