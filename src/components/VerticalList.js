@@ -60,8 +60,9 @@ export const VerticalList = ({
       // if there is a pagination, the end of the list is reached, when no more data is returned
       // from partially fetching, so we need to check the data to determine the lists end
       const { data: moreData } = await fetchMoreData();
+      const moreItems = query ? moreData?.[query] ?? [] : moreData ?? [];
 
-      setListEndReached(!moreData[query].length);
+      setListEndReached(!moreItems.length);
     } else {
       setListEndReached(true);
     }

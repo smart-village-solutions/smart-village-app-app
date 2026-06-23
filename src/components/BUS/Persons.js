@@ -11,11 +11,11 @@ import { InfoBox, Wrapper } from '../Wrapper';
 import { Block } from './Block';
 import { getAddress, getContact } from './helpers';
 
-export const Persons = ({ data, openWebScreen }) => {
+export const Persons = ({ data, bottomDivider, openWebScreen }) => {
   const { persons } = data;
 
   return (
-    <Block title={texts.bbBus.employees}>
+    <Block title={texts.bus.employees} bottomDivider={bottomDivider}>
       {persons.map((person) => {
         const {
           id,
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
 });
 
 Persons.propTypes = {
+  bottomDivider: PropTypes.bool,
   data: PropTypes.object.isRequired,
   openWebScreen: PropTypes.func.isRequired
 };

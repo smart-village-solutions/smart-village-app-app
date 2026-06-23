@@ -1,46 +1,22 @@
-import _remove from 'lodash/remove';
-import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
-import { useQuery } from 'react-apollo';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { BBBusClient } from '../../BBBusClient';
 import { BackToTop, Button, SafeAreaViewFlex } from '../../components';
-import { Authority } from '../../components/BB-BUS/Authority';
-import { Persons } from '../../components/BB-BUS/Persons';
-import { TextBlock } from '../../components/BB-BUS/TextBlock';
+import { Authority } from '../../components/BUS/Authority';
+import { Persons } from '../../components/BUS/Persons';
+import { TextBlock } from '../../components/BUS/TextBlock';
 import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, device, normalize } from '../../config';
-import { matomoTrackingString, openLink, rootRouteName } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
-import { GET_SERVICE } from '../../queries/BB-BUS';
+import { matomoTrackingString, openLink } from '../../helpers';
+import { getBusTopActions, splitBusTextBlocks } from '../../helpers/busDetailHelper';
+import { useBusService, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
 const uniqueId = (name) => name.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-
-const TEXT_BLOCKS_SORTER = {
-  Kurztext: 0,
-  Volltext: 1,
-  Ansprechpartner: 2,
-  'Erforderliche Unterlagen': 3,
-  Voraussetzungen: 4,
-  Bearbeitungsdauer: 5,
-  Verfahrensablauf: 6,
-  Formulare: 7,
-  Fristen: 8,
-  'Kosten (Gebühren, Auslagen, etc.)': 9,
-  'Rechtsgrundlage(n)': 10,
-  'Hinweise (Besonderheiten)': 11,
-  Urheber: 12,
-  'Weiterführende Informationen': 13,
-  Ansprechpunkt: 14,
-  'Zuständige Stelle': 15
-};
 
 const FormButton = ({ headerTitle, link, name, rootRouteName }) => {
   const { url } = link;
@@ -60,74 +36,40 @@ const renderForm = (headerTitle, form, rootRouteName) => {
   const { links, name } = form;
 
   return links.map((link) => {
+    const buttonTitle = name || link?.name || 'Formular öffnen';
+
     return (
       <FormButton
         headerTitle={headerTitle}
         key={link.url}
         link={link}
-        name={name}
+        name={buttonTitle}
         rootRouteName={rootRouteName}
       />
     );
   });
 };
 
-const parseTextBlocks = (service) => {
-  const { textBlocks } = service;
-  let firstTextBlocks;
-  let sortedTextBlocks;
-
-  if (textBlocks) {
-    sortedTextBlocks = _sortBy(textBlocks, (textBlock) => {
-      return TEXT_BLOCKS_SORTER[textBlock.type.name];
-    });
-
-    // filter text blocks we want to render before authorities and persons
-    firstTextBlocks = _remove(sortedTextBlocks, (textBlock) => {
-      return (
-        textBlock.type.name.toUpperCase() === 'KURZTEXT' ||
-        textBlock.type.name.toUpperCase() === 'VOLLTEXT'
-      );
-    });
-
-    // filter text blocks, we do not want to render
-    _remove(sortedTextBlocks, (textBlock) => {
-      return (
-        textBlock.type.name.toUpperCase() === 'TEASER' ||
-        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
-        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
-      );
-    });
-  }
-
-  return { firstTextBlocks, sortedTextBlocks };
-};
-
 // eslint-disable-next-line complexity
 export const DetailScreen = ({ route }) => {
   const scrollViewRef = useRef();
-  const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { bus = {} } = settings;
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [client] = useState(BBBusClient(globalSettings?.settings?.busBb?.uri));
 
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const details = route?.params?.data ?? '';
-  const areaId = route.params?.areaId ?? globalSettings?.settings?.busBb?.v2?.areaId?.toString();
+  const areaId = route.params?.areaId ?? bus?.areaId?.toString();
   const id = details.id;
 
-  useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
+  useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BUS, headerTitle]));
 
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  const { data, loading, refetch } = useQuery(GET_SERVICE, {
-    variables: { externalIds: id, areaId },
-    client,
-    fetchPolicy: 'network-only',
-    skip: !id || !areaId
-  });
+  const { data: service, isLoading: loading, refetch } = useBusService({ areaId, id });
 
   if (!id || !areaId) return null;
 
@@ -137,19 +79,23 @@ export const DetailScreen = ({ route }) => {
 
   const refresh = async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
+    try {
+      await refetch();
+    } catch (error) {
+      console.warn('BUS detail refresh failed', error);
+    } finally {
+      setRefreshing(false);
+    }
   };
-
-  const service = data?.publicServiceTypes?.[0];
 
   if (!service) return null;
 
   const { organisationalUnits, persons } = service;
-
-  const forms = organisationalUnits?.map((ou) => ou.forms).flat();
-
-  const { firstTextBlocks, sortedTextBlocks } = parseTextBlocks(service);
+  const topActions = getBusTopActions(service);
+  const { firstTextBlocks, sortedTextBlocks } = splitBusTextBlocks(service);
+  const hasAuthorities = !!organisationalUnits?.length;
+  const hasPersons = !!persons?.length;
+  const hasSortedTextBlocks = !!sortedTextBlocks?.length;
 
   return (
     <SafeAreaViewFlex>
@@ -167,9 +113,9 @@ export const DetailScreen = ({ route }) => {
           />
         }
       >
-        {!!forms?.length && (
+        {!!topActions.length && (
           <View style={styles.formContainer}>
-            {forms.map((form) => renderForm(headerTitle, form, rootRouteName))}
+            {topActions.map((action) => renderForm(headerTitle, action, rootRouteName))}
           </View>
         )}
 
@@ -179,7 +125,12 @@ export const DetailScreen = ({ route }) => {
           return (
             <TextBlock
               key={textBlock.type?.id || uniqueId(textBlock.type.name)}
-              bottomDivider={index == firstTextBlocks.length - 1}
+              bottomDivider={
+                index == firstTextBlocks.length - 1 &&
+                !hasAuthorities &&
+                !hasPersons &&
+                !hasSortedTextBlocks
+              }
               textBlock={textBlock}
               openWebScreen={openWebScreen}
             />
@@ -190,13 +141,19 @@ export const DetailScreen = ({ route }) => {
           <Authority
             key={ou.id}
             data={ou}
-            bottomDivider={index == organisationalUnits.length - 1}
+            bottomDivider={
+              index == organisationalUnits.length - 1 && !hasPersons && !hasSortedTextBlocks
+            }
             openWebScreen={openWebScreen}
           />
         ))}
 
         {!!persons?.length && (
-          <Persons data={{ id: details.id, persons }} openWebScreen={openWebScreen} />
+          <Persons
+            data={{ id: details.id, persons }}
+            bottomDivider={!hasSortedTextBlocks}
+            openWebScreen={openWebScreen}
+          />
         )}
 
         {sortedTextBlocks?.map((textBlock, index) => {

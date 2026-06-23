@@ -1,29 +1,59 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { memo, useEffect, useRef } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
 
 const { a11yLabel } = consts;
 
-export const TextSearch = memo(({ data, setData, label, placeholder }) => {
+const SearchIcon = () => (
+  <Icon.Search
+    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`}
+    color={colors.primary}
+    size={normalize(28)}
+  />
+);
+
+const ClearIcon = ({ onPress }) => (
+  <TouchableOpacity
+    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`}
+    activeOpacity={1}
+    onPress={onPress}
+  >
+    <Icon.Close color={colors.primary} size={normalize(24)} />
+  </TouchableOpacity>
+);
+
+ClearIcon.propTypes = {
+  onPress: PropTypes.func.isRequired
+};
+
+export const TextSearch = memo(({ blurSignal = 0, data, setData, label, placeholder }) => {
+  const inputRef = useRef(null);
+  const clearSearch = () => setData('');
+
+  useEffect(() => {
+    if (!blurSignal) {
+      return;
+    }
+
+    inputRef.current?.blur?.();
+  }, [blurSignal]);
+
   return (
     <View>
       <WrapperHorizontal>
         <Label>{label}</Label>
       </WrapperHorizontal>
       <SearchBar
-        clearIcon={{
-          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`,
-          color: colors.primary,
-          size: normalize(24)
-        }}
+        clearIcon={() => <ClearIcon onPress={clearSearch} />}
+        inputRef={inputRef}
         value={data}
         onChangeText={(value) => setData(value)}
-        onClearText={() => setData('')}
+        onClearText={clearSearch}
         placeholder={placeholder}
         placeholderTextColor={colors.darkText}
         lightTheme
@@ -32,15 +62,7 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
         inputStyle={[styles.inputStyle, data.length && styles.marginLeft]}
         leftIconContainerStyle={styles.leftIconContainerStyle}
         rightIconContainerStyle={styles.rightIconContainerStyle}
-        searchIcon={
-          data.length
-            ? null
-            : {
-                accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`,
-                color: colors.primary,
-                size: normalize(28)
-              }
-        }
+        searchIcon={() => (data.length ? null : <SearchIcon />)}
       />
     </View>
   );
@@ -80,6 +102,7 @@ const styles = StyleSheet.create({
 
 TextSearch.displayName = 'TextSearch';
 TextSearch.propTypes = {
+  blurSignal: PropTypes.number,
   data: PropTypes.string.isRequired,
   setData: PropTypes.func.isRequired,
   label: PropTypes.string,

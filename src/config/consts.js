@@ -115,7 +115,6 @@ export const consts = {
     ONCE_PER_MINUTE,
     NEVER,
     // refresh intervals per type:
-    BB_BUS: ONCE_A_DAY,
     BOOKMARKS: ONCE_A_DAY,
     EVENTS: ONCE_A_DAY,
     NEWS: ONCE_A_DAY,
@@ -216,7 +215,7 @@ export const consts = {
 
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
-      BB_BUS: 'Bürger- und Unternehmensservice',
+      BUS: 'Bürger- und Unternehmensservice',
       BOOKMARK_CATEGORY: 'Bookmark category',
       BOOKMARKS: 'Bookmarks',
       COMMERCIAL_OFFER: 'Commercial offer',

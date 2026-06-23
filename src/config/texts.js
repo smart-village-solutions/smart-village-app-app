@@ -75,24 +75,42 @@ export const texts = {
     worksOfArt: 'Kunstwerke'
   },
   backToTop: 'zurück nach oben',
-  bbBus: {
+  bus: {
     authority: {
+      accessibility: 'Barrierefreiheit',
       elevator: 'Aufzug vorhanden',
       openingTime: 'Öffnungszeiten',
+      paymentMethod: 'Zahlungsweise',
+      paymentMethods: 'Zahlungsdaten',
+      transportation: 'Verkehrsanbindung',
       wheelchairAccessible: 'Rollstuhlgerecht'
     },
     categoryFilter: {
       label: 'Lebenslage'
     },
+    emptyStates: {
+      lifeSituations:
+        'Für diese Lebenslage sind derzeit keine Unterkategorien oder Leistungen verfügbar.',
+      lifeSituationsNested: 'Diese Lebenslage konnte derzeit nicht geladen werden.',
+      lifeSituationsRoot: 'Die Lebenslagen konnten derzeit nicht geladen werden.',
+      search: 'Die Suchergebnisse konnten derzeit nicht geladen werden.',
+      services: 'Die Dienstleistungen konnten derzeit nicht geladen werden.'
+    },
     employees: 'Ansprechpartner',
     initialFilter: {
       aToZ: 'A-Z',
+      lifeSituations: 'Lebenslagen',
       top10: 'Meistgesucht',
       search: 'Suche'
     },
     locationFilter: {
+      error: 'Die Ortssuche ist derzeit nicht verfügbar.',
       label: 'Ort',
-      searchPlaceholder: 'Suche'
+      loading: 'Orte werden geladen...',
+      minSearchLength: 'Bitte gib mindestens 3 Zeichen ein.',
+      noResults: 'Keine Orte gefunden.',
+      resetTo: (areaName) => `Auf ${areaName} zurücksetzen`,
+      searchPlaceholder: 'Ort suchen'
     },
     textSearch: {
       label: 'Dienstleistung',

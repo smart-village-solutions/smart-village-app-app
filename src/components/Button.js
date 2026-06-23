@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary
   },
   bigButton: {
-    height: normalize(56)
+    minHeight: normalize(56),
+    paddingVertical: normalize(10)
   },
   bigButtonRadius: {
     borderRadius: normalize(8)
@@ -123,7 +124,10 @@ const styles = StyleSheet.create({
     fontSize: normalize(14)
   },
   button: {
-    height: normalize(48)
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(48),
+    paddingVertical: normalize(8)
   },
   buttonDisabled: {
     backgroundColor: colors.placeholder
@@ -170,13 +174,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.error
   },
   smallButton: {
-    height: normalize(40)
+    minHeight: normalize(40),
+    paddingVertical: normalize(6)
   },
   smallButtonRadius: {
     borderRadius: normalize(40)
   },
   smallestButton: {
-    height: normalize(32)
+    minHeight: normalize(32),
+    paddingVertical: normalize(4)
   },
   smallestButtonRadius: {
     borderRadius: normalize(32)
@@ -191,7 +197,8 @@ const styles = StyleSheet.create({
     color: colors.lightestText,
     fontFamily: 'bold',
     fontSize: normalize(14),
-    fontWeight: '600'
+    fontWeight: '600',
+    textAlign: 'center'
   },
   titleInvert: {
     color: colors.primary

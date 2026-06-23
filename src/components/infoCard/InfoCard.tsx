@@ -54,7 +54,7 @@ export const InfoCard = ({
       </InfoBox>
     )}
 
-    {!!category && !!category.name && (
+    {!!category?.name && (
       <InfoBox>
         <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
         <RegularText accessibilityLabel={`${consts.a11yLabel.category} (${category.name})`}>
@@ -63,7 +63,7 @@ export const InfoCard = ({
       </InfoBox>
     )}
 
-    <Divider style={styles.divider} />
+    {(!!name || !!category?.name) && <Divider style={styles.divider} />}
 
     {showOpeningTimes && <OpenStatus openingHours={openingHours} />}
 
