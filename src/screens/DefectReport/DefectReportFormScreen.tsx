@@ -14,6 +14,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors } from '../../config';
+import { graphqlFetchPolicy } from '../../helpers/graphqlHelper';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_CATEGORIES } from '../../queries/categories';
@@ -24,10 +25,10 @@ export const DefectReportFormScreen = ({
   navigation,
   route
 }: {
-  navigation: StackNavigationProp<any>;
-  route: any;
+  navigation: StackNavigationProp<Record<string, object | undefined>>;
+  route: { params?: { consentForDataProcessingText?: string } };
 }) => {
-  const { isConnected } = useContext(NetworkContext);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
   const [isLocationSelect, setIsLocationSelect] = useState(true);
@@ -52,6 +53,7 @@ export const DefectReportFormScreen = ({
     refetch: refetchCategories
   } = useQuery(GET_CATEGORIES, {
     variables: { ids: [categoryId] },
+    fetchPolicy: graphqlFetchPolicy({ isConnected, isMainserverUp }),
     skip: !categoryId
   });
 
@@ -62,7 +64,7 @@ export const DefectReportFormScreen = ({
       await refetchCategories?.();
     }
     setRefreshing(false);
-  }, [isConnected, refetchHtml]);
+  }, [isConnected, refetchCategories, refetchHtml]);
 
   if (loadingHtml || loadingCategories) {
     return (
