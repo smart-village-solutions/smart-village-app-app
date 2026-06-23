@@ -2,7 +2,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
-import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -10,6 +9,7 @@ import { useInfiniteQuery, useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import {
   EmptyMessage,
   Filter,
@@ -23,6 +23,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
+import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../../helpers/cacheHelper';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
@@ -78,6 +79,7 @@ type Props = {
 
 export const SueListScreen = ({ navigation, route }: Props) => {
   const { isConnected } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
@@ -119,7 +121,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
         return allPages.length * limit;
       },
-      cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
+      cacheTime: millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.SUE)
     }
   );
 

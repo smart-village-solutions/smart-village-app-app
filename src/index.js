@@ -19,6 +19,7 @@ import { BookmarkProvider } from './BookmarkProvider';
 import { consts, namespace, secrets } from './config';
 import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
+  createEndOfDayExpiringStorage,
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
@@ -76,7 +77,9 @@ const MainAppWithApolloProvider = () => {
     // const link = ApolloLink.from([authLink, restLink, errorLink, retryLink, httpLink]);
     const link = ApolloLink.from([authLink, httpLink]);
     const cache = new InMemoryCache();
-    const storage = AsyncStorage;
+    const storage = createEndOfDayExpiringStorage(AsyncStorage, {
+      getGlobalSettings: storageHelper.globalSettings
+    });
 
     try {
       // await before instantiating ApolloClient,
@@ -219,18 +222,20 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <ConfigurationsProvider>
-          <OnboardingManager>
-            <ProfileProvider>
-              <UnreadMessagesProvider>
-                <RootView>
-                  <OtaUpdateManager />
-                  <Navigator navigationType={initialGlobalSettings.navigation} />
-                </RootView>
-              </UnreadMessagesProvider>
-            </ProfileProvider>
-          </OnboardingManager>
-        </ConfigurationsProvider>
+        <ReactQueryProvider globalSettings={initialGlobalSettings}>
+          <ConfigurationsProvider>
+            <OnboardingManager>
+              <ProfileProvider>
+                <UnreadMessagesProvider>
+                  <RootView>
+                    <OtaUpdateManager />
+                    <Navigator navigationType={initialGlobalSettings.navigation} />
+                  </RootView>
+                </UnreadMessagesProvider>
+              </ProfileProvider>
+            </OnboardingManager>
+          </ConfigurationsProvider>
+        </ReactQueryProvider>
       </SettingsProvider>
     </ApolloProvider>
   );
@@ -241,13 +246,11 @@ export const MainApp = () => (
     <OrientationProvider>
       <BookmarkProvider>
         <PermanentFilterProvider>
-          <ReactQueryProvider>
-            <SafeAreaProvider>
-              <AccessibilityProvider>
-                <MainAppWithApolloProvider />
-              </AccessibilityProvider>
-            </SafeAreaProvider>
-          </ReactQueryProvider>
+          <SafeAreaProvider>
+            <AccessibilityProvider>
+              <MainAppWithApolloProvider />
+            </AccessibilityProvider>
+          </SafeAreaProvider>
         </PermanentFilterProvider>
       </BookmarkProvider>
     </OrientationProvider>
