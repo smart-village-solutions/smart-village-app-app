@@ -20,7 +20,7 @@ import { addToStore, readFromStore } from './storageHelper';
  */
 export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
   if (refreshInterval === consts.REFRESH_INTERVALS.NEVER) {
-    return endOfDayUnix();
+    return Number.MAX_SAFE_INTEGER;
   }
 
   const refreshIntervals = await readFromStore('refresh-intervals');

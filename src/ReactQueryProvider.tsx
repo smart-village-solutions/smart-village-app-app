@@ -32,15 +32,22 @@ export const ReactQueryProvider = ({
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
+    const expireCache = () => {
+      queryClient.removeQueries({ predicate: (query) => !query.isActive() });
+      queryClient.invalidateQueries();
+    };
+
     const scheduleEndOfDayCacheReset = () => {
-      const delay = Math.max(
-        millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.GENERAL),
-        1000
-      );
+      const delay = millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.GENERAL);
+
+      if (delay <= 0) {
+        expireCache();
+
+        return;
+      }
 
       timeoutId = setTimeout(() => {
-        queryClient.removeQueries({ inactive: true });
-        queryClient.invalidateQueries();
+        expireCache();
         scheduleEndOfDayCacheReset();
       }, delay);
     };
