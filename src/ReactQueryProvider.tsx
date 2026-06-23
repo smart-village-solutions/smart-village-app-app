@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from './helpers/cacheHelper';
@@ -25,9 +25,13 @@ export const ReactQueryProvider = ({
 }) => {
   const [queryClient] = useState(() => createQueryClient(globalSettings));
 
-  useEffect(() => {
+  const applyQueryDefaults = useCallback(() => {
     queryClient.setDefaultOptions(queryDefaultOptions(globalSettings));
   }, [globalSettings, queryClient]);
+
+  useEffect(() => {
+    applyQueryDefaults();
+  }, [applyQueryDefaults]);
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -38,6 +42,8 @@ export const ReactQueryProvider = ({
     };
 
     const scheduleEndOfDayCacheReset = () => {
+      applyQueryDefaults();
+
       const delay = millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.GENERAL);
 
       if (delay <= 0) {
@@ -55,7 +61,7 @@ export const ReactQueryProvider = ({
     scheduleEndOfDayCacheReset();
 
     return () => clearTimeout(timeoutId);
-  }, [globalSettings, queryClient]);
+  }, [applyQueryDefaults, globalSettings, queryClient]);
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };

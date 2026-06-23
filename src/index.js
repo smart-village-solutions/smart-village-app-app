@@ -36,11 +36,32 @@ import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import RootView from './RootView';
-import { initialContext, SettingsProvider } from './SettingsProvider';
+import { initialContext, SettingsContext, SettingsProvider } from './SettingsProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { OtaUpdateManager } from './components';
 
 const { LIST_TYPES } = consts;
+
+const MainAppWithSettings = () => {
+  const { globalSettings } = useContext(SettingsContext);
+
+  return (
+    <ReactQueryProvider globalSettings={globalSettings}>
+      <ConfigurationsProvider>
+        <OnboardingManager>
+          <ProfileProvider>
+            <UnreadMessagesProvider>
+              <RootView>
+                <OtaUpdateManager />
+                <Navigator navigationType={globalSettings.navigation} />
+              </RootView>
+            </UnreadMessagesProvider>
+          </ProfileProvider>
+        </OnboardingManager>
+      </ConfigurationsProvider>
+    </ReactQueryProvider>
+  );
+};
 
 const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -222,20 +243,7 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <ReactQueryProvider globalSettings={initialGlobalSettings}>
-          <ConfigurationsProvider>
-            <OnboardingManager>
-              <ProfileProvider>
-                <UnreadMessagesProvider>
-                  <RootView>
-                    <OtaUpdateManager />
-                    <Navigator navigationType={initialGlobalSettings.navigation} />
-                  </RootView>
-                </UnreadMessagesProvider>
-              </ProfileProvider>
-            </OnboardingManager>
-          </ConfigurationsProvider>
-        </ReactQueryProvider>
+        <MainAppWithSettings />
       </SettingsProvider>
     </ApolloProvider>
   );

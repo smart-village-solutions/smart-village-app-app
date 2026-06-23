@@ -20,17 +20,6 @@ const HOURS_TO_MILLISECONDS = 60 * 60 * 1000;
 export const millisecondsUntilEndOfDay = () =>
   Math.max(moment().endOf('day').diff(moment(), 'milliseconds'), 0);
 
-const cacheConfigFor = (globalSettings, cacheScope = CACHE_SCOPES.GENERAL) => {
-  const cacheConfig = globalSettings?.settings?.cache;
-
-  if (!cacheConfig) {
-    return undefined;
-  }
-
-  // Scope-specific values override general; general remains the cross-app fallback.
-  return cacheConfig[cacheScope] ?? cacheConfig[CACHE_SCOPES.GENERAL];
-};
-
 const normalizeMomentEndOfUnit = (value) => {
   const normalizedValue = value.replace(/[\s_-]/g, '').toLowerCase();
   const endOfMatch = normalizedValue.match(/^endof['"]?\(?['"]?([a-z]+)['"]?\)?$/);
@@ -56,9 +45,7 @@ const normalizeMomentEndOfUnit = (value) => {
   return units[unit];
 };
 
-const configuredCacheMaxAgeInMilliseconds = (globalSettings, cacheScope) => {
-  const cacheConfig = cacheConfigFor(globalSettings, cacheScope);
-
+const cacheConfigValueInMilliseconds = (cacheConfig) => {
   if (typeof cacheConfig === 'number') {
     return Number.isFinite(cacheConfig) && cacheConfig >= 0
       ? cacheConfig * HOURS_TO_MILLISECONDS
@@ -76,6 +63,23 @@ const configuredCacheMaxAgeInMilliseconds = (globalSettings, cacheScope) => {
   }
 
   return Math.max(moment().endOf(momentEndOfUnit).diff(moment(), 'milliseconds'), 0);
+};
+
+const configuredCacheMaxAgeInMilliseconds = (globalSettings, cacheScope = CACHE_SCOPES.GENERAL) => {
+  const cacheConfig = globalSettings?.settings?.cache;
+
+  if (!cacheConfig) {
+    return undefined;
+  }
+
+  const scopedCacheMaxAge = cacheConfigValueInMilliseconds(cacheConfig[cacheScope]);
+
+  if (scopedCacheMaxAge !== undefined || cacheScope === CACHE_SCOPES.GENERAL) {
+    return scopedCacheMaxAge;
+  }
+
+  // Scope-specific values override general; invalid or missing scopes fall back to general.
+  return cacheConfigValueInMilliseconds(cacheConfig[CACHE_SCOPES.GENERAL]);
 };
 
 export const millisecondsUntilCacheExpires = (globalSettings, cacheScope = CACHE_SCOPES.GENERAL) =>

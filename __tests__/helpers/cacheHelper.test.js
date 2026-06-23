@@ -109,6 +109,22 @@ describe('cacheHelper', () => {
     ).toBe(6 * 60 * 60 * 1000);
   });
 
+  it('falls back to general settings when scoped settings are invalid', () => {
+    expect(
+      millisecondsUntilCacheExpires(
+        {
+          settings: {
+            cache: {
+              general: 6,
+              sue: -1
+            }
+          }
+        },
+        CACHE_SCOPES.SUE
+      )
+    ).toBe(6 * 60 * 60 * 1000);
+  });
+
   it('supports zero cache hours', () => {
     expect(
       millisecondsUntilCacheExpires({

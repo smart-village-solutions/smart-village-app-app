@@ -11,12 +11,14 @@ If no cache configuration is provided, the app defaults to keeping cache until t
 Add a `cache` object inside `globalSettings.settings`:
 
 ```json
-"settings": {
-  "cache": {
-    "general": "endDay",
-    "sue": 14,
-    "home": "endOfDay",
-    "apollo": 6
+{
+  "settings": {
+    "cache": {
+      "general": "endDay",
+      "sue": 14,
+      "home": "endOfDay",
+      "apollo": 6
+    }
   }
 }
 ```
@@ -60,16 +62,18 @@ Supported units are `hour`, `day`, `week`, `isoWeek`, `month`, `quarter`, and `y
 The app resolves cache configuration in this order:
 
 1. Use the requested scope value, for example `settings.cache.sue`.
-2. If the requested scope is missing, use `settings.cache.general`.
+2. If the requested scope is missing or invalid, use `settings.cache.general`.
 3. If `general` is missing or invalid, use the built-in default: end of the current day.
 
 Example:
 
 ```json
-"settings": {
-  "cache": {
-    "general": "endDay",
-    "sue": 14
+{
+  "settings": {
+    "cache": {
+      "general": "endDay",
+      "sue": 14
+    }
   }
 }
 ```
@@ -86,9 +90,11 @@ In this example:
 ### One Rule for the Whole App
 
 ```json
-"settings": {
-  "cache": {
-    "general": 24
+{
+  "settings": {
+    "cache": {
+      "general": 24
+    }
   }
 }
 ```
@@ -98,9 +104,11 @@ All cache scopes use 24 hours unless a scope-specific value is added.
 ### Refresh Everything at the End of the Day
 
 ```json
-"settings": {
-  "cache": {
-    "general": "endDay"
+{
+  "settings": {
+    "cache": {
+      "general": "endDay"
+    }
   }
 }
 ```
@@ -110,10 +118,12 @@ This is equivalent to the built-in default, but makes the behavior explicit in s
 ### Custom SUE Cache
 
 ```json
-"settings": {
-  "cache": {
-    "general": "endDay",
-    "sue": 14
+{
+  "settings": {
+    "cache": {
+      "general": "endDay",
+      "sue": 14
+    }
   }
 }
 ```
@@ -123,11 +133,13 @@ SUE request list data expires after 14 hours. Other cache scopes expire at the e
 ### Separate Apollo and Home Cache
 
 ```json
-"settings": {
-  "cache": {
-    "general": "endDay",
-    "apollo": 6,
-    "home": "endOfHour"
+{
+  "settings": {
+    "cache": {
+      "general": "endDay",
+      "apollo": 6,
+      "home": "endOfHour"
+    }
   }
 }
 ```
