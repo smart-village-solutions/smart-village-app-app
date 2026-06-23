@@ -85,10 +85,15 @@ export const endOfDayTimestamp = () => moment().endOf('day').valueOf();
 
 export const endOfDayUnix = () => moment().endOf('day').unix();
 
-export const cacheExpiresAtTimestamp = (globalSettings, cacheScope = CACHE_SCOPES.GENERAL) =>
-  configuredCacheMaxAgeInMilliseconds(globalSettings, cacheScope) !== undefined
-    ? Date.now() + millisecondsUntilCacheExpires(globalSettings, cacheScope)
-    : endOfDayTimestamp();
+export const cacheExpiresAtTimestamp = (globalSettings, cacheScope = CACHE_SCOPES.GENERAL) => {
+  const configuredCacheMaxAge = configuredCacheMaxAgeInMilliseconds(globalSettings, cacheScope);
+
+  if (configuredCacheMaxAge === undefined) {
+    return endOfDayTimestamp();
+  }
+
+  return Date.now() + configuredCacheMaxAge;
+};
 
 export const createEndOfDayExpiringStorage = (
   storage,
