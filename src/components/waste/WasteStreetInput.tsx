@@ -10,6 +10,12 @@ import { Label } from '../Label';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Wrapper } from '../Wrapper';
 
+import {
+  getAutocompleteKeyboardMarginBottom,
+  getAutocompleteListContainerHeight,
+  getAutocompleteMaxDropdownHeight
+} from './autocompleteLayout';
+
 type Props = {
   isFocused: boolean;
   renderSuggestions: {
@@ -82,7 +88,21 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
         inputContainerStyle={styles.autoCompleteInputContainer}
         listContainerStyle={[
           styles.autoCompleteListContainer,
-          { height: listContainerHeight, marginBottom: keyboardHeight }
+          {
+            height: getAutocompleteListContainerHeight({
+              height: listContainerHeight,
+              keyboardHeight,
+              maxDropdownHeight: getAutocompleteMaxDropdownHeight({
+                androidMaxHeight: normalize(230),
+                iosMaxHeight: normalize(200),
+                platform: device.platform
+              })
+            }),
+            marginBottom: getAutocompleteKeyboardMarginBottom({
+              keyboardHeight,
+              platform: device.platform
+            })
+          }
         ]}
         onBlur={() => setIsFocused(false)}
         onChangeText={(text) => setInputValue(text)}
