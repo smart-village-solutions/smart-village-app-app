@@ -34,7 +34,7 @@ import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
-import { ReactQueryProvider } from './ReactQueryProvider';
+import { ReactQueryCacheSettings, ReactQueryProvider } from './ReactQueryProvider';
 import RootView from './RootView';
 import { initialContext, SettingsContext, SettingsProvider } from './SettingsProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
@@ -46,7 +46,8 @@ const MainAppWithSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
 
   return (
-    <ReactQueryProvider globalSettings={globalSettings}>
+    <>
+      <ReactQueryCacheSettings globalSettings={globalSettings} />
       <ConfigurationsProvider>
         <OnboardingManager>
           <ProfileProvider>
@@ -59,7 +60,7 @@ const MainAppWithSettings = () => {
           </ProfileProvider>
         </OnboardingManager>
       </ConfigurationsProvider>
-    </ReactQueryProvider>
+    </>
   );
 };
 
@@ -254,11 +255,13 @@ export const MainApp = () => (
     <OrientationProvider>
       <BookmarkProvider>
         <PermanentFilterProvider>
-          <SafeAreaProvider>
-            <AccessibilityProvider>
-              <MainAppWithApolloProvider />
-            </AccessibilityProvider>
-          </SafeAreaProvider>
+          <ReactQueryProvider>
+            <SafeAreaProvider>
+              <AccessibilityProvider>
+                <MainAppWithApolloProvider />
+              </AccessibilityProvider>
+            </SafeAreaProvider>
+          </ReactQueryProvider>
         </PermanentFilterProvider>
       </BookmarkProvider>
     </OrientationProvider>

@@ -110,6 +110,12 @@ export const createEndOfDayExpiringStorage = (
     await storage.removeItem(expiresAtKey);
   };
 
+  const writeExpiresAt = async () => {
+    const globalSettings = await getGlobalSettings?.();
+
+    await storage.setItem(expiresAtKey, `${cacheExpiresAtTimestamp(globalSettings, cacheScope)}`);
+  };
+
   return {
     ...storage,
     getItem: async (key) => {
@@ -117,26 +123,32 @@ export const createEndOfDayExpiringStorage = (
         return storage.getItem(key);
       }
 
+      const cache = await storage.getItem(key);
       const expiresAt = Number(await storage.getItem(expiresAtKey));
 
-      if (!expiresAt || Date.now() >= expiresAt) {
+      if (!cache) {
+        return null;
+      }
+
+      if (!expiresAt) {
+        await writeExpiresAt();
+
+        return cache;
+      }
+
+      if (Date.now() >= expiresAt) {
         await purgeCache();
 
         return null;
       }
 
-      return storage.getItem(key);
+      return cache;
     },
     setItem: async (key, value) => {
       await storage.setItem(key, value);
 
       if (key === cacheKey) {
-        const globalSettings = await getGlobalSettings?.();
-
-        await storage.setItem(
-          expiresAtKey,
-          `${cacheExpiresAtTimestamp(globalSettings, cacheScope)}`
-        );
+        await writeExpiresAt();
       }
     },
     removeItem: async (key) => {

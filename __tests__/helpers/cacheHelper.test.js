@@ -33,15 +33,15 @@ describe('cacheHelper', () => {
     expect(storage.removeItem).not.toHaveBeenCalled();
   });
 
-  it('purges persisted cache when expiration metadata is missing', async () => {
+  it('migrates persisted cache when expiration metadata is missing', async () => {
     const storage = createStorage({
       [APOLLO_CACHE_PERSIST_KEY]: 'cache-data'
     });
     const expiringStorage = createEndOfDayExpiringStorage(storage);
 
-    await expect(expiringStorage.getItem(APOLLO_CACHE_PERSIST_KEY)).resolves.toBeNull();
-    expect(storage.removeItem).toHaveBeenCalledWith(APOLLO_CACHE_PERSIST_KEY);
-    expect(storage.removeItem).toHaveBeenCalledWith(expiresAtKey);
+    await expect(expiringStorage.getItem(APOLLO_CACHE_PERSIST_KEY)).resolves.toBe('cache-data');
+    expect(storage.setItem).toHaveBeenCalledWith(expiresAtKey, expect.any(String));
+    expect(storage.removeItem).not.toHaveBeenCalled();
   });
 
   it('purges persisted cache when it is expired', async () => {

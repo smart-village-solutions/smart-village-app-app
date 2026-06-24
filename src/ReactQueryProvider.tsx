@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query';
 
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from './helpers/cacheHelper';
 
@@ -11,19 +11,17 @@ const queryDefaultOptions = (globalSettings?: Record<string, unknown>) => ({
   }
 });
 
-const createQueryClient = (globalSettings?: Record<string, unknown>) =>
+const createQueryClient = () =>
   new QueryClient({
-    defaultOptions: queryDefaultOptions(globalSettings)
+    defaultOptions: queryDefaultOptions()
   });
 
-export const ReactQueryProvider = ({
-  children,
+export const ReactQueryCacheSettings = ({
   globalSettings
 }: {
-  children?: React.ReactNode;
   globalSettings?: Record<string, unknown>;
 }) => {
-  const [queryClient] = useState(() => createQueryClient(globalSettings));
+  const queryClient = useQueryClient();
 
   const applyQueryDefaults = useCallback(() => {
     queryClient.setDefaultOptions(queryDefaultOptions(globalSettings));
@@ -62,6 +60,12 @@ export const ReactQueryProvider = ({
 
     return () => clearTimeout(timeoutId);
   }, [applyQueryDefaults, globalSettings, queryClient]);
+
+  return null;
+};
+
+export const ReactQueryProvider = ({ children }: { children?: React.ReactNode }) => {
+  const [queryClient] = useState(() => createQueryClient());
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
