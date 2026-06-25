@@ -45,6 +45,7 @@ export enum ScreenName {
   Events = 'Events',
   EventSuggestion = 'EventSuggestion',
   Feedback = 'Feedback',
+  FloorPlan = 'FloorPlan',
   Form = 'Form',
   Home = 'Home',
   Html = 'Html',
