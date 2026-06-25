@@ -38,20 +38,18 @@ export const ImagesCarousel = ({
   } = sliderPauseButton;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
-  const [carouselImageIndex, setCarouselImageIndex] = useState(0);
+  const [, setCarouselImageIndex] = useState(0);
 
   const carouselRef = useRef();
   const isFocused = useIsFocused();
 
-  if (isFocused) {
-    carouselRef.current?.startAutoplay();
-  } else {
-    carouselRef.current?.stopAutoplay();
-  }
-
   useEffect(() => {
-    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
-  }, [isPaused]);
+    if (isFocused && !isPaused) {
+      carouselRef.current?.startAutoplay();
+    } else {
+      carouselRef.current?.stopAutoplay();
+    }
+  }, [isFocused, isPaused]);
 
   const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
 
@@ -88,8 +86,7 @@ export const ImagesCarousel = ({
 
               if (!details) return null;
 
-              // extend the item.picture with new params data containing shareContent and details
-              item.picture = {
+              const source = {
                 ...item.picture,
                 params: {
                   ...params,
@@ -108,7 +105,7 @@ export const ImagesCarousel = ({
                   message={item.message}
                   navigation={navigation}
                   refreshInterval={item.refreshInterval || refreshInterval}
-                  source={item.picture}
+                  source={source}
                 />
               );
             }}
@@ -130,7 +127,7 @@ export const ImagesCarousel = ({
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio]
+    [navigation, fetchPolicy, aspectRatio, isImageFullWidth]
   );
 
   if (!data || data.length === 0) return null;
@@ -156,12 +153,12 @@ export const ImagesCarousel = ({
         containerCustomStyle={styles.center}
         data={carouselData}
         enableMomentum
-        firstItem={-carouselData.length}
+        firstItem={0}
         inactiveSlideOpacity={1}
         inactiveSlideScale={1}
         itemWidth={itemWidth}
         loop
-        loopClonesPerSide={carouselData.length}
+        loopClonesPerSide={1}
         onScrollIndexChanged={setCarouselImageIndex}
         ref={carouselRef}
         removeClippedSubviews={false}
@@ -169,6 +166,7 @@ export const ImagesCarousel = ({
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
         sliderWidth={dimensions.width}
+        useScrollView
       />
 
       {shouldShowPauseButton &&

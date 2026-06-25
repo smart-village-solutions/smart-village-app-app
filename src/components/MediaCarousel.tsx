@@ -72,16 +72,12 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !isPaused) {
       carouselRef.current?.startAutoplay();
     } else {
       carouselRef.current?.stopAutoplay();
     }
-  }, [isFocused]);
-
-  useEffect(() => {
-    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
-  }, [isPaused]);
+  }, [isFocused, isPaused]);
 
   const filteredContents = _filter(
     mediaContents,
@@ -120,16 +116,17 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
         autoplayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
         containerCustomStyle={styles.center}
         data={filteredContents}
-        firstItem={-filteredContents.length}
+        firstItem={0}
         inactiveSlideOpacity={1}
         inactiveSlideScale={1}
         itemWidth={itemWidth}
         loop
-        loopClonesPerSide={filteredContents.length}
+        loopClonesPerSide={1}
         onScrollIndexChanged={setCarouselIndex}
         ref={carouselRef}
         renderItem={renderItem}
         sliderWidth={dimensions.width}
+        useScrollView
         vertical={false}
       />
 
