@@ -75,7 +75,6 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   };
 
   const [isPaused, setIsPaused] = useState(false);
-  const [, setCarouselIndex] = useState(0);
 
   const isFocused = useIsFocused();
 
@@ -110,9 +109,11 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: unknown }) => (
-      <MediaCarouselItem containerStyle={carouselItemContainerStyle} item={item as MediaContent} />
-    ),
+    (info: { item: unknown }) => {
+      const mediaContent = info.item as MediaContent;
+
+      return <MediaCarouselItem containerStyle={carouselItemContainerStyle} item={mediaContent} />;
+    },
     [carouselItemContainerStyle]
   );
 
@@ -137,7 +138,6 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
         defaultIndex={0}
         itemWidth={itemWidth}
         loop
-        onSnapToItem={setCarouselIndex}
         renderItem={renderItem}
         style={[styles.center, { height: itemHeight, width: dimensions.width }]}
         vertical={false}

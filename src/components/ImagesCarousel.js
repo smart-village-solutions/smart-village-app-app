@@ -39,7 +39,6 @@ export const ImagesCarousel = ({
   } = sliderPauseButton;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
-  const [, setCarouselImageIndex] = useState(0);
 
   const isFocused = useIsFocused();
 
@@ -161,7 +160,6 @@ export const ImagesCarousel = ({
         defaultIndex={0}
         itemWidth={itemWidth}
         loop
-        onSnapToItem={setCarouselImageIndex}
         renderItem={({ item }) =>
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
