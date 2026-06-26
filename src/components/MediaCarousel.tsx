@@ -30,16 +30,25 @@ type MediaCarouselProps = {
   mediaContents?: MediaContent[];
 };
 
-const MediaCarouselItem = ({ item }: { item: MediaContent }) => {
+const MediaCarouselItem = ({
+  containerStyle,
+  item
+}: {
+  containerStyle?: object;
+  item: MediaContent;
+}) => {
   if (item.contentType === 'image' || item.contentType === 'thumbnail') {
     return (
-      <Image source={{ uri: item.sourceUrl?.url ?? '' }} containerStyle={styles.imageContainer} />
+      <Image
+        source={{ uri: item.sourceUrl?.url ?? '' }}
+        containerStyle={[styles.imageContainer, containerStyle]}
+      />
     );
   }
 
   // video or audio – render via MediaItem (same look as MediaSection)
   return (
-    <WrapperHorizontal>
+    <WrapperHorizontal style={containerStyle}>
       <MediaItem mediaContent={item} />
     </WrapperHorizontal>
   );
@@ -81,8 +90,14 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   );
 
   const itemWidth = imageWidth();
-  const itemHeight = imageHeight(itemWidth);
+  const itemHeight = Math.max(imageHeight(itemWidth), normalize(210));
   const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const carouselItemContainerStyle = useMemo(
+    () => ({
+      marginLeft: centerOffset
+    }),
+    [centerOffset]
+  );
   const withAnimation = useMemo(
     () => ({
       type: 'timing' as const,
@@ -94,20 +109,11 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
     []
   );
 
-  const animationStyle = useCallback(
-    (value: number) => {
-      'worklet';
-
-      return {
-        transform: [{ translateX: centerOffset + value * itemWidth }]
-      };
-    },
-    [centerOffset, itemWidth]
-  );
-
   const renderItem = useCallback(
-    ({ item }: { item: unknown }) => <MediaCarouselItem item={item as MediaContent} />,
-    []
+    ({ item }: { item: unknown }) => (
+      <MediaCarouselItem containerStyle={carouselItemContainerStyle} item={item as MediaContent} />
+    ),
+    [carouselItemContainerStyle]
   );
 
   if (!filteredContents?.length) return null;
@@ -128,7 +134,6 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
         autoPlay={isFocused && !isPaused}
         autoPlayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
         data={filteredContents}
-        customAnimation={animationStyle}
         defaultIndex={0}
         itemWidth={itemWidth}
         loop

@@ -53,6 +53,10 @@ export const ImagesCarousel = ({
   const itemWidth = imageWidth(isImageFullWidth);
   const itemHeight = imageHeight(itemWidth, aspectRatio);
   const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const carouselItemContainerStyle = useMemo(
+    () => StyleSheet.flatten([styles.imageContainer, { marginLeft: centerOffset }]),
+    [centerOffset]
+  );
   const withAnimation = useMemo(
     () => ({
       type: 'timing',
@@ -62,17 +66,6 @@ export const ImagesCarousel = ({
       }
     }),
     []
-  );
-
-  const animationStyle = useCallback(
-    (value) => {
-      'worklet';
-
-      return {
-        transform: [{ translateX: centerOffset + value * itemWidth }]
-      };
-    },
-    [centerOffset, itemWidth]
   );
 
   const renderItem = useCallback(
@@ -115,7 +108,7 @@ export const ImagesCarousel = ({
                   aspectRatio={aspectRatio}
                   button={item.button}
                   buttons={item.buttons}
-                  containerStyle={styles.imageContainer}
+                  containerStyle={carouselItemContainerStyle}
                   isImageFullWidth={isImageFullWidth}
                   message={item.message}
                   navigation={navigation}
@@ -133,7 +126,7 @@ export const ImagesCarousel = ({
           aspectRatio={aspectRatio}
           button={item.button}
           buttons={item.buttons}
-          containerStyle={styles.imageContainer}
+          containerStyle={carouselItemContainerStyle}
           isImageFullWidth={isImageFullWidth}
           message={item.message}
           navigation={navigation}
@@ -142,7 +135,7 @@ export const ImagesCarousel = ({
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio, isImageFullWidth]
+    [navigation, fetchPolicy, aspectRatio, isImageFullWidth, carouselItemContainerStyle]
   );
 
   if (!data || data.length === 0) return null;
@@ -165,7 +158,6 @@ export const ImagesCarousel = ({
         autoPlay={isFocused && !isPaused}
         autoPlayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
         data={carouselData}
-        customAnimation={animationStyle}
         defaultIndex={0}
         itemWidth={itemWidth}
         loop
