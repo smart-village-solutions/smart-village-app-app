@@ -91,7 +91,7 @@ const parseFloorPlanFloorConfig = (json: unknown): FloorPlanFloorConfig | undefi
   const svgXml = getStringValue(json.svgXml) || getStringValue(json.svg);
   const svgUrl = getStringValue(json.svgUrl);
 
-  if (!id || !viewBox || (!svgXml && !svgUrl)) return undefined;
+  if (!id || !viewBox) return undefined;
 
   return {
     id,
