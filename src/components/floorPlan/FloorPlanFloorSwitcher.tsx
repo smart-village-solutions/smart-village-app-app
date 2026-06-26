@@ -23,6 +23,7 @@ export const FloorPlanFloorSwitcher = memo(({ floors, onFloorSelect, selectedFlo
           key={floor.id}
           accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
           accessibilityRole="button"
+          accessibilityState={{ selected: isSelected }}
           activeOpacity={0.75}
           onPress={() => onFloorSelect(floor.id)}
           style={[styles.floorButton, isSelected && styles.selectedFloorButton]}

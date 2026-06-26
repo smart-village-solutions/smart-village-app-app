@@ -18,6 +18,9 @@ const pinFillByType: Record<FloorPlanPinType, string> = {
   warning: colors.error
 };
 
+const getPinFill = (type?: string) =>
+  type && type in pinFillByType ? pinFillByType[type as FloorPlanPinType] : pinFillByType.info;
+
 const Pin = memo(
   ({
     isSelected,
@@ -28,7 +31,7 @@ const Pin = memo(
     onPress: (pin: FloorPlanPin) => void;
     pin: FloorPlanPin;
   }) => {
-    const fill = pinFillByType[pin.type || 'info'];
+    const fill = getPinFill(pin.type);
     const radius = isSelected ? 32 : 24;
 
     return (
