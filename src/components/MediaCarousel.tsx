@@ -1,11 +1,11 @@
 import { useIsFocused } from '@react-navigation/native';
 import _filter from 'lodash/filter';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 
 import { colors, Icon, normalize } from '../config';
-import { imageWidth } from '../helpers';
+import { imageHeight, imageWidth } from '../helpers';
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
 
@@ -67,17 +67,7 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   const [isPaused, setIsPaused] = useState(false);
   const [, setCarouselIndex] = useState(0);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const carouselRef = useRef<any>(null);
   const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused && !isPaused) {
-      carouselRef.current?.startAutoplay();
-    } else {
-      carouselRef.current?.stopAutoplay();
-    }
-  }, [isFocused, isPaused]);
 
   const filteredContents = _filter(
     mediaContents,
@@ -90,6 +80,19 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   );
 
   const itemWidth = imageWidth();
+  const itemHeight = imageHeight(itemWidth);
+  const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+
+  const animationStyle = useCallback(
+    (value: number) => {
+      'worklet';
+
+      return {
+        transform: [{ translateX: centerOffset + value * itemWidth }]
+      };
+    },
+    [centerOffset, itemWidth]
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: unknown }) => <MediaCarouselItem item={item as MediaContent} />,
@@ -111,22 +114,16 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   return (
     <View>
       <Carousel
-        autoplay
-        autoplayDelay={0}
-        autoplayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
-        containerCustomStyle={styles.center}
+        autoPlay={isFocused && !isPaused}
+        autoPlayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
         data={filteredContents}
-        firstItem={0}
-        inactiveSlideOpacity={1}
-        inactiveSlideScale={1}
+        customAnimation={animationStyle}
+        defaultIndex={0}
         itemWidth={itemWidth}
         loop
-        loopClonesPerSide={1}
-        onScrollIndexChanged={setCarouselIndex}
-        ref={carouselRef}
+        onSnapToItem={setCarouselIndex}
         renderItem={renderItem}
-        sliderWidth={dimensions.width}
-        useScrollView
+        style={[styles.center, { height: itemHeight, width: dimensions.width }]}
         vertical={false}
       />
 
