@@ -6,12 +6,6 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 6;
 const RESET_ANIMATION_DURATION = 220;
 
-const clamp = (value: number, lowerBound: number, upperBound: number) => {
-  'worklet';
-
-  return Math.min(Math.max(value, lowerBound), upperBound);
-};
-
 export const useZoomableSvgTransform = () => {
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
@@ -30,9 +24,11 @@ export const useZoomableSvgTransform = () => {
         })
         .onUpdate((event) => {
           const maxPan = 1600 * scale.value;
+          const nextTranslateX = savedTranslateX.value + event.translationX;
+          const nextTranslateY = savedTranslateY.value + event.translationY;
 
-          translateX.value = clamp(savedTranslateX.value + event.translationX, -maxPan, maxPan);
-          translateY.value = clamp(savedTranslateY.value + event.translationY, -maxPan, maxPan);
+          translateX.value = Math.min(Math.max(nextTranslateX, -maxPan), maxPan);
+          translateY.value = Math.min(Math.max(nextTranslateY, -maxPan), maxPan);
         }),
     [savedTranslateX, savedTranslateY, scale, translateX, translateY]
   );
@@ -41,7 +37,9 @@ export const useZoomableSvgTransform = () => {
     () =>
       Gesture.Pinch()
         .onUpdate((event) => {
-          scale.value = clamp(savedScale.value * event.scale, MIN_SCALE, MAX_SCALE);
+          const nextScale = savedScale.value * event.scale;
+
+          scale.value = Math.min(Math.max(nextScale, MIN_SCALE), MAX_SCALE);
         })
         .onEnd(() => {
           savedScale.value = scale.value;

@@ -55,7 +55,7 @@ export const FloorPlanPinPreview = memo(({ navigation, pin }: Props) => {
           id: pin.id,
           bottomDivider: false,
           isHeadlineTitle: false,
-          onPress: canNavigate ? handlePress : () => undefined,
+          onPress: canNavigate ? handlePress : undefined,
           overtitle: texts.floorPlan.typeLabels[pin.type || 'info'],
           params: pin.params || {},
           routeName: pin.routeName || '',
@@ -67,7 +67,7 @@ export const FloorPlanPinPreview = memo(({ navigation, pin }: Props) => {
         imageStyle={styles.imageStyle}
         listItemStyle={styles.listItem}
         listsWithoutArrows
-        navigation={navigation as never}
+        navigation={(canNavigate ? navigation : undefined) as never}
       />
     </View>
   );
