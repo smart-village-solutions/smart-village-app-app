@@ -2,8 +2,7 @@ import {
   launchCameraAsync,
   launchImageLibraryAsync,
   PermissionStatus,
-  requestCameraPermissionsAsync,
-  requestMediaLibraryPermissionsAsync
+  requestCameraPermissionsAsync
 } from 'expo-image-picker';
 import {
   addAssetsToAlbumAsync,
@@ -71,13 +70,6 @@ export const useSelectImage = ({
   const [imageUri, setImageUri] = useState<string>();
 
   const selectImage = useCallback(async () => {
-    const { status } = await requestMediaLibraryPermissionsAsync();
-
-    if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body);
-      return;
-    }
-
     // this allows for proper selecting and cropping to 1:1 images (and not videos)
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
@@ -94,7 +86,7 @@ export const useSelectImage = ({
 
       return result.assets[0];
     }
-  }, [onChange]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality]);
 
   return { imageUri, selectImage };
 };
@@ -148,7 +140,7 @@ export const useCaptureImage = ({
 
       return result.assets[0];
     }
-  }, [onChange]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality, saveImage]);
 
   return { imageUri, captureImage };
 };
