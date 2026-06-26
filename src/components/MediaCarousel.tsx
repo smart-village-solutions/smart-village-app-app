@@ -38,11 +38,12 @@ const MediaCarouselItem = ({
   item: MediaContent;
 }) => {
   if (item.contentType === 'image' || item.contentType === 'thumbnail') {
+    const imageContainerStyle = containerStyle
+      ? [styles.imageContainer, containerStyle]
+      : styles.imageContainer;
+
     return (
-      <Image
-        source={{ uri: item.sourceUrl?.url ?? '' }}
-        containerStyle={[styles.imageContainer, containerStyle]}
-      />
+      <Image source={{ uri: item.sourceUrl?.url ?? '' }} containerStyle={imageContainerStyle} />
     );
   }
 
