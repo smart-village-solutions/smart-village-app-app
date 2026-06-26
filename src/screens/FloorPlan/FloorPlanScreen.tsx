@@ -60,7 +60,15 @@ const getSelectedFloor = (config?: FloorPlanConfig, selectedFloorId?: string) =>
   return config.floors.find((floor) => floor.id === selectedFloorId) || config.floors[0];
 };
 
-const parseStaticFloorPlanConfig = (json: unknown) => parseFloorPlanConfig(json) as FloorPlanConfig;
+const parseStaticFloorPlanConfig = (json: unknown) => {
+  const config = parseFloorPlanConfig(json);
+
+  if (!config) {
+    throw new Error(texts.floorPlan.configError);
+  }
+
+  return config;
+};
 
 /* eslint-disable complexity */
 export const FloorPlanScreen = ({ navigation, route }: Props) => {

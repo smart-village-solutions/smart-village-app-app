@@ -560,6 +560,7 @@ export const texts = {
     noSelection: 'Bitte wählen Sie eine Markierung aus.'
   },
   floorPlan: {
+    configError: 'Die Konfiguration für den Lageplan ist ungültig.',
     emptyPins: 'Keine Orte im Lageplan vorhanden.',
     fallbackDescription: 'Für diesen Ort sind noch keine weiteren Informationen hinterlegt.',
     listAccessibilityLabel: 'Orte im Lageplan',

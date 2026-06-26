@@ -83,6 +83,7 @@ const parseFloorPlanPin = (value: unknown): FloorPlanPin | undefined => {
 const parseFloorPlanFloorConfig = (json: unknown): FloorPlanFloorConfig | undefined => {
   if (!isRecord(json)) return undefined;
 
+  const id = getStringValue(json.id);
   const viewBox = parseViewBox(json.viewBox);
   const pins = Array.isArray(json.pins)
     ? json.pins.map(parseFloorPlanPin).filter((pin): pin is FloorPlanPin => !!pin)
@@ -90,10 +91,10 @@ const parseFloorPlanFloorConfig = (json: unknown): FloorPlanFloorConfig | undefi
   const svgXml = getStringValue(json.svgXml) || getStringValue(json.svg);
   const svgUrl = getStringValue(json.svgUrl);
 
-  if (!viewBox || (!svgXml && !svgUrl)) return undefined;
+  if (!id || !viewBox || (!svgXml && !svgUrl)) return undefined;
 
   return {
-    id: getStringValue(json.id) || 'remote-floor-plan',
+    id,
     title: getStringValue(json.title) || '',
     pins,
     svgUrl,
