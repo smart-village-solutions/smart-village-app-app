@@ -1,5 +1,6 @@
 import { NavigationProp } from '@react-navigation/native';
 import React, { memo, useCallback } from 'react';
+import type { ListRenderItem } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -19,8 +20,9 @@ type Props = {
 
 export const FloorPlanPinList = memo(
   ({ isFullHeight = false, navigation, pins, selectedPinId }: Props) => {
-    const renderItem = useCallback(
-      ({ item }: { item: FloorPlanPin }) => {
+    const renderItem: ListRenderItem<FloorPlanPin> = useCallback(
+      (info) => {
+        const item = info.item;
         const itemId = item.listId || item.id;
         const isSelected = itemId === selectedPinId;
         const canNavigate = canNavigateToLinkedContent(item);

@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { G, Rect } from 'react-native-svg';
-import { SvgXml } from 'react-native-svg';
+import { G, Rect, SvgXml } from 'react-native-svg';
 
 import { colors, texts } from '../../config';
 
