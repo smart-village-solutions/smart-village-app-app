@@ -1,8 +1,9 @@
 import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
 import { colors, Icon, normalize } from '../config';
@@ -52,6 +53,16 @@ export const ImagesCarousel = ({
   const itemWidth = imageWidth(isImageFullWidth);
   const itemHeight = imageHeight(itemWidth, aspectRatio);
   const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const withAnimation = useMemo(
+    () => ({
+      type: 'timing',
+      config: {
+        duration: 850,
+        easing: Easing.inOut(Easing.cubic)
+      }
+    }),
+    []
+  );
 
   const animationStyle = useCallback(
     (value) => {
@@ -163,6 +174,7 @@ export const ImagesCarousel = ({
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
         style={[styles.center, { height: itemHeight, width: dimensions.width }]}
+        withAnimation={withAnimation}
       />
 
       {shouldShowPauseButton &&

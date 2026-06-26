@@ -1,7 +1,8 @@
 import { useIsFocused } from '@react-navigation/native';
 import _filter from 'lodash/filter';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
 import { colors, Icon, normalize } from '../config';
@@ -82,6 +83,16 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   const itemWidth = imageWidth();
   const itemHeight = imageHeight(itemWidth);
   const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const withAnimation = useMemo(
+    () => ({
+      type: 'timing' as const,
+      config: {
+        duration: 850,
+        easing: Easing.inOut(Easing.cubic)
+      }
+    }),
+    []
+  );
 
   const animationStyle = useCallback(
     (value: number) => {
@@ -125,6 +136,7 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
         renderItem={renderItem}
         style={[styles.center, { height: itemHeight, width: dimensions.width }]}
         vertical={false}
+        withAnimation={withAnimation}
       />
 
       {showSliderPauseButton &&
