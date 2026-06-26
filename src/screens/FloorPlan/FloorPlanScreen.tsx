@@ -32,6 +32,15 @@ type Props = {
   route: RouteProp<Record<string, FloorPlanRouteParams | undefined>, string>;
 };
 
+const renderCloseBackImage = ({ tintColor }: { tintColor?: string }) => (
+  <Icon.Close color={tintColor} size={normalize(22)} style={{ paddingHorizontal: normalize(14) }} />
+);
+
+const createHeaderLeft =
+  (onPress: () => void, isCloseButton = false) =>
+  () =>
+    <HeaderLeft onPress={onPress} backImage={isCloseButton ? renderCloseBackImage : undefined} />;
+
 const getAllFloorPlanPins = (config?: FloorPlanConfig) =>
   config
     ? config.floors.flatMap((floor) =>
@@ -118,6 +127,10 @@ export const FloorPlanScreen = ({ navigation, route }: Props) => {
     setViewModeOverride(undefined);
   }, []);
 
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   const handleFloorSelect = useCallback((floorId: string) => {
     setSelectedPin(undefined);
     setSelectedFloorId(floorId);
@@ -126,29 +139,14 @@ export const FloorPlanScreen = ({ navigation, route }: Props) => {
   useLayoutEffect(() => {
     if (isInitialListView && viewMode === FloorPlanViewMode.Svg) {
       navigation.setOptions({
-        headerLeft: () => (
-          <HeaderLeft
-            onPress={closeSvgView}
-            backImage={({ tintColor }) => (
-              <Icon.Close
-                color={tintColor}
-                size={normalize(22)}
-                style={{ paddingHorizontal: normalize(14) }}
-              />
-            )}
-          />
-        )
-      });
-    } else if (viewMode === FloorPlanViewMode.List) {
-      navigation.setOptions({
-        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
+        headerLeft: createHeaderLeft(closeSvgView, true)
       });
     } else {
       navigation.setOptions({
-        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
+        headerLeft: createHeaderLeft(goBack)
       });
     }
-  }, [closeSvgView, isInitialListView, navigation, viewMode]);
+  }, [closeSvgView, goBack, isInitialListView, navigation, viewMode]);
 
   if (loading) {
     return <LoadingSpinner loading />;

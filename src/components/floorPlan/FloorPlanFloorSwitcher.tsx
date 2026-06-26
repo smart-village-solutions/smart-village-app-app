@@ -46,7 +46,7 @@ export const FloorPlanFloorSwitcher = memo(({ floors, onFloorSelect, selectedFlo
 
   return (
     <View style={styles.container} pointerEvents="box-none">
-      {floors.map(renderFloorButton)}
+      {floors.map((floor) => renderFloorButton(floor))}
     </View>
   );
 });
