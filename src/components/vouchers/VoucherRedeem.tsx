@@ -13,6 +13,7 @@ import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota, TVoucherDates } from '../../types';
 import { Button } from '../Button';
 import { Checkbox } from '../Checkbox';
+import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
@@ -156,7 +157,7 @@ export const VoucherRedeem = ({
         visible={isVisible}
         supportedOrientations={['landscape', 'portrait']}
       >
-        <View style={styles.sheetBackgroundContainer}>
+        <SafeAreaViewFlex edges={['bottom']} style={styles.sheetBackgroundContainer}>
           <View style={styles.sheetContainer}>
             {isExpiredVoucher ? (
               <WrapperVertical>
@@ -315,7 +316,7 @@ export const VoucherRedeem = ({
               </WrapperVertical>
             )}
           </View>
-        </View>
+        </SafeAreaViewFlex>
       </Modal>
     </>
   );
