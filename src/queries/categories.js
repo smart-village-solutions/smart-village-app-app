@@ -6,6 +6,7 @@ export const GET_CATEGORIES = gql`
       id
       iconName
       name
+      position
       pointsOfInterestTreeCount(location: $location)
       toursTreeCount(location: $location)
       parent {
@@ -15,36 +16,42 @@ export const GET_CATEGORIES = gql`
         id
         iconName
         name
+        position
         pointsOfInterestTreeCount(location: $location)
         toursTreeCount(location: $location)
         children {
           id
           iconName
           name
+          position
           pointsOfInterestTreeCount(location: $location)
           toursTreeCount(location: $location)
           children {
             id
             iconName
             name
+            position
             pointsOfInterestTreeCount(location: $location)
             toursTreeCount(location: $location)
             children {
               id
               iconName
               name
+              position
               pointsOfInterestTreeCount(location: $location)
               toursTreeCount(location: $location)
               children {
                 id
                 iconName
                 name
+                position
                 pointsOfInterestTreeCount(location: $location)
                 toursTreeCount(location: $location)
                 children {
                   id
                   iconName
                   name
+                  position
                   pointsOfInterestTreeCount(location: $location)
                   toursTreeCount(location: $location)
                 }

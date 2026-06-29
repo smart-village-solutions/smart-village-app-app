@@ -14,6 +14,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors } from '../../config';
+import { buildDefectReportCategoryOptions } from '../../helpers/defectReportCategoryOptions';
 import { graphqlFetchPolicy } from '../../helpers/graphqlHelper';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
@@ -76,12 +77,9 @@ export const DefectReportFormScreen = ({
 
   const Component = isLocationSelect ? DefectReportLocationForm : DefectReportCreateForm;
 
-  const categoryNameDropdownData =
-    dataCategories?.categories?.[0]?.children?.map((category) => ({
-      id: category.id,
-      name: category.name,
-      value: category.name
-    })) || [];
+  const categoryNameDropdownData = buildDefectReportCategoryOptions(
+    dataCategories?.categories?.[0]?.children
+  );
 
   return (
     <SafeAreaViewFlex>
