@@ -209,8 +209,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     const updateData = async () => {
       const settingsList = [];
 
-      // add push notification option if they are enabled
-      if (settings.pushNotifications !== false) {
+      if (settings.pushNotifications) {
         const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
         if (personalizedPush.categories) {
