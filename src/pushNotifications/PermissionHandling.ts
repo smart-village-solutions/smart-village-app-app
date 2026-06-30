@@ -12,6 +12,7 @@ import {
   handleIncomingToken,
   PushNotificationStorageKeys
 } from './TokenHandling';
+import { clearWasteReminderLocalNotifications } from './WasteReminderLocalNotifications';
 
 const PermissionStatus = {
   DENIED: 'denied',
@@ -38,6 +39,10 @@ export const setInAppPermission = async (newValue: boolean) => {
     const successfullyHandled = await handleIncomingToken(token);
 
     if (successfullyHandled) {
+      if (!newValue) {
+        await clearWasteReminderLocalNotifications();
+      }
+
       addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
     }
 
