@@ -1,3 +1,5 @@
+import { formatWasteReminderTime } from '../helpers/wasteReminderTimeHelper';
+
 export const WASTE_REMINDER_MAX_LOCAL_NOTIFICATIONS = 50;
 
 const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
@@ -145,8 +147,7 @@ const buildRegistrationsByType = (registrations: WasteReminderRegistration[]) =>
     return acc;
   }, {});
 
-const formatReminderTime = (reminderTime: Date) =>
-  `${reminderTime.getHours()}:${reminderTime.getMinutes()}`;
+const formatReminderTime = (reminderTime: Date) => formatWasteReminderTime(reminderTime);
 
 const parseReminderTime = (time: string) => {
   const [hours = '0', minutes = '0'] = time.split(':');

@@ -42,6 +42,7 @@ import {
 } from '../components';
 import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { formatTime, saveWasteReminderSettings, storageHelper } from '../helpers';
+import { formatWasteReminderTime } from '../helpers/wasteReminderTimeHelper';
 import {
   useFilterStreets,
   useRenderSuggestions,
@@ -495,7 +496,7 @@ export const WasteCollectionSettingsScreen = () => {
         payload: {
           slotId: activeFlexibleTimePicker.slotId,
           typeKey: activeFlexibleTimePicker.typeKey,
-          value: `${newTime.getHours()}:${newTime.getMinutes()}`
+          value: formatWasteReminderTime(newTime)
         }
       });
     },
@@ -1164,7 +1165,7 @@ const buildReminderTimeDate = (time: string) => {
   return reminderTime;
 };
 
-const formatDateAsReminderTime = (date: Date) => `${date.getHours()}:${date.getMinutes()}`;
+const formatDateAsReminderTime = (date: Date) => formatWasteReminderTime(date);
 
 const formatReminderTimeString = (time: string) => formatTime(buildReminderTimeDate(time));
 

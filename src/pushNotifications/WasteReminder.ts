@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import * as appJson from '../../app.json';
 import { device, secrets, staticRestSuffix, texts } from '../config';
+import { formatWasteReminderTime } from '../helpers/wasteReminderTimeHelper';
 
 import { ensurePushNotificationToken } from './PermissionHandling';
 import {
@@ -14,13 +15,11 @@ import { WasteReminderServerSyncPayload } from './WasteReminderLocalStorage';
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const DEV_WASTE_REMINDER_PUSH_TOKEN = 'ExponentPushToken[dev-waste-reminder]';
 
-type LocationData =
-  | {
-      city: string;
-      street: string;
-      zip: string;
-    }
-  | undefined;
+type LocationData = {
+  city: string;
+  street: string;
+  zip: string;
+};
 
 type SettingInfo = {
   localCoverageUntil?: Date;
@@ -418,8 +417,7 @@ const getNotifyDaysBefore = (onDayBefore?: boolean | number) => {
   return onDayBefore ? 1 : 0;
 };
 
-const formatTimeOfDay = (date: Date) =>
-  [date.getHours(), date.getMinutes()].map((value) => String(value).padStart(2, '0')).join(':');
+const formatTimeOfDay = (date: Date) => formatWasteReminderTime(date);
 
 const buildReminderTimeDate = (time: string) => {
   const [hours = '0', minutes = '0'] = time.split(':');
