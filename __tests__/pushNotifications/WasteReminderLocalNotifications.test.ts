@@ -3,6 +3,7 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 
 import {
+  clearWasteReminderLocalNotifications,
   clearWasteReminderLocalStateForChangedOwner,
   rescheduleWasteReminderNotificationsFromLocalState,
   scheduleWasteReminderNotifications
@@ -382,6 +383,46 @@ describe('scheduleWasteReminderNotifications', () => {
     await expect(clearWasteReminderLocalStateForChangedOwner()).resolves.toBe(true);
     expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith(
       'scheduled-waste:key-1'
+    );
+    expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).toBeNull();
+  });
+
+  it('clears locally scheduled waste reminders and removes local state on push opt-out', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: ['stored-pickup', 'stored-coverage'],
+        scheduledReminderKeys: ['waste:key-1'],
+        serverSyncStatus: 'synced'
+      })
+    );
+    (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValueOnce([
+      {
+        content: {
+          data: {
+            query_type: 'WasteAddresses',
+            reminderKey: 'orphaned-waste:key-2'
+          }
+        },
+        identifier: 'orphaned-waste'
+      },
+      {
+        content: {
+          data: {
+            query_type: 'Other'
+          }
+        },
+        identifier: 'other-notification'
+      }
+    ]);
+
+    await clearWasteReminderLocalNotifications();
+
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('stored-pickup');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('stored-coverage');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('orphaned-waste');
+    expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith(
+      'other-notification'
     );
     expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).toBeNull();
   });

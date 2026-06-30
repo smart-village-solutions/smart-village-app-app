@@ -107,6 +107,22 @@ export const scheduleWasteReminderNotifications = async ({
   return nextState;
 };
 
+export const clearWasteReminderLocalNotifications = async () => {
+  const localState = await readWasteReminderLocalState();
+  const storedNotificationIds = localState?.scheduledNotificationIds ?? [];
+  const scheduledWasteNotificationIds = await getScheduledWasteReminderNotificationIds();
+  const notificationIds = Array.from(
+    new Set([...storedNotificationIds, ...scheduledWasteNotificationIds])
+  );
+
+  await Promise.all(
+    notificationIds.map((notificationId) =>
+      Notifications.cancelScheduledNotificationAsync(notificationId)
+    )
+  );
+  await removeWasteReminderLocalState();
+};
+
 export const clearWasteReminderLocalStateForChangedOwner = async () => {
   const localState = await readWasteReminderLocalState();
 
@@ -299,6 +315,22 @@ const subtractDays = (date: Date, days: number) => {
   result.setDate(result.getDate() - days);
 
   return result;
+};
+
+const getScheduledWasteReminderNotificationIds = async () => {
+  try {
+    const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+
+    return scheduledNotifications
+      .filter((notification) => {
+        const data = notification.content.data;
+
+        return data?.query_type === 'WasteAddresses' && !!data?.reminderKey;
+      })
+      .map((notification) => notification.identifier);
+  } catch {
+    return [];
+  }
 };
 
 const logWasteReminderLocalState = (state: unknown) => {
