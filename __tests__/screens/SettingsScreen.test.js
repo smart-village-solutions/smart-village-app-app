@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
+import React from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 jest.mock('../../src/components', () => {
-  const React = require('react');
   const { Text, View } = require('react-native');
 
   return {
@@ -110,9 +110,9 @@ jest.mock('../../src/ReactQueryProvider', () => ({
   clearPersistentCaches: jest.fn()
 }));
 
+import { clearPersistentCaches } from '../../src/ReactQueryProvider';
 import { SettingsScreen, confirmResetPersistentCaches } from '../../src/screens/SettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
-import { clearPersistentCaches } from '../../src/ReactQueryProvider';
 
 describe('SettingsScreen', () => {
   const navigation = { navigate: jest.fn() };
