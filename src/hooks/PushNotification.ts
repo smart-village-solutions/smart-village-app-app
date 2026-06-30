@@ -79,6 +79,7 @@ export const usePushNotifications = (
       Notifications.setNotificationHandler({
         handleNotification: async () =>
           behaviorRef.current ?? {
+            shouldShowAlert: true,
             shouldPlaySound: false,
             shouldSetBadge: false,
             shouldShowBanner: __DEV__,

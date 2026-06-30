@@ -31,7 +31,7 @@ type ScheduleWasteReminderNotificationsParams = {
   now?: Date;
   reminders: WasteReminderOccurrence[];
   serverSyncPayload: WasteReminderServerSyncPayload;
-  serverSyncStatus?: WasteReminderLocalState['serverSyncStatus'];
+  serverSyncStatus?: NonNullable<WasteReminderLocalState['serverSyncStatus']>;
   streetName?: string;
   wasteTypesData?: WasteTypeData;
 };

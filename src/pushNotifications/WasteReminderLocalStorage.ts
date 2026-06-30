@@ -102,7 +102,7 @@ export const buildPendingWasteReminderState = ({
   scheduledCoverageReminderNotificationIds?: string[];
   scheduledNotificationIds: string[];
   serverSyncPayload: WasteReminderServerSyncPayload;
-  serverSyncStatus?: WasteReminderLocalState['serverSyncStatus'];
+  serverSyncStatus?: NonNullable<WasteReminderLocalState['serverSyncStatus']>;
 }): WasteReminderLocalState => ({
   localCoverageUntil: localCoverageUntil?.toISOString(),
   ownerKey,
