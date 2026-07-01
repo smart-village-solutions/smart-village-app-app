@@ -43,8 +43,7 @@ import {
 import { colors, consts, device, Icon, normalize, texts } from '../config';
 import {
   buildDefaultReminderSettingsByType,
-  buildReminderServerSyncRegistrations,
-  mergeReminderSettingsWithDefaults
+  buildReminderServerSyncRegistrations
 } from '../helpers/wasteReminderRegistrationHelper';
 import { formatTime, saveWasteReminderSettings, storageHelper } from '../helpers';
 import { formatWasteReminderTime } from '../helpers/wasteReminderTimeHelper';
@@ -115,6 +114,15 @@ type TooltipRef = {
   toggleTooltip: () => void;
 };
 
+type WasteCollectionSettingsViewState = 'loading' | 'suggestions' | 'settings' | 'empty';
+
+type WasteCollectionSettingsViewStateParams = {
+  hasSelectedStreet: boolean;
+  hasStreetSuggestions: boolean;
+  isLoading: boolean;
+  isStreetSelected: boolean;
+};
+
 const initialWasteSettingsState: WasteSettingsState = {
   activeTypes: {},
   typeSettings: {},
@@ -124,6 +132,27 @@ const initialWasteSettingsState: WasteSettingsState = {
   onDayBefore: true,
   reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
   reminderSettingsByType: {}
+};
+
+export const getWasteCollectionSettingsViewState = ({
+  hasSelectedStreet,
+  hasStreetSuggestions,
+  isLoading,
+  isStreetSelected
+}: WasteCollectionSettingsViewStateParams): WasteCollectionSettingsViewState => {
+  if (isLoading) {
+    return 'loading';
+  }
+
+  if (hasStreetSuggestions && !isStreetSelected) {
+    return 'suggestions';
+  }
+
+  if (hasSelectedStreet) {
+    return 'settings';
+  }
+
+  return 'empty';
 };
 
 /* eslint-disable complexity */
@@ -614,11 +643,18 @@ export const WasteCollectionSettingsScreen = () => {
     getPermission();
   }, [isPushPermissionGranted, showNotificationSettings]);
 
-  if (loading || typesLoading || streetLoading || !loadedStoredSettingsInitially) {
+  const viewState = getWasteCollectionSettingsViewState({
+    hasSelectedStreet: !!selectedStreetId,
+    hasStreetSuggestions: !!inputValue,
+    isLoading: loading || typesLoading || streetLoading || !loadedStoredSettingsInitially,
+    isStreetSelected
+  });
+
+  if (viewState === 'loading') {
     return <LoadingSpinner loading />;
   }
 
-  if (inputValue && !isStreetSelected) {
+  if (viewState === 'suggestions') {
     const filteredStreets = filterStreets(inputValue, addressesData);
 
     return (
@@ -633,506 +669,825 @@ export const WasteCollectionSettingsScreen = () => {
     );
   }
 
-  if (selectedStreetId) {
+  if (viewState === 'settings') {
     return (
-      <SafeAreaViewFlex>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          style={styles.container}
-          refreshControl={
-            <RefreshControl
-              refreshing={loadingStoredSettings}
-              onRefresh={() => loadStoredSettingsFromServer()}
-              colors={[colors.refreshControl]}
-              tintColor={colors.refreshControl}
-            />
+      <SelectedStreetSettingsContent
+        activeFlexibleSlotTime={activeFlexibleSlotTime}
+        activeFlexibleTimePicker={activeFlexibleTimePicker}
+        areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+        isSavingSettings={isSavingSettings}
+        loadingStoredSettings={loadingStoredSettings}
+        locationData={locationData}
+        navigationType={navigationType}
+        notificationSettings={notificationSettings}
+        onDatePickerChange={onDatePickerChange}
+        onFlexibleDatePickerChange={onFlexibleDatePickerChange}
+        onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
+        onSaveSettings={saveSettings}
+        onToggleNotifications={async () => {
+          if (areWasteReminderControlsDisabled) {
+            return;
           }
-        >
-          {!!locationData && (
-            <Wrapper>
-              <RegularText>{wasteTexts.myLocation}</RegularText>
-              <BoldText>{streetName}</BoldText>
-            </Wrapper>
-          )}
-          {!!usedTypeKeys?.length && !_isEmpty(typeSettings) && (
-            <WrapperVertical style={[styles.paddingHorizontal]}>
-              <WrapperVertical style={styles.mediumPaddingVertical}>
-                <RegularText big>{wasteTexts.chooseCategory}</RegularText>
-              </WrapperVertical>
-              <View style={styles.borderRadius}>
-                {[...usedTypeKeys]
-                  .sort(compareAlphabetically)
-                  .map((item, index, sortedUsedTypeKeys) => (
-                    <ListItem
-                      key={keyExtractor(item, index)}
-                      bottomDivider={index < sortedUsedTypeKeys.length - 1}
-                      containerStyle={styles.listItemContainer}
-                      accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
-                    >
-                      <ListItem.Content>{renderWasteTypeLabel(usedTypes[item])}</ListItem.Content>
 
-                      <Switch
-                        isDisabled={false}
-                        switchValue={typeSettings[item]}
-                        toggleSwitch={() => {
-                          dispatch({
-                            type: WasteSettingsActions.setTypeSetting,
-                            payload: { key: item, value: !typeSettings[item] }
-                          });
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-              </View>
-            </WrapperVertical>
-          )}
-          <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
-            <WrapperVertical style={styles.mediumPaddingVertical}>
-              <RegularText big>{wasteTexts.reminders}</RegularText>
-            </WrapperVertical>
-            {areWasteReminderControlsDisabled && (
-              <WrapperVertical style={styles.pushDisabledHint}>
-                <RegularText small placeholder>
-                  {wasteTexts.notificationsDisabledHint}
-                </RegularText>
-                <TouchableOpacity onPress={openNotificationSettings}>
-                  <RegularText small primary underline>
-                    {wasteTexts.notificationSettingsLink}
-                  </RegularText>
-                </TouchableOpacity>
-              </WrapperVertical>
-            )}
-            <ListItem
-              containerStyle={[styles.borderRadius, styles.listItemContainer]}
-              accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
-            >
-              <ListItem.Content>
-                <BoldText small>{wasteTexts.notificationsOn}</BoldText>
-              </ListItem.Content>
-              <Switch
-                isDisabled={areWasteReminderControlsDisabled}
-                switchValue={showNotificationSettings}
-                toggleSwitch={async () => {
-                  if (areWasteReminderControlsDisabled) {
-                    return;
-                  }
+          if (!isPushPermissionGranted) {
+            const hasPermission = await requestLocalNotificationPermission();
 
-                  if (!isPushPermissionGranted) {
-                    const hasPermission = await requestLocalNotificationPermission();
+            if (!hasPermission) {
+              showSystemPermissionMissingDialog();
+              return;
+            }
 
-                    if (!hasPermission) {
-                      showSystemPermissionMissingDialog();
-                      return;
-                    }
+            setIsPushPermissionGranted(true);
+          }
 
-                    setIsPushPermissionGranted(true);
-                  }
+          if (!showNotificationSettings) {
+            let hasPushToken = false;
 
-                  if (!showNotificationSettings) {
-                    let hasPushToken = false;
+            try {
+              hasPushToken = await setInAppPermission(true);
+            } catch (error) {
+              console.warn('Failed to enable in-app waste reminder permission:', error);
+            }
 
-                    try {
-                      hasPushToken = await setInAppPermission(true);
-                    } catch (error) {
-                      console.warn('Failed to enable in-app waste reminder permission:', error);
-                    }
+            if (!hasPushToken) {
+              showSystemPermissionMissingDialog();
+              return;
+            }
+          }
 
-                    if (!hasPushToken) {
-                      showSystemPermissionMissingDialog();
-                      return;
-                    }
-                  }
-
-                  dispatch({ type: WasteSettingsActions.toggleNotifications });
-                }}
-              />
-            </ListItem>
-          </Wrapper>
-          <Collapsible collapsed={!showNotificationSettings}>
-            {reminderUiMode === 'legacy-global' && (
-              <>
-                <WrapperHorizontal>
-                  <Divider style={styles.divider} />
-                  <ListItem
-                    bottomDivider
-                    containerStyle={[styles.borderRadiusTop, styles.listItemContainer]}
-                    accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
-                  >
-                    <ListItem.Content>
-                      <BoldText small>{wasteTexts.daysBefore}</BoldText>
-                    </ListItem.Content>
-                    {areWasteReminderControlsDisabled ? (
-                      <WrapperRow itemsCenter>
-                        <RegularText small placeholder style={{ paddingVertical: normalize(4.85) }}>
-                          {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
-                        </RegularText>
-                        <Icon.KeyboardArrowUpDown size={normalize(14)} />
-                      </WrapperRow>
-                    ) : (
-                      <Tooltip
-                        ref={tooltipRef}
-                        backgroundColor={colors.surface}
-                        containerStyle={[styles.borderRadius, styles.tooltipContainer]}
-                        height={normalize(70)}
-                        popover={
-                          <TouchableWithoutFeedback onPress={(event) => event.stopPropagation()}>
-                            <View
-                              onTouchStart={(event) => event.stopPropagation()}
-                              style={[styles.tooltipTouchableArea, styles.tooltipContent]}
-                            >
-                              <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
-                                <RegularText
-                                  primary={!onDayBefore}
-                                  style={styles.tooltipSelection}
-                                >
-                                  {wasteTexts.sameDay}
-                                </RegularText>
-                              </TouchableOpacity>
-                              <Divider style={styles.dividerSmall} />
-                              <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
-                                <RegularText
-                                  primary={onDayBefore}
-                                  style={styles.tooltipSelection}
-                                >
-                                  {wasteTexts.oneDayBefore}
-                                </RegularText>
-                              </TouchableOpacity>
-                            </View>
-                          </TouchableWithoutFeedback>
-                        }
-                        width={normalize(160)}
-                        withOverlay={device.platform === 'android'}
-                        overlayColor={colors.shadowRgba}
-                        withPointer={false}
-                      >
-                        <WrapperRow itemsCenter>
-                          <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
-                            {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
-                          </RegularText>
-                          <Icon.KeyboardArrowUpDown size={normalize(14)} />
-                        </WrapperRow>
-                      </Tooltip>
-                    )}
-                  </ListItem>
-                  <ListItem
-                    containerStyle={[
-                      styles.borderRadiusBottom,
-                      styles.listItemContainer,
-                      { paddingVertical: normalize(11.5) }
-                    ]}
-                    accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
-                  >
-                    <ListItem.Content>
-                      <BoldText small>{wasteTexts.timeOfDay}</BoldText>
-                    </ListItem.Content>
-                    <TouchableOpacity
-                      disabled={areWasteReminderControlsDisabled}
-                      onPress={
-                        areWasteReminderControlsDisabled ? undefined : () => setShowDatePicker(true)
-                      }
-                    >
-                      <View
-                        style={[
-                          styles.smallBorderRadius,
-                          styles.timeContainer,
-                          areWasteReminderControlsDisabled && styles.disabledControl
-                        ]}
-                      >
-                        <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
-                      </View>
-                    </TouchableOpacity>
-                    {device.platform === 'ios' && (
-                      <Modal
-                        animationType="none"
-                        transparent={true}
-                        visible={showDatePicker}
-                        supportedOrientations={['landscape', 'portrait']}
-                      >
-                        <View style={styles.modalContainer}>
-                          <View style={styles.dateTimePickerContainerIOS}>
-                            <SafeAreaView>
-                              <WrapperHorizontal style={styles.paddingTop}>
-                                <WrapperRow spaceBetween>
-                                  <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                                    <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
-                                  </TouchableOpacity>
-                                  <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                                    <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
-                                  </TouchableOpacity>
-                                </WrapperRow>
-                              </WrapperHorizontal>
-
-                              <DateTimePicker
-                                display="spinner"
-                                mode="time"
-                                onChange={onDatePickerChange}
-                                style={styles.dateTimePickerIOS}
-                                textColor={colors.darkText}
-                                value={reminderTime}
-                              />
-                            </SafeAreaView>
-                          </View>
-                        </View>
-                      </Modal>
-                    )}
-                    {device.platform === 'android' && showDatePicker && (
-                      <View style={styles.dateTimePickerContainerAndroid}>
-                        <DateTimePicker
-                          mode="time"
-                          onChange={onDatePickerChange}
-                          value={reminderTime}
-                        />
-                      </View>
-                    )}
-                  </ListItem>
-                  <Divider style={styles.divider} />
-                </WrapperHorizontal>
-                {!!selectedTypeKeys?.length && usedTypes && !_isEmpty(notificationSettings) && (
-                  <WrapperHorizontal>
-                    <View style={styles.borderRadius}>
-                      {selectedTypeKeys
-                        .filter((key) => usedTypes[key])
-                        .sort(compareAlphabetically)
-                        .map((item, index, filteredSelectedTypeKeys) => (
-                          <ListItem
-                            key={keyExtractor(item, index)}
-                            bottomDivider={index < filteredSelectedTypeKeys.length - 1}
-                            containerStyle={styles.listItemContainer}
-                            accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
-                          >
-                            <ListItem.Content>
-                              {renderWasteTypeLabel(usedTypes[item])}
-                            </ListItem.Content>
-
-                            <Switch
-                              isDisabled={areWasteReminderControlsDisabled}
-                              switchValue={notificationSettings[item]}
-                              toggleSwitch={() => {
-                                if (areWasteReminderControlsDisabled) {
-                                  return;
-                                }
-
-                                dispatch({
-                                  type: WasteSettingsActions.setNotificationSetting,
-                                  payload: { key: item, value: !notificationSettings[item] }
-                                });
-                              }}
-                            />
-                          </ListItem>
-                        ))}
-                    </View>
-                  </WrapperHorizontal>
-                )}
-              </>
-            )}
-            {reminderUiMode === 'flexible-per-type' && !!selectedTypeKeys?.length && usedTypes && (
-              <WrapperHorizontal>
-                {selectedTypeKeys
-                  .filter((key) => usedTypes[key])
-                  .sort(compareAlphabetically)
-                  .map((typeKey) => {
-                    const normalizedSlots = normalizePushReminderSlots(usedTypes[typeKey]);
-                    const isPushReminderEnabled = normalizedSlots.slots.length > 0;
-                    const isNotificationEnabled =
-                      isPushReminderEnabled && !!notificationSettings[typeKey];
-                    const isTypeReminderDisabled =
-                      !isPushReminderEnabled || areWasteReminderControlsDisabled;
-                    const configuredSlots = normalizedSlots.slots.filter(
-                      (slot) => !!reminderSettingsByType[typeKey]?.reminders[slot.id]
-                    );
-
-                    return (
-                      <View key={typeKey}>
-                        <ListItem
-                          containerStyle={styles.listItemContainer}
-                          accessibilityLabel={`(${usedTypes[typeKey].label}) ${consts.a11yLabel.button}`}
-                          topDivider
-                        >
-                          <ListItem.Content>
-                            {renderWasteTypeLabel(usedTypes[typeKey])}
-                          </ListItem.Content>
-                          <Switch
-                            isDisabled={isTypeReminderDisabled}
-                            switchValue={isNotificationEnabled}
-                            toggleSwitch={() => {
-                              if (isTypeReminderDisabled) {
-                                return;
-                              }
-
-                              dispatch({
-                                type: WasteSettingsActions.setNotificationSetting,
-                                payload: {
-                                  key: typeKey,
-                                  value: !isNotificationEnabled
-                                }
-                              });
-                            }}
-                          />
-                        </ListItem>
-                        <Collapsible collapsed={!isNotificationEnabled || !configuredSlots.length}>
-                          {configuredSlots.map((slot, slotIndex) => {
-                            const slotSetting = reminderSettingsByType[typeKey]?.reminders[slot.id];
-
-                            if (!slotSetting) {
-                              return null;
-                            }
-
-                            const tooltipHeight = normalize(
-                              Math.min(260, 34 * (slot.maxLeadDays + 1))
-                            );
-
-                            return (
-                              <View key={`${typeKey}-${slot.id}`}>
-                                {configuredSlots.length > 1 && (
-                                  <View
-                                    style={[
-                                      styles.flexibleReminderHeading,
-                                      slotIndex !== 0 && { paddingTop: normalize(8) }
-                                    ]}
-                                  >
-                                    <RegularText smallest>
-                                      {`${slotIndex + 1}. ${wasteTexts.reminder}`}
-                                    </RegularText>
-                                  </View>
-                                )}
-                                <ListItem
-                                  containerStyle={[
-                                    styles.flexibleReminderListItem,
-                                    styles.listItemContainer
-                                  ]}
-                                  accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
-                                >
-                                  <ListItem.Content>
-                                    <BoldText small>{wasteTexts.daysBefore}</BoldText>
-                                  </ListItem.Content>
-                                  <FlexibleLeadDaysTooltip
-                                    isDisabled={areWasteReminderControlsDisabled}
-                                    maxLeadDays={slot.maxLeadDays}
-                                    onSelectLeadDays={setFlexibleLeadDays}
-                                    selectedLeadDays={slotSetting.leadDays}
-                                    slotId={slot.id}
-                                    tooltipHeight={tooltipHeight}
-                                    typeKey={typeKey}
-                                    wasteTexts={wasteTexts}
-                                  />
-                                </ListItem>
-                                <ListItem
-                                  containerStyle={[
-                                    styles.flexibleReminderListItem,
-                                    styles.listItemContainer,
-                                    { paddingBottom: normalize(16), paddingTop: normalize(4) }
-                                  ]}
-                                  accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
-                                >
-                                  <ListItem.Content>
-                                    <BoldText small>{wasteTexts.timeOfDay}</BoldText>
-                                  </ListItem.Content>
-                                  <TouchableOpacity
-                                    disabled={areWasteReminderControlsDisabled}
-                                    onPress={
-                                      areWasteReminderControlsDisabled
-                                        ? undefined
-                                        : () =>
-                                            setActiveFlexibleTimePicker({
-                                              slotId: slot.id,
-                                              typeKey
-                                            })
-                                    }
-                                  >
-                                    <View
-                                      style={[
-                                        styles.smallBorderRadius,
-                                        styles.timeContainer,
-                                        styles.flexibleTimeContainer,
-                                        areWasteReminderControlsDisabled && styles.disabledControl
-                                      ]}
-                                    >
-                                      <RegularText small>
-                                        {formatReminderTimeString(slotSetting.time)} Uhr
-                                      </RegularText>
-                                    </View>
-                                  </TouchableOpacity>
-                                </ListItem>
-                                {device.platform === 'android' &&
-                                  activeFlexibleTimePicker?.typeKey === typeKey &&
-                                  activeFlexibleTimePicker?.slotId === slot.id && (
-                                    <View style={styles.dateTimePickerContainerAndroid}>
-                                      <DateTimePicker
-                                        mode="time"
-                                        onChange={onFlexibleDatePickerChange}
-                                        value={buildReminderTimeDate(slotSetting.time)}
-                                      />
-                                    </View>
-                                  )}
-                              </View>
-                            );
-                          })}
-                        </Collapsible>
-                      </View>
-                    );
-                  })}
-              </WrapperHorizontal>
-            )}
-            {device.platform === 'ios' && activeFlexibleSlotTime && (
-              <Modal
-                animationType="none"
-                transparent={true}
-                visible={!!activeFlexibleTimePicker}
-                supportedOrientations={['landscape', 'portrait']}
-              >
-                <View style={styles.modalContainer}>
-                  <View style={styles.dateTimePickerContainerIOS}>
-                    <SafeAreaView>
-                      <WrapperHorizontal style={styles.paddingTop}>
-                        <WrapperRow spaceBetween>
-                          <TouchableOpacity onPress={() => setActiveFlexibleTimePicker(undefined)}>
-                            <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={() => setActiveFlexibleTimePicker(undefined)}>
-                            <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
-                          </TouchableOpacity>
-                        </WrapperRow>
-                      </WrapperHorizontal>
-
-                      <DateTimePicker
-                        display="spinner"
-                        mode="time"
-                        onChange={onFlexibleDatePickerChange}
-                        style={styles.dateTimePickerIOS}
-                        textColor={colors.darkText}
-                        value={buildReminderTimeDate(activeFlexibleSlotTime)}
-                      />
-                    </SafeAreaView>
-                  </View>
-                </View>
-              </Modal>
-            )}
-          </Collapsible>
-
-          <View style={styles.spacer} />
-        </ScrollView>
-
-        <View
-          style={[
-            styles.paddingTop,
-            styles.saveButtonContainer,
-            getPositionStyleByNavigation({ navigationType }).position
-          ]}
-        >
-          <Wrapper noPaddingBottom>
-            <Button
-              disabled={isSavingSettings}
-              notFullWidth
-              onPress={isSavingSettings ? undefined : saveSettings}
-              title={wasteTexts.save}
-            />
-          </Wrapper>
-        </View>
-      </SafeAreaViewFlex>
+          dispatch({ type: WasteSettingsActions.toggleNotifications });
+        }}
+        openNotificationSettings={openNotificationSettings}
+        reminderSettingsByType={reminderSettingsByType}
+        reminderTime={reminderTime}
+        reminderUiMode={reminderUiMode}
+        selectedTypeKeys={selectedTypeKeys}
+        setActiveFlexibleTimePicker={setActiveFlexibleTimePicker}
+        setFlexibleLeadDays={setFlexibleLeadDays}
+        setShowDatePicker={setShowDatePicker}
+        showDatePicker={showDatePicker}
+        showNotificationSettings={showNotificationSettings}
+        streetName={streetName}
+        tooltipRef={tooltipRef}
+        typeSettings={typeSettings}
+        usedTypeKeys={usedTypeKeys}
+        usedTypes={usedTypes}
+        wasteTexts={wasteTexts}
+        onRefreshStoredSettings={loadStoredSettingsFromServer}
+        onToggleNotificationSetting={(typeKey, value) => {
+          dispatch({
+            type: WasteSettingsActions.setNotificationSetting,
+            payload: { key: typeKey, value }
+          });
+        }}
+        onToggleTypeSetting={(typeKey, value) => {
+          dispatch({
+            type: WasteSettingsActions.setTypeSetting,
+            payload: { key: typeKey, value }
+          });
+        }}
+        onDayBefore={onDayBefore}
+      />
     );
   }
+
+  return null;
 };
 /* eslint-enable complexity */
+
+type SelectedStreetSettingsContentProps = {
+  activeFlexibleSlotTime?: string;
+  activeFlexibleTimePicker?: { slotId: string; typeKey: string };
+  areWasteReminderControlsDisabled: boolean;
+  isSavingSettings: boolean;
+  loadingStoredSettings: boolean;
+  locationData?: { [key: string]: unknown };
+  navigationType: string;
+  notificationSettings: { [key: string]: boolean };
+  onDatePickerChange: (_: unknown, newTime?: Date) => void;
+  onFlexibleDatePickerChange: (_: unknown, newTime?: Date) => void;
+  onPressUpdateOnDayBefore: (value: boolean) => void;
+  onRefreshStoredSettings: () => Promise<void>;
+  onSaveSettings: () => Promise<void>;
+  onToggleNotifications: () => Promise<void>;
+  onToggleNotificationSetting: (typeKey: string, value: boolean) => void;
+  onToggleTypeSetting: (typeKey: string, value: boolean) => void;
+  onDayBefore: boolean;
+  openNotificationSettings: () => void;
+  reminderSettingsByType: WasteReminderSettingsByType;
+  reminderTime: Date;
+  reminderUiMode: ReturnType<typeof getWasteReminderUiMode>;
+  selectedTypeKeys: string[];
+  setActiveFlexibleTimePicker: React.Dispatch<
+    React.SetStateAction<{ slotId: string; typeKey: string } | undefined>
+  >;
+  setFlexibleLeadDays: (typeKey: string, slotId: string, value: number) => void;
+  setShowDatePicker: React.Dispatch<React.SetStateAction<boolean>>;
+  showDatePicker: boolean;
+  showNotificationSettings: boolean;
+  streetName?: string;
+  tooltipRef: React.MutableRefObject<TooltipRef | null>;
+  typeSettings: { [key: string]: boolean };
+  usedTypeKeys: string[];
+  usedTypes?: WasteTypeData;
+  wasteTexts: { [key: string]: string };
+};
+
+const SelectedStreetSettingsContent = ({
+  activeFlexibleSlotTime,
+  activeFlexibleTimePicker,
+  areWasteReminderControlsDisabled,
+  isSavingSettings,
+  loadingStoredSettings,
+  locationData,
+  navigationType,
+  notificationSettings,
+  onDatePickerChange,
+  onFlexibleDatePickerChange,
+  onPressUpdateOnDayBefore,
+  onRefreshStoredSettings,
+  onSaveSettings,
+  onToggleNotifications,
+  onToggleNotificationSetting,
+  onToggleTypeSetting,
+  onDayBefore,
+  openNotificationSettings,
+  reminderSettingsByType,
+  reminderTime,
+  reminderUiMode,
+  selectedTypeKeys,
+  setActiveFlexibleTimePicker,
+  setFlexibleLeadDays,
+  setShowDatePicker,
+  showDatePicker,
+  showNotificationSettings,
+  streetName,
+  tooltipRef,
+  typeSettings,
+  usedTypeKeys,
+  usedTypes,
+  wasteTexts
+}: SelectedStreetSettingsContentProps) => (
+  <SafeAreaViewFlex>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={loadingStoredSettings}
+          onRefresh={() => onRefreshStoredSettings()}
+          colors={[colors.refreshControl]}
+          tintColor={colors.refreshControl}
+        />
+      }
+    >
+      {!!locationData && (
+        <Wrapper>
+          <RegularText>{wasteTexts.myLocation}</RegularText>
+          <BoldText>{streetName}</BoldText>
+        </Wrapper>
+      )}
+      {!!usedTypeKeys?.length && !!usedTypes && !_isEmpty(typeSettings) && (
+        <WasteTypeSelectionList
+          onToggleTypeSetting={onToggleTypeSetting}
+          typeSettings={typeSettings}
+          usedTypeKeys={usedTypeKeys}
+          usedTypes={usedTypes}
+          wasteTexts={wasteTexts}
+        />
+      )}
+      <ReminderSettingsPanel
+        activeFlexibleSlotTime={activeFlexibleSlotTime}
+        activeFlexibleTimePicker={activeFlexibleTimePicker}
+        areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+        notificationSettings={notificationSettings}
+        onDatePickerChange={onDatePickerChange}
+        onFlexibleDatePickerChange={onFlexibleDatePickerChange}
+        onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
+        onToggleNotifications={onToggleNotifications}
+        onToggleNotificationSetting={onToggleNotificationSetting}
+        onDayBefore={onDayBefore}
+        openNotificationSettings={openNotificationSettings}
+        reminderSettingsByType={reminderSettingsByType}
+        reminderTime={reminderTime}
+        reminderUiMode={reminderUiMode}
+        selectedTypeKeys={selectedTypeKeys}
+        setActiveFlexibleTimePicker={setActiveFlexibleTimePicker}
+        setFlexibleLeadDays={setFlexibleLeadDays}
+        setShowDatePicker={setShowDatePicker}
+        showDatePicker={showDatePicker}
+        showNotificationSettings={showNotificationSettings}
+        tooltipRef={tooltipRef}
+        usedTypes={usedTypes}
+        wasteTexts={wasteTexts}
+      />
+
+      <View style={styles.spacer} />
+    </ScrollView>
+
+    <View
+      style={[
+        styles.paddingTop,
+        styles.saveButtonContainer,
+        getPositionStyleByNavigation({ navigationType }).position
+      ]}
+    >
+      <Wrapper noPaddingBottom>
+        <Button
+          disabled={isSavingSettings}
+          notFullWidth
+          onPress={isSavingSettings ? undefined : onSaveSettings}
+          title={wasteTexts.save}
+        />
+      </Wrapper>
+    </View>
+  </SafeAreaViewFlex>
+);
+
+type LegacyGlobalReminderSettingsProps = {
+  areWasteReminderControlsDisabled: boolean;
+  notificationSettings: { [key: string]: boolean };
+  onDatePickerChange: (_: unknown, newTime?: Date) => void;
+  onDayBefore: boolean;
+  onPressUpdateOnDayBefore: (value: boolean) => void;
+  onToggleNotificationSetting: (typeKey: string, value: boolean) => void;
+  reminderTime: Date;
+  selectedTypeKeys: string[];
+  setShowDatePicker: React.Dispatch<React.SetStateAction<boolean>>;
+  showDatePicker: boolean;
+  tooltipRef: React.MutableRefObject<TooltipRef | null>;
+  usedTypes?: WasteTypeData;
+  wasteTexts: { [key: string]: string };
+};
+
+const LegacyGlobalReminderSettings = ({
+  areWasteReminderControlsDisabled,
+  notificationSettings,
+  onDatePickerChange,
+  onDayBefore,
+  onPressUpdateOnDayBefore,
+  onToggleNotificationSetting,
+  reminderTime,
+  selectedTypeKeys,
+  setShowDatePicker,
+  showDatePicker,
+  tooltipRef,
+  usedTypes,
+  wasteTexts
+}: LegacyGlobalReminderSettingsProps) => (
+  <>
+    <WrapperHorizontal>
+      <Divider style={styles.divider} />
+      <LegacyDayBeforeSelector
+        areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+        onDayBefore={onDayBefore}
+        onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
+        tooltipRef={tooltipRef}
+        wasteTexts={wasteTexts}
+      />
+      <ListItem
+        containerStyle={[
+          styles.borderRadiusBottom,
+          styles.listItemContainer,
+          { paddingVertical: normalize(11.5) }
+        ]}
+        accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
+      >
+        <ListItem.Content>
+          <BoldText small>{wasteTexts.timeOfDay}</BoldText>
+        </ListItem.Content>
+        <TouchableOpacity
+          disabled={areWasteReminderControlsDisabled}
+          onPress={areWasteReminderControlsDisabled ? undefined : () => setShowDatePicker(true)}
+        >
+          <View
+            style={[
+              styles.smallBorderRadius,
+              styles.timeContainer,
+              areWasteReminderControlsDisabled && styles.disabledControl
+            ]}
+          >
+            <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
+          </View>
+        </TouchableOpacity>
+        {device.platform === 'ios' && (
+          <Modal
+            animationType="none"
+            transparent={true}
+            visible={showDatePicker}
+            supportedOrientations={['landscape', 'portrait']}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.dateTimePickerContainerIOS}>
+                <SafeAreaView>
+                  <WrapperHorizontal style={styles.paddingTop}>
+                    <WrapperRow spaceBetween>
+                      <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                        <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                        <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
+                      </TouchableOpacity>
+                    </WrapperRow>
+                  </WrapperHorizontal>
+
+                  <DateTimePicker
+                    display="spinner"
+                    mode="time"
+                    onChange={onDatePickerChange}
+                    style={styles.dateTimePickerIOS}
+                    textColor={colors.darkText}
+                    value={reminderTime}
+                  />
+                </SafeAreaView>
+              </View>
+            </View>
+          </Modal>
+        )}
+        {device.platform === 'android' && showDatePicker && (
+          <View style={styles.dateTimePickerContainerAndroid}>
+            <DateTimePicker mode="time" onChange={onDatePickerChange} value={reminderTime} />
+          </View>
+        )}
+      </ListItem>
+      <Divider style={styles.divider} />
+    </WrapperHorizontal>
+    {!!selectedTypeKeys?.length && !!usedTypes && !_isEmpty(notificationSettings) && (
+      <LegacyNotificationTypeList
+        areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+        notificationSettings={notificationSettings}
+        onToggleNotificationSetting={onToggleNotificationSetting}
+        selectedTypeKeys={selectedTypeKeys}
+        usedTypes={usedTypes}
+      />
+    )}
+  </>
+);
+
+type WasteTypeSelectionListProps = {
+  onToggleTypeSetting: (typeKey: string, value: boolean) => void;
+  typeSettings: { [key: string]: boolean };
+  usedTypeKeys: string[];
+  usedTypes: WasteTypeData;
+  wasteTexts: { [key: string]: string };
+};
+
+const WasteTypeSelectionList = ({
+  onToggleTypeSetting,
+  typeSettings,
+  usedTypeKeys,
+  usedTypes,
+  wasteTexts
+}: WasteTypeSelectionListProps) => (
+  <WrapperVertical style={[styles.paddingHorizontal]}>
+    <WrapperVertical style={styles.mediumPaddingVertical}>
+      <RegularText big>{wasteTexts.chooseCategory}</RegularText>
+    </WrapperVertical>
+    <View style={styles.borderRadius}>
+      {[...usedTypeKeys].sort(compareAlphabetically).map((item, index, sortedUsedTypeKeys) => (
+        <ListItem
+          key={keyExtractor(item, index)}
+          bottomDivider={index < sortedUsedTypeKeys.length - 1}
+          containerStyle={styles.listItemContainer}
+          accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+        >
+          <ListItem.Content>{renderWasteTypeLabel(usedTypes[item])}</ListItem.Content>
+          <Switch
+            isDisabled={false}
+            switchValue={typeSettings[item]}
+            toggleSwitch={() => onToggleTypeSetting(item, !typeSettings[item])}
+          />
+        </ListItem>
+      ))}
+    </View>
+  </WrapperVertical>
+);
+
+type ReminderSettingsPanelProps = {
+  activeFlexibleSlotTime?: string;
+  activeFlexibleTimePicker?: { slotId: string; typeKey: string };
+  areWasteReminderControlsDisabled: boolean;
+  notificationSettings: { [key: string]: boolean };
+  onDatePickerChange: (_: unknown, newTime?: Date) => void;
+  onFlexibleDatePickerChange: (_: unknown, newTime?: Date) => void;
+  onPressUpdateOnDayBefore: (value: boolean) => void;
+  onToggleNotifications: () => Promise<void>;
+  onToggleNotificationSetting: (typeKey: string, value: boolean) => void;
+  onDayBefore: boolean;
+  openNotificationSettings: () => void;
+  reminderSettingsByType: WasteReminderSettingsByType;
+  reminderTime: Date;
+  reminderUiMode: ReturnType<typeof getWasteReminderUiMode>;
+  selectedTypeKeys: string[];
+  setActiveFlexibleTimePicker: React.Dispatch<
+    React.SetStateAction<{ slotId: string; typeKey: string } | undefined>
+  >;
+  setFlexibleLeadDays: (typeKey: string, slotId: string, value: number) => void;
+  setShowDatePicker: React.Dispatch<React.SetStateAction<boolean>>;
+  showDatePicker: boolean;
+  showNotificationSettings: boolean;
+  tooltipRef: React.MutableRefObject<TooltipRef | null>;
+  usedTypes?: WasteTypeData;
+  wasteTexts: { [key: string]: string };
+};
+
+const ReminderSettingsPanel = ({
+  activeFlexibleSlotTime,
+  activeFlexibleTimePicker,
+  areWasteReminderControlsDisabled,
+  notificationSettings,
+  onDatePickerChange,
+  onFlexibleDatePickerChange,
+  onPressUpdateOnDayBefore,
+  onToggleNotifications,
+  onToggleNotificationSetting,
+  onDayBefore,
+  openNotificationSettings,
+  reminderSettingsByType,
+  reminderTime,
+  reminderUiMode,
+  selectedTypeKeys,
+  setActiveFlexibleTimePicker,
+  setFlexibleLeadDays,
+  setShowDatePicker,
+  showDatePicker,
+  showNotificationSettings,
+  tooltipRef,
+  usedTypes,
+  wasteTexts
+}: ReminderSettingsPanelProps) => (
+  <>
+    <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
+      <WrapperVertical style={styles.mediumPaddingVertical}>
+        <RegularText big>{wasteTexts.reminders}</RegularText>
+      </WrapperVertical>
+      {areWasteReminderControlsDisabled && (
+        <WrapperVertical style={styles.pushDisabledHint}>
+          <RegularText small placeholder>
+            {wasteTexts.notificationsDisabledHint}
+          </RegularText>
+          <TouchableOpacity onPress={openNotificationSettings}>
+            <RegularText small primary underline>
+              {wasteTexts.notificationSettingsLink}
+            </RegularText>
+          </TouchableOpacity>
+        </WrapperVertical>
+      )}
+      <ListItem
+        containerStyle={[styles.borderRadius, styles.listItemContainer]}
+        accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
+      >
+        <ListItem.Content>
+          <BoldText small>{wasteTexts.notificationsOn}</BoldText>
+        </ListItem.Content>
+        <Switch
+          isDisabled={areWasteReminderControlsDisabled}
+          switchValue={showNotificationSettings}
+          toggleSwitch={onToggleNotifications}
+        />
+      </ListItem>
+    </Wrapper>
+    <Collapsible collapsed={!showNotificationSettings}>
+      {reminderUiMode === 'legacy-global' && (
+        <LegacyGlobalReminderSettings
+          areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+          notificationSettings={notificationSettings}
+          onDatePickerChange={onDatePickerChange}
+          onDayBefore={onDayBefore}
+          onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
+          onToggleNotificationSetting={onToggleNotificationSetting}
+          reminderTime={reminderTime}
+          selectedTypeKeys={selectedTypeKeys}
+          setShowDatePicker={setShowDatePicker}
+          showDatePicker={showDatePicker}
+          tooltipRef={tooltipRef}
+          usedTypes={usedTypes}
+          wasteTexts={wasteTexts}
+        />
+      )}
+      {reminderUiMode === 'flexible-per-type' && !!usedTypes && !!selectedTypeKeys?.length && (
+        <FlexiblePerTypeReminderSettings
+          activeFlexibleTimePicker={activeFlexibleTimePicker}
+          areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+          notificationSettings={notificationSettings}
+          onFlexibleDatePickerChange={onFlexibleDatePickerChange}
+          onToggleNotificationSetting={onToggleNotificationSetting}
+          reminderSettingsByType={reminderSettingsByType}
+          selectedTypeKeys={selectedTypeKeys}
+          setActiveFlexibleTimePicker={setActiveFlexibleTimePicker}
+          setFlexibleLeadDays={setFlexibleLeadDays}
+          usedTypes={usedTypes}
+          wasteTexts={wasteTexts}
+        />
+      )}
+      {device.platform === 'ios' && activeFlexibleSlotTime && (
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={!!activeFlexibleTimePicker}
+          supportedOrientations={['landscape', 'portrait']}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.dateTimePickerContainerIOS}>
+              <SafeAreaView>
+                <WrapperHorizontal style={styles.paddingTop}>
+                  <WrapperRow spaceBetween>
+                    <TouchableOpacity onPress={() => setActiveFlexibleTimePicker(undefined)}>
+                      <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setActiveFlexibleTimePicker(undefined)}>
+                      <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
+                    </TouchableOpacity>
+                  </WrapperRow>
+                </WrapperHorizontal>
+
+                <DateTimePicker
+                  display="spinner"
+                  mode="time"
+                  onChange={onFlexibleDatePickerChange}
+                  style={styles.dateTimePickerIOS}
+                  textColor={colors.darkText}
+                  value={buildReminderTimeDate(activeFlexibleSlotTime)}
+                />
+              </SafeAreaView>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </Collapsible>
+  </>
+);
+
+type LegacyDayBeforeSelectorProps = {
+  areWasteReminderControlsDisabled: boolean;
+  onDayBefore: boolean;
+  onPressUpdateOnDayBefore: (value: boolean) => void;
+  tooltipRef: React.MutableRefObject<TooltipRef | null>;
+  wasteTexts: { [key: string]: string };
+};
+
+const LegacyDayBeforeSelector = ({
+  areWasteReminderControlsDisabled,
+  onDayBefore,
+  onPressUpdateOnDayBefore,
+  tooltipRef,
+  wasteTexts
+}: LegacyDayBeforeSelectorProps) => (
+  <ListItem
+    bottomDivider
+    containerStyle={[styles.borderRadiusTop, styles.listItemContainer]}
+    accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
+  >
+    <ListItem.Content>
+      <BoldText small>{wasteTexts.daysBefore}</BoldText>
+    </ListItem.Content>
+    {areWasteReminderControlsDisabled ? (
+      <WrapperRow itemsCenter>
+        <RegularText small placeholder style={{ paddingVertical: normalize(4.85) }}>
+          {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
+        </RegularText>
+        <Icon.KeyboardArrowUpDown size={normalize(14)} />
+      </WrapperRow>
+    ) : (
+      <Tooltip
+        ref={tooltipRef}
+        backgroundColor={colors.surface}
+        containerStyle={[styles.borderRadius, styles.tooltipContainer]}
+        height={normalize(70)}
+        popover={
+          <TouchableWithoutFeedback onPress={(event) => event.stopPropagation()}>
+            <View
+              onTouchStart={(event) => event.stopPropagation()}
+              style={[styles.tooltipTouchableArea, styles.tooltipContent]}
+            >
+              <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
+                <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
+                  {wasteTexts.sameDay}
+                </RegularText>
+              </TouchableOpacity>
+              <Divider style={styles.dividerSmall} />
+              <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
+                <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
+                  {wasteTexts.oneDayBefore}
+                </RegularText>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        }
+        width={normalize(160)}
+        withOverlay={device.platform === 'android'}
+        overlayColor={colors.shadowRgba}
+        withPointer={false}
+      >
+        <WrapperRow itemsCenter>
+          <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
+            {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
+          </RegularText>
+          <Icon.KeyboardArrowUpDown size={normalize(14)} />
+        </WrapperRow>
+      </Tooltip>
+    )}
+  </ListItem>
+);
+
+type LegacyNotificationTypeListProps = {
+  areWasteReminderControlsDisabled: boolean;
+  notificationSettings: { [key: string]: boolean };
+  onToggleNotificationSetting: (typeKey: string, value: boolean) => void;
+  selectedTypeKeys: string[];
+  usedTypes: WasteTypeData;
+};
+
+const LegacyNotificationTypeList = ({
+  areWasteReminderControlsDisabled,
+  notificationSettings,
+  onToggleNotificationSetting,
+  selectedTypeKeys,
+  usedTypes
+}: LegacyNotificationTypeListProps) => (
+  <WrapperHorizontal>
+    <View style={styles.borderRadius}>
+      {selectedTypeKeys
+        .filter((key) => usedTypes[key])
+        .sort(compareAlphabetically)
+        .map((item, index, filteredSelectedTypeKeys) => (
+          <ListItem
+            key={keyExtractor(item, index)}
+            bottomDivider={index < filteredSelectedTypeKeys.length - 1}
+            containerStyle={styles.listItemContainer}
+            accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+          >
+            <ListItem.Content>{renderWasteTypeLabel(usedTypes[item])}</ListItem.Content>
+            <Switch
+              isDisabled={areWasteReminderControlsDisabled}
+              switchValue={notificationSettings[item]}
+              toggleSwitch={() =>
+                areWasteReminderControlsDisabled
+                  ? undefined
+                  : onToggleNotificationSetting(item, !notificationSettings[item])
+              }
+            />
+          </ListItem>
+        ))}
+    </View>
+  </WrapperHorizontal>
+);
+
+type FlexiblePerTypeReminderSettingsProps = {
+  activeFlexibleTimePicker?: { slotId: string; typeKey: string };
+  areWasteReminderControlsDisabled: boolean;
+  notificationSettings: { [key: string]: boolean };
+  onFlexibleDatePickerChange: (_: unknown, newTime?: Date) => void;
+  onToggleNotificationSetting: (typeKey: string, value: boolean) => void;
+  reminderSettingsByType: WasteReminderSettingsByType;
+  selectedTypeKeys: string[];
+  setActiveFlexibleTimePicker: React.Dispatch<
+    React.SetStateAction<{ slotId: string; typeKey: string } | undefined>
+  >;
+  setFlexibleLeadDays: (typeKey: string, slotId: string, value: number) => void;
+  usedTypes: WasteTypeData;
+  wasteTexts: { [key: string]: string };
+};
+
+const FlexiblePerTypeReminderSettings = ({
+  activeFlexibleTimePicker,
+  areWasteReminderControlsDisabled,
+  notificationSettings,
+  onFlexibleDatePickerChange,
+  onToggleNotificationSetting,
+  reminderSettingsByType,
+  selectedTypeKeys,
+  setActiveFlexibleTimePicker,
+  setFlexibleLeadDays,
+  usedTypes,
+  wasteTexts
+}: FlexiblePerTypeReminderSettingsProps) => (
+  <WrapperHorizontal>
+    {selectedTypeKeys
+      .filter((key) => usedTypes[key])
+      .sort(compareAlphabetically)
+      .map((typeKey) => {
+        const normalizedSlots = normalizePushReminderSlots(usedTypes[typeKey]);
+        const isPushReminderEnabled = normalizedSlots.slots.length > 0;
+        const isNotificationEnabled = isPushReminderEnabled && !!notificationSettings[typeKey];
+        const isTypeReminderDisabled = !isPushReminderEnabled || areWasteReminderControlsDisabled;
+        const configuredSlots = normalizedSlots.slots.filter(
+          (slot) => !!reminderSettingsByType[typeKey]?.reminders[slot.id]
+        );
+
+        return (
+          <View key={typeKey}>
+            <ListItem
+              containerStyle={styles.listItemContainer}
+              accessibilityLabel={`(${usedTypes[typeKey].label}) ${consts.a11yLabel.button}`}
+              topDivider
+            >
+              <ListItem.Content>{renderWasteTypeLabel(usedTypes[typeKey])}</ListItem.Content>
+              <Switch
+                isDisabled={isTypeReminderDisabled}
+                switchValue={isNotificationEnabled}
+                toggleSwitch={() =>
+                  isTypeReminderDisabled
+                    ? undefined
+                    : onToggleNotificationSetting(typeKey, !isNotificationEnabled)
+                }
+              />
+            </ListItem>
+            <Collapsible collapsed={!isNotificationEnabled || !configuredSlots.length}>
+              {configuredSlots.map((slot, slotIndex) => {
+                const slotSetting = reminderSettingsByType[typeKey]?.reminders[slot.id];
+
+                if (!slotSetting) {
+                  return null;
+                }
+
+                const tooltipHeight = normalize(Math.min(260, 34 * (slot.maxLeadDays + 1)));
+
+                return (
+                  <View key={`${typeKey}-${slot.id}`}>
+                    {configuredSlots.length > 1 && (
+                      <View
+                        style={[
+                          styles.flexibleReminderHeading,
+                          slotIndex !== 0 && { paddingTop: normalize(8) }
+                        ]}
+                      >
+                        <RegularText smallest>{`${slotIndex + 1}. ${
+                          wasteTexts.reminder
+                        }`}</RegularText>
+                      </View>
+                    )}
+                    <ListItem
+                      containerStyle={[styles.flexibleReminderListItem, styles.listItemContainer]}
+                      accessibilityLabel={`(${wasteTexts.daysBefore}) ${consts.a11yLabel.button}`}
+                    >
+                      <ListItem.Content>
+                        <BoldText small>{wasteTexts.daysBefore}</BoldText>
+                      </ListItem.Content>
+                      <FlexibleLeadDaysTooltip
+                        isDisabled={areWasteReminderControlsDisabled}
+                        maxLeadDays={slot.maxLeadDays}
+                        onSelectLeadDays={setFlexibleLeadDays}
+                        selectedLeadDays={slotSetting.leadDays}
+                        slotId={slot.id}
+                        tooltipHeight={tooltipHeight}
+                        typeKey={typeKey}
+                        wasteTexts={wasteTexts}
+                      />
+                    </ListItem>
+                    <ListItem
+                      containerStyle={[
+                        styles.flexibleReminderListItem,
+                        styles.listItemContainer,
+                        { paddingBottom: normalize(16), paddingTop: normalize(4) }
+                      ]}
+                      accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
+                    >
+                      <ListItem.Content>
+                        <BoldText small>{wasteTexts.timeOfDay}</BoldText>
+                      </ListItem.Content>
+                      <TouchableOpacity
+                        disabled={areWasteReminderControlsDisabled}
+                        onPress={
+                          areWasteReminderControlsDisabled
+                            ? undefined
+                            : () => setActiveFlexibleTimePicker({ slotId: slot.id, typeKey })
+                        }
+                      >
+                        <View
+                          style={[
+                            styles.smallBorderRadius,
+                            styles.timeContainer,
+                            styles.flexibleTimeContainer,
+                            areWasteReminderControlsDisabled && styles.disabledControl
+                          ]}
+                        >
+                          <RegularText small>
+                            {formatReminderTimeString(slotSetting.time)} Uhr
+                          </RegularText>
+                        </View>
+                      </TouchableOpacity>
+                    </ListItem>
+                    {device.platform === 'android' &&
+                      activeFlexibleTimePicker?.typeKey === typeKey &&
+                      activeFlexibleTimePicker?.slotId === slot.id && (
+                        <View style={styles.dateTimePickerContainerAndroid}>
+                          <DateTimePicker
+                            mode="time"
+                            onChange={onFlexibleDatePickerChange}
+                            value={buildReminderTimeDate(slotSetting.time)}
+                          />
+                        </View>
+                      )}
+                  </View>
+                );
+              })}
+            </Collapsible>
+          </View>
+        );
+      })}
+  </WrapperHorizontal>
+);
 
 const buildReminderSettingsFromRegistrations = (
   usedTypes: WasteTypeData,
