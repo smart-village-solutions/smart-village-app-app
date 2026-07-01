@@ -120,7 +120,17 @@ export const clearWasteReminderLocalNotifications = async () => {
       Notifications.cancelScheduledNotificationAsync(notificationId)
     )
   );
-  await removeWasteReminderLocalState();
+
+  if (!localState) {
+    return;
+  }
+
+  await writeWasteReminderLocalState({
+    ...localState,
+    scheduledCoverageReminderNotificationIds: [],
+    scheduledNotificationIds: [],
+    scheduledReminderKeys: []
+  });
 };
 
 export const clearWasteReminderLocalStateForChangedOwner = async () => {

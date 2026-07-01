@@ -170,6 +170,8 @@ export const WasteCollectionSettingsScreen = () => {
   const locationData = getLocationData(streetData);
   const { getStreetString } = useStreetString();
   const streetName = locationData ? getStreetString(locationData) : undefined;
+  const effectiveStreetName =
+    streetName || (selectedStreetId === waste.streetId ? waste.streetName : undefined);
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef<TooltipRef | null>(null);
   const applyInitialStoredSettingsFallback = useCallback(async () => {
@@ -178,7 +180,7 @@ export const WasteCollectionSettingsScreen = () => {
     const permission = await getLocalNotificationPermission();
 
     if (permission) {
-      dispatch({ type: WasteSettingsActions.toggleNotifications });
+      dispatch({ type: WasteSettingsActions.setNotificationsEnabled, payload: true });
     }
   }, [usedTypeKeys]);
 
@@ -192,7 +194,7 @@ export const WasteCollectionSettingsScreen = () => {
     const localLocation = localServerSyncPayload?.locationData;
     const localStreetName = localLocation ? getStreetString(localLocation) : undefined;
 
-    if (localServerSyncPayload && localStreetName && localStreetName === streetName) {
+    if (localServerSyncPayload && localStreetName && localStreetName === effectiveStreetName) {
       if (usedTypes && localServerSyncPayload.activeReminderRegistrations?.length) {
         dispatch({
           type: WasteSettingsActions.setReminderSettingsByType,
@@ -206,6 +208,7 @@ export const WasteCollectionSettingsScreen = () => {
       dispatch({
         type: WasteSettingsActions.updateWasteSettings,
         payload: {
+          notificationSettings: localServerSyncPayload.notificationSettings,
           serverSettings: buildStoredSettingsFromLocalPayload(localServerSyncPayload).map(
             (registration) => ({
               city: localLocation?.city ?? '',
@@ -224,16 +227,15 @@ export const WasteCollectionSettingsScreen = () => {
       return;
     }
 
-    const storedSettingsOnServer = (await getReminderSettings())?.map(
-      (setting: WasteReminderSettingJson) => ({
+    const storedSettingsOnServer =
+      (await getReminderSettings())?.map((setting: WasteReminderSettingJson) => ({
         ...setting,
         street: getStreetString(setting),
         // Replace null values with empty strings for city and zip in storedSettings to prevent
         // validation issues
         city: setting.city ?? '',
         zip: setting.zip ?? ''
-      })
-    );
+      })) ?? [];
 
     if (!areValidReminderSettings(storedSettingsOnServer)) {
       Alert.alert(texts.errors.errorTitle, texts.errors.noData);
@@ -246,7 +248,7 @@ export const WasteCollectionSettingsScreen = () => {
       await applyInitialStoredSettingsFallback();
     } else {
       const streetSettings = storedSettingsOnServer.filter(
-        (item) => item.street === waste.streetName
+        (item) => item.street === effectiveStreetName
       );
 
       if (usedTypes && reminderUiMode === 'flexible-per-type') {
@@ -274,6 +276,7 @@ export const WasteCollectionSettingsScreen = () => {
     waste.selectedTypeKeys,
     reminderUiMode,
     streetName,
+    effectiveStreetName,
     selectedStreetId,
     usedTypeKeys,
     usedTypes,
@@ -436,10 +439,6 @@ export const WasteCollectionSettingsScreen = () => {
       type: WasteSettingsActions.setReminderSettingsByType,
       payload: buildDefaultReminderSettingsByType(usedTypes)
     });
-    // Activate notifications if the user has allowed system permissions
-    getLocalNotificationPermission().then((permission) => {
-      if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
-    });
   }, [loadedStoredSettingsInitially, usedTypes, usedTypeKeys]);
 
   // Use this ref to prevent the useEffect from running multiple times
@@ -450,7 +449,8 @@ export const WasteCollectionSettingsScreen = () => {
       if (
         !hasStartedLoadingStoredSettingsFromServer.current &&
         !loadedStoredSettingsInitially &&
-        !_isEmpty(typeSettings)
+        !_isEmpty(typeSettings) &&
+        (!!effectiveStreetName || waste.streetId !== selectedStreetId)
       ) {
         hasStartedLoadingStoredSettingsFromServer.current = true;
         await loadStoredSettingsFromServer();
@@ -459,7 +459,14 @@ export const WasteCollectionSettingsScreen = () => {
     };
 
     asyncLoadStoredSettingsFromServer();
-  }, [loadStoredSettingsFromServer, loadedStoredSettingsInitially, typeSettings]);
+  }, [
+    effectiveStreetName,
+    loadStoredSettingsFromServer,
+    loadedStoredSettingsInitially,
+    selectedStreetId,
+    typeSettings,
+    waste.streetId
+  ]);
 
   useEffect(() => {
     if (!addressesData || !inputValue) {

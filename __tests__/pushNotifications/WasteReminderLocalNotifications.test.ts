@@ -400,12 +400,25 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).not.toBeNull();
   });
 
-  it('clears locally scheduled waste reminders and removes local state on push opt-out', async () => {
+  it('clears locally scheduled waste reminders and keeps reminder configuration on push opt-out', async () => {
+    const serverSyncPayload = createServerSyncPayload({
+      activeReminderRegistrations: [
+        {
+          active: true,
+          leadDays: 2,
+          slotId: 'first',
+          time: '11:30',
+          typeKey: 'paper'
+        }
+      ]
+    });
+
     await AsyncStorage.setItem(
       WASTE_REMINDER_LOCAL_STORAGE_KEY,
       JSON.stringify({
         scheduledNotificationIds: ['stored-pickup', 'stored-coverage'],
         scheduledReminderKeys: ['waste:key-1'],
+        serverSyncPayload,
         serverSyncStatus: 'synced'
       })
     );
@@ -437,6 +450,16 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith(
       'other-notification'
     );
-    expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).toBeNull();
+
+    const storedState = await parseStoredReminderState();
+
+    expect(storedState.scheduledNotificationIds).toEqual([]);
+    expect(storedState.scheduledReminderKeys).toEqual([]);
+    expect(storedState.scheduledCoverageReminderNotificationIds).toEqual([]);
+    expect(storedState.serverSyncPayload).toEqual({
+      ...serverSyncPayload,
+      reminderTime: serverSyncPayload.reminderTime.toISOString()
+    });
+    expect(storedState.serverSyncStatus).toBe('synced');
   });
 });
