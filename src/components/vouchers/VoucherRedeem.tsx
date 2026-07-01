@@ -1,12 +1,15 @@
 import { randomUUID as uuid } from 'expo-crypto';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 import { colors, Icon, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
+import {
+  isVoucherCurrentlyAvailable,
+  isVoucherRedeemedForMember
+} from '../../helpers/voucherAvailability';
 import { VOUCHER_DEVICE_TOKEN, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
 import { useVoucher } from '../../hooks';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
@@ -40,36 +43,32 @@ export const VoucherRedeem = ({
   const [isAvailableVoucher, setIsAvailableVoucher] = useState(false);
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
 
-  const { availableQuantityForMember = 0, availableQuantity = 0 } = quota;
+  const { availableQuantityForMember, availableQuantity } = quota;
 
-  const localRedeemedVoucherCheck = async () => {
+  const localRedeemedVoucherCheck = useCallback(async () => {
     const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
+    const hasLocalRedemption = voucherTransactions.some(
+      (transaction) => transaction.voucherId === voucherId && transaction.memberId === memberId
+    );
 
-    if (voucherTransactions.length) {
-      const isRedeemed = voucherTransactions.some(
-        (transaction) => transaction.voucherId === voucherId && transaction.memberId === memberId
-      );
-
-      setIsRedeemedVoucher(isRedeemed);
-    }
-  };
+    setIsRedeemedVoucher(
+      isVoucherRedeemedForMember({
+        availableQuantityForMember,
+        hasLocalRedemption
+      })
+    );
+  }, [availableQuantityForMember, memberId, voucherId]);
 
   useEffect(() => {
-    // check with dates?.[0]?.dateStart and dates?.[0]?.dateEnd against now to see if it is outdated and does not start in future
-    const isInTime =
-      moment(dates?.[0]?.dateStart).startOf('day').isBefore(moment()) &&
-      moment(dates?.[0]?.dateEnd).endOf('day').isAfter(moment());
-    const hasAvailableQuantity = availableQuantity !== 0;
-    const hasNoAvailableQuantityForMember = availableQuantityForMember === 0;
+    const isAvailable = isVoucherCurrentlyAvailable({
+      dates,
+      quota: { availableQuantity }
+    });
 
-    setIsAvailableVoucher(isInTime && hasAvailableQuantity);
-
-    if (hasNoAvailableQuantityForMember) {
-      setIsRedeemedVoucher(true);
-    }
+    setIsAvailableVoucher(isAvailable);
 
     localRedeemedVoucherCheck();
-  }, [availableQuantity, availableQuantityForMember, memberId]);
+  }, [availableQuantity, availableQuantityForMember, dates, localRedeemedVoucherCheck]);
 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 

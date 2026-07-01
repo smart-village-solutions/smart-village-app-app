@@ -22,6 +22,7 @@ import {
 } from '../../components';
 import { colors, texts } from '../../config';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
+import { getActiveVoucherDateRange } from '../../helpers/voucherAvailability';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
@@ -91,13 +92,17 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     await refetch();
     await actualVouchersRefetch();
     setRefreshing(false);
-  }, [refetch, setRefreshing]);
+  }, [actualVouchersRefetch, refetch, setRefreshing]);
 
   if (!data || loading) {
     return <LoadingSpinner loading />;
   }
 
-  const availabilityText = dateOfAvailabilityText(dates?.[0]?.dateStart, dates?.[0]?.dateEnd);
+  const activeDateRange = getActiveVoucherDateRange(dates) ?? dates?.[0];
+  const availabilityText = dateOfAvailabilityText(
+    activeDateRange?.dateStart,
+    activeDateRange?.dateEnd
+  );
   const dataProviderLogo = dataProvider?.logo?.url;
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
 
