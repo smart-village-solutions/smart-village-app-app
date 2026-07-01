@@ -172,6 +172,63 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(storedState.scheduledReminderKeys).toEqual(['waste:key-1']);
   });
 
+  it('reads coverage reminder copy from texts', async () => {
+    jest.resetModules();
+    jest.clearAllMocks();
+
+    const customTexts = {
+      wasteCalendar: {
+        localReminderCoverageNotificationBody: 'Custom coverage body',
+        localReminderCoverageNotificationTitle: 'Custom coverage title',
+        localReminderNotificationTitle: 'Custom pickup title'
+      }
+    };
+
+    jest.doMock('../../src/config', () => ({
+      texts: customTexts
+    }));
+
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const FreshNotifications = require('expo-notifications');
+    const {
+      scheduleWasteReminderNotifications: scheduleNotificationsWithMockedTexts
+    } = require('../../src/pushNotifications/WasteReminderLocalNotifications');
+    /* eslint-enable @typescript-eslint/no-var-requires */
+
+    await scheduleNotificationsWithMockedTexts({
+      hasMoreReminders: true,
+      localCoverageUntil: new Date('2026-08-31T09:00:00.000+02:00'),
+      now: new Date('2026-07-01T08:00:00.000+02:00'),
+      reminders: [
+        createReminder({
+          pickupDates: ['2026-08-31'],
+          reminderAt: new Date('2026-08-31T09:00:00.000+02:00')
+        })
+      ],
+      serverSyncPayload: createServerSyncPayload(),
+      streetName: 'Test Street',
+      wasteTypesData: paperWasteTypesData
+    });
+
+    expect(FreshNotifications.scheduleNotificationAsync).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        content: expect.objectContaining({
+          title: 'Custom pickup title'
+        })
+      })
+    );
+    expect(FreshNotifications.scheduleNotificationAsync).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        content: expect.objectContaining({
+          body: 'Custom coverage body',
+          title: 'Custom coverage title'
+        })
+      })
+    );
+  });
+
   it('clamps the one-month coverage reminder to the previous month when day would overflow', async () => {
     await scheduleWasteReminderNotifications({
       hasMoreReminders: true,
