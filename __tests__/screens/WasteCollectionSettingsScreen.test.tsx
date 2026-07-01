@@ -5,6 +5,8 @@ import renderer, { act } from 'react-test-renderer';
 import { WasteCollectionSettingsScreen } from '../../src/screens/WasteCollectionSettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 
+const mockGetLocalNotificationPermission = jest.fn(async () => false);
+
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({ goBack: jest.fn() }),
   useRoute: () => ({ params: { currentSelectedStreetId: 1 } })
@@ -47,7 +49,8 @@ jest.mock('../../src/components', () => {
     LoadingSpinner: () => React.createElement(Text, null, 'loading'),
     RegularText: textComponent(),
     SafeAreaViewFlex: ({ children }) => React.createElement(View, null, children),
-    Switch: () => React.createElement(View),
+    Switch: ({ switchValue }) =>
+      React.createElement(Text, null, switchValue ? 'switch:on' : 'switch:off'),
     Wrapper: ({ children }) => React.createElement(View, null, children),
     WrapperHorizontal: ({ children }) => React.createElement(View, null, children),
     WrapperRow: ({ children }) => React.createElement(View, null, children),
@@ -69,7 +72,7 @@ let mockUsedTypes = {
   }
 };
 
-const mockStreetData = {
+let mockStreetData = {
   wasteAddresses: [
     {
       city: 'Berlin',
@@ -123,7 +126,7 @@ jest.mock('../../src/pushNotifications', () => ({
     reminders: []
   })),
   handleSystemPermissions: jest.fn(async () => false),
-  getLocalNotificationPermission: jest.fn(async () => false),
+  getLocalNotificationPermission: (...args) => mockGetLocalNotificationPermission(...args),
   getReminderSettings: jest.fn(async () => undefined),
   getWasteReminderUiMode: jest.requireActual('../../src/pushNotifications/WasteReminderConfig')
     .getWasteReminderUiMode,
@@ -224,6 +227,17 @@ describe('WasteCollectionSettingsScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetLocalNotificationPermission.mockResolvedValue(false);
+    mockStreetData = {
+      wasteAddresses: [
+        {
+          city: 'Berlin',
+          street: 'Test Street',
+          wasteLocationTypes: [{ wasteType: 'paper' }],
+          zip: '12345'
+        }
+      ]
+    };
     mockUsedTypes = {
       paper: {
         color: '#000000',
@@ -245,7 +259,7 @@ describe('WasteCollectionSettingsScreen', () => {
       navigation: 'tab',
       waste: {
         streetId: 1,
-        streetName: 'Test Street',
+        streetName: 'Test Street (12345 Berlin)',
         selectedTypeKeys: ['paper']
       }
     };
@@ -285,5 +299,80 @@ describe('WasteCollectionSettingsScreen', () => {
 
     expect(renderedText).toContain('11:30');
     expect(renderedText).not.toContain('09:00');
+  });
+
+  it('waits for street data before finalizing stored reminder settings', async () => {
+    const globalSettings = {
+      ...initialContext.globalSettings,
+      navigation: 'tab',
+      waste: {
+        streetId: 1,
+        streetName: 'Test Street (12345 Berlin)',
+        selectedTypeKeys: ['paper']
+      }
+    };
+    let tree;
+
+    mockStreetData = undefined as any;
+
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    mockStreetData = {
+      wasteAddresses: [
+        {
+          city: 'Berlin',
+          street: 'Test Street',
+          wasteLocationTypes: [{ wasteType: 'paper' }],
+          zip: '12345'
+        }
+      ]
+    };
+
+    await act(async () => {
+      tree.update(
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const renderedText = collectText(tree.toJSON()).join(' ');
+
+    expect(renderedText).toContain('11:30');
+    expect(renderedText).not.toContain('09:00');
+  });
+
+  it('does not switch stored active reminders off when permission checks resolve during hydration', async () => {
+    const globalSettings = {
+      ...initialContext.globalSettings,
+      navigation: 'tab',
+      waste: {
+        streetId: 1,
+        streetName: 'Test Street (12345 Berlin)',
+        selectedTypeKeys: ['paper']
+      }
+    };
+    let tree;
+
+    mockGetLocalNotificationPermission.mockResolvedValue(true);
+
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const renderedText = collectText(tree.toJSON()).join(' ');
+
+    expect(renderedText).toContain('Reminders Notifications switch:on');
+    expect(renderedText).toContain('11:30');
   });
 });
