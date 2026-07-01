@@ -29,4 +29,31 @@ describe('wasteSettingsReducer', () => {
     expect(nextState.notificationSettings).toEqual({ paper: true });
     expect(nextState.showNotificationSettings).toBe(true);
   });
+
+  it('clears stale activeTypes store ids when server settings are empty', () => {
+    const nextState = wasteSettingsReducer(
+      {
+        ...initialState,
+        activeTypes: {
+          paper: { active: true, storeId: 99 },
+          bio: { active: true, storeId: 55 }
+        },
+        selectedTypeKeys: ['paper', 'bio'],
+        typeSettings: { paper: true, bio: true }
+      },
+      {
+        type: WasteSettingsActions.updateWasteSettings,
+        payload: {
+          notificationSettings: { paper: true },
+          selectedTypeKeys: ['paper'],
+          serverSettings: []
+        }
+      }
+    );
+
+    expect(nextState.activeTypes).toEqual({
+      paper: { active: false },
+      bio: { active: false }
+    });
+  });
 });

@@ -1815,6 +1815,10 @@ export const texts = {
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',
     location: 'Ortschaft',
+    localReminderCoverageNotificationBody:
+      'Bitte öffne die App, um Abfalltermine und Erinnerungen zu synchronisieren.',
+    localReminderCoverageNotificationTitle: 'Abfallkalender aktualisieren',
+    localReminderNotificationTitle: 'Abfallkalender',
     myLocation: 'Meine Straße',
     notifications: 'Benachrichtigungen',
     notificationsDisabledHint:

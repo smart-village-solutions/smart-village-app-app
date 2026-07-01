@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications';
 
+import { texts } from '../config';
 import { WasteTypeData } from '../types';
 
 import {
@@ -18,10 +19,6 @@ import {
   WasteReminderRegistration
 } from './WasteReminderScheduler';
 
-const WASTE_REMINDER_NOTIFICATION_TITLE = 'Abfallkalender';
-const WASTE_REMINDER_COVERAGE_NOTIFICATION_TITLE = 'Abfallkalender aktualisieren';
-const WASTE_REMINDER_COVERAGE_NOTIFICATION_BODY =
-  'Bitte öffne die App, um Abfalltermine und Erinnerungen zu synchronisieren.';
 const WASTE_REMINDER_COVERAGE_ONE_MONTH_KEY = 'waste-sync:one-month-before';
 const WASTE_REMINDER_COVERAGE_ONE_WEEK_KEY = 'waste-sync:one-week-before';
 
@@ -273,7 +270,7 @@ const scheduleWasteReminderNotification = ({
         reminderKey: reminder.id,
         wasteTypes: reminder.wasteTypes
       },
-      title: WASTE_REMINDER_NOTIFICATION_TITLE
+      title: texts.wasteCalendar.localReminderNotificationTitle
     },
     trigger: {
       date: reminderAt as Date,
@@ -292,13 +289,13 @@ const scheduleWasteReminderCoverageNotification = ({
 }: WasteReminderCoverageNotification) =>
   Notifications.scheduleNotificationAsync({
     content: {
-      body: WASTE_REMINDER_COVERAGE_NOTIFICATION_BODY,
+      body: texts.wasteCalendar.localReminderCoverageNotificationBody,
       channelId: 'default',
       data: {
         query_type: 'WasteAddresses',
         reminderKey: id
       },
-      title: WASTE_REMINDER_COVERAGE_NOTIFICATION_TITLE
+      title: texts.wasteCalendar.localReminderCoverageNotificationTitle
     },
     trigger: {
       date: reminderAt,

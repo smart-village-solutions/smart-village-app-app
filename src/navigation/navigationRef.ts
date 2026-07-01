@@ -31,6 +31,11 @@ export const flushPendingNavigationActions = () => {
   }
 
   while (pendingNavigationActions.length > 0) {
-    pendingNavigationActions.shift()?.();
+    try {
+      pendingNavigationActions.shift()?.();
+    } catch (error) {
+      // Keep draining the queue so one bad action does not block later navigations.
+      console.error('[navigationRef] queued navigation action failed', error);
+    }
   }
 };

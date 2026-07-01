@@ -186,8 +186,11 @@ export const wasteSettingsReducer = (
       };
     }
     case WasteSettingsActions.updateWasteSettings: {
-      const { notificationSettings: storedNotificationSettings, serverSettings, selectedTypeKeys } =
-        action.payload;
+      const {
+        notificationSettings: storedNotificationSettings,
+        serverSettings,
+        selectedTypeKeys
+      } = action.payload;
 
       const updatedActiveTypes = serverSettings.reduce(
         (acc: { [key: string]: { active: boolean; storeId?: number | string } }, item) => {
@@ -219,6 +222,7 @@ export const wasteSettingsReducer = (
 
         return {
           ...state,
+          activeTypes: updatedActiveTypes,
           typeSettings,
           selectedTypeKeys,
           notificationSettings: storedNotificationSettings ?? {},
