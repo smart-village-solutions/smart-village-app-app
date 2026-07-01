@@ -133,6 +133,30 @@ export const clearWasteReminderLocalNotifications = async () => {
   });
 };
 
+export const storeWasteReminderSettingsWithoutScheduling = async (
+  serverSyncPayload: WasteReminderServerSyncPayload,
+  serverSyncStatus: NonNullable<WasteReminderLocalState['serverSyncStatus']> = 'pending'
+) => {
+  await clearWasteReminderLocalNotifications();
+
+  const ownerKey = await getWasteReminderOwnerKey();
+  const nextState: WasteReminderLocalState = {
+    ownerKey,
+    scheduledCoverageReminderNotificationIds: [],
+    scheduledNotificationIds: [],
+    scheduledReminderKeys: [],
+    serverSyncPayload,
+    serverSyncStatus
+  };
+
+  await writeWasteReminderLocalState(nextState);
+  logWasteReminderLocalState(nextState);
+  logWasteReminderScheduledIds({ remindersCount: 0, scheduledNotificationIds: [] });
+  await logScheduledWasteReminderNotifications();
+
+  return nextState;
+};
+
 export const clearWasteReminderLocalStateForChangedOwner = async () => {
   const localState = await readWasteReminderLocalState();
 
@@ -142,7 +166,7 @@ export const clearWasteReminderLocalStateForChangedOwner = async () => {
 
   const ownerKey = await getWasteReminderOwnerKey();
 
-  if (!localState.ownerKey) {
+  if (!localState.ownerKey || localState.ownerKey === 'anonymous') {
     await writeWasteReminderLocalState({ ...localState, ownerKey });
 
     return false;
