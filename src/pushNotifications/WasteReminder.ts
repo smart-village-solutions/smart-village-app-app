@@ -15,11 +15,7 @@ import { WasteReminderServerSyncPayload } from './WasteReminderLocalStorage';
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const DEV_WASTE_REMINDER_PUSH_TOKEN = 'ExponentPushToken[dev-waste-reminder]';
 
-type LocationData = {
-  city: string;
-  street: string;
-  zip: string;
-};
+type LocationData = NonNullable<WasteReminderServerSyncPayload['locationData']>;
 
 type SettingInfo = {
   localCoverageUntil?: Date;
@@ -362,7 +358,7 @@ export const syncWasteReminderSettingsWithServer = async (
 
 const syncFlexibleReminderRegistration = async (
   registration: WasteReminderServerSyncActiveRegistration,
-  locationData: LocationData,
+  locationData?: LocationData,
   localCoverageUntil?: Date
 ) => {
   if (registration.active && registration.storeId) {
