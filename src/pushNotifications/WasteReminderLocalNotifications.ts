@@ -138,6 +138,10 @@ export const clearWasteReminderLocalStateForChangedOwner = async () => {
     return false;
   }
 
+  if (ownerKey === 'anonymous') {
+    return false;
+  }
+
   if (localState.ownerKey === ownerKey) {
     return false;
   }

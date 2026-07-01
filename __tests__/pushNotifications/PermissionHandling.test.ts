@@ -92,4 +92,22 @@ describe('setInAppPermission', () => {
     expect(clearWasteReminderLocalNotifications).not.toHaveBeenCalled();
     expect(addToStore).not.toHaveBeenCalled();
   });
+
+  it('persists push opt-out even if clearing local waste reminders fails', async () => {
+    const error = new Error('cleanup failed');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    (readFromStore as jest.Mock).mockResolvedValue(true);
+    (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+    (clearWasteReminderLocalNotifications as jest.Mock).mockRejectedValue(error);
+
+    await expect(setInAppPermission(false)).resolves.toBe(true);
+
+    expect(clearWasteReminderLocalNotifications).toHaveBeenCalledTimes(1);
+    expect(addToStore).toHaveBeenCalledWith('IN_APP_PERMISSION', false);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'An error occurred while clearing local waste reminder notifications:',
+      error
+    );
+    warnSpy.mockRestore();
+  });
 });

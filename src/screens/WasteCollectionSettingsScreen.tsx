@@ -167,6 +167,15 @@ export const WasteCollectionSettingsScreen = () => {
   const streetName = locationData ? getStreetString(locationData) : undefined;
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef<TooltipRef | null>(null);
+  const applyInitialStoredSettingsFallback = useCallback(async () => {
+    dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+
+    const permission = await getLocalNotificationPermission();
+
+    if (permission) {
+      dispatch({ type: WasteSettingsActions.toggleNotifications });
+    }
+  }, [usedTypeKeys]);
 
   const loadStoredSettingsFromServer = useCallback(async () => {
     if (isInitial) return;
@@ -222,16 +231,14 @@ export const WasteCollectionSettingsScreen = () => {
     );
 
     if (!areValidReminderSettings(storedSettingsOnServer)) {
+      Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+      await applyInitialStoredSettingsFallback();
       setLoadingStoredSettings(false);
       return;
     }
 
     if (waste.streetId !== selectedStreetId) {
-      dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
-      // Activate notifications if the user has allowed system permissions
-      getLocalNotificationPermission().then((permission) => {
-        if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
-      });
+      await applyInitialStoredSettingsFallback();
     } else {
       const streetSettings = storedSettingsOnServer.filter(
         (item) => item.street === waste.streetName
@@ -264,7 +271,8 @@ export const WasteCollectionSettingsScreen = () => {
     streetName,
     selectedStreetId,
     usedTypeKeys,
-    usedTypes
+    usedTypes,
+    applyInitialStoredSettingsFallback
   ]);
 
   const updateSettings = useCallback(
@@ -414,18 +422,20 @@ export const WasteCollectionSettingsScreen = () => {
 
   // Set initial waste types used in the selected street
   useEffect(() => {
-    if (usedTypes) {
-      dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
-      dispatch({
-        type: WasteSettingsActions.setReminderSettingsByType,
-        payload: buildDefaultReminderSettingsByType(usedTypes)
-      });
-      // Activate notifications if the user has allowed system permissions
-      getLocalNotificationPermission().then((permission) => {
-        if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
-      });
+    if (!usedTypes || loadedStoredSettingsInitially) {
+      return;
     }
-  }, [usedTypes, usedTypeKeys]);
+
+    dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+    dispatch({
+      type: WasteSettingsActions.setReminderSettingsByType,
+      payload: buildDefaultReminderSettingsByType(usedTypes)
+    });
+    // Activate notifications if the user has allowed system permissions
+    getLocalNotificationPermission().then((permission) => {
+      if (permission) dispatch({ type: WasteSettingsActions.toggleNotifications });
+    });
+  }, [loadedStoredSettingsInitially, usedTypes, usedTypeKeys]);
 
   // Use this ref to prevent the useEffect from running multiple times
   const hasStartedLoadingStoredSettingsFromServer = useRef(false);
