@@ -1,10 +1,11 @@
 import React from 'react';
-import { AppState } from 'react-native';
+import { AppState, DeviceEventEmitter } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import { NetworkContext } from '../../src/NetworkProvider';
 import {
   clearWasteReminderLocalStateForChangedOwner,
+  getInAppPermission,
   markWasteReminderServerSyncSynced,
   rescheduleWasteReminderNotificationsFromLocalState,
   syncWasteReminderSettingsWithServer
@@ -26,9 +27,12 @@ const mockUsedTypes = {
   paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
 };
 let appStateListener: ((state: string) => void) | undefined;
+let permissionChangeListener: ((isEnabled: boolean) => void) | undefined;
 
 jest.mock('../../src/pushNotifications', () => ({
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT: 'pushNotificationPermissionChanged',
   clearWasteReminderLocalStateForChangedOwner: jest.fn(async () => false),
+  getInAppPermission: jest.fn(async () => true),
   markWasteReminderServerSyncSynced: jest.fn(async () => undefined),
   readWasteReminderLocalState: jest.fn(async () => ({
     localCoverageUntil: '2026-06-09T07:00:00.000Z',
@@ -75,6 +79,13 @@ const TestWasteReminderSync = () => {
   return null;
 };
 
+const flushPromises = async () => {
+  await act(async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+};
+
 const renderHook = async () => {
   await act(async () => {
     renderer.create(
@@ -99,8 +110,15 @@ describe('useWasteReminderSync', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     appStateListener = undefined;
+    permissionChangeListener = undefined;
+    (getInAppPermission as jest.Mock).mockResolvedValue(true);
     jest.spyOn(AppState, 'addEventListener').mockImplementation((_, listener) => {
       appStateListener = listener as (state: string) => void;
+
+      return { remove: jest.fn() };
+    });
+    jest.spyOn(DeviceEventEmitter, 'addListener').mockImplementation((_, listener) => {
+      permissionChangeListener = listener as (isEnabled: boolean) => void;
 
       return { remove: jest.fn() };
     });
@@ -149,5 +167,57 @@ describe('useWasteReminderSync', () => {
 
     expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
     expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+  });
+
+  it('skips pending sync and local replan while in-app push notifications are disabled', async () => {
+    (getInAppPermission as jest.Mock).mockResolvedValue(false);
+
+    await renderHook();
+    await flushPromises();
+
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+    expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+
+    jest.clearAllMocks();
+    (getInAppPermission as jest.Mock).mockResolvedValue(false);
+
+    await act(async () => {
+      appStateListener?.('active');
+    });
+    await flushPromises();
+
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+    expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+  });
+
+  it('syncs and replans stored waste reminders when in-app push notifications are enabled', async () => {
+    const callOrder: string[] = [];
+
+    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockImplementation(async () => {
+      callOrder.push('cleanup');
+      return false;
+    });
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async () => {
+      callOrder.push('sync');
+      return { serverSyncPayload: {}, success: true };
+    });
+    (markWasteReminderServerSyncSynced as jest.Mock).mockImplementation(async () => {
+      callOrder.push('mark-synced');
+    });
+    (rescheduleWasteReminderNotificationsFromLocalState as jest.Mock).mockImplementation(
+      async () => {
+        callOrder.push('replan');
+      }
+    );
+
+    await renderHook();
+    callOrder.length = 0;
+
+    await act(async () => {
+      permissionChangeListener?.(true);
+    });
+    await flushPromises();
+
+    expect(callOrder).toEqual(['cleanup', 'sync', 'mark-synced', 'replan']);
   });
 });

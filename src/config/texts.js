@@ -1810,7 +1810,10 @@ export const texts = {
     location: 'Ortschaft',
     myLocation: 'Meine Straße',
     notifications: 'Benachrichtigungen',
+    notificationsDisabledHint:
+      'Die Push-Benachrichtigungen sind in den App-Einstellungen deaktiviert. Daher werden auch keine Push-Benachrichtigungen für die Abfallarten gesendet.',
     notificationsOn: 'Benachrichtigungen an',
+    notificationSettingsLink: 'Zu den App-Einstellungen',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     oneDayBefore: '1 Tag vorher',

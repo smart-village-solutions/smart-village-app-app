@@ -6,7 +6,8 @@ import {
   clearWasteReminderLocalNotifications,
   clearWasteReminderLocalStateForChangedOwner,
   rescheduleWasteReminderNotificationsFromLocalState,
-  scheduleWasteReminderNotifications
+  scheduleWasteReminderNotifications,
+  storeWasteReminderSettingsWithoutScheduling
 } from '../../src/pushNotifications/WasteReminderLocalNotifications';
 import {
   WASTE_REMINDER_LOCAL_STORAGE_KEY,
@@ -400,6 +401,28 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).not.toBeNull();
   });
 
+  it('keeps anonymous reminder configuration when a push token becomes available later', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        ownerKey: 'anonymous',
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncPayload: createServerSyncPayload(),
+        serverSyncStatus: 'pending'
+      })
+    );
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('new-push-token');
+
+    await expect(clearWasteReminderLocalStateForChangedOwner()).resolves.toBe(false);
+
+    const storedState = await parseStoredReminderState();
+
+    expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalled();
+    expect(storedState.serverSyncPayload).toBeDefined();
+    expect(storedState.ownerKey).not.toBe('anonymous');
+  });
+
   it('clears locally scheduled waste reminders and keeps reminder configuration on push opt-out', async () => {
     const serverSyncPayload = createServerSyncPayload({
       activeReminderRegistrations: [
@@ -461,5 +484,44 @@ describe('scheduleWasteReminderNotifications', () => {
       reminderTime: serverSyncPayload.reminderTime.toISOString()
     });
     expect(storedState.serverSyncStatus).toBe('synced');
+  });
+
+  it('stores reminder configuration without scheduled notification ids while global push is disabled', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: ['stored-pickup'],
+        scheduledReminderKeys: ['waste:key-1'],
+        serverSyncPayload: createServerSyncPayload({ notificationSettings: { paper: false } }),
+        serverSyncStatus: 'synced'
+      })
+    );
+
+    const serverSyncPayload = createServerSyncPayload({
+      activeReminderRegistrations: [
+        {
+          active: true,
+          leadDays: 2,
+          slotId: 'first',
+          time: '11:30',
+          typeKey: 'paper'
+        }
+      ]
+    });
+
+    await storeWasteReminderSettingsWithoutScheduling(serverSyncPayload);
+
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('stored-pickup');
+
+    const storedState = await parseStoredReminderState();
+
+    expect(storedState.scheduledNotificationIds).toEqual([]);
+    expect(storedState.scheduledReminderKeys).toEqual([]);
+    expect(storedState.scheduledCoverageReminderNotificationIds).toEqual([]);
+    expect(storedState.serverSyncPayload).toEqual({
+      ...serverSyncPayload,
+      reminderTime: serverSyncPayload.reminderTime.toISOString()
+    });
+    expect(storedState.serverSyncStatus).toBe('pending');
   });
 });

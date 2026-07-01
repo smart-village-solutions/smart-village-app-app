@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Alert, SectionList, StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
   AugmentedReality,
@@ -19,7 +19,7 @@ import {
   PermanentFilterSettings,
   PersonalizedPushSettings
 } from '../components/settings';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   addToStore,
   createMatomoUserId,
@@ -500,6 +500,12 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(16)
+  }
+});
 
 SettingsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

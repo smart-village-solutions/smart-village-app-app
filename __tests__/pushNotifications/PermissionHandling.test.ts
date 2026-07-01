@@ -1,5 +1,10 @@
+import { DeviceEventEmitter } from 'react-native';
+
 import { addToStore, readFromStore } from '../../src/helpers/storageHelper';
-import { setInAppPermission } from '../../src/pushNotifications/PermissionHandling';
+import {
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+  setInAppPermission
+} from '../../src/pushNotifications/PermissionHandling';
 import { handleIncomingToken } from '../../src/pushNotifications/TokenHandling';
 import { clearWasteReminderLocalNotifications } from '../../src/pushNotifications/WasteReminderLocalNotifications';
 
@@ -109,5 +114,17 @@ describe('setInAppPermission', () => {
       error
     );
     warnSpy.mockRestore();
+  });
+
+  it('emits a permission change event after successfully activating push notifications', async () => {
+    const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
+    (readFromStore as jest.Mock).mockResolvedValue(false);
+    (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+
+    await expect(setInAppPermission(true)).resolves.toBe(true);
+
+    expect(addToStore).toHaveBeenCalledWith('IN_APP_PERMISSION', true);
+    expect(emitSpy).toHaveBeenCalledWith(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, true);
+    emitSpy.mockRestore();
   });
 });

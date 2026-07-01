@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Alert, Linking } from 'react-native';
+import { Alert, DeviceEventEmitter, Linking } from 'react-native';
 
 import { colors, device, texts } from '../config';
 import { parseColorToHex } from '../helpers/colorHelper';
@@ -19,6 +19,8 @@ const PermissionStatus = {
   GRANTED: 'granted',
   UNDETERMINED: 'undetermined'
 };
+
+export const PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT = 'pushNotificationPermissionChanged';
 
 export const getInAppPermission = async (): Promise<boolean> => {
   return (await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)) ?? false;
@@ -48,6 +50,7 @@ export const setInAppPermission = async (newValue: boolean) => {
       }
 
       addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
+      DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, newValue);
     }
 
     return successfullyHandled;

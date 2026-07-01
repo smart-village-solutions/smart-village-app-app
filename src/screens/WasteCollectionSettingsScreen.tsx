@@ -1,5 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import _isEmpty from 'lodash/isEmpty';
 import React, {
   Fragment,
@@ -60,6 +60,7 @@ import {
 import { areValidReminderSettings } from '../jsonValidation';
 import {
   buildWasteReminderSchedule,
+  getInAppPermission,
   getLocalNotificationPermission,
   getReminderSettings,
   getWasteReminderUiMode,
@@ -70,6 +71,7 @@ import {
   scheduleWasteReminderNotifications,
   setInAppPermission,
   showSystemPermissionMissingDialog,
+  storeWasteReminderSettingsWithoutScheduling,
   syncWasteReminderSettingsWithServer,
   WasteReminderRegistration,
   WasteReminderServerSyncPayload,
@@ -83,7 +85,7 @@ import {
 } from '../reducers';
 import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
-import { WasteReminderSettingJson, WasteTypeData } from '../types';
+import { ScreenName, WasteReminderSettingJson, WasteTypeData } from '../types';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
@@ -143,6 +145,7 @@ export const WasteCollectionSettingsScreen = () => {
     slotId: string;
     typeKey: string;
   }>();
+  const [isInAppPushEnabled, setIsInAppPushEnabled] = useState(true);
   const [isPushPermissionGranted, setIsPushPermissionGranted] = useState(false);
   const [state, dispatch] = useReducer(wasteSettingsReducer, initialWasteSettingsState);
   const {
@@ -172,17 +175,45 @@ export const WasteCollectionSettingsScreen = () => {
   const streetName = locationData ? getStreetString(locationData) : undefined;
   const effectiveStreetName =
     streetName || (selectedStreetId === waste.streetId ? waste.streetName : undefined);
+  const areWasteReminderControlsDisabled = !isInAppPushEnabled;
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef<TooltipRef | null>(null);
+  const openNotificationSettings = useCallback(() => {
+    navigation.navigate(ScreenName.Settings);
+  }, [navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      getInAppPermission().then((permission) => {
+        if (isActive) {
+          setIsInAppPushEnabled(permission);
+        }
+      });
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
+
   const applyInitialStoredSettingsFallback = useCallback(async () => {
     dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
+
+    if (usedTypes) {
+      dispatch({
+        type: WasteSettingsActions.setReminderSettingsByType,
+        payload: buildDefaultReminderSettingsByType(usedTypes)
+      });
+    }
 
     const permission = await getLocalNotificationPermission();
 
     if (permission) {
       dispatch({ type: WasteSettingsActions.setNotificationsEnabled, payload: true });
     }
-  }, [usedTypeKeys]);
+  }, [usedTypeKeys, usedTypes]);
 
   const loadStoredSettingsFromServer = useCallback(async () => {
     if (isInitial) return;
@@ -288,6 +319,10 @@ export const WasteCollectionSettingsScreen = () => {
       localCoverageUntil?: Date,
       reminderSyncRegistrations?: WasteReminderServerSyncRegistration[]
     ) => {
+      if (!isInAppPushEnabled) {
+        return;
+      }
+
       const {
         activeTypes: resettedActiveTypes,
         serverSyncPayload,
@@ -317,7 +352,15 @@ export const WasteCollectionSettingsScreen = () => {
         await markWasteReminderServerSyncSynced(serverSyncPayload);
       }
     },
-    [usedTypeKeys, activeTypes, notificationSettings, locationData, onDayBefore, reminderTime]
+    [
+      usedTypeKeys,
+      activeTypes,
+      notificationSettings,
+      locationData,
+      onDayBefore,
+      reminderTime,
+      isInAppPushEnabled
+    ]
   );
 
   const scheduleLocalReminderSettings = useCallback(async () => {
@@ -330,6 +373,24 @@ export const WasteCollectionSettingsScreen = () => {
             notificationSettings
           )
         : undefined;
+
+    if (!isInAppPushEnabled) {
+      await storeWasteReminderSettingsWithoutScheduling({
+        activeReminderRegistrations: reminderSyncRegistrations,
+        activeTypes,
+        locationData,
+        notificationSettings,
+        onDayBefore,
+        reminderTime,
+        usedTypeKeys
+      });
+
+      return {
+        reminderSyncRegistrations,
+        localCoverageUntil: undefined
+      };
+    }
+
     const activeReminderTypeKeys = usedTypeKeys.filter(
       (typeKey) => !!notificationSettings[typeKey]
     );
@@ -383,7 +444,8 @@ export const WasteCollectionSettingsScreen = () => {
     streetData,
     streetName,
     usedTypeKeys,
-    usedTypes
+    usedTypes,
+    isInAppPushEnabled
   ]);
 
   const saveSettings = useCallback(async () => {
@@ -628,6 +690,18 @@ export const WasteCollectionSettingsScreen = () => {
             <WrapperVertical style={styles.mediumPaddingVertical}>
               <RegularText big>{wasteTexts.reminders}</RegularText>
             </WrapperVertical>
+            {areWasteReminderControlsDisabled && (
+              <WrapperVertical style={styles.pushDisabledHint}>
+                <RegularText small placeholder>
+                  {wasteTexts.notificationsDisabledHint}
+                </RegularText>
+                <TouchableOpacity onPress={openNotificationSettings}>
+                  <RegularText small primary underline>
+                    {wasteTexts.notificationSettingsLink}
+                  </RegularText>
+                </TouchableOpacity>
+              </WrapperVertical>
+            )}
             <ListItem
               containerStyle={[styles.borderRadius, styles.listItemContainer]}
               accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
@@ -636,9 +710,13 @@ export const WasteCollectionSettingsScreen = () => {
                 <BoldText small>{wasteTexts.notificationsOn}</BoldText>
               </ListItem.Content>
               <Switch
-                isDisabled={false}
+                isDisabled={areWasteReminderControlsDisabled}
                 switchValue={showNotificationSettings}
                 toggleSwitch={async () => {
+                  if (areWasteReminderControlsDisabled) {
+                    return;
+                  }
+
                   if (!isPushPermissionGranted) {
                     const hasPermission = await requestLocalNotificationPermission();
 
@@ -683,43 +761,58 @@ export const WasteCollectionSettingsScreen = () => {
                     <ListItem.Content>
                       <BoldText small>{wasteTexts.daysBefore}</BoldText>
                     </ListItem.Content>
-                    <Tooltip
-                      ref={tooltipRef}
-                      backgroundColor={colors.surface}
-                      containerStyle={[styles.borderRadius, styles.tooltipContainer]}
-                      height={normalize(70)}
-                      popover={
-                        <TouchableWithoutFeedback onPress={(event) => event.stopPropagation()}>
-                          <View
-                            onTouchStart={(event) => event.stopPropagation()}
-                            style={[styles.tooltipTouchableArea, styles.tooltipContent]}
-                          >
-                            <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
-                              <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
-                                {wasteTexts.sameDay}
-                              </RegularText>
-                            </TouchableOpacity>
-                            <Divider style={styles.dividerSmall} />
-                            <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
-                              <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
-                                {wasteTexts.oneDayBefore}
-                              </RegularText>
-                            </TouchableOpacity>
-                          </View>
-                        </TouchableWithoutFeedback>
-                      }
-                      width={normalize(160)}
-                      withOverlay={device.platform === 'android'}
-                      overlayColor={colors.shadowRgba}
-                      withPointer={false}
-                    >
+                    {areWasteReminderControlsDisabled ? (
                       <WrapperRow itemsCenter>
-                        <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
+                        <RegularText small placeholder style={{ paddingVertical: normalize(4.85) }}>
                           {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
                         </RegularText>
                         <Icon.KeyboardArrowUpDown size={normalize(14)} />
                       </WrapperRow>
-                    </Tooltip>
+                    ) : (
+                      <Tooltip
+                        ref={tooltipRef}
+                        backgroundColor={colors.surface}
+                        containerStyle={[styles.borderRadius, styles.tooltipContainer]}
+                        height={normalize(70)}
+                        popover={
+                          <TouchableWithoutFeedback onPress={(event) => event.stopPropagation()}>
+                            <View
+                              onTouchStart={(event) => event.stopPropagation()}
+                              style={[styles.tooltipTouchableArea, styles.tooltipContent]}
+                            >
+                              <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
+                                <RegularText
+                                  primary={!onDayBefore}
+                                  style={styles.tooltipSelection}
+                                >
+                                  {wasteTexts.sameDay}
+                                </RegularText>
+                              </TouchableOpacity>
+                              <Divider style={styles.dividerSmall} />
+                              <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
+                                <RegularText
+                                  primary={onDayBefore}
+                                  style={styles.tooltipSelection}
+                                >
+                                  {wasteTexts.oneDayBefore}
+                                </RegularText>
+                              </TouchableOpacity>
+                            </View>
+                          </TouchableWithoutFeedback>
+                        }
+                        width={normalize(160)}
+                        withOverlay={device.platform === 'android'}
+                        overlayColor={colors.shadowRgba}
+                        withPointer={false}
+                      >
+                        <WrapperRow itemsCenter>
+                          <RegularText small primary style={{ paddingVertical: normalize(4.85) }}>
+                            {onDayBefore ? wasteTexts.oneDayBefore : wasteTexts.sameDay}{' '}
+                          </RegularText>
+                          <Icon.KeyboardArrowUpDown size={normalize(14)} />
+                        </WrapperRow>
+                      </Tooltip>
+                    )}
                   </ListItem>
                   <ListItem
                     containerStyle={[
@@ -732,8 +825,19 @@ export const WasteCollectionSettingsScreen = () => {
                     <ListItem.Content>
                       <BoldText small>{wasteTexts.timeOfDay}</BoldText>
                     </ListItem.Content>
-                    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                      <View style={[styles.smallBorderRadius, styles.timeContainer]}>
+                    <TouchableOpacity
+                      disabled={areWasteReminderControlsDisabled}
+                      onPress={
+                        areWasteReminderControlsDisabled ? undefined : () => setShowDatePicker(true)
+                      }
+                    >
+                      <View
+                        style={[
+                          styles.smallBorderRadius,
+                          styles.timeContainer,
+                          areWasteReminderControlsDisabled && styles.disabledControl
+                        ]}
+                      >
                         <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
                       </View>
                     </TouchableOpacity>
@@ -801,9 +905,13 @@ export const WasteCollectionSettingsScreen = () => {
                             </ListItem.Content>
 
                             <Switch
-                              isDisabled={false}
+                              isDisabled={areWasteReminderControlsDisabled}
                               switchValue={notificationSettings[item]}
                               toggleSwitch={() => {
+                                if (areWasteReminderControlsDisabled) {
+                                  return;
+                                }
+
                                 dispatch({
                                   type: WasteSettingsActions.setNotificationSetting,
                                   payload: { key: item, value: !notificationSettings[item] }
@@ -827,6 +935,8 @@ export const WasteCollectionSettingsScreen = () => {
                     const isPushReminderEnabled = normalizedSlots.slots.length > 0;
                     const isNotificationEnabled =
                       isPushReminderEnabled && !!notificationSettings[typeKey];
+                    const isTypeReminderDisabled =
+                      !isPushReminderEnabled || areWasteReminderControlsDisabled;
                     const configuredSlots = normalizedSlots.slots.filter(
                       (slot) => !!reminderSettingsByType[typeKey]?.reminders[slot.id]
                     );
@@ -842,10 +952,10 @@ export const WasteCollectionSettingsScreen = () => {
                             {renderWasteTypeLabel(usedTypes[typeKey])}
                           </ListItem.Content>
                           <Switch
-                            isDisabled={!isPushReminderEnabled}
+                            isDisabled={isTypeReminderDisabled}
                             switchValue={isNotificationEnabled}
                             toggleSwitch={() => {
-                              if (!isPushReminderEnabled) {
+                              if (isTypeReminderDisabled) {
                                 return;
                               }
 
@@ -896,6 +1006,7 @@ export const WasteCollectionSettingsScreen = () => {
                                     <BoldText small>{wasteTexts.daysBefore}</BoldText>
                                   </ListItem.Content>
                                   <FlexibleLeadDaysTooltip
+                                    isDisabled={areWasteReminderControlsDisabled}
                                     maxLeadDays={slot.maxLeadDays}
                                     onSelectLeadDays={setFlexibleLeadDays}
                                     selectedLeadDays={slotSetting.leadDays}
@@ -917,18 +1028,23 @@ export const WasteCollectionSettingsScreen = () => {
                                     <BoldText small>{wasteTexts.timeOfDay}</BoldText>
                                   </ListItem.Content>
                                   <TouchableOpacity
-                                    onPress={() =>
-                                      setActiveFlexibleTimePicker({
-                                        slotId: slot.id,
-                                        typeKey
-                                      })
+                                    disabled={areWasteReminderControlsDisabled}
+                                    onPress={
+                                      areWasteReminderControlsDisabled
+                                        ? undefined
+                                        : () =>
+                                            setActiveFlexibleTimePicker({
+                                              slotId: slot.id,
+                                              typeKey
+                                            })
                                     }
                                   >
                                     <View
                                       style={[
                                         styles.smallBorderRadius,
                                         styles.timeContainer,
-                                        styles.flexibleTimeContainer
+                                        styles.flexibleTimeContainer,
+                                        areWasteReminderControlsDisabled && styles.disabledControl
                                       ]}
                                     >
                                       <RegularText small>
@@ -1112,6 +1228,7 @@ const getLeadDayOptions = (maxLeadDays: number) =>
   Array.from({ length: maxLeadDays + 1 }, (_, index) => index);
 
 type FlexibleLeadDaysTooltipProps = {
+  isDisabled?: boolean;
   maxLeadDays: number;
   onSelectLeadDays: (typeKey: string, slotId: string, value: number) => void;
   selectedLeadDays: number;
@@ -1122,6 +1239,7 @@ type FlexibleLeadDaysTooltipProps = {
 };
 
 const FlexibleLeadDaysTooltip = ({
+  isDisabled = false,
   maxLeadDays,
   onSelectLeadDays,
   selectedLeadDays,
@@ -1138,6 +1256,17 @@ const FlexibleLeadDaysTooltip = ({
     },
     [onSelectLeadDays, slotId, typeKey]
   );
+
+  if (isDisabled) {
+    return (
+      <WrapperRow itemsCenter>
+        <RegularText small placeholder>
+          {getLeadDaysLabel(selectedLeadDays, wasteTexts)}{' '}
+        </RegularText>
+        <Icon.KeyboardArrowUpDown size={normalize(14)} />
+      </WrapperRow>
+    );
+  }
 
   return (
     <Tooltip
@@ -1234,6 +1363,9 @@ const styles = StyleSheet.create({
     marginVertical: normalize(4),
     width: normalize(136)
   },
+  disabledControl: {
+    opacity: 0.45
+  },
   flexibleReminderListItem: {
     paddingLeft: normalize(28)
   },
@@ -1261,6 +1393,9 @@ const styles = StyleSheet.create({
   },
   paddingTop: {
     paddingTop: normalize(14)
+  },
+  pushDisabledHint: {
+    paddingBottom: normalize(10)
   },
   dateTimePickerContainerAndroid: {
     marginLeft: normalize(-14)

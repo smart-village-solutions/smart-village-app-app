@@ -1,10 +1,12 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { AppState } from 'react-native';
+import { AppState, DeviceEventEmitter } from 'react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import {
   clearWasteReminderLocalStateForChangedOwner,
+  getInAppPermission,
   markWasteReminderServerSyncSynced,
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
   readWasteReminderLocalState,
   rescheduleWasteReminderNotificationsFromLocalState,
   syncWasteReminderSettingsWithServer
@@ -66,6 +68,12 @@ export const useWasteReminderSync = () => {
       maintenanceQueue.current = maintenanceQueue.current
         .catch(() => undefined)
         .then(async () => {
+          const hasInAppPermission = await getInAppPermission();
+
+          if (!hasInAppPermission) {
+            return;
+          }
+
           const clearedStateForChangedOwner = await clearWasteReminderLocalStateForChangedOwner();
 
           if (clearedStateForChangedOwner) {
@@ -116,6 +124,19 @@ export const useWasteReminderSync = () => {
         enqueueWasteReminderMaintenance({ shouldRefreshLocalNotifications: true });
       }
     });
+
+    return () => subscription.remove();
+  }, [enqueueWasteReminderMaintenance]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+      (isEnabled: boolean) => {
+        if (isEnabled) {
+          enqueueWasteReminderMaintenance({ shouldRefreshLocalNotifications: true });
+        }
+      }
+    );
 
     return () => subscription.remove();
   }, [enqueueWasteReminderMaintenance]);
