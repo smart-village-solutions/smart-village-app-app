@@ -15,6 +15,9 @@ jest.mock('expo-secure-store', () => ({
 jest.mock('../../src/config', () => ({
   device: { platform: 'ios' },
   secrets: {
+    prignitz: {
+      serverUrl: 'https://example.test'
+    },
     'smart-village-app': {
       serverUrl: 'https://example.test'
     },
