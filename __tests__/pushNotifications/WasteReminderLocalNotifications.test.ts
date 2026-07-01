@@ -387,6 +387,19 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).toBeNull();
   });
 
+  it('keeps local waste reminder state when the current push token is temporarily unavailable', async () => {
+    await scheduleWasteReminderNotifications({
+      reminders: [createReminder()],
+      serverSyncPayload: createServerSyncPayload()
+    });
+
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+    await expect(clearWasteReminderLocalStateForChangedOwner()).resolves.toBe(false);
+    expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalled();
+    expect(await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)).not.toBeNull();
+  });
+
   it('clears locally scheduled waste reminders and removes local state on push opt-out', async () => {
     await AsyncStorage.setItem(
       WASTE_REMINDER_LOCAL_STORAGE_KEY,
