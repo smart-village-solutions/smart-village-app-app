@@ -2,7 +2,10 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
-import { WasteCollectionSettingsScreen } from '../../src/screens/WasteCollectionSettingsScreen';
+import {
+  getWasteCollectionSettingsViewState,
+  WasteCollectionSettingsScreen
+} from '../../src/screens/WasteCollectionSettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 import { ScreenName } from '../../src/types';
 import { saveWasteReminderSettings } from '../../src/helpers';
@@ -298,6 +301,46 @@ describe('WasteCollectionSettingsScreen', () => {
         selected_color: '#111111'
       }
     };
+  });
+
+  describe('getWasteCollectionSettingsViewState', () => {
+    it('returns the expected screen state for loading, suggestions, settings, and empty cases', () => {
+      expect(
+        getWasteCollectionSettingsViewState({
+          hasSelectedStreet: false,
+          hasStreetSuggestions: false,
+          isLoading: true,
+          isStreetSelected: true
+        })
+      ).toBe('loading');
+
+      expect(
+        getWasteCollectionSettingsViewState({
+          hasSelectedStreet: false,
+          hasStreetSuggestions: true,
+          isLoading: false,
+          isStreetSelected: false
+        })
+      ).toBe('suggestions');
+
+      expect(
+        getWasteCollectionSettingsViewState({
+          hasSelectedStreet: true,
+          hasStreetSuggestions: false,
+          isLoading: false,
+          isStreetSelected: true
+        })
+      ).toBe('settings');
+
+      expect(
+        getWasteCollectionSettingsViewState({
+          hasSelectedStreet: false,
+          hasStreetSuggestions: false,
+          isLoading: false,
+          isStreetSelected: true
+        })
+      ).toBe('empty');
+    });
   });
 
   it('keeps loaded flexible reminder times when waste types refresh with a new object reference', async () => {
