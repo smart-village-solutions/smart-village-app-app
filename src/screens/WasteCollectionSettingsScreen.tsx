@@ -74,8 +74,9 @@ export const WasteCollectionSettingsScreen = () => {
   const { wasteAddresses = {} } = settings;
   const { texts: wasteAddressesTexts = {} } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
+  const isInitial = waste.streetId === undefined;
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
-  const [loadingStoredSettings, setLoadingStoredSettings] = useState(true);
+  const [loadingStoredSettings, setLoadingStoredSettings] = useState(!isInitial);
   const [errorWithStoredSettings, setErrorWithStoredSettings] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState(routeParams?.currentSelectedStreetId);
@@ -92,7 +93,6 @@ export const WasteCollectionSettingsScreen = () => {
     onDayBefore,
     reminderTime
   } = state;
-  const isInitial = waste.streetId === undefined;
   const { inputValue, renderSuggestion } = useRenderSuggestions(() => setIsStreetSelected(true));
   const { data, loading } = useWasteAddresses({ search: inputValue });
   const addressesData = data?.wasteAddresses;
@@ -149,6 +149,7 @@ export const WasteCollectionSettingsScreen = () => {
     setLoadingStoredSettings(false);
   }, [
     getStreetString,
+    isInitial,
     waste.streetId,
     waste.streetName,
     waste.selectedTypeKeys,
