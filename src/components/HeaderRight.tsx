@@ -57,12 +57,12 @@ export const HeaderRight = ({
     {withCalendar && <CalendarHeader navigation={navigation} style={styles.icon} />}
     {withChat && <ChatHeader navigation={navigation} style={styles.icon} />}
     {withDelete && <DeleteHeader onPress={onPress} style={styles.icon} />}
-    {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
     {withEdit && <EditHeader onPress={onPress} style={styles.icon} />}
     {withGroup && <GroupHeader navigation={navigation} style={styles.icon} />}
     {withInfo && <InfoHeader route={route} style={styles.icon} />}
     {withSearch && <SearchHeader navigation={navigation} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
+    {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
   </WrapperRow>
 );
 /* eslint-enable complexity */
