@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import { LocationObjectCoords } from 'expo-location';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../config';
 import {
@@ -109,7 +109,10 @@ export const TourStops = ({
         <ListComponent data={listItem} navigation={navigation} />
       )}
 
-      {selectedFilterId === TOP_FILTER.MAP_VIEW && (
+      <View
+        pointerEvents={selectedFilterId === TOP_FILTER.MAP_VIEW ? 'auto' : 'none'}
+        style={selectedFilterId === TOP_FILTER.MAP_VIEW ? undefined : styles.hiddenMap}
+      >
         <MapLibre
           currentPosition={currentPosition}
           geometryTourData={geometryTourData}
@@ -139,7 +142,7 @@ export const TourStops = ({
           }}
           // onMaximizeButtonPress={() => console.log('Maximize map pressed')} // TODO: implement maximize map functionality
         />
-      )}
+      </View>
 
       <Wrapper>
         <Button
@@ -199,6 +202,13 @@ export const mapToMapMarkers = (
     .filter((item) => item !== undefined);
 
 const styles = StyleSheet.create({
+  hiddenMap: {
+    left: -10000,
+    opacity: 0,
+    position: 'absolute',
+    top: 0,
+    width: '100%'
+  },
   map: {
     height: normalize(500),
     width: '100%'

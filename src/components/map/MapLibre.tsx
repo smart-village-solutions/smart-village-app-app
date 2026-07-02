@@ -40,12 +40,15 @@ import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
+import { buildInitialZoomStop } from './buildInitialZoomStop';
+import { buildSelectedSingleIconStyle } from './buildSelectedSingleIconStyle';
+import { buildSingleIconStyle } from './buildSingleIconStyle';
+import { calculateInitialRegion } from './calculateInitialRegion';
+
 const { a11yLabel, MAP } = consts;
 
 const CAMERA_ANIMATION_DURATION = 1500;
 const CAMERA_ANIMATION_MODE = 'ease';
-const DEFAULT_CENTER_LATITUDE = 51.1657;
-const DEFAULT_CENTER_LONGITUDE = 10.4515;
 const FOLLOW_USER_TIMEOUT = 5000;
 const MAP_PRESS_DEBOUNCE = 50;
 const MAX_ZOOM_LEVEL = 20;
@@ -57,7 +60,9 @@ const PROXIMITY_THRESHOLD = 0.0008;
  * Entries with a `uri` field are wrapped as `{ source: { uri } }` per the v11 ImageEntry spec.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buildMarkerImages = (markerImages: Record<string, any> | undefined): Record<string, ImageEntry> | undefined => {
+const buildMarkerImages = (
+  markerImages: Record<string, any> | undefined
+): Record<string, ImageEntry> | undefined => {
   if (!markerImages) return undefined;
 
   return Object.fromEntries(
@@ -175,63 +180,6 @@ const getIconAnchor = (iconName: string, anchorDefault: string) => [
   'center',
   anchorDefault
 ];
-
-/**
- * Calculates initial map region based on available position data.
- */
-const calculateInitialRegion = ({
-  defaultAlternativePosition,
-  mapCenterPosition,
-  isMultipleMarkersMap,
-  locations,
-  showsUserLocation,
-  currentPosition
-}: {
-  defaultAlternativePosition?: any;
-  mapCenterPosition?: LocationObjectCoords;
-  isMultipleMarkersMap: boolean;
-  locations: MapMarker[];
-  showsUserLocation: boolean;
-  currentPosition?: LocationObject;
-}): Partial<LocationObjectCoords> => {
-  let region: Partial<LocationObjectCoords> = {
-    latitude: DEFAULT_CENTER_LATITUDE,
-    longitude: DEFAULT_CENTER_LONGITUDE
-  };
-
-  if (defaultAlternativePosition) {
-    region = {
-      ...region,
-      latitude: defaultAlternativePosition.coords?.latitude,
-      longitude: defaultAlternativePosition.coords?.longitude
-    };
-  }
-
-  if (mapCenterPosition) {
-    region = { ...region, ...mapCenterPosition };
-  }
-
-  const isSingleLocation = !isMultipleMarkersMap || locations?.length === 1;
-  const firstLocation = locations?.[0];
-
-  if (isSingleLocation && firstLocation?.position?.latitude && firstLocation?.position?.longitude) {
-    region = {
-      ...region,
-      latitude: firstLocation.position.latitude,
-      longitude: firstLocation.position.longitude
-    };
-  }
-
-  if (showsUserLocation && currentPosition?.coords.latitude && currentPosition?.coords.longitude) {
-    region = {
-      ...region,
-      latitude: currentPosition.coords.latitude,
-      longitude: currentPosition.coords.longitude
-    };
-  }
-
-  return region;
-};
 
 // useBottomTabBarHeight throws if no bottom tab navigator is in context;
 // fall back to 0 for stack-only screens.
@@ -421,6 +369,18 @@ export const MapLibre = ({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapCenterPosition]);
+
+  // Apply the distance-based zoom on initial map load.
+  // Fires once when the map is ready, or once when the GPS position first resolves
+  // after the map is already ready. Does not re-fire on next/previous navigation
+  // (those are handled by the mapCenterPosition effect above).
+  useEffect(() => {
+    if (!mapReady || mapCenterZoomLevel == null || !cameraRef.current) return;
+    if (hasAppliedInitialZoomRef.current) return;
+
+    hasAppliedInitialZoomRef.current = true;
+    cameraRef.current.setStop(buildInitialZoomStop(mapCenterZoomLevel));
+  }, [mapReady, mapCenterZoomLevel]);
 
   useEffect(() => {
     if (suppressAutoFitRef.current || hasInitialFitRef.current) {
@@ -756,29 +716,17 @@ export const MapLibre = ({
     ...layerStyles.clusteredCircleShadow,
     circlePitchAlignment: 'map'
   });
-  const { paint: singleIconPaint, layout: singleIconLayout } = splitLayerStyle('symbol', {
-    ...singleIcon,
-    iconImage: [
-      'case',
-      ['==', ['get', 'id'], selectedMarker],
-      ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
-      ['get', 'iconName']
-    ],
-    iconSize: [
-      'case',
-      ['==', ['get', 'id'], selectedMarker],
-      (singleIcon.iconSize ?? 1) * 1.2,
-      singleIcon.iconSize
-    ],
-    iconAnchor: [
-      'case',
-      ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-      'center',
-      singleIcon.iconAnchor
-    ],
-    iconAllowOverlap: true,
-    iconIgnorePlacement: true
-  });
+  const { paint: singleIconPaint, layout: singleIconLayout } = splitLayerStyle(
+    'symbol',
+    buildSingleIconStyle({
+      labelStyles,
+      markerLabelHaloColor,
+      ownLocationPin: MAP.OWN_LOCATION_PIN,
+      selectedMarker,
+      showMarkerLabels,
+      singleIconStyle: singleIcon
+    })
+  );
   const { paint: clusterPaint } = splitLayerStyle('circle', {
     ...layerStyles.clusteredCircle,
     circleColor: clusterCircleColor,
@@ -809,19 +757,13 @@ export const MapLibre = ({
   });
   const { paint: selectedSingleIconPaint, layout: selectedSingleIconLayout } = splitLayerStyle(
     'symbol',
-    {
-      ...singleIcon,
-      iconImage: ['coalesce', ['get', 'activeIconName'], ['get', 'iconName']],
-      iconSize: (singleIcon.iconSize ?? 1) * 1.2,
-      iconAnchor: [
-        'case',
-        ['==', ['get', 'iconName'], MAP.OWN_LOCATION_PIN],
-        'center',
-        singleIcon.iconAnchor
-      ],
-      iconAllowOverlap: true,
-      iconIgnorePlacement: true
-    }
+    buildSelectedSingleIconStyle({
+      labelStyles,
+      markerLabelHaloColor,
+      ownLocationPin: MAP.OWN_LOCATION_PIN,
+      showMarkerLabels,
+      singleIconStyle: singleIcon
+    })
   );
   // Depends on runtime values (safeAreaBottom, bottomTabBarHeight) so cannot go into StyleSheet.
   const maximizeFullscreenStyle = isFullscreenMap
