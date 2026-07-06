@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -9,7 +9,6 @@ import {
   EmptyMessage,
   HtmlView,
   LoadingSpinner,
-  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   TextListItem,
@@ -28,7 +27,6 @@ import {
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
-import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { GenericItem, GenericType, ScreenName } from '../../types';
 
 type ParticipationProjectHomeParamList = Record<string, object | undefined> & {
@@ -296,9 +294,6 @@ export const ParticipationProjectHomeScreen = ({
   navigation
 }: StackScreenProps<ParticipationProjectHomeParamList, ScreenName.ParticipationProjectHome>) => {
   const [refreshing, setRefreshing] = useState(false);
-  const listContentContainerStyle = useReadAloudScrollContentContainerStyle(
-    styles.contentContainer
-  );
 
   const {
     data: homeConfigData,
@@ -445,12 +440,6 @@ export const ParticipationProjectHomeScreen = ({
 
             {!!introHtml && (
               <WrapperVertical>
-                <View style={styles.readAloudContainer}>
-                  <ReadAloudContent
-                    content={introHtml}
-                    contentId="participation-project-home-content"
-                  />
-                </View>
                 <WrapperVertical noPaddingBottom>
                   <HtmlView html={introHtml} />
                 </WrapperVertical>
@@ -487,7 +476,7 @@ export const ParticipationProjectHomeScreen = ({
             )}
           </>
         }
-        contentContainerStyle={listContentContainerStyle}
+        contentContainerStyle={styles.contentContainer}
         keyExtractor={(item) => item.id}
         renderItem={renderCategoryItem}
         refreshControl={
@@ -507,9 +496,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     paddingHorizontal: normalize(16)
-  },
-  readAloudContainer: {
-    marginHorizontal: normalize(-16)
   },
   sectionHeader: {
     paddingLeft: 0,
