@@ -4,6 +4,8 @@ import { IconSet } from '../config';
 
 export type WidgetProps = {
   additionalProps?: {
+    accessibilityActionLabel?: string;
+    accessibilityLabel?: string;
     dataProviderId?: string;
     htmlName?: string;
     iconName?: ComponentProps<typeof IconSet>['name'];
@@ -27,8 +29,8 @@ export type WidgetProps = {
   };
   text?: string;
   widgetStyle?: {
-    fontStyle?: any;
-    iconStyle?: any;
-    widgetStyle?: any;
+    fontStyle?: unknown;
+    iconStyle?: unknown;
+    widgetStyle?: unknown;
   };
 };
