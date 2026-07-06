@@ -153,13 +153,13 @@ const normalizeParticipationProjectPreviewText = (text?: string) =>
 export const getParticipationProjectPreviewSubtitle = (item: ParticipationProject) =>
   normalizeParticipationProjectPreviewText(item.contentBlocks?.[0]?.body);
 
-export const getParticipationProjectPreviewDate = (item: Pick<ParticipationProject, 'dates'>) => {
+export const getParticipationProjectPreviewDate = (item: ParticipationProject) => {
   const date = item.dates?.[0];
   const dateStart = date?.dateStart;
 
   if (!dateStart) return;
 
-  return [getParticipationProjectListDatePrefix(date), momentFormatUtcToLocal(dateStart)]
+  return [getParticipationProjectDatePrefix(date), momentFormatUtcToLocal(dateStart)]
     .filter(Boolean)
     .join(' ');
 };
