@@ -1,9 +1,14 @@
 import { LocationObjectCoords } from 'expo-location';
 
-import { GenericItem, OpeningHour, SVA_Date } from '../types';
+import { consts, texts } from '../config';
+import { QUERY_TYPES } from '../queries';
+import { GenericItem, OpeningHour, ScreenName, SVA_Date } from '../types';
 
 import { formatAddress } from './addressHelper';
 import { removeHtml, trimNewLines } from './htmlViewHelper';
+import { mainImageOfMediaContents } from './imageHelper';
+import { momentFormatUtcToLocal } from './momentHelper';
+import { subtitle as formatSubtitle } from './textHelper';
 
 export type ParticipationProjectPayload = {
   capacity?: string | number;
@@ -27,6 +32,28 @@ export type ParticipationProject = GenericItem<ParticipationProjectPayload> & {
   description?: string;
   teaser?: string;
   updatedAt?: string;
+};
+
+type ParticipationProjectPreviewItem = {
+  accessibilityLabel: string;
+  bottomDivider: boolean;
+  id: string;
+  overtitle?: string;
+  params: {
+    details: ParticipationProject;
+    query: string;
+    queryVariables: {
+      id: string;
+    };
+    rootRouteName: string;
+    title: string;
+  };
+  picture: {
+    url?: string;
+  };
+  routeName: ScreenName;
+  subtitle?: string;
+  title: string;
 };
 
 export const normalizeParticipationProjectValue = (value?: unknown) => {
@@ -70,6 +97,9 @@ export const getParticipationProjectGeoLocation = ({
   locations?.find((location) => location.geoLocation)?.geoLocation ||
   addresses?.find((address) => address.geoLocation)?.geoLocation;
 
+export const isParticipationProjectMapEligible = (item: ParticipationProject) =>
+  !!getParticipationProjectGeoLocation(item);
+
 export const getParticipationProjectLocationText = ({
   addresses,
   locations,
@@ -95,6 +125,67 @@ export const getParticipationProjectPlainBody = (data: ParticipationProject) =>
   normalizeParticipationProjectValue(
     trimNewLines(removeHtml(getParticipationProjectBody(data) || ''))
   );
+
+const normalizeParticipationProjectPreviewText = (text?: string) =>
+  trimNewLines(removeHtml(text || ''))
+    ?.replace(/\s+/g, ' ')
+    .trim();
+
+export const getParticipationProjectPreviewSubtitle = (item: ParticipationProject) =>
+  normalizeParticipationProjectPreviewText(item.contentBlocks?.[0]?.body);
+
+export const getParticipationProjectPreviewDate = (item: ParticipationProject) => {
+  const date = item.dates?.[0];
+  const dateStart = date?.dateStart;
+
+  if (!dateStart) return;
+
+  return [getParticipationProjectDatePrefix(date), momentFormatUtcToLocal(dateStart)]
+    .filter(Boolean)
+    .join(' ');
+};
+
+export const buildParticipationProjectPreviewItem = (
+  item: ParticipationProject,
+  {
+    bottomDivider = false,
+    rootRouteName = consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS,
+    title = texts.participationProject.participationProject
+  }: {
+    bottomDivider?: boolean;
+    rootRouteName?: string;
+    title?: string;
+  } = {}
+): ParticipationProjectPreviewItem => {
+  const type = getParticipationProjectType(item);
+  const subtitle = getParticipationProjectPreviewSubtitle(item);
+  const previewDate = getParticipationProjectPreviewDate(item);
+  const overtitle = formatSubtitle(previewDate, type, '');
+  const accessibilityLabel = [overtitle, item.title, subtitle]
+    .filter(Boolean)
+    .map((text) => `(${text})`)
+    .join(' ');
+
+  return {
+    accessibilityLabel: `${accessibilityLabel} ${consts.a11yLabel.button}`.trim(),
+    bottomDivider,
+    id: item.id,
+    overtitle,
+    params: {
+      title,
+      query: QUERY_TYPES.GENERIC_ITEM,
+      queryVariables: { id: `${item.id}` },
+      rootRouteName,
+      details: item
+    },
+    picture: {
+      url: mainImageOfMediaContents(item.mediaContents)
+    },
+    routeName: ScreenName.Detail,
+    subtitle,
+    title: item.title || texts.participationProject.participationProject
+  };
+};
 
 export const normalizeParticipationProjectDates = ({
   dates,
