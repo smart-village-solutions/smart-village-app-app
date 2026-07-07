@@ -36,7 +36,7 @@ jest.mock('../../src/config', () => {
       a11yLabel: {
         button: '(Taste)',
         checkbox: '(Checkbox)',
-        textInput: 'Texteingabe'
+        textInput: '(Texteingabe)'
       },
       DIMENSIONS: {
         FULL_SCREEN_MAX_WIDTH: 504
