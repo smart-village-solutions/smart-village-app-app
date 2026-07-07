@@ -6,7 +6,7 @@ import TableRenderer, {
 } from '@native-html/table-plugin';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useMemo } from 'react';
-import HTML from 'react-native-render-html';
+import HTML, { IMGElement, useIMGElementProps } from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -78,7 +78,26 @@ table {
 }
 `;
 
+const HtmlImageRenderer = (props) => {
+  const imgProps = useIMGElementProps(props);
+  const altText = imgProps.alt?.trim?.();
+  const accessibilityLabel = altText || consts.a11yLabel.image;
+
+  return (
+    <IMGElement
+      {...imgProps}
+      containerProps={{
+        ...imgProps.containerProps,
+        accessible: true,
+        accessibilityRole: 'image',
+        accessibilityLabel
+      }}
+    />
+  );
+};
+
 const renderers = {
+  img: HtmlImageRenderer,
   iframe: IframeRenderer,
   table: TableRenderer
 };
