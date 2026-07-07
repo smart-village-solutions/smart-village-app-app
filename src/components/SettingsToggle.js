@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, device, normalize, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 import { NetworkContext } from '../NetworkProvider';
 import { serverConnectionAlert } from '../pushNotifications';
 
@@ -58,11 +58,12 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
 
   return (
     <ListItem
-      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+      accessible={false}
       bottomDivider={bottomDivider ?? false}
       Component={!isDisabled ? Touchable : undefined}
       containerStyle={styles.container}
       delayPressIn={0}
+      importantForAccessibility="no"
       onPress={!isDisabled ? onPress : undefined}
       topDivider={topDivider ?? false}
     >
@@ -73,7 +74,12 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
 
       <WrapperRow>
         {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
-        <Switch isDisabled={isDisabled} switchValue={switchValue} toggleSwitch={toggleSwitch} />
+        <Switch
+          accessibilityLabel={title}
+          isDisabled={isDisabled}
+          switchValue={switchValue}
+          toggleSwitch={toggleSwitch}
+        />
       </WrapperRow>
     </ListItem>
   );

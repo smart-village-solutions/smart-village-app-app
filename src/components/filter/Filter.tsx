@@ -197,12 +197,16 @@ export const Filter = ({
                   lineHeight: normalize(23)
                 }
               }}
-              rightComponent={{
-                color: colors.darkText,
-                icon: 'close',
-                onPress: () => setIsCollapsed(!isCollapsed),
-                type: 'ionicon'
-              }}
+              rightComponent={
+                <TouchableOpacity
+                  accessibilityLabel={`${texts.accessibilityLabels.actions.close} ${a11yLabel.button}`}
+                  accessibilityRole="button"
+                  onPress={() => setIsCollapsed(!isCollapsed)}
+                  style={styles.closeButton}
+                >
+                  <Icon.Close color={colors.darkText} size={normalize(20)} />
+                </TouchableOpacity>
+              }
               rightContainerStyle={styles.headerRightContainer}
             />
             <Divider />
@@ -303,6 +307,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end'
+  },
+  closeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(32),
+    minWidth: normalize(32)
   },
   countContainer: {
     alignItems: 'center',
