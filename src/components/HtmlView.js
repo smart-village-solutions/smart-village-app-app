@@ -4,9 +4,14 @@ import TableRenderer, {
   defaultTableStylesSpecs,
   tableModel
 } from '@native-html/table-plugin';
+import { removeElement, textContent } from 'domutils';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useMemo } from 'react';
-import HTML, { IMGElement, useIMGElementProps } from 'react-native-render-html';
+import HTML, {
+  defaultHTMLElementModels,
+  IMGElement,
+  useIMGElementProps,
+} from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -96,16 +101,101 @@ const HtmlImageRenderer = (props) => {
   );
 };
 
+const hasMeaningfulNonTextNode = (node) => {
+  if (!node?.children?.length) {
+    return false;
+  }
+
+  return node.children.some((child) => {
+    if (child.type === 'text') {
+      return false;
+    }
+
+    if (child.name === 'br') {
+      return false;
+    }
+
+    if (child.children?.length) {
+      return true;
+    }
+
+    return true;
+  });
+};
+
+const isAccessibilityEmptyParagraph = (domNode) => {
+  if (!domNode) {
+    return false;
+  }
+
+  const normalizedTextContent = textContent(domNode).replace(/\u00A0/g, ' ').trim();
+
+  return normalizedTextContent.length === 0 && !hasMeaningfulNonTextNode(domNode);
+};
+
+const isWhitespaceOnlyTextNodeInList = (node) =>
+  node?.type === 'text' &&
+  node.data?.trim?.().length === 0 &&
+  (node.parent?.name === 'ul' || node.parent?.name === 'ol');
+
 const renderers = {
   img: HtmlImageRenderer,
   iframe: IframeRenderer,
   table: TableRenderer
 };
 
+const mergeNativeProps = (baseNativeProps, additionalNativeProps) => ({
+  ...(baseNativeProps || {}),
+  ...(additionalNativeProps || {})
+});
+
+const getListNativeProps = (role, model, accessible = true) => (tnode, preGeneratedProps = {}) => {
+  const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+
+  return {
+    ...modelProps,
+    native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
+      accessible,
+      accessibilityRole: role
+    })
+  };
+};
+
+const htmlElementModels = {
+  p: defaultHTMLElementModels.p.extend((model) => ({
+    getReactNativeProps(tnode, preGeneratedProps = {}) {
+      const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+
+      if (!isAccessibilityEmptyParagraph(tnode.domNode)) {
+        return modelProps;
+      }
+
+      return {
+        ...modelProps,
+        native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
+          accessible: false,
+          accessibilityElementsHidden: true,
+          importantForAccessibility: 'no-hide-descendants'
+        })
+      };
+    }
+  })),
+  ul: defaultHTMLElementModels.ul.extend((model) => ({
+    getReactNativeProps: getListNativeProps('list', model, false)
+  })),
+  ol: defaultHTMLElementModels.ol.extend((model) => ({
+    getReactNativeProps: getListNativeProps('list', model, false)
+  })),
+  li: defaultHTMLElementModels.li.extend((model) => ({
+    getReactNativeProps: getListNativeProps('listitem', model)
+  }))
+};
+
 const htmlConfig = {
   WebView,
   renderers,
   customHTMLElementModels: {
+    ...htmlElementModels,
     iframe: iframeModel,
     table: tableModel
   }
@@ -227,6 +317,11 @@ export const HtmlView = memo(
             }
 
             return node.children;
+          },
+          onText: (node) => {
+            if (isWhitespaceOnlyTextNodeInList(node)) {
+              removeElement(node);
+            }
           }
         }}
         systemFonts={['regular', 'bold', 'condbold', 'italic', 'bold-italic', 'condbold-italic']}
