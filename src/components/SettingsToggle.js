@@ -73,7 +73,13 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
       </ListItem.Content>
 
       <WrapperRow>
-        {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
+        <ActivityIndicator
+          color={colors.refreshControl}
+          style={[
+            styles.loadingIndicator,
+            !loading && styles.loadingIndicatorHidden
+          ]}
+        />
         <Switch
           accessibilityLabel={title}
           isDisabled={isDisabled}
@@ -91,8 +97,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: device.isTablet ? normalize(16) : normalize(10)
   },
-  marginRight: {
-    marginRight: device.isTablet ? normalize(7) : -normalize(2)
+  loadingIndicator: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: device.isTablet ? normalize(7) : -normalize(2),
+    width: normalize(18)
+  },
+  loadingIndicatorHidden: {
+    opacity: 0
   }
 });
 

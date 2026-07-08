@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from './AccessibilityProvider';
@@ -12,9 +12,12 @@ import { SUE_REPORT_VALUES } from './screens';
 const RootView = ({ children }: { children: React.ReactNode }) => {
   const [isFontLoaded] = useFonts(fontConfig);
   const { isGrayscaleEnabled } = useContext(AccessibilityContext);
+  const hasHandledInitialLayout = useRef(false);
 
   const onLayoutRootView = useCallback(async () => {
-    if (isFontLoaded) {
+    if (isFontLoaded && !hasHandledInitialLayout.current) {
+      hasHandledInitialLayout.current = true;
+
       // when the application is closed and reopened, the saved data in the sue report form is deleted
       await AsyncStorage.removeItem(SUE_REPORT_VALUES);
 

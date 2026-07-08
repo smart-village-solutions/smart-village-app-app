@@ -62,7 +62,11 @@ jest.mock('../../src/components/Text', () => ({
 }));
 
 jest.mock('../../src/components/Wrapper', () => ({
-  WrapperRow: ({ children }) => children
+  WrapperRow: ({ children, style }) => {
+    const ReactLocal = require('react');
+
+    return ReactLocal.createElement('mock-wrapper-row', { style }, children);
+  }
 }));
 
 jest.mock('../../src/components/Touchable', () => ({
@@ -100,5 +104,26 @@ describe('SettingsToggle accessibility', () => {
     expect(row.props.importantForAccessibility).toBe('no');
     expect(row.props.accessibilityLabel).toBeUndefined();
     expect(switchNode.props.accessibilityLabel).toBe('Filtereinstellungen dauerhaft speichern');
+  });
+
+  it('reserves a fixed loading slot next to the switch to avoid text shifting', () => {
+    const tree = renderWithAct(
+      <SettingsToggle
+        needsConnection={false}
+        item={{
+          title: 'Graustufenmodus',
+          value: false
+        }}
+      />
+    );
+
+    const loadingSlot = tree.root.findAll(
+      (node) =>
+        node.props.color === '#107821' &&
+        Array.isArray(node.props.style) &&
+        node.props.style.some((style) => style?.width === 18)
+    )[0];
+
+    expect(loadingSlot).toBeDefined();
   });
 });
