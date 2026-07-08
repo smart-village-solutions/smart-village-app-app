@@ -6,6 +6,7 @@ import { colors, consts, Icon, normalize, texts } from '../config';
 import { useVolunteerNavigation } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
 
@@ -35,7 +36,12 @@ export const CalendarHeader = ({ navigation, style }: Props) => {
       accessibilityHint={a11yLabel.calendarHint}
       accessibilityRole="button"
     >
-      <Icon.Plus color={colors.darkText} style={[style, styles.icon]} size={normalize(28)} />
+      <Icon.Plus
+        color={colors.darkText}
+        style={[style, styles.icon]}
+        size={normalize(28)}
+        strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+      />
     </TouchableOpacity>
   );
 };

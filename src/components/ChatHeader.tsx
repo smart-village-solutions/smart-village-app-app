@@ -5,6 +5,7 @@ import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 import { colors, consts, Icon, normalize, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
 
@@ -29,6 +30,11 @@ export const ChatHeader = ({ navigation, style }: Props) => (
     accessibilityHint={a11yLabel.chatHint}
     accessibilityRole="button"
   >
-    <Icon.Pen color={colors.darkText} style={style} size={normalize(20)} />
+    <Icon.Pen
+      color={colors.darkText}
+      style={style}
+      size={normalize(20)}
+      strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+    />
   </TouchableOpacity>
 );

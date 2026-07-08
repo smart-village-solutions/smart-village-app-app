@@ -34,6 +34,7 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts, device, Icon, normalize, texts } from '../config';
@@ -197,7 +198,11 @@ export const WasteCollectionScreen = ({ navigation }) => {
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
-                <Icon.EditSetting color={tintColor} style={styles.icon} />
+                <Icon.EditSetting
+                  color={tintColor}
+                  style={styles.icon}
+                  strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+                />
               )}
             />
 

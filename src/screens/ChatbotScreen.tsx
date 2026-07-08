@@ -11,6 +11,7 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { colors, Icon, normalize, texts } from '../config';
 import { useChatbot, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -69,7 +70,12 @@ export const ChatbotScreen = () => {
             accessibilityLabel={texts.chatbot.headerButtonAccessibilityLabel}
             accessibilityHint={texts.chatbot.headerButtonAccessibilityHint}
           >
-            <Icon.NamedIcon name="refresh" size={normalize(24)} color={colors.darkText} />
+            <Icon.NamedIcon
+              name="refresh"
+              size={normalize(24)}
+              color={colors.darkText}
+              strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+            />
           </TouchableOpacity>
         </WrapperRow>
       )
