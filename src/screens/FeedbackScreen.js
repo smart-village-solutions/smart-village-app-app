@@ -107,6 +107,9 @@ export const FeedbackScreen = ({ route }) => {
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.email}
               keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              textContentType="emailAddress"
               validate
               rules={{
                 pattern: {
