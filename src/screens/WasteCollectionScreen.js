@@ -193,25 +193,26 @@ export const WasteCollectionScreen = ({ navigation }) => {
     navigation.setOptions({
       headerRight: () =>
         !!streetData && !!usedTypes ? (
-          <WrapperRow itemsCenter>
-            <AccessibilityHeader style={styles.icon} />
+          <WrapperRow itemsCenter style={styles.headerRight}>
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
                 <Icon.EditSetting
                   color={tintColor}
+                  size={normalize(20)}
                   style={styles.icon}
                   strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
                 />
               )}
             />
+            <AccessibilityHeader style={styles.icon} />
 
             {navigationType === 'drawer' && (
               <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
             )}
           </WrapperRow>
         ) : navigationType === 'drawer' ? (
-          <WrapperRow itemsCenter>
+          <WrapperRow itemsCenter style={styles.headerRight}>
             <AccessibilityHeader style={styles.icon} />
             <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
           </WrapperRow>
@@ -430,6 +431,10 @@ const styles = StyleSheet.create({
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
+  },
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(8)
   },
   icon: {
     paddingHorizontal: normalize(16)

@@ -18,6 +18,11 @@ export const DeleteHeader = ({ onPress, style }: Props) => (
     accessibilityHint={a11yLabel.deleteHint}
     accessibilityRole="button"
   >
-    <Icon.Trash color={colors.darkText} style={style} strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH} />
+    <Icon.NamedIcon
+      name="trash"
+      color={colors.darkText}
+      style={style}
+      strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+    />
   </TouchableOpacity>
 );
