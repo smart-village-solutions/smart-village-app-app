@@ -112,7 +112,12 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             )}
 
             {pictures?.length ? (
-              <View style={styles.carouselContainer}>
+              <View
+                style={[
+                  styles.carouselContainer,
+                  !showContent && styles.carouselContainerWithoutContent
+                ]}
+              >
                 <ImagesCarousel
                   aspectRatio={aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
                   autoplayInterval={autoplayInterval}
@@ -185,6 +190,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: normalize(8),
     borderTopRightRadius: normalize(8),
     overflow: 'hidden'
+  },
+  carouselContainerWithoutContent: {
+    borderBottomLeftRadius: normalize(8),
+    borderBottomRightRadius: normalize(8)
   },
   closeButton: {
     alignItems: 'center',
