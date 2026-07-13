@@ -1,5 +1,10 @@
-import React, { useContext } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import {
+  NativeSyntheticEvent,
+  StyleSheet,
+  TextLayoutEventData,
+  TouchableOpacity
+} from 'react-native';
 
 import { Icon, normalize, texts } from '../../config';
 import { useStreetString } from '../../hooks';
@@ -17,6 +22,10 @@ type WasteHeaderProps = {
 };
 
 export const WasteHeader = ({ locationData, onPress }: WasteHeaderProps) => {
+  const [editButtonPosition, setEditButtonPosition] = useState<{
+    left: number;
+    top: number;
+  }>();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -24,14 +33,40 @@ export const WasteHeader = ({ locationData, onPress }: WasteHeaderProps) => {
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const { getStreetString } = useStreetString();
 
+  const onAddressTextLayout = ({ nativeEvent }: NativeSyntheticEvent<TextLayoutEventData>) => {
+    const lastLine = nativeEvent.lines[nativeEvent.lines.length - 1];
+
+    if (!lastLine) return;
+
+    setEditButtonPosition((currentPosition) => {
+      const nextPosition = {
+        left: lastLine.x + lastLine.width,
+        top: lastLine.y
+      };
+
+      return currentPosition?.left === nextPosition.left && currentPosition.top === nextPosition.top
+        ? currentPosition
+        : nextPosition;
+    });
+  };
+
   if (!locationData) return null;
 
   return (
     <Wrapper>
       <RegularText>{wasteTexts.myLocation}:</RegularText>
-      <WrapperRow>
-        <BoldText>{getStreetString(locationData)}</BoldText>
-        <TouchableOpacity onPress={onPress}>
+      <WrapperRow style={styles.addressRow}>
+        <BoldText style={styles.address} onTextLayout={onAddressTextLayout}>
+          {getStreetString(locationData)}
+        </BoldText>
+        <TouchableOpacity
+          onPress={onPress}
+          style={[
+            styles.editButton,
+            editButtonPosition,
+            !editButtonPosition && styles.hiddenEditButton
+          ]}
+        >
           <Icon.Pen size={normalize(20)} style={styles.icon} />
         </TouchableOpacity>
       </WrapperRow>
@@ -40,6 +75,19 @@ export const WasteHeader = ({ locationData, onPress }: WasteHeaderProps) => {
 };
 
 const styles = StyleSheet.create({
+  address: {
+    paddingRight: normalize(40),
+    width: '100%'
+  },
+  addressRow: {
+    position: 'relative'
+  },
+  editButton: {
+    position: 'absolute'
+  },
+  hiddenEditButton: {
+    opacity: 0
+  },
   icon: {
     paddingHorizontal: normalize(10)
   }
