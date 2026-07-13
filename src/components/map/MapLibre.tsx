@@ -1,3 +1,4 @@
+import type { LngLatBounds } from '@maplibre/maplibre-react-native';
 import {
   Camera,
   type CameraRef,
@@ -40,6 +41,7 @@ import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 
+import { buildInitialViewState } from './buildInitialViewState';
 import { buildInitialZoomStop } from './buildInitialZoomStop';
 import { buildSelectedSingleIconStyle } from './buildSelectedSingleIconStyle';
 import { buildSingleIconStyle } from './buildSingleIconStyle';
@@ -203,6 +205,7 @@ type Props = {
     touchRotate: boolean;
     touchZoom: boolean;
   };
+  initialBounds?: LngLatBounds;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
   locations: MapMarker[];
@@ -235,6 +238,7 @@ export const MapLibre = ({
   clusterDistance,
   clusterThreshold,
   geometryTourData,
+  initialBounds,
   interactivity = {
     dragPan: true,
     touchPitch: true,
@@ -281,6 +285,7 @@ export const MapLibre = ({
   const initialZoomLevel = isMultipleMarkersMap
     ? zoomLevel.multipleMarkers
     : zoomLevel.singleMarker;
+  const mapCenterZoomLevel = initialZoomLevel;
 
   // Build a MapLibre `case` expression for label halo color:
   // active pins (iconName contains 'Active') get labelBackgroundActiveColor, others get labelBackgroundColor.
@@ -328,7 +333,9 @@ export const MapLibre = ({
   const cameraRef = useRef<CameraRef>(null);
   const shapeSourceRef = useRef<GeoJSONSourceRef>(null);
   const mapPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hasInitialFitRef = useRef(false);
+  const hasInitialFitRef = useRef(!!initialBounds);
+  // Ensures the distance-based initial zoom is applied only once per mount.
+  const hasAppliedInitialZoomRef = useRef(false);
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
   const bottomTabBarHeight = useSafeBottomTabBarHeight();
 
@@ -784,10 +791,12 @@ export const MapLibre = ({
         {...interactivity}
       >
         <Camera
-          initialViewState={{
-            center: [initialRegion.longitude ?? 10.4515, initialRegion.latitude ?? 51.1657],
+          initialViewState={buildInitialViewState({
+            bounds: initialBounds,
+            latitude: initialRegion.latitude ?? 51.1657,
+            longitude: initialRegion.longitude ?? 10.4515,
             zoom: initialZoomLevel ?? 0
-          }}
+          })}
           trackUserLocation={followsUserLocation ? 'default' : undefined}
           minZoom={minZoom}
           ref={cameraRef}

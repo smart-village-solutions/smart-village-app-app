@@ -207,6 +207,9 @@ describe('TourStops', () => {
     expect(component!.root.findAll((node) => node.props.testID === 'map').length).toBeGreaterThan(
       0
     );
+    expect(component!.root.findByProps({ testID: 'map' }).props.initialBounds).toEqual([
+      13.405, 52.52, 13.41, 52.53
+    ]);
 
     act(() => {
       component!.root.findByProps({ testID: 'filter-list' }).props.onPress();

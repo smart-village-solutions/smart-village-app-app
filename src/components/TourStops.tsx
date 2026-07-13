@@ -18,6 +18,7 @@ import { Button } from './Button';
 import { IndexFilterWrapperAndList } from './IndexFilterWrapperAndList';
 import { ListComponent } from './ListComponent';
 import { MapLibre } from './map';
+import { getMarkerBounds } from './map/getMarkerBounds';
 import { SectionHeader } from './SectionHeader';
 import { locationServiceEnabledAlert } from './SUE/report/SueReportLocation';
 import { Wrapper } from './Wrapper';
@@ -99,6 +100,7 @@ export const TourStops = ({
   );
 
   const mapMarkers = mapToMapMarkers(tourStops);
+  const initialBounds = getMarkerBounds(mapMarkers);
 
   return (
     <>
@@ -116,6 +118,7 @@ export const TourStops = ({
         <MapLibre
           currentPosition={currentPosition}
           geometryTourData={geometryTourData}
+          initialBounds={initialBounds}
           isMultipleMarkersMap
           isMyLocationButtonVisible
           locations={mapMarkers}
