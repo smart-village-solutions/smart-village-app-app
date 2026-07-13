@@ -98,6 +98,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   } = closestItem;
 
   const showButton = !!button && !!button.title && !!button.navigationTo && !!button.params;
+  const showContent = !!headline || !!title || !!description || showButton;
 
   return (
     <Wrapper style={styles.wrapperPadding}>
@@ -125,49 +126,53 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               <View style={styles.withoutImageMarginTop} />
             )}
 
-            <Wrapper style={styles.smallPaddingBottom}>
-              <WrapperHorizontal>
-                {!!headline && (
-                  <HeadlineText center uppercase style={styles.headlineText}>
-                    {headline}
-                  </HeadlineText>
-                )}
-              </WrapperHorizontal>
-            </Wrapper>
+            {showContent && (
+              <>
+                <Wrapper style={styles.smallPaddingBottom}>
+                  <WrapperHorizontal>
+                    {!!headline && (
+                      <HeadlineText center uppercase style={styles.headlineText}>
+                        {headline}
+                      </HeadlineText>
+                    )}
+                  </WrapperHorizontal>
+                </Wrapper>
 
-            <Wrapper noPaddingTop>
-              <WrapperHorizontal>
-                {!!title && (
-                  <HeadlineText center big>
-                    {title}
-                  </HeadlineText>
-                )}
-              </WrapperHorizontal>
-            </Wrapper>
+                <Wrapper noPaddingTop>
+                  <WrapperHorizontal>
+                    {!!title && (
+                      <HeadlineText center big>
+                        {title}
+                      </HeadlineText>
+                    )}
+                  </WrapperHorizontal>
+                </Wrapper>
 
-            <Wrapper noPaddingTop>
-              <WrapperHorizontal>
-                {!!description && (
-                  <RegularText center big>
-                    {description}
-                  </RegularText>
-                )}
-              </WrapperHorizontal>
-            </Wrapper>
+                <Wrapper noPaddingTop>
+                  <WrapperHorizontal>
+                    {!!description && (
+                      <RegularText center big>
+                        {description}
+                      </RegularText>
+                    )}
+                  </WrapperHorizontal>
+                </Wrapper>
 
-            <Wrapper>
-              <WrapperHorizontal>
-                {showButton && (
-                  <Button
-                    big
-                    title={button.title}
-                    onPress={() => {
-                      navigation.navigate(button.navigationTo, button.params);
-                    }}
-                  />
-                )}
-              </WrapperHorizontal>
-            </Wrapper>
+                <Wrapper>
+                  <WrapperHorizontal>
+                    {showButton && (
+                      <Button
+                        big
+                        title={button.title}
+                        onPress={() => {
+                          navigation.navigate(button.navigationTo, button.params);
+                        }}
+                      />
+                    )}
+                  </WrapperHorizontal>
+                </Wrapper>
+              </>
+            )}
           </>
         )}
       </View>
