@@ -1,5 +1,5 @@
 import { randomUUID as uuid } from 'expo-crypto';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
@@ -11,7 +11,6 @@ import {
   isVoucherRedeemedForMember
 } from '../../helpers/voucherAvailability';
 import { VOUCHER_DEVICE_TOKEN, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
-import { useVoucher } from '../../hooks';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota, TVoucherDates } from '../../types';
 import { Button } from '../Button';
@@ -24,26 +23,40 @@ const defaultTime = 15 * 60; // 15 minutes in seconds
 
 /* eslint-disable complexity */
 export const VoucherRedeem = ({
+  autoLogin,
   dates,
+  isLoggedIn,
+  isSessionLoading,
+  memberId,
   quota,
   voucherId
 }: {
+  autoLogin: () => Promise<void>;
   dates: TVoucherDates[];
+  isLoggedIn: boolean;
+  isSessionLoading: boolean;
+  memberId: string | undefined;
   quota: TQuota;
   voucherId: string;
 }) => {
-  const { autoLogin, isLoggedIn, memberId } = useVoucher();
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
   const [isRedeemingVoucher, setIsRedeemingVoucher] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [isRedeemedVoucher, setIsRedeemedVoucher] = useState(false);
+  const [isRedeemedVoucher, setIsRedeemedVoucher] = useState<boolean>();
   const [redeemStartTime, setRedeemStartTime] = useState<number | null>(null);
-  const [isAvailableVoucher, setIsAvailableVoucher] = useState(false);
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
 
   const { availableQuantityForMember, availableQuantity } = quota;
+  const isAvailableVoucher = useMemo(
+    () =>
+      isVoucherCurrentlyAvailable({
+        dates,
+        quota: { availableQuantity }
+      }),
+    [availableQuantity, dates]
+  );
 
   const localRedeemedVoucherCheck = useCallback(async () => {
     const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
@@ -60,15 +73,11 @@ export const VoucherRedeem = ({
   }, [availableQuantityForMember, memberId, voucherId]);
 
   useEffect(() => {
-    const isAvailable = isVoucherCurrentlyAvailable({
-      dates,
-      quota: { availableQuantity }
-    });
-
-    setIsAvailableVoucher(isAvailable);
-
-    localRedeemedVoucherCheck();
-  }, [availableQuantity, availableQuantityForMember, dates, localRedeemedVoucherCheck]);
+    if (!isSessionLoading) {
+      setIsRedeemedVoucher(undefined);
+      localRedeemedVoucherCheck();
+    }
+  }, [isSessionLoading, localRedeemedVoucherCheck]);
 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
@@ -144,6 +153,10 @@ export const VoucherRedeem = ({
       : isRedeemedVoucher
       ? texts.voucher.detailScreen.redeemed
       : texts.voucher.detailScreen.redeem;
+
+  if (isSessionLoading || isRedeemedVoucher === undefined) {
+    return null;
+  }
 
   return (
     <>

@@ -29,7 +29,7 @@ import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { memberId } = useVoucher();
+  const { autoLogin, isLoading: isVoucherSessionLoading, isLoggedIn, memberId } = useVoucher();
   const [refreshing, setRefreshing] = useState(false);
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
 
@@ -187,7 +187,15 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
       {!!quota && (
         <Wrapper noPaddingTop>
-          <VoucherRedeem dates={dates} quota={quota} voucherId={id} />
+          <VoucherRedeem
+            autoLogin={autoLogin}
+            dates={dates}
+            isLoggedIn={isLoggedIn}
+            isSessionLoading={isVoucherSessionLoading}
+            memberId={memberId}
+            quota={quota}
+            voucherId={id}
+          />
         </Wrapper>
       )}
 
