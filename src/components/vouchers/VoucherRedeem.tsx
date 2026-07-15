@@ -106,6 +106,10 @@ export const VoucherRedeem = ({
 
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
+  const formattedRemainingTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
+    2,
+    '0'
+  )}`;
 
   const redeemVoucher = async () => {
     let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
@@ -222,10 +226,7 @@ export const VoucherRedeem = ({
                     subtitle={texts.voucher.detailScreen.progressSubtitle}
                     subtitleColor={colors.surface}
                     subtitleFontSize={normalize(15)}
-                    title={`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
-                      2,
-                      '0'
-                    )}`}
+                    title={formattedRemainingTime}
                     titleColor={colors.surface}
                     titleFontSize={normalize(50)}
                     titleStyle={styles.progressTitle}
@@ -248,7 +249,7 @@ export const VoucherRedeem = ({
                 </Wrapper>
               </WrapperVertical>
             ) : (
-              <WrapperVertical>
+              <WrapperVertical noPaddingBottom>
                 <Wrapper>
                   <BoldText lightest>{texts.voucher.detailScreen.sheetTitle}</BoldText>
                 </Wrapper>
@@ -305,13 +306,15 @@ export const VoucherRedeem = ({
                   </Wrapper>
                 )}
 
-                <Wrapper noPaddingBottom>
+                <Wrapper noPaddingBottom noPaddingTop>
                   <TouchableOpacity
                     disabled={!isChecked}
                     style={[styles.button, !isChecked && styles.buttonDisabled]}
                     onPress={redeemVoucher}
                   >
-                    <BoldText lightest>{texts.voucher.detailScreen.redeemNow}</BoldText>
+                    <BoldText lightest style={styles.buttonText}>
+                      {texts.voucher.detailScreen.redeemNow}
+                    </BoldText>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -346,6 +349,10 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: colors.placeholder
+  },
+  buttonText: {
+    textAlign: 'center',
+    width: '100%'
   },
   checkbox: {
     backgroundColor: colors.transparent,
@@ -396,15 +403,14 @@ const styles = StyleSheet.create({
   },
   sheetBackgroundContainer: {
     backgroundColor: colors.shadowRgba,
-    flex: 1
+    flex: 1,
+    justifyContent: 'flex-end'
   },
   sheetContainer: {
     backgroundColor: colors.darkerPrimary,
     borderTopLeftRadius: normalize(5),
     borderTopRightRadius: normalize(5),
-    bottom: 0,
     paddingBottom: normalize(20),
-    position: 'absolute',
     width: '100%'
   }
 });
