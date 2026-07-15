@@ -37,6 +37,7 @@ export const DefectReportFormScreen = ({
 
   const name = isLocationSelect ? 'defectReportLocationForm' : 'defectReportCreateForm';
   const categoryId = globalSettings?.settings?.defectReports?.categoryId;
+  const withoutLocation = globalSettings?.settings?.defectReports?.withoutLocation === true;
 
   const {
     data: html,
@@ -109,6 +110,7 @@ export const DefectReportFormScreen = ({
               setIsLocationSelect,
               selectedPosition,
               setSelectedPosition,
+              withoutLocation,
               categoryNameDropdownData
             }}
           />
