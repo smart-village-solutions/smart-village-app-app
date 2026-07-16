@@ -71,37 +71,50 @@ export const scheduleWasteReminderNotifications = async ({
       scheduledCoverageReminderNotificationIds.push(notificationId);
     }
   } catch (error) {
-    await Promise.all(
-      scheduledNotificationIds.map((notificationId) =>
-        Notifications.cancelScheduledNotificationAsync(notificationId)
-      )
-    );
+    await cancelScheduledNotificationsBestEffort(scheduledNotificationIds);
 
     throw error;
   }
 
-  await Promise.all(
-    (previousState?.scheduledNotificationIds ?? []).map((notificationId) =>
-      Notifications.cancelScheduledNotificationAsync(notificationId)
-    )
-  );
+  let nextState: WasteReminderLocalState;
 
-  const nextState = buildPendingWasteReminderState({
-    localCoverageUntil,
-    ownerKey,
-    reminders,
-    scheduledCoverageReminderNotificationIds,
-    scheduledNotificationIds,
-    serverSyncPayload,
-    serverSyncStatus
-  });
+  try {
+    await Promise.all(
+      (previousState?.scheduledNotificationIds ?? []).map((notificationId) =>
+        Notifications.cancelScheduledNotificationAsync(notificationId)
+      )
+    );
 
-  await writeWasteReminderLocalState(nextState);
+    nextState = buildPendingWasteReminderState({
+      localCoverageUntil,
+      ownerKey,
+      reminders,
+      scheduledCoverageReminderNotificationIds,
+      scheduledNotificationIds,
+      serverSyncPayload,
+      serverSyncStatus
+    });
+
+    await writeWasteReminderLocalState(nextState);
+  } catch (error) {
+    await cancelScheduledNotificationsBestEffort(scheduledNotificationIds);
+
+    throw error;
+  }
+
   logWasteReminderLocalState(nextState);
   logWasteReminderScheduledIds({ remindersCount: reminders.length, scheduledNotificationIds });
   await logScheduledWasteReminderNotifications();
 
   return nextState;
+};
+
+const cancelScheduledNotificationsBestEffort = async (notificationIds: string[]) => {
+  await Promise.allSettled(
+    notificationIds.map((notificationId) =>
+      Notifications.cancelScheduledNotificationAsync(notificationId)
+    )
+  );
 };
 
 export const clearWasteReminderLocalNotifications = async () => {

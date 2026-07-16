@@ -68,6 +68,7 @@ const parseStoredReminderState = async () =>
 describe('scheduleWasteReminderNotifications', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    (Notifications.cancelScheduledNotificationAsync as jest.Mock).mockResolvedValue(undefined);
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('access-token');
     await AsyncStorage.clear();
   });
@@ -378,6 +379,121 @@ describe('scheduleWasteReminderNotifications', () => {
     const storedState = await parseStoredReminderState();
 
     expect(storedState.scheduledNotificationIds).toEqual(['old-1', 'old-2']);
+    expect(storedState.serverSyncStatus).toBe('synced');
+  });
+
+  it('cancels every replacement and keeps stored state when cancelling an old reminder fails', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: ['old-1', 'old-2'],
+        scheduledReminderKeys: ['old-key'],
+        serverSyncStatus: 'synced'
+      })
+    );
+    (Notifications.scheduleNotificationAsync as jest.Mock)
+      .mockResolvedValueOnce('new-1')
+      .mockResolvedValueOnce('new-2');
+    (Notifications.cancelScheduledNotificationAsync as jest.Mock).mockImplementation(
+      async (notificationId: string) => {
+        if (notificationId === 'old-1') {
+          throw new Error('old cancellation failed');
+        }
+      }
+    );
+
+    await expect(
+      scheduleWasteReminderNotifications({
+        reminders: [
+          createReminder(),
+          createReminder({
+            id: 'waste:key-2',
+            pickupDates: ['2026-06-11'],
+            reminderAt: new Date('2026-06-10T09:00:00.000+02:00')
+          })
+        ],
+        serverSyncPayload: createServerSyncPayload()
+      })
+    ).rejects.toThrow('old cancellation failed');
+
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('old-1');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('old-2');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('new-1');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('new-2');
+
+    const storedState = await parseStoredReminderState();
+
+    expect(storedState.scheduledNotificationIds).toEqual(['old-1', 'old-2']);
+    expect(storedState.serverSyncStatus).toBe('synced');
+  });
+
+  it('attempts every replacement cleanup without masking the original cancellation error', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: ['old-1'],
+        scheduledReminderKeys: ['old-key'],
+        serverSyncStatus: 'synced'
+      })
+    );
+    (Notifications.scheduleNotificationAsync as jest.Mock)
+      .mockResolvedValueOnce('new-1')
+      .mockResolvedValueOnce('new-2');
+    (Notifications.cancelScheduledNotificationAsync as jest.Mock).mockImplementation(
+      async (notificationId: string) => {
+        if (notificationId === 'old-1') {
+          throw new Error('original cancellation error');
+        }
+
+        if (notificationId === 'new-1') {
+          throw new Error('rollback cleanup error');
+        }
+      }
+    );
+
+    await expect(
+      scheduleWasteReminderNotifications({
+        reminders: [
+          createReminder(),
+          createReminder({
+            id: 'waste:key-2',
+            pickupDates: ['2026-06-11'],
+            reminderAt: new Date('2026-06-10T09:00:00.000+02:00')
+          })
+        ],
+        serverSyncPayload: createServerSyncPayload()
+      })
+    ).rejects.toThrow('original cancellation error');
+
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('new-1');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('new-2');
+  });
+
+  it('cancels replacements and keeps stored state when persisting the replacement fails', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: ['old-1'],
+        scheduledReminderKeys: ['old-key'],
+        serverSyncStatus: 'synced'
+      })
+    );
+    (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValueOnce('new-1');
+    (AsyncStorage.setItem as jest.Mock).mockRejectedValueOnce(new Error('persistence failed'));
+
+    await expect(
+      scheduleWasteReminderNotifications({
+        reminders: [createReminder()],
+        serverSyncPayload: createServerSyncPayload()
+      })
+    ).rejects.toThrow('persistence failed');
+
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('old-1');
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('new-1');
+
+    const storedState = await parseStoredReminderState();
+
+    expect(storedState.scheduledNotificationIds).toEqual(['old-1']);
     expect(storedState.serverSyncStatus).toBe('synced');
   });
 
