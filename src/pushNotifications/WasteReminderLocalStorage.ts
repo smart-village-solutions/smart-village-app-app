@@ -40,6 +40,7 @@ export type WasteReminderServerSyncRegistration = WasteReminderRegistration & {
 export type WasteReminderLocalState = {
   localCoverageUntil?: string;
   ownerKey?: string;
+  reminderPlanFingerprint?: string;
   scheduledCoverageReminderNotificationIds?: string[];
   scheduledNotificationIds: string[];
   scheduledReminderKeys: string[];
@@ -96,6 +97,7 @@ export const markWasteReminderServerSyncSynced = async (
 export const buildPendingWasteReminderState = ({
   localCoverageUntil,
   ownerKey,
+  reminderPlanFingerprint,
   reminders,
   scheduledCoverageReminderNotificationIds = [],
   scheduledNotificationIds,
@@ -104,6 +106,7 @@ export const buildPendingWasteReminderState = ({
 }: {
   localCoverageUntil?: Date;
   ownerKey?: string;
+  reminderPlanFingerprint?: string;
   reminders: WasteReminderOccurrence[];
   scheduledCoverageReminderNotificationIds?: string[];
   scheduledNotificationIds: string[];
@@ -112,6 +115,7 @@ export const buildPendingWasteReminderState = ({
 }): WasteReminderLocalState => ({
   localCoverageUntil: localCoverageUntil?.toISOString(),
   ownerKey,
+  reminderPlanFingerprint,
   scheduledCoverageReminderNotificationIds,
   scheduledNotificationIds,
   scheduledReminderKeys: reminders.map((reminder) => reminder.id),

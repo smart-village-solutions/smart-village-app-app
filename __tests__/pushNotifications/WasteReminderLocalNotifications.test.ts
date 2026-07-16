@@ -65,6 +65,34 @@ const paperWasteTypesData = {
 const parseStoredReminderState = async () =>
   JSON.parse((await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}');
 
+const foregroundReminderInput = {
+  now: new Date('2026-07-01T08:00:00.000+02:00'),
+  streetName: 'Test Street',
+  wasteLocationTypes: [
+    {
+      wasteType: 'paper',
+      pickUpTimes: [{ pickupDate: '2026-08-01' }, { pickupDate: '2026-09-01' }]
+    }
+  ],
+  wasteTypesData: paperWasteTypesData
+};
+
+const seedForegroundReminderState = async (
+  payloadOverrides: Partial<WasteReminderServerSyncPayload> = {}
+) => {
+  await AsyncStorage.setItem(
+    WASTE_REMINDER_LOCAL_STORAGE_KEY,
+    JSON.stringify({
+      scheduledNotificationIds: [],
+      scheduledReminderKeys: [],
+      serverSyncPayload: createServerSyncPayload(payloadOverrides),
+      serverSyncStatus: 'synced'
+    })
+  );
+  await rescheduleWasteReminderNotificationsFromLocalState(foregroundReminderInput);
+  jest.clearAllMocks();
+};
+
 describe('scheduleWasteReminderNotifications', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -323,6 +351,153 @@ describe('scheduleWasteReminderNotifications', () => {
     expect(storedState.scheduledNotificationIds).toContain(
       storedState.scheduledCoverageReminderNotificationIds[0]
     );
+  });
+
+  it('skips an unchanged foreground refresh without native or storage work', async () => {
+    await seedForegroundReminderState();
+
+    const previousState = await parseStoredReminderState();
+    jest.clearAllMocks();
+
+    await rescheduleWasteReminderNotificationsFromLocalState(foregroundReminderInput);
+
+    expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+    expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalled();
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+    expect(await parseStoredReminderState()).toEqual(previousState);
+  });
+
+  it('replans legacy state once and persists comparison data', async () => {
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: ['legacy-id'],
+        scheduledReminderKeys: ['legacy-key'],
+        serverSyncPayload: createServerSyncPayload(),
+        serverSyncStatus: 'synced'
+      })
+    );
+    jest.clearAllMocks();
+
+    await rescheduleWasteReminderNotificationsFromLocalState(foregroundReminderInput);
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+    expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('legacy-id');
+    expect((await parseStoredReminderState()).reminderPlanFingerprint).toEqual(expect.any(String));
+  });
+
+  it('replans when stored ids are inconsistent despite a matching fingerprint', async () => {
+    await seedForegroundReminderState();
+    const storedState = await parseStoredReminderState();
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({ ...storedState, scheduledNotificationIds: [] })
+    );
+    jest.clearAllMocks();
+
+    await rescheduleWasteReminderNotificationsFromLocalState(foregroundReminderInput);
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+    expect(AsyncStorage.setItem).toHaveBeenCalled();
+  });
+
+  it.each([
+    [
+      'pickup dates',
+      {
+        wasteLocationTypes: [{ wasteType: 'paper', pickUpTimes: [{ pickupDate: '2026-08-02' }] }]
+      }
+    ],
+    ['street display text', { streetName: 'Changed Street' }],
+    [
+      'waste type label',
+      {
+        wasteTypesData: {
+          paper: { ...paperWasteTypesData.paper, label: 'Papiertonne' }
+        }
+      }
+    ]
+  ])('replans when %s changes', async (_name, changes) => {
+    await seedForegroundReminderState();
+
+    await rescheduleWasteReminderNotificationsFromLocalState({
+      ...foregroundReminderInput,
+      ...changes
+    });
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+    expect(AsyncStorage.setItem).toHaveBeenCalled();
+  });
+
+  it('replans when the selected waste types change', async () => {
+    await seedForegroundReminderState();
+    const storedState = await parseStoredReminderState();
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        ...storedState,
+        serverSyncPayload: {
+          ...storedState.serverSyncPayload,
+          notificationSettings: { paper: true, residual: true },
+          usedTypeKeys: ['paper', 'residual']
+        }
+      })
+    );
+    jest.clearAllMocks();
+
+    await rescheduleWasteReminderNotificationsFromLocalState(foregroundReminderInput);
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+  });
+
+  it.each([
+    ['reminder time', { reminderTime: '2000-01-01T10:00:00.000Z' }],
+    ['lead days', { onDayBefore: false }]
+  ])('replans when %s changes', async (_name, payloadChanges) => {
+    await seedForegroundReminderState();
+    const storedState = await parseStoredReminderState();
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        ...storedState,
+        serverSyncPayload: { ...storedState.serverSyncPayload, ...payloadChanges }
+      })
+    );
+    jest.clearAllMocks();
+
+    await rescheduleWasteReminderNotificationsFromLocalState(foregroundReminderInput);
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+  });
+
+  it('replans when the coverage boundary changes', async () => {
+    const manyPickups = Array.from({ length: 55 }, (_, index) => ({
+      pickupDate: `2026-${String(8 + Math.floor(index / 28)).padStart(2, '0')}-${String(
+        (index % 28) + 1
+      ).padStart(2, '0')}`
+    }));
+    const input = {
+      ...foregroundReminderInput,
+      wasteLocationTypes: [{ wasteType: 'paper', pickUpTimes: manyPickups }]
+    };
+    await AsyncStorage.setItem(
+      WASTE_REMINDER_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncPayload: createServerSyncPayload(),
+        serverSyncStatus: 'synced'
+      })
+    );
+    await rescheduleWasteReminderNotificationsFromLocalState(input);
+    jest.clearAllMocks();
+
+    await rescheduleWasteReminderNotificationsFromLocalState({
+      ...input,
+      wasteLocationTypes: [{ wasteType: 'paper', pickUpTimes: manyPickups.slice(1) }]
+    });
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
   });
 
   it('does not store pending server sync state if local scheduling fails', async () => {
