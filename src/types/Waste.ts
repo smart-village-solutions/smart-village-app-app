@@ -35,6 +35,7 @@ export type WasteType = {
   color: string;
   icon: string;
   label: string;
+  notification_kind?: 'disruption';
   reminders?: WasteReminderConfig;
   selected_color: string;
 };

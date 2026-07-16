@@ -4,6 +4,7 @@ import renderer, { act } from 'react-test-renderer';
 
 import {
   getWasteCollectionSettingsViewState,
+  getDisruptionSettingsFromSyncPayload,
   WasteCollectionSettingsScreen
 } from '../../src/screens/WasteCollectionSettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
@@ -304,7 +305,32 @@ describe('WasteCollectionSettingsScreen', () => {
   });
 
   describe('getWasteCollectionSettingsViewState', () => {
+    it('hydrates disruption intent and deletion ids from a matching local payload', () => {
+      expect(
+        getDisruptionSettingsFromSyncPayload({
+          disruption_all_locations: { active: true, storeId: 41 },
+          disruption_location: { active: true, storeId: 42 }
+        })
+      ).toEqual({
+        notificationSettings: {
+          disruption_all_locations: true,
+          disruption_location: true
+        },
+        storeIds: { disruption_all_locations: 41, disruption_location: 42 }
+      });
+    });
+
     it('returns the expected screen state for loading, suggestions, settings, and empty cases', () => {
+      expect(
+        getWasteCollectionSettingsViewState({
+          hasDisruptionTypes: true,
+          hasSelectedStreet: false,
+          hasStreetSuggestions: false,
+          isLoading: false,
+          isStreetSelected: true
+        })
+      ).toBe('disruption-settings');
+
       expect(
         getWasteCollectionSettingsViewState({
           hasSelectedStreet: false,

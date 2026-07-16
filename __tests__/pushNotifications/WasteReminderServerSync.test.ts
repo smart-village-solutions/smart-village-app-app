@@ -46,6 +46,93 @@ jest.mock('../../src/pushNotifications/PermissionHandling', () => ({
 }));
 
 describe('updateWasteReminderSettings server sync', () => {
+  it('retains an active disruption as pending when the server returns 422', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({
+      json: async () => ({ errors: ['invalid disruption registration'] }),
+      ok: false,
+      status: 422
+    }) as jest.Mock;
+
+    const result = await syncWasteReminderSettingsWithServer({
+      activeTypes: {},
+      disruptionRegistrations: { disruption_all_locations: { active: true } },
+      notificationSettings: {},
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      usedTypeKeys: []
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.serverSyncPayload.disruptionRegistrations?.disruption_all_locations).toEqual({
+      active: true
+    });
+  });
+
+  it('deletes a hydrated disruption registration by its stored id', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({ ok: true, status: 202 }) as jest.Mock;
+
+    const result = await syncWasteReminderSettingsWithServer({
+      activeTypes: {},
+      disruptionRegistrations: {
+        disruption_all_locations: { active: false, storeId: 77 }
+      },
+      notificationSettings: {},
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      usedTypeKeys: []
+    });
+
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://example.test/notification/wastes/77.json?token=push-token',
+      expect.objectContaining({ method: 'DELETE' })
+    );
+    expect(result.success).toBe(true);
+    expect(result.serverSyncPayload.disruptionRegistrations?.disruption_all_locations).toEqual({
+      active: false
+    });
+  });
+
+  it('posts canonical neutral local and global disruption registrations', async () => {
+    globalThis.fetch = jest
+      .fn()
+      .mockResolvedValue({ json: async () => ({ id: 44 }), ok: true, status: 201 }) as jest.Mock;
+
+    const result = await syncWasteReminderSettingsWithServer({
+      activeTypes: {},
+      disruptionRegistrations: {
+        disruption_all_locations: { active: true },
+        disruption_location: { active: true }
+      },
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+      notificationSettings: {},
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      usedTypeKeys: []
+    });
+
+    const bodies = (globalThis.fetch as jest.Mock).mock.calls.map(
+      (call) => JSON.parse(call[1].body).waste_registration
+    );
+    expect(bodies).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          city: '',
+          notify_at: '00:00',
+          notify_days_before: '0',
+          notify_for_waste_type: 'disruption_all_locations',
+          street: '',
+          zip: ''
+        }),
+        expect.objectContaining({
+          city: 'Berlin',
+          notify_at: '00:00',
+          notify_days_before: '0',
+          notify_for_waste_type: 'disruption_location',
+          street: 'Test Street',
+          zip: '12345'
+        })
+      ])
+    );
+    expect(result.success).toBe(true);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     globalThis.fetch = jest.fn(async () => ({

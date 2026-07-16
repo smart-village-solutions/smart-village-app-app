@@ -7,7 +7,9 @@ import {
   clearWasteReminderLocalStateForChangedOwner,
   getInAppPermission,
   markWasteReminderServerSyncSynced,
+  readWasteReminderLocalState,
   rescheduleWasteReminderNotificationsFromLocalState,
+  storeWasteReminderSettingsWithoutScheduling,
   syncWasteReminderSettingsWithServer
 } from '../../src/pushNotifications';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
@@ -26,6 +28,8 @@ const mockStreetData = {
 const mockUsedTypes = {
   paper: { color: '#000', icon: 'paper', label: 'Papier', selected_color: '#111' }
 };
+let mockStreetDataValue: typeof mockStreetData | undefined = mockStreetData;
+let mockStreetLoading = false;
 let appStateListener: ((state: string) => void) | undefined;
 let permissionChangeListener: ((isEnabled: boolean) => void) | undefined;
 
@@ -45,6 +49,7 @@ jest.mock('../../src/pushNotifications', () => ({
     serverSyncStatus: 'pending'
   })),
   rescheduleWasteReminderNotificationsFromLocalState: jest.fn(async () => undefined),
+  storeWasteReminderSettingsWithoutScheduling: jest.fn(async () => undefined),
   syncWasteReminderSettingsWithServer: jest.fn(async () => ({
     serverSyncPayload: {
       activeTypes: { paper: { active: true, storeId: 123 } },
@@ -68,7 +73,7 @@ jest.mock('../../src/hooks/waste', () => ({
   useStreetString: () => ({
     getStreetString: ({ street }: { street?: string }) => street || ''
   }),
-  useWasteStreet: () => ({ data: mockStreetData, loading: false }),
+  useWasteStreet: () => ({ data: mockStreetDataValue, loading: mockStreetLoading }),
   useWasteTypes: () => ({ data: mockUsedTypes, loading: false }),
   useWasteUsedTypes: () => mockUsedTypes
 }));
@@ -86,7 +91,7 @@ const flushPromises = async () => {
   });
 };
 
-const renderHook = async () => {
+const renderHook = async (waste: Record<string, unknown> = { streetId: 12 }) => {
   await act(async () => {
     renderer.create(
       <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
@@ -95,7 +100,7 @@ const renderHook = async () => {
             ...initialContext,
             globalSettings: {
               ...initialContext.globalSettings,
-              waste: { streetId: 12 }
+              waste
             }
           }}
         >
@@ -111,7 +116,25 @@ describe('useWasteReminderSync', () => {
     jest.clearAllMocks();
     appStateListener = undefined;
     permissionChangeListener = undefined;
+    mockStreetDataValue = mockStreetData;
+    mockStreetLoading = false;
+    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockResolvedValue(false);
     (getInAppPermission as jest.Mock).mockResolvedValue(true);
+    (storeWasteReminderSettingsWithoutScheduling as jest.Mock).mockResolvedValue(undefined);
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockResolvedValue({
+      serverSyncPayload: {},
+      success: true
+    });
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      localCoverageUntil: '2026-06-09T07:00:00.000Z',
+      serverSyncPayload: {
+        activeTypes: { paper: { active: true } },
+        notificationSettings: { paper: true },
+        reminderTime: '2000-01-01T08:00:00.000Z',
+        usedTypeKeys: ['paper']
+      },
+      serverSyncStatus: 'pending'
+    });
     jest.spyOn(AppState, 'addEventListener').mockImplementation((_, listener) => {
       appStateListener = listener as (state: string) => void;
 
@@ -122,6 +145,95 @@ describe('useWasteReminderSync', () => {
 
       return { remove: jest.fn() };
     });
+  });
+
+  it('writes global intent pending before owner-change sync and marks it synced without a street', async () => {
+    const order: string[] = [];
+    mockStreetDataValue = undefined;
+    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockResolvedValue(true);
+    (storeWasteReminderSettingsWithoutScheduling as jest.Mock).mockImplementation(async () => {
+      order.push('write-pending');
+    });
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async (payload) => {
+      order.push('sync');
+      return { serverSyncPayload: payload, success: true };
+    });
+    (markWasteReminderServerSyncSynced as jest.Mock).mockImplementation(async () => {
+      order.push('mark-synced');
+    });
+
+    await renderHook({
+      disruptionNotificationSettings: {
+        disruption_all_locations: true,
+        disruption_location: true
+      }
+    });
+    await flushPromises();
+
+    const payload = (storeWasteReminderSettingsWithoutScheduling as jest.Mock).mock.calls[0][0];
+    expect(payload.disruptionRegistrations).toEqual({
+      disruption_all_locations: { active: true },
+      disruption_location: { active: false }
+    });
+    expect(order).toEqual(['write-pending', 'sync', 'mark-synced']);
+  });
+
+  it('does not re-post unchanged synced intent during normal startup', async () => {
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      serverSyncPayload: {
+        activeTypes: {},
+        disruptionRegistrations: {
+          disruption_all_locations: { active: true, storeId: 9 },
+          disruption_location: { active: false }
+        },
+        notificationSettings: {},
+        reminderTime: '2000-01-01T00:00:00.000Z',
+        usedTypeKeys: []
+      },
+      serverSyncStatus: 'synced'
+    });
+    mockStreetDataValue = undefined;
+
+    await renderHook({
+      disruptionNotificationSettings: {
+        disruption_all_locations: true,
+        disruption_location: true
+      }
+    });
+    await flushPromises();
+
+    expect(storeWasteReminderSettingsWithoutScheduling).not.toHaveBeenCalled();
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+  });
+
+  it('preserves an existing location disruption subscription while its street is loading', async () => {
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      serverSyncPayload: {
+        activeTypes: {},
+        disruptionRegistrations: {
+          disruption_all_locations: { active: false },
+          disruption_location: { active: true, storeId: 17 }
+        },
+        notificationSettings: {},
+        reminderTime: '2000-01-01T00:00:00.000Z',
+        usedTypeKeys: []
+      },
+      serverSyncStatus: 'synced'
+    });
+    mockStreetDataValue = undefined;
+    mockStreetLoading = true;
+
+    await renderHook({
+      disruptionNotificationSettings: {
+        disruption_all_locations: true,
+        disruption_location: true
+      },
+      streetId: 12
+    });
+    await flushPromises();
+
+    expect(storeWasteReminderSettingsWithoutScheduling).not.toHaveBeenCalled();
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
   });
 
   it('serializes owner cleanup, pending server sync, and local replan when app becomes active', async () => {

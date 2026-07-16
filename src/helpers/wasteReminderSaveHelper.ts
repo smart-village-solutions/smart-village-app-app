@@ -5,6 +5,10 @@ type WasteGlobalSettings = Record<string, unknown> & {
 };
 
 type SaveWasteReminderSettingsParams = {
+  disruptionNotificationSettings?: {
+    disruption_all_locations: boolean;
+    disruption_location: boolean;
+  };
   dispatchActiveType: (typeKey: string, value: boolean) => void;
   globalSettings: WasteGlobalSettings;
   notificationSettings: Record<string, boolean>;
@@ -25,6 +29,7 @@ type SaveWasteReminderSettingsParams = {
 };
 
 export const saveWasteReminderSettings = async ({
+  disruptionNotificationSettings,
   dispatchActiveType,
   globalSettings,
   notificationSettings,
@@ -44,7 +49,8 @@ export const saveWasteReminderSettings = async ({
       ...waste,
       streetName,
       streetId: selectedStreetId,
-      selectedTypeKeys
+      selectedTypeKeys,
+      ...(disruptionNotificationSettings ? { disruptionNotificationSettings } : {})
     }
   };
 

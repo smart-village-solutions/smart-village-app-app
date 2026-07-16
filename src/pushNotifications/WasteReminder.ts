@@ -177,6 +177,10 @@ const updateReminderSettings = async ({
 
     try {
       const response = await fetch(requestPath, fetchObj);
+      if (!response.ok) {
+        serverConnectionAlert(false);
+        return undefined;
+      }
       const json = await response.json();
 
       return json?.id as number | undefined;
@@ -280,6 +284,37 @@ export const syncWasteReminderSettingsWithServer = async (
   const legacyReminderTime =
     payload.reminderTime instanceof Date ? payload.reminderTime : new Date(payload.reminderTime);
 
+  const disruptionRegistrations = { ...payload.disruptionRegistrations };
+  if (payload.disruptionRegistrations) {
+    await Promise.all(
+      Object.entries(payload.disruptionRegistrations).map(async ([typeKey, setting]) => {
+        const isGlobal = typeKey === 'disruption_all_locations';
+        const locationData = isGlobal ? { street: '', zip: '', city: '' } : payload.locationData;
+        const result = await updateWasteReminderSettings({
+          isActive: setting.active,
+          locationData,
+          onDayBefore: 0,
+          reminderTime: new Date('2000-01-01T00:00:00.000+01:00'),
+          storeId: setting.storeId,
+          typeKey
+        });
+
+        if (setting.active && result) {
+          disruptionRegistrations[typeKey as keyof typeof disruptionRegistrations] = {
+            active: true,
+            storeId: result as string | number
+          };
+        } else if (!setting.active && (!setting.storeId || result === true)) {
+          disruptionRegistrations[typeKey as keyof typeof disruptionRegistrations] = {
+            active: false
+          };
+        } else {
+          errorOccurred = true;
+        }
+      })
+    );
+  }
+
   if (payload.activeReminderRegistrations) {
     const syncResults = await Promise.all(
       payload.activeReminderRegistrations.map((registration) =>
@@ -287,7 +322,7 @@ export const syncWasteReminderSettingsWithServer = async (
       )
     );
     const activeReminderRegistrations = syncResults.map(({ registration }) => registration);
-    errorOccurred = syncResults.some((result) => result.errorOccurred);
+    errorOccurred = errorOccurred || syncResults.some((result) => result.errorOccurred);
 
     activeReminderRegistrations.forEach((registration) => {
       const currentTypeState = resettedActiveTypes[registration.typeKey];
@@ -310,6 +345,7 @@ export const syncWasteReminderSettingsWithServer = async (
       activeTypes: resettedActiveTypes,
       serverSyncPayload: {
         ...payload,
+        disruptionRegistrations,
         activeReminderRegistrations
       },
       success: !errorOccurred
@@ -350,6 +386,7 @@ export const syncWasteReminderSettingsWithServer = async (
     activeTypes: resettedActiveTypes,
     serverSyncPayload: {
       ...payload,
+      disruptionRegistrations,
       activeTypes: resettedActiveTypes
     },
     success: !errorOccurred
