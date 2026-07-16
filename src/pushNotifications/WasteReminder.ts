@@ -14,6 +14,7 @@ import { WasteReminderServerSyncPayload } from './WasteReminderLocalStorage';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const DEV_WASTE_REMINDER_PUSH_TOKEN = 'ExponentPushToken[dev-waste-reminder]';
+const NOTIFICATION_DEVICE_TOKEN_HEADER = 'X-Notification-Device-Token';
 
 type LocationData = NonNullable<WasteReminderServerSyncPayload['locationData']>;
 
@@ -72,6 +73,13 @@ const logWasteReminderServerDebug = (message: string, payload?: unknown) => {
 
 const getStoredWasteReminderPushToken = () => getPushTokenFromStorage();
 
+const buildWasteReminderRequestHeaders = (accessToken: string, pushToken: string) => ({
+  Accept: 'application/json',
+  Authorization: 'Bearer ' + accessToken,
+  'Content-Type': 'application/json',
+  [NOTIFICATION_DEVICE_TOKEN_HEADER]: pushToken
+});
+
 const getWasteReminderPushToken = async () => {
   const pushToken = await getPushTokenFromStorage();
 
@@ -97,14 +105,10 @@ const getWasteReminderPushToken = async () => {
 export const getReminderSettings = async () => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getStoredWasteReminderPushToken();
-  const requestPath =
-    secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister + `?token=${pushToken}`;
+  const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister;
 
   const fetchObj: RequestInit = {
-    headers: {
-      Authorization: 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    },
+    headers: buildWasteReminderRequestHeaders(accessToken ?? '', pushToken ?? ''),
     cache: 'no-cache'
   };
 
@@ -150,18 +154,13 @@ const updateReminderSettings = async ({
       notify_days_before: `${notifyDaysBefore}`
     },
     notification_device: {
-      token: pushToken,
       device_type: os
     }
   };
 
   const fetchObj: RequestInit = {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      Authorization: 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    },
+    headers: buildWasteReminderRequestHeaders(accessToken ?? '', pushToken ?? ''),
     body: JSON.stringify(requestBody),
     cache: 'no-cache'
   };
@@ -169,10 +168,7 @@ const updateReminderSettings = async ({
   if (accessToken && pushToken) {
     logWasteReminderServerRequest('POST', {
       ...requestBody,
-      notification_device: {
-        ...requestBody.notification_device,
-        token: '[present]'
-      }
+      notificationDeviceToken: '[present]'
     });
 
     try {
@@ -201,16 +197,11 @@ const deleteReminderSetting = async (id: number | string) => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getWasteReminderPushToken();
   const requestPath =
-    secrets[namespace].serverUrl +
-    staticRestSuffix.wasteReminderDelete +
-    `${id}.json?token=${pushToken}`;
+    secrets[namespace].serverUrl + staticRestSuffix.wasteReminderDelete + `${id}.json`;
 
   const fetchObj: RequestInit = {
     method: 'DELETE',
-    headers: {
-      Authorization: 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    },
+    headers: buildWasteReminderRequestHeaders(accessToken ?? '', pushToken ?? ''),
     cache: 'no-cache'
   };
 
