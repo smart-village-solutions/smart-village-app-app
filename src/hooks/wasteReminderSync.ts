@@ -12,10 +12,20 @@ import {
   storeWasteReminderSettingsWithoutScheduling,
   syncWasteReminderSettingsWithServer
 } from '../pushNotifications';
+import type { WasteReminderServerSyncPayload } from '../pushNotifications';
 import { getLocationData } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 
 import { useStreetString, useWasteStreet, useWasteTypes, useWasteUsedTypes } from './waste';
+
+const overlayCurrentLocation = (
+  desiredPayload: WasteReminderServerSyncPayload,
+  storedPayload?: WasteReminderServerSyncPayload
+) => ({
+  ...desiredPayload,
+  ...storedPayload,
+  locationData: desiredPayload.locationData || storedPayload?.locationData
+});
 
 export const useWasteReminderSync = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -76,7 +86,7 @@ export const useWasteReminderSync = () => {
         if (!forceIntentReconcile && !intentChanged) return;
 
         payload = {
-          ...desiredPayload,
+          ...overlayCurrentLocation(desiredPayload, payload),
           disruptionRegistrations: {
             disruption_all_locations: {
               ...desiredPayload.disruptionRegistrations.disruption_all_locations,
