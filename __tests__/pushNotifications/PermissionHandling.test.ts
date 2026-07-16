@@ -116,15 +116,57 @@ describe('setInAppPermission', () => {
     warnSpy.mockRestore();
   });
 
-  it('emits a permission change event after successfully activating push notifications', async () => {
+  it.each([
+    { newValue: true, oldValue: false },
+    { newValue: false, oldValue: true }
+  ])(
+    'persists permission $newValue before emitting its change event',
+    async ({ newValue, oldValue }) => {
+      let resolveStorageWrite: (() => void) | undefined;
+      const storageWrite = new Promise<void>((resolve) => {
+        resolveStorageWrite = resolve;
+      });
+      const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
+      (readFromStore as jest.Mock).mockResolvedValue(oldValue);
+      (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+      (addToStore as jest.Mock).mockReturnValue(storageWrite);
+
+      const result = setInAppPermission(newValue);
+
+      await new Promise((resolve) => setImmediate(resolve));
+      expect(addToStore).toHaveBeenCalledWith('IN_APP_PERMISSION', newValue);
+      expect(emitSpy).not.toHaveBeenCalled();
+
+      resolveStorageWrite?.();
+      await expect(result).resolves.toBe(true);
+
+      expect(emitSpy).toHaveBeenCalledTimes(1);
+      expect(emitSpy).toHaveBeenCalledWith(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, newValue);
+      emitSpy.mockRestore();
+    }
+  );
+
+  it('does not persist or emit when token handling fails', async () => {
     const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
     (readFromStore as jest.Mock).mockResolvedValue(false);
-    (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+    (handleIncomingToken as jest.Mock).mockResolvedValue(false);
+
+    await expect(setInAppPermission(true)).resolves.toBe(false);
+
+    expect(addToStore).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
+    emitSpy.mockRestore();
+  });
+
+  it('does not persist or emit when permission is unchanged', async () => {
+    const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
+    (readFromStore as jest.Mock).mockResolvedValue(true);
 
     await expect(setInAppPermission(true)).resolves.toBe(true);
 
-    expect(addToStore).toHaveBeenCalledWith('IN_APP_PERMISSION', true);
-    expect(emitSpy).toHaveBeenCalledWith(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, true);
+    expect(handleIncomingToken).not.toHaveBeenCalled();
+    expect(addToStore).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
     emitSpy.mockRestore();
   });
 });

@@ -45,11 +45,14 @@ export const setInAppPermission = async (newValue: boolean) => {
         try {
           await clearWasteReminderLocalNotifications();
         } catch (error) {
-          console.warn('An error occurred while clearing local waste reminder notifications:', error);
+          console.warn(
+            'An error occurred while clearing local waste reminder notifications:',
+            error
+          );
         }
       }
 
-      addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
+      await addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
       DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, newValue);
     }
 
