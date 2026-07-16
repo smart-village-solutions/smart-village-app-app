@@ -81,8 +81,14 @@ describe('updateWasteReminderSettings server sync', () => {
     });
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://example.test/notification/wastes/77.json?token=push-token',
-      expect.objectContaining({ method: 'DELETE' })
+      'https://example.test/notification/wastes/77.json',
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer access-token',
+          'X-Notification-Device-Token': 'push-token'
+        }),
+        method: 'DELETE'
+      })
     );
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload.disruptionRegistrations?.disruption_all_locations).toEqual({
@@ -171,6 +177,16 @@ describe('updateWasteReminderSettings server sync', () => {
     expect(requestBody.waste_registration).not.toHaveProperty('local_coverage_until');
     expect(requestBody.waste_registration).not.toHaveProperty('reminder_slot_id');
     expect(requestBody.waste_registration.notify_at).toBe('10:01');
+    expect(requestBody.notification_device).toEqual({ device_type: 'ios' });
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
+      'https://example.test/notification/wastes.json'
+    );
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
+      expect.objectContaining({
+        Authorization: 'Bearer access-token',
+        'X-Notification-Device-Token': 'push-token'
+      })
+    );
     expect(SecureStore.getItemAsync).toHaveBeenCalledWith('ACCESS_TOKEN');
   });
 
@@ -185,9 +201,11 @@ describe('updateWasteReminderSettings server sync', () => {
       typeKey: 'paper'
     });
 
-    const requestBody = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
-
-    expect(requestBody.notification_device.token).toBe('ExponentPushToken[dev-waste-reminder]');
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
+      expect.objectContaining({
+        'X-Notification-Device-Token': 'ExponentPushToken[dev-waste-reminder]'
+      })
+    );
   });
 
   it('does not create or fake a push token when only reading reminder settings', async () => {
@@ -198,6 +216,20 @@ describe('updateWasteReminderSettings server sync', () => {
     expect(result).toBeUndefined();
     expect(ensurePushNotificationToken).not.toHaveBeenCalled();
     expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  it('reads reminder settings with the token header and no token in the URL', async () => {
+    await getReminderSettings();
+
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://example.test/notification/wastes.json',
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer access-token',
+          'X-Notification-Device-Token': 'push-token'
+        })
+      })
+    );
   });
 
   it('reports a failed sync when deleting a disabled server registration fails', async () => {
@@ -283,9 +315,15 @@ describe('updateWasteReminderSettings server sync', () => {
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
-      'https://example.test/notification/wastes/456.json?token=push-token'
+      'https://example.test/notification/wastes/456.json'
     );
     expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
+      expect.objectContaining({
+        Authorization: 'Bearer access-token',
+        'X-Notification-Device-Token': 'push-token'
+      })
+    );
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
       active: false,
@@ -371,7 +409,7 @@ describe('updateWasteReminderSettings server sync', () => {
     expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('POST');
     expect(JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body)).toEqual(
       expect.objectContaining({
-        notification_device: expect.objectContaining({ token: 'push-token' }),
+        notification_device: { device_type: 'ios' },
         waste_registration: expect.objectContaining({
           city: 'Berlin',
           notify_for_waste_type: 'paper',
@@ -379,6 +417,12 @@ describe('updateWasteReminderSettings server sync', () => {
           street: 'Test Street',
           zip: '12345'
         })
+      })
+    );
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
+      expect.objectContaining({
+        Authorization: 'Bearer access-token',
+        'X-Notification-Device-Token': 'push-token'
       })
     );
     expect(result.success).toBe(true);
