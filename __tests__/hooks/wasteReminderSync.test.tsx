@@ -178,6 +178,37 @@ describe('useWasteReminderSync', () => {
     expect(order).toEqual(['write-pending', 'sync', 'mark-synced']);
   });
 
+  it('builds a complete disruption payload when no local reminder state exists', async () => {
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue(undefined);
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async (payload) => ({
+      serverSyncPayload: payload,
+      success: true
+    }));
+
+    await renderHook({
+      disruptionNotificationSettings: {
+        disruption_all_locations: true,
+        disruption_location: true
+      },
+      streetId: 12
+    });
+    await flushPromises();
+
+    const expectedPayload = {
+      activeTypes: {},
+      disruptionRegistrations: {
+        disruption_all_locations: { active: true, storeId: undefined },
+        disruption_location: { active: true, storeId: undefined }
+      },
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+      notificationSettings: {},
+      reminderTime: new Date('2000-01-01T00:00:00.000+01:00'),
+      usedTypeKeys: []
+    };
+    expect(storeWasteReminderSettingsWithoutScheduling).toHaveBeenCalledWith(expectedPayload);
+    expect(syncWasteReminderSettingsWithServer).toHaveBeenCalledWith(expectedPayload, undefined);
+  });
+
   it('does not re-post unchanged synced intent during normal startup', async () => {
     (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
       serverSyncPayload: {
@@ -204,6 +235,74 @@ describe('useWasteReminderSync', () => {
 
     expect(storeWasteReminderSettingsWithoutScheduling).not.toHaveBeenCalled();
     expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+  });
+
+  it('preserves pickup reminder payload fields when push notifications are enabled', async () => {
+    const storedPayload = {
+      activeReminderRegistrations: [
+        {
+          active: true,
+          leadDays: 1,
+          slotId: 'first',
+          storeId: 31,
+          time: '09:00',
+          typeKey: 'paper'
+        }
+      ],
+      activeTypes: { paper: { active: true, storeId: 31 } },
+      disruptionRegistrations: {
+        disruption_all_locations: { active: false, storeId: 41 },
+        disruption_location: { active: true, storeId: 42 }
+      },
+      locationData: { city: 'Old Berlin', street: 'Old Street', zip: '00000' },
+      notificationSettings: { paper: true },
+      reminderTime: '2000-01-01T08:00:00.000Z',
+      usedTypeKeys: ['paper']
+    };
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      serverSyncPayload: storedPayload,
+      serverSyncStatus: 'synced'
+    });
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async (payload) => ({
+      serverSyncPayload: payload,
+      success: true
+    }));
+
+    await renderHook({
+      disruptionNotificationSettings: {
+        disruption_all_locations: true,
+        disruption_location: false
+      },
+      streetId: 12
+    });
+    await flushPromises();
+    jest.clearAllMocks();
+    (getInAppPermission as jest.Mock).mockResolvedValue(true);
+    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockResolvedValue(false);
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      serverSyncPayload: storedPayload,
+      serverSyncStatus: 'synced'
+    });
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async (payload) => ({
+      serverSyncPayload: payload,
+      success: true
+    }));
+
+    await act(async () => {
+      permissionChangeListener?.(true);
+    });
+    await flushPromises();
+
+    const expectedPayload = {
+      ...storedPayload,
+      disruptionRegistrations: {
+        disruption_all_locations: { active: true, storeId: 41 },
+        disruption_location: { active: false, storeId: 42 }
+      },
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' }
+    };
+    expect(storeWasteReminderSettingsWithoutScheduling).toHaveBeenCalledWith(expectedPayload);
+    expect(syncWasteReminderSettingsWithServer).toHaveBeenCalledWith(expectedPayload, undefined);
   });
 
   it('preserves an existing location disruption subscription while its street is loading', async () => {
