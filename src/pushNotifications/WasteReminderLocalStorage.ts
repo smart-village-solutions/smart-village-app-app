@@ -7,6 +7,12 @@ import { WasteReminderOccurrence, WasteReminderRegistration } from './WasteRemin
 export const WASTE_REMINDER_LOCAL_STORAGE_KEY = 'WASTE_REMINDER_LOCAL_STATE';
 
 export type WasteReminderServerSyncPayload = {
+  disruptionRegistrations?: {
+    [key in 'disruption_location' | 'disruption_all_locations']?: {
+      active: boolean;
+      storeId?: number | string;
+    };
+  };
   activeReminderRegistrations?: WasteReminderServerSyncRegistration[];
   activeTypes: {
     [key: string]: {
