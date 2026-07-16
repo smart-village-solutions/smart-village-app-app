@@ -342,18 +342,12 @@ describe('updateWasteReminderSettings server sync', () => {
     ]);
   });
 
-  it('replaces existing active flexible registrations before creating updated server fallback ids', async () => {
-    globalThis.fetch = jest
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 204
-      })
-      .mockResolvedValueOnce({
-        json: async () => ({ id: 987 }),
-        ok: true,
-        status: 201
-      }) as jest.Mock;
+  it('updates an existing active flexible registration without deleting it first', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValueOnce({
+      json: async () => ({ id: 987 }),
+      ok: true,
+      status: 201
+    }) as jest.Mock;
 
     const result = await syncWasteReminderSettingsWithServer({
       activeReminderRegistrations: [
@@ -373,18 +367,64 @@ describe('updateWasteReminderSettings server sync', () => {
       usedTypeKeys: ['paper']
     });
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
-      'https://example.test/notification/wastes/456.json?token=push-token'
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('POST');
+    expect(JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body)).toEqual(
+      expect.objectContaining({
+        notification_device: expect.objectContaining({ token: 'push-token' }),
+        waste_registration: expect.objectContaining({
+          city: 'Berlin',
+          notify_for_waste_type: 'paper',
+          reminder_slot_id: 'first',
+          street: 'Test Street',
+          zip: '12345'
+        })
+      })
     );
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
-    expect((globalThis.fetch as jest.Mock).mock.calls[1][1].method).toBe('POST');
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
       active: true,
       leadDays: 2,
       slotId: 'first',
       storeId: 987,
+      time: '10:15',
+      typeKey: 'paper'
+    });
+  });
+
+  it('keeps an existing active flexible registration when its update fails', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValueOnce({
+      json: async () => ({ errors: ['temporary failure'] }),
+      ok: false,
+      status: 500
+    }) as jest.Mock;
+
+    const result = await syncWasteReminderSettingsWithServer({
+      activeReminderRegistrations: [
+        {
+          active: true,
+          leadDays: 2,
+          slotId: 'first',
+          storeId: 456,
+          time: '10:15',
+          typeKey: 'paper'
+        }
+      ],
+      activeTypes: { paper: { active: true, storeId: 456 } },
+      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+      notificationSettings: { paper: true },
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      usedTypeKeys: ['paper']
+    });
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('POST');
+    expect(result.success).toBe(false);
+    expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
+      active: true,
+      leadDays: 2,
+      slotId: 'first',
+      storeId: 456,
       time: '10:15',
       typeKey: 'paper'
     });

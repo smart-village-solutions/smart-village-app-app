@@ -398,14 +398,6 @@ const syncFlexibleReminderRegistration = async (
   locationData?: LocationData,
   localCoverageUntil?: Date
 ) => {
-  if (registration.active && registration.storeId) {
-    const deletedOldRegistration = await deleteReminderSetting(registration.storeId);
-
-    if (!deletedOldRegistration) {
-      return { errorOccurred: true, registration };
-    }
-  }
-
   const newIdToStore = (await updateWasteReminderSettings({
     isActive: registration.active,
     localCoverageUntil,
