@@ -47,6 +47,15 @@ export const scheduleWasteReminderNotifications = async ({
   const ownerKey = await getWasteReminderOwnerKey();
   const scheduledNotificationIds: string[] = [];
   const scheduledCoverageReminderNotificationIds: string[] = [];
+  const reminderPlanFingerprint = buildReminderPlanFingerprint({
+    hasMoreReminders,
+    localCoverageUntil,
+    now,
+    reminders,
+    serverSyncPayload,
+    streetName,
+    wasteTypesData
+  });
 
   try {
     for (const reminder of reminders) {
@@ -88,6 +97,7 @@ export const scheduleWasteReminderNotifications = async ({
     nextState = buildPendingWasteReminderState({
       localCoverageUntil,
       ownerKey,
+      reminderPlanFingerprint,
       reminders,
       scheduledCoverageReminderNotificationIds,
       scheduledNotificationIds,
@@ -137,6 +147,7 @@ export const clearWasteReminderLocalNotifications = async () => {
 
   await writeWasteReminderLocalState({
     ...localState,
+    reminderPlanFingerprint: undefined,
     scheduledCoverageReminderNotificationIds: [],
     scheduledNotificationIds: [],
     scheduledReminderKeys: []
@@ -228,6 +239,31 @@ export const rescheduleWasteReminderNotificationsFromLocalState = async ({
     wasteLocationTypes
   });
 
+  const reminderPlanFingerprint = buildReminderPlanFingerprint({
+    hasMoreReminders: schedule.hasMoreReminders,
+    localCoverageUntil: schedule.localCoverageUntil,
+    now,
+    reminders: schedule.reminders,
+    serverSyncPayload,
+    streetName,
+    wasteTypesData
+  });
+
+  if (
+    localState.reminderPlanFingerprint === reminderPlanFingerprint &&
+    hasConsistentScheduledReminderIds({
+      localState,
+      coverageReminderCount: buildCoverageReminderNotifications({
+        hasMoreReminders: schedule.hasMoreReminders,
+        localCoverageUntil: schedule.localCoverageUntil,
+        now
+      }).length,
+      reminders: schedule.reminders
+    })
+  ) {
+    return localState;
+  }
+
   return scheduleWasteReminderNotifications({
     hasMoreReminders: schedule.hasMoreReminders,
     localCoverageUntil: schedule.localCoverageUntil,
@@ -239,6 +275,84 @@ export const rescheduleWasteReminderNotificationsFromLocalState = async ({
     wasteTypesData
   });
 };
+
+const hasConsistentScheduledReminderIds = ({
+  coverageReminderCount,
+  localState,
+  reminders
+}: {
+  coverageReminderCount: number;
+  localState: WasteReminderLocalState;
+  reminders: WasteReminderOccurrence[];
+}) => {
+  const coverageIds = localState.scheduledCoverageReminderNotificationIds ?? [];
+
+  return (
+    localState.scheduledReminderKeys.length === reminders.length &&
+    localState.scheduledReminderKeys.every((key, index) => key === reminders[index].id) &&
+    coverageIds.length === coverageReminderCount &&
+    localState.scheduledNotificationIds.length === reminders.length + coverageReminderCount &&
+    new Set(localState.scheduledNotificationIds).size ===
+      localState.scheduledNotificationIds.length &&
+    coverageIds.every((id) => localState.scheduledNotificationIds.includes(id))
+  );
+};
+
+const buildReminderPlanFingerprint = ({
+  hasMoreReminders,
+  localCoverageUntil,
+  now,
+  reminders,
+  serverSyncPayload,
+  streetName,
+  wasteTypesData
+}: Required<Pick<ScheduleWasteReminderNotificationsParams, 'hasMoreReminders' | 'now'>> &
+  Omit<ScheduleWasteReminderNotificationsParams, 'hasMoreReminders' | 'now'>) => {
+  const coverageReminders = buildCoverageReminderNotifications({
+    hasMoreReminders,
+    localCoverageUntil,
+    now
+  });
+  const activeRegistrations = buildActiveReminderRegistrations(serverSyncPayload) ?? [];
+
+  return JSON.stringify({
+    coverage: {
+      hasMoreReminders,
+      localCoverageUntil: localCoverageUntil?.toISOString(),
+      notifications: coverageReminders.map(({ id, reminderAt }) => ({
+        body: texts.wasteCalendar.localReminderCoverageNotificationBody,
+        id,
+        reminderAt: reminderAt.toISOString(),
+        title: texts.wasteCalendar.localReminderCoverageNotificationTitle
+      }))
+    },
+    intent: {
+      activeRegistrations: activeRegistrations
+        .map(({ leadDays, slotId, time, typeKey }) => ({ leadDays, slotId, time, typeKey }))
+        .sort((left, right) =>
+          `${left.typeKey}:${left.slotId}:${left.time}:${left.leadDays}`.localeCompare(
+            `${right.typeKey}:${right.slotId}:${right.time}:${right.leadDays}`
+          )
+        ),
+      onDayBefore: !!serverSyncPayload.onDayBefore,
+      reminderTime:
+        serverSyncPayload.reminderTime instanceof Date
+          ? serverSyncPayload.reminderTime.toISOString()
+          : serverSyncPayload.reminderTime,
+      selectedTypeKeys: buildSelectedReminderTypeKeys(serverSyncPayload).sort(compareAlphabetically)
+    },
+    reminders: reminders.map((reminder) => ({
+      body: buildReminderBody({ reminder, streetName, wasteTypesData }),
+      id: reminder.id,
+      pickupDates: reminder.pickupDates,
+      reminderAt: reminder.reminderAt.toISOString(),
+      title: texts.wasteCalendar.localReminderNotificationTitle,
+      wasteTypes: reminder.wasteTypes
+    }))
+  });
+};
+
+const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
 
 const buildActiveReminderRegistrations = ({
   activeReminderRegistrations
