@@ -220,7 +220,6 @@ export const WasteCollectionSettingsScreen = () => {
     reminderTime,
     reminderSettingsByType
   } = state;
-  const isInitial = waste.streetId === undefined;
   const { inputValue, renderSuggestion } = useRenderSuggestions(() => setIsStreetSelected(true));
   const { data, loading } = useWasteAddresses({ search: inputValue });
   const addressesData = data?.wasteAddresses;
@@ -276,6 +275,8 @@ export const WasteCollectionSettingsScreen = () => {
   const effectiveStreetName =
     streetName || (selectedStreetId === waste.streetId ? waste.streetName : undefined);
   const areWasteReminderControlsDisabled = !isInAppPushEnabled;
+  const areDisruptionOnlyControlsDisabled =
+    !isInAppPushEnabled || loadingStoredSettings || !loadedStoredSettingsInitially;
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef<TooltipRef | null>(null);
   const openNotificationSettings = useCallback(() => {
@@ -441,12 +442,9 @@ export const WasteCollectionSettingsScreen = () => {
     setLoadingStoredSettings(false);
   }, [
     getStreetString,
-    isInitial,
     waste.streetId,
-    waste.streetName,
     waste.selectedTypeKeys,
     reminderUiMode,
-    streetName,
     effectiveStreetName,
     selectedStreetId,
     usedTypes,
@@ -640,6 +638,10 @@ export const WasteCollectionSettingsScreen = () => {
   ]);
 
   const saveDisruptionOnlySettings = useCallback(async () => {
+    if (loadingStoredSettings || !loadedStoredSettingsInitially) {
+      return;
+    }
+
     setIsSavingSettings(true);
     const nextGlobalSettings = {
       ...globalSettings,
@@ -671,6 +673,8 @@ export const WasteCollectionSettingsScreen = () => {
     disruptionRegistrationsForSync,
     globalSettings,
     isInAppPushEnabled,
+    loadedStoredSettingsInitially,
+    loadingStoredSettings,
     navigation,
     setGlobalSettings,
     waste
@@ -923,7 +927,7 @@ export const WasteCollectionSettingsScreen = () => {
       <SafeAreaViewFlex>
         <ScrollView style={styles.container}>
           <DisruptionNotificationSection
-            areControlsDisabled={!isInAppPushEnabled}
+            areControlsDisabled={areDisruptionOnlyControlsDisabled}
             hasLocation={false}
             notificationSettings={disruptionNotificationSettings}
             onToggle={(typeKey, value) =>
@@ -935,7 +939,7 @@ export const WasteCollectionSettingsScreen = () => {
         </ScrollView>
         <Wrapper noPaddingBottom>
           <Button
-            disabled={isSavingSettings}
+            disabled={isSavingSettings || areDisruptionOnlyControlsDisabled}
             onPress={saveDisruptionOnlySettings}
             title={wasteTexts.save}
           />
