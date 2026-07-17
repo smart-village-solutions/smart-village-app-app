@@ -771,12 +771,12 @@ export const texts = {
   participationProject: {
     categories: 'Kategorien',
     categoryCount: (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'}`,
-    calendarExport: 'In Kalender exportieren',
+    calendarExport: 'Termin speichern',
     capacity: 'Kapazität',
     contact: 'Kontakt',
     date: 'Zeitraum',
     email: 'E-Mail',
-    empty: 'Keine Beteiligungsprojekte gefunden.',
+    empty: 'Keine Beteiligungen gefunden.',
     featuredProjects: 'Besonders interessant',
     instance: 'Mandant',
     location: 'Ort',
@@ -785,8 +785,8 @@ export const texts = {
     openStreetMap: 'Auf OpenStreetMap anzeigen',
     organizer: 'Veranstalter',
     overview: 'Übersicht',
-    participationProject: 'Beteiligungsprojekt',
-    participationProjects: 'Beteiligungsprojekte',
+    participationProject: 'Beteiligung',
+    participationProjects: 'Beteiligungen',
     phone: 'Telefon',
     portalHint:
       'Weitere Informationen und Beteiligungsmöglichkeiten finden Sie im Beteiligungsportal.',
@@ -1218,7 +1218,7 @@ export const texts = {
     pointsOfInterest: 'Orte und Touren',
     participationProject: {
       home: 'Beteiligung',
-      index: 'Beteiligungsprojekte'
+      index: 'Beteiligungen'
     },
     search: 'Suche',
     service: 'Service',

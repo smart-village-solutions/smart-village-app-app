@@ -40,6 +40,7 @@ export const SectionHeader = ({
         accessibilityRole={onPress ? undefined : 'header'}
         big={big}
         center={center}
+        onPress={onPress}
         small={small}
         uppercase={uppercase}
       >

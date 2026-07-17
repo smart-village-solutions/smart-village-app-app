@@ -1,13 +1,11 @@
-import React, { useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, View } from 'react-native';
 
-import { NetworkContext } from '../../NetworkProvider';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import {
   buildParticipationProjectCalendarValues,
   getGenericItemMatomoName,
   getParticipationProjectBody,
-  getParticipationProjectGeoLocation,
   getParticipationProjectLocationText,
   getParticipationProjectPlainBody,
   getParticipationProjectType,
@@ -27,9 +25,8 @@ import { ImageSection } from '../ImageSection';
 import { SectionHeader } from '../SectionHeader';
 import { StorySection } from '../StorySection';
 import { HeadlineText, RegularText } from '../Text';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
-import { MapLibre } from '../map';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -44,8 +41,6 @@ type Props = {
     };
   };
 };
-
-const { MAP } = consts;
 
 const isImage = (mediaContent: { contentType?: string }) => mediaContent.contentType === 'image';
 
@@ -106,9 +101,12 @@ const ParticipationProjectAppointments = ({ data }: { data: ParticipationProject
   if (!appointments.length && !openingHours.length) return null;
 
   return (
-    <WrapperVertical>
+    <WrapperVertical noPaddingBottom>
       <SectionHeader title={texts.eventRecord.appointments} />
-      <OpeningTimesCard openingHours={appointments.length ? appointments : openingHours} />
+      <OpeningTimesCard
+        leftAligned
+        openingHours={appointments.length ? appointments : openingHours}
+      />
     </WrapperVertical>
   );
 };
@@ -140,33 +138,6 @@ const ParticipationProjectContent = ({
           <RegularText>{data.teaser || data.description}</RegularText>
         </WrapperHorizontal>
       )}
-    </WrapperVertical>
-  );
-};
-
-const ParticipationProjectMap = ({ data }: { data: ParticipationProject }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const geoLocation = getParticipationProjectGeoLocation(data);
-
-  if (!geoLocation || !isConnected || !isMainserverUp) return null;
-
-  return (
-    <WrapperVertical noPaddingTop>
-      <SectionHeader title={texts.pointOfInterest.location} />
-      <MapLibre
-        isMultipleMarkersMap={false}
-        isMyLocationButtonVisible={false}
-        locations={[
-          {
-            iconName: MAP.DEFAULT_PIN,
-            activeIconName: `${MAP.DEFAULT_PIN}Active`,
-            id: data.id,
-            position: geoLocation
-          }
-        ]}
-        mapStyle={styles.mapStyle}
-        selectedMarker={data.id}
-      />
     </WrapperVertical>
   );
 };
@@ -214,9 +185,13 @@ const ParticipationProjectCalendarExport = ({ data }: { data: ParticipationProje
           })
         }
       >
-        <RegularText primary center>
-          {texts.participationProject.calendarExport}
-        </RegularText>
+        <WrapperRow center>
+          <Icon.NamedIcon name="download" style={{ marginRight: normalize(8) }} />
+
+          <RegularText primary center>
+            {texts.participationProject.calendarExport}
+          </RegularText>
+        </WrapperRow>
       </TouchableOpacity>
     </Wrapper>
   );
@@ -268,6 +243,7 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
       )}
 
       <ParticipationProjectInfo data={data} openWebScreen={openWebScreen} />
+      <ParticipationProjectCalendarExport data={data} />
       <ParticipationProjectAppointments data={data} />
       <ParticipationProjectContent data={data} openWebScreen={openWebScreen} />
 
@@ -281,10 +257,6 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
         link={link}
         openWebScreen={openWebScreen}
       />
-
-      <ParticipationProjectCalendarExport data={data} />
-
-      <ParticipationProjectMap data={data} />
 
       {!hasParticipationProjectContent(data) && (
         <Wrapper>
@@ -307,28 +279,3 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  mapStyle: {
-    height: normalize(300),
-    width: '100%'
-  },
-  metaRow: {
-    marginBottom: normalize(8)
-  },
-  metaValue: {
-    flex: 1
-  },
-  tag: {
-    borderColor: colors.borderRgba,
-    borderRadius: normalize(4),
-    borderWidth: StyleSheet.hairlineWidth,
-    marginBottom: normalize(4),
-    marginRight: normalize(6),
-    paddingHorizontal: normalize(6),
-    paddingVertical: normalize(2)
-  },
-  tagWrapper: {
-    flex: 1
-  }
-});

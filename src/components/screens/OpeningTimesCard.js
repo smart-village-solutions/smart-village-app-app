@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 
 import { colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -18,14 +18,21 @@ const TimeBox = styled.View`
 const DateBox = styled(TimeBox)`
   align-items: flex-end;
   flex-direction: column;
+
+  ${(props) =>
+    props.leftAligned &&
+    css`
+      align-items: flex-start;
+    `};
 `;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const OpeningTimesCard = ({
-  openingHours,
+  appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton,
+  leftAligned = false,
   MAX_INITIAL_NUM_TO_RENDER = 15,
-  appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton
+  openingHours
 }) => {
   const [moreData, setMoreData] = useState(1);
 
@@ -82,7 +89,7 @@ export const OpeningTimesCard = ({
                     </TimeBox>
                   )}
                   {(!!dateFrom || !!dateTo) && (
-                    <DateBox>
+                    <DateBox leftAligned={leftAligned}>
                       {!!dateFrom && (
                         <RegularText>
                           {!!datePrefix && <RegularText small>{datePrefix} </RegularText>}
@@ -152,6 +159,7 @@ const styles = StyleSheet.create({
 
 OpeningTimesCard.propTypes = {
   appointmentsShowMoreButton: PropTypes.string,
+  leftAligned: PropTypes.bool,
   MAX_INITIAL_NUM_TO_RENDER: PropTypes.number,
   openingHours: PropTypes.arrayOf(
     PropTypes.shape({
