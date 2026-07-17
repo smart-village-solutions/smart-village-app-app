@@ -1793,6 +1793,8 @@ export const texts = {
     }
   },
   wasteCalendar: {
+    disruptionNotificationsHeading: 'Störungshinweise',
+    selectWasteLocationForDisruptionsHint: 'Bitte wählen Sie zuerst einen Abholort aus.',
     calendarIntro:
       'Klicken Sie auf die Farbpunkte um die genauen Informationen zu den Abfallterminen ablesen zu können.',
     chooseCategory: 'Kategorien auswählen',

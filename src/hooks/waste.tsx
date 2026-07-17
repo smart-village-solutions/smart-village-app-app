@@ -85,7 +85,7 @@ export const useWasteUsedTypes = ({ streetData, typesData }) =>
       streetData?.[QUERY_TYPES.WASTE_ADDRESSES]?.[0]?.wasteLocationTypes?.reduce(
         (acc, { wasteType }) => {
           const typeData = typesData?.[wasteType];
-          if (typeData) {
+          if (typeData && typeData.notification_kind !== 'disruption') {
             acc[wasteType] = typeData;
           }
           return acc;
