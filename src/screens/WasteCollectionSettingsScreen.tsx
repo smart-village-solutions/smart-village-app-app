@@ -449,7 +449,6 @@ export const WasteCollectionSettingsScreen = () => {
     streetName,
     effectiveStreetName,
     selectedStreetId,
-    usedTypeKeys,
     usedTypes,
     applyInitialStoredSettingsFallback,
     locationData
