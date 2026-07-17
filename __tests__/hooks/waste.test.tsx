@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
-import { useWasteTypes } from '../../src/hooks/waste';
+import { useWasteTypes, useWasteUsedTypes } from '../../src/hooks/waste';
 import { useStaticContent } from '../../src/hooks/staticContent';
 
 jest.mock('../../src/components', () => ({
@@ -22,6 +22,7 @@ jest.mock('../../src/helpers', () => ({
 }));
 
 jest.mock('../../src/NetworkProvider', () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const React = require('react');
 
   return {
@@ -30,6 +31,7 @@ jest.mock('../../src/NetworkProvider', () => {
 });
 
 jest.mock('../../src/SettingsProvider', () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const React = require('react');
 
   return {
@@ -59,6 +61,16 @@ const TestWasteTypes = () => {
   return null;
 };
 
+const TestWasteUsedTypes = ({ onResult, streetData, typesData }) => {
+  const usedTypes = useWasteUsedTypes({ streetData, typesData });
+
+  React.useEffect(() => {
+    onResult(usedTypes);
+  }, [onResult, usedTypes]);
+
+  return null;
+};
+
 describe('useWasteTypes', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -74,5 +86,35 @@ describe('useWasteTypes', () => {
       name: 'wasteTypes',
       type: 'json'
     });
+  });
+});
+
+describe('useWasteUsedTypes', () => {
+  it('excludes disruption types from normal waste type consumers', async () => {
+    const onResult = jest.fn();
+
+    await act(async () => {
+      renderer.create(
+        <TestWasteUsedTypes
+          onResult={onResult}
+          streetData={{
+            wasteAddresses: [
+              {
+                wasteLocationTypes: [{ wasteType: 'paper' }, { wasteType: 'disruption_location' }]
+              }
+            ]
+          }}
+          typesData={{
+            disruption_location: {
+              label: 'Störungshinweise',
+              notification_kind: 'disruption'
+            },
+            paper: { label: 'Papier' }
+          }}
+        />
+      );
+    });
+
+    expect(onResult).toHaveBeenLastCalledWith({ paper: { label: 'Papier' } });
   });
 });

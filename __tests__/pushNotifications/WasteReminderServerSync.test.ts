@@ -5,7 +5,10 @@ import {
   syncWasteReminderSettingsWithServer,
   updateWasteReminderSettings
 } from '../../src/pushNotifications/WasteReminder';
-import { getPushTokenFromStorage } from '../../src/pushNotifications/TokenHandling';
+import {
+  getPushTokenFromStorage,
+  serverConnectionAlert
+} from '../../src/pushNotifications/TokenHandling';
 import { ensurePushNotificationToken } from '../../src/pushNotifications/PermissionHandling';
 
 jest.mock('expo-secure-store', () => ({
@@ -65,6 +68,26 @@ describe('updateWasteReminderSettings server sync', () => {
     expect(result.serverSyncPayload.disruptionRegistrations?.disruption_all_locations).toEqual({
       active: true
     });
+    expect(serverConnectionAlert).not.toHaveBeenCalled();
+  });
+
+  it('shows the connection alert when the server returns 5xx', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({
+      json: async () => ({ errors: ['temporary failure'] }),
+      ok: false,
+      status: 503
+    }) as jest.Mock;
+
+    const result = await syncWasteReminderSettingsWithServer({
+      activeTypes: {},
+      disruptionRegistrations: { disruption_all_locations: { active: true } },
+      notificationSettings: {},
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      usedTypeKeys: []
+    });
+
+    expect(result.success).toBe(false);
+    expect(serverConnectionAlert).toHaveBeenCalledWith(false);
   });
 
   it('deletes a hydrated disruption registration by its stored id', async () => {

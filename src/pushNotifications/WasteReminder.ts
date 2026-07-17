@@ -80,6 +80,12 @@ const buildWasteReminderRequestHeaders = (accessToken: string, pushToken: string
   [NOTIFICATION_DEVICE_TOKEN_HEADER]: pushToken
 });
 
+const alertForWasteReminderServerError = (status: number) => {
+  if (status >= 500) {
+    serverConnectionAlert(false);
+  }
+};
+
 const getWasteReminderPushToken = async () => {
   const pushToken = await getPushTokenFromStorage();
 
@@ -174,7 +180,7 @@ const updateReminderSettings = async ({
     try {
       const response = await fetch(requestPath, fetchObj);
       if (!response.ok) {
-        serverConnectionAlert(false);
+        alertForWasteReminderServerError(response.status);
         return undefined;
       }
       const json = await response.json();
