@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
@@ -12,10 +12,11 @@ import {
   usePosition,
   useSystemPermission
 } from '../../hooks';
+import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
-import { TourDetailInfoCard } from '../infoCard';
+import { DistanceDirectionCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { MediaCarousel } from '../MediaCarousel';
 import { locationServiceEnabledAlert } from '../SUE/report/SueReportLocation';
@@ -30,6 +31,9 @@ import { SectionHeader } from './../SectionHeader';
 export const TourStopDetail = ({ route, navigation }: { route: any; navigation: any }) => {
   const { geometryTourData, id, rootRouteName, tourStops, tourStopData, subtitle } = route.params;
   const { description, mediaContents, title } = tourStopData || {};
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showDistanceDirection = {} } = settings;
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -133,7 +137,14 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 
       <SectionHeader title={texts.tour.overview} />
 
-      <TourDetailInfoCard currentPosition={currentPosition} tourStopData={tourStopData} />
+      {!!showDistanceDirection?.tour &&
+        tourStopData?.location?.geoLocation?.latitude != null &&
+        tourStopData?.location?.geoLocation?.longitude != null && (
+          <DistanceDirectionCard
+            currentPosition={currentPosition}
+            targetPosition={tourStopData.location.geoLocation}
+          />
+        )}
 
       <>
         <Wrapper>
