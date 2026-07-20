@@ -559,6 +559,25 @@ export const texts = {
     map: 'Kartenansicht',
     noSelection: 'Bitte wählen Sie eine Markierung aus.'
   },
+  floorPlan: {
+    configError: 'Die Konfiguration für den Lageplan ist ungültig.',
+    emptyPins: 'Keine Orte im Lageplan vorhanden.',
+    fallbackDescription: 'Für diesen Ort sind noch keine weiteren Informationen hinterlegt.',
+    listAccessibilityLabel: 'Orte im Lageplan',
+    listView: 'Liste',
+    linkedContent: 'Verknüpfung',
+    openLinkedContent: 'Verknüpften Inhalt öffnen',
+    reset: 'Reset',
+    svgError: 'Der Lageplan konnte nicht geladen werden.',
+    svgFallback: 'Es ist kein SVG für den Lageplan hinterlegt.',
+    svgView: 'Plan',
+    typeLabels: {
+      info: 'Information',
+      room: 'Raum',
+      service: 'Service',
+      warning: 'Hinweis'
+    }
+  },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',
     showAll: 'Alle Gastro-Angebote anzeigen'
@@ -1100,6 +1119,7 @@ export const texts = {
     eventSuggestion: 'Veranstaltungsvorschlag',
     favorites: 'Favoriten',
     feedback: 'Feedback',
+    floorPlan: 'Lageplan',
     home: appJson.expo.name,
     map: 'Karte',
     mapView: 'Kartenansicht',

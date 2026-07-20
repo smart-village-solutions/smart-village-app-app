@@ -33,6 +33,7 @@ import {
   EncounterUserDetailScreen,
   EventSuggestionScreen,
   FeedbackScreen,
+  FloorPlanScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -312,6 +313,14 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.feedback },
       routeName: ScreenName.Feedback,
       screenComponent: FeedbackScreen
+    },
+    {
+      initialParams: initialParams || {
+        staticJsonName: 'floorPlan',
+        title: texts.screenTitles.floorPlan
+      },
+      routeName: ScreenName.FloorPlan,
+      screenComponent: FloorPlanScreen
     },
     {
       initialParams: initialParams || {

@@ -28,6 +28,7 @@ export * from './EncounterScannerScreen';
 export * from './EncounterUserDetailScreen';
 export * from './EventSuggestionScreen';
 export * from './FeedbackScreen';
+export * from './FloorPlan';
 export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
