@@ -20,11 +20,12 @@ export const WebScreen = ({
 }: {
   route: {
     params: {
-      injectedJavaScript: string;
+      hasBotControl?: boolean;
+      injectedJavaScript?: string;
       inModalBrowser?: boolean;
       isExternal?: boolean;
-      webUrl: string;
       isIncognito?: boolean;
+      webUrl: string;
     };
   };
 }) => {
@@ -40,6 +41,7 @@ export const WebScreen = ({
   const isExternal = route.params?.isExternal ?? false;
   // Use route-specific isIncognito if provided, otherwise fall back to global setting
   const isIncognito = route.params?.isIncognito ?? isIncognitoWebScreens;
+  const hasBotControl = route.params?.hasBotControl ?? false;
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `webUrl`
   //       dependency
@@ -78,6 +80,7 @@ export const WebScreen = ({
         // https://github.com/react-native-webview/react-native-webview/blob/19980d888d66554875f3ac64b3e8a35bd7ad998b/src/WebViewTypes.ts#L378-L389
         decelerationRate={device.platform === 'ios' ? 'normal' : undefined}
         incognito={isIncognito}
+        originWhitelist={hasBotControl ? ['http', 'https'] : undefined}
         injectedJavaScript={injectedJavaScript}
         mediaPlaybackRequiresUserAction
         onMessage={noop} // needed for making `injectedJavaScript` work in some cases
