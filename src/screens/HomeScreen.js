@@ -58,6 +58,7 @@ const renderItem = ({ item }) => {
   const {
     buttonTitle,
     categoriesNews,
+    dateTimeFormat,
     fetchPolicy,
     isDrawer,
     limit,
@@ -117,27 +118,28 @@ const renderItem = ({ item }) => {
     CATEGORIES_INDEX: {
       name: ScreenName.Index,
       params: {
-        title,
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
-        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
+        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
+        title
       }
     },
     EVENT_RECORDS_INDEX: {
       name: ScreenName.Index,
       params: {
-        title,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit, order: 'listDate_ASC' },
-        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
+        title
       }
     },
     NEWS_ITEMS_INDEX: ({
       categoryId,
-      title,
-      titleDetail,
+      dateTimeFormat,
       indexCategoryIds,
-      rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS
+      rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS,
+      title,
+      titleDetail
     }) => {
       const indexQueryVariables = { limit };
 
@@ -150,11 +152,11 @@ const renderItem = ({ item }) => {
       return {
         name: ScreenName.Index,
         params: {
-          title,
-          titleDetail,
           query: QUERY_TYPES.NEWS_ITEMS,
           queryVariables: indexQueryVariables,
-          rootRouteName
+          rootRouteName,
+          title,
+          titleDetail
         }
       };
     }
@@ -182,16 +184,17 @@ const renderItem = ({ item }) => {
           {...{
             buttonTitle: categoryButton,
             categoryId,
+            dateTimeFormat,
             fetchPolicy,
             navigation,
             navigate: () =>
               navigation.navigate(
                 NAVIGATION.NEWS_ITEMS_INDEX({
                   categoryId,
-                  title,
-                  titleDetail,
                   indexCategoryIds,
-                  rootRouteName
+                  rootRouteName,
+                  title,
+                  titleDetail
                 })
               ),
             placeholder: <NewsSectionPlaceholder navigation={navigation} title={title} />,
@@ -230,6 +233,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const {
     hdvt = {},
     homeScreenConfig = [],
+    settings = {},
     sections = {},
     widgets: widgetConfigs = []
   } = globalSettings;
@@ -252,6 +256,7 @@ export const HomeScreen = ({ navigation, route }) => {
     limitNews = 15,
     limitPointsOfInterestAndTours = 15
   } = sections;
+  const { listDateFormat } = settings?.news || {};
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
@@ -338,6 +343,7 @@ export const HomeScreen = ({ navigation, route }) => {
     { type: DEFAULT_HOME_SCREEN_SECTIONS.DISTURBER, show: true, navigation },
     {
       categoriesNews,
+      dateTimeFormat: listDateFormat,
       fetchPolicy,
       limit: limitNews,
       navigation,
@@ -392,6 +398,7 @@ export const HomeScreen = ({ navigation, route }) => {
             case QUERY_TYPES.NEWS_ITEMS:
               return {
                 categoriesNews: section.categoriesNews || categoriesNews,
+                dateTimeFormat: listDateFormat,
                 fetchPolicy,
                 limit: section.limitNews ?? limitNews,
                 navigation,

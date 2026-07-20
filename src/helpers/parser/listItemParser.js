@@ -153,12 +153,12 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
   }));
 };
 
-const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
+const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable, dateTimeFormat) => {
   return _uniqBy(
     data?.map((newsItem, index) => ({
       id: newsItem.id,
       overtitle: subtitle(
-        momentFormatUtcToLocal(newsItem.publishedAt),
+        momentFormatUtcToLocal(newsItem.publishedAt, dateTimeFormat),
         newsItem.dataProvider?.name
       ),
       title: newsItem.contentBlocks?.[0]?.title,
@@ -174,15 +174,13 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
       routeName: ScreenName.Detail,
       params: {
         bookmarkable,
-        title: titleDetail,
-        suffix: newsItem.categories?.[0]?.parent?.id || newsItem.categories?.[0]?.id,
+        details: newsItem,
         query: QUERY_TYPES.NEWS_ITEM,
         queryVariables: { id: `${newsItem.id}` },
         rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
-        shareContent: {
-          message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
-        },
-        details: newsItem
+        shareContent: { message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM) },
+        suffix: newsItem.categories?.[0]?.parent?.id || newsItem.categories?.[0]?.id,
+        title: titleDetail
       },
       bottomDivider: !skipLastDivider || index !== data.length - 1
     })),
@@ -374,6 +372,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
   const {
     appDesignSystem,
     bookmarkable = true,
+    dateTimeFormat,
     filterTypes,
     isSectioned = false,
     queryKey,
@@ -390,7 +389,13 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
     case QUERY_TYPES.GENERIC_ITEMS:
       return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery, filterTypes);
     case QUERY_TYPES.NEWS_ITEMS:
-      return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
+      return parseNewsItems(
+        data[query],
+        skipLastDivider,
+        titleDetail,
+        bookmarkable,
+        dateTimeFormat
+      );
     case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
       return parsePointOfInterest(data[query], skipLastDivider, queryVariables);
