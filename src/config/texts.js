@@ -479,11 +479,15 @@ export const texts = {
   feedbackLink: 'Feedback',
   feedbackScreen: {
     alert: {
+      errorMessage: 'Beim Senden ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      errorTitle: 'Feedback konnte nicht gesendet werden',
       title: 'Feedback',
       message: 'Vielen Dank für Ihr Feedback!',
       ok: 'OK'
     },
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
+    diagnosticInformationHint:
+      'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
     inputsLabel: {
       address: 'Veranstaltungsort',
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',

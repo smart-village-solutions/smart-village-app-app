@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
@@ -15,14 +15,18 @@ import {
   Wrapper
 } from '../components';
 import { Icon, colors, consts, normalize, texts } from '../config';
+import { collectDeviceInfo } from '../helpers';
 import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
 export const FeedbackScreen = ({ route }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const { globalSettings } = useContext(SettingsContext);
+  const feedbackSettings = globalSettings?.settings?.feedback || {};
   const {
     link,
     linkDescription,
@@ -60,30 +64,45 @@ export const FeedbackScreen = ({ route }) => {
       );
     }
 
-    const formData = {
-      dataType: 'json',
-      dataSource: 'form',
-      content: JSON.stringify({
+    setLoading(true);
+
+    try {
+      let deviceInfo;
+
+      try {
+        deviceInfo = await collectDeviceInfo({ settings: feedbackSettings });
+      } catch (error) {
+        console.error(error);
+      }
+
+      const content = {
         name: createAppUserContentNewData.name,
         email: createAppUserContentNewData.email,
         phone: createAppUserContentNewData.phone,
         message: createAppUserContentNewData.message,
         consent: createAppUserContentNewData.consent,
-        appInfo
-      })
-    };
+        appInfo,
+        ...(deviceInfo && { deviceInfo })
+      };
+      const formData = {
+        dataType: 'json',
+        dataSource: 'form',
+        content: JSON.stringify(content)
+      };
 
-    setLoading(true);
-
-    try {
       await createAppUserContent({ variables: formData });
-      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
+      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message, [
+        {
+          text: texts.feedbackScreen.alert.ok,
+          onPress: () => navigation.goBack()
+        }
+      ]);
     } catch (error) {
       console.error(error);
+      Alert.alert(texts.feedbackScreen.alert.errorTitle, texts.feedbackScreen.alert.errorMessage);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-    navigation.goBack();
   };
 
   return (
@@ -162,6 +181,11 @@ export const FeedbackScreen = ({ route }) => {
               )}
               control={control}
             />
+
+            {(feedbackSettings.includeSystemInformation === true ||
+              feedbackSettings.includeScheduledNotifications === true) && (
+              <RegularText small>{texts.feedbackScreen.diagnosticInformationHint}</RegularText>
+            )}
           </Wrapper>
 
           <Wrapper noPaddingTop>
