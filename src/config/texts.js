@@ -488,12 +488,15 @@ export const texts = {
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
     diagnosticInformationHint:
       'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
+    scheduledNotificationsInformationHint:
+      'Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt.',
     inputsLabel: {
       address: 'Veranstaltungsort',
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
       description: 'Beschreibung',
       email: 'E-Mail',
       eventName: 'Veranstaltungsname',
+      includeDiagnosticInformation: 'Diagnoseinformationen mitsenden',
       message: 'Ihre Mitteilung',
       name: 'Name',
       phone: 'Telefon',

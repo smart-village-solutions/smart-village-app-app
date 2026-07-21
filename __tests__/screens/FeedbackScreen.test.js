@@ -16,7 +16,8 @@ const mockFormData = {
   email: 'erika@example.org',
   phone: '0123',
   message: 'Test feedback',
-  consent: true
+  consent: true,
+  includeDiagnosticInformation: false
 };
 
 jest.mock('@react-navigation/native', () => ({
@@ -28,11 +29,20 @@ jest.mock('react-apollo', () => ({
 }));
 
 jest.mock('react-hook-form', () => ({
-  Controller: () => null,
+  Controller: ({ name, render }) =>
+    render({
+      field: {
+        onChange: (value) => {
+          mockFormData[name] = value;
+        },
+        value: mockFormData[name]
+      }
+    }),
   useForm: () => ({
     control: {},
     formState: { errors: {} },
-    handleSubmit: (onSubmit) => () => onSubmit(mockFormData)
+    handleSubmit: (onSubmit) => () => onSubmit(mockFormData),
+    watch: (name) => mockFormData[name]
   })
 }));
 
@@ -45,7 +55,11 @@ jest.mock('../../src/components', () => {
         <Text>{title}</Text>
       </Pressable>
     ),
-    Checkbox: () => null,
+    Checkbox: ({ title, ...props }) => (
+      <Pressable {...props}>
+        <Text>{title}</Text>
+      </Pressable>
+    ),
     DefaultKeyboardAvoidingView: ({ children }) => <View>{children}</View>,
     Input: () => null,
     RegularText: ({ children, ...props }) => <Text {...props}>{children}</Text>,
@@ -70,6 +84,8 @@ jest.mock('../../src/config', () => ({
       },
       diagnosticInformationHint:
         'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
+      scheduledNotificationsInformationHint:
+        'Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt.',
       inputsErrorMessages: {
         hint: 'Hint',
         checkbox: 'Consent',
@@ -79,6 +95,7 @@ jest.mock('../../src/config', () => ({
       inputsLabel: {
         checkbox: 'Consent',
         email: 'Email',
+        includeDiagnosticInformation: 'Diagnoseinformationen mitsenden',
         message: 'Message',
         name: 'Name',
         phone: 'Phone',
@@ -111,7 +128,14 @@ jest.mock('../../src/queries', () => ({
 }));
 
 const route = { params: {} };
-const basePayload = { ...mockFormData, appInfo };
+const basePayload = {
+  name: mockFormData.name,
+  email: mockFormData.email,
+  phone: mockFormData.phone,
+  message: mockFormData.message,
+  consent: mockFormData.consent,
+  appInfo
+};
 
 const renderAndSubmit = async (feedback) => {
   const globalSettings = {
@@ -143,33 +167,63 @@ describe('FeedbackScreen diagnostic payload', () => {
     mockCreateAppUserContent.mockResolvedValue({});
     mockCollectDeviceInfo.mockResolvedValue(undefined);
     mockFormData.consent = true;
+    mockFormData.includeDiagnosticInformation = false;
   });
 
   it('sends the unchanged payload without active flags', async () => {
     const component = await renderAndSubmit(undefined);
 
-    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings: {} });
+    expect(mockCollectDeviceInfo).not.toHaveBeenCalled();
     expect(sentPayload()).toEqual(basePayload);
     expect(sentPayload()).not.toHaveProperty('deviceInfo');
     expect(
       component.root.findAllByProps({
-        children: 'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.'
+        children: 'Diagnoseinformationen mitsenden'
       })
     ).toHaveLength(0);
   });
 
   it.each([{ includeSystemInformation: true }, { includeScheduledNotifications: true }])(
-    'shows the diagnostic hint for active feedback settings %#',
+    'offers diagnostic information for active feedback settings %#',
     async (settings) => {
       const component = await renderAndSubmit(settings);
 
       expect(
         component.root.findByProps({
-          children: 'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.'
+          children: 'Diagnoseinformationen mitsenden'
         })
       ).toBeTruthy();
+      expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
+      expect(mockCollectDeviceInfo).not.toHaveBeenCalled();
     }
   );
+
+  it('appends diagnostic information inline before the required marker after opt-in', async () => {
+    mockFormData.includeDiagnosticInformation = true;
+
+    const component = await renderAndSubmit({ includeSystemInformation: true });
+    const consentTitle =
+      'Consent Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt. *';
+
+    expect(component.root.findByProps({ children: consentTitle })).toBeTruthy();
+    expect(consentTitle).not.toContain('\n');
+    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({
+      settings: { includeSystemInformation: true }
+    });
+  });
+
+  it('describes scheduled notifications inline when they are included', async () => {
+    mockFormData.includeDiagnosticInformation = true;
+
+    const component = await renderAndSubmit({ includeScheduledNotifications: true });
+
+    expect(
+      component.root.findByProps({
+        children:
+          'Consent Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt. *'
+      })
+    ).toBeTruthy();
+  });
 
   it('adds system information beside unchanged appInfo', async () => {
     const settings = { includeSystemInformation: true };
@@ -178,6 +232,7 @@ describe('FeedbackScreen diagnostic payload', () => {
       operatingSystem: { name: 'TestOS' }
     };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
+    mockFormData.includeDiagnosticInformation = true;
 
     await renderAndSubmit(settings);
 
@@ -204,6 +259,7 @@ describe('FeedbackScreen diagnostic payload', () => {
       scheduledNotifications: [{ identifier: 'one', content: {}, trigger: null }]
     };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
+    mockFormData.includeDiagnosticInformation = true;
 
     await renderAndSubmit(settings);
 
@@ -222,6 +278,7 @@ describe('FeedbackScreen diagnostic payload', () => {
       scheduledNotifications: []
     };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
+    mockFormData.includeDiagnosticInformation = true;
 
     await renderAndSubmit(settings);
 
@@ -233,6 +290,7 @@ describe('FeedbackScreen diagnostic payload', () => {
   it('sends a stable collector failure status', async () => {
     const deviceInfo = { collectionStatus: { scheduledNotifications: 'failed' } };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
+    mockFormData.includeDiagnosticInformation = true;
 
     await renderAndSubmit({ includeScheduledNotifications: true });
 
@@ -251,6 +309,7 @@ describe('FeedbackScreen diagnostic payload', () => {
 
   it('continues with base feedback after an unexpected helper rejection', async () => {
     mockCollectDeviceInfo.mockRejectedValue(new Error('unexpected collector bug'));
+    mockFormData.includeDiagnosticInformation = true;
 
     const component = await renderAndSubmit({ includeSystemInformation: true });
 

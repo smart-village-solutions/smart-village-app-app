@@ -27,27 +27,46 @@ export const FeedbackScreen = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const { globalSettings } = useContext(SettingsContext);
   const feedbackSettings = globalSettings?.settings?.feedback || {};
+  const hasDiagnosticInformation =
+    feedbackSettings.includeSystemInformation === true ||
+    feedbackSettings.includeScheduledNotifications === true;
   const {
     link,
     linkDescription,
     params = {},
     routeName,
-    title = texts.feedbackScreen.inputsLabel.checkbox + ' *'
+    title = texts.feedbackScreen.inputsLabel.checkbox
   } = route.params?.checkbox || {};
 
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    watch
   } = useForm({
     defaultValues: {
       consent: false,
       email: '',
+      includeDiagnosticInformation: false,
       message: '',
       name: '',
       phone: ''
     }
   });
+  const includeDiagnosticInformation = watch('includeDiagnosticInformation');
+  const diagnosticInformationHint = [
+    feedbackSettings.includeSystemInformation === true
+      ? texts.feedbackScreen.diagnosticInformationHint
+      : null,
+    feedbackSettings.includeScheduledNotifications === true
+      ? texts.feedbackScreen.scheduledNotificationsInformationHint
+      : null
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const consentTitle = `${title.replace(/\s*\*$/, '')}${
+    includeDiagnosticInformation ? ` ${diagnosticInformationHint}` : ''
+  } *`;
 
   const appInfo = useAppInfo();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
@@ -69,10 +88,12 @@ export const FeedbackScreen = ({ route }) => {
     try {
       let deviceInfo;
 
-      try {
-        deviceInfo = await collectDeviceInfo({ settings: feedbackSettings });
-      } catch (error) {
-        console.error(error);
+      if (includeDiagnosticInformation === true) {
+        try {
+          deviceInfo = await collectDeviceInfo({ settings: feedbackSettings });
+        } catch (error) {
+          console.error(error);
+        }
       }
 
       const content = {
@@ -165,6 +186,23 @@ export const FeedbackScreen = ({ route }) => {
           </Wrapper>
 
           <Wrapper noPaddingTop>
+            {hasDiagnosticInformation && (
+              <Controller
+                name="includeDiagnosticInformation"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    checked={value}
+                    checkedIcon={<Icon.SquareCheckFilled />}
+                    onPress={() => onChange(!value)}
+                    testID="diagnostic-information-checkbox"
+                    title={texts.feedbackScreen.inputsLabel.includeDiagnosticInformation}
+                    uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+                  />
+                )}
+                control={control}
+              />
+            )}
+
             <Controller
               name="consent"
               render={({ field: { onChange, value } }) => (
@@ -175,17 +213,12 @@ export const FeedbackScreen = ({ route }) => {
                   linkDescription={linkDescription}
                   navigate={routeName ? () => navigation.navigate(routeName, params) : undefined}
                   onPress={() => onChange(!value)}
-                  title={title}
+                  title={consentTitle}
                   uncheckedIcon={<Icon.Square color={colors.placeholder} />}
                 />
               )}
               control={control}
             />
-
-            {(feedbackSettings.includeSystemInformation === true ||
-              feedbackSettings.includeScheduledNotifications === true) && (
-              <RegularText small>{texts.feedbackScreen.diagnosticInformationHint}</RegularText>
-            )}
           </Wrapper>
 
           <Wrapper noPaddingTop>
