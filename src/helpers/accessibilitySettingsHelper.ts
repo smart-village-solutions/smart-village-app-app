@@ -1,9 +1,10 @@
+import { isThemeMode } from '../config/colors';
 import {
   AccessibilityFeatureAvailability,
   AccessibilityFeatureKey,
   AccessibilityTogglePreferenceKey,
   AccessibilityUserSettings
-} from '../types';
+} from '../types/Accessibility';
 
 export const ACCESSIBILITY_FEATURE_BY_PREFERENCE: Record<
   AccessibilityTogglePreferenceKey,
@@ -29,7 +30,8 @@ export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = 
   reduceMotion: false,
   reduceTransparency: false,
   settingsEntry: false,
-  textScaling: false
+  textScaling: false,
+  theming: false
 };
 
 export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
@@ -39,7 +41,8 @@ export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
   readAloudEnabled: false,
   reduceMotionEnabled: false,
   reduceTransparencyEnabled: false,
-  textScaleLevel: DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL
+  textScaleLevel: DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL,
+  themeMode: 'system'
 };
 
 type AccessibilityGlobalSettings = {
@@ -149,7 +152,10 @@ export const resolveAccessibilityConfiguration = (
       defaultSettings.reduceTransparencyEnabled,
       DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceTransparencyEnabled
     ),
-    textScaleLevel: getTextScaleDefault(defaultSettings)
+    textScaleLevel: getTextScaleDefault(defaultSettings),
+    themeMode: isThemeMode(defaultSettings.themeMode)
+      ? defaultSettings.themeMode
+      : DEFAULT_ACCESSIBILITY_USER_SETTINGS.themeMode
   };
 
   return {
