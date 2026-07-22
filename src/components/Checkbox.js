@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { useOpenWebScreen } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
 import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
@@ -61,6 +62,8 @@ export const Checkbox = ({
   ...props
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
   const headerTitle = title ?? '';
@@ -110,23 +113,27 @@ export const Checkbox = ({
   );
 };
 
-const styles = StyleSheet.create({
-  containerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    marginLeft: 0,
-    marginRight: 0,
-    padding: 0
-  },
-  containerStyleLandscape: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  titleStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors) =>
+  StyleSheet.create({
+    containerStyle: {
+      backgroundColor: colors.surface,
+      borderWidth: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 0
+    },
+    containerStyleLandscape: {
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    titleStyle: {
+      color: colors.text,
+      fontWeight: 'normal'
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 Checkbox.propTypes = {
   boldTitle: PropTypes.bool,

@@ -3,35 +3,18 @@ import React, { useContext } from 'react';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, device } from '../config';
-
-const trackColor = {
-  ...Platform.select({
-    android: { false: colors.shadow, true: colors.primary },
-    ios: { false: colors.shadow, true: colors.primary }
-  })
-};
-const thumbColor = Platform.select({
-  android: colors.gray20,
-  ios: colors.lightestText
-});
-const thumbColorEnabled = Platform.select({
-  android: colors.gray20,
-  ios: colors.lightestText
-});
-const disabledTrackColor = {
-  ...Platform.select({
-    android: { false: colors.shadow, true: colors.primary },
-    ios: { false: colors.shadow, true: colors.primary }
-  })
-};
-const disabledThumbColor = Platform.select({
-  android: colors.gray40,
-  ios: colors.lightestText
-});
+import { device } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 export const Switch = ({ accessibilityLabel, isDisabled, switchValue, toggleSwitch }) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
+  const trackColor = Platform.select({
+    android: { false: colors.shadow, true: colors.primary },
+    ios: { false: colors.shadow, true: colors.primary }
+  });
+  const thumbColor = Platform.select({ android: colors.gray20, ios: colors.onPrimary });
+  const disabledThumbColor = Platform.select({ android: colors.gray40, ios: colors.onPrimary });
 
   return (
     <RNSwitch
@@ -48,8 +31,8 @@ export const Switch = ({ accessibilityLabel, isDisabled, switchValue, toggleSwit
             transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
           }
       ]}
-      thumbColor={isDisabled ? disabledThumbColor : switchValue ? thumbColorEnabled : thumbColor}
-      trackColor={isDisabled ? disabledTrackColor : trackColor}
+      thumbColor={isDisabled ? disabledThumbColor : thumbColor}
+      trackColor={trackColor}
       value={switchValue}
     />
   );

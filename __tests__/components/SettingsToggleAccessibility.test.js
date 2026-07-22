@@ -56,6 +56,21 @@ jest.mock('../../src/pushNotifications', () => ({
   serverConnectionAlert: jest.fn()
 }));
 
+jest.mock('../../src/hooks/useTheme', () => ({
+  useTheme: () => ({
+    colors: {
+      gray20: '#F2F2F7',
+      gray40: '#DBDBE6',
+      onPrimary: '#FFFFFF',
+      overlayRgba: 'rgba(0, 0, 0, 0.7)',
+      primary: '#107821',
+      refreshControl: '#107821',
+      shadow: '#858585',
+      transparent: 'transparent'
+    }
+  })
+}));
+
 jest.mock('../../src/components/Text', () => ({
   BoldText: ({ children }) => children,
   RegularText: ({ children }) => children

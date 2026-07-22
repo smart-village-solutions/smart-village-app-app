@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
+import { consts, normalize } from '../config';
 import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 
 import { Image } from './Image';
 import { SueCategory, SueImageFallback, SueStatus } from './SUE';
@@ -15,7 +16,7 @@ import { Wrapper, WrapperHorizontal } from './Wrapper';
 const keyExtractor = (item, index) => `item${item}-index${index}`;
 
 /* eslint-disable complexity */
-const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle) => {
+const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle, themedStyles) => {
   const {
     address,
     appDesignSystem = {},
@@ -54,7 +55,7 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
           style={[stylesWithProps({ aspectRatio, horizontal }).image, isSue && styles.sueImage]}
           containerStyle={[styles.imageContainer, isSue && styles.sueImage, imageStyle]}
           key={keyExtractor(picture.url, index)}
-          placeholderStyle={styles.placeholderStyle}
+          placeholderStyle={themedStyles.placeholderStyle}
           source={{ uri: picture.url }}
         />
       ) : isSue ? (
@@ -116,7 +117,7 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
             ),
           divider: () => (
             <Wrapper key={keyExtractor('divider', index)} noPaddingTop>
-              <Divider />
+              <Divider style={themedStyles.divider} />
             </Wrapper>
           ),
           status: () =>
@@ -179,6 +180,8 @@ export const CardListItem = memo(
     navigation,
     noOvertitle = false
   }) => {
+    const { colors } = useTheme();
+    const themedStyles = useMemo(() => createThemedStyles(colors), [colors]);
     const {
       appDesignSystem = {},
       overtitle,
@@ -212,6 +215,7 @@ export const CardListItem = memo(
           <Card
             containerStyle={[
               styles.container,
+              themedStyles.container,
               stylesWithProps({ horizontal }).container,
               containerStyle
             ]}
@@ -220,10 +224,18 @@ export const CardListItem = memo(
               style={[
                 stylesWithProps({ horizontal }).contentContainer,
                 contentContainerStyle,
-                isSue && styles.sueContentContainer
+                isSue && [styles.sueContentContainer, themedStyles.sueContentContainer]
               ]}
             >
-              {renderCardContent(bigTitle, horizontal, index, isSue, item, noOvertitle)}
+              {renderCardContent(
+                bigTitle,
+                horizontal,
+                index,
+                isSue,
+                item,
+                noOvertitle,
+                themedStyles
+              )}
             </View>
           </Card>
         </View>
@@ -234,7 +246,6 @@ export const CardListItem = memo(
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.transparent,
     borderWidth: 0,
     margin: 0,
     paddingVertical: normalize(16),
@@ -243,7 +254,7 @@ const styles = StyleSheet.create({
         elevation: 0
       },
       ios: {
-        shadowColor: colors.transparent
+        shadowColor: 'transparent'
       }
     })
   },
@@ -259,12 +270,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     marginBottom: normalize(8)
   },
-  placeholderStyle: {
-    backgroundColor: colors.surface,
-    flex: 1
-  },
   sueContentContainer: {
-    borderColor: colors.gray20,
     borderRadius: normalize(8),
     borderWidth: 1,
     width: '100%'
@@ -276,6 +282,26 @@ const styles = StyleSheet.create({
     width: '100%'
   }
 });
+
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createThemedStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.transparent
+    },
+    divider: {
+      backgroundColor: colors.border
+    },
+    placeholderStyle: {
+      backgroundColor: colors.surface,
+      flex: 1
+    },
+    sueContentContainer: {
+      borderColor: colors.border
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */

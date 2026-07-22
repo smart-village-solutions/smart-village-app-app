@@ -2,14 +2,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, Icon, normalize } from '../config';
+import { Icon, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 
 import { SafeAreaViewFlex } from './SafeAreaViewFlex';
 import { RegularText } from './Text';
 import { Wrapper } from './Wrapper';
 
 export const EmptyMessage = ({ title, showIcon = true }) => {
+  const { colors } = useTheme();
+
   return (
     <SafeAreaViewFlex>
       <Wrapper>

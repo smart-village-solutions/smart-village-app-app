@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, device, normalize, texts } from '../config';
+import { device, normalize, texts } from '../config';
+import { useTheme } from '../hooks/useTheme';
 import { NetworkContext } from '../NetworkProvider';
 import { serverConnectionAlert } from '../pushNotifications';
 
@@ -15,6 +16,8 @@ import { WrapperRow } from './Wrapper';
 // TODO: snack bar / toast als nutzerinfo
 export const SettingsToggle = ({ item, needsConnection = true }) => {
   const { isConnected } = useContext(NetworkContext);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const {
     bottomDivider,
     description,
@@ -75,10 +78,7 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
       <WrapperRow>
         <ActivityIndicator
           color={colors.refreshControl}
-          style={[
-            styles.loadingIndicator,
-            !loading && styles.loadingIndicatorHidden
-          ]}
+          style={[styles.loadingIndicator, !loading && styles.loadingIndicatorHidden]}
         />
         <Switch
           accessibilityLabel={title}
@@ -91,22 +91,25 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.transparent,
-    paddingHorizontal: 0,
-    paddingVertical: device.isTablet ? normalize(16) : normalize(10)
-  },
-  loadingIndicator: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: device.isTablet ? normalize(7) : -normalize(2),
-    width: normalize(18)
-  },
-  loadingIndicatorHidden: {
-    opacity: 0
-  }
-});
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.transparent,
+      paddingHorizontal: 0,
+      paddingVertical: device.isTablet ? normalize(16) : normalize(10)
+    },
+    loadingIndicator: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: device.isTablet ? normalize(7) : -normalize(2),
+      width: normalize(18)
+    },
+    loadingIndicatorHidden: {
+      opacity: 0
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 SettingsToggle.propTypes = {
   item: PropTypes.object.isRequired,

@@ -1,11 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
-import React, { memo, NamedExoticComponent, Validator } from 'react';
+import React, { memo, NamedExoticComponent, useMemo, Validator } from 'react';
 import { ImageStyle, StyleSheet, ViewStyle } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
 import { isOpen, trimNewLines } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 
 import { Image } from './Image';
 import { BoldText, HeadlineText, RegularText } from './Text';
@@ -75,6 +76,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
     titleNumberOfLines,
     withCard = false
   }) => {
+    const { colors } = useTheme();
+    const styles = useMemo(() => createStyles(colors), [colors]);
     const {
       badge,
       accessibilityLabel,
@@ -216,7 +219,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         {!!count && <BoldText>{count}</BoldText>}
 
         {!listsWithoutArrows && !!navigation && !withCard && (
-          <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+          <Icon.ArrowRight color={colors.text} size={normalize(18)} />
         )}
       </ListItem>
     );
@@ -224,36 +227,40 @@ export const TextListItem: NamedExoticComponent<Props> & {
 );
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.transparent,
-    paddingHorizontal: 0,
-    paddingVertical: normalize(16)
-  },
-  overtitleMarginBottom: {
-    marginBottom: normalize(4)
-  },
-  smallImage: {
-    height: normalize(72),
-    width: normalize(96)
-  },
-  smallImageContainer: {
-    alignSelf: 'flex-start'
-  },
-  statustitleWrapper: {
-    marginTop: normalize(7)
-  },
-  subtitle: {
-    marginTop: normalize(6)
-  },
-  topMargin: {
-    marginTop: normalize(4)
-  },
-  withBigCardStyle: {
-    height: normalize(72),
-    width: normalize(96)
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.transparent,
+      paddingHorizontal: 0,
+      paddingVertical: normalize(16)
+    },
+    overtitleMarginBottom: {
+      marginBottom: normalize(4)
+    },
+    smallImage: {
+      height: normalize(72),
+      width: normalize(96)
+    },
+    smallImageContainer: {
+      alignSelf: 'flex-start'
+    },
+    statustitleWrapper: {
+      marginTop: normalize(7)
+    },
+    subtitle: {
+      marginTop: normalize(6)
+    },
+    topMargin: {
+      marginTop: normalize(4)
+    },
+    withBigCardStyle: {
+      height: normalize(72),
+      width: normalize(96)
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 TextListItem.displayName = 'TextListItem';
 
