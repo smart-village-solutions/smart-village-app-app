@@ -61,7 +61,8 @@ Use the following JSON shape in `globalSettings`:
         "highContrast": false,
         "reduceMotion": false,
         "reduceTransparency": false,
-        "readAloud": false
+        "readAloud": false,
+        "theming": false
       },
       "defaults": {
         "textScaleLevel": 2,
@@ -70,7 +71,25 @@ Use the following JSON shape in `globalSettings`:
         "highContrastEnabled": false,
         "reduceMotionEnabled": false,
         "reduceTransparencyEnabled": false,
-        "readAloudEnabled": false
+        "readAloudEnabled": false,
+        "themeMode": "system"
+      },
+      "themePalettes": {
+        "light": {
+          "primary": "#107821",
+          "onPrimary": "#FFFFFF",
+          "background": "#FFFFFF",
+          "surface": "#FFFFFF",
+          "text": "#141414"
+        },
+        "dark": {
+          "primary": "#8AD996",
+          "onPrimary": "#141414",
+          "background": "#121212",
+          "surface": "#1E1E1E",
+          "surfaceElevated": "#2A2A2A",
+          "text": "#F5F5F5"
+        }
       }
     }
   }
@@ -106,6 +125,9 @@ Any omitted key in `enabledFeatures` defaults to `false`.
   - Enables/disables in-app reduced-transparency preference.
 - `readAloud`
   - Enables/disables read-aloud capability toggle (feature gate for detail and HTML-page TTS behavior).
+- `theming`
+  - Enables/disables the Light, Dark, and System theme selector in both accessibility entry points.
+  - When disabled or omitted, the app uses the built-in light palette and ignores stored theme selections and configured palette overrides.
 
 ### `defaults`
 
@@ -118,10 +140,34 @@ Defines default user preference values applied when a user has no stored accessi
 - `reduceMotionEnabled`
 - `reduceTransparencyEnabled`
 - `readAloudEnabled`
+- `themeMode` (`"light"`, `"dark"`, or `"system"`; defaults to `"system"`)
+
+### `themePalettes`
+
+Defines optional, partial palette overrides for `light` and `dark`. Each mode is merged with its built-in palette, so operators only need to provide tokens that differ from the defaults.
+
+The preferred semantic tokens are:
+
+- Surfaces: `background`, `surface`, `surfaceElevated`
+- Content: `text`, `textMuted`, `onPrimary`
+- Brand and actions: `primary`, `lighterPrimary`, `lighterPrimaryRgba`, `darkerPrimary`, `darkerPrimaryRgba`, `secondary`, `accent`, `blue`
+- State and structure: `error`, `errorRgba`, `border`, `borderRgba`, `placeholder`, `shadow`, `shadowRgba`, `overlayRgba`, `backgroundRgba`
+- Calendar: `calendarBackground`, `calendarTodayText`, `calendarSelectedDayText`, `calendarSelected`
+- Utility: `gray20`, `gray40`, `gray60`, `refreshControl`, `transparent`
+
+`darkText` and `lightestText` remain available as compatibility aliases. Prefer `text` and `onPrimary` in new configuration and application code. Overriding `text` automatically synchronizes `darkText`; overriding `onPrimary` automatically synchronizes `lightestText`.
+
+Palette rules:
+
+- Accepted values are CSS-style hex (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`), `rgb(...)`, `rgba(...)`, and `transparent`.
+- Unknown tokens, malformed colors, and values of the wrong type are ignored.
+- Critical text pairs must meet a WCAG contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
+- If a critical pair is invalid, translucent, or below the threshold, both tokens in that pair fall back to the built-in palette for that mode. Use opaque values for critical foreground/background tokens.
+- Palette changes received through `globalSettings` are resolved at runtime; no app rebuild is required.
 
 ## Precedence and Persistence
 
-## Runtime precedence
+### Runtime precedence
 
 For bold text, motion, transparency, and text-scaling-related behavior, effective runtime values are resolved from:
 
@@ -131,7 +177,17 @@ For bold text, motion, transparency, and text-scaling-related behavior, effectiv
 
 This means OS accessibility still works even if the app-level preference is off.
 
-## Local persistence
+Theme resolution follows this order:
+
+1. `enabledFeatures.theming` decides whether theming is active.
+2. A persisted user selection overrides `defaults.themeMode`.
+3. `system` resolves through the current iOS/Android color scheme and updates while the app is running.
+4. The matching built-in palette is merged with `themePalettes.light` or `themePalettes.dark`.
+5. Invalid or insufficient-contrast overrides fall back to built-in tokens.
+
+When theming is disabled, the resolved mode is always `light`, regardless of the OS scheme or stored preference.
+
+### Local persistence
 
 User selections are stored in local storage under:
 
@@ -142,16 +198,17 @@ Behavior:
 - If stored settings exist, they are reused.
 - If no stored settings exist, `defaults` from `globalSettings` are applied.
 - Changes in the Settings screen and header modal update the same stored state.
+- When theming is disabled, stored theme values are not applied; preference hydration normalizes them to the configured default while the runtime remains light.
 
 ## User-Facing Behavior
 
-## Settings screen
+### Settings screen
 
 - Accessibility appears as a dedicated Settings entry when `enabledFeatures.settingsEntry === true`.
 - The screen exposes toggles only for features enabled by `enabledFeatures`.
 - A reset action restores values to global defaults (`defaults`).
 
-## Header modal
+### Header modal
 
 - Header accessibility icon is shown when `enabledFeatures.headerEntry === true`.
 - Tapping the icon opens a modal with the same toggle set as the Settings screen.
@@ -192,8 +249,71 @@ Behavior:
   - Reads detail content block-by-block in display order.
   - Uses `expo-speech` and automatically chunks long strings according to `Speech.maxSpeechInputLength`.
   - Stops playback when app goes to background or when leaving the screen.
+- **Theme (Light / Dark / System)**
+  - Is shown when `enabledFeatures.theming` is enabled.
+  - Uses one radio-group selector in both the Settings screen and header accessibility modal.
+  - Applies immediately to navigation, headers, drawers, tabs, modals, forms, lists, cards, maps, HTML content, media surfaces, loaders, icons, and other shared primitives.
+  - Persists the user selection under `accessibilityUserSettings.themeMode`.
+  - Uses the current OS appearance in `system` mode.
+  - Supports independently configurable light and dark palettes through `themePalettes`.
 
-### Read Aloud Coverage (Screen-by-Screen)
+## Integrating Theme Support in App Code
+
+All new or changed UI must resolve colors at render time. Do not import the backwards-compatible static `colors` object for component styling; it represents only the built-in light palette.
+
+### Functional components and style sheets
+
+Use `useThemeStyles` for style objects and `useTheme` for runtime props such as icon colors:
+
+```tsx
+import { useTheme, useThemeStyles } from '../hooks';
+
+const ExampleCard = () => {
+  const { colors, mode } = useTheme();
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <View style={styles.card}>
+      <Icon.Info color={colors.primary} />
+      <RegularText>{mode === 'dark' ? 'Dark' : 'Light'}</RegularText>
+    </View>
+  );
+};
+
+const createStyles = (colors) => ({
+  card: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border
+  }
+});
+```
+
+Use semantic tokens according to purpose: `background` for screen backgrounds, `surface`/`surfaceElevated` for cards and overlays, `text`/`textMuted` for content, `onPrimary` for content placed on `primary`, and `error` for destructive/error states.
+
+### Styled components
+
+The app provides the active palette through `styled-components`:
+
+```tsx
+const Card = styled.View`
+  background-color: ${({ theme }) => theme.surface};
+  border-color: ${({ theme }) => theme.border};
+`;
+```
+
+### Class components
+
+Set `static contextType = ThemeContext`, then build styles from `this.context.colors` during render. Do not create a module-level `StyleSheet` from the static light palette.
+
+### Special renderers
+
+- HTML/WebView CSS must be regenerated when `colors` changes and use `text`, `surface`, `surfaceElevated`, `border`, and `primary`.
+- Map layers and calendar theme objects must be created from the current palette rather than module-level constants.
+- Default icons and `IconUrl` already use the active `primary` token; pass an explicit semantic token when a different meaning is required.
+- Pull-to-refresh controls created by `usePullToRefetch` already use `refreshControl` from the active palette.
+- Status must never be communicated by color alone; retain a text or icon label in both themes.
+
+## Read Aloud Coverage (Screen-by-Screen)
 
 When `enabledFeatures.readAloud` is enabled and user preference `readAloudEnabled` is on, TTS controls are available on the following screens:
 
@@ -245,9 +365,13 @@ Implementation notes:
 1. Add `settings.accessibility` to your `globalSettings` payload.
 2. Enable only the features you want to release.
 3. Set defaults according to your accessibility policy.
-4. Verify:
+4. Configure and contrast-check both palettes when applying tenant branding.
+5. Verify:
    - Settings entry visibility,
    - header icon visibility,
+   - Light, Dark, and System selection in both entry points,
+   - live OS appearance changes while System is selected,
+   - navigation, modal, HTML, map, form, list, media, loading, and error surfaces in both modes,
    - persistence after app restart,
    - expected behavior on iOS and Android.
 
@@ -262,3 +386,10 @@ Implementation notes:
 - Feature toggle visible but no effect:
   - Confirm the related feature key in `enabledFeatures` is `true`.
   - Confirm target components consume accessibility context values.
+- Theme selector does not appear:
+  - Check `enabledFeatures.theming` is explicitly set to `true`.
+- Custom palette value is not applied:
+  - Check the token name and color syntax.
+  - Check the critical contrast pairs; unsafe overrides deliberately fall back to built-in values.
+- A screen remains light after switching themes:
+  - Replace module-level `colors` usage with `useTheme`, `useThemeStyles`, `ThemeContext`, or the styled-components theme as appropriate.
