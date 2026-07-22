@@ -32,6 +32,22 @@ import { RegularText } from './Text';
 import { VolunteerAvatar } from './volunteer';
 import { Wrapper } from './Wrapper';
 
+const MessageVideo = ({ styles, uri }) => {
+  const player = useVideoPlayer(uri, (videoPlayer) => {
+    videoPlayer.loop = true;
+    videoPlayer.play();
+  });
+
+  return (
+    <VideoView player={player} resizeMode="cover" style={styles.videoBubble} useNativeControls />
+  );
+};
+
+MessageVideo.propTypes = {
+  styles: PropTypes.object.isRequired,
+  uri: PropTypes.string.isRequired
+};
+
 const { IMAGE_TYPE_REGEX, MB_TO_BYTES, VIDEO_TYPE_REGEX } = consts;
 
 /**
@@ -285,23 +301,9 @@ export const Chat = ({
         ))
       }
       renderMessageVideo={(props) =>
-        props?.currentMessage?.video?.map(({ uri }, index) => {
-          const player = useVideoPlayer(uri, (player) => {
-            player.loop = true;
-            player.play();
-          });
-
-          return (
-            <VideoView
-              player={player}
-              key={`video-${index}`}
-              resizeMode="cover"
-              source={{ uri }}
-              style={styles.videoBubble}
-              useNativeControls
-            />
-          );
-        })
+        props?.currentMessage?.video?.map(({ uri }, index) => (
+          <MessageVideo key={`video-${index}`} styles={styles} uri={uri} />
+        ))
       }
       renderMessageText={(props) => (
         <MessageText

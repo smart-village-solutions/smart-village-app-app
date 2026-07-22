@@ -17,7 +17,7 @@ type TabBarIconProps = {
   size: number;
 };
 
-const homeTabConfig: TabConfig = {
+const homeTabConfig = (): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Home,
     isDrawer: false
@@ -29,9 +29,9 @@ const homeTabConfig: TabConfig = {
       <OrientationAwareIcon color={color} Icon={Icon.Home} />
     )
   }
-};
+});
 
-const serviceTabConfig: TabConfig = {
+const serviceTabConfig = (): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Service,
     isDrawer: false
@@ -43,7 +43,7 @@ const serviceTabConfig: TabConfig = {
       <OrientationAwareIcon color={color} Icon={Icon.Service} style={{ marginTop: normalize(3) }} />
     )
   }
-};
+});
 
 const pointOfInterestTabConfig = (colors: ThemeColorPalette): TabConfig => ({
   stackConfig: defaultStackConfig({
@@ -66,7 +66,7 @@ const pointOfInterestTabConfig = (colors: ThemeColorPalette): TabConfig => ({
   }
 });
 
-const eventsTabConfig: TabConfig = {
+const eventsTabConfig = (): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Events,
     isDrawer: false
@@ -78,9 +78,9 @@ const eventsTabConfig: TabConfig = {
       <OrientationAwareIcon color={color} Icon={Icon.Calendar} />
     )
   }
-};
+});
 
-const aboutTabConfig: TabConfig = {
+const aboutTabConfig = (): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.About,
     isDrawer: false
@@ -97,7 +97,7 @@ const aboutTabConfig: TabConfig = {
       />
     )
   }
-};
+});
 
 export const createDefaultTabNavigatorConfig = (
   colors: ThemeColorPalette = lightColors
@@ -107,17 +107,13 @@ export const createDefaultTabNavigatorConfig = (
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
   tabConfigs: [
-    homeTabConfig,
-    serviceTabConfig,
+    homeTabConfig(),
+    serviceTabConfig(),
     pointOfInterestTabConfig(colors),
-    eventsTabConfig,
-    aboutTabConfig
+    eventsTabConfig(),
+    aboutTabConfig()
   ]
 });
-
-// Backwards-compatible light defaults for non-React consumers. Navigators use the
-// runtime factory so theme changes are reflected immediately.
-export const tabNavigatorConfig = createDefaultTabNavigatorConfig();
 
 export const createDynamicTabConfig = (
   accessibilityLabel: string,

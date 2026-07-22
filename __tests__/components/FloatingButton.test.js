@@ -3,12 +3,26 @@ import { TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { FloatingButton } from '../../src/components/FloatingButton';
+import { lightColors } from '../../src/config/colors';
+import { ThemeContext } from '../../src/ThemeContext';
+
+const themeColors = {
+  ...lightColors,
+  darkText: '#111111',
+  lightestText: '#ffffff',
+  primary: '#000000',
+  shadow: '#000000'
+};
 
 const renderFloatingButton = (props) => {
   let testRenderer;
 
   renderer.act(() => {
-    testRenderer = renderer.create(<FloatingButton publicJsonFile="floatingButton" {...props} />);
+    testRenderer = renderer.create(
+      <ThemeContext.Provider value={{ colors: themeColors, isDark: false, mode: 'light' }}>
+        <FloatingButton publicJsonFile="floatingButton" {...props} />
+      </ThemeContext.Provider>
+    );
   });
 
   return testRenderer;
