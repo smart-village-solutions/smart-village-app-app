@@ -313,6 +313,33 @@ Set `static contextType = ThemeContext`, then build styles from `this.context.co
 - Pull-to-refresh controls created by `usePullToRefetch` already use `refreshControl` from the active palette.
 - Status must never be communicated by color alone; retain a text or icon label in both themes.
 
+### Themed `tabNavigation` static content
+
+The four root-level tab bar color fields remain supported as legacy light-mode configuration. Dark mode uses the semantic app palette unless `themeColors.dark` is provided. This prevents an existing light-only `tabNavigation` payload from forcing a light tab bar in dark mode.
+
+```json
+{
+  "activeTintColor": "#005A8D",
+  "inactiveTintColor": "#666666",
+  "activeBackgroundColor": "#FFFFFF",
+  "inactiveBackgroundColor": "#FFFFFF",
+  "themeColors": {
+    "light": {
+      "activeTintColor": "#005A8D"
+    },
+    "dark": {
+      "activeTintColor": "#8AD996",
+      "inactiveTintColor": "#F5F5F5",
+      "activeBackgroundColor": "#1E1E1E",
+      "inactiveBackgroundColor": "#1E1E1E"
+    }
+  },
+  "tabConfigs": ["Home", "Service", "Index", "Events", "About"]
+}
+```
+
+Mode-specific values are partial. Any omitted value falls back to the active semantic palette. `themeColors.light` takes precedence over the legacy root-level light value when both are present.
+
 ## Read Aloud Coverage (Screen-by-Screen)
 
 When `enabledFeatures.readAloud` is enabled and user preference `readAloudEnabled` is on, TTS controls are available on the following screens:
