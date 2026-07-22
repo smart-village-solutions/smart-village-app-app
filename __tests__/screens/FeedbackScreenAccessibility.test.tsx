@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
+import { Alert } from 'react-native';
 import renderer from 'react-test-renderer';
+
+const mockGoBack = jest.fn();
+let mockValidationErrors: Record<string, { message: string }> | null = null;
 
 jest.mock('react-native', () => {
   const ReactLocal = require('react');
@@ -11,7 +16,8 @@ jest.mock('react-native', () => {
     Keyboard: {
       dismiss: jest.fn()
     },
-    ScrollView: ({ children, ...props }) => ReactLocal.createElement('mock-scroll-view', props, children),
+    ScrollView: ({ children, ...props }) =>
+      ReactLocal.createElement('mock-scroll-view', props, children),
     StyleSheet: {
       create: (styles) => styles
     }
@@ -20,7 +26,7 @@ jest.mock('react-native', () => {
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
-    goBack: jest.fn(),
+    goBack: mockGoBack,
     navigate: jest.fn()
   })
 }));
@@ -34,7 +40,8 @@ jest.mock('react-hook-form', () => ({
   useForm: () => ({
     control: {},
     formState: { errors: {} },
-    handleSubmit: (handler) => handler
+    handleSubmit: (onValid, onInvalid) => (data) =>
+      mockValidationErrors ? onInvalid(mockValidationErrors) : onValid(data)
   })
 }));
 
@@ -75,6 +82,7 @@ jest.mock('../../src/config', () => ({
     feedbackScreen: {
       alert: {
         message: 'Vielen Dank fuer Ihr Feedback!',
+        ok: 'OK',
         title: 'Feedback'
       },
       inputsErrorMessages: {
@@ -123,6 +131,11 @@ const renderWithAct = (component: React.ReactElement) => {
 };
 
 describe('FeedbackScreen accessibility', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockValidationErrors = null;
+  });
+
   it('configures the email field with email semantics for accessibility and autofill', () => {
     const testRenderer = renderWithAct(<FeedbackScreen route={{ params: {} }} />);
 
@@ -135,5 +148,43 @@ describe('FeedbackScreen accessibility', () => {
     expect(emailInput?.props.textContentType).toBe('emailAddress');
     expect(emailInput?.props.autoComplete).toBe('email');
     expect(emailInput?.props.autoCapitalize).toBe('none');
+  });
+
+  it('keeps the success status alert focused until it is acknowledged', async () => {
+    const testRenderer = renderWithAct(<FeedbackScreen route={{ params: {} }} />);
+    const sendButton = testRenderer.root.findByType('mock-button');
+
+    await renderer.act(async () => {
+      await sendButton.props.onPress({
+        consent: true,
+        email: 'person@example.com',
+        message: 'Feedback',
+        name: 'Person',
+        phone: ''
+      });
+    });
+
+    expect(Alert.alert).toHaveBeenCalledWith('Feedback', 'Vielen Dank fuer Ihr Feedback!', [
+      expect.objectContaining({ text: 'OK', onPress: expect.any(Function) })
+    ]);
+    expect(mockGoBack).not.toHaveBeenCalled();
+
+    const alertActions = (Alert.alert as jest.Mock).mock.calls[0][2];
+    renderer.act(() => alertActions[0].onPress());
+
+    expect(mockGoBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('presents the first validation status in an automatically focused alert', () => {
+    mockValidationErrors = {
+      message: { message: 'Bitte geben Sie eine Mitteilung ein.' }
+    };
+    const testRenderer = renderWithAct(<FeedbackScreen route={{ params: {} }} />);
+    const sendButton = testRenderer.root.findByType('mock-button');
+
+    renderer.act(() => sendButton.props.onPress({}));
+
+    expect(Alert.alert).toHaveBeenCalledWith('Hinweis', 'Bitte geben Sie eine Mitteilung ein.');
+    expect(mockGoBack).not.toHaveBeenCalled();
   });
 });

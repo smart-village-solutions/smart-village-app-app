@@ -50,6 +50,16 @@ export const FeedbackScreen = ({ route }) => {
 
   const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
 
+  const onInvalid = (validationErrors) => {
+    const firstError = Object.values(validationErrors).find(
+      (error) => typeof error?.message === 'string'
+    );
+
+    if (firstError) {
+      Alert.alert(texts.feedbackScreen.inputsErrorMessages.hint, firstError.message);
+    }
+  };
+
   const onSubmit = async (createAppUserContentNewData) => {
     Keyboard.dismiss();
 
@@ -77,13 +87,17 @@ export const FeedbackScreen = ({ route }) => {
 
     try {
       await createAppUserContent({ variables: formData });
-      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
+      setLoading(false);
+      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message, [
+        {
+          text: texts.feedbackScreen.alert.ok,
+          onPress: () => navigation.goBack()
+        }
+      ]);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
-
-    setLoading(false);
-    navigation.goBack();
   };
 
   return (
@@ -169,7 +183,7 @@ export const FeedbackScreen = ({ route }) => {
 
           <Wrapper noPaddingTop>
             <Button
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit(onSubmit, onInvalid)}
               title={
                 loading
                   ? texts.feedbackScreen.sendButton.disabled
