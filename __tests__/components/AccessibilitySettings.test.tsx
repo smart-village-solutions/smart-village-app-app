@@ -4,7 +4,8 @@ import renderer from 'react-test-renderer';
 jest.mock('react-native-elements', () => {
   const ReactLocal = require('react');
 
-  const ListItem = (props: unknown) => ReactLocal.createElement('mock-list-item', props, props.children);
+  const ListItem = (props: unknown) =>
+    ReactLocal.createElement('mock-list-item', props, props.children);
   ListItem.Content = (props: unknown) =>
     ReactLocal.createElement('mock-list-item-content', props, props.children);
 
@@ -43,6 +44,13 @@ jest.mock('../../src/config', () => ({
         reduceMotion: { title: 'Bewegung reduzieren', description: 'desc' },
         reduceTransparency: { title: 'Transparenz reduzieren', description: 'desc' },
         reset: 'Auf Standardwerte zurücksetzen',
+        theme: {
+          title: 'Farbschema',
+          description: 'Farbschema auswählen',
+          light: 'Hell',
+          dark: 'Dunkel',
+          system: 'Systemeinstellung'
+        },
         textSize: {
           currentValue: 'Aktuelle Größe: {{value}}',
           decreaseLabel: 'A-',
@@ -80,6 +88,14 @@ jest.mock('../../src/components/Button', () => ({
 
 jest.mock('../../src/components/SettingsToggle', () => ({
   SettingsToggle: () => null
+}));
+
+jest.mock('../../src/components/Radiobutton', () => ({
+  Radiobutton: (props: unknown) => {
+    const ReactLocal = require('react');
+
+    return ReactLocal.createElement('mock-radiobutton', props);
+  }
 }));
 
 jest.mock('../../src/components/Text', () => ({
@@ -123,7 +139,9 @@ describe('AccessibilitySettings', () => {
       },
       resetPreferences: jest.fn(),
       setPreference: jest.fn(),
-      setTextScaleLevel: jest.fn()
+      setTextScaleLevel: jest.fn(),
+      setThemeMode: jest.fn(),
+      themeMode: 'system'
     });
   });
 
@@ -139,10 +157,14 @@ describe('AccessibilitySettings', () => {
       },
       resetPreferences: jest.fn(),
       setPreference: jest.fn(),
-      setTextScaleLevel: jest.fn()
+      setTextScaleLevel: jest.fn(),
+      setThemeMode: jest.fn(),
+      themeMode: 'system'
     });
 
-    const tree = renderWithAct(<AccessibilitySettings withResetButton={false} withScrollView={false} />);
+    const tree = renderWithAct(
+      <AccessibilitySettings withResetButton={false} withScrollView={false} />
+    );
     const touchables = tree.root.findAllByType('mock-touchable');
 
     expect(touchables[0].props.style).toEqual(
@@ -151,5 +173,43 @@ describe('AccessibilitySettings', () => {
     expect(touchables[1].props.style).toEqual(
       expect.arrayContaining([expect.objectContaining({ borderColor: '#141414' })])
     );
+  });
+
+  it('renders an accessible light, dark and system radio group when theming is enabled', () => {
+    const setThemeMode = jest.fn();
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: {
+        textScaling: false,
+        theming: true
+      },
+      preferences: {
+        textScaleLevel: 2
+      },
+      resetPreferences: jest.fn(),
+      setPreference: jest.fn(),
+      setTextScaleLevel: jest.fn(),
+      setThemeMode,
+      themeMode: 'system'
+    });
+
+    const tree = renderWithAct(
+      <AccessibilitySettings withResetButton={false} withScrollView={false} />
+    );
+    const radioGroup = tree.root.findByProps({ accessibilityRole: 'radiogroup' });
+    const radios = tree.root.findAllByType('mock-radiobutton');
+
+    expect(radioGroup.props.accessibilityLabel).toBe('Farbschema');
+    expect(radios.map((radio) => radio.props.title)).toEqual([
+      'Hell',
+      'Dunkel',
+      'Systemeinstellung'
+    ]);
+    expect(radios.map((radio) => radio.props.selected)).toEqual([false, false, true]);
+
+    renderer.act(() => {
+      radios[1].props.onPress();
+    });
+
+    expect(setThemeMode).toHaveBeenCalledWith('dark');
   });
 });

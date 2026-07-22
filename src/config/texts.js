@@ -1278,6 +1278,13 @@ export const texts = {
         'Diese Einstellungen erweitern die systemweiten Bedienungshilfen um app-interne Optionen.',
       reset: 'Auf Standardwerte zurücksetzen',
       setting: 'Barrierefreiheit',
+      theme: {
+        title: 'Farbschema',
+        description: 'Wähle ein helles, dunkles oder vom Gerät gesteuertes Farbschema.',
+        light: 'Hell',
+        dark: 'Dunkel',
+        system: 'Systemeinstellung'
+      },
       textSize: {
         title: 'Textgröße',
         description: 'Passe die Schriftgröße in der App stufenweise an.',
