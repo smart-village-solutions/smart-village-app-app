@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
-import { Platform } from 'react-native';
 
-import { device, normalize } from '../../config';
+import { device } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { SettingsContext } from '../../SettingsProvider';
 import { Wrapper } from '../Wrapper';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { WasteCityInput } from './WasteCityInput';
 import { WasteStreetInput } from './WasteStreetInput';
+import { createWasteInputStyles } from './wasteInputStyles';
 
 export const WasteInputForm = ({
   renderSuggestions = {
@@ -34,7 +34,7 @@ export const WasteInputForm = ({
   };
   setSelectedStreetId: (id?: number) => void;
 }) => {
-  const styles = useThemeStyles(createStyles);
+  const styles = useThemeStyles(createWasteInputStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -74,61 +74,3 @@ export const WasteInputForm = ({
     </>
   );
 };
-
-const createStyles = (colors) => ({
-  autoCompleteContainer: {
-    paddingHorizontal: 0
-  },
-
-  autoCompleteInputContainer: {
-    borderColor: colors.gray40,
-    borderRadius: normalize(8),
-    borderWidth: normalize(1),
-    height: normalize(42)
-  },
-
-  autoCompleteInput: {
-    backgroundColor: colors.transparent,
-    color: colors.darkText,
-    paddingLeft: normalize(12),
-    paddingRight: normalize(6),
-    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
-    fontFamily: 'regular',
-    fontSize: normalize(14),
-    height: normalize(42),
-    lineHeight: normalize(20)
-  },
-
-  autoCompleteList: {
-    paddingHorizontal: normalize(6),
-    position: 'relative',
-    ...Platform.select({
-      ios: {
-        borderWidth: 0
-      },
-      android: {
-        borderColor: colors.gray20,
-        borderRadius: 0,
-        borderWidth: normalize(1),
-        maxHeight: normalize(300)
-      }
-    })
-  },
-
-  autoCompleteListContainer: {
-    elevation: 2,
-    shadowColor: colors.shadow,
-    shadowOffset: { height: 5, width: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3
-  },
-
-  noPaddingTop: {
-    paddingTop: 0
-  },
-
-  noBorderTop: {
-    borderTopWidth: 0,
-    marginTop: normalize(-1)
-  }
-});
