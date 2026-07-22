@@ -107,7 +107,7 @@ export const Filter = ({
     } else {
       setIsCollapsed(!isCollapsed);
 
-      const { dateRange, ...rest } = initialQueryVariables || {};
+      const rest = _omit(initialQueryVariables || {}, ['dateRange']);
 
       setFilters((prev) => ({
         saveable: false,
@@ -191,89 +191,91 @@ export const Filter = ({
             presentationStyle="pageSheet"
             visible={!isCollapsed}
           >
-            <Header
-              backgroundColor={colors.transparent}
-              centerComponent={{
-                text: texts.filter.header,
-                style: {
-                  color: colors.darkText,
-                  fontFamily: 'condbold',
-                  fontSize: normalize(18),
-                  lineHeight: normalize(23)
+            <View style={styles.overlayContent}>
+              <Header
+                backgroundColor={colors.background}
+                centerComponent={{
+                  text: texts.filter.header,
+                  style: {
+                    color: colors.text,
+                    fontFamily: 'condbold',
+                    fontSize: normalize(18),
+                    lineHeight: normalize(23)
+                  }
+                }}
+                rightComponent={
+                  <TouchableOpacity
+                    accessibilityLabel={`${texts.accessibilityLabels.actions.close} ${a11yLabel.button}`}
+                    accessibilityRole="button"
+                    onPress={() => setIsCollapsed(!isCollapsed)}
+                    style={styles.closeButton}
+                  >
+                    <Icon.Close color={colors.text} size={normalize(20)} />
+                  </TouchableOpacity>
                 }
-              }}
-              rightComponent={
-                <TouchableOpacity
-                  accessibilityLabel={`${texts.accessibilityLabels.actions.close} ${a11yLabel.button}`}
-                  accessibilityRole="button"
-                  onPress={() => setIsCollapsed(!isCollapsed)}
-                  style={styles.closeButton}
-                >
-                  <Icon.Close color={colors.darkText} size={normalize(20)} />
-                </TouchableOpacity>
-              }
-              rightContainerStyle={styles.headerRightContainer}
-            />
-            <Divider />
-            <ScrollView>
-              <Wrapper noPaddingTop noPaddingBottom>
-                <FilterComponent
-                  filters={filters}
-                  filterTypes={filterTypes}
-                  isOverlayFilter
-                  setFilters={setFilters}
-                />
+                rightContainerStyle={styles.headerRightContainer}
+              />
+              <Divider style={styles.overlayDivider} />
+              <ScrollView style={styles.overlayScrollView}>
+                <Wrapper noPaddingTop noPaddingBottom>
+                  <FilterComponent
+                    filters={filters}
+                    filterTypes={filterTypes}
+                    isOverlayFilter
+                    setFilters={setFilters}
+                  />
+                </Wrapper>
+              </ScrollView>
+
+              <Wrapper style={styles.alignLeft} noPaddingTop>
+                <WrapperRow style={{ gap: normalize(16) }}>
+                  <Button
+                    disabled={!!isNoFilterSet}
+                    invert
+                    notFullWidth
+                    onPress={resetFilters}
+                    title={texts.filter.resetFilter}
+                  />
+                  <Button
+                    disabled={!!isNoFilterSet}
+                    notFullWidth
+                    onPress={() => {
+                      let dateRange = filters.dateRange || null;
+
+                      if (filters.start_date && filters.end_date) {
+                        dateRange = [
+                          momentFormat(filters.start_date, 'YYYY-MM-DD'),
+                          momentFormat(filters.end_date, 'YYYY-MM-DD')
+                        ];
+                      } else if (filters.start_date && !filters.end_date) {
+                        // because of the requirement to specify the start and end date of the `dateRange`,
+                        // if only `startDate` is selected, `endDate` is set to 31.12.9999
+                        dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
+                      } else if (!filters.start_date && filters.end_date) {
+                        // because of the requirement to specify the start and end date of the `dateRange`,
+                        // if only `endDate` is selected, `startDate` is set to today's date or if
+                        // `endDate` is in the past, it is set to the date of the `endDate`
+                        dateRange = [
+                          moment().isAfter(filters.end_date)
+                            ? momentFormat(filters.end_date, 'YYYY-MM-DD')
+                            : moment().format('YYYY-MM-DD'),
+                          momentFormat(filters.end_date, 'YYYY-MM-DD')
+                        ];
+                      }
+
+                      if (dateRange?.length) {
+                        setQueryVariables({ ...filters, dateRange });
+                      } else {
+                        setQueryVariables({ ...filters });
+                      }
+
+                      setIsCollapsed(!isCollapsed);
+                    }}
+                    title={texts.filter.filter}
+                  />
+                </WrapperRow>
               </Wrapper>
-            </ScrollView>
-
-            <Wrapper style={styles.alignLeft} noPaddingTop>
-              <WrapperRow style={{ gap: normalize(16) }}>
-                <Button
-                  disabled={!!isNoFilterSet}
-                  invert
-                  notFullWidth
-                  onPress={resetFilters}
-                  title={texts.filter.resetFilter}
-                />
-                <Button
-                  disabled={!!isNoFilterSet}
-                  notFullWidth
-                  onPress={() => {
-                    let dateRange = filters.dateRange || null;
-
-                    if (filters.start_date && filters.end_date) {
-                      dateRange = [
-                        momentFormat(filters.start_date, 'YYYY-MM-DD'),
-                        momentFormat(filters.end_date, 'YYYY-MM-DD')
-                      ];
-                    } else if (filters.start_date && !filters.end_date) {
-                      // because of the requirement to specify the start and end date of the `dateRange`,
-                      // if only `startDate` is selected, `endDate` is set to 31.12.9999
-                      dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
-                    } else if (!filters.start_date && filters.end_date) {
-                      // because of the requirement to specify the start and end date of the `dateRange`,
-                      // if only `endDate` is selected, `startDate` is set to today's date or if
-                      // `endDate` is in the past, it is set to the date of the `endDate`
-                      dateRange = [
-                        moment().isAfter(filters.end_date)
-                          ? momentFormat(filters.end_date, 'YYYY-MM-DD')
-                          : moment().format('YYYY-MM-DD'),
-                        momentFormat(filters.end_date, 'YYYY-MM-DD')
-                      ];
-                    }
-
-                    if (dateRange?.length) {
-                      setQueryVariables({ ...filters, dateRange });
-                    } else {
-                      setQueryVariables({ ...filters });
-                    }
-
-                    setIsCollapsed(!isCollapsed);
-                  }}
-                  title={texts.filter.filter}
-                />
-              </WrapperRow>
-            </Wrapper>
+            </View>
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
@@ -342,5 +344,18 @@ const createStyles = (colors) => ({
 
   icon: {
     paddingLeft: normalize(8)
+  },
+
+  overlayContent: {
+    backgroundColor: colors.background,
+    flex: 1
+  },
+
+  overlayDivider: {
+    backgroundColor: colors.border
+  },
+
+  overlayScrollView: {
+    backgroundColor: colors.background
   }
 });
