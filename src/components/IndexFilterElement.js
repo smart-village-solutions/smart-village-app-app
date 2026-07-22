@@ -3,22 +3,27 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 
-import { colors } from '../config';
+import { lightColors } from '../config/colors';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { WrapperVertical } from './Wrapper';
 
 export const IndexFilterWrapper = styled.View`
   border-bottom-width: ${StyleSheet.hairlineWidth};
-  border-bottom-color: ${colors.shadow};
+  border-bottom-color: ${(props) => props.theme?.shadow || lightColors.shadow};
 `;
 
-export const IndexFilterElement = ({ children, selected }) => (
-  <WrapperVertical>
-    <View style={selected ? styles.underline : undefined}>{children}</View>
-  </WrapperVertical>
-);
+export const IndexFilterElement = ({ children, selected }) => {
+  const styles = useThemeStyles(createStyles);
 
-const styles = StyleSheet.create({
+  return (
+    <WrapperVertical>
+      <View style={selected ? styles.underline : undefined}>{children}</View>
+    </WrapperVertical>
+  );
+};
+
+const createStyles = (colors) => ({
   underline: {
     borderBottomColor: colors.primary,
     borderBottomWidth: 1

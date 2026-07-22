@@ -3,9 +3,10 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { formatAddress, shareMessage } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES } from '../../queries';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
@@ -72,21 +73,26 @@ const parseAttributes = (input?: string) => {
   };
 };
 
-const LunchOffer = ({ name, price }: { name: string; price: string }) => (
-  <View style={styles.container}>
-    <View style={styles.nameContainer}>
-      <RegularText accessibilityLabel={`${consts.a11yLabel.lunch} (${name})`}>{name}</RegularText>
+const LunchOffer = ({ name, price }: { name: string; price: string }) => {
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.nameContainer}>
+        <RegularText accessibilityLabel={`${consts.a11yLabel.lunch} (${name})`}>{name}</RegularText>
+      </View>
+      <View style={styles.priceContainer}>
+        <RegularText accessibilityLabel={`${consts.a11yLabel.price} (${name}): ${price}`}>
+          {price}
+        </RegularText>
+      </View>
     </View>
-    <View style={styles.priceContainer}>
-      <RegularText accessibilityLabel={`${consts.a11yLabel.price} (${name}): ${price}`}>
-        {price}
-      </RegularText>
-    </View>
-  </View>
-);
+  );
+};
 
 // eslint-disable-next-line complexity
 export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const { text, lunchOffers, pointOfInterest, pointOfInterestAttributes } = lunchOfferData;
 
   // validation already filters out entries where pointOfInterest is null or undefined
@@ -172,7 +178,7 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   address: {
     flexDirection: 'column'
   },

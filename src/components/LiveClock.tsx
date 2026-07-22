@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, Easing, View } from 'react-native';
 
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { BoldText } from './Text';
 import { Wrapper } from './Wrapper';
@@ -9,6 +10,7 @@ import { Wrapper } from './Wrapper';
 const SECOND_DIGIT_HEIGHT = normalize(54);
 
 const AnimatedSeconds = ({ seconds }: { seconds: number }) => {
+  const styles = useThemeStyles(createStyles);
   const slideAnim = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
@@ -72,6 +74,7 @@ const AnimatedSeconds = ({ seconds }: { seconds: number }) => {
 };
 
 export const LiveClock = ({ withAnimatedSeconds }: { withAnimatedSeconds?: boolean }) => {
+  const styles = useThemeStyles(createStyles);
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -112,7 +115,7 @@ export const LiveClock = ({ withAnimatedSeconds }: { withAnimatedSeconds?: boole
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   liveClockText: {
     fontSize: normalize(48),
     lineHeight: SECOND_DIGIT_HEIGHT,

@@ -6,6 +6,7 @@ import { IconUrl, normalize, texts } from '../../config';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { WrapperHorizontal } from '../Wrapper';
+import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
@@ -52,12 +53,13 @@ export const AvailableVehicles = ({
   status: 'frei' | 'belegt' | 'unbekannt' | null;
   iconName: string;
 }) => {
+  const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const statusCircle =
     status === 'frei' ? (
-      <RegularText style={{ color: '#7cbb4d' }}> ⬤</RegularText>
+      <RegularText style={{ color: colors.primary }}> ⬤</RegularText>
     ) : status === 'belegt' ? (
-      <RegularText style={{ color: '#e60041' }}> ⬤</RegularText>
+      <RegularText style={{ color: colors.error }}> ⬤</RegularText>
     ) : null;
   return (
     <>

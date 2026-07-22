@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { VolunteerAvatar } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
+import { useTheme } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { getTitleForQuery } from '../queryHelper';
@@ -10,6 +11,14 @@ import { shareMessage } from '../shareHelper';
 import { volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
+
+const VolunteerMemberIcon = () => {
+  const { colors } = useTheme();
+
+  return (
+    <Icon.Member color={colors.placeholder} size={normalize(13)} style={styles.statustitleIcon} />
+  );
+};
 
 /* eslint-disable complexity */
 export const parseVolunteerData = (
@@ -26,13 +35,7 @@ export const parseVolunteerData = (
     if (query === QUERY_TYPES.VOLUNTEER.USER) {
       if ((volunteer.user?.id || volunteer.id) == currentUserId) {
         badge = {
-          value: texts.volunteer.myProfile,
-          textStyle: {
-            color: colors.lightestText
-          },
-          badgeStyle: {
-            backgroundColor: colors.primary
-          }
+          value: texts.volunteer.myProfile
         };
       }
 
@@ -41,13 +44,7 @@ export const parseVolunteerData = (
 
     if (query === QUERY_TYPES.VOLUNTEER.GROUP && !!volunteer.role) {
       statustitle = texts.volunteer[volunteer.role];
-      statustitleIcon = (
-        <Icon.Member
-          color={colors.placeholder}
-          size={normalize(13)}
-          style={styles.statustitleIcon}
-        />
-      );
+      statustitleIcon = <VolunteerMemberIcon />;
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.GROUP) {

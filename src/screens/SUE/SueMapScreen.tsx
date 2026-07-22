@@ -23,7 +23,7 @@ import {
   Wrapper,
   locationServiceEnabledAlert
 } from '../../components';
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import {
   useLastKnownPosition,
@@ -31,18 +31,25 @@ import {
   usePosition,
   useSystemPermission
 } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker, SueViewType } from '../../types';
 
-const CloseButton = ({ onPress }: { onPress: () => void }) => (
-  <TouchableOpacity
-    accessibilityLabel={consts.a11yLabel.closeIcon}
-    onPress={onPress}
-    style={styles.closeButton}
-  >
-    <Icon.Close size={normalize(16)} color={colors.surface} />
-  </TouchableOpacity>
-);
+const CloseButton = ({ onPress }: { onPress: () => void }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <TouchableOpacity
+      accessibilityLabel={consts.a11yLabel.closeIcon}
+      onPress={onPress}
+      style={styles.closeButton}
+    >
+      <Icon.Close size={normalize(16)} color={colors.onPrimary} />
+    </TouchableOpacity>
+  );
+};
 
 type ItemProps = {
   iconName: string;
@@ -76,6 +83,8 @@ type Props = {
 
 /* eslint-disable complexity */
 export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const { locationSettings = {} } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
@@ -207,7 +216,7 @@ export const SueMapScreen = ({ navigation, route, viewType, setViewType }: Props
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.placeholder,

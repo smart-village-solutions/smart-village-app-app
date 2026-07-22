@@ -1,99 +1,93 @@
 /* eslint-disable complexity */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import { LoadingSpinner } from '../components';
-import { createDynamicTabConfig, tabNavigatorConfig } from '../config/navigation/tabConfig';
-import { useStaticContent } from '../hooks';
+import {
+  createDefaultTabNavigatorConfig,
+  createDynamicTabConfig
+} from '../config/navigation/tabConfig';
+import { useStaticContent, useTheme } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
 import { CustomTab, TabConfig, TabNavigatorConfig } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
 
 export const useTabRoutes = () => {
+  const { colors } = useTheme();
+  const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
   const { data: tabRoutesData, loading } = useStaticContent<TabNavigatorConfig>({
     name: 'tabNavigation',
     type: 'json'
   });
 
-  const [tabRoutes, setTabRoutes] = useState<TabNavigatorConfig>();
+  const tabRoutes = useMemo(() => {
+    if (loading) return;
 
-  useEffect(() => {
     const {
       activeBackgroundColor,
       activeTintColor,
       inactiveBackgroundColor,
       inactiveTintColor,
       tabConfigs
-    } = tabRoutesData || tabNavigatorConfig;
+    } = tabRoutesData || defaultTabRoutes;
 
-    !loading &&
-      setTabRoutes((prev) => {
-        const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])?.map(
-          (tabConfig, index) => {
-            if (typeof tabConfig === 'string') {
-              // here we are comparing defaultTabs with the array on main-server.
-              // if the string in the main-server array matches the `initialRouteName` in the
-              // `tabNavigatorConfig` (default), that tab is automatically selected.
-              return tabNavigatorConfig.tabConfigs.find(
-                ({ stackConfig }) => stackConfig.initialRouteName === tabConfig
-              );
-            } else if ('stackConfig' in tabConfig) {
-              return tabConfig;
-            } else {
-              return createDynamicTabConfig(
-                tabConfig.accessibilityLabel,
-                tabConfig.iconName,
-                tabConfig.iconSize,
-                index,
-                tabConfig.label,
-                tabConfigs.length,
-                tabConfig.screen,
-                tabConfig.activeIconName,
-                tabConfig.iconLandscapeStyle,
-                tabConfig.iconStyle,
-                tabConfig.params,
-                tabConfig.strokeColor,
-                tabConfig.strokeWidth,
-                tabConfig.tabBarLabelStyle,
-                tabConfig.tilesScreenParams
-              );
-            }
-          }
-        );
+    const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])?.map(
+      (tabConfig, index) => {
+        if (typeof tabConfig === 'string') {
+          // Here we compare default tabs with the array on main-server. A matching
+          // initial route automatically selects the themed default tab definition.
+          return defaultTabRoutes.tabConfigs.find(
+            ({ stackConfig }) => stackConfig.initialRouteName === tabConfig
+          );
+        } else if ('stackConfig' in tabConfig) {
+          return tabConfig;
+        } else {
+          return createDynamicTabConfig(
+            tabConfig.accessibilityLabel,
+            tabConfig.iconName,
+            tabConfig.iconSize,
+            index,
+            tabConfig.label,
+            tabConfigs.length,
+            tabConfig.screen,
+            tabConfig.activeIconName,
+            tabConfig.iconLandscapeStyle,
+            tabConfig.iconStyle,
+            tabConfig.params,
+            tabConfig.strokeColor,
+            tabConfig.strokeWidth,
+            tabConfig.tabBarLabelStyle,
+            tabConfig.tilesScreenParams
+          );
+        }
+      }
+    );
 
-        return {
-          ...prev,
-          activeBackgroundColor,
-          activeTintColor,
-          inactiveBackgroundColor,
-          inactiveTintColor,
-          tabConfigs: dynamicTabs
-        };
-      });
-  }, [loading, tabRoutesData]);
+    return {
+      activeBackgroundColor,
+      activeTintColor,
+      inactiveBackgroundColor,
+      inactiveTintColor,
+      tabConfigs: dynamicTabs.filter(Boolean) as TabConfig[]
+    };
+  }, [defaultTabRoutes, loading, tabRoutesData]);
 
-  return { loading, tabRoutes };
+  return { defaultTabRoutes, loading, tabRoutes };
 };
 
 const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
-  const { loading, tabRoutes } = useTabRoutes();
+  const { defaultTabRoutes, loading, tabRoutes } = useTabRoutes();
   const { orientation } = useContext(OrientationContext);
   const isPortrait = orientation === 'portrait';
 
-  const [tabConfigs, setTabConfigs] = useState<TabConfig[]>();
-
-  useEffect(() => {
-    if (!loading && tabRoutes) {
-      setTabConfigs(tabRoutes.tabConfigs);
-    }
-  }, [loading, tabRoutes]);
+  const tabConfigs = tabRoutes?.tabConfigs;
 
   if (!tabConfigs || loading) return <LoadingSpinner loading />;
 
-  const { inactiveBackgroundColor: backgroundColor } = tabRoutes || tabNavigatorConfig;
+  const { inactiveBackgroundColor: backgroundColor } = tabRoutes || defaultTabRoutes;
 
   return (
     <Tab.Navigator
@@ -102,12 +96,11 @@ export const MainTabNavigator = () => {
         tabBarAllowFontScaling: false,
         tabBarStyle: { backgroundColor },
         tabBarActiveBackgroundColor:
-          tabRoutes?.activeBackgroundColor || tabNavigatorConfig.activeBackgroundColor,
-        tabBarActiveTintColor: tabRoutes?.activeTintColor || tabNavigatorConfig.activeTintColor,
+          tabRoutes?.activeBackgroundColor || defaultTabRoutes.activeBackgroundColor,
+        tabBarActiveTintColor: tabRoutes?.activeTintColor || defaultTabRoutes.activeTintColor,
         tabBarHideOnKeyboard: true,
         tabBarInactiveBackgroundColor: backgroundColor,
-        tabBarInactiveTintColor:
-          tabRoutes?.inactiveTintColor || tabNavigatorConfig.inactiveTintColor,
+        tabBarInactiveTintColor: tabRoutes?.inactiveTintColor || defaultTabRoutes.inactiveTintColor,
         tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'
       }}
     >

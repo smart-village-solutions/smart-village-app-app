@@ -2,12 +2,14 @@ import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
@@ -26,6 +28,8 @@ export const ImagesCarousel = ({
   navigation,
   refreshTimeKey
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const { dimensions } = useContext(OrientationContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
@@ -150,7 +154,7 @@ export const ImagesCarousel = ({
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio, isImageFullWidth]
+    [navigation, fetchPolicy, aspectRatio, isImageFullWidth, colors.refreshControl, styles]
   );
 
   if (!data || data.length === 0) return null;
@@ -202,7 +206,9 @@ export const ImagesCarousel = ({
           showPreviousItem,
           setIsPaused,
           sizeSliderPauseButton,
-          verticalPosition
+          verticalPosition,
+          colors,
+          styles
         )}
     </View>
   );
@@ -218,7 +224,9 @@ const carouselControls = (
   showPreviousItem,
   setIsPaused,
   size,
-  verticalPosition
+  verticalPosition,
+  colors,
+  styles
 ) => (
   <View
     pointerEvents="box-none"
@@ -235,7 +243,8 @@ const carouselControls = (
         texts.accessibilityLabels.actions.previousCarouselItem,
         <Icon.ArrowLeft color={colors.darkText} size={normalize(size)} />,
         showPreviousItem,
-        size
+        size,
+        styles
       )}
     {showPauseButton && (
       <TouchableOpacity
@@ -257,12 +266,13 @@ const carouselControls = (
         texts.accessibilityLabels.actions.nextCarouselItem,
         <Icon.ArrowRight color={colors.darkText} size={normalize(size)} />,
         showNextItem,
-        size
+        size,
+        styles
       )}
   </View>
 );
 
-const navigationButton = (accessibilityLabel, icon, onPress, size) => (
+const navigationButton = (accessibilityLabel, icon, onPress, size, styles) => (
   <TouchableOpacity
     activeOpacity={0.8}
     accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
@@ -279,7 +289,7 @@ const controlButtonSize = (size) => ({
   padding: normalize(size / 2)
 });
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   center: {
     alignSelf: 'center'
   },

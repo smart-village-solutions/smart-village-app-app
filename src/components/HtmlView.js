@@ -15,8 +15,9 @@ import HTML, {
 import { WebView } from 'react-native-webview';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, consts, normalize, styles } from '../config';
+import { consts, normalize, styles } from '../config';
 import { imageWidth, openLink } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 
 import { RegularText } from './Text';
 
@@ -42,46 +43,58 @@ const scaleTagsStyles = (tagsStyles = {}, textScaleMultiplier = 1) =>
     return acc;
   }, {});
 
-const getCssRules = (textScaleMultiplier = 1) =>
+const getCssRules = (colors, textScaleMultiplier = 1) =>
   cssRulesFromSpecs({
     ...defaultTableStylesSpecs,
     linkColor: colors.primary,
     // TODO: font family documentation
     //      https://github.com/native-html/plugins/tree/rnrh/4.x#how-to-load-custom-fonts
     // fontFamily: 'regular',
-    thColor: colors.lightestText,
-    trOddBackground: colors.lightestText,
-    trOddColor: colors.darkText,
-    trEvenBackground: colors.lightestText,
-    trEvenColor: colors.darkText
+    thColor: colors.onPrimary,
+    trOddBackground: colors.surface,
+    trOddColor: colors.text,
+    trEvenBackground: colors.surfaceElevated,
+    trEvenColor: colors.text
   }) +
   `
 :root {
   font-size: ${normalize(13) * textScaleMultiplier}px;
 }
 th {
-  border-bottom: 1px solid ${'#3f5c7a'};
-  border-left: 1px solid ${'#3f5c7a'};
-  border-top: 1px solid ${'#3f5c7a'};
+  border-bottom: 1px solid ${colors.border};
+  border-left: 1px solid ${colors.border};
+  border-top: 1px solid ${colors.border};
 }
 th:last-child {
-  border-right: 1px solid ${'#3f5c7a'};
+  border-right: 1px solid ${colors.border};
 }
 td {
-  border-bottom: 1px solid ${'#b5b5b5'};
-  border-left: 1px solid ${'#b5b5b5'};
+  border-bottom: 1px solid ${colors.border};
+  border-left: 1px solid ${colors.border};
   border-top: 0;
 }
 td:last-child {
-  border-right: 1px solid ${'#b5b5b5'};
+  border-right: 1px solid ${colors.border};
 }
 tr:first-child td {
-  border-top: 1px solid ${'#b5b5b5'};
+  border-top: 1px solid ${colors.border};
 }
 table {
-  border-bottom: 1px solid ${'#b5b5b5'};
+  border-bottom: 1px solid ${colors.border};
 }
 `;
+
+const getThemedHtmlStyles = (colors) => ({
+  ...styles.html,
+  a: { ...styles.html.a, color: colors.primary },
+  h1: { ...styles.html.h1, color: colors.text },
+  h2: { ...styles.html.h2, color: colors.text },
+  h3: { ...styles.html.h3, color: colors.text },
+  h4: { ...styles.html.h4, color: colors.text },
+  h5: { ...styles.html.h5, color: colors.text },
+  h6: { ...styles.html.h6, color: colors.text },
+  p: { ...styles.html.p, color: colors.text }
+});
 
 const HtmlImageRenderer = (props) => {
   const imgProps = useIMGElementProps(props);
@@ -352,22 +365,25 @@ export const HtmlView = memo(
     tagsStyles = {},
     width
   }) => {
+    const { colors } = useTheme();
     const { isBoldTextEnabled, textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+    const themedHtmlStyles = useMemo(() => getThemedHtmlStyles(colors), [colors]);
     const scaledBaseStyle = useMemo(
-      () => scaleTypographyStyle(styles.baseFontStyle, textScaleMultiplier),
-      [textScaleMultiplier]
+      () =>
+        scaleTypographyStyle({ ...styles.baseFontStyle, color: colors.text }, textScaleMultiplier),
+      [colors.text, textScaleMultiplier]
     );
     const scaledTagStyles = useMemo(
       () =>
         scaleTagsStyles(
           {
-            ...styles.html,
+            ...themedHtmlStyles,
             ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
             ...tagsStyles
           },
           textScaleMultiplier
         ),
-      [isBoldTextEnabled, tagsStyles, textScaleMultiplier]
+      [isBoldTextEnabled, tagsStyles, textScaleMultiplier, themedHtmlStyles]
     );
     const defaultTextProps = useMemo(() => ({ allowFontScaling: true, selectable }), [selectable]);
 
@@ -406,7 +422,7 @@ export const HtmlView = memo(
               style: { opacity: 0.99 }
             }
           },
-          table: { cssRules: getCssRules(textScaleMultiplier) }
+          table: { cssRules: getCssRules(colors, textScaleMultiplier) }
         }}
         tagsStyles={scaledTagStyles}
         emSize={normalize(16) * textScaleMultiplier}

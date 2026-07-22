@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, useMemo, Validator } from 'react';
-import { ImageStyle, StyleSheet, ViewStyle } from 'react-native';
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { consts, Icon, normalize } from '../config';
@@ -16,7 +16,11 @@ import { WrapperRow } from './Wrapper';
 export type ItemData = {
   id: string;
   accessibilityLabel?: string;
-  badge?: { value: string; textStyle: { color: string } };
+  badge?: {
+    badgeStyle?: ViewStyle;
+    textStyle?: TextStyle;
+    value: string;
+  };
   bottomDivider?: boolean;
   count?: number;
   isHeadlineTitle?: boolean;
@@ -154,7 +158,13 @@ export const TextListItem: NamedExoticComponent<Props> & {
         bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={[styles.container, containerStyle]}
-        badge={badge}
+        badge={
+          badge && {
+            ...badge,
+            badgeStyle: [styles.badge, badge.badgeStyle],
+            textStyle: [styles.badgeText, badge.textStyle]
+          }
+        }
         onPress={() => (onPress ? onPress(navigation) : navigate())}
         disabled={!navigation}
         delayPressIn={0}
@@ -231,6 +241,12 @@ export const TextListItem: NamedExoticComponent<Props> & {
 /* eslint-disable react-native/no-unused-styles */
 const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
   StyleSheet.create({
+    badge: {
+      backgroundColor: colors.primary
+    },
+    badgeText: {
+      color: colors.onPrimary
+    },
     container: {
       backgroundColor: colors.transparent,
       paddingHorizontal: 0,

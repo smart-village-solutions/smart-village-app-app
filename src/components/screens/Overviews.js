@@ -14,7 +14,7 @@ import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -36,6 +36,7 @@ import {
   useStaticContent,
   useSystemPermission
 } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
@@ -117,17 +118,21 @@ const toFiniteNumber = (value) => {
   return null;
 };
 
-const ParticipationProjectIndexMapButton = ({ navigationType, onPress }) => (
-  <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
-    <Button
-      icon={<Icon.Map color={colors.surface} />}
-      iconPosition="left"
-      onPress={onPress}
-      title={texts.locationOverview.map}
-      notFullWidth
-    />
-  </View>
-);
+const ParticipationProjectIndexMapButton = ({ navigationType, onPress }) => {
+  const { colors } = useTheme();
+
+  return (
+    <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
+      <Button
+        icon={<Icon.Map color={colors.onPrimary} />}
+        iconPosition="left"
+        onPress={onPress}
+        title={texts.locationOverview.map}
+        notFullWidth
+      />
+    </View>
+  );
+};
 
 ParticipationProjectIndexMapButton.propTypes = {
   navigationType: PropTypes.string,
@@ -136,6 +141,7 @@ ParticipationProjectIndexMapButton.propTypes = {
 
 /* eslint-disable complexity */
 export const Overviews = ({ navigation, route }) => {
+  const { colors } = useTheme();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
