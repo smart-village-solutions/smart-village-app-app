@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { VolunteerAvatar } from '../../components';
+import { VolunteerAvatar } from '../../components/volunteer/VolunteerAvatar';
 import { consts, Icon, normalize, texts } from '../../config';
-import { useTheme } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { getTitleForQuery } from '../queryHelper';
