@@ -11,9 +11,11 @@ import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { getLocationData } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
+import { ThemeColorPalette } from '../types/Theme';
 
 import { useStaticContent } from './staticContent';
 import { useRefreshTime } from './TimeHooks';
+import { useThemeStyles } from './useThemeStyles';
 
 export const useWasteAddresses = ({
   minSearchLength = 0,
@@ -229,6 +231,7 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
 };
 
 export const useRenderSuggestions = (selectionCallback?: (item: any) => void) => {
+  const styles = useThemeStyles(createSuggestionStyles);
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -245,13 +248,13 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
           Keyboard.dismiss();
         }}
       >
-        <Wrapper>
+        <Wrapper style={styles.row}>
           <RegularText small>{item.city}</RegularText>
         </Wrapper>
-        <Divider />
+        <Divider style={styles.divider} />
       </TouchableOpacity>
     ),
-    [setInputValue, setInputValueCity, setInputValueCitySelected]
+    [setInputValue, setInputValueCity, setInputValueCitySelected, styles.divider, styles.row]
   );
 
   const renderSuggestion = useCallback(
@@ -267,14 +270,14 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
             Keyboard.dismiss();
           }}
         >
-          <Wrapper>
+          <Wrapper style={styles.row}>
             <RegularText small>{streetString}</RegularText>
           </Wrapper>
-          <Divider />
+          <Divider style={styles.divider} />
         </TouchableOpacity>
       );
     },
-    [getStreetString, selectionCallback, setInputValue]
+    [getStreetString, selectionCallback, setInputValue, styles.divider, styles.row]
   );
 
   return {
@@ -288,6 +291,15 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
     renderSuggestion
   };
 };
+
+const createSuggestionStyles = (colors: ThemeColorPalette) => ({
+  divider: {
+    backgroundColor: colors.border
+  },
+  row: {
+    backgroundColor: colors.surfaceElevated
+  }
+});
 
 export const useTriggerExport = ({ streetData, wasteTexts }) => {
   const triggerExport = useCallback(
