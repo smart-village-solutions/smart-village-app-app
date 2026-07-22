@@ -1,4 +1,12 @@
-import { colors } from '../../src/config';
+import {
+  colors,
+  darkColors,
+  getThemePalette,
+  isThemeMode,
+  lightColors,
+  resolveThemeMode,
+  themePalettes
+} from '../../src/config';
 
 describe('color', () => {
   it('lighterPrimary is defined', () => {
@@ -78,6 +86,46 @@ describe('color', () => {
   });
 
   it('gray60 is defined', () => {
-    expect(colors.gray40).toBeTruthy();
+    expect(colors.gray60).toBeTruthy();
+  });
+
+  it('keeps the existing colors export mapped to the light palette', () => {
+    expect(colors).toBe(lightColors);
+  });
+
+  it('provides complete semantic tokens for both themes', () => {
+    const semanticTokens = [
+      'background',
+      'border',
+      'onPrimary',
+      'surface',
+      'surfaceElevated',
+      'text',
+      'textMuted'
+    ];
+
+    semanticTokens.forEach((token) => {
+      expect(lightColors[token]).toBeTruthy();
+      expect(darkColors[token]).toBeTruthy();
+    });
+
+    expect(Object.keys(darkColors).sort()).toEqual(Object.keys(lightColors).sort());
+    expect(themePalettes).toEqual({ dark: darkColors, light: lightColors });
+  });
+
+  it('resolves explicit and system theme modes', () => {
+    expect(resolveThemeMode('light', 'dark')).toBe('light');
+    expect(resolveThemeMode('dark', 'light')).toBe('dark');
+    expect(resolveThemeMode('system', 'dark')).toBe('dark');
+    expect(resolveThemeMode('system', null)).toBe('light');
+    expect(getThemePalette('dark')).toBe(darkColors);
+  });
+
+  it('accepts only supported theme mode values', () => {
+    expect(isThemeMode('light')).toBe(true);
+    expect(isThemeMode('dark')).toBe(true);
+    expect(isThemeMode('system')).toBe(true);
+    expect(isThemeMode('sepia')).toBe(false);
+    expect(isThemeMode(null)).toBe(false);
   });
 });
