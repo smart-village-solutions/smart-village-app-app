@@ -12,7 +12,7 @@ import { Direction } from 'react-native-calendars/src/types';
 import Collapsible from 'react-native-collapsible';
 
 import { Icon, consts, device, normalize, texts } from '../../config';
-import { momentFormat, updateFilters } from '../../helpers';
+import { getCalendarTheme, momentFormat, updateFilters } from '../../helpers';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { DatesTypes, FilterProps } from '../../types';
@@ -217,9 +217,7 @@ const CalendarView = ({
           setDate(momentFormat(date.dateString, 'YYYY-MM-DD'))
         }
         theme={{
-          todayTextColor: colors.calendarTodayText,
-          selectedDayTextColor: colors.calendarSelectedDayText,
-          indicatorColor: colors.refreshControl,
+          ...getCalendarTheme(colors),
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
             height: DOT_SIZE,
