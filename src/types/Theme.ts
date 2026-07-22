@@ -38,3 +38,15 @@ export type ThemeColorPalette = {
   textMuted: string;
   transparent: string;
 };
+
+export type ThemePaletteOverrides = Partial<Record<keyof ThemeColorPalette, unknown>>;
+
+export type ThemePalettesConfig = Partial<Record<ResolvedThemeMode, ThemePaletteOverrides>>;
+
+export type ThemeGlobalSettings = {
+  settings?: {
+    accessibility?: {
+      themePalettes?: ThemePalettesConfig;
+    };
+  };
+};
