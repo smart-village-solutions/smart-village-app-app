@@ -74,9 +74,20 @@ describe('themed shared primitives', () => {
     const switchNode = tree.root.findByProps({ accessibilityRole: 'switch' });
 
     expect(switchNode.props.trackColor).toEqual({
-      false: darkColors.shadow,
+      false: darkColors.gray60,
       true: darkColors.primary
     });
+  });
+
+  it('keeps an off dark-theme switch visible', () => {
+    const tree = renderWithDarkTheme(
+      <Switch accessibilityLabel="Theme" switchValue={false} toggleSwitch={jest.fn()} />
+    );
+    const switchNode = tree.root.findByProps({ accessibilityRole: 'switch' });
+
+    expect(switchNode.props.trackColor.false).toBe(darkColors.gray60);
+    expect(switchNode.props.ios_backgroundColor).toBe(darkColors.gray60);
+    expect(switchNode.props.accessibilityState).toEqual({ checked: false, disabled: undefined });
   });
 
   it('recreates semantic styles when the active palette changes', () => {

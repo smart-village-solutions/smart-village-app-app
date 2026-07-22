@@ -10,8 +10,8 @@ export const Switch = ({ accessibilityLabel, isDisabled, switchValue, toggleSwit
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
   const { colors } = useTheme();
   const trackColor = Platform.select({
-    android: { false: colors.shadow, true: colors.primary },
-    ios: { false: colors.shadow, true: colors.primary }
+    android: { false: colors.gray60, true: colors.primary },
+    ios: { false: colors.gray60, true: colors.primary }
   });
   const thumbColor = Platform.select({ android: colors.gray20, ios: colors.onPrimary });
   const disabledThumbColor = Platform.select({ android: colors.gray40, ios: colors.onPrimary });
@@ -22,7 +22,9 @@ export const Switch = ({ accessibilityLabel, isDisabled, switchValue, toggleSwit
       accessibilityRole="switch"
       accessibilityState={{ checked: switchValue, disabled: isDisabled }}
       disabled={isDisabled}
-      ios_backgroundColor={isReduceTransparencyEnabled ? colors.overlayRgba : colors.shadow}
+      ios_backgroundColor={
+        isDisabled ? colors.gray40 : isReduceTransparencyEnabled ? colors.border : colors.gray60
+      }
       onValueChange={toggleSwitch}
       style={[
         device.platform === 'ios' &&
