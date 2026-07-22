@@ -5,12 +5,12 @@ import { ThemeColorPalette } from '../../types/Theme';
 
 export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   autoCompleteContainer: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
     paddingHorizontal: 0
   },
 
   autoCompleteInputContainer: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
     borderColor: colors.border,
     borderRadius: normalize(8),
     borderWidth: normalize(1),
@@ -18,7 +18,7 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   },
 
   autoCompleteInput: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
     color: colors.text,
     paddingLeft: normalize(12),
     paddingRight: normalize(6),
@@ -30,7 +30,7 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   },
 
   autoCompleteList: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.background,
     borderColor: colors.border,
     paddingHorizontal: normalize(6),
     position: 'relative' as const,
@@ -48,7 +48,7 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   },
 
   autoCompleteListContainer: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.background,
     elevation: 2,
     shadowColor: colors.shadow,
     shadowOffset: { height: 5, width: 0 },
@@ -63,5 +63,14 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   noBorderTop: {
     borderTopWidth: 0,
     marginTop: normalize(-1)
+  }
+});
+
+export const createWasteSuggestionStyles = (colors: ThemeColorPalette) => ({
+  divider: {
+    backgroundColor: colors.border
+  },
+  row: {
+    backgroundColor: colors.background
   }
 });
