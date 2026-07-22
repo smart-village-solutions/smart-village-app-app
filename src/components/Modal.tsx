@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { consts, normalize, texts } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';
@@ -32,6 +33,8 @@ export const Modal = ({
   overlayStyle
 }: TModal) => {
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <Overlay
@@ -61,12 +64,17 @@ export const Modal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    borderRadius: normalize(8),
-    padding: normalize(30)
-  },
-  overlayWidth: {
-    width: '80%'
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    overlay: {
+      backgroundColor: colors.surface,
+      borderRadius: normalize(8),
+      padding: normalize(30)
+    },
+    overlayWidth: {
+      width: '80%'
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */

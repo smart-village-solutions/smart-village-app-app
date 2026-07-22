@@ -1,23 +1,8 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components/native';
 
 import { AccessibilityContext } from './AccessibilityProvider';
-import { lightColors } from './config/colors';
-import { ResolvedThemeMode, ThemeColorPalette } from './types/Theme';
-
-export type AppThemeContextValue = {
-  colors: ThemeColorPalette;
-  isDark: boolean;
-  mode: ResolvedThemeMode;
-};
-
-const defaultTheme: AppThemeContextValue = {
-  colors: lightColors,
-  isDark: false,
-  mode: 'light'
-};
-
-export const ThemeContext = createContext<AppThemeContextValue>(defaultTheme);
+import { AppThemeContextValue, ThemeContext } from './ThemeContext';
 
 export const AppThemeProvider = ({ children }: { children?: React.ReactNode }) => {
   const { resolvedThemeMode, themeColors } = useContext(AccessibilityContext);

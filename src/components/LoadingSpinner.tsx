@@ -1,7 +1,8 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import { colors, consts } from '../config';
+import { consts } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 import { LoadingContainer } from './LoadingContainer';
 
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export const LoadingSpinner = ({ loading }: Props) => {
+  const { colors } = useTheme();
+
   return loading ? (
     <LoadingContainer>
       <View

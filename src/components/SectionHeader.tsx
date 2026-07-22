@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { colors, consts, device, Icon, normalize } from '../config';
+import { consts, device, Icon, normalize } from '../config';
+import { useTheme } from '../hooks/useTheme';
 import { SettingsContext } from '../SettingsProvider';
 
 import { Title, TitleContainer, TitleShadow } from './Title';
@@ -26,6 +27,7 @@ export const SectionHeader = ({
   title
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { colors } = useTheme();
   const { settings = {} } = globalSettings;
   const { flat = true, uppercase = false } = settings;
 

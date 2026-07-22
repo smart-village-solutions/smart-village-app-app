@@ -1,10 +1,11 @@
-import React, { forwardRef, useContext, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useController, UseControllerProps } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { InputProps, Input as RNEInput } from 'react-native-elements';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
-import { colors, consts, device, Icon, normalize } from '../../config';
+import { consts, device, Icon, normalize } from '../../config';
+import { useTheme } from '../../hooks/useTheme';
 import { Label } from '../Label';
 
 const { a11yLabel } = consts;
@@ -90,6 +91,8 @@ export const Input = forwardRef(
     ref
   ) => {
     const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+    const { colors } = useTheme();
+    const styles = useMemo(() => createStyles(colors), [colors]);
 
     const { field } = control
       ? useController({
@@ -226,84 +229,88 @@ export const Input = forwardRef(
 );
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 0
-  },
-  containerHidden: {
-    height: 0
-  },
-  row: {
-    width: '47%'
-  },
-  inputAccessibilityBorderContrast: {
-    borderColor: colors.darkText
-  },
-  inputContainer: {
-    borderBottomWidth: normalize(1),
-    borderColor: colors.gray40,
-    borderLeftWidth: normalize(1),
-    borderRadius: normalize(8),
-    borderRightWidth: normalize(1),
-    borderTopWidth: normalize(1),
-    height: normalize(42)
-  },
-  inputContainerDisabled: {
-    backgroundColor: colors.gray20,
-    borderColor: colors.gray60
-  },
-  inputContainerHidden: {
-    borderBottomWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    display: 'none'
-  },
-  inputContainerMultiline: {
-    height: 'auto'
-  },
-  inputContainerSuccess: {
-    borderColor: colors.primary
-  },
-  inputContainerError: {
-    borderColor: colors.error
-  },
-  rightIconContainer: {
-    marginRight: 0,
-    marginVertical: 0,
-    paddingRight: normalize(12)
-  },
-  input: {
-    color: colors.darkText,
-    paddingLeft: normalize(12),
-    paddingRight: normalize(6),
-    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
-    fontFamily: 'regular',
-    fontSize: normalize(14),
-    lineHeight: normalize(20)
-  },
-  multiline: {
-    paddingTop: normalize(12)
-  },
-  inputError: {
-    color: colors.error,
-    fontSize: normalize(14),
-    lineHeight: normalize(20)
-  },
-  inputErrorHeight: {
-    height: 0
-  },
-  inputDisabled: {
-    color: colors.placeholder
-  },
-  chatContainer: {
-    width: '90%'
-  },
-  chatMultiline: {
-    paddingTop: normalize(8)
-  },
-  chatInput: {
-    fontSize: normalize(12),
-    paddingVertical: device.platform === 'ios' ? normalize(6) : normalize(4)
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: 0
+    },
+    containerHidden: {
+      height: 0
+    },
+    row: {
+      width: '47%'
+    },
+    inputAccessibilityBorderContrast: {
+      borderColor: colors.text
+    },
+    inputContainer: {
+      borderBottomWidth: normalize(1),
+      borderColor: colors.gray40,
+      borderLeftWidth: normalize(1),
+      borderRadius: normalize(8),
+      borderRightWidth: normalize(1),
+      borderTopWidth: normalize(1),
+      height: normalize(42)
+    },
+    inputContainerDisabled: {
+      backgroundColor: colors.gray20,
+      borderColor: colors.gray60
+    },
+    inputContainerHidden: {
+      borderBottomWidth: 0,
+      borderLeftWidth: 0,
+      borderRightWidth: 0,
+      borderTopWidth: 0,
+      display: 'none'
+    },
+    inputContainerMultiline: {
+      height: 'auto'
+    },
+    inputContainerSuccess: {
+      borderColor: colors.primary
+    },
+    inputContainerError: {
+      borderColor: colors.error
+    },
+    rightIconContainer: {
+      marginRight: 0,
+      marginVertical: 0,
+      paddingRight: normalize(12)
+    },
+    input: {
+      color: colors.text,
+      paddingLeft: normalize(12),
+      paddingRight: normalize(6),
+      paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
+      fontFamily: 'regular',
+      fontSize: normalize(14),
+      lineHeight: normalize(20)
+    },
+    multiline: {
+      paddingTop: normalize(12)
+    },
+    inputError: {
+      color: colors.error,
+      fontSize: normalize(14),
+      lineHeight: normalize(20)
+    },
+    inputErrorHeight: {
+      height: 0
+    },
+    inputDisabled: {
+      color: colors.placeholder
+    },
+    chatContainer: {
+      width: '90%'
+    },
+    chatMultiline: {
+      paddingTop: normalize(8)
+    },
+    chatInput: {
+      fontSize: normalize(12),
+      paddingVertical: device.platform === 'ios' ? normalize(6) : normalize(4)
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
