@@ -2,13 +2,15 @@ import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { FilterProps, FilterTypesProps } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { Button } from './../Button';
 import { BoldText, RegularText } from './../Text';
@@ -59,6 +61,9 @@ export const Filter = ({
   setQueryVariables,
   withSearch = false
 }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(queryVariables);
   const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -299,21 +304,24 @@ export const Filter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   alignLeft: {
     alignItems: 'flex-start'
   },
+
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end'
   },
+
   closeButton: {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: normalize(32),
     minWidth: normalize(32)
   },
+
   countContainer: {
     alignItems: 'center',
     backgroundColor: colors.primary,
@@ -323,12 +331,15 @@ const styles = StyleSheet.create({
     marginLeft: normalize(8),
     width: normalize(20)
   },
+
   container: {
     padding: normalize(14)
   },
+
   headerRightContainer: {
     justifyContent: 'center'
   },
+
   icon: {
     paddingLeft: normalize(8)
   }

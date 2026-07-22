@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 import {
   EmptyMessage,
@@ -9,12 +9,17 @@ import {
   Wrapper,
   WrapperVertical
 } from '../../components';
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { ScreenName, TCard } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const WalletCardsListScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -85,7 +90,7 @@ export const WalletCardsListScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)

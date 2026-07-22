@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { ConsulClient } from '../../ConsulClient';
 import {
   deleteArrayItem,
@@ -17,6 +17,8 @@ import { Button } from '../Button';
 import { Input } from '../form';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { MB_TO_BYTES, URL_REGEX } = consts;
 
@@ -56,6 +58,9 @@ export const DocumentSelector = ({
   isVolunteer: boolean;
   item: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
   const { maxCount, maxFileSize } = configuration?.limitation || {};
@@ -215,20 +220,24 @@ export const DocumentSelector = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     marginVertical: normalize(10)
   },
+
   infoText: {
     marginTop: normalize(-7),
     marginBottom: normalize(5)
   },
+
   volunteerContainer: {
     marginBottom: normalize(8)
   },
+
   volunteerInfoText: {
     width: '90%'
   },
+
   volunteerUploadPreview: {
     alignItems: 'center',
     backgroundColor: colors.gray20,

@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors } from '../../../config';
 import { BoldText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 
 export const ConsulSummary = ({ summary }) => {
+  const styles = useThemeStyles(createStyles);
   return (
     <Wrapper>
       <View style={styles.textContainer}>
@@ -16,7 +17,7 @@ export const ConsulSummary = ({ summary }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   textContainer: {
     borderLeftColor: colors.placeholder,
     borderLeftWidth: 0.5,

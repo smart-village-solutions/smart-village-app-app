@@ -4,17 +4,11 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import {
-  ActivityIndicator,
-  DeviceEventEmitter,
-  RefreshControl,
-  StyleSheet,
-  View
-} from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery } from 'react-query';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -47,6 +41,8 @@ import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { RegularText } from '../Text';
 import { WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EVENT_SUGGESTION_BUTTON } = consts;
 
@@ -64,6 +60,9 @@ const today = moment().format('YYYY-MM-DD');
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecords = ({ navigation, route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
@@ -363,7 +362,7 @@ export const EventRecords = ({ navigation, route }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   noPaddingHorizontal: {
     paddingHorizontal: 0
   }

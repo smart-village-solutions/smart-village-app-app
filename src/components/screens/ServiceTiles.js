@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { useStaticContent, useVolunteerRefresh } from '../../hooks';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
@@ -11,6 +11,8 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { Service } from './Service';
 
@@ -23,6 +25,9 @@ export const ServiceTiles = ({
   staticJsonName,
   title
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -108,10 +113,11 @@ export const ServiceTiles = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   imageContainerStyle: {
     alignSelf: 'center'
   },
+
   padding: {
     padding: normalize(16),
     paddingBottom: normalize(8)

@@ -8,12 +8,12 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
+import { DeviceEventEmitter, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, styles as configStyles, consts, normalize, texts } from '../../config';
+import { styles as configStyles, consts, normalize, texts } from '../../config';
 import {
   isOwner,
   openLink,
@@ -50,6 +50,7 @@ import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerGroupSearch } from './VolunteerGroupSearch';
@@ -73,6 +74,7 @@ export const VolunteerGroup = ({
   refetch: () => void;
   isRefetching: boolean;
 } & StackScreenProps<any>) => {
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
 
@@ -375,7 +377,7 @@ export const VolunteerGroup = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   logoContainer: {
     backgroundColor: colors.surface,
     left: normalize(20),

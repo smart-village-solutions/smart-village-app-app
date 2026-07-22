@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
+import { Keyboard, TouchableOpacity } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../../../../config';
+import { consts, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -29,12 +29,17 @@ import { MapLibre } from '../../../map';
 import { SectionHeader } from '../../../SectionHeader';
 import { BoldText, RegularText } from '../../../Text';
 import { Wrapper, WrapperRow } from '../../../Wrapper';
+import { useThemeStyles } from '../../../../hooks/useThemeStyles';
+import { useTheme } from '../../../../hooks/useTheme';
 
 const { MAP } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ProposalDetail = ({ data, refetch, route, navigation }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
 
@@ -232,22 +237,25 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   button: {
     alignSelf: 'flex-end',
     alignItems: 'flex-end',
     marginBottom: normalize(10),
     width: '10%'
   },
+
   imageContainerStyle: {
     alignSelf: 'center'
   },
+
   input: {
     shadowColor: colors.shadow,
     shadowOpacity: 0.7,
     shadowRadius: 3,
     backgroundColor: colors.surface
   },
+
   mapStyle: {
     height: normalize(300),
     width: '100%'

@@ -1,18 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { DOWNLOAD_TYPE, deleteObject, downloadObject, progressSizeGenerator } from '../../helpers';
 import { ScreenName } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
+  const styles = useThemeStyles(createStyles);
   const {
     payload: { downloadType, progressSize, totalSize, locationInfo },
     title
@@ -72,7 +74,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.transparent,
     paddingRight: normalize(18),

@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { DEFAULT_TILE_GRID_COLUMNS, resolveTileGridLayout } from '../../helpers/serviceTileLayout';
 import { umlautSwitcher } from '../../helpers/umlautSwitcher';
@@ -16,6 +16,8 @@ import { DiagonalGradient } from '../DiagonalGradient';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { WrapperWrap } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { DraggableGrid } from './DraggableGrid';
 import { ServiceTile, TServiceTile } from './ServiceTile';
@@ -34,6 +36,9 @@ export const Service = ({
   staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { orientation } = useContext(OrientationContext);
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
@@ -163,10 +168,11 @@ export const Service = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   diagonalGradient: {
     flex: 1
   },
+
   toggler: {
     paddingVertical: normalize(14)
   }

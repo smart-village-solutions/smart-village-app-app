@@ -1,17 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useMutation } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CAST_VOTE_ON_DEBATE } from '../../../queries/consul';
 import { SectionHeader } from '../../SectionHeader';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { Wrapper, WrapperRow } from '../../Wrapper';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 export const ConsulVoting = ({ votesData, refetch, id }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { cachedVotesDown, cachedVotesTotal, cachedVotesUp, votesFor } = votesData;
 
   let downVotesPercent = 0;
@@ -84,10 +89,11 @@ export const ConsulVoting = ({ votesData, refetch, id }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   icon: {
     paddingHorizontal: normalize(5)
   },
+
   iconButton: {
     alignItems: 'center',
     marginHorizontal: normalize(10)

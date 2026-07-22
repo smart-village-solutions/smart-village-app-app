@@ -279,3 +279,32 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
   );
 };
 /* eslint-enable complexity */
+
+const createStyles = (colors) => ({
+  mapStyle: {
+    height: normalize(300),
+    width: '100%'
+  },
+
+  metaRow: {
+    marginBottom: normalize(8)
+  },
+
+  metaValue: {
+    flex: 1
+  },
+
+  tag: {
+    borderColor: colors.borderRgba,
+    borderRadius: normalize(4),
+    borderWidth: StyleSheet.hairlineWidth,
+    marginBottom: normalize(4),
+    marginRight: normalize(6),
+    paddingHorizontal: normalize(6),
+    paddingVertical: normalize(2)
+  },
+
+  tagWrapper: {
+    flex: 1
+  }
+});

@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { Image } from '../Image';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export const SueLoadingIndicator = () => {
+  const styles = useThemeStyles(createStyles);
   return (
     <Image
       containerStyle={styles.animationContainer}
@@ -14,7 +16,7 @@ export const SueLoadingIndicator = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   animationContainer: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -22,6 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: normalize(14)
   },
+
   image: {
     height: normalize(40),
     width: normalize(40)

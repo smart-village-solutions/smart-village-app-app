@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 const TimeBox = styled.View`
   flex-direction: row;
@@ -34,6 +35,7 @@ export const OpeningTimesCard = ({
   MAX_INITIAL_NUM_TO_RENDER = 15,
   openingHours
 }) => {
+  const styles = useThemeStyles(createStyles);
   const [moreData, setMoreData] = useState(1);
 
   const loadMoreItems = () => {
@@ -134,24 +136,29 @@ export const OpeningTimesCard = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     borderBottomColor: colors.gray60,
     borderBottomWidth: StyleSheet.hairlineWidth
   },
+
   margin: {
     marginBottom: normalize(3),
     marginTop: normalize(5)
   },
+
   marginBottom: {
     marginBottom: normalize(3)
   },
+
   noMarginTop: {
     marginTop: 0
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   noPaddingTop: {
     paddingTop: 0
   }

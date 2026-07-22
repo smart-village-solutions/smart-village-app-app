@@ -6,13 +6,12 @@ import {
   Keyboard,
   Modal,
   ScrollView,
-  StyleSheet,
   TouchableOpacity
 } from 'react-native';
 import { Divider, Header } from 'react-native-elements';
 import { useMutation, useQueryClient } from 'react-query';
 
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { VOLUNTEER_GROUP_REFRESH_EVENT, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
 import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
 import { VolunteerFileObject, VolunteerPost } from '../../types';
@@ -21,6 +20,8 @@ import { Input } from '../form';
 import { MultiImageSelector } from '../selectors';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 const { a11yLabel } = consts;
@@ -42,6 +43,9 @@ export const VolunteerPostModal = ({
   };
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const isEdit = !!post;
   const [isPublishing, setIsPublishing] = React.useState(false);
 
@@ -253,17 +257,19 @@ export const VolunteerPostModal = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   button: {
     alignItems: 'center',
     padding: 8
   },
+
   closeButton: {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: normalize(32),
     minWidth: normalize(32)
   },
+
   headerRightContainer: {
     justifyContent: 'center'
   }

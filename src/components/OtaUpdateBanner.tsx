@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { Button } from './Button';
 import { HeadlineText, RegularText } from './Text';
@@ -23,7 +25,7 @@ type OtaUpdateBannerProps = {
 
 export const OtaUpdateBanner = ({
   actionLabel,
-  backgroundColor = colors.surface,
+  backgroundColor: backgroundColorProp,
   closeLabel,
   description,
   isReloading = false,
@@ -32,6 +34,10 @@ export const OtaUpdateBanner = ({
   title,
   visible
 }: OtaUpdateBannerProps) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const backgroundColor = backgroundColorProp || colors.surface;
   const insets = useSafeAreaInsets();
 
   if (!visible) return null;
@@ -88,7 +94,7 @@ export const OtaUpdateBanner = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.darkText,
@@ -102,9 +108,11 @@ const styles = StyleSheet.create({
     width: normalize(32),
     zIndex: 1
   },
+
   containerRadius: {
     borderRadius: normalize(8)
   },
+
   overlayWidth: {
     borderRadius: normalize(8),
     height: 'auto',
@@ -112,9 +120,11 @@ const styles = StyleSheet.create({
     padding: 0,
     width: '95%'
   },
+
   overlayPosition: {
     position: 'absolute'
   },
+
   smallPaddingBottom: {
     paddingBottom: normalize(8)
   }

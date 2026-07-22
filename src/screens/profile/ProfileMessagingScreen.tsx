@@ -2,16 +2,18 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 
 import { Button, Chat, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { shareMessage } from '../../helpers';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 import { ScreenName } from '../../types';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type Message = {
   createdAt: string;
@@ -29,6 +31,9 @@ type Messages = {
 }[];
 
 export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const query = route.params?.query;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [messageData, setMessageData] = useState<Messages>([]);
@@ -167,7 +172,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   noPaddingBottom: {
     paddingBottom: 0
   }

@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 
-import { colors, device, normalize } from '../../config';
+import { device, normalize } from '../../config';
 import { SettingsContext } from '../../SettingsProvider';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { WasteCityInput } from './WasteCityInput';
 import { WasteStreetInput } from './WasteStreetInput';
@@ -33,6 +34,7 @@ export const WasteInputForm = ({
   };
   setSelectedStreetId: (id?: number) => void;
 }) => {
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -73,16 +75,18 @@ export const WasteInputForm = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   autoCompleteContainer: {
     paddingHorizontal: 0
   },
+
   autoCompleteInputContainer: {
     borderColor: colors.gray40,
     borderRadius: normalize(8),
     borderWidth: normalize(1),
     height: normalize(42)
   },
+
   autoCompleteInput: {
     backgroundColor: colors.transparent,
     color: colors.darkText,
@@ -94,6 +98,7 @@ const styles = StyleSheet.create({
     height: normalize(42),
     lineHeight: normalize(20)
   },
+
   autoCompleteList: {
     paddingHorizontal: normalize(6),
     position: 'relative',
@@ -109,6 +114,7 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   autoCompleteListContainer: {
     elevation: 2,
     shadowColor: colors.shadow,
@@ -116,9 +122,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+
   noPaddingTop: {
     paddingTop: 0
   },
+
   noBorderTop: {
     borderTopWidth: 0,
     marginTop: normalize(-1)

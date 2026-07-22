@@ -1,11 +1,13 @@
 import * as Location from 'expo-location';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   currentPosition?: Location.LocationObject;
@@ -20,6 +22,9 @@ type Props = {
 };
 
 export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [localPosition, setLocalPosition] = useState<Location.LocationObject | undefined>(
     currentPosition
   );
@@ -221,10 +226,11 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   },
+
   margin: {
     marginRight: normalize(12)
   }

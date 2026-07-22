@@ -1,11 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, styles as configStyles, consts, Icon, normalize, texts } from '../../config';
+import { styles as configStyles, consts, Icon, normalize, texts } from '../../config';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { createCalendarEvent } from '../../helpers/createCalendarEvent';
 import { useOpenWebScreen } from '../../hooks';
@@ -22,6 +22,8 @@ import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
@@ -43,6 +45,9 @@ export const VolunteerEventRecord = ({
   navigation,
   route
 }: { data: any; refetch: () => void } & StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const {
     all_day: allDay,
     content,
@@ -257,10 +262,11 @@ export const VolunteerEventRecord = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   volunteerInfoText: {
     width: '90%'
   },
+
   volunteerUploadPreview: {
     alignItems: 'center',
     backgroundColor: colors.gray20,

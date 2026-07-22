@@ -29,7 +29,7 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../components';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { formatTime, storageHelper } from '../helpers';
 import {
   useFilterStreets,
@@ -52,6 +52,8 @@ import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '
 import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 import { WasteReminderSettingJson } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 
@@ -67,6 +69,9 @@ const initialWasteSettingsState: WasteSettingsState = {
 
 /* eslint-disable complexity */
 export const WasteCollectionSettingsScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const routeParams = useRoute().params;
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
@@ -640,63 +645,79 @@ export const WasteCollectionSettingsScreen = () => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   borderRadius: {
     borderRadius: normalize(10)
   },
+
   smallBorderRadius: {
     borderRadius: normalize(6)
   },
+
   borderRadiusTop: {
     borderTopLeftRadius: normalize(10),
     borderTopRightRadius: normalize(10)
   },
+
   borderRadiusBottom: {
     borderBottomLeftRadius: normalize(10),
     borderBottomRightRadius: normalize(10)
   },
+
   container: {
     backgroundColor: colors.surface
   },
+
   divider: {
     backgroundColor: colors.placeholder
   },
+
   dividerSmall: {
     backgroundColor: colors.placeholder,
     marginVertical: normalize(4),
     width: normalize(140)
   },
+
   listItemContainer: {
     backgroundColor: colors.surface,
     paddingHorizontal: 0
   },
+
   mediumPaddingVertical: {
     paddingBottom: normalize(8),
     paddingTop: normalize(8)
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   paddingHorizontal: {
     paddingHorizontal: normalize(16)
   },
+
   paddingTop: {
     paddingTop: normalize(14)
   },
+
   dateTimePickerContainerAndroid: {
     marginLeft: normalize(-14)
   },
+
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface
   },
+
   dateTimePickerIOS: {
     alignSelf: 'center'
   },
+
   modalContainer: {
     backgroundColor: colors.overlayRgba,
     flex: 1,
     justifyContent: 'flex-end'
   },
+
   timeContainer: {
     backgroundColor: colors.shadowRgba,
     paddingVertical: normalize(6),
@@ -710,17 +731,21 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   resultsList: {
     padding: normalize(14)
   },
+
   saveButtonContainer: {
     alignSelf: 'center',
     position: 'absolute',
     width: '100%'
   },
+
   spacer: {
     height: normalize(70)
   },
+
   tooltipContainer: {
     borderColor: colors.shadowRgba,
     borderWidth: StyleSheet.hairlineWidth,
@@ -735,6 +760,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 8
   },
+
   tooltipSelection: {
     paddingHorizontal: normalize(8)
   }

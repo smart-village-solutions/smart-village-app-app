@@ -1,9 +1,9 @@
 import { ImagePickerAsset } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { ConsulClient } from '../../ConsulClient';
 import { jsonParser } from '../../helpers';
 import { imageHeight, imageWidth } from '../../helpers/imageHelper';
@@ -15,6 +15,8 @@ import { Input } from '../form';
 import { Image } from '../Image';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const deleteImageAlert = (onPress: () => void) =>
   Alert.alert(
@@ -47,6 +49,9 @@ export const ImageSelector = ({
   imageId: string;
   item: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -135,7 +140,7 @@ export const ImageSelector = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   image: {
     height: imageHeight(imageWidth() * 0.6),
     width: imageWidth() * 0.6

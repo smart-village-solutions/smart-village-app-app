@@ -5,7 +5,7 @@ import { extendMoment } from 'moment-range';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery as useQueryWithApollo } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -22,7 +22,7 @@ import {
   WrapperHorizontal,
   WrapperRow
 } from '../../../components';
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { consts, Icon, normalize, texts } from '../../../config';
 import {
   formatSizeStandard,
   graphqlFetchPolicy,
@@ -40,6 +40,8 @@ import { showLoginAgainAlert } from '../../../screens/profile/ProfileScreen';
 import { SettingsContext } from '../../../SettingsProvider';
 import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../../types';
 import { DocumentSelector, MultiImageSelector } from '../../selectors';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 const {
   EMAIL_REGEX,
@@ -111,6 +113,9 @@ export const ProfileNoticeboardCreateForm = ({
   queryVariables: { [key: string]: any };
   route: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const isEdit = !!Object.keys(data).length;
@@ -478,7 +483,6 @@ export const ProfileNoticeboardCreateForm = ({
   return (
     <>
       <Input name="dateStart" hidden control={control} />
-
       {!isCarpool ? (
         <>
           <Wrapper noPaddingTop>
@@ -1173,7 +1177,6 @@ export const ProfileNoticeboardCreateForm = ({
           )}
         </>
       )}
-
       {showDocument && (
         <Wrapper noPaddingTop>
           <Controller
@@ -1201,7 +1204,6 @@ export const ProfileNoticeboardCreateForm = ({
           />
         </Wrapper>
       )}
-
       {showImage && (
         <Wrapper noPaddingTop>
           <Controller
@@ -1233,13 +1235,11 @@ export const ProfileNoticeboardCreateForm = ({
           />
         </Wrapper>
       )}
-
       {!!consentForDataProcessingText && (
         <WrapperHorizontal>
           <HtmlView html={consentForDataProcessingText} />
         </WrapperHorizontal>
       )}
-
       <Wrapper>
         {loading || isLoading ? (
           <LoadingSpinner loading />
@@ -1265,13 +1265,14 @@ export const ProfileNoticeboardCreateForm = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
   },
+
   textArea: {
     height: normalize(100),
     padding: normalize(10)

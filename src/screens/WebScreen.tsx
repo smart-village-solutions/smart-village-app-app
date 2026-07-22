@@ -2,16 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser';
 import { noop } from 'lodash';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
 import { LoadingContainer, SafeAreaViewFlex } from '../components';
-import { colors, consts, device } from '../config';
+import { consts, device } from '../config';
 import { openLink } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -28,6 +30,9 @@ export const WebScreen = ({
     };
   };
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings = {} } = useContext(SettingsContext);
@@ -94,7 +99,7 @@ export const WebScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.surface
   }

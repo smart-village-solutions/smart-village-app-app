@@ -1,30 +1,35 @@
 import React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, View } from 'react-native';
 
-import { colors, consts } from '../config';
+import { consts } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { LoadingSpinner } from './LoadingSpinner';
 
-export const LoadingModal = ({ loading }: { loading?: boolean }) => (
-  <Modal
-    animationType="none"
-    transparent={true}
-    visible={loading}
-    accessibilityViewIsModal
-    supportedOrientations={['landscape', 'portrait']}
-  >
-    <View
-      accessibilityLabel={consts.a11yLabel.loadingModal}
-      accessibilityRole="alert"
-      accessible
-      style={styles.modalContainer}
-    >
-      <LoadingSpinner loading />
-    </View>
-  </Modal>
-);
+export const LoadingModal = ({ loading }: { loading?: boolean }) => {
+  const styles = useThemeStyles(createStyles);
 
-const styles = StyleSheet.create({
+  return (
+    <Modal
+      animationType="none"
+      transparent={true}
+      visible={loading}
+      accessibilityViewIsModal
+      supportedOrientations={['landscape', 'portrait']}
+    >
+      <View
+        accessibilityLabel={consts.a11yLabel.loadingModal}
+        accessibilityRole="alert"
+        accessible
+        style={styles.modalContainer}
+      >
+        <LoadingSpinner loading />
+      </View>
+    </Modal>
+  );
+};
+
+const createStyles = (colors) => ({
   modalContainer: {
     flex: 1,
     backgroundColor: colors.overlayRgba

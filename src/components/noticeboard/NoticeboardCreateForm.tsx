@@ -5,7 +5,7 @@ import { extendMoment } from 'moment-range';
 import React, { useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 
 import {
   Button,
@@ -23,7 +23,7 @@ import {
   WrapperHorizontal,
   WrapperRow
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import {
   formatSizeStandard,
   graphqlFetchPolicy,
@@ -36,6 +36,8 @@ import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, MEDIA_TYPES } = consts;
 
@@ -69,6 +71,9 @@ export const NoticeboardCreateForm = ({
   queryVariables: { [key: string]: any };
   route: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const isEdit = !!Object.keys(data).length;
@@ -552,17 +557,19 @@ export const NoticeboardCreateForm = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
   },
+
   checkboxTextStyle: {
     color: colors.darkText,
     fontWeight: 'normal'
   },
+
   textArea: {
     height: normalize(100),
     padding: normalize(10)

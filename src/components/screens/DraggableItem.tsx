@@ -13,10 +13,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { getGridContentHeight } from '../../helpers/draggableGrid';
 import { getHeaderHeight, statusBarHeight } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export type Positions = {
   [id: string]: number;
@@ -48,6 +49,7 @@ export const DraggableItem = ({
   numberOfTiles,
   tileSize
 }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const { dimensions, orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const containerHeight =
@@ -218,12 +220,13 @@ export const DraggableItem = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   draggableItem: {
     borderColor: colors.borderRgba,
     borderWidth: 1,
     margin: normalize(3)
   },
+
   noBorder: {
     borderWidth: 0
   }

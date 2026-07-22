@@ -1,14 +1,7 @@
 import moment from 'moment';
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  View
-} from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, ScrollView, View } from 'react-native';
 
 import {
   DailyWeather,
@@ -23,13 +16,15 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../components';
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { hasDailyWeather, hasHourlyWeather, parseValidAlerts } from '../jsonValidation';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, POLL_INTERVALS } = consts;
 
@@ -58,6 +53,9 @@ const markNow = (data) => {
 
 /* eslint-disable complexity */
 export const WeatherScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { flat = true, weather = {} } = settings;
@@ -223,7 +221,7 @@ export const WeatherScreen = () => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   currentTemp: {
     color: colors.primary,
     fontSize: normalize(72),
@@ -231,9 +229,11 @@ const styles = StyleSheet.create({
     marginTop: -normalize(20),
     paddingLeft: normalize(30)
   },
+
   marginHorizontal: {
     marginHorizontal: normalize(5)
   },
+
   separator: {
     backgroundColor: colors.gray40,
     height: normalize(1)

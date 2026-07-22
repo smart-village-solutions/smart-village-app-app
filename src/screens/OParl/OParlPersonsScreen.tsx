@@ -6,7 +6,7 @@ import { FlatList, StyleSheet } from 'react-native';
 import { DropdownSelect, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { useOParlQuery } from '../../hooks';
 import {
   organizationMembershipQuery,
@@ -19,6 +19,7 @@ import {
   OrganizationPreviewData,
   PersonPreviewData
 } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   navigation: StackNavigationProp<never>;
@@ -88,6 +89,7 @@ const useListData = (
 
 // eslint-disable-next-line complexity
 export const OParlPersonsScreen = ({ navigation }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const [fetchingMore, setFetchingMore] = useState(false);
   const [finished, setFinished] = useState(false);
   const {
@@ -208,7 +210,7 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,

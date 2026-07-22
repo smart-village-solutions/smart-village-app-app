@@ -1,12 +1,13 @@
 import React, { RefObject, useCallback, useRef, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, Keyboard, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, TextInput, View } from 'react-native';
 
-import { colors, device, normalize, texts } from '../config';
+import { device, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
 import { COMMENT_ON_SURVEY } from '../queries/survey';
 import { Survey } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { Button } from './Button';
 import { RegularText } from './Text';
@@ -29,6 +30,7 @@ export const CommentSection = ({
   scrollViewRef,
   surveyId
 }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const refForPosition = useRef<View>(null);
   const [sendComment] = useMutation(COMMENT_ON_SURVEY);
   const [newComment, setNewComment] = useState('');
@@ -107,10 +109,11 @@ export const CommentSection = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   limitContainer: {
     alignItems: 'flex-end'
   },
+
   textArea: {
     borderColor: colors.shadow,
     borderWidth: 1,

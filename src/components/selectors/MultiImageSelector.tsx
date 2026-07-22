@@ -1,11 +1,11 @@
 import { ImagePickerAsset } from 'expo-image-picker';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { jsonParser, volunteerApiV1Url } from '../../helpers';
 import { onDeleteImage, onImageSelect } from '../../helpers/selectors';
 import {
@@ -24,6 +24,8 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { IMAGE_FROM, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -74,6 +76,9 @@ export const MultiImageSelector = ({
   item: any;
   selectorType: string;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const reverseGeocode = useReverseGeocode();
   const systemPermission = useSystemPermission();
 
@@ -347,13 +352,15 @@ export const MultiImageSelector = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   infoText: {
     width: '90%'
   },
+
   noPaddingTop: {
     paddingTop: 0
   },
+
   overlay: {
     backgroundColor: colors.surface,
     bottom: 0,
@@ -363,15 +370,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%'
   },
+
   overlayCloseButton: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center'
   },
+
   overlayCloseButtonText: {
     paddingRight: normalize(10),
     paddingTop: normalize(3)
   },
+
   sueDeleteImageButton: {
     alignItems: 'center',
     backgroundColor: colors.placeholder,
@@ -384,24 +394,30 @@ const styles = StyleSheet.create({
     width: normalize(22),
     zIndex: 5
   },
+
   sueImage: {
     height: normalize(55),
     width: normalize(88)
   },
+
   sueInfoText: {
     marginTop: normalize(-7),
     marginBottom: normalize(5)
   },
+
   volunteerContainer: {
     marginBottom: normalize(8)
   },
+
   volunteerImage: {
     height: normalize(55),
     width: normalize(55)
   },
+
   volunteerInfoText: {
     width: '65%'
   },
+
   volunteerUploadPreview: {
     alignItems: 'center',
     backgroundColor: colors.gray20,

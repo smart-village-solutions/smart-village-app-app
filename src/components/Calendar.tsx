@@ -3,14 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  DeviceEventEmitter,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle
-} from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter, StyleProp, View, ViewStyle } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import { DateData, Direction } from 'react-native-calendars/src/types';
 import { useInfiniteQuery, useQuery } from 'react-query';
@@ -18,11 +11,13 @@ import { useInfiniteQuery, useQuery } from 'react-query';
 import { NetworkContext } from '../NetworkProvider';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getQuery } from '../queries';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { DayComponent } from './DayComponent';
 import { EmptyMessage } from './EmptyMessage';
@@ -59,6 +54,9 @@ export const Calendar = ({
   queryVariables,
   subListContainerStyle
 }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -360,13 +358,15 @@ export const Calendar = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   spacer: {
     height: normalize(70)
   },
+
   spacerSmall: {
     height: normalize(20)
   },
+
   noPaddingLeftAndRight: {
     paddingLeft: 0,
     paddingRight: 0

@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
-import { colors, normalize } from '../../../config';
+import { normalize } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { PROVIDE_ANSWER_TO_POLL_QUESTION } from '../../../queries/consul';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText, RegularText } from '../../Text';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -18,6 +19,7 @@ export const ConsulQuestionsListItem = ({
   resultsReadyToBeShown,
   token
 }) => {
+  const styles = useThemeStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
 
   const { answersGivenByCurrentUser, id, questionAnswers, title } = questionItem;
@@ -86,7 +88,7 @@ export const ConsulQuestionsListItem = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   answerContainer: {
     alignItems: 'center',
     borderColor: colors.darkText,
@@ -95,15 +97,18 @@ const styles = StyleSheet.create({
     marginVertical: normalize(10),
     paddingVertical: normalize(10)
   },
+
   container: {
     borderColor: colors.borderRgba,
     borderWidth: 1,
     marginVertical: normalize(10),
     padding: normalize(10)
   },
+
   disabledAnswerContainer: {
     borderWidth: 0.3
   },
+
   selectedContainer: {
     borderColor: colors.lighterPrimary,
     borderWidth: 2

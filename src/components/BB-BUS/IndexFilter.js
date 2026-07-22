@@ -3,12 +3,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { DropdownSelect } from '../DropdownSelect';
 import { search } from '../../helpers';
 import { IndexFilterWrapper } from '../IndexFilterElement';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { AZFilter } from './AZFilter';
 import { TextSearch } from './TextSearch';
@@ -45,6 +46,7 @@ export const IndexFilter = ({
   setAreaId,
   setListItems
 }) => {
+  const styles = useThemeStyles(createStyles);
   const [serviceSearchData, setServiceSearchData] = useState('');
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
   const [locationFilterData, setLocationFilterData] = useState(areas);
@@ -198,17 +200,19 @@ export const IndexFilter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.surface,
     height: normalize(18),
     opacity: 0
   },
+
   results: {
     fontSize: normalize(10),
     letterSpacing: normalize(1.5),
     lineHeight: normalize(30)
   },
+
   searchInput: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderRgba,

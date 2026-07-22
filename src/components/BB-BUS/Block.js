@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { Title } from '../Title';
 import { Touchable } from '../Touchable';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export const Block = ({ bottomDivider, children, initiallyOpen, title }) => {
+  const styles = useThemeStyles(createStyles);
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
   const onPress = useCallback(() => {
@@ -35,7 +37,7 @@ export const Block = ({ bottomDivider, children, initiallyOpen, title }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   sectionTitle: {
     backgroundColor: colors.transparent,
     paddingHorizontal: normalize(14),

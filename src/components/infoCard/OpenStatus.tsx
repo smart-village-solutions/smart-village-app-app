@@ -1,18 +1,23 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { Icon, colors, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { isOpen } from '../../helpers';
 import { OpeningHour } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   openingHours?: OpeningHour[];
 };
 
 export const OpenStatus = ({ openingHours }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   if (!openingHours?.length) {
     return null;
   }
@@ -49,10 +54,11 @@ export const OpenStatus = ({ openingHours }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   },
+
   margin: {
     marginRight: normalize(12)
   }

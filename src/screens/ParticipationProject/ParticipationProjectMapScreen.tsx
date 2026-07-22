@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
@@ -13,7 +13,7 @@ import {
   TextListItem,
   Wrapper
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import {
   buildParticipationProjectPreviewItem,
   getParticipationProjectGeoLocation,
@@ -22,6 +22,7 @@ import {
 } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { GenericType, MapMarker, ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type ParticipationProjectMapParamList = Record<string, object | undefined> & {
   [ScreenName.ParticipationProjectMap]: {
@@ -42,6 +43,7 @@ export const ParticipationProjectMapScreen = ({
   navigation,
   route
 }: StackScreenProps<ParticipationProjectMapParamList, ScreenName.ParticipationProjectMap>) => {
+  const styles = useThemeStyles(createStyles);
   const [selectedMarker, setSelectedMarker] = useState<string>();
   const title = route.params?.title || texts.locationOverview.map;
   const rootRouteName = route.params?.rootRouteName;
@@ -145,17 +147,19 @@ export const ParticipationProjectMapScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     flex: 1,
     width: '100%'
   },
+
   emptyState: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: normalize(24)
   },
+
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),
@@ -173,6 +177,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     width: '92%'
   },
+
   map: {
     height: '100%',
     width: '100%'

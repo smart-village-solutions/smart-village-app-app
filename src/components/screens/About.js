@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SectionList, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { useHomeRefresh, useRenderItem, useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -10,8 +10,13 @@ import { SettingsContext } from '../../SettingsProvider';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { VersionNumber } from '../VersionNumber';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, withSettings }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { data, loading, refetch } = useStaticContent({
     name: publicJsonFile,
     type: 'json',
@@ -88,10 +93,11 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     paddingHorizontal: normalize(16)
   },
+
   sectionHeader: {
     paddingLeft: 0,
     paddingRight: 0

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => ({
@@ -13,7 +13,8 @@ jest.mock('react-native-elements', () => ({
 import { Button } from '../../src/components/Button';
 import { LoadingContainer } from '../../src/components/LoadingContainer';
 import { Switch } from '../../src/components/Switch';
-import { darkColors } from '../../src/config/colors';
+import { darkColors, lightColors } from '../../src/config/colors';
+import { useThemeStyles } from '../../src/hooks/useThemeStyles';
 import { ThemeContext } from '../../src/ThemeContext';
 
 const renderWithDarkTheme = (component: React.ReactElement) => {
@@ -28,6 +29,16 @@ const renderWithDarkTheme = (component: React.ReactElement) => {
   });
 
   return tree!;
+};
+
+const createProbeStyles = (colors: typeof lightColors) => ({
+  surface: { backgroundColor: colors.surface }
+});
+
+const ThemeStyleProbe = () => {
+  const styles = useThemeStyles(createProbeStyles);
+
+  return <View style={styles.surface} testID="theme-style-probe" />;
 };
 
 describe('themed shared primitives', () => {
@@ -65,6 +76,34 @@ describe('themed shared primitives', () => {
     expect(switchNode.props.trackColor).toEqual({
       false: darkColors.shadow,
       true: darkColors.primary
+    });
+  });
+
+  it('recreates semantic styles when the active palette changes', () => {
+    let tree: renderer.ReactTestRenderer;
+
+    renderer.act(() => {
+      tree = renderer.create(
+        <ThemeContext.Provider value={{ colors: lightColors, isDark: false, mode: 'light' }}>
+          <ThemeStyleProbe />
+        </ThemeContext.Provider>
+      );
+    });
+
+    expect(tree!.root.findByProps({ testID: 'theme-style-probe' }).props.style).toMatchObject({
+      backgroundColor: lightColors.surface
+    });
+
+    renderer.act(() => {
+      tree!.update(
+        <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>
+          <ThemeStyleProbe />
+        </ThemeContext.Provider>
+      );
+    });
+
+    expect(tree!.root.findByProps({ testID: 'theme-style-probe' }).props.style).toMatchObject({
+      backgroundColor: darkColors.surface
     });
   });
 });

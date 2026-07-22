@@ -2,12 +2,13 @@ import { ApolloQueryResult } from 'apollo-client';
 import _sortBy from 'lodash/sortBy';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconUrl, colors, consts, normalize } from '../../config';
+import { IconUrl, consts, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   pointsOfInterest?: { category: { id: string | number; iconName: string; name: string } }[];
@@ -32,6 +33,7 @@ const keyExtractor = (
 ) => `index${index}-id${item.id}`;
 
 export const ChipFilter = ({ queryVariables, refetch }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const [categoryIds, setCategoryIds] = useState<string[]>(
     queryVariables.categoryIds?.map((item) => item.toString()) || []
   );
@@ -113,10 +115,11 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   category: {
     marginLeft: normalize(4)
   },
+
   chip: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -136,18 +139,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+
   chipActive: {
     backgroundColor: colors.secondary
   },
+
   filterContainer: {
     position: 'absolute',
     top: normalize(16),
     width: '100%',
     zIndex: 1
   },
+
   lastChip: {
     marginRight: normalize(16)
   },
+
   list: {
     flexGrow: 0
   }

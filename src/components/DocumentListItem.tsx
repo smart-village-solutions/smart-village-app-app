@@ -1,14 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
-import { colors, Icon, normalize } from '../config';
+import { Icon, normalize } from '../config';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { DocumentTypes } from './DocumentList';
 import { RegularText } from './Text';
 
 export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
 
   const { contentType, id, sourceUrl, title } = item;
@@ -31,7 +36,7 @@ export const DocumentListItem = ({ item }: { item: DocumentTypes }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',

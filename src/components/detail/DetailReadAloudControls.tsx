@@ -1,11 +1,12 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { Button } from '../Button';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   activeItemId?: string;
@@ -40,6 +41,7 @@ export const DetailReadAloudControls = ({
   speechRate,
   totalItems
 }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const [showReadAlongText, setShowReadAlongText] = React.useState(false);
   const { isHighContrastEnabled } = React.useContext(AccessibilityContext);
 
@@ -180,14 +182,16 @@ export const DetailReadAloudControls = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   activeWord: {
     backgroundColor: colors.darkText,
     color: colors.lightestText
   },
+
   buttonsRow: {
     marginTop: normalize(4)
   },
+
   container: {
     backgroundColor: colors.surface,
     borderColor: colors.gray40,
@@ -195,28 +199,35 @@ const styles = StyleSheet.create({
     borderWidth: normalize(1),
     padding: normalize(12)
   },
+
   currentTextSection: {
     marginBottom: normalize(8)
   },
+
   currentTextTitle: {
     color: colors.placeholder,
     marginBottom: normalize(4)
   },
+
   readAlongToggle: {
     alignSelf: 'flex-start',
     marginBottom: normalize(8)
   },
+
   readAlongToggleText: {
     color: colors.primary,
     textDecorationLine: 'underline'
   },
+
   primaryButton: {
     flex: 1,
     marginRight: normalize(8)
   },
+
   progressText: {
     color: colors.placeholder
   },
+
   speedChip: {
     alignItems: 'center',
     borderColor: colors.gray40,
@@ -228,30 +239,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(8),
     paddingVertical: normalize(6)
   },
+
   speedChipSpacing: {
     marginRight: normalize(8)
   },
+
   speedChipSelected: {
     backgroundColor: colors.primary,
     borderColor: colors.primary
   },
+
   speedChipText: {
     color: colors.darkText
   },
+
   speedChipTextSelected: {
     color: colors.lightestText
   },
+
   speedOptionsRow: {
     marginTop: normalize(6),
     width: '100%'
   },
+
   speedSection: {
     marginBottom: normalize(8),
     marginTop: normalize(8)
   },
+
   speedTitle: {
     color: colors.placeholder
   },
+
   secondaryButton: {
     flex: 1
   }

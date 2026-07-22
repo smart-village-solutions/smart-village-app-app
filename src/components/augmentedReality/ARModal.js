@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { DOWNLOAD_TYPE, progressSizeGenerator } from '../../helpers';
 import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { ARObjectList } from './ARObjectList';
 import { HiddenModalAlert } from './HiddenModalAlert';
@@ -23,6 +25,9 @@ export const ARModal = ({
   onModalVisible,
   showTitle
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   // this modal is called for file package lists and for single file packages, where we need the
   // explicit object at the given `index`. the `index` is only given if we do not have a
   // truthy `isListView`, thats why we need to "secure" the destructing with `{}`.
@@ -101,15 +106,17 @@ export const ARModal = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     marginBottom: normalize(20),
     width: '100%'
   },
+
   iconAndByteText: {
     alignItems: 'center',
     flexDirection: 'row'
   },
+
   progressTextStyle: {
     marginLeft: normalize(10)
   }

@@ -1,10 +1,15 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Icon, colors, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const SueImageFallback = ({ style }: { style?: any }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <View style={[styles.container, stylesForImage().defaultStyle, style]}>
       <Icon.SueBroom color={colors.placeholder} size={normalize(32)} />
@@ -12,7 +17,7 @@ export const SueImageFallback = ({ style }: { style?: any }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     alignItems: 'center',
     backgroundColor: colors.gray20,

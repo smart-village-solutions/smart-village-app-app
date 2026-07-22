@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import {
   AccessibilityHeader,
@@ -12,13 +12,18 @@ import {
   WrapperRow
 } from '../components';
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
-import { colors, Icon, normalize, texts } from '../config';
+import { Icon, normalize, texts } from '../config';
 import { useChatbot, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ChatbotConfig, ChatbotConnectionState } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 export const ChatbotScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const { isConnected: isNetworkConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -134,14 +139,16 @@ export const ChatbotScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   headerRight: {
     alignItems: 'center',
     paddingRight: normalize(8)
   },
+
   headerButton: {
     paddingHorizontal: normalize(10)
   },
+
   icon: {
     paddingHorizontal: normalize(6)
   }

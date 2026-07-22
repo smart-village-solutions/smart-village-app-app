@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 
-import { colors, consts, normalize } from '../config';
+import { consts, normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { BackToTop } from './BackToTop';
 
@@ -38,6 +40,9 @@ export const VerticalList = ({
   showBackToTop,
   stickyHeaderIndices
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
@@ -142,16 +147,23 @@ export const VerticalList = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     paddingHorizontal: normalize(16)
   },
+
   contentContainerStyle: {
     flexGrow: 1
   },
+
   loadingIndicator: {
     margin: normalize(14)
   },
+
+  indexScreenContainer: {
+    paddingHorizontal: normalize(8)
+  },
+
   spacer: {
     height: normalize(70)
   }

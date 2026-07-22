@@ -1,10 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
-import { Icon, colors, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
@@ -15,6 +15,8 @@ import { Button } from '../Button';
 import { Image } from '../Image';
 import { HeadlineText, RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const LOGIN_MODAL = 'loginModal';
 
@@ -33,6 +35,9 @@ interface DataItem {
 
 /* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isLoading, isLoggedIn, currentUserData } = useProfileContext();
   const [isVisible, setIsVisible] = useState(false);
   const isProfileUpdated =
@@ -206,7 +211,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.darkText,
@@ -220,20 +225,24 @@ const styles = StyleSheet.create({
     width: normalize(32),
     zIndex: 1
   },
+
   containerRadius: {
     borderRadius: normalize(8)
   },
+
   overlayWidth: {
     borderRadius: normalize(8),
     height: 'auto',
     padding: 0,
     width: '95%'
   },
+
   headlineText: {
     fontSize: normalize(14),
     fontWeight: '700',
     lineHeight: normalize(16)
   },
+
   smallPaddingBottom: {
     paddingBottom: normalize(8)
   }

@@ -1,15 +1,17 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
 import { momentFormat, removeHtml } from '../helpers';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { BoldText, HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 
 export const GroupedListItem = ({ item: groupedItem, navigation, options }) => {
+  const styles = useThemeStyles(createStyles);
   const sectionHeaderTop = momentFormat(groupedItem[0][options.groupKey], 'dd');
   const sectionHeaderBottom = momentFormat(groupedItem[0][options.groupKey], 'DD');
 
@@ -24,9 +26,7 @@ export const GroupedListItem = ({ item: groupedItem, navigation, options }) => {
           {groupedItem.map((item, index) => (
             <View key={item.id}>
               <TouchableOpacity
-                accessibilityLabel={
-                  item.topTitle ? `${item.topTitle} (${item.title})` : item.title
-                }
+                accessibilityLabel={item.topTitle ? `${item.topTitle} (${item.title})` : item.title}
                 onPress={() => navigation.navigate(ScreenName.Detail, item.params)}
               >
                 {!!item.topTitle && (
@@ -48,16 +48,19 @@ export const GroupedListItem = ({ item: groupedItem, navigation, options }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   cell: {
     backgroundColor: colors.gray20
   },
+
   spacerTiny: {
     marginBottom: normalize(16)
   },
+
   width15: {
     width: '15%'
   },
+
   width85: {
     width: '85%'
   }

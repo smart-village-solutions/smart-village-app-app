@@ -1,12 +1,14 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { HeadlineText } from './Text';
 import { Wrapper } from './Wrapper';
 
 export const GroupedSectionHeader = ({ item }) => {
+  const styles = useThemeStyles(createStyles);
   return (
     <Wrapper style={styles.header}>
       <HeadlineText biggest>{item}</HeadlineText>
@@ -14,7 +16,7 @@ export const GroupedSectionHeader = ({ item }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   header: {
     backgroundColor: colors.surface,
     paddingBottom: normalize(4),

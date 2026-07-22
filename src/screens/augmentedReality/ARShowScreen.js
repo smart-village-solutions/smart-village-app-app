@@ -1,11 +1,13 @@
 import { ViroARSceneNavigator } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Animated, TouchableOpacity, View } from 'react-native';
 
 import { AugmentedRealityView, LoadingSpinner } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { objectParser } from '../../helpers';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const errorHandler = (errorCode) => {
   Alert.alert(
@@ -30,6 +32,9 @@ const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
 };
 
 export const ARShowScreen = ({ navigation, route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isLoading, setIsLoading] = useState(true);
   const [isObjectLoading, setIsObjectLoading] = useState(true);
   const [isAnchorFound, setIsAnchorFound] = useState(false);
@@ -144,27 +149,31 @@ export const ARShowScreen = ({ navigation, route }) => {
   );
 };
 
-var styles = StyleSheet.create({
+var createStyles = (colors) => ({
   animationButton: {
     backgroundColor: colors.surface,
     alignSelf: 'center',
     bottom: normalize(40),
     padding: normalize(15)
   },
+
   arSceneNavigator: {
     flex: 1
   },
+
   backButton: {
     padding: normalize(5),
     right: normalize(10),
     top: normalize(50)
   },
+
   flashEffectContainer: {
     backgroundColor: colors.surface,
     height: '100%',
     position: 'absolute',
     width: '100%'
   },
+
   generalButtonStyle: {
     alignItems: 'center',
     borderRadius: 50,
@@ -172,14 +181,17 @@ var styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1
   },
+
   objectLoadingIndicatorComponent: {
     height: '100%',
     position: 'absolute',
     width: '100%'
   },
+
   opacity: {
     opacity: 0.6
   },
+
   screenShotButton: {
     backgroundColor: colors.surface,
     bottom: normalize(40),

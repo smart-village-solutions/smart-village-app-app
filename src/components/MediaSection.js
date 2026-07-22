@@ -1,12 +1,14 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, Linking, Platform, StyleSheet } from 'react-native';
+import { ActivityIndicator, Linking, Platform } from 'react-native';
 import WebView from 'react-native-webview';
 import YoutubeIframe from 'react-native-youtube-iframe';
 
-import { colors, consts, normalize } from '../config';
+import { consts, normalize } from '../config';
 import { trimNewLines } from '../helpers';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { LoadingContainer } from './LoadingContainer';
 import { WrapperHorizontal, WrapperVertical } from './Wrapper';
@@ -118,6 +120,9 @@ const buildHtmlDocument = (content) => `<!DOCTYPE html>
 </html>`;
 
 export const MediaItem = ({ mediaContent }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const rawUrl = mediaContent?.sourceUrl?.url ?? '';
   const youtubeId = extractYoutubeId(rawUrl);
 
@@ -211,7 +216,7 @@ export const MediaSection = ({ mediaContents }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   iframeWebView: {
     height: normalize(210),
     width: '100%'

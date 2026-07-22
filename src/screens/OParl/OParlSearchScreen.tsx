@@ -11,10 +11,11 @@ import {
 } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { useOParlQuery } from '../../hooks';
 import { keywordListQuery, keywordQuery } from '../../queries/OParl';
 import { OParlObjectData } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   navigation: StackNavigationProp<never>;
@@ -70,6 +71,7 @@ const useKeywordQuery = (dropdownData: { value: string; selected?: boolean }[]) 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 export const OParlSearchScreen = ({ navigation }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const [dropdownData, setDropdownData] = useState<Array<{ value: string; selected?: boolean }>>(
     []
   );
@@ -134,7 +136,7 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,

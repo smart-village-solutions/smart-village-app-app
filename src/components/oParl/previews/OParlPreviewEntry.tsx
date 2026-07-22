@@ -1,12 +1,14 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize } from '../../../config';
+import { consts, Icon, normalize } from '../../../config';
 import { OParlObjectType } from '../../../types';
 import { HtmlView } from '../../HtmlView';
 import { Touchable } from '../../Touchable';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 type Props = {
   id: string;
@@ -25,6 +27,9 @@ export const OParlPreviewEntry = ({
   screenTitle,
   topDivider = false
 }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <ListItem
       bottomDivider={!topDivider}
@@ -45,7 +50,7 @@ export const OParlPreviewEntry = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.transparent,
     marginHorizontal: normalize(16),

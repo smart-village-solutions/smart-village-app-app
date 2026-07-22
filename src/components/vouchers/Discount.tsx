@@ -1,11 +1,13 @@
 import React, { useCallback, useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { Icon, colors, consts, normalize } from '../../config';
+import { Icon, consts, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { TDiscount } from '../../types';
 import { BoldText, RegularText } from '../Text';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const a11yLabel = consts.a11yLabel;
 const localeString = 'de';
@@ -29,6 +31,9 @@ export const Discount = ({
   payloadId: string;
   query: string;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { toggleBookmark } = useContext(BookmarkContext);
   const { discountAmount, discountedPrice, originalPrice } = discount;
 
@@ -73,12 +78,13 @@ export const Discount = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
+
   discountedPriceContainer: {
     backgroundColor: colors.primary,
     borderRadius: normalize(4),
@@ -86,6 +92,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(6),
     paddingVertical: normalize(2)
   },
+
   icon: {
     paddingHorizontal: normalize(7),
     paddingVertical: normalize(4)

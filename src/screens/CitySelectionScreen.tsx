@@ -1,6 +1,6 @@
 import _kebabCase from 'lodash/kebabCase';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import {
   Button,
@@ -14,14 +14,19 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { readFromStore, SELECTED_CITY, storeSelectedCity } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { useReadAloudPlayerBottomSpacing } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { DropdownProps } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 export const CitySelectionScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const readAloudPlayerBottomSpacing = useReadAloudPlayerBottomSpacing();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -143,7 +148,7 @@ export const CitySelectionScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   paddingLeft: {
     paddingLeft: normalize(16)
   }

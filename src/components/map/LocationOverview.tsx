@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, colors, consts, device, normalize, texts } from '../../config';
+import { Icon, consts, device, normalize, texts } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
@@ -25,6 +25,8 @@ import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
 import { fetchAvailableVehicles, vehiclePropertyKey } from '../screens';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { ChipFilter } from './ChipFilter';
 import { MapLibre } from './MapLibre';
@@ -110,6 +112,9 @@ export const LocationOverview = ({
   queryVariables,
   route
 }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
@@ -315,7 +320,7 @@ export const LocationOverview = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   iconContainer: {
     alignItems: 'center',
     backgroundColor: colors.lighterPrimary,
@@ -323,16 +328,19 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: normalize(8),
     justifyContent: 'center'
   },
+
   imageStyle: {
     borderBottomRightRadius: 0,
     borderTopRightRadius: 0,
     height: normalize(96),
     width: normalize(96)
   },
+
   imageRadius: {
     borderBottomLeftRadius: normalize(12),
     borderTopLeftRadius: normalize(12)
   },
+
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(8),
@@ -350,13 +358,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+
   listItem: {
     marginVertical: normalize(16)
   },
+
   map: {
     height: '100%',
     width: '100%'
   },
+
   textListItemContainer: {
     alignItems: 'flex-start',
     paddingVertical: 0,

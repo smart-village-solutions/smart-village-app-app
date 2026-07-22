@@ -1,14 +1,19 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Divider, Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { openLink } from '../../helpers';
 import { Contact } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const ContactView = ({ contact }: { contact?: Contact }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const a11yText = consts.a11yLabel;
 
   if (!contact) {
@@ -125,13 +130,15 @@ export const ContactSection = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   },
+
   margin: {
     marginRight: normalize(12)
   },
+
   wrap: {
     width: '90%'
   }

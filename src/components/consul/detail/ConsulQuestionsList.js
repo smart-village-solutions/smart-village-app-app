@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
-import { colors, texts } from '../../../config';
+import { texts } from '../../../config';
 import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 
 import { ConsulQuestionsDescriptionListItem } from './ConsulQuestionsDescriptionListItem';
 import { ConsulQuestionsListItem } from './ConsulQuestionsListItem';
 
 export const ConsulQuestionsList = ({ data, refetch, token, disabled, resultsReadyToBeShown }) => {
+  const styles = useThemeStyles(createStyles);
   const [isUserAnswer, setIsUserAnswer] = useState(false);
 
   useEffect(() => {
@@ -56,11 +58,12 @@ export const ConsulQuestionsList = ({ data, refetch, token, disabled, resultsRea
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   pollEndeContainer: {
     backgroundColor: colors.lighterPrimary,
     padding: 5
   },
+
   pollUserAnswerContainer: {
     backgroundColor: colors.error,
     padding: 5

@@ -1,12 +1,17 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { Input } from '../form';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const VolunteerGroupSearchField = ({ onPress }: { onPress: () => void }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { control } = useForm({
     defaultValues: {
       dummy: ''
@@ -37,7 +42,7 @@ export const VolunteerGroupSearchField = ({ onPress }: { onPress: () => void }) 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   button: {
     alignSelf: 'center',
     alignItems: 'flex-end',

@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -14,7 +14,7 @@ import {
   TextListItem,
   WrapperVertical
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import {
   subtitle as formatSubtitle,
   getParticipationProjectPreviewDate,
@@ -27,6 +27,8 @@ import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { GenericItem, GenericType, ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type ParticipationProjectHomeParamList = Record<string, object | undefined> & {
   [ScreenName.ParticipationProjectHome]: undefined;
@@ -281,6 +283,9 @@ const buildCategoryItems = ({
 export const ParticipationProjectHomeScreen = ({
   navigation
 }: StackScreenProps<ParticipationProjectHomeParamList, ScreenName.ParticipationProjectHome>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [refreshing, setRefreshing] = useState(false);
 
   const {
@@ -480,11 +485,12 @@ export const ParticipationProjectHomeScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   contentContainer: {
     flexGrow: 1,
     paddingHorizontal: normalize(16)
   },
+
   sectionHeader: {
     paddingLeft: 0,
     paddingRight: 0,

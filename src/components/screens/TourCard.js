@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { locationLink, locationString, openLink } from '../../helpers';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { InfoBox, Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const addressOnPress = (address) => {
   const mapsString = locationString(address);
@@ -19,6 +21,9 @@ const addressOnPress = (address) => {
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const TourCard = ({ lengthKm, tourAddresses, payload }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { duration = '' } = payload || {};
 
   return (
@@ -77,7 +82,7 @@ export const TourCard = ({ lengthKm, tourAddresses, payload }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   margin: {
     marginRight: normalize(10)
   }

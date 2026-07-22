@@ -1,16 +1,17 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { momentFormat } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { VolunteerAvatar } from '../volunteer';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { ConversationActions } from './ConversationActions';
 
@@ -34,6 +35,7 @@ type TConversation = {
 };
 
 export const ConversationListItem = ({ item, navigation, currentUserId }: TConversation) => {
+  const styles = useThemeStyles(createStyles);
   const message = item;
   const query = QUERY_TYPES.GENERIC_ITEM;
   const { data, loading } = useQuery(getQuery(query), { variables: { id: item.genericItemId } });
@@ -107,21 +109,25 @@ export const ConversationListItem = ({ item, navigation, currentUserId }: TConve
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   avatar: {
     alignSelf: 'center'
   },
+
   badgeStyle: {
     backgroundColor: colors.secondary
   },
+
   container: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
     paddingVertical: normalize(16)
   },
+
   textContainer: {
     flex: 1
   },
+
   rowContainer: {
     alignItems: 'center',
     flexDirection: 'row',

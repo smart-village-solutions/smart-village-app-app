@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
 import {
@@ -26,7 +26,7 @@ import {
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { volunteerAuthToken } from '../../helpers';
 import {
   useCalendarsHeader,
@@ -41,6 +41,8 @@ import {
 import { QUERY_TYPES } from '../../queries';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VolunteerUser } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { FILTER_TYPES, ROOT_ROUTE_NAMES } = consts;
 
@@ -101,6 +103,9 @@ const SORT_OPTIONS = [
 
 /* eslint-disable complexity */
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -347,10 +352,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   noPaddingHorizontal: {
     paddingHorizontal: 0
   }

@@ -1,9 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../config';
+import { Icon, normalize, texts } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { BoldText, RegularText } from './Text';
 
@@ -13,6 +15,9 @@ type Props = {
 };
 
 export const NewsSectionPlaceholder = ({ navigation, title }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <View>
       <View style={styles.paddingContainer}>
@@ -41,10 +46,11 @@ export const NewsSectionPlaceholder = ({ navigation, title }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   icon: {
     opacity: 0.4 // TODO: use lighterPrimary instead, once it is defined by using opacity
   },
+
   paddingContainer: {
     alignItems: 'center',
     paddingVertical: normalize(40)

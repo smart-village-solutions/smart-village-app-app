@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { DropdownSelect } from '../DropdownSelect';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { Input } from './Input';
 
@@ -47,6 +48,7 @@ export const DropdownInput = ({
   control,
   showSearch = true
 }: DropdownInputProps) => {
+  const styles = useThemeStyles(createStyles);
   const [dropdownData, setDropdownData] = useState([
     {
       id: 0,
@@ -102,11 +104,12 @@ export const DropdownInput = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   labelWrapper: {
     paddingLeft: 0,
     paddingRight: 0
   },
+
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,

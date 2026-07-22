@@ -3,11 +3,11 @@ import { StackScreenProps } from '@react-navigation/stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { jsonParser, momentFormat } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { calendarDelete, calendarNew, calendarUpload, groupsMy } from '../../queries/volunteer';
@@ -21,6 +21,8 @@ import { DocumentSelector, MultiImageSelector } from '../selectors';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_TYPE_REGEX, MB_TO_BYTES, PDF_TYPE_REGEX, URL_REGEX } =
   consts;
@@ -84,6 +86,9 @@ export const VolunteerFormCalendar = ({
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const calendarData = route.params?.calendarData as Calendar;
   const isEditMode = !!calendarData; // edit mode if there exists some calendar data
 
@@ -466,7 +471,7 @@ export const VolunteerFormCalendar = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

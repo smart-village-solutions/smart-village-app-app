@@ -1,10 +1,10 @@
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _filter from 'lodash/filter';
 import React, { useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import {
   formatAddress,
   formatAddressSingleLine,
@@ -17,6 +17,8 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Address } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   address?: Address;
@@ -49,6 +51,9 @@ const getBBNaviUrl = (baseUrl: string, address: Address, currentPosition?: Locat
 };
 
 export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   // @ts-expect-error global settings are not properly typed
   const bbNaviBaseUrl = useContext(SettingsContext).globalSettings?.settings?.['bbnavi'];
   const isAddress = address || addresses?.length;
@@ -135,14 +140,16 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   },
+
   margin: {
     marginRight: normalize(10),
     marginTop: normalize(-1)
   },
+
   wrap: {
     width: '90%'
   }
