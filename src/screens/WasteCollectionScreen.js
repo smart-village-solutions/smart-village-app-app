@@ -39,7 +39,7 @@ import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { consts, device, Icon, normalize, texts } from '../config';
 import { momentFormat, parseListItemsFromQuery } from '../helpers';
-import { setupLocales } from '../helpers/calendarHelper';
+import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
 import {
   useKeyboardHeight,
   useRenderSuggestions,
@@ -323,10 +323,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
                   onDayPress={onDayPress}
                   renderArrow={renderArrow}
                   theme={{
-                    calendarBackground: colors.calendarBackground,
-                    todayTextColor: colors.calendarTodayText,
-                    selectedDayTextColor: colors.calendarSelectedDayText,
-                    indicatorColor: colors.refreshControl,
+                    ...getCalendarTheme(colors),
                     dotStyle: {
                       borderRadius: DOT_SIZE / 2,
                       height: DOT_SIZE,

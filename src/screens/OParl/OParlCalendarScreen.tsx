@@ -9,7 +9,7 @@ import { NoTouchDay, RegularText, renderArrow, SafeAreaViewFlex, Wrapper } from 
 import { OParlPreviewSection } from '../../components/oParl/sections';
 import { consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
-import { setupLocales } from '../../helpers/calendarHelper';
+import { getCalendarTheme, setupLocales } from '../../helpers/calendarHelper';
 import { useOParlQuery } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { meetingListQuery } from '../../queries/OParl/meeting';
@@ -107,10 +107,7 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
           onMonthChange={updateMonth}
           renderArrow={renderArrow}
           theme={{
-            calendarBackground: colors.calendarBackground,
-            todayTextColor: colors.calendarTodayText,
-            selectedDayTextColor: colors.calendarSelectedDayText,
-            indicatorColor: colors.refreshControl,
+            ...getCalendarTheme(colors),
             dotStyle: {
               borderRadius: DOT_SIZE / 2,
               height: DOT_SIZE,

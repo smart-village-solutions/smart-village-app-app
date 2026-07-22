@@ -73,6 +73,13 @@ jest.mock('../../src/config', () => {
 });
 
 jest.mock('../../src/helpers', () => ({
+  getCalendarTheme: (colors: Record<string, string>) => ({
+    arrowColor: colors.primary,
+    calendarBackground: colors.calendarBackground,
+    dayTextColor: colors.text,
+    monthTextColor: colors.text,
+    textDisabledColor: colors.placeholder
+  }),
   momentFormat: (value: string) => value,
   updateFilters: ({ currentFilters }: { currentFilters: Record<string, unknown> }) => currentFilters
 }));

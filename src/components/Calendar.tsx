@@ -13,7 +13,7 @@ import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
 import { consts, normalize, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
-import { setupLocales } from '../helpers/calendarHelper';
+import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getQuery } from '../queries';
 import { ScreenName } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -304,10 +304,7 @@ export const Calendar = ({
           )
         }
         theme={{
-          calendarBackground: colors.calendarBackground,
-          todayTextColor: colors.calendarTodayText,
-          selectedDayTextColor: colors.calendarSelectedDayText,
-          indicatorColor: colors.refreshControl,
+          ...getCalendarTheme(colors),
           dotStyle: {
             borderRadius: DOT_SIZE / 2,
             height: DOT_SIZE,
