@@ -86,7 +86,7 @@ export const VolunteerFormCalendar = ({
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
-  const { colors: colors } = useTheme();
+  const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
   const calendarData = route.params?.calendarData as Calendar;
@@ -178,8 +178,14 @@ export const VolunteerFormCalendar = ({
   const { mutateAsync, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
 
   const onSubmit = async (calendarNewData: Calendar) => {
-    mutateAsync(calendarNewData).then(async ({ id }: { id: number }) => {
-      if (id) filerParseAndUpload(calendarNewData, id);
+    const themedCalendarData = {
+      ...calendarNewData,
+      color:
+        calendarNewData.color || (colors.primary.startsWith('#') ? colors.primary : colors.text)
+    };
+
+    mutateAsync(themedCalendarData).then(async ({ id }: { id: number }) => {
+      if (id) filerParseAndUpload(themedCalendarData, id);
     });
   };
 

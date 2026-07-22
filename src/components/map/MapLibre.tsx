@@ -24,7 +24,6 @@ import {
   Platform,
   Pressable,
   StyleProp,
-  StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle
@@ -32,9 +31,11 @@ import {
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { getBounds, truncateText } from '../../helpers';
 import { useLocationSettings, useMapFeatureConfig } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -144,6 +145,7 @@ const splitLayerStyle = (
 };
 
 const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
+  const styles = useThemeStyles(createStyles);
   const { properties = {} } = feature || {};
   const serviceName = truncateText(properties?.serviceName);
   const title = truncateText(properties?.title);
@@ -315,6 +317,8 @@ export const MapLibre = ({
   preserveZoomOnSelectedPosition = false,
   style
 }: Props) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const locationService = (settings as { locationService?: unknown }).locationService;
@@ -1074,7 +1078,7 @@ export const MapLibre = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   buttons: {
     alignItems: 'center',
     height: '100%',

@@ -33,8 +33,9 @@ import {
   WrapperVertical,
   WrapperWrap
 } from '../../components';
-import { colors, device, Icon, normalize, texts } from '../../config';
+import { device, Icon, normalize, texts } from '../../config';
 import { deleteCardByNumber } from '../../helpers';
+import { useTheme } from '../../hooks/useTheme';
 import { fetchCardInfo } from '../../queries';
 import { CardType, TCard, TCardInfo } from '../../types';
 
@@ -51,6 +52,7 @@ const ShareableCard = ({
   pinCode?: string;
   serverCardType?: TCard;
 }) => {
+  const { colors } = useTheme();
   const { barcodeFormat = 'QR' } = serverCardType ?? {};
 
   return (
@@ -95,6 +97,7 @@ export const WalletCardDetailScreen = ({
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<{ params: { savedCard: TCard; serverCardType?: TCard } }>;
 }) => {
+  const { colors } = useTheme();
   const { savedCard, serverCardType } = route.params;
   const { apiConnection, cardName, cardNumber, pinCode, title, type: cardType } = savedCard;
   const {

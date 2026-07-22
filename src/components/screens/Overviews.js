@@ -14,7 +14,7 @@ import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -35,6 +35,7 @@ import {
   useStaticContent,
   useSystemPermission
 } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
@@ -100,6 +101,7 @@ const getAdditionalQueryVariables = (
 
 /* eslint-disable complexity */
 export const Overviews = ({ navigation, route }) => {
+  const { colors } = useTheme();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);

@@ -60,7 +60,7 @@ import {
   visible,
   voucher
 } from '../../icons';
-import { colors } from '../colors';
+import { useTheme } from '../../hooks/useTheme';
 import { normalize } from '../normalize';
 
 export type IconProps = {
@@ -91,14 +91,18 @@ export const getHitSlops = (size: number) => {
 
 const SvgIcon = ({
   accessibilityLabel,
-  color = colors.primary,
+  color: colorProp,
   iconStyle,
   size = normalize(24),
-  strokeColor = colors.transparent,
+  strokeColor: strokeColorProp,
   strokeWidth = 0,
   style,
   xml
 }: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
+  const { colors } = useTheme();
+  const color = colorProp || colors.primary;
+  const strokeColor = strokeColorProp || colors.transparent;
+
   return (
     <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
       <SvgXml
@@ -115,7 +119,7 @@ type TablerIconName = keyof typeof Tabler;
 
 const NamedIcon = ({
   accessibilityLabel,
-  color = colors.primary,
+  color: colorProp,
   hasNoHitSlop = false,
   iconStyle,
   name,
@@ -126,6 +130,8 @@ const NamedIcon = ({
   name: ComponentProps<typeof IconSet>['name'];
   strokeWidth?: number;
 }) => {
+  const { colors } = useTheme();
+  const color = colorProp || colors.primary;
   let IconComponent: any;
 
   if (IconSet === Tabler) {

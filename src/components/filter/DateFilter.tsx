@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Insets,
   StyleProp,
-  StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle
@@ -12,8 +11,10 @@ import { Calendar, CalendarProps } from 'react-native-calendars';
 import { Direction } from 'react-native-calendars/src/types';
 import Collapsible from 'react-native-collapsible';
 
-import { Icon, colors, consts, device, normalize, texts } from '../../config';
+import { Icon, consts, device, normalize, texts } from '../../config';
 import { momentFormat, updateFilters } from '../../helpers';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { DatesTypes, FilterProps } from '../../types';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
@@ -45,7 +46,10 @@ const DateFilterCalendarHeader = ({
   hideArrows?: boolean;
   month?: { toString: (format: string) => string };
   onPressArrowLeft?: (method: () => void, month?: { toString: (format: string) => string }) => void;
-  onPressArrowRight?: (method: () => void, month?: { toString: (format: string) => string }) => void;
+  onPressArrowRight?: (
+    method: () => void,
+    month?: { toString: (format: string) => string }
+  ) => void;
   renderArrow?: (direction: Direction) => React.ReactNode;
   theme?: {
     arrowColor?: string;
@@ -53,6 +57,8 @@ const DateFilterCalendarHeader = ({
     indicatorColor?: string;
   };
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const hitSlop =
     typeof arrowsHitSlop === 'number'
       ? {
@@ -101,16 +107,17 @@ const DateFilterCalendarHeader = ({
         accessibilityRole="button"
         disabled={!!disabled}
         hitSlop={hitSlop}
-        onPress={
-          disabled ? undefined : direction === 'left' ? handlePressLeft : handlePressRight
-        }
+        onPress={disabled ? undefined : direction === 'left' ? handlePressLeft : handlePressRight}
         style={styles.headerArrow}
       >
         {renderArrow
           ? renderArrow(direction)
-          : defaultRenderArrow(direction, color) || (
-              direction === 'left' ? <Icon.ArrowLeft color={color} /> : <Icon.ArrowRight color={color} />
-            )}
+          : defaultRenderArrow(direction, color) ||
+            (direction === 'left' ? (
+              <Icon.ArrowLeft color={color} />
+            ) : (
+              <Icon.ArrowRight color={color} />
+            ))}
       </TouchableOpacity>
     );
   };
@@ -154,6 +161,7 @@ const CalendarView = ({
   name?: string;
   setDate: Dispatch<SetStateAction<string>>;
 }) => {
+  const { colors } = useTheme();
   const markedDates = useMemo(() => {
     const dates: CalendarProps['markedDates'] = {};
 
@@ -165,7 +173,7 @@ const CalendarView = ({
     };
 
     return dates;
-  }, [date]);
+  }, [colors.calendarSelected, date]);
 
   const selectedDateData = data.find((item) => item.name === name);
   const hasFutureDates = selectedDateData?.hasFutureDates ?? false;
@@ -225,6 +233,7 @@ const CalendarView = ({
 /* eslint-enable complexity */
 
 export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const [isCollapsed, setIsCollapsed] = useState<{ [key: string]: boolean }>(
     data.reduce((acc: { [key: string]: boolean }, item) => {
       acc[item.name] = true;
@@ -237,6 +246,23 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
       return acc;
     }, {})
   );
+
+  useEffect(() => {
+    const nextFilters = data.reduce((currentFilters, item) => {
+      const endTimeOfDay = item.name === 'start_date' ? 'T00:00:00+01:00' : 'T22:59:59+01:00';
+
+      return updateFilters({
+        currentFilters,
+        name: item.name as keyof FilterProps,
+        removeFromFilter: !selectedDate[item.name],
+        value: `${selectedDate[item.name]}${endTimeOfDay}`
+      });
+    }, filters);
+
+    setFilters(nextFilters);
+    // Selection is the user-owned trigger; filters/data are inputs to that calculation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
 
   if (!data.length) return null;
 
@@ -252,19 +278,6 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
       <Label bold>{texts.filter.date}</Label>
       <WrapperRow spaceBetween>
         {data.map((item) => {
-          useEffect(() => {
-            const endTimeOfDay = item.name === 'start_date' ? 'T00:00:00+01:00' : 'T22:59:59+01:00';
-
-            setFilters(
-              updateFilters({
-                currentFilters: filters,
-                name: item.name as keyof FilterProps,
-                removeFromFilter: !selectedDate[item.name],
-                value: `${selectedDate[item.name]}${endTimeOfDay}`
-              })
-            );
-          }, [selectedDate[item.name]]);
-
           return (
             <View key={item.name} style={[styles.container, containerStyle]}>
               <TouchableOpacity
@@ -320,7 +333,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {},
   button: {
     alignItems: 'center',

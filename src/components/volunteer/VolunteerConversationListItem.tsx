@@ -1,11 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, Validator } from 'react';
-import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize } from '../../config';
+import { consts, Icon, normalize } from '../../config';
 import { trimNewLines } from '../../helpers';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 
@@ -30,6 +31,8 @@ export const VolunteerConversationListItem: NamedExoticComponent<Props> & {
   item: ItemData;
   navigation: StackNavigationProp<Record<string, any>>;
 }>(({ item, navigation }) => {
+  const { colors } = useTheme();
+  const listItemStyles = useThemeStyles(createStyles);
   const { routeName: name, params, subtitle, title, bottomDivider, onPress, status } = item;
   const titleText = trimNewLines(title);
   const navigate = () => navigation && navigation.push(name, params);
@@ -57,12 +60,12 @@ export const VolunteerConversationListItem: NamedExoticComponent<Props> & {
         )}
       </ListItem.Content>
 
-      <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+      <Icon.ArrowRight color={colors.text} size={normalize(18)} />
     </ListItem>
   );
 });
 
-const listItemStyles = StyleSheet.create({
+const createStyles = (colors) => ({
   contentContainerStyle: {
     backgroundColor: colors.transparent,
     paddingVertical: normalize(12)

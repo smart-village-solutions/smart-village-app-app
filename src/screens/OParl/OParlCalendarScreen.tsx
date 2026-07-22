@@ -7,10 +7,11 @@ import { Calendar as RNCalendar } from 'react-native-calendars';
 
 import { NoTouchDay, RegularText, renderArrow, SafeAreaViewFlex, Wrapper } from '../../components';
 import { OParlPreviewSection } from '../../components/oParl/sections';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { setupLocales } from '../../helpers/calendarHelper';
 import { useOParlQuery } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { meetingListQuery } from '../../queries/OParl/meeting';
 import { MeetingPreviewData } from '../../types';
 
@@ -22,8 +23,6 @@ const { DOT_SIZE } = CALENDAR;
 type Props = {
   navigation: StackNavigationProp<never>;
 };
-
-const dot = { key: 'dot', color: colors.primary };
 
 const filterAndSortMeetings = (
   meetings: MeetingPreviewData[]
@@ -39,7 +38,8 @@ const filterAndSortMeetings = (
 const getSectionsAndDots = (
   sortedAndfilteredMeetings: (MeetingPreviewData & {
     start: number;
-  })[]
+  })[],
+  dotColor: string
 ) => {
   const meetingsPerDate: Record<string, typeof sortedAndfilteredMeetings> = {};
   const markedDates: { [date: string]: any } = {};
@@ -48,7 +48,7 @@ const getSectionsAndDots = (
     const startDateString = momentFormat(meeting.start, 'DD.MM.YYYY', 'x');
     const markDateString = momentFormat(meeting.start, 'YYYY-MM-DD', 'x');
 
-    markedDates[markDateString] = { dots: [dot] };
+    markedDates[markDateString] = { dots: [{ key: 'dot', color: dotColor }] };
 
     if (meetingsPerDate[startDateString]) {
       meetingsPerDate[startDateString].push(meeting);
@@ -75,6 +75,7 @@ const getMonthLimits = (date?: any) => {
 const [query, queryName] = meetingListQuery;
 
 export const OParlCalendarScreen = ({ navigation }: Props) => {
+  const { colors } = useTheme();
   const [limits, setLimits] = useState(getMonthLimits());
 
   const { data, error, loading } = useOParlQuery<{ [queryName]: MeetingPreviewData[] }>(query, {
@@ -86,7 +87,7 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
   // parse meetings into sections
 
   const filteredAndSortedMeetings = filterAndSortMeetings(meetings);
-  const { markedDates } = getSectionsAndDots(filteredAndSortedMeetings);
+  const { markedDates } = getSectionsAndDots(filteredAndSortedMeetings, colors.primary);
 
   const updateMonth = useCallback(
     (date) => {

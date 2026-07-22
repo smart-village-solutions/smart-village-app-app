@@ -3,8 +3,8 @@ import React from 'react';
 import { ViewStyle } from 'react-native';
 
 import { OrientationAwareIcon } from '../../components';
-import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
-import { colors } from '../colors';
+import { ScreenName, TabConfig, TabNavigatorConfig, ThemeColorPalette } from '../../types';
+import { lightColors } from '../colors';
 import { Icon } from '../icons';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
@@ -45,7 +45,7 @@ const serviceTabConfig: TabConfig = {
   }
 };
 
-const pointOfInterestTabConfig: TabConfig = {
+const pointOfInterestTabConfig = (colors: ThemeColorPalette): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Index,
     isDrawer: false
@@ -64,7 +64,7 @@ const pointOfInterestTabConfig: TabConfig = {
       />
     )
   }
-};
+});
 
 const eventsTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
@@ -99,7 +99,9 @@ const aboutTabConfig: TabConfig = {
   }
 };
 
-export const tabNavigatorConfig: TabNavigatorConfig = {
+export const createDefaultTabNavigatorConfig = (
+  colors: ThemeColorPalette = lightColors
+): TabNavigatorConfig => ({
   activeTintColor: colors.accent,
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
@@ -107,11 +109,15 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   tabConfigs: [
     homeTabConfig,
     serviceTabConfig,
-    pointOfInterestTabConfig,
+    pointOfInterestTabConfig(colors),
     eventsTabConfig,
     aboutTabConfig
   ]
-};
+});
+
+// Backwards-compatible light defaults for non-React consumers. Navigators use the
+// runtime factory so theme changes are reflected immediately.
+export const tabNavigatorConfig = createDefaultTabNavigatorConfig();
 
 export const createDynamicTabConfig = (
   accessibilityLabel: string,

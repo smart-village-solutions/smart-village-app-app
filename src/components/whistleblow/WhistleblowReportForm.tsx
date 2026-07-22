@@ -1,10 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Keyboard, StyleSheet } from 'react-native';
+import { Keyboard } from 'react-native';
 
 import { Button, Input, LoadingModal, RegularText, Touchable, Wrapper } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { Globaleaks } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 

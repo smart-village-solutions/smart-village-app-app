@@ -5,7 +5,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Keyboard, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Keyboard, ScrollView, TouchableOpacity, View } from 'react-native';
 import {
   Actions,
   Bubble,
@@ -19,9 +19,11 @@ import {
 } from 'react-native-gifted-chat';
 import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { ScreenName } from '../types';
 
 import { DotsAnimation } from './DotsAnimation';
@@ -61,6 +63,8 @@ export const Chat = ({
   textInputProps,
   userId
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const [messages, setMessages] = useState(data);
   const [medias, setMedias] = useState([]);
@@ -189,7 +193,7 @@ export const Chat = ({
             {...props}
             options={mediaActionSheet}
             containerStyle={styles.actionButtonContainer}
-            icon={() => <Icon.Plus color={colors.darkText} />}
+            icon={() => <Icon.Plus color={colors.text} />}
           />
         );
       }}
@@ -205,7 +209,7 @@ export const Chat = ({
             },
             right: bubbleWrapperStyleRight || {
               // TODO: added manually because there is no similar color in the colors file
-              backgroundColor: '#E8F1E9'
+              backgroundColor: colors.lighterPrimaryRgba
             }
           }}
         />
@@ -250,7 +254,7 @@ export const Chat = ({
               </View>
             )}
             {/* Show media preview if there are medias */}
-            {hasMedias && renderFooter(medias, setMedias)}
+            {hasMedias && renderFooter(medias, setMedias, colors, styles)}
           </View>
         );
       }}
@@ -344,7 +348,7 @@ export const Chat = ({
           containerStyle={styles.sendButtonContainer}
           sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
         >
-          <Icon.Send color={colors.lightestText} size={normalize(20)} />
+          <Icon.Send color={colors.onPrimary} size={normalize(20)} />
         </Send>
       )}
       renderTime={(props) => (
@@ -360,14 +364,14 @@ export const Chat = ({
             borderRadius: normalize(8),
             borderWidth: 0
           }}
-          quickReplyTextStyle={{ color: colors.lightestText }}
+          quickReplyTextStyle={{ color: colors.onPrimary }}
         />
       )}
     />
   );
 };
 
-const renderFooter = (medias, setMedias) => (
+const renderFooter = (medias, setMedias, colors, styles) => (
   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.footerStyle}>
     {medias.map(({ uri, type }, index) => {
       return (
@@ -411,7 +415,7 @@ const renderFooter = (medias, setMedias) => (
   </ScrollView>
 );
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   actionButtonContainer: {
     alignItems: 'center',
     height: normalize(30),
@@ -488,7 +492,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(10)
   },
   textStyle: {
-    color: colors.darkText,
+    color: colors.text,
     fontFamily: 'regular',
     fontSize: normalize(14),
     lineHeight: normalize(20)

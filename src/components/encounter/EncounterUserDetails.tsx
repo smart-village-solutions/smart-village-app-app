@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { User } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
@@ -15,6 +16,8 @@ type Props = {
 };
 
 const EncounterDetailEntry = ({ left, right }: { left: string; right: string }) => {
+  const styles = useThemeStyles(createStyles);
+
   return (
     <Wrapper>
       <WrapperRow spaceBetween style={styles.entryContainer}>
@@ -29,6 +32,8 @@ const EncounterDetailEntry = ({ left, right }: { left: string; right: string }) 
 };
 
 export const EncounterUserDetails = ({ data }: Props) => {
+  const styles = useThemeStyles(createStyles);
+
   return (
     <Wrapper>
       <View style={styles.container}>
@@ -53,7 +58,7 @@ export const EncounterUserDetails = ({ data }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     alignItems: 'center'
   },

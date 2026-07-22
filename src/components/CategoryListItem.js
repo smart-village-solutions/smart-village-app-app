@@ -4,13 +4,18 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, IconUrl, normalize } from '../config';
+import { consts, Icon, IconUrl, normalize } from '../config';
+import { ThemeContext } from '../ThemeContext';
 
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 export class CategoryListItem extends React.PureComponent {
+  static contextType = ThemeContext;
+
   render() {
+    const { colors } = this.context;
+    const styles = createStyles(colors);
     const { categoryTitles, index, item, navigation, noSubtitle = false, section } = this.props;
     const {
       bottomDivider,
@@ -67,24 +72,25 @@ export class CategoryListItem extends React.PureComponent {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.transparent,
-    paddingHorizontal: 0,
-    paddingVertical: normalize(15.8)
-  },
-  badge: {
-    backgroundColor: colors.transparent,
-    borderWidth: 0,
-    flex: 1
-  },
-  badgeText: {
-    color: colors.darkText,
-    fontSize: normalize(14),
-    fontFamily: 'bold',
-    lineHeight: normalize(20)
-  }
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.transparent,
+      paddingHorizontal: 0,
+      paddingVertical: normalize(15.8)
+    },
+    badge: {
+      backgroundColor: colors.transparent,
+      borderWidth: 0,
+      flex: 1
+    },
+    badgeText: {
+      color: colors.darkText,
+      fontSize: normalize(14),
+      fontFamily: 'bold',
+      lineHeight: normalize(20)
+    }
+  });
 
 CategoryListItem.propTypes = {
   categoryTitles: PropTypes.object.isRequired,

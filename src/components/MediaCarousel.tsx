@@ -1,11 +1,12 @@
 import { useIsFocused } from '@react-navigation/native';
 import _filter from 'lodash/filter';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { imageWidth } from '../helpers';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
@@ -31,6 +32,8 @@ type MediaCarouselProps = {
 };
 
 const MediaCarouselItem = ({ item }: { item: MediaContent }) => {
+  const styles = useThemeStyles(createStyles);
+
   if (item.contentType === 'image' || item.contentType === 'thumbnail') {
     return (
       <Image source={{ uri: item.sourceUrl?.url ?? '' }} containerStyle={styles.imageContainer} />
@@ -46,6 +49,7 @@ const MediaCarouselItem = ({ item }: { item: MediaContent }) => {
 };
 
 export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarouselProps) => {
+  const styles = useThemeStyles(createStyles);
   const { dimensions } = useContext(OrientationContext);
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -148,7 +152,8 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
           isPaused,
           setIsPaused,
           sizeSliderPauseButton,
-          verticalPosition
+          verticalPosition,
+          styles
         )}
     </View>
   );
@@ -160,7 +165,8 @@ const pauseButton = (
   isPaused: boolean,
   setIsPaused: (paused: boolean) => void,
   size: number,
-  verticalPosition: string
+  verticalPosition: string,
+  styles: ReturnType<typeof createStyles>
 ) => (
   <TouchableOpacity
     activeOpacity={0.8}
@@ -185,7 +191,7 @@ const pauseButton = (
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   center: {
     alignSelf: 'center'
   },

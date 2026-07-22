@@ -6,7 +6,6 @@ import {
   Modal,
   ScrollView,
   StyleProp,
-  StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle
@@ -16,9 +15,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { addToStore, Initializer, readFromStore } from '../helpers';
 import { useStaticContent } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { parseIntroSlides } from '../jsonValidation';
 import {
   HAS_TERMS_AND_CONDITIONS_STORE_KEY,
@@ -47,6 +48,7 @@ const SliderButton = ({
   isDisabled = false,
   isLightest = false
 }: SliderButtonProps) => {
+  const styles = useThemeStyles(createStyles);
   const buttonStyle = isDisabled ? [style, styles.sliderButtonDisabled] : style;
 
   return (
@@ -106,6 +108,8 @@ const TermsAndConditionsSection = ({
   onTermsAcceptanceChange: (value: boolean) => void;
   reduceMotion: boolean;
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(hasAcceptedTerms);
   const [isModalVisibleDataPrivacy, setModalVisibleDataPrivacy] = useState(false);
 
@@ -185,13 +189,15 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
   hasAcceptedTerms,
   item,
   onTermsAcceptanceChange,
-  reduceMotion
+  reduceMotion,
+  styles
 }: {
   backgroundColor?: string;
   hasAcceptedTerms: boolean;
   item: AppIntroSlide;
   onTermsAcceptanceChange: (value: boolean) => void;
   reduceMotion: boolean;
+  styles: ReturnType<typeof createStyles>;
 }) => {
   const ImageComponent = () => (
     <Image
@@ -251,8 +257,11 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
 export const AppIntroScreen = ({
   setOnboardingComplete,
   onlyTermsAndConditions,
-  backgroundColor = colors.surface
+  backgroundColor: backgroundColorProp
 }: Props) => {
+  const { colors, isDark } = useTheme();
+  const styles = useThemeStyles(createStyles);
+  const backgroundColor = backgroundColorProp || colors.surface;
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const [showDoneButtonTermsAndConditions, setShowDoneButtonTermsAndConditions] = useState(true);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
@@ -286,7 +295,8 @@ export const AppIntroScreen = ({
         setShowDoneButtonTermsAndConditions(value);
         setHasAcceptedTerms(value);
       },
-      reduceMotion: isReduceMotionEnabled
+      reduceMotion: isReduceMotionEnabled,
+      styles
     });
 
   useEffect(() => {
@@ -360,7 +370,7 @@ export const AppIntroScreen = ({
 
   return (
     <SafeAreaViewFlex style={[styles.background, { backgroundColor }]} edges={['top', 'bottom']}>
-      <StatusBar style="dark" translucent backgroundColor="transparent" />
+      <StatusBar style={isDark ? 'light' : 'dark'} translucent backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
         activeDotStyle={onlyTermsAndConditions ? styles.hiddenDot : styles.activeDot}
         bottomButton
@@ -415,7 +425,7 @@ export const AppIntroScreen = ({
 const INACTIVE_DOT_SIZE = normalize(4);
 const ACTIVE_DOT_SIZE = INACTIVE_DOT_SIZE * 2;
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   activeDot: {
     backgroundColor: colors.darkText,
     borderRadius: normalize(ACTIVE_DOT_SIZE) / 2,

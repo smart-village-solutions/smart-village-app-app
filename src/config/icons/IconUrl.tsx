@@ -3,16 +3,19 @@ import { View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { SvgCss } from 'react-native-svg/css';
 
-import { IconProps, colors, getHitSlops, normalize } from '../../config';
+import { IconProps, getHitSlops, normalize } from '../../config';
+import { useTheme } from '../../hooks/useTheme';
 import { SettingsContext } from '../../SettingsProvider';
 
 export const IconUrl = ({
-  color = colors.primary,
+  color: colorProp,
   iconName,
   iconStyle,
   size = normalize(24),
   style
 }: IconProps & { iconName: string }) => {
+  const { colors } = useTheme();
+  const color = colorProp || colors.primary;
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { icons = {} } = settings;
