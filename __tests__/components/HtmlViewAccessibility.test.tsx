@@ -42,6 +42,13 @@ jest.mock('../../src/config', () => ({
     },
     HTML_REGEX: /<[^>]+>/,
     a11yLabel: {
+      formatting: {
+        bold: 'Fett',
+        color: 'Farbig',
+        italic: 'Kursiv',
+        lineThrough: 'Durchgestrichen',
+        underline: 'Unterstrichen'
+      },
       image: '(Bild)'
     }
   },
@@ -173,6 +180,7 @@ jest.mock('react-native-render-html', () => {
     __esModule: true,
     default: MockHTML,
     defaultHTMLElementModels: {
+      div: createModel(),
       p: createModel(),
       li: createModel(),
       ol: createModel(),
@@ -294,5 +302,84 @@ describe('HtmlView accessibility', () => {
     domVisitors.onText(whitespaceNode);
 
     expect(parent.children).toEqual([contentNode]);
+  });
+
+  it('exposes inline formatting in the accessible paragraph text', () => {
+    const tree = renderWithAct(
+      <HtmlView
+        html={'<p>Normal <strong>sehr <em>wichtig</em></strong> und <u>unterstrichen</u>.</p>'}
+      />
+    );
+    const paragraphModel = tree.root.findByType('mock-html').props.customHTMLElementModels.p;
+    const paragraphProps = paragraphModel.getReactNativeProps(
+      {
+        domNode: {
+          children: [
+            { data: 'Normal ', type: 'text' },
+            {
+              attribs: {},
+              children: [
+                { data: 'sehr ', type: 'text' },
+                {
+                  attribs: {},
+                  children: [{ data: 'wichtig', type: 'text' }],
+                  name: 'em',
+                  type: 'tag'
+                }
+              ],
+              name: 'strong',
+              type: 'tag'
+            },
+            { data: ' und ', type: 'text' },
+            {
+              attribs: {},
+              children: [{ data: 'unterstrichen', type: 'text' }],
+              name: 'u',
+              type: 'tag'
+            },
+            { data: '.', type: 'text' }
+          ],
+          name: 'p',
+          type: 'tag'
+        }
+      },
+      { native: {} }
+    );
+
+    expect(paragraphProps.native.accessible).toBe(true);
+    expect(paragraphProps.native.accessibilityLabel).toBe(
+      'Normal Fett Anfang, sehr Kursiv Anfang, wichtig, Kursiv Ende, Fett Ende und Unterstrichen Anfang, unterstrichen, Unterstrichen Ende.'
+    );
+  });
+
+  it('exposes inline CSS formatting in live ticker div content', () => {
+    const tree = renderWithAct(
+      <HtmlView
+        html={'<div><span style="font-weight: 700; color: #b00020">Wichtig</span></div>'}
+      />
+    );
+    const divModel = tree.root.findByType('mock-html').props.customHTMLElementModels.div;
+    const divProps = divModel.getReactNativeProps(
+      {
+        domNode: {
+          children: [
+            {
+              attribs: { style: 'font-weight: 700; color: #b00020' },
+              children: [{ data: 'Wichtig', type: 'text' }],
+              name: 'span',
+              type: 'tag'
+            }
+          ],
+          name: 'div',
+          type: 'tag'
+        }
+      },
+      { native: {} }
+    );
+
+    expect(divProps.native.accessible).toBe(true);
+    expect(divProps.native.accessibilityLabel).toBe(
+      'Farbig Anfang, Fett Anfang, Wichtig, Fett Ende, Farbig Ende'
+    );
   });
 });

@@ -42,6 +42,13 @@ export const consts = {
     encounterIdInfo: 'Informationen zur Identifikationsnummer',
     fax: '(Fax)',
     firstName: 'Vorname',
+    formatting: {
+      bold: 'Fett',
+      color: 'Farbig',
+      italic: 'Kursiv',
+      lineThrough: 'Durchgestrichen',
+      underline: 'Unterstrichen'
+    },
     groupHint: 'Eine neue Gruppe oder einen neuen Verein erstellen',
     groupIcon: 'Neue Gruppe/Verein (Taste)',
     heading: '(Überschrift)',

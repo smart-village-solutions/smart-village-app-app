@@ -37,6 +37,7 @@ export const SectionHeader = ({
     <WrapperRow spaceBetween>
       <Title
         accessibilityLabel={onPress ? pressableAccessibilityLabel : headingAccessibilityLabel}
+        accessibilityRole={onPress ? undefined : 'header'}
         big={big}
         center={center}
         small={small}

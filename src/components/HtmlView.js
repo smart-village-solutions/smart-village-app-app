@@ -140,6 +140,84 @@ const isWhitespaceOnlyTextNodeInList = (node) =>
   node.data?.trim?.().length === 0 &&
   (node.parent?.name === 'ul' || node.parent?.name === 'ol');
 
+const BLOCK_ELEMENT_NAMES = new Set(['div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'p']);
+
+const FORMATTING_KEY_BY_TAG = {
+  b: 'bold',
+  del: 'lineThrough',
+  em: 'italic',
+  i: 'italic',
+  s: 'lineThrough',
+  strike: 'lineThrough',
+  strong: 'bold',
+  u: 'underline'
+};
+
+const FORMATTING_KEY_BY_STYLE = [
+  ['bold', /font-weight\s*:\s*(bold|[6-9]00)/],
+  ['italic', /font-style\s*:\s*italic/],
+  ['underline', /text-decoration[^:]*:\s*[^;]*underline/],
+  ['lineThrough', /text-decoration[^:]*:\s*[^;]*line-through/],
+  ['color', /(?:^|;)\s*color\s*:\s*[^;]+/]
+];
+
+const getFormattingLabels = (node) => {
+  const tagName = node?.name?.toLowerCase?.();
+  const inlineStyle = node?.attribs?.style?.toLowerCase?.() || '';
+  const { formatting } = consts.a11yLabel;
+  const formattingKeys = new Set();
+  const tagFormattingKey = FORMATTING_KEY_BY_TAG[tagName];
+
+  if (tagFormattingKey) {
+    formattingKeys.add(tagFormattingKey);
+  }
+
+  if (node?.attribs?.color) {
+    formattingKeys.add('color');
+  }
+
+  FORMATTING_KEY_BY_STYLE.forEach(([formattingKey, pattern]) => {
+    if (pattern.test(inlineStyle)) formattingKeys.add(formattingKey);
+  });
+
+  return Array.from(formattingKeys, (formattingKey) => formatting[formattingKey]);
+};
+
+const hasInlineFormatting = (node) =>
+  node?.children?.some((child) => {
+    if (child.type === 'text') return false;
+    if (BLOCK_ELEMENT_NAMES.has(child.name)) return false;
+
+    return getFormattingLabels(child).length > 0 || hasInlineFormatting(child);
+  }) || false;
+
+const getFormattedAccessibilityText = (node, isRoot = true) => {
+  if (!node) return '';
+  if (node.type === 'text') return node.data || '';
+
+  if (!isRoot && BLOCK_ELEMENT_NAMES.has(node.name)) {
+    return textContent(node);
+  }
+
+  const childText = (node.children || [])
+    .map((child) => getFormattedAccessibilityText(child, false))
+    .join('');
+
+  return getFormattingLabels(node).reduce(
+    (formattedText, label) => `${label} Anfang, ${formattedText.trim()}, ${label} Ende`,
+    childText
+  );
+};
+
+const getFormattingAccessibilityProps = (domNode) => {
+  if (!hasInlineFormatting(domNode)) return {};
+
+  return {
+    accessible: true,
+    accessibilityLabel: getFormattedAccessibilityText(domNode).replace(/\s+/g, ' ').trim()
+  };
+};
+
 const renderers = {
   img: HtmlImageRenderer,
   iframe: IframeRenderer,
@@ -160,18 +238,43 @@ const getListNativeProps =
       ...modelProps,
       native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
         accessible,
-        accessibilityRole: role
+        accessibilityRole: role,
+        ...getFormattingAccessibilityProps(tnode.domNode)
       })
     };
   };
 
+const getBlockNativeProps =
+  (model) =>
+  (tnode, preGeneratedProps = {}) => {
+    const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+    const formattingProps = getFormattingAccessibilityProps(tnode.domNode);
+
+    if (!formattingProps.accessible) return modelProps;
+
+    return {
+      ...modelProps,
+      native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, formattingProps)
+    };
+  };
+
 const htmlElementModels = {
+  div: defaultHTMLElementModels.div.extend((model) => ({
+    getReactNativeProps: getBlockNativeProps(model)
+  })),
   p: defaultHTMLElementModels.p.extend((model) => ({
     getReactNativeProps(tnode, preGeneratedProps = {}) {
       const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
 
       if (!isAccessibilityEmptyParagraph(tnode.domNode)) {
-        return modelProps;
+        const formattingProps = getFormattingAccessibilityProps(tnode.domNode);
+
+        if (!formattingProps.accessible) return modelProps;
+
+        return {
+          ...modelProps,
+          native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, formattingProps)
+        };
       }
 
       return {
