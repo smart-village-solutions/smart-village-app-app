@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import _camelCase from 'lodash/camelCase';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useQueries, useQuery } from 'react-query';
 
@@ -12,12 +12,14 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, consts, device, Icon, texts } from '../config';
+import { consts, device, Icon, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { useRenderItem } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 const defaultFilter = ['news_item', 'event_record', 'point_of_interest', 'tour'];
@@ -46,6 +48,9 @@ const keyExtractor = (item: { id?: any } | string, index: any) => {
 };
 
 export const SearchScreen = ({ navigation }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { sections: sectionsGlobalSettings = {}, settings = {} } = globalSettings;
   const { search: searchSettings = {} } = settings;
@@ -257,7 +262,7 @@ export const SearchScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   inputContainerStyle: {
     backgroundColor: colors.backgroundRgba
   }

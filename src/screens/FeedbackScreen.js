@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, ScrollView } from 'react-native';
 
 import {
   Button,
@@ -14,13 +14,18 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { Icon, colors, consts, normalize, texts } from '../config';
+import { Icon, consts, normalize, texts } from '../config';
 import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
 export const FeedbackScreen = ({ route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const {
@@ -202,7 +207,7 @@ export const FeedbackScreen = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   textArea: {
     height: normalize(100),
     padding: normalize(10)

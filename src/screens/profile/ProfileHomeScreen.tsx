@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -16,10 +16,12 @@ import {
   WrapperHorizontal
 } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { profileAuthToken } from '../../helpers';
 import { useStaticContent, useTrackScreenViewAsync } from '../../hooks';
 import { ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { ProfileScreen } from './ProfileScreen';
 
@@ -27,6 +29,9 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { refresh, isLoading, isLoggedIn } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
@@ -172,12 +177,13 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   headlineText: {
     fontSize: normalize(14),
     fontWeight: '700',
     lineHeight: normalize(16)
   },
+
   smallPaddingBottom: {
     paddingBottom: normalize(8)
   }

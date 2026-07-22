@@ -2,10 +2,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { useProfileContext } from '../../../ProfileProvider';
-import { colors, Icon, normalize, texts } from '../../../config';
+import { Icon, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
@@ -27,6 +27,8 @@ import { TextListItem } from '../../TextListItem';
 import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../Wrapper';
 import { InfoCard } from '../../infoCard';
 import { VolunteerAvatar } from '../../volunteer';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
@@ -39,6 +41,9 @@ export const NoticeboardDetail = ({
   refetch,
   route
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const {
     id,
     categories,
@@ -397,10 +402,11 @@ export const NoticeboardDetail = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   noPaddingTop: {
     paddingTop: 0
   },
+
   paddingTop: {
     paddingTop: normalize(24)
   }

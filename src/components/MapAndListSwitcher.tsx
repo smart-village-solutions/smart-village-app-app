@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
 import { SueViewType } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { RegularText } from './Text';
 import { WrapperRow } from './Wrapper';
@@ -16,6 +18,9 @@ export const MapAndListSwitcher = ({
   viewType: SueViewType;
   setViewType: (viewType: SueViewType) => void;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <WrapperRow
       style={[
@@ -52,7 +57,7 @@ export const MapAndListSwitcher = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   buttonContainer: {
     alignItems: 'center',
     borderRadius: normalize(8),
@@ -60,19 +65,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: normalize(16)
   },
+
   container: {
     backgroundColor: colors.secondary,
     borderRadius: normalize(8),
     position: 'absolute',
     zIndex: 1
   },
+
   icon: {
     marginLeft: normalize(6)
   },
+
   listViewContainer: {
     left: 0,
     top: 0
   },
+
   mapViewContainer: {
     left: normalize(16),
     top: normalize(16)

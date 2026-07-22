@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -17,10 +17,12 @@ import {
   Wrapper,
   WrapperVertical
 } from '../../components';
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { profileRegister } from '../../queries/profile';
 import { ProfileRegistration, ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
@@ -32,6 +34,9 @@ const showTermsOfUseCheckedAlert = () =>
 
 // eslint-disable-next-line complexity
 export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
   const [hasAcceptedTermsOfUse, setHasAcceptedTermsOfUse] = useState(false);
@@ -210,13 +215,15 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   center: {
     alignItems: 'center'
   },
+
   passwordInput: {
     lineHeight: normalize(17)
   },
+
   inputContainer: {
     height: normalize(45)
   }

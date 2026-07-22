@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { View, StyleSheet, Modal, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Modal, Dimensions, TouchableOpacity } from 'react-native';
 import WebView from 'react-native-webview';
 
-import { colors, device, Icon, normalize, texts } from '../../../config';
+import { device, Icon, normalize, texts } from '../../../config';
 import { Button } from '../../Button';
 import { RegularText } from '../../Text';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 export const ConsulDocumentListItem = ({ documentItem }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { url, title } = documentItem;
@@ -54,11 +59,12 @@ export const ConsulDocumentListItem = ({ documentItem }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   button: {
     borderRadius: 20,
     padding: 5
   },
+
   buttonClose: {
     backgroundColor: colors.borderRgba,
     position: 'absolute',
@@ -66,17 +72,20 @@ const styles = StyleSheet.create({
     top: 25,
     zIndex: 1
   },
+
   centeredView: {
     alignItems: 'center',
     backgroundColor: colors.borderRgba,
     flex: 1,
     justifyContent: 'flex-end'
   },
+
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: normalize(21)
   },
+
   modalView: {
     alignItems: 'center',
     backgroundColor: colors.surface,

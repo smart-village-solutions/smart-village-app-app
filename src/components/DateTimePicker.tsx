@@ -4,9 +4,11 @@ import CommunityDateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import React, { useCallback, useState } from 'react';
 import { useEffect } from 'react';
-import { Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Modal, SafeAreaView, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, device, texts } from '../config';
+import { consts, device, texts } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { BoldText } from './Text';
 import { Wrapper, WrapperRow } from './Wrapper';
@@ -30,6 +32,9 @@ export const DateTimePicker = ({
   setVisible,
   visible
 }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [localSelectedTime, setLocalSelectedTime] = useState<Date>(initialTime ?? new Date());
 
   const onDismissCallback = useCallback(() => {
@@ -123,21 +128,25 @@ export const DateTimePicker = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface
   },
+
   modalContainer: {
     backgroundColor: colors.overlayRgba,
     flex: 1,
     justifyContent: 'flex-end'
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   picker: {
     alignSelf: 'center'
   },
+
   radioContainer: {
     backgroundColor: colors.transparent
   }

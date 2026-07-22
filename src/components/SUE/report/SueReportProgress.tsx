@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { Divider, normalize } from 'react-native-elements';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors, texts } from '../../../config';
+import { texts } from '../../../config';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper, WrapperRow } from '../../Wrapper';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 type TProgress = {
   title: string;
@@ -22,6 +24,9 @@ export const SueReportProgress = ({
   currentProgress: number;
   isFullscreenMap: boolean;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueProgress = {} } = appDesignSystem;
   const { subtitleStyle = {}, textContainer = {}, titleStyle = {} } = sueProgress;
@@ -72,16 +77,19 @@ export const SueReportProgress = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   divider: {
     marginTop: normalize(14)
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   textContainer: {
     width: '80%'
   },
+
   wrapperHidden: {
     display: 'none'
   }

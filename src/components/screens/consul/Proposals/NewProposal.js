@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity } from 'react-native';
 
-import { colors, consts, Icon, namespace, normalize, secrets, texts } from '../../../../config';
+import { consts, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { documentErrorMessageGenerator, imageErrorMessageGenerator } from '../../../../helpers';
 import { QUERY_TYPES } from '../../../../queries';
@@ -18,6 +18,8 @@ import { Label } from '../../../Label';
 import { DocumentSelector, ImageSelector } from '../../../selectors';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { useThemeStyles } from '../../../../hooks/useThemeStyles';
+import { useTheme } from '../../../../hooks/useTheme';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, URL_REGEX } = consts;
 
@@ -162,6 +164,9 @@ const INPUTS = [
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewProposal = ({ navigation, data, query }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
     data?.termsOfService ?? false
   );
@@ -466,15 +471,17 @@ export const NewProposal = ({ navigation, data, query }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   tagContainer: {
     backgroundColor: colors.borderRgba,
     margin: 5,
     borderRadius: 5
   },
+
   tagContainerSelected: {
     backgroundColor: colors.primary
   },
+
   tagText: {
     padding: 10
   }

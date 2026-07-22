@@ -1,11 +1,13 @@
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
-import { Icon, colors, device, normalize, texts } from '../../config';
+import { Icon, device, normalize, texts } from '../../config';
 import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const SueStatus = ({
@@ -21,6 +23,9 @@ export const SueStatus = ({
   small?: boolean;
   status: string;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const {
@@ -68,9 +73,9 @@ export const SueStatus = ({
       {!!iconName && (
         <StatusIcon
           accessibilityLabel={
-            disabled 
-            ? `${texts.components.sueStatus.inactive} ${status}` 
-            : `${texts.components.sueStatus.active} ${status}`
+            disabled
+              ? `${texts.components.sueStatus.inactive} ${status}`
+              : `${texts.components.sueStatus.active} ${status}`
           }
           color={textColor}
           size={small ? normalize(12) : normalize(16)}
@@ -88,7 +93,7 @@ export const SueStatus = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     alignItems: 'center',
     alignSelf: 'flex-end',
@@ -100,24 +105,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(4)
   },
+
   filterContainer: {
     borderRadius: normalize(8),
     borderWidth: normalize(1),
     height: normalize(32),
     width: device.width * 0.3
   },
+
   smallContainer: {
     borderRadius: normalize(28),
     marginBottom: 0,
     marginRight: 0,
     marginTop: 0
   },
+
   marginRight: {
     marginRight: normalize(6)
   },
+
   smallFontSize: {
     fontSize: normalize(9)
   },
+
   smallMarginRight: {
     marginRight: normalize(4)
   }

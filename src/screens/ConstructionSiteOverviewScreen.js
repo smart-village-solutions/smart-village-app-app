@@ -1,21 +1,26 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 
 import { Filter, RegularText, SafeAreaViewFlex, TextListItem, Wrapper } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { filterTypesHelper, momentFormat, updateResourceFiltersStateHelper } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 import { PermanentFilterContext } from '../PermanentFilterProvider';
 import { GenericType } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => index + item.title + item.startDate;
 
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const initialQueryVariables = {};
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
@@ -110,7 +115,7 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     paddingHorizontal: normalize(16)
   }

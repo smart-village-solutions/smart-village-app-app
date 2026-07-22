@@ -2,11 +2,11 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors, device, normalize, texts } from '../../../config';
+import { device, normalize, texts } from '../../../config';
 import { useAppInfo, useKeyboardHeight } from '../../../hooks';
 import { QUERY_TYPES, createQuery } from '../../../queries';
 import { ScreenName } from '../../../types';
@@ -16,6 +16,8 @@ import { Image } from '../../Image';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 type TNewContent = {
   message: string;
@@ -31,6 +33,9 @@ export const SueReportSend = ({
   isLoading: boolean;
   navigation: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueReportScreen = {} } = sueConfig;
   const {
@@ -198,7 +203,7 @@ export const SueReportSend = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   feedbackContainer: {
     backgroundColor: colors.lighterPrimary,
     borderRadius: normalize(8),
@@ -206,26 +211,33 @@ const styles = StyleSheet.create({
     marginTop: normalize(24),
     padding: normalize(24)
   },
+
   headerContainer: {
     marginBottom: normalize(24)
   },
+
   image: {
     alignSelf: 'center',
     height: normalize(50),
     width: '100%'
   },
+
   inputContainer: {
     borderColor: colors.transparent
   },
+
   labelText: {
     marginBottom: normalize(8)
   },
+
   rating: {
     alignSelf: 'flex-start'
   },
+
   ratingContainer: {
     marginBottom: normalize(8)
   },
+
   textArea: {
     backgroundColor: colors.surface,
     borderRadius: normalize(8),

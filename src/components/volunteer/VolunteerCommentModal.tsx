@@ -6,13 +6,12 @@ import {
   Keyboard,
   Modal,
   ScrollView,
-  StyleSheet,
   TouchableOpacity
 } from 'react-native';
 import { Divider, Header } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import {
   useComments,
   VOLUNTEER_GROUP_REFRESH_EVENT,
@@ -25,6 +24,8 @@ import { Input } from '../form';
 import { MultiImageSelector } from '../selectors';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
 const { a11yLabel } = consts;
@@ -47,6 +48,9 @@ export const VolunteerCommentModal = ({
   objectModel: VolunteerObjectModelType;
   setIsCollapsed: (isCollapsed: boolean) => void;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const isEdit = !!comment?.message;
   const { createComment, deleteComment, updateComment } = useComments({ objectId, objectModel });
   const [isPublishing, setIsPublishing] = React.useState(false);
@@ -251,17 +255,19 @@ export const VolunteerCommentModal = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   button: {
     alignItems: 'center',
     padding: 8
   },
+
   closeButton: {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: normalize(32),
     minWidth: normalize(32)
   },
+
   headerRightContainer: {
     justifyContent: 'center'
   }

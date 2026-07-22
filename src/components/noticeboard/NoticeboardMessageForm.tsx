@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 
 import {
   Button,
@@ -14,8 +14,10 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { CREATE_GENERIC_ITEM_MESSAGE } from '../../queries/genericItem';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
@@ -40,6 +42,9 @@ export const NoticeboardMessageForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const subQuery = route.params?.subQuery ?? {};
   const consentForDataProcessingText =
     subQuery?.params?.consentForDataProcessingText ??
@@ -200,17 +205,19 @@ export const NoticeboardMessageForm = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
   },
+
   checkboxTextStyle: {
     color: colors.darkText,
     fontWeight: 'normal'
   },
+
   textArea: {
     height: normalize(100),
     padding: normalize(10)

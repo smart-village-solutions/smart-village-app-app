@@ -1,15 +1,17 @@
 import React, { useContext, useRef } from 'react';
 import { Controller } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
-import { colors, consts, normalize, texts } from '../../../config';
+import { consts, normalize, texts } from '../../../config';
 import { useOpenWebScreen } from '../../../hooks';
 import { TValues } from '../../../screens';
 import { Checkbox } from '../../Checkbox';
 import { RegularText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Input } from '../../form';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 const { a11yLabel, EMAIL_REGEX, PHONE_NUMBER_REGEX, INPUT_KEYS } = consts;
 
@@ -25,6 +27,9 @@ export const SueReportUser = ({
   errors: any;
   requiredInputs: keyof TValues[];
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
@@ -183,13 +188,14 @@ export const SueReportUser = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
   },
+
   container: {
     paddingTop: normalize(16),
     width: '100%'

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 type AppWideGrayscaleFilterProps = {
   children: React.ReactNode;
@@ -16,6 +16,7 @@ export const AppWideGrayscaleFilter = ({
   isGrayscaleEnabled,
   style
 }: AppWideGrayscaleFilterProps) => {
+  const styles = useThemeStyles(createStyles);
   const baseStyle = fillContainer ? styles.flex : undefined;
   const isAndroid = Platform.OS === 'android';
 
@@ -36,18 +37,21 @@ export const AppWideGrayscaleFilter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   androidGrayscale: {
     filter: [{ grayscale: 1 }]
   },
+
   flex: {
     flex: 1
   },
+
   iosSaturationOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: colors.placeholder,
     mixBlendMode: 'saturation'
   },
+
   isolationContext: {
     isolation: 'isolate'
   }

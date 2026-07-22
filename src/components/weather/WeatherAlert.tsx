@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   description: string;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const WeatherAlert = ({ description, end, event, start }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const from = momentFormat(start * 1000, 'DD.MM.YYYY HH:mm', 'x');
   const to = momentFormat(end * 1000, 'DD.MM.YYYY HH:mm', 'x');
 
@@ -27,7 +29,7 @@ export const WeatherAlert = ({ description, end, event, start }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   separator: {
     backgroundColor: colors.gray60,
     height: normalize(1),

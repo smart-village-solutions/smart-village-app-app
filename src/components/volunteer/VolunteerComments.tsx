@@ -1,13 +1,15 @@
 import React, { Fragment } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
+import { styles as configStyles, Icon, normalize, texts } from '../../config';
 import { momentFormat, volunteerListDate } from '../../helpers';
 import { useInfiniteComments } from '../../hooks/volunteer/comment';
 import { VolunteerComment, VolunteerFileObject, VolunteerObjectModelType } from '../../types';
 import { BoldText, RegularText } from '../Text';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerCommentAnswer } from './VolunteerCommentAnswer';
@@ -43,6 +45,9 @@ export const VolunteerComments = ({
   setIsCommentModalCollapsed: (isCollapsed: boolean) => void;
   userGuid?: string | null;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { comments, hasLoadedPrevious, loadPreviousComments, previousCommentsCount } =
     useInfiniteComments({
       commentsCount,
@@ -167,31 +172,36 @@ export const VolunteerComments = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   answerCommentsContainer: {
     backgroundColor: colors.gray20,
     paddingLeft: normalize(24)
   },
+
   badge: {
     backgroundColor: colors.surface,
     borderRadius: normalize(40),
     height: normalize(40),
     width: normalize(40)
   },
+
   commentsContainer: {
     backgroundColor: colors.gray20,
     paddingHorizontal: normalize(12),
     paddingBottom: 0,
     paddingTop: normalize(12)
   },
+
   loadPreviousContainer: {
     backgroundColor: colors.gray20,
     paddingHorizontal: normalize(12),
     paddingVertical: normalize(12)
   },
+
   noPaddingTop: {
     paddingTop: 0
   },
+
   paddingBottom: {
     paddingBottom: normalize(12)
   }

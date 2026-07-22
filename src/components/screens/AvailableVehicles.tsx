@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { IconUrl, colors, normalize, texts } from '../../config';
+import { IconUrl, normalize, texts } from '../../config';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { WrapperHorizontal } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export const vehiclePropertyKey = 'Datastreams/0/Observations/0/result';
 
@@ -51,6 +52,7 @@ export const AvailableVehicles = ({
   status: 'frei' | 'belegt' | 'unbekannt' | null;
   iconName: string;
 }) => {
+  const styles = useThemeStyles(createStyles);
   const statusCircle =
     status === 'frei' ? (
       <RegularText style={{ color: '#7cbb4d' }}> ⬤</RegularText>
@@ -79,15 +81,17 @@ export const AvailableVehicles = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.transparent,
     padding: normalize(14)
   },
+
   contentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+
   divider: {
     backgroundColor: colors.placeholder
   }

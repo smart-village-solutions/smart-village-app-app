@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, RefreshControl, ScrollView } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -21,13 +21,15 @@ import {
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { storeProfileUserData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { profileUpdate } from '../../queries/profile';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileUpdate, ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
@@ -48,6 +50,9 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { currentUserData } = useProfileContext();
   const member = route.params?.member ?? {};
@@ -317,7 +322,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   center: {
     alignItems: 'center'
   }

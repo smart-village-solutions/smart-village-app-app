@@ -6,9 +6,11 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, device } from '../config';
+import { consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { ImageButton, TImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
@@ -49,13 +51,20 @@ export const Image = ({
   imageRightsPosition,
   isImageFullWidth,
   message,
-  PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
-  placeholderStyle = styles.placeholderStyle,
+  PlaceholderContent: placeholderContent,
+  placeholderStyle: placeholderStyleProp,
   refreshInterval,
   resizeMode = 'cover',
   source: sourceProp,
   style
 }: ImageProps) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const PlaceholderContent = placeholderContent || (
+    <ActivityIndicator color={colors.refreshControl} />
+  );
+  const placeholderStyle = placeholderStyleProp || styles.placeholderStyle;
   const [source, setSource] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,9 +78,10 @@ export const Image = ({
   useEffect(() => {
     let mounted = true;
 
-    const next = typeof sourceProp === 'object' ? { ...sourceProp } : sourceProp;
-
-    if (next?.uri) next.uri = next.uri.trim?.();
+    const next =
+      typeof sourceProp === 'object' && sourceProp.uri
+        ? { ...sourceProp, uri: sourceProp.uri.trim?.() }
+        : sourceProp;
 
     if (!next?.uri || next.uri.startsWith('file:///') || typeof next === 'number') {
       mounted && setSource(next);
@@ -95,16 +105,17 @@ export const Image = ({
     };
   }, [timestamp, refreshInterval, sourceProp, apiKey]);
 
-  if (source?.uri === NO_IMAGE.uri) return null;
-
-  const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
-  const showChildren = !!message || !!button || showImageRights;
   const defaultImageStyle = stylesForImage(aspectRatio, isImageFullWidth).defaultStyle;
 
   const imageStyle = useMemo(
     () => [style || defaultImageStyle, { borderRadius }],
     [style, defaultImageStyle, borderRadius]
   );
+
+  if (source?.uri === NO_IMAGE.uri) return null;
+
+  const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
+  const showChildren = !!message || !!button || showImageRights;
 
   const imageElement = (
     <ExpoImage
@@ -152,18 +163,21 @@ export const Image = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   contentContainerStyle: {
     height: '100%',
     justifyContent: 'flex-end'
   },
+
   loadingStyle: {
     alignItems: 'center',
     justifyContent: 'center'
   },
+
   overlayFill: {
     ...StyleSheet.absoluteFillObject
   },
+
   placeholderStyle: {
     backgroundColor: colors.transparent
   }

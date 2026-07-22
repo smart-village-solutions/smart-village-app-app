@@ -2,13 +2,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
 
 import {
   BoldText,
@@ -20,15 +14,20 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
 export const LunchScreen = ({ navigation, route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [poiId, setPoiId] = useState(route.params?.poiId);
   const [date, setDate] = useState(moment());
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -137,11 +136,12 @@ export const LunchScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   left: {
     flex: 1,
     marginRight: normalize(12)
   },
+
   right: {
     flex: 1,
     alignItems: 'flex-end',

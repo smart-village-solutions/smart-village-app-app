@@ -1,13 +1,18 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, Icon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   verified: boolean;
 };
 
 export const ImageBadge = ({ verified }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <View style={styles.badge}>
       {verified ? (
@@ -19,7 +24,7 @@ export const ImageBadge = ({ verified }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   badge: {
     position: 'absolute',
     right: 0,

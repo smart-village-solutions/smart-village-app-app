@@ -3,13 +3,15 @@ import React, { memo } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
-import { Icon, colors, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { TVoucherItem } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { Discount } from './Discount';
 
@@ -23,6 +25,9 @@ export const VoucherListItem = memo(
     horizontal: boolean;
     item: TVoucherItem;
   }) => {
+    const { colors: colors } = useTheme();
+
+    const styles = useThemeStyles(createStyles);
     const {
       discountType,
       id,
@@ -95,7 +100,7 @@ export const VoucherListItem = memo(
   }
 );
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.transparent,
     borderWidth: 0,
@@ -110,10 +115,12 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   imageContainer: {
     alignSelf: 'center',
     marginBottom: normalize(8)
   },
+
   textContainer: {
     width: '90%'
   }

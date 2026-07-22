@@ -1,14 +1,15 @@
 import React, { useContext, useMemo } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
-import { colors, device, normalize, texts } from '../../config';
+import { device, normalize, texts } from '../../config';
 import { useFilterStreets, useKeyboardHeight, useWasteAddresses } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   isFocused: boolean;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -96,16 +98,18 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   autoCompleteContainer: {
     paddingHorizontal: 0
   },
+
   autoCompleteInputContainer: {
     borderColor: colors.gray40,
     borderRadius: normalize(8),
     borderWidth: normalize(1),
     height: normalize(42)
   },
+
   autoCompleteInput: {
     backgroundColor: colors.transparent,
     color: colors.darkText,
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
     height: normalize(42),
     lineHeight: normalize(20)
   },
+
   autoCompleteList: {
     paddingHorizontal: normalize(6),
     position: 'relative',
@@ -132,6 +137,7 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   autoCompleteListContainer: {
     elevation: 2,
     shadowColor: colors.shadow,
@@ -139,9 +145,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+
   noPaddingTop: {
     paddingTop: 0
   },
+
   noBorderTop: {
     borderTopWidth: 0,
     marginTop: normalize(-1)

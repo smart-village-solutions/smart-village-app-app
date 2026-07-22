@@ -1,13 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import { setStringAsync } from 'expo-clipboard';
 import React, { useCallback, useContext, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, TouchableOpacity } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
@@ -20,10 +14,12 @@ import {
   Wrapper,
   WrapperRow
 } from '../../components';
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const WhistleblowFormScreen = ({
   navigation,
@@ -32,6 +28,9 @@ export const WhistleblowFormScreen = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
@@ -130,7 +129,7 @@ export const WhistleblowFormScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   reportCode: {
     marginRight: normalize(8),
     marginTop: normalize(2)

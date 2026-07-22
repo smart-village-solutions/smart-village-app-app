@@ -3,7 +3,7 @@ import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { BBBusClient } from '../../BBBusClient';
 import { BackToTop, Button, SafeAreaViewFlex } from '../../components';
@@ -12,12 +12,14 @@ import { Persons } from '../../components/BB-BUS/Persons';
 import { TextBlock } from '../../components/BB-BUS/TextBlock';
 import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { colors, consts, device, normalize } from '../../config';
+import { consts, device, normalize } from '../../config';
 import { matomoTrackingString, openLink, rootRouteName } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_SERVICE } from '../../queries/BB-BUS';
 import { SettingsContext } from '../../SettingsProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -105,6 +107,9 @@ const parseTextBlocks = (service) => {
 
 // eslint-disable-next-line complexity
 export const DetailScreen = ({ route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const scrollViewRef = useRef();
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -229,7 +234,7 @@ export const DetailScreen = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   formContainer: {
     marginTop: normalize(21),
     paddingHorizontal: normalize(14)

@@ -1,11 +1,14 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { useVolunteerNavigation } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
+
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
@@ -16,6 +19,9 @@ type Props = {
 };
 
 export const CalendarHeader = ({ navigation, style }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const volunteerNavigation = useVolunteerNavigation();
 
   return (
@@ -46,7 +52,7 @@ export const CalendarHeader = ({ navigation, style }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   icon: {
     paddingHorizontal: normalize(6)
   }

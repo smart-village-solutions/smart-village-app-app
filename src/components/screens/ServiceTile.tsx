@@ -4,13 +4,15 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, Icon, IconSet, IconUrl, normalize } from '../../config';
+import { consts, Icon, IconSet, IconUrl, normalize } from '../../config';
 import { normalizeStyleValues } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export type TServiceTile = {
   accessibilityLabel: string;
@@ -94,6 +96,9 @@ export const ServiceTile = ({
   shouldAddMargin?: boolean;
   tileSizeFactor?: number;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
@@ -240,33 +245,39 @@ export const ServiceTile = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   button: {
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center',
     width: '100%'
   },
+
   editableTile: {
     flex: 1,
     marginBottom: 0,
     width: '100%'
   },
+
   marginLeft: {
     marginLeft: normalize(8)
   },
+
   squareTile: {
     aspectRatio: 1
   },
+
   serviceIcon: {
     alignSelf: 'center',
     paddingVertical: normalize(7.5)
   },
+
   serviceImage: {
     alignSelf: 'center',
     marginBottom: normalize(7),
     width: '100%'
   },
+
   toggleVisibilityIcon: {
     backgroundColor: colors.surface,
     position: 'absolute',
@@ -274,9 +285,11 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1
   },
+
   toggleVisibilityIconBigTile: {
     top: normalize(2)
   },
+
   invisible: {
     opacity: 0.2
   }

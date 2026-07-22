@@ -1,10 +1,10 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { Badge } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { volunteerAuthToken } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { posts as postsQuery } from '../../queries/volunteer';
@@ -14,6 +14,7 @@ import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { VolunteerCommentModal } from './VolunteerCommentModal';
 import { VolunteerPostListItem } from './VolunteerPostListItem';
@@ -38,6 +39,7 @@ export const VolunteerPosts = ({
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   userGuid?: string | null;
 }) => {
+  const styles = useThemeStyles(createStyles);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [commentForModal, setCommentForModal] = useState();
   const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
@@ -194,7 +196,7 @@ export const VolunteerPosts = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   badge: {
     backgroundColor: colors.gray20,
     borderRadius: normalize(30),
@@ -203,6 +205,7 @@ const styles = StyleSheet.create({
     marginTop: normalize(7),
     width: normalize(30)
   },
+
   badgeText: {
     color: colors.darkText,
     fontSize: normalize(14),

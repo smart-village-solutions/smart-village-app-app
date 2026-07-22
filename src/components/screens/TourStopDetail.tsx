@@ -1,9 +1,9 @@
 import * as Location from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { trimNewLines } from '../../helpers';
 import {
   useLastKnownPosition,
@@ -23,11 +23,16 @@ import { HeadlineText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { mapToMapMarkers } from '../TourStops';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { SectionHeader } from './../SectionHeader';
 
 /* eslint-disable complexity */
 export const TourStopDetail = ({ route, navigation }: { route: any; navigation: any }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { geometryTourData, id, rootRouteName, tourStops, tourStopData, subtitle } = route.params;
   const { description, mediaContents, title } = tourStopData || {};
 
@@ -225,14 +230,16 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   },
+
   map: {
     height: normalize(500),
     width: '100%'
   },
+
   margin: {
     marginRight: normalize(12)
   }

@@ -3,13 +3,18 @@ import React, { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { a11yLabel } = consts;
 
 export const TextSearch = memo(({ data, setData, label, placeholder }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <View>
       <WrapperHorizontal>
@@ -46,7 +51,7 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
   );
 });
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   containerStyle: {
     backgroundColor: colors.backgroundRgba,
     borderColor: colors.borderRgba,
@@ -57,22 +62,27 @@ const styles = StyleSheet.create({
     borderTopColor: colors.borderRgba,
     padding: normalize(6)
   },
+
   inputStyle: {
     backgroundColor: colors.transparent,
     color: colors.darkText,
     fontFamily: 'regular',
     fontSize: normalize(16)
   },
+
   marginLeft: {
     marginLeft: normalize(8)
   },
+
   inputContainerStyle: {
     backgroundColor: colors.transparent
   },
+
   leftIconContainerStyle: {
     backgroundColor: colors.transparent,
     marginLeft: normalize(6)
   },
+
   rightIconContainerStyle: {
     backgroundColor: colors.transparent
   }

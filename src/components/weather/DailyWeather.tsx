@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { Image } from '../Image';
 import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   date: number;
@@ -23,6 +25,9 @@ type Props = {
 };
 
 export const DailyWeather = ({ date, description, icon, temperatures, index }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { max, min } = temperatures;
 
   return (
@@ -63,17 +68,20 @@ export const DailyWeather = ({ date, description, icon, temperatures, index }: P
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   marginHorizontal: {
     marginHorizontal: normalize(5)
   },
+
   icon: {
     aspectRatio: 1,
     width: normalize(44)
   },
+
   temperatureContainer: {
     width: normalize(50)
   },
+
   textWrapper: {
     width: normalize(70)
   }

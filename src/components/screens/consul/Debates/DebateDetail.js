@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
+import { Keyboard, TouchableOpacity } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../../config';
+import { Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -21,10 +21,15 @@ import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { SectionHeader } from '../../../SectionHeader';
 import { Wrapper, WrapperRow } from '../../../Wrapper';
+import { useThemeStyles } from '../../../../hooks/useThemeStyles';
+import { useTheme } from '../../../../hooks/useTheme';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const DebateDetail = ({ data, refetch, route, navigation }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
 
@@ -164,13 +169,14 @@ export const DebateDetail = ({ data, refetch, route, navigation }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   button: {
     alignSelf: 'flex-end',
     alignItems: 'flex-end',
     marginBottom: normalize(10),
     width: '10%'
   },
+
   input: {
     shadowColor: colors.shadow,
     shadowOpacity: 0.7,

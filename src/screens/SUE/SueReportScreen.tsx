@@ -14,7 +14,7 @@ import React, {
   useState
 } from 'react';
 import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
-import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
@@ -35,11 +35,13 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { colors, consts, device, normalize, texts } from '../../config';
+import { consts, device, normalize, texts } from '../../config';
 import { addToStore, formatSizeStandard, readFromStore } from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
 
@@ -237,6 +239,9 @@ export const SueReportScreen = ({
   navigation,
   route
 }: { navigation: any } & StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const {
     isLoading: isConfigLoading,
     refetch: configRefetch,
@@ -755,20 +760,24 @@ export const SueReportScreen = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   buttonContainer: {
     paddingBottom: 0
   },
+
   buttonContainerHidden: {
     display: 'none'
   },
+
   buttonContainerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+
   contentContainer: {
     width: device.width
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   }

@@ -1,14 +1,16 @@
 import { NavigationState, PartialState, useNavigationState } from '@react-navigation/native';
 import _filter from 'lodash/filter';
 import React, { useContext, useMemo } from 'react';
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../config';
+import { Icon, normalize, texts } from '../config';
 import { useAccessibilityPreferences, useHomeRefresh, useStaticContent } from '../hooks';
 import { navigationRef, type RootNavigationParamList } from '../navigation/navigationRef';
 import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { FloatingReadAloudPlayer } from './FloatingReadAloudPlayer';
 import { Image } from './Image';
@@ -30,6 +32,9 @@ export const FloatingButton = ({
   bottomOffset?: number;
   publicJsonFile: string;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const { features, preferences, setPreference } = useAccessibilityPreferences();
@@ -133,7 +138,7 @@ export const FloatingButton = ({
 
 const BUTTON_SIZE = normalize(56);
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   button: {
     alignItems: 'center',
     borderRadius: BUTTON_SIZE / 2,
@@ -153,12 +158,15 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   buttonDisabled: {
     backgroundColor: colors.darkText
   },
+
   buttonEnabled: {
     backgroundColor: colors.primary
   },
+
   container: {
     alignItems: 'flex-end',
     position: 'absolute',
@@ -169,9 +177,11 @@ const styles = StyleSheet.create({
     height: normalize(24),
     width: normalize(24)
   },
+
   readAloudButton: {
     marginTop: 0
   },
+
   readAloudRow: {
     alignItems: 'flex-end',
     flexDirection: 'row',

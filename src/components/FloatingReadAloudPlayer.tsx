@@ -2,10 +2,12 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import { Animated, Easing, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, device, Icon, normalize, texts } from '../config';
+import { device, Icon, normalize, texts } from '../config';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 import { useDetailSpeech } from '../hooks';
 import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { RegularText } from './Text';
 
@@ -35,6 +37,9 @@ const SPEED_OPTIONS = [
 
 // eslint-disable-next-line complexity
 export const FloatingReadAloudPlayer = ({ items }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isHighContrastEnabled } = useContext(AccessibilityContext);
   const { setPlayerBottomSpacing } = useReadAloudAvailability();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -336,11 +341,12 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   activeWord: {
     backgroundColor: colors.darkText,
     color: colors.lightestText
   },
+
   collapseButton: {
     alignItems: 'center',
     height: CONTROL_SIZE,
@@ -351,6 +357,7 @@ const styles = StyleSheet.create({
     width: CONTROL_SIZE,
     zIndex: 1
   },
+
   container: {
     alignSelf: 'flex-end',
     backgroundColor: colors.surface,
@@ -373,11 +380,13 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   controlsRow: {
     alignItems: 'center',
     flexDirection: 'row',
     height: CONTROL_SIZE
   },
+
   currentTextPreview: {
     alignItems: 'center',
     flex: 1,
@@ -386,20 +395,25 @@ const styles = StyleSheet.create({
     minWidth: 0,
     paddingHorizontal: normalize(10)
   },
+
   disabledButton: {
     opacity: 0.45
   },
+
   expandedBody: {
     flex: 1,
     paddingBottom: normalize(10)
   },
+
   expandedContainer: {
     marginRight: -EXPANDED_PLAYER_OVERLAP,
     width: EXPANDED_PLAYER_WIDTH
   },
+
   expandedControlsRow: {
     paddingRight: EXPANDED_CONTROLS_INSET
   },
+
   iconButton: {
     alignItems: 'center',
     borderRadius: CONTROL_SIZE / 2,
@@ -407,23 +421,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: CONTROL_SIZE
   },
+
   leftControls: {
     alignItems: 'center',
     flexDirection: 'row'
   },
+
   previewText: {
     color: colors.darkText
   },
+
   previewScrollContent: {
     alignItems: 'center'
   },
+
   previewScrollView: {
     flex: 1
   },
+
   primaryButton: {
     backgroundColor: colors.primary,
     marginRight: normalize(8)
   },
+
   speedChip: {
     alignItems: 'center',
     borderColor: colors.gray40,
@@ -436,16 +456,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(4),
     paddingVertical: normalize(6)
   },
+
   speedChipSelected: {
     backgroundColor: colors.gray20,
     borderColor: colors.darkText
   },
+
   speedChipText: {
     color: colors.darkText
   },
+
   speedChipTextSelected: {
     color: colors.darkText
   },
+
   speedOptions: {
     alignItems: 'center',
     flex: 1,
@@ -453,13 +477,16 @@ const styles = StyleSheet.create({
     minWidth: 0,
     paddingLeft: normalize(4)
   },
+
   stopButton: {
     backgroundColor: colors.gray40
   },
+
   textScrollContent: {
     paddingBottom: TEXT_SCROLL_END_PADDING,
     paddingRight: normalize(30)
   },
+
   textScrollView: {
     flex: 1
   }

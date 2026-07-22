@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
+import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
   AugmentedReality,
@@ -20,7 +20,7 @@ import {
   PermanentFilterSettings,
   PersonalizedPushSettings
 } from '../components/settings';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import {
   addToStore,
   getAccessibilitySettingsEntryEnabled,
@@ -43,6 +43,8 @@ import {
 } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -213,6 +215,9 @@ export const onDeactivatePushNotifications = (revert) => {
 
 /* eslint-disable complexity */
 export const SettingsScreen = ({ navigation, route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
   const {
@@ -490,7 +495,7 @@ export const SettingsScreen = ({ navigation, route }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     paddingHorizontal: normalize(16)
   }

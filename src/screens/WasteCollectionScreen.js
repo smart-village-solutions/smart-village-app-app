@@ -37,7 +37,7 @@ import {
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { momentFormat, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import {
@@ -52,6 +52,8 @@ import {
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 setupLocales();
 
@@ -78,6 +80,9 @@ export const getLocationData = (streetData) => {
  */
 /* eslint-disable complexity */
 export const WasteCollectionScreen = ({ navigation }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -422,34 +427,41 @@ export const WasteCollectionScreen = ({ navigation }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   exportButtonContainer: {
     alignSelf: 'center',
     position: 'absolute',
     width: '100%'
   },
+
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
   },
+
   headerRight: {
     alignItems: 'center',
     paddingRight: normalize(8)
   },
+
   icon: {
     paddingHorizontal: normalize(16)
   },
+
   noPaddingLeft: {
     paddingLeft: 0
   },
+
   overlay: {
     borderRadius: normalize(8),
     padding: normalize(30),
     paddingBottom: normalize(9)
   },
+
   overlayWidth: {
     width: '80%'
   },
+
   paddingTop: {
     paddingTop: normalize(14)
   }

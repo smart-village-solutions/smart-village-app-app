@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 import { useInfiniteQuery } from 'react-query';
 
 import {
@@ -18,11 +18,13 @@ import {
   VolunteerPostModal,
   WrapperVertical
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { volunteerAuthToken } from '../../helpers';
 import { useOpenWebScreen, useStaticContent } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { FILTER_TYPES } = consts;
 
@@ -52,6 +54,9 @@ const ORDER_OPTIONS = [
 
 /* eslint-disable complexity */
 export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const query = QUERY_TYPES.VOLUNTEER.GROUP_SEARCH;
   const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const headerTitle = route.params?.title ?? '';
@@ -275,7 +280,7 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     paddingHorizontal: normalize(16)
   }

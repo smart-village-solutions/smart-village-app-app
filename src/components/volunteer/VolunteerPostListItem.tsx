@@ -4,7 +4,7 @@ import { Badge, ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
 
-import { colors, styles as configStyles, device, Icon, normalize } from '../../config';
+import { styles as configStyles, device, Icon, normalize } from '../../config';
 import {
   imageWidth,
   momentFormat,
@@ -17,6 +17,8 @@ import { VolunteerFileObject, VolunteerObjectModelType } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerComment } from './VolunteerComment';
@@ -79,6 +81,9 @@ export const VolunteerPostListItem = ({
   }) => void;
   userGuid?: string | null;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { comments, files, likes, metadata } = content || {};
   const {
     contentcontainer_id,
@@ -238,33 +243,38 @@ export const VolunteerPostListItem = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   avatarContainerStyle: {
     backgroundColor: colors.transparent,
     paddingBottom: 0,
     paddingHorizontal: 0,
     paddingVertical: normalize(12)
   },
+
   badge: {
     backgroundColor: colors.gray20,
     borderRadius: normalize(40),
     height: normalize(40),
     width: normalize(40)
   },
+
   contentContainerStyle: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
     paddingBottom: 0,
     paddingTop: normalize(12)
   },
+
   filesContainerStyle: {
     backgroundColor: colors.transparent,
     paddingHorizontal: normalize(0),
     paddingTop: 0
   },
+
   imageContainer: {
     alignSelf: 'center'
   },
+
   paddingBottom: {
     paddingBottom: normalize(12)
   }

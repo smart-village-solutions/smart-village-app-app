@@ -2,11 +2,11 @@ import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { groupEdit, groupNew } from '../../queries/volunteer';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
@@ -15,6 +15,8 @@ import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const VISIBILITY_OPTIONS = [
   { value: VISIBILITY_TYPES.ALL, title: 'Öffentlich (auch nicht registrierte Besucher)' },
@@ -34,6 +36,9 @@ export const VolunteerFormGroup = ({
   route,
   scrollToTop
 }: StackScreenProps<any> & { scrollToTop: () => void }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const groupData = route.params?.groupData;
   const isEditMode = !!groupData; // edit mode if there exists some group data
 
@@ -207,7 +212,7 @@ export const VolunteerFormGroup = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

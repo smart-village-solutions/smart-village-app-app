@@ -1,7 +1,7 @@
 import React, { SetStateAction, useCallback } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { getAnswerLabel } from '../../helpers';
 import { imageWidth } from '../../helpers/imageHelper';
 import { useSurveyLanguages } from '../../hooks';
@@ -10,6 +10,7 @@ import { Radiobutton } from '../Radiobutton';
 import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { SurveyText } from './SurveyText';
 
@@ -37,6 +38,7 @@ export const SurveyAnswer = ({
   selected,
   setSelection
 }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const languages = useSurveyLanguages(isMultilingual);
 
   const { id } = responseOption;
@@ -90,17 +92,20 @@ export const SurveyAnswer = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   answerContainer: {
     flex: 1
   },
+
   border: {
     borderColor: colors.darkText,
     borderWidth: 1
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   radioButtonContainer: {
     justifyContent: 'center'
   }

@@ -1,13 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect } from 'react';
-import {
-  DeviceEventEmitter,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { DeviceEventEmitter, RefreshControl, ScrollView, TouchableOpacity } from 'react-native';
 
 import {
   Button,
@@ -18,13 +12,18 @@ import {
   ServiceTiles,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { useStaticContent, useVolunteerUser, VOLUNTEER_HOME_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 // eslint-disable-next-line complexity
 export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { refresh, isLoading, isLoggedIn } = useVolunteerUser();
   const {
     data: dataImageCarousel,
@@ -111,7 +110,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   buttonWrapper: {
     backgroundColor: colors.lighterPrimaryRgba
   }

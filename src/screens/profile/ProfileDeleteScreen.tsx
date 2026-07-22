@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, RefreshControl, ScrollView } from 'react-native';
 
 import {
   Button,
@@ -17,13 +17,18 @@ import {
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, Icon, texts } from '../../config';
+import { Icon, texts } from '../../config';
 import { useAppInfo, useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { createQuery, QUERY_TYPES } from '../../queries';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [loading, setLoading] = useState(false);
   const { currentUserData } = useProfileContext();
@@ -168,7 +173,7 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   center: {
     alignItems: 'center'
   }

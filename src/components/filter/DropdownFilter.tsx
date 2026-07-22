@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DropdownProps, FilterProps } from '../../types';
 import { DropdownSelect } from '../DropdownSelect';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -33,6 +34,7 @@ export const DropdownFilter = ({
   setFilters,
   showSearch
 }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const initiallySelectedItem = !data.some((item) => item.selected)
     ? {
         id: 0,
@@ -111,12 +113,14 @@ export const DropdownFilter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {},
+
   labelWrapper: {
     paddingLeft: 0,
     paddingRight: 0
   },
+
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,

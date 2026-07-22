@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, Keyboard, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, RefreshControl, ScrollView } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -17,15 +17,20 @@ import {
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { profileResetPassword } from '../../queries/profile';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileResetPassword } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
 export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     control,
@@ -144,7 +149,7 @@ export const ProfileEditPasswordScreen = ({ navigation }: StackScreenProps<any>)
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   center: {
     alignItems: 'center'
   }

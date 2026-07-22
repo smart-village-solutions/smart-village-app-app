@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext } from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, RefreshControl, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
@@ -16,7 +16,7 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -24,6 +24,8 @@ import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { ProfileUpdateScreen } from './ProfileUpdateScreen';
 
@@ -36,6 +38,9 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
   ]);
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { refetch: refetchUnreadMessages, reset: resetUnreadMessages } = useMessagesContext();
   const { currentUserData } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
@@ -189,7 +194,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   settingsContainer: {
     marginBottom: normalize(9),
     marginTop: normalize(9)

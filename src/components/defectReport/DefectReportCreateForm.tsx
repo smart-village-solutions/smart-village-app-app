@@ -3,7 +3,7 @@ import * as Location from 'expo-location';
 import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 
 import {
   Button,
@@ -15,11 +15,13 @@ import {
   Touchable,
   Wrapper
 } from '../../components';
-import { Icon, colors, consts, texts } from '../../config';
+import { Icon, consts, texts } from '../../config';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { GenericType } from '../../types';
 import { ImageSelector } from '../selectors';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
@@ -45,6 +47,9 @@ export const DefectReportCreateForm = ({
   selectedPosition: Location.LocationObjectCoords | undefined;
   categoryNameDropdownData: { id: number; name: string; value: string }[];
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -294,7 +299,7 @@ export const DefectReportCreateForm = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,
