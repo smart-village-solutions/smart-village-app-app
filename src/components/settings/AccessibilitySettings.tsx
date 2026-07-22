@@ -5,10 +5,13 @@ import { ListItem, Slider } from 'react-native-elements';
 import { colors, consts, normalize, texts } from '../../config';
 import { ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS, normalizeTextScaleLevel } from '../../helpers';
 import { useAccessibilityPreferences } from '../../hooks';
+import { ThemeMode } from '../../types/Theme';
 import { SettingsToggle } from '../SettingsToggle';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+
+import { ThemeModeSelector } from './ThemeModeSelector';
 
 type Props = {
   hideIntro?: boolean;
@@ -65,6 +68,28 @@ const SETTINGS_DEFINITIONS: Definition[] = [
   }
 ];
 
+type ThemeControlProps = {
+  enabled: boolean;
+  onChange: (mode: ThemeMode) => void;
+  value: ThemeMode;
+};
+
+const ThemeControl = ({ enabled, onChange, value }: ThemeControlProps) => {
+  if (!enabled) return null;
+
+  return (
+    <WrapperHorizontal>
+      <ThemeModeSelector onChange={onChange} value={value} />
+    </WrapperHorizontal>
+  );
+};
+
+const hasEnabledControls = (
+  showTextScaleControl: boolean,
+  showThemeControl: boolean,
+  availableSettingsCount: number
+) => showTextScaleControl || showThemeControl || availableSettingsCount > 0;
+
 export const AccessibilitySettings = ({
   hideIntro = false,
   withResetButton = true,
@@ -76,7 +101,9 @@ export const AccessibilitySettings = ({
     preferences,
     resetPreferences,
     setPreference,
-    setTextScaleLevel
+    setTextScaleLevel,
+    setThemeMode,
+    themeMode
   } = useAccessibilityPreferences();
 
   const availableSettings = SETTINGS_DEFINITIONS.filter((setting) => features[setting.featureKey]);
@@ -96,7 +123,12 @@ export const AccessibilitySettings = ({
   const canDecreaseTextScale = textScaleLevel > 0;
   const canIncreaseTextScale = textScaleLevel < ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS.length - 1;
   const showTextScaleControl = features.textScaling;
-  const hasControls = showTextScaleControl || availableSettings.length > 0;
+  const showThemeControl = features.theming;
+  const hasControls = hasEnabledControls(
+    showTextScaleControl,
+    showThemeControl,
+    availableSettings.length
+  );
 
   const content = (
     <>
@@ -107,6 +139,8 @@ export const AccessibilitySettings = ({
           </WrapperVertical>
         </WrapperHorizontal>
       )}
+
+      <ThemeControl enabled={showThemeControl} onChange={setThemeMode} value={themeMode} />
 
       {showTextScaleControl && (
         <WrapperHorizontal>
@@ -184,7 +218,7 @@ export const AccessibilitySettings = ({
         </WrapperHorizontal>
       )}
 
-      {availableSettings.map((setting, index) => (
+      {availableSettings.map((setting) => (
         <WrapperHorizontal key={setting.key}>
           <SettingsToggle
             needsConnection={false}
