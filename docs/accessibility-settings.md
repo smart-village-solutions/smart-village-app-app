@@ -165,6 +165,102 @@ Palette rules:
 - If a critical pair is invalid, translucent, or below the threshold, both tokens in that pair fall back to the built-in palette for that mode. Use opaque values for critical foreground/background tokens.
 - Palette changes received through `globalSettings` are resolved at runtime; no app rebuild is required.
 
+### Complete remote palette example
+
+The following payload enables theming and supplies every preferred configurable token. It can be
+sent as part of `globalSettings`; omitted palette tokens continue to use the built-in value for the
+corresponding mode.
+
+```json
+{
+  "settings": {
+    "accessibility": {
+      "enabledFeatures": {
+        "settingsEntry": true,
+        "headerEntry": true,
+        "theming": true
+      },
+      "defaults": {
+        "themeMode": "system"
+      },
+      "themePalettes": {
+        "light": {
+          "primary": "#107821",
+          "lighterPrimary": "#5EC66F",
+          "lighterPrimaryRgba": "rgba(15, 70, 24, 0.10)",
+          "darkerPrimary": "#0F4618",
+          "darkerPrimaryRgba": "rgba(15, 70, 24, 0.60)",
+          "secondary": "#09483C",
+          "accent": "#0F4618",
+          "blue": "#5C7ADB",
+          "background": "#FFFFFF",
+          "backgroundRgba": "rgba(162, 162, 162, 0.08)",
+          "surface": "#FFFFFF",
+          "surfaceElevated": "#FFFFFF",
+          "text": "#141414",
+          "textMuted": "#595959",
+          "onPrimary": "#FFFFFF",
+          "border": "#DBDBE6",
+          "borderRgba": "rgba(162, 162, 162, 0.75)",
+          "placeholder": "#A2A2A2",
+          "shadow": "#BCBBC1",
+          "shadowRgba": "rgba(188, 187, 193, 0.40)",
+          "overlayRgba": "rgba(20, 20, 20, 0.70)",
+          "error": "#AE001D",
+          "errorRgba": "rgba(174, 0, 29, 0.10)",
+          "calendarBackground": "#FFFFFF",
+          "calendarTodayText": "#107821",
+          "calendarSelected": "#5EC66F",
+          "calendarSelectedDayText": "#141414",
+          "gray20": "#EAEAEA",
+          "gray40": "#DBDBE6",
+          "gray60": "#BCBBC1",
+          "refreshControl": "#0F4618",
+          "transparent": "transparent"
+        },
+        "dark": {
+          "primary": "#5EC66F",
+          "lighterPrimary": "#8AD996",
+          "lighterPrimaryRgba": "rgba(94, 198, 111, 0.18)",
+          "darkerPrimary": "#8AD996",
+          "darkerPrimaryRgba": "rgba(138, 217, 150, 0.65)",
+          "secondary": "#73D6C2",
+          "accent": "#8AD996",
+          "blue": "#91A7FF",
+          "background": "#121212",
+          "backgroundRgba": "rgba(255, 255, 255, 0.08)",
+          "surface": "#1E1E1E",
+          "surfaceElevated": "#2A2A2A",
+          "text": "#F5F5F5",
+          "textMuted": "#C7C7CC",
+          "onPrimary": "#141414",
+          "border": "#54545A",
+          "borderRgba": "rgba(199, 199, 204, 0.75)",
+          "placeholder": "#AFAFB5",
+          "shadow": "#000000",
+          "shadowRgba": "rgba(0, 0, 0, 0.55)",
+          "overlayRgba": "rgba(0, 0, 0, 0.78)",
+          "error": "#FF8A9D",
+          "errorRgba": "rgba(255, 138, 157, 0.18)",
+          "calendarBackground": "#1E1E1E",
+          "calendarTodayText": "#8AD996",
+          "calendarSelected": "#8AD996",
+          "calendarSelectedDayText": "#141414",
+          "gray20": "#2A2A2A",
+          "gray40": "#54545A",
+          "gray60": "#85858D",
+          "refreshControl": "#8AD996",
+          "transparent": "transparent"
+        }
+      }
+    }
+  }
+}
+```
+
+Tab bar colors are not read from `globalSettings`. Configure their light/dark variants in the
+`tabNavigation` static content as described in [Themed `tabNavigation` static content](#themed-tabnavigation-static-content).
+
 ## Precedence and Persistence
 
 ### Runtime precedence
