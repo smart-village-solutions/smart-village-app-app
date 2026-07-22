@@ -21,15 +21,18 @@ import {
   VoucherRedeem,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const { memberId } = useVoucher();
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);

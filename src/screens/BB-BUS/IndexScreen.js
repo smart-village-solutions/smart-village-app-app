@@ -14,13 +14,14 @@ import {
   SafeAreaViewFlex
 } from '../../components';
 import { ServiceList } from '../../components/BB-BUS/ServiceList';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 import { shareMessage } from '../../helpers/BB-BUS/shareHelper';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_AREAS_AND_TOP_10, GET_SERVICES, GET_TOP_10_IDS } from '../../queries/BB-BUS';
 import { SettingsContext } from '../../SettingsProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -40,6 +41,8 @@ const FILTER_IDS = {
 };
 
 export const IndexScreen = ({ navigation }) => {
+  const { colors } = useTheme();
+
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);

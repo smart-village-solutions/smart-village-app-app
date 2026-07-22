@@ -14,9 +14,10 @@ import {
   VolunteerMessage,
   VolunteerUser
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 const getComponent = (query: VolunteerQuery): any => {
   switch (query) {
@@ -32,6 +33,8 @@ const getComponent = (query: VolunteerQuery): any => {
 };
 
 export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const queryOptions = route.params?.queryOptions ?? {};

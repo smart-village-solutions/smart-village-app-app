@@ -4,9 +4,9 @@ import _sortBy from 'lodash/sortBy';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import { colors } from '../config';
 import { getTitleForQuery, parseListItemsFromQuery } from '../helpers';
 import { QUERY_TYPES } from '../queries';
+import { useTheme } from '../hooks/useTheme';
 
 import { Button } from './Button';
 import { ListComponent } from './ListComponent';
@@ -83,6 +83,8 @@ export const DataListSection = ({
   showButton,
   showLink
 }: Props) => {
+  const { colors } = useTheme();
+
   const renderSectionHeader = () => {
     if (!sectionTitle) return null;
 

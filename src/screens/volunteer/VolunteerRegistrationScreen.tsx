@@ -20,11 +20,12 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { Icon, colors, consts, secrets, texts } from '../../config';
+import { Icon, consts, secrets, texts } from '../../config';
 import { usePullToRefetch } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { register, userGroups } from '../../queries/volunteer';
 import { ScreenName, VolunteerRegistration } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 const namespace = appJson.expo.slug as keyof typeof secrets;
@@ -38,6 +39,8 @@ const showPrivacyCheckedAlert = () =>
 
 // eslint-disable-next-line complexity
 export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);

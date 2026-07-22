@@ -18,7 +18,7 @@ import {
   SafeAreaViewFlex,
   Widgets
 } from '../components';
-import { colors, consts, texts } from '../config';
+import { consts, texts } from '../config';
 import {
   graphqlFetchPolicy,
   queryVariablesFromQuery,
@@ -38,6 +38,7 @@ import {
 } from '../hooks/HomeRefresh';
 import { QUERY_TYPES, getQueryType } from '../queries';
 import { ScreenName } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -224,6 +225,8 @@ const renderItem = ({ item }) => {
 };
 
 export const HomeScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
+
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);

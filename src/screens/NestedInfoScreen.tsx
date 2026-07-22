@@ -12,13 +12,14 @@ import {
   SectionHeader,
   WrapperVertical
 } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
 import { useStaticContent } from '../hooks';
 import { useRenderItem } from '../hooks/listHooks';
 import { NetworkContext } from '../NetworkProvider';
 import { QUERY_TYPES } from '../queries';
 import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 import { SubQuery } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 type NestedInfo = {
   content?: string;
@@ -67,6 +68,8 @@ export const ListHeaderComponent = ({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const name = route.params?.name;

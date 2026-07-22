@@ -16,7 +16,7 @@ import {
   Tour
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, consts, texts } from '../config';
+import { consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
 import { useRefreshTime } from '../hooks';
@@ -30,6 +30,7 @@ import {
 } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
@@ -91,6 +92,8 @@ const useRootRouteByCategory = (details, navigation) => {
 
 /* eslint-disable complexity, react-hooks/static-components */
 export const DetailScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
+
   const { features } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
