@@ -7,16 +7,17 @@ import {
   createDefaultTabNavigatorConfig,
   createDynamicTabConfig
 } from '../config/navigation/tabConfig';
+import { resolveTabBarColors } from '../helpers/tabNavigationHelper';
 import { useStaticContent, useTheme } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
-import { CustomTab, TabConfig, TabNavigatorConfig } from '../types';
+import { CustomTab, TabConfig, TabNavigationStaticContent } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
 
 export const useTabRoutes = () => {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
-  const { data: tabRoutesData, loading } = useStaticContent<TabNavigatorConfig>({
+  const { data: tabRoutesData, loading } = useStaticContent<TabNavigationStaticContent>({
     name: 'tabNavigation',
     type: 'json'
   });
@@ -24,13 +25,8 @@ export const useTabRoutes = () => {
   const tabRoutes = useMemo(() => {
     if (loading) return;
 
-    const {
-      activeBackgroundColor,
-      activeTintColor,
-      inactiveBackgroundColor,
-      inactiveTintColor,
-      tabConfigs
-    } = tabRoutesData || defaultTabRoutes;
+    const { tabConfigs } = tabRoutesData || defaultTabRoutes;
+    const tabBarColors = resolveTabBarColors(defaultTabRoutes, tabRoutesData, mode);
 
     const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])?.map(
       (tabConfig, index) => {
@@ -65,13 +61,10 @@ export const useTabRoutes = () => {
     );
 
     return {
-      activeBackgroundColor,
-      activeTintColor,
-      inactiveBackgroundColor,
-      inactiveTintColor,
+      ...tabBarColors,
       tabConfigs: dynamicTabs.filter(Boolean) as TabConfig[]
     };
-  }, [defaultTabRoutes, loading, tabRoutesData]);
+  }, [defaultTabRoutes, loading, mode, tabRoutesData]);
 
   return { defaultTabRoutes, loading, tabRoutes };
 };

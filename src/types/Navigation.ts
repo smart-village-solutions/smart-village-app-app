@@ -5,6 +5,8 @@ import { ViewStyle } from 'react-native';
 
 import { Icon } from '../config';
 
+import type { ResolvedThemeMode } from './Theme';
+
 export enum ScreenName {
   About = 'About',
   ARShow = 'ARShow',
@@ -168,12 +170,20 @@ export type TabConfig = {
   tabOptions: TabOptions;
 };
 
-export type TabNavigatorConfig = {
+export type TabBarColorConfig = {
   activeTintColor: string;
   inactiveTintColor: string;
   activeBackgroundColor: string;
   inactiveBackgroundColor: string;
+};
+
+export type TabNavigatorConfig = TabBarColorConfig & {
   tabConfigs: (CustomTab | string | TabConfig)[];
+};
+
+export type TabNavigationStaticContent = Partial<TabBarColorConfig> & {
+  tabConfigs: (CustomTab | string | TabConfig)[];
+  themeColors?: Partial<Record<ResolvedThemeMode, Partial<TabBarColorConfig>>>;
 };
 
 export type NavigatorConfig = { type: 'drawer' } | { type: 'tab' };

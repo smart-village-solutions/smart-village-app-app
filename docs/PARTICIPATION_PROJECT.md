@@ -356,6 +356,14 @@ Example:
   "inactiveTintColor": "#666666",
   "activeBackgroundColor": "#FFFFFF",
   "inactiveBackgroundColor": "#FFFFFF",
+  "themeColors": {
+    "dark": {
+      "activeTintColor": "#8AD996",
+      "inactiveTintColor": "#F5F5F5",
+      "activeBackgroundColor": "#1E1E1E",
+      "inactiveBackgroundColor": "#1E1E1E"
+    }
+  },
   "tabConfigs": [
     "Home",
     "Service",
@@ -379,6 +387,9 @@ Important values:
 - `label` is the visible tab label.
 - `accessibilityLabel` is used for the generated tab accessibility label.
 - `iconName` must be a valid key from `src/config/icons/Icon.tsx`.
+- Root-level color fields configure the legacy light appearance. Add partial `themeColors.light`
+  and `themeColors.dark` objects for mode-specific tab bar colors; omitted dark values use the
+  active semantic app palette.
 
 ## Runtime Behavior
 
