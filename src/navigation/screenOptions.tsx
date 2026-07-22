@@ -5,7 +5,8 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 type NavigationParams = Record<string, object | undefined>;
 
@@ -27,6 +28,12 @@ type OptionConfig = {
   withShare?: boolean;
 };
 
+const HeaderBackground = () => {
+  const { colors } = useTheme();
+
+  return <DiagonalGradient colors={[colors.surface, colors.surface]} />;
+};
+
 export const getScreenOptions =
   ({
     cardStyleInterpolator,
@@ -44,7 +51,7 @@ export const getScreenOptions =
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-      headerBackground: () => <DiagonalGradient colors={[colors.surface, colors.surface]} />,
+      headerBackground: HeaderBackground,
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
       headerRight: () => (
@@ -75,7 +82,6 @@ export const getScreenOptions =
 
 const styles = StyleSheet.create({
   headerTitleStyle: {
-    color: colors.darkText,
     fontFamily: 'condbold',
     fontSize: normalize(18),
     lineHeight: normalize(23)

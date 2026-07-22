@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
 import { getAccessibilityHeaderEntryEnabled } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 
 import { AccessibilitySettingsModal } from './AccessibilitySettingsModal';
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
@@ -14,6 +15,7 @@ type Props = {
 
 export const AccessibilityHeader = ({ style }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { colors } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
 
   if (!getAccessibilityHeaderEntryEnabled(globalSettings)) {

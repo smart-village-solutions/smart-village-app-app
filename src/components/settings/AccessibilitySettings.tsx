@@ -2,9 +2,10 @@ import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem, Slider } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS, normalizeTextScaleLevel } from '../../helpers';
 import { useAccessibilityPreferences } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { ThemeMode } from '../../types/Theme';
 import { SettingsToggle } from '../SettingsToggle';
 import { BoldText, RegularText } from '../Text';
@@ -105,6 +106,8 @@ export const AccessibilitySettings = ({
     setThemeMode,
     themeMode
   } = useAccessibilityPreferences();
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const availableSettings = SETTINGS_DEFINITIONS.filter((setting) => features[setting.featureKey]);
   const textScaleLevel = normalizeTextScaleLevel(preferences.textScaleLevel);
@@ -257,52 +260,56 @@ export const AccessibilitySettings = ({
   return <ScrollView>{content}</ScrollView>;
 };
 
-const styles = StyleSheet.create({
-  listItem: {
-    backgroundColor: colors.transparent,
-    paddingHorizontal: 0,
-    paddingVertical: normalize(10)
-  },
-  resetLink: {
-    minHeight: normalize(32),
-    justifyContent: 'center'
-  },
-  slider: {
-    marginHorizontal: 0,
-    width: '100%'
-  },
-  sliderContainer: {
-    flex: 1,
-    minWidth: 0,
-    justifyContent: 'center',
-    marginHorizontal: normalize(12)
-  },
-  sliderThumb: {
-    backgroundColor: colors.primary,
-    height: normalize(20),
-    width: normalize(20)
-  },
-  textScaleButton: {
-    alignItems: 'center',
-    borderColor: colors.gray40,
-    borderRadius: normalize(18),
-    borderWidth: normalize(1),
-    justifyContent: 'center',
-    minHeight: normalize(36),
-    minWidth: normalize(72),
-    paddingHorizontal: normalize(8)
-  },
-  textScaleButtonHighContrast: {
-    borderColor: colors.darkText
-  },
-  textScaleButtonDisabled: {
-    opacity: 0.5
-  },
-  textScaleRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: normalize(8),
-    marginTop: normalize(8),
-    width: '100%'
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    listItem: {
+      backgroundColor: colors.transparent,
+      paddingHorizontal: 0,
+      paddingVertical: normalize(10)
+    },
+    resetLink: {
+      minHeight: normalize(32),
+      justifyContent: 'center'
+    },
+    slider: {
+      marginHorizontal: 0,
+      width: '100%'
+    },
+    sliderContainer: {
+      flex: 1,
+      minWidth: 0,
+      justifyContent: 'center',
+      marginHorizontal: normalize(12)
+    },
+    sliderThumb: {
+      backgroundColor: colors.primary,
+      height: normalize(20),
+      width: normalize(20)
+    },
+    textScaleButton: {
+      alignItems: 'center',
+      borderColor: colors.gray40,
+      borderRadius: normalize(18),
+      borderWidth: normalize(1),
+      justifyContent: 'center',
+      minHeight: normalize(36),
+      minWidth: normalize(72),
+      paddingHorizontal: normalize(8)
+    },
+    textScaleButtonHighContrast: {
+      borderColor: colors.text
+    },
+    textScaleButtonDisabled: {
+      opacity: 0.5
+    },
+    textScaleRow: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginBottom: normalize(8),
+      marginTop: normalize(8),
+      width: '100%'
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */

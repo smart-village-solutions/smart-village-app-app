@@ -7,11 +7,13 @@ import { StyleSheet, View } from 'react-native';
 import { AccessibilityContext } from './AccessibilityProvider';
 import { AppWideGrayscaleFilter } from './components/AppWideGrayscaleFilter';
 import { fontConfig } from './config';
+import { useTheme } from './hooks/useTheme';
 import { SUE_REPORT_VALUES } from './screens';
 
 const RootView = ({ children }: { children: React.ReactNode }) => {
   const [isFontLoaded] = useFonts(fontConfig);
-  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
+  const { features, isGrayscaleEnabled, isHydrated } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
   const hasHandledInitialLayout = useRef(false);
 
   const onLayoutRootView = useCallback(async () => {
@@ -30,10 +32,10 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isFontLoaded]);
 
-  if (!isFontLoaded) return null;
+  if (!isFontLoaded || (features?.theming && !isHydrated)) return null;
 
   return (
-    <View style={styles.flex} onLayout={onLayoutRootView}>
+    <View style={[styles.root, { backgroundColor: colors.background }]} onLayout={onLayoutRootView}>
       <AppWideGrayscaleFilter isGrayscaleEnabled={isGrayscaleEnabled}>
         {children}
       </AppWideGrayscaleFilter>
@@ -42,7 +44,7 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
 };
 
 const styles = StyleSheet.create({
-  flex: {
+  root: {
     flex: 1
   }
 });
