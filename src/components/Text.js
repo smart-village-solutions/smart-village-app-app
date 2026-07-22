@@ -4,7 +4,9 @@ import { StyleSheet, Text as RNText } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { lightColors } from '../config/colors';
+import { useTheme } from '../hooks/useTheme';
 
 // example: S&#322;ubice -> Słubice
 function parseNumericCharacterReferences(text) {
@@ -47,7 +49,7 @@ const scaleTypography = (style, scale = 1) => {
   return scaledStyle;
 };
 
-const updateColorForHighContrast = (style, isHighContrastEnabled) => {
+const updateColorForHighContrast = (style, isHighContrastEnabled, colors) => {
   if (!style || !isHighContrastEnabled) return style;
   if (!style.color) return style;
 
@@ -72,9 +74,10 @@ export const Text = ({ children, style, italic, ignoreTextScale = false, ...prop
     isHighContrastEnabled,
     textScaleMultiplier = 1
   } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
   const flattenedStyle = StyleSheet.flatten(style || {});
   const baseStyle = scaleTypography(flattenedStyle, ignoreTextScale ? 1 : textScaleMultiplier);
-  const adjustedStyle = updateColorForHighContrast(baseStyle, isHighContrastEnabled);
+  const adjustedStyle = updateColorForHighContrast(baseStyle, isHighContrastEnabled, colors);
 
   /* eslint-disable react-native/no-inline-styles */
   return (
@@ -92,6 +95,8 @@ export const Text = ({ children, style, italic, ignoreTextScale = false, ...prop
   /* eslint-enable react-native/no-inline-styles */
 };
 
+const themeColor = (props, token) => props.theme?.[token] || lightColors[token];
+
 Text.propTypes = {
   children: PropTypes.node,
   ignoreTextScale: PropTypes.bool,
@@ -100,7 +105,7 @@ Text.propTypes = {
 };
 
 export const RegularText = styled(Text)`
-  color: ${colors.darkText};
+  color: ${(props) => themeColor(props, 'text')};
   font-family: regular;
   font-size: ${normalize(16)};
   line-height: ${normalize(22)};
@@ -147,57 +152,57 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.primary &&
     css`
-      color: ${colors.primary};
-      text-decoration-color: ${colors.primary};
+      color: ${themeColor(props, 'primary')};
+      text-decoration-color: ${themeColor(props, 'primary')};
     `};
 
   ${(props) =>
     props.secondary &&
     css`
-      color: ${colors.secondary};
-      text-decoration-color: ${colors.secondary};
+      color: ${themeColor(props, 'secondary')};
+      text-decoration-color: ${themeColor(props, 'secondary')};
     `};
 
   ${(props) =>
     props.lighter &&
     css`
-      color: ${colors.gray60};
-      text-decoration-color: ${colors.gray60};
+      color: ${themeColor(props, 'textMuted')};
+      text-decoration-color: ${themeColor(props, 'textMuted')};
     `};
 
   ${(props) =>
     props.lightest &&
     css`
-      color: ${colors.lightestText};
-      text-decoration-color: ${colors.lightestText};
+      color: ${themeColor(props, 'onPrimary')};
+      text-decoration-color: ${themeColor(props, 'onPrimary')};
     `};
 
   ${(props) =>
     props.placeholder &&
     css`
-      color: ${colors.placeholder};
-      text-decoration-color: ${colors.placeholder};
+      color: ${themeColor(props, 'placeholder')};
+      text-decoration-color: ${themeColor(props, 'placeholder')};
     `};
 
   ${(props) =>
     props.darker &&
     css`
-      color: ${colors.darkerPrimary};
-      text-decoration-color: ${colors.darkerPrimary};
+      color: ${themeColor(props, 'darkerPrimary')};
+      text-decoration-color: ${themeColor(props, 'darkerPrimary')};
     `};
 
   ${(props) =>
     props.error &&
     css`
-      color: ${colors.error};
-      text-decoration-color: ${colors.error};
+      color: ${themeColor(props, 'error')};
+      text-decoration-color: ${themeColor(props, 'error')};
     `};
 
   ${(props) =>
     props.blue &&
     css`
-      color: ${colors.blue};
-      text-decoration-color: ${colors.blue};
+      color: ${themeColor(props, 'blue')};
+      text-decoration-color: ${themeColor(props, 'blue')};
     `};
 
   ${(props) =>

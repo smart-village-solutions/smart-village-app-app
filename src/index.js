@@ -36,6 +36,7 @@ import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import RootView from './RootView';
 import { initialContext, SettingsProvider } from './SettingsProvider';
+import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { OtaUpdateManager } from './components';
 
@@ -220,18 +221,20 @@ const MainAppWithApolloProvider = () => {
         }}
       >
         <AccessibilityProvider>
-          <ConfigurationsProvider>
-            <OnboardingManager>
-              <ProfileProvider>
-                <UnreadMessagesProvider>
-                  <RootView>
-                    <OtaUpdateManager />
-                    <Navigator navigationType={initialGlobalSettings.navigation} />
-                  </RootView>
-                </UnreadMessagesProvider>
-              </ProfileProvider>
-            </OnboardingManager>
-          </ConfigurationsProvider>
+          <AppThemeProvider>
+            <ConfigurationsProvider>
+              <OnboardingManager>
+                <ProfileProvider>
+                  <UnreadMessagesProvider>
+                    <RootView>
+                      <OtaUpdateManager />
+                      <Navigator navigationType={initialGlobalSettings.navigation} />
+                    </RootView>
+                  </UnreadMessagesProvider>
+                </ProfileProvider>
+              </OnboardingManager>
+            </ConfigurationsProvider>
+          </AppThemeProvider>
         </AccessibilityProvider>
       </SettingsProvider>
     </ApolloProvider>

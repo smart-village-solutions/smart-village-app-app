@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { Divider, Overlay } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { useAccessibilityPreferences } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
 
 import { AppWideGrayscaleFilter } from './AppWideGrayscaleFilter';
 import { AccessibilitySettings } from './settings';
@@ -28,6 +29,8 @@ export const AccessibilitySettingsModal = ({ isVisible, onClose }: Props) => {
   const insets = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
   const { resetPreferences } = useAccessibilityPreferences();
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const verticalInsetSpacing = normalize(16);
   const overlayMaxHeight = Math.max(
     normalize(240),
@@ -69,7 +72,7 @@ export const AccessibilitySettingsModal = ({ isVisible, onClose }: Props) => {
                 onPress={onClose}
                 style={styles.closeButton}
               >
-                <Icon.Close color={colors.darkText} size={normalize(20)} />
+                <Icon.Close color={colors.text} size={normalize(20)} />
               </TouchableOpacity>
             </View>
 
@@ -112,70 +115,74 @@ export const AccessibilitySettingsModal = ({ isVisible, onClose }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  closeButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: normalize(32),
-    marginRight: normalize(-8),
-    width: normalize(32)
-  },
-  container: {
-    borderRadius: normalize(8),
-    maxHeight: '100%',
-    overflow: 'hidden',
-    width: '100%'
-  },
-  content: {
-    flexGrow: 1,
-    flexShrink: 1,
-    minHeight: 0
-  },
-  contentContainer: {
-    paddingBottom: normalize(8)
-  },
-  divider: {
-    backgroundColor: colors.gray40,
-    height: normalize(1)
-  },
-  grayscaleSurface: {
-    backgroundColor: colors.surface
-  },
-  headerRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: normalize(48)
-  },
-  headerSpacer: {
-    height: normalize(32),
-    width: normalize(32)
-  },
-  headerTitle: {
-    color: colors.darkText,
-    flex: 1,
-    fontFamily: 'condbold',
-    fontSize: normalize(18),
-    lineHeight: normalize(23)
-  },
-  headerTitleBold: {
-    fontFamily: 'bold'
-  },
-  overlay: {
-    backgroundColor: colors.surface,
-    borderRadius: normalize(8),
-    padding: 0,
-    width: '95%'
-  },
-  overlayAccessibleBorder: {
-    borderColor: colors.darkText,
-    borderWidth: normalize(1)
-  },
-  resetLink: {
-    minHeight: normalize(32),
-    justifyContent: 'center'
-  },
-  backdropReducedTransparency: {
-    backgroundColor: colors.darkText
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    closeButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: normalize(32),
+      marginRight: normalize(-8),
+      width: normalize(32)
+    },
+    container: {
+      borderRadius: normalize(8),
+      maxHeight: '100%',
+      overflow: 'hidden',
+      width: '100%'
+    },
+    content: {
+      flexGrow: 1,
+      flexShrink: 1,
+      minHeight: 0
+    },
+    contentContainer: {
+      paddingBottom: normalize(8)
+    },
+    divider: {
+      backgroundColor: colors.gray40,
+      height: normalize(1)
+    },
+    grayscaleSurface: {
+      backgroundColor: colors.surface
+    },
+    headerRow: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      minHeight: normalize(48)
+    },
+    headerSpacer: {
+      height: normalize(32),
+      width: normalize(32)
+    },
+    headerTitle: {
+      color: colors.text,
+      flex: 1,
+      fontFamily: 'condbold',
+      fontSize: normalize(18),
+      lineHeight: normalize(23)
+    },
+    headerTitleBold: {
+      fontFamily: 'bold'
+    },
+    overlay: {
+      backgroundColor: colors.surface,
+      borderRadius: normalize(8),
+      padding: 0,
+      width: '95%'
+    },
+    overlayAccessibleBorder: {
+      borderColor: colors.text,
+      borderWidth: normalize(1)
+    },
+    resetLink: {
+      minHeight: normalize(32),
+      justifyContent: 'center'
+    },
+    backdropReducedTransparency: {
+      backgroundColor: colors.text
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */

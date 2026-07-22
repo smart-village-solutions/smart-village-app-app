@@ -2,7 +2,8 @@ import { HeaderBackButtonProps } from '@react-navigation/elements';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 import { HeadlineText } from './Text';
 
@@ -12,6 +13,8 @@ export const HeaderLeft = ({
   backImage,
   text
 }: HeaderBackButtonProps & { text?: string }) => {
+  const { colors } = useTheme();
+
   if (!onPress && !backImage && !text) {
     return null;
   }
