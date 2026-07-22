@@ -1,5 +1,8 @@
 import { darkColors, lightColors } from '../../src/config/colors';
-import { createWasteInputStyles } from '../../src/components/waste/wasteInputStyles';
+import {
+  createWasteInputStyles,
+  createWasteSuggestionStyles
+} from '../../src/components/waste/wasteInputStyles';
 
 describe('waste address autocomplete theme', () => {
   it.each([
@@ -9,19 +12,24 @@ describe('waste address autocomplete theme', () => {
     const styles = createWasteInputStyles(colors);
 
     expect(styles.autoCompleteInput).toMatchObject({
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       color: colors.text
     });
     expect(styles.autoCompleteInputContainer).toMatchObject({
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       borderColor: colors.border
     });
     expect(styles.autoCompleteList).toMatchObject({
-      backgroundColor: colors.surfaceElevated,
+      backgroundColor: colors.background,
       borderColor: colors.border
     });
     expect(styles.autoCompleteListContainer).toMatchObject({
-      backgroundColor: colors.surfaceElevated
+      backgroundColor: colors.background
+    });
+
+    expect(createWasteSuggestionStyles(colors)).toMatchObject({
+      divider: { backgroundColor: colors.border },
+      row: { backgroundColor: colors.background }
     });
   });
 });
