@@ -4,12 +4,14 @@ import React, { useCallback, useEffect } from 'react';
 import { DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import { LoadingSpinner, SafeAreaViewFlex, ServiceTiles } from '../../components';
-import { colors } from '../../config';
 import { useStaticContent, useVolunteerUser, VOLUNTEER_PERSONAL_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 export const VolunteerPersonalScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const { isLoading, isLoggedIn } = useVolunteerUser();
   const {
     data: dataPersonalText,

@@ -2,9 +2,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+import { useTheme } from '../hooks/useTheme';
+
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
@@ -14,27 +16,31 @@ type Props = {
   style: StyleProp<ViewStyle>;
 };
 
-export const ChatHeader = ({ navigation, style }: Props) => (
-  <TouchableOpacity
-    onPress={() =>
-      navigation.navigate({
-        name: ScreenName.VolunteerForm,
-        params: {
-          title: texts.volunteer.conversationStart,
-          query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
-          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-        }
-      })
-    }
-    accessibilityLabel={a11yLabel.chatIcon}
-    accessibilityHint={a11yLabel.chatHint}
-    accessibilityRole="button"
-  >
-    <Icon.Pen
-      color={colors.darkText}
-      style={style}
-      size={normalize(20)}
-      strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
-    />
-  </TouchableOpacity>
-);
+export const ChatHeader = ({ navigation, style }: Props) => {
+  const { colors } = useTheme();
+
+  return (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate({
+          name: ScreenName.VolunteerForm,
+          params: {
+            title: texts.volunteer.conversationStart,
+            query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+          }
+        })
+      }
+      accessibilityLabel={a11yLabel.chatIcon}
+      accessibilityHint={a11yLabel.chatHint}
+      accessibilityRole="button"
+    >
+      <Icon.Pen
+        color={colors.darkText}
+        style={style}
+        size={normalize(20)}
+        strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+      />
+    </TouchableOpacity>
+  );
+};

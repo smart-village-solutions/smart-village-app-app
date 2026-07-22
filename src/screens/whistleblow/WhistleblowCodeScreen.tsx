@@ -13,11 +13,12 @@ import {
   WhistleblowReportCode,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 export type Report = {
   questionnaires: [
@@ -36,6 +37,8 @@ export const WhistleblowCodeScreen = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();

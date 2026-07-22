@@ -18,11 +18,12 @@ import {
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
 import { useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName, TCategory, TVoucherItem } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 const getAdditionalQueryVariables = (selectedValue: string) => {
   const additionalQueryVariables = {};
@@ -40,6 +41,8 @@ const hasFilterSelection = (queryVariables: any) => {
 
 /* eslint-disable complexity */
 export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const { isLoggedIn, memberId, isLoading } = useVoucher();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });

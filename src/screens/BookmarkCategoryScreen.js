@@ -10,16 +10,19 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, consts, texts } from '../config';
+import { consts, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { useTheme } from '../hooks/useTheme';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 export const BookmarkCategoryScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
+
   const query = route.params?.query ?? '';
   const queryKey = query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query;
   const queryVariables = route.params?.queryVariables ?? {};

@@ -13,16 +13,19 @@ import {
   WrapperVertical
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts, texts } from '../config';
+import { consts, texts } from '../config';
 import { trimNewLines } from '../helpers';
 import { useStaticContent, useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
 // eslint-disable-next-line complexity
 export const HtmlScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};

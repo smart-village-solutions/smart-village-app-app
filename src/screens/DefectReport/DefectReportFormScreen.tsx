@@ -14,12 +14,12 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
-import { colors } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_CATEGORIES } from '../../queries/categories';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const DefectReportFormScreen = ({
@@ -29,6 +29,8 @@ export const DefectReportFormScreen = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();

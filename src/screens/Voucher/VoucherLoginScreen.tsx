@@ -16,7 +16,7 @@ import {
   SectionHeader,
   Wrapper
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import {
   storeVoucherAuthToken,
   storeVoucherMemberId,
@@ -26,12 +26,15 @@ import { useStaticContent } from '../../hooks';
 import { profileLogIn as logIn } from '../../queries/profile';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VoucherLogin } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 const showLoginFailAlert = () =>
   Alert.alert(texts.voucher.loginFailedTitle, texts.voucher.loginFailedBody);
 
 // eslint-disable-next-line complexity
 export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const imageUri = route?.params?.imageUri;
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 

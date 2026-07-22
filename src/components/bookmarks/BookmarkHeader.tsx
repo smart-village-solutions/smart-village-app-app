@@ -3,10 +3,11 @@ import React, { useCallback, useContext } from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { colors, consts, Icon } from '../../config';
+import { consts, Icon } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { togglePushDeviceAssignment } from '../../pushNotifications';
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../headerIconConfig';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   route: RouteProp<any, any>;
@@ -16,6 +17,8 @@ type Props = {
 const a11yLabel = consts.a11yLabel;
 
 export const BookmarkHeader = ({ route, style }: Props) => {
+  const { colors } = useTheme();
+
   const { toggleBookmark } = useContext(BookmarkContext);
 
   const suffix = route.params?.suffix ?? '';

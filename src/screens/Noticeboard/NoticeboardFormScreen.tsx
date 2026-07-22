@@ -19,11 +19,12 @@ import {
   Wrapper,
   WrapperRow
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
@@ -33,6 +34,8 @@ export const NoticeboardFormScreen = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);

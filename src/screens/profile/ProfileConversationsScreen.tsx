@@ -5,15 +5,18 @@ import { useQuery } from 'react-apollo';
 import { RefreshControl } from 'react-native';
 
 import { EmptyMessage, ListComponent, LoadingSpinner, SafeAreaViewFlex } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const { conversationSettings } = useContext(SettingsContext);
   const { refetch: refetchUnreadMessages } = useMessagesContext();
   const { currentUserData } = useProfileContext();

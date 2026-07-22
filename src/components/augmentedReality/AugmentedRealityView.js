@@ -15,12 +15,15 @@ import {
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 
-import { colors, consts, device, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { SettingsContext } from '../../SettingsProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 const { GB_TO_BYTES } = consts;
 
 export const AugmentedRealityView = ({ sceneNavigator }) => {
+  const { colors } = useTheme();
+
   const {
     isObjectLoading,
     setIsObjectLoading,

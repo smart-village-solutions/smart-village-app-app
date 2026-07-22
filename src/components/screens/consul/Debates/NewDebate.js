@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
 import { Alert } from 'react-native';
 
-import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
+import { Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/consul';
@@ -14,6 +14,7 @@ import { Checkbox } from '../../../Checkbox';
 import { Input } from '../../../form';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { useTheme } from '../../../../hooks/useTheme';
 
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
@@ -64,6 +65,8 @@ const INPUTS = [
 ];
 
 export const NewDebate = ({ navigation, data, query }) => {
+  const { colors } = useTheme();
+
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
     data?.termsOfService ?? false
   );

@@ -18,10 +18,11 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../../components';
-import { colors, consts, Icon, namespace, secrets, texts } from '../../../config';
+import { consts, Icon, namespace, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CONSUL_REGISTER_USER } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
+import { useTheme } from '../../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
@@ -32,6 +33,8 @@ const showPrivacyCheckedAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 
 export const ConsulRegisterScreen = ({ navigation }) => {
+  const { colors } = useTheme();
+
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(false);

@@ -1,8 +1,10 @@
 import React from 'react';
 import { ShareContent, StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon } from '../config';
+import { consts, Icon } from '../config';
 import { openShare } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
+
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel } = consts;
@@ -13,6 +15,8 @@ type Props = {
 };
 
 export const ShareHeader = ({ shareContent, style }: Props) => {
+  const { colors } = useTheme();
+
   if (!shareContent) {
     return null;
   }

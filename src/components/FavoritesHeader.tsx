@@ -2,7 +2,8 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, texts } from '../config';
+import { consts, Icon, texts } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 const a11yText = consts.a11yLabel;
 
@@ -12,6 +13,8 @@ type Props = {
 };
 
 export const FavoritesHeader = ({ navigation, style }: Props) => {
+  const { colors } = useTheme();
+
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}

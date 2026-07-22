@@ -5,9 +5,10 @@ import { ActivityIndicator, ScrollView } from 'react-native';
 
 import { LoadingContainer, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
 import { OParlComponent } from '../../components/oParl';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { useOParlQuery } from '../../hooks';
 import { getOParlQuery } from '../../queries/OParl';
+import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
   navigation: StackNavigationProp<never>;
@@ -15,6 +16,8 @@ type Props = {
 };
 
 export const OParlDetailScreen = ({ navigation, route }: Props) => {
+  const { colors } = useTheme();
+
   const oParlType = route.params?.type ?? '';
   const id = route.params?.id ?? '';
 
