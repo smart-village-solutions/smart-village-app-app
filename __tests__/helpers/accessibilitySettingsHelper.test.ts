@@ -26,6 +26,7 @@ describe('accessibilitySettingsHelper', () => {
             settingsEntry: true,
             headerEntry: true,
             textScaling: true,
+            theming: true,
             boldText: true,
             highContrast: false,
             // invalid values should fall back to defaults
@@ -39,6 +40,7 @@ describe('accessibilitySettingsHelper', () => {
     expect(resolved.features.settingsEntry).toBe(true);
     expect(resolved.features.headerEntry).toBe(true);
     expect(resolved.features.textScaling).toBe(true);
+    expect(resolved.features.theming).toBe(true);
     expect(resolved.features.boldText).toBe(true);
     expect(resolved.features.highContrast).toBe(false);
     expect(resolved.features.reduceMotion).toBe(DEFAULT_ACCESSIBILITY_FEATURES.reduceMotion);
@@ -83,7 +85,8 @@ describe('accessibilitySettingsHelper', () => {
             readAloudEnabled: true,
             reduceMotionEnabled: true,
             reduceTransparencyEnabled: true,
-            textScaleLevel: 0
+            textScaleLevel: 0,
+            themeMode: 'dark'
           }
         }
       }
@@ -95,6 +98,21 @@ describe('accessibilitySettingsHelper', () => {
     expect(resolved.defaults.reduceMotionEnabled).toBe(true);
     expect(resolved.defaults.reduceTransparencyEnabled).toBe(true);
     expect(resolved.defaults.textScaleLevel).toBe(0);
+    expect(resolved.defaults.themeMode).toBe('dark');
+  });
+
+  it('falls back to system when the configured theme mode is invalid', () => {
+    const resolved = resolveAccessibilityConfiguration({
+      settings: {
+        accessibility: {
+          defaults: {
+            themeMode: 'sepia' as never
+          }
+        }
+      }
+    });
+
+    expect(resolved.defaults.themeMode).toBe('system');
   });
 
   it('exposes feature helper selectors', () => {
@@ -104,7 +122,8 @@ describe('accessibilitySettingsHelper', () => {
           enabledFeatures: {
             settingsEntry: true,
             headerEntry: false,
-            readAloud: true
+            readAloud: true,
+            theming: true
           }
         }
       }
@@ -114,5 +133,6 @@ describe('accessibilitySettingsHelper', () => {
     expect(getAccessibilityHeaderEntryEnabled(settings)).toBe(false);
     expect(isAccessibilityFeatureEnabled(settings, 'readAloud')).toBe(true);
     expect(isAccessibilityFeatureEnabled(settings, 'highContrast')).toBe(false);
+    expect(isAccessibilityFeatureEnabled(settings, 'theming')).toBe(true);
   });
 });

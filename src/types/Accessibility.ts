@@ -1,3 +1,5 @@
+import { ResolvedThemeMode, ThemeColorPalette, ThemeMode } from './Theme';
+
 export type AccessibilitySystemState = {
   isBoldTextEnabled: boolean;
   isGrayscaleEnabled: boolean;
@@ -15,7 +17,10 @@ export type AccessibilityTogglePreferenceKey =
   | 'reduceMotionEnabled'
   | 'reduceTransparencyEnabled';
 
-export type AccessibilityPreferenceKey = AccessibilityTogglePreferenceKey | 'textScaleLevel';
+export type AccessibilityPreferenceKey =
+  | AccessibilityTogglePreferenceKey
+  | 'textScaleLevel'
+  | 'themeMode';
 
 export type AccessibilityUserSettings = {
   boldTextEnabled: boolean;
@@ -25,6 +30,7 @@ export type AccessibilityUserSettings = {
   reduceMotionEnabled: boolean;
   reduceTransparencyEnabled: boolean;
   textScaleLevel: number;
+  themeMode: ThemeMode;
 };
 
 export type AccessibilityFeatureKey =
@@ -36,7 +42,8 @@ export type AccessibilityFeatureKey =
   | 'reduceMotion'
   | 'reduceTransparency'
   | 'headerEntry'
-  | 'settingsEntry';
+  | 'settingsEntry'
+  | 'theming';
 
 export type AccessibilityFeatureAvailability = Record<AccessibilityFeatureKey, boolean>;
 
@@ -44,12 +51,17 @@ export type AccessibilityContextValue = AccessibilitySystemState & {
   defaults: AccessibilityUserSettings;
   features: AccessibilityFeatureAvailability;
   isHighContrastEnabled: boolean;
+  isHydrated: boolean;
   isReadAloudEnabled: boolean;
+  resolvedThemeMode: ResolvedThemeMode;
   preferences: AccessibilityUserSettings;
   resetPreferences: () => void;
   setPreference: (key: AccessibilityTogglePreferenceKey, value?: boolean) => void;
   setPreferences: (values: Partial<AccessibilityUserSettings>) => void;
   setTextScaleLevel: (level: number) => void;
+  setThemeMode: (mode: ThemeMode) => void;
   system: AccessibilitySystemState;
+  themeColors: ThemeColorPalette;
+  themeMode: ThemeMode;
   textScaleMultiplier: number;
 };

@@ -1,20 +1,24 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useColorScheme } from 'react-native';
 
+import { isThemeMode, lightColors, resolveThemeMode } from './config/colors';
 import {
   ACCESSIBILITY_FEATURE_BY_PREFERENCE,
   getTextScaleMultiplier,
   normalizeTextScaleLevel,
-  accessibilityListeners,
-  resolveAccessibilityConfiguration,
-  storageHelper
-} from './helpers';
+  resolveAccessibilityConfiguration
+} from './helpers/accessibilitySettingsHelper';
+import { accessibilityListeners } from './helpers/accessibilityListeners';
+import { storageHelper } from './helpers/storageHelper';
+import { resolveThemePalettes } from './helpers/themeHelper';
 import { SettingsContext } from './SettingsProvider';
 import {
   AccessibilityContextValue,
   AccessibilitySystemState,
   AccessibilityTogglePreferenceKey,
   AccessibilityUserSettings
-} from './types';
+} from './types/Accessibility';
+import { ThemeMode } from './types/Theme';
 
 const defaultSystemAccessibility: AccessibilitySystemState = {
   isBoldTextEnabled: false,
@@ -34,7 +38,8 @@ const defaultAccessibility: AccessibilityContextValue = {
     readAloudEnabled: false,
     reduceMotionEnabled: false,
     reduceTransparencyEnabled: false,
-    textScaleLevel: 2
+    textScaleLevel: 2,
+    themeMode: 'system'
   },
   features: {
     boldText: false,
@@ -45,9 +50,11 @@ const defaultAccessibility: AccessibilityContextValue = {
     reduceMotion: false,
     reduceTransparency: false,
     settingsEntry: false,
-    textScaling: false
+    textScaling: false,
+    theming: false
   },
   isHighContrastEnabled: false,
+  isHydrated: false,
   isReadAloudEnabled: false,
   preferences: {
     boldTextEnabled: false,
@@ -56,13 +63,18 @@ const defaultAccessibility: AccessibilityContextValue = {
     readAloudEnabled: false,
     reduceMotionEnabled: false,
     reduceTransparencyEnabled: false,
-    textScaleLevel: 2
+    textScaleLevel: 2,
+    themeMode: 'system'
   },
+  resolvedThemeMode: 'light',
   resetPreferences: () => undefined,
   setPreference: () => undefined,
   setPreferences: () => undefined,
   setTextScaleLevel: () => undefined,
+  setThemeMode: () => undefined,
   system: defaultSystemAccessibility,
+  themeColors: lightColors,
+  themeMode: 'system',
   textScaleMultiplier: 1
 };
 
@@ -70,6 +82,7 @@ export const AccessibilityContext = createContext<AccessibilityContextValue>(def
 
 export const AccessibilityProvider = ({ children }: { children?: React.ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const systemColorScheme = useColorScheme();
   const [systemAccessibility, setSystemAccessibility] = useState<AccessibilitySystemState>(
     defaultSystemAccessibility
   );
@@ -108,6 +121,10 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
         }
       }
 
+      if (features.theming && isThemeMode(values.themeMode)) {
+        nextPreferences.themeMode = values.themeMode;
+      }
+
       return nextPreferences;
     },
     [features]
@@ -128,8 +145,8 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
 
         if (storedSettings && typeof storedSettings === 'object') {
           setHasStoredPreferences(true);
-          setPreferencesState((prev) =>
-            normalizePreferences(storedSettings as Partial<AccessibilityUserSettings>, prev)
+          setPreferencesState(
+            normalizePreferences(storedSettings as Partial<AccessibilityUserSettings>, defaults)
           );
         }
       } catch (error) {
@@ -146,7 +163,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     return () => {
       mounted = false;
     };
-  }, [normalizePreferences]);
+  }, [defaults, normalizePreferences]);
 
   useEffect(() => {
     if (!hasHydratedSettings || hasStoredPreferences || hasUserInteraction) return;
@@ -200,10 +217,31 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     [features.textScaling]
   );
 
+  const setThemeMode = useCallback(
+    (mode: ThemeMode) => {
+      if (features.theming === false || !isThemeMode(mode)) return;
+      setHasUserInteraction(true);
+      setPreferencesState((prev) => ({ ...prev, themeMode: mode }));
+    },
+    [features.theming]
+  );
+
   const resetPreferences = useCallback(() => {
     setHasUserInteraction(true);
     setPreferencesState(defaults);
   }, [defaults]);
+
+  const resolvedThemeMode = features.theming
+    ? resolveThemeMode(preferences.themeMode, systemColorScheme)
+    : 'light';
+  const configuredThemePalettes = useMemo(
+    () => resolveThemePalettes(globalSettings),
+    [globalSettings]
+  );
+  const themeColors = features.theming ? configuredThemePalettes[resolvedThemeMode] : lightColors;
+  const textScaleMultiplier = features.textScaling
+    ? getTextScaleMultiplier(preferences.textScaleLevel)
+    : 1;
 
   const accessibility = useMemo<AccessibilityContextValue>(() => {
     const isBoldTextEnabled =
@@ -217,10 +255,6 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     const isReduceTransparencyEnabled =
       systemAccessibility.isReduceTransparencyEnabled ||
       (features.reduceTransparency && preferences.reduceTransparencyEnabled);
-    const textScaleMultiplier = features.textScaling
-      ? getTextScaleMultiplier(preferences.textScaleLevel)
-      : 1;
-
     return {
       ...systemAccessibility,
       defaults,
@@ -228,26 +262,36 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
       isBoldTextEnabled,
       isGrayscaleEnabled,
       isHighContrastEnabled: features.highContrast && preferences.highContrastEnabled,
+      isHydrated: hasHydratedSettings,
       isReadAloudEnabled: features.readAloud && preferences.readAloudEnabled,
       isReduceMotionEnabled,
       isReduceTransparencyEnabled,
       preferences,
+      resolvedThemeMode,
       resetPreferences,
       setPreference,
       setPreferences,
       setTextScaleLevel,
+      setThemeMode,
       system: systemAccessibility,
+      themeColors,
+      themeMode: preferences.themeMode,
       textScaleMultiplier
     };
   }, [
     defaults,
     features,
+    hasHydratedSettings,
     preferences,
     resetPreferences,
     setPreference,
     setPreferences,
     setTextScaleLevel,
-    systemAccessibility
+    setThemeMode,
+    systemAccessibility,
+    resolvedThemeMode,
+    themeColors,
+    textScaleMultiplier
   ]);
 
   return (

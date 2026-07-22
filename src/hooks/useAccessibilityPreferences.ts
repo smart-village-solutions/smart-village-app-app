@@ -1,8 +1,12 @@
 import { useCallback, useContext, useMemo } from 'react';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { ACCESSIBILITY_FEATURE_BY_PREFERENCE } from '../helpers';
-import { AccessibilityTogglePreferenceKey, AccessibilityUserSettings } from '../types';
+import { isThemeMode } from '../config/colors';
+import { ACCESSIBILITY_FEATURE_BY_PREFERENCE } from '../helpers/accessibilitySettingsHelper';
+import {
+  AccessibilityTogglePreferenceKey,
+  AccessibilityUserSettings
+} from '../types/Accessibility';
 
 export const useAccessibilityPreferences = () => {
   const {
@@ -12,9 +16,13 @@ export const useAccessibilityPreferences = () => {
     isHighContrastEnabled,
     preferences,
     resetPreferences,
+    resolvedThemeMode,
     setPreference,
     setPreferences,
     setTextScaleLevel,
+    setThemeMode,
+    themeColors,
+    themeMode,
     textScaleMultiplier
   } = useContext(AccessibilityContext);
 
@@ -53,6 +61,13 @@ export const useAccessibilityPreferences = () => {
           return acc;
         }
 
+        if (key === 'themeMode') {
+          if (features.theming && isThemeMode(value)) {
+            acc.themeMode = value;
+          }
+          return acc;
+        }
+
         const typedKey = key as AccessibilityTogglePreferenceKey;
         if (isPreferenceAvailable(typedKey) && typeof value === 'boolean') {
           acc[typedKey] = value;
@@ -62,7 +77,7 @@ export const useAccessibilityPreferences = () => {
 
       setPreferences(filteredValues);
     },
-    [isPreferenceAvailable, isTextScalingAvailable, setPreferences]
+    [features.theming, isPreferenceAvailable, isTextScalingAvailable, setPreferences]
   );
 
   return {
@@ -73,14 +88,22 @@ export const useAccessibilityPreferences = () => {
     isHighContrastEnabled,
     isPreferenceAvailable,
     isTextScalingAvailable,
+    isThemingAvailable: features.theming !== false,
     preferences,
     resetPreferences,
+    resolvedThemeMode,
     setPreference: togglePreference,
     setPreferences: updatePreferences,
     setTextScaleLevel: (level: number) => {
       if (!isTextScalingAvailable) return;
       setTextScaleLevel(level);
     },
+    setThemeMode: (mode: AccessibilityUserSettings['themeMode']) => {
+      if (features.theming === false) return;
+      setThemeMode(mode);
+    },
+    themeColors,
+    themeMode,
     textScaleMultiplier
   };
 };

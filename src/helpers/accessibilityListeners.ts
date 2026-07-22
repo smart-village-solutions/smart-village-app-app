@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
-import { AccessibilitySystemState } from '../types';
+import { AccessibilitySystemState } from '../types/Accessibility';
 
 // for detailed information: https://reactnative.dev/docs/accessibilityinfo#addeventlistener
 export const accessibilityListeners = (
