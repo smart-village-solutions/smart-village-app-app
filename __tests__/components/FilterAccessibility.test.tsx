@@ -1,8 +1,13 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
-jest.mock('react-native-collapsible', () => ({ children }) => children);
+jest.mock(
+  'react-native-collapsible',
+  () =>
+    ({ children }) =>
+      children
+);
 
 jest.mock('react-native-elements', () => {
   const ReactLocal = require('react');
@@ -80,6 +85,8 @@ jest.mock('../../src/components/filter/FilterComponent', () => ({
 }));
 
 import { Filter } from '../../src/components/filter/Filter';
+import { darkColors } from '../../src/config/colors';
+import { ThemeContext } from '../../src/ThemeContext';
 
 const renderWithAct = (component: React.ReactElement) => {
   let testRenderer: renderer.ReactTestRenderer;
@@ -109,9 +116,9 @@ describe('Filter accessibility', () => {
       toggleButton.props.onPress();
     });
 
-    const closeButton = tree.root.findAllByType(TouchableOpacity).find(
-      (button) => button.props.accessibilityLabel === 'Schließen (Taste)'
-    );
+    const closeButton = tree.root
+      .findAllByType(TouchableOpacity)
+      .find((button) => button.props.accessibilityLabel === 'Schließen (Taste)');
 
     expect(closeButton).toBeDefined();
     expect(closeButton?.props.accessibilityRole).toBe('button');
@@ -121,9 +128,37 @@ describe('Filter accessibility', () => {
     });
 
     expect(
-      tree.root.findAllByType(TouchableOpacity).some(
-        (button) => button.props.accessibilityLabel === 'Schließen (Taste)'
-      )
+      tree.root
+        .findAllByType(TouchableOpacity)
+        .some((button) => button.props.accessibilityLabel === 'Schließen (Taste)')
     ).toBe(false);
+  });
+
+  it('uses the active dark background for the complete overlay surface', () => {
+    const tree = renderWithAct(
+      <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>
+        <Filter
+          filterTypes={[{ name: 'saveable', type: 'CHECKBOX' } as never]}
+          initialQueryVariables={{}}
+          isOverlay
+          queryVariables={{}}
+          setQueryVariables={jest.fn()}
+        />
+      </ThemeContext.Provider>
+    );
+
+    const toggleButton = tree.root.findAllByType(TouchableOpacity)[0];
+
+    renderer.act(() => {
+      toggleButton.props.onPress();
+    });
+
+    const overlaySurface = tree.root.find(
+      (node) =>
+        StyleSheet.flatten(node.props.style)?.backgroundColor === darkColors.background &&
+        StyleSheet.flatten(node.props.style)?.flex === 1
+    );
+
+    expect(overlaySurface).toBeDefined();
   });
 });
