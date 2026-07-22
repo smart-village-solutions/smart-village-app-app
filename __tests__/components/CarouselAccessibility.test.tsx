@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('@react-navigation/native', () => ({
@@ -15,6 +15,8 @@ jest.mock('react-native-snap-carousel', () => {
 
   return ReactLocal.forwardRef((props, ref) => {
     ReactLocal.useImperativeHandle(ref, () => ({
+      snapToNext: mockSnapToNext,
+      snapToPrev: mockSnapToPrev,
       startAutoplay: jest.fn(),
       stopAutoplay: jest.fn()
     }));
@@ -22,6 +24,9 @@ jest.mock('react-native-snap-carousel', () => {
     return ReactLocal.createElement('mock-carousel', props, props.children);
   });
 });
+
+const mockSnapToNext = jest.fn();
+const mockSnapToPrev = jest.fn();
 
 jest.mock('../../src/config', () => {
   const ReactLocal = require('react');
@@ -39,6 +44,8 @@ jest.mock('../../src/config', () => {
       }
     },
     Icon: {
+      ArrowLeft: MockIcon,
+      ArrowRight: MockIcon,
       Pause: MockIcon,
       Play: MockIcon
     },
@@ -47,6 +54,8 @@ jest.mock('../../src/config', () => {
       accessibilityLabels: {
         actions: {
           pausePlayback: 'Wiedergabe pausieren',
+          nextCarouselItem: 'Nächstes Bild im Bilderkarussell',
+          previousCarouselItem: 'Vorheriges Bild im Bilderkarussell',
           startPlayback: 'Wiedergabe starten'
         }
       }
@@ -113,7 +122,18 @@ const renderWithAct = (component: React.ReactElement) => {
   return testRenderer!;
 };
 
-const wrapWithContexts = (element: React.ReactElement) => (
+type CarouselSettings = {
+  sliderPauseButton?: { show?: boolean; size?: number };
+  sliderSettings?: { showNavigationButtons?: boolean };
+};
+
+const wrapWithContexts = (
+  element: React.ReactElement,
+  settings: CarouselSettings = {
+    sliderPauseButton: { show: true },
+    sliderSettings: { showNavigationButtons: true }
+  }
+) => (
   <AccessibilityContext.Provider
     value={{
       defaults: {
@@ -175,11 +195,7 @@ const wrapWithContexts = (element: React.ReactElement) => (
         <SettingsContext.Provider
           value={{
             globalSettings: {
-              settings: {
-                sliderPauseButton: {
-                  show: true
-                }
-              }
+              settings
             }
           }}
         >
@@ -191,6 +207,11 @@ const wrapWithContexts = (element: React.ReactElement) => (
 );
 
 describe('Carousel accessibility', () => {
+  beforeEach(() => {
+    mockSnapToNext.mockClear();
+    mockSnapToPrev.mockClear();
+  });
+
   it('adds button semantics to the images carousel pause control', () => {
     const tree = renderWithAct(
       wrapWithContexts(
@@ -201,10 +222,94 @@ describe('Carousel accessibility', () => {
       )
     );
 
-    const button = tree.root.findByType(TouchableOpacity);
+    const button = tree.root
+      .findAllByType(TouchableOpacity)
+      .find((item) => item.props.accessibilityLabel === 'Wiedergabe pausieren (Taste)');
 
-    expect(button.props.accessibilityRole).toBe('button');
-    expect(button.props.accessibilityLabel).toBe('Wiedergabe pausieren (Taste)');
+    expect(button?.props.accessibilityRole).toBe('button');
+    expect(button?.props.accessibilityLabel).toBe('Wiedergabe pausieren (Taste)');
+    expect(StyleSheet.flatten(button?.props.style)).toEqual(
+      expect.objectContaining({ borderRadius: 50, padding: 12.5 })
+    );
+  });
+
+  it('offers tap controls as an alternative to swiping the images carousel', () => {
+    const tree = renderWithAct(
+      wrapWithContexts(
+        <ImagesCarousel
+          data={[{ picture: { url: 'https://example.com/1.jpg' } }, { picture: { url: 'x' } }]}
+          navigation={{}}
+        />
+      )
+    );
+
+    const buttons = tree.root.findAllByType(TouchableOpacity);
+    const previousButton = buttons.find(
+      (item) =>
+        item.props.accessibilityLabel === 'Vorheriges Bild im Bilderkarussell (Taste)'
+    );
+    const nextButton = buttons.find(
+      (item) => item.props.accessibilityLabel === 'Nächstes Bild im Bilderkarussell (Taste)'
+    );
+
+    expect(previousButton?.props.accessibilityRole).toBe('button');
+    expect(nextButton?.props.accessibilityRole).toBe('button');
+    expect(buttons.map((item) => item.props.accessibilityLabel)).toEqual([
+      'Vorheriges Bild im Bilderkarussell (Taste)',
+      'Wiedergabe pausieren (Taste)',
+      'Nächstes Bild im Bilderkarussell (Taste)'
+    ]);
+
+    renderer.act(() => previousButton?.props.onPress());
+    renderer.act(() => nextButton?.props.onPress());
+
+    expect(mockSnapToPrev).toHaveBeenCalledTimes(1);
+    expect(mockSnapToNext).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the existing pause button size for all images carousel controls', () => {
+    const tree = renderWithAct(
+      wrapWithContexts(
+        <ImagesCarousel
+          data={[{ picture: { url: 'https://example.com/1.jpg' } }, { picture: { url: 'x' } }]}
+          navigation={{}}
+        />,
+        {
+          sliderPauseButton: { show: true, size: 32 },
+          sliderSettings: { showNavigationButtons: true }
+        }
+      )
+    );
+
+    const controlStyles = tree.root
+      .findAllByType(TouchableOpacity)
+      .map((item) => StyleSheet.flatten(item.props.style));
+
+    expect(controlStyles).toHaveLength(3);
+    expect(controlStyles).toEqual([
+      expect.objectContaining({ borderRadius: 64, padding: 16 }),
+      expect.objectContaining({ borderRadius: 64, padding: 16 }),
+      expect.objectContaining({ borderRadius: 64, padding: 16 })
+    ]);
+  });
+
+  it('hides the images carousel navigation buttons by default', () => {
+    const tree = renderWithAct(
+      wrapWithContexts(
+        <ImagesCarousel
+          data={[{ picture: { url: 'https://example.com/1.jpg' } }, { picture: { url: 'x' } }]}
+          navigation={{}}
+        />,
+        { sliderPauseButton: { show: true }, sliderSettings: {} }
+      )
+    );
+
+    const labels = tree.root
+      .findAllByType(TouchableOpacity)
+      .map((item) => item.props.accessibilityLabel);
+
+    expect(labels).not.toContain('Vorheriges Bild im Bilderkarussell (Taste)');
+    expect(labels).not.toContain('Nächstes Bild im Bilderkarussell (Taste)');
   });
 
   it('adds button semantics to the media carousel pause control', () => {

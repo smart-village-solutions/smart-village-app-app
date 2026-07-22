@@ -10,7 +10,7 @@ import React, { memo, useContext, useMemo } from 'react';
 import HTML, {
   defaultHTMLElementModels,
   IMGElement,
-  useIMGElementProps,
+  useIMGElementProps
 } from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
@@ -128,7 +128,9 @@ const isAccessibilityEmptyParagraph = (domNode) => {
     return false;
   }
 
-  const normalizedTextContent = textContent(domNode).replace(/\u00A0/g, ' ').trim();
+  const normalizedTextContent = textContent(domNode)
+    .replace(/\u00A0/g, ' ')
+    .trim();
 
   return normalizedTextContent.length === 0 && !hasMeaningfulNonTextNode(domNode);
 };
@@ -149,17 +151,19 @@ const mergeNativeProps = (baseNativeProps, additionalNativeProps) => ({
   ...(additionalNativeProps || {})
 });
 
-const getListNativeProps = (role, model, accessible = true) => (tnode, preGeneratedProps = {}) => {
-  const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+const getListNativeProps =
+  (role, model, accessible = true) =>
+  (tnode, preGeneratedProps = {}) => {
+    const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
 
-  return {
-    ...modelProps,
-    native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
-      accessible,
-      accessibilityRole: role
-    })
+    return {
+      ...modelProps,
+      native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
+        accessible,
+        accessibilityRole: role
+      })
+    };
   };
-};
 
 const htmlElementModels = {
   p: defaultHTMLElementModels.p.extend((model) => ({
@@ -262,10 +266,7 @@ export const HtmlView = memo(
         ),
       [isBoldTextEnabled, tagsStyles, textScaleMultiplier]
     );
-    const defaultTextProps = useMemo(
-      () => ({ allowFontScaling: true, selectable }),
-      [selectable]
-    );
+    const defaultTextProps = useMemo(() => ({ allowFontScaling: true, selectable }), [selectable]);
 
     let calculatedWidth =
       width !== undefined
@@ -279,7 +280,7 @@ export const HtmlView = memo(
 
     const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
-    if (!html.match(HTML_REGEX)) {
+    if (!html?.match(HTML_REGEX)) {
       return (
         <RegularText big={big} selectable={selectable}>
           {html}

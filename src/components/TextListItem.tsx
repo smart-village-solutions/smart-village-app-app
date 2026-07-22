@@ -34,6 +34,7 @@ export type ItemData = {
 };
 
 type Props = {
+  accessibilityLabel?: string;
   containerStyle?: ViewStyle;
   imageContainerStyle?: ViewStyle;
   imageStyle?: ImageStyle;
@@ -56,6 +57,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(
   ({
+    accessibilityLabel,
     containerStyle,
     imageContainerStyle,
     imageStyle,
