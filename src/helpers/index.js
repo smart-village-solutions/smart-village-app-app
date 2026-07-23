@@ -6,6 +6,7 @@ export * from './wallet';
 
 export * from './accessibilityListeners';
 export * from './addressHelper';
+export * from './appUserContentHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';
 export * from './cameraHelper';
