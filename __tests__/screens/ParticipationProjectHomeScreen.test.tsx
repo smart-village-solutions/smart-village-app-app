@@ -86,10 +86,9 @@ jest.mock('../../src/config', () => ({
 
 jest.mock('../../src/helpers', () => ({
   subtitle: jest.fn((...parts) => parts.filter(Boolean).join(' | ')),
-  getParticipationProjectDatePrefix: jest.fn(),
+  getParticipationProjectPreviewDate: jest.fn(),
   mainImageOfMediaContents: jest.fn(),
   matomoTrackingString: jest.fn((parts) => parts.join(' / ')),
-  momentFormatUtcToLocal: jest.fn(),
   removeHtml: jest.fn((value) => value),
   trimNewLines: jest.fn((value) => value)
 }));

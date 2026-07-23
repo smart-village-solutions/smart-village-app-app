@@ -15,7 +15,7 @@ import {
 import { removeHtml, trimNewLines } from '../htmlViewHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
-import { getParticipationProjectDatePrefix } from '../participationProjectHelper';
+import { getParticipationProjectPreviewDate } from '../participationProjectHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
 
@@ -40,17 +40,6 @@ const normalizeParticipationProjectText = (text) =>
 
 const getParticipationProjectSubtitle = (genericItem) =>
   normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);
-
-const getParticipationProjectListDate = (genericItem) => {
-  const date = genericItem.dates?.[0];
-  const dateStart = date?.dateStart;
-
-  if (!dateStart) return;
-
-  return [getParticipationProjectDatePrefix(date), momentFormatUtcToLocal(dateStart)]
-    .filter(Boolean)
-    .join(' ');
-};
 
 /* eslint-disable complexity */
 export const filterGenericItems = (item, queryVariables, filterTypes) => {
@@ -140,7 +129,7 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
       id: genericItem.id,
       categories: genericItem.categories,
       overtitle: isParticipationProject
-        ? subtitle(getParticipationProjectListDate(genericItem), genericItem.payload?.type)
+        ? subtitle(getParticipationProjectPreviewDate(genericItem), genericItem.payload?.type)
         : genericItem.genericType !== GenericType.Deadline &&
           subtitle(
             (isCarpool && genericItem?.payload?.departureDate) ||
