@@ -5,6 +5,9 @@ import { createNavigationContainerRef } from '@react-navigation/native';
  * This broad typing keeps navigation type-safe without restricting route names here.
  */
 export type RootNavigationParamList = Record<string, object | undefined>;
+type PendingNavigationAction = () => void;
+
+const pendingNavigationActions: PendingNavigationAction[] = [];
 
 /**
  * Global navigation ref passed to <NavigationContainer>.
@@ -12,3 +15,27 @@ export type RootNavigationParamList = Record<string, object | undefined>;
  * even before nested navigator state is registered in the parent state tree.
  */
 export const navigationRef = createNavigationContainerRef<RootNavigationParamList>();
+
+export const runWhenNavigationReady = (action: PendingNavigationAction) => {
+  if (navigationRef.isReady()) {
+    action();
+    return;
+  }
+
+  pendingNavigationActions.push(action);
+};
+
+export const flushPendingNavigationActions = () => {
+  if (!navigationRef.isReady()) {
+    return;
+  }
+
+  while (pendingNavigationActions.length > 0) {
+    try {
+      pendingNavigationActions.shift()?.();
+    } catch (error) {
+      // Keep draining the queue so one bad action does not block later navigations.
+      console.error('[navigationRef] queued navigation action failed', error);
+    }
+  }
+};

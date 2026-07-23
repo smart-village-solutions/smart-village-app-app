@@ -30,4 +30,5 @@ export * from './TimeHooks';
 export * from './versionCheck';
 export * from './voucherHooks';
 export * from './waste';
+export * from './wasteReminderSync';
 export * from './waterTemperature';

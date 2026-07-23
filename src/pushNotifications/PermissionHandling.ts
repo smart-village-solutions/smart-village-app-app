@@ -1,19 +1,26 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Alert, Linking } from 'react-native';
+import { Alert, DeviceEventEmitter, Linking } from 'react-native';
 
 import { colors, device, texts } from '../config';
 import { parseColorToHex } from '../helpers/colorHelper';
 import { addToStore, readFromStore } from '../helpers/storageHelper';
 
-import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
+import {
+  getPushTokenFromStorage,
+  handleIncomingToken,
+  PushNotificationStorageKeys
+} from './TokenHandling';
+import { clearWasteReminderLocalNotifications } from './WasteReminderLocalNotifications';
 
 const PermissionStatus = {
   DENIED: 'denied',
   GRANTED: 'granted',
   UNDETERMINED: 'undetermined'
 };
+
+export const PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT = 'pushNotificationPermissionChanged';
 
 export const getInAppPermission = async (): Promise<boolean> => {
   return (await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)) ?? false;
@@ -34,7 +41,16 @@ export const setInAppPermission = async (newValue: boolean) => {
     const successfullyHandled = await handleIncomingToken(token);
 
     if (successfullyHandled) {
+      if (!newValue) {
+        try {
+          await clearWasteReminderLocalNotifications();
+        } catch (error) {
+          console.warn('An error occurred while clearing local waste reminder notifications:', error);
+        }
+      }
+
       addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
+      DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, newValue);
     }
 
     return successfullyHandled;
@@ -52,6 +68,84 @@ const registerForPushNotificationsAsync = async () => {
   return token;
 };
 
+const ensureDefaultNotificationChannel = async () => {
+  if (device.platform === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: __DEV__
+        ? Notifications.AndroidImportance.HIGH
+        : Notifications.AndroidImportance.DEFAULT,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
+    });
+  }
+};
+
+const hasGrantedNotificationPermission = (
+  settings: Notifications.NotificationPermissionsStatus
+) => {
+  return (
+    settings.granted ||
+    settings.status === PermissionStatus.GRANTED ||
+    settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+  );
+};
+
+export const getLocalNotificationPermission = async (): Promise<boolean> => {
+  await ensureDefaultNotificationChannel();
+
+  if (!__DEV__ && !Device.isDevice) {
+    return false;
+  }
+
+  const settings = await Notifications.getPermissionsAsync();
+
+  return hasGrantedNotificationPermission(settings);
+};
+
+export const requestLocalNotificationPermission = async (): Promise<boolean> => {
+  await ensureDefaultNotificationChannel();
+
+  if (!__DEV__ && !Device.isDevice) {
+    return false;
+  }
+
+  const existingSettings = await Notifications.getPermissionsAsync();
+
+  if (hasGrantedNotificationPermission(existingSettings)) {
+    return true;
+  }
+
+  const requestedSettings = await Notifications.requestPermissionsAsync();
+
+  return hasGrantedNotificationPermission(requestedSettings);
+};
+
+export const ensurePushNotificationToken = async () => {
+  const storedToken = await getPushTokenFromStorage();
+
+  if (storedToken) {
+    return storedToken;
+  }
+
+  if (!Device.isDevice) {
+    return undefined;
+  }
+
+  await ensureDefaultNotificationChannel();
+
+  const { status } = await Notifications.getPermissionsAsync();
+
+  if (status !== PermissionStatus.GRANTED) {
+    return undefined;
+  }
+
+  const token = await registerForPushNotificationsAsync();
+  const successfullyHandled = await handleIncomingToken(token);
+
+  return successfullyHandled ? token : undefined;
+};
+
 export const handleSystemPermissions = async (
   shouldSetInAppPermission = true
 ): Promise<boolean> => {
@@ -60,14 +154,7 @@ export const handleSystemPermissions = async (
     return false;
   }
 
-  if (device.platform === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.DEFAULT,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
-    });
-  }
+  await ensureDefaultNotificationChannel();
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;

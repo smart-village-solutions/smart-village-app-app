@@ -38,7 +38,9 @@ export const FloatingButton = ({
   // `navigationRef.getCurrentRoute()` traverses the full navigation tree via the
   // root NavigationContainer ref and always returns the focused leaf route.
   useNavigationState((state: NavigationState | PartialState<NavigationState>) => state);
-  const activeRouteName = navigationRef.getCurrentRoute()?.name ?? '';
+  const activeRouteName = navigationRef.isReady()
+    ? navigationRef.getCurrentRoute()?.name ?? ''
+    : '';
   const positionStyle = useMemo(
     () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
     [bottomOffset, navigationType]

@@ -19,16 +19,11 @@ import {
   Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
-import {
-  graphqlFetchPolicy,
-  queryVariablesFromQuery,
-  rootRouteName,
-  routeNameFromQuery
-} from '../helpers';
+import { graphqlFetchPolicy } from '../helpers';
+import { homeSectionKeyExtractor } from '../helpers/homeSectionKeyExtractor';
 import {
   useMatomoTrackScreenView,
   usePermanentFilter,
-  usePushNotifications,
   useRedeemLocalVouchers,
   useVersionCheck
 } from '../hooks';
@@ -36,7 +31,7 @@ import {
   HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT,
   HOME_REFRESH_EVENT
 } from '../hooks/HomeRefresh';
-import { QUERY_TYPES, getQueryType } from '../queries';
+import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
@@ -258,39 +253,6 @@ export const HomeScreen = ({ navigation, route }) => {
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { widgets: widgetStyle } = appDesignSystem;
 
-  const interactionHandler = useCallback(
-    (response) => {
-      const data = response?.notification?.request?.content?.data || {};
-      const { id, query_type: queryType, title } = data;
-      const query = queryType ? getQueryType(queryType) : undefined;
-      const name = routeNameFromQuery(query);
-      const queryVariables = queryVariablesFromQuery(query, data);
-
-      if (id && name && query) {
-        // navigate to the referenced item
-        navigation.navigate({
-          name,
-          params: {
-            details: null,
-            query,
-            queryVariables,
-            rootRouteName: rootRouteName(query),
-            shareContent: null,
-            title: title || texts.detailTitles[query]
-          }
-        });
-      }
-    },
-    [navigation]
-  );
-
-  usePushNotifications(
-    undefined,
-    interactionHandler,
-    undefined,
-    globalSettings?.settings?.pushNotifications
-  );
-
   useVersionCheck();
   useRedeemLocalVouchers();
 
@@ -458,6 +420,7 @@ export const HomeScreen = ({ navigation, route }) => {
             tintColor={colors.refreshControl}
           />
         }
+        keyExtractor={homeSectionKeyExtractor}
         renderItem={renderItem}
       />
     </SafeAreaViewFlex>

@@ -1225,6 +1225,11 @@ export const texts = {
     }
   },
   settingsScreen: {
+    resetPersistentCaches: 'Persistente Caches zurücksetzen',
+    resetPersistentCachesAbort: 'Abbrechen',
+    resetPersistentCachesConfirm: 'Zurücksetzen',
+    resetPersistentCachesContent: 'Sollen die persistenten Caches zurückgesetzt werden?',
+    resetPersistentCachesError: 'Persistente Caches konnten nicht zurückgesetzt werden.',
     intro: ''
   },
   settingsTitles: {
@@ -1810,13 +1815,22 @@ export const texts = {
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',
     location: 'Ortschaft',
+    localReminderCoverageNotificationBody:
+      'Bitte öffne die App, um Abfalltermine und Erinnerungen zu synchronisieren.',
+    localReminderCoverageNotificationTitle: 'Abfallkalender aktualisieren',
+    localReminderNotificationTitle: 'Abfallkalender',
     myLocation: 'Meine Straße',
     notifications: 'Benachrichtigungen',
+    notificationsDisabledHint:
+      'Die Push-Benachrichtigungen sind in den App-Einstellungen deaktiviert. Daher werden auch keine Push-Benachrichtigungen für die Abfallarten gesendet.',
     notificationsOn: 'Benachrichtigungen an',
+    notificationSettingsLink: 'Zu den App-Einstellungen',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     oneDayBefore: '1 Tag vorher',
-    reminder: 'Erinnerungen',
+    xDaysBefore: 'Tage vorher',
+    reminder: 'Erinnerung',
+    reminders: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     sameDay: 'selber Tag',
     save: 'Änderungen speichern',
