@@ -17,10 +17,9 @@ import {
 import { colors, consts, normalize, texts } from '../../config';
 import {
   subtitle as formatSubtitle,
-  getParticipationProjectDatePrefix,
+  getParticipationProjectPreviewDate,
   mainImageOfMediaContents,
   matomoTrackingString,
-  momentFormatUtcToLocal,
   removeHtml,
   trimNewLines
 } from '../../helpers';
@@ -185,21 +184,10 @@ const getContentBlockText = (item: GenericItem) => {
 
 const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
 
-const getProjectListDate = (item: GenericItem) => {
-  const date = item.dates?.[0];
-  const dateStart = date?.dateStart;
-
-  if (!dateStart) return;
-
-  return [getParticipationProjectDatePrefix(date), momentFormatUtcToLocal(dateStart)]
-    .filter(Boolean)
-    .join(' ');
-};
-
 const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
   const type = getPayloadType(item.payload);
   const subtitle = getProjectSubtitle(item);
-  const listDate = getProjectListDate(item);
+  const listDate = getParticipationProjectPreviewDate(item);
 
   const overtitle = formatSubtitle(listDate, type);
 

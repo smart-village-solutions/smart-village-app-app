@@ -68,6 +68,19 @@ export const normalizeParticipationProjectValue = (value?: unknown) => {
 
 export const PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX = 'ab';
 
+const getParticipationProjectCalendarDate = (value?: unknown) => {
+  const date = normalizeParticipationProjectValue(value);
+
+  return date?.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || date;
+};
+
+const isParticipationProjectDateRange = (date?: SVA_Date) => {
+  const dateStart = getParticipationProjectCalendarDate(date?.dateStart || date?.dateFrom);
+  const dateEnd = getParticipationProjectCalendarDate(date?.dateEnd || date?.dateTo);
+
+  return !!dateStart && !!dateEnd && dateStart !== dateEnd;
+};
+
 export const getParticipationProjectDatePrefix = (date?: SVA_Date) => {
   const timeDescription = normalizeParticipationProjectValue(date?.timeDescription)?.toLowerCase();
 
@@ -75,6 +88,12 @@ export const getParticipationProjectDatePrefix = (date?: SVA_Date) => {
     ? PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX
     : undefined;
 };
+
+export const getParticipationProjectListDatePrefix = (date?: SVA_Date) =>
+  getParticipationProjectDatePrefix(date) ||
+  (isParticipationProjectDateRange(date)
+    ? PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX
+    : undefined);
 
 export const normalizeParticipationProjectTags = (tags?: string[] | string) => {
   if (Array.isArray(tags)) {
@@ -134,13 +153,13 @@ const normalizeParticipationProjectPreviewText = (text?: string) =>
 export const getParticipationProjectPreviewSubtitle = (item: ParticipationProject) =>
   normalizeParticipationProjectPreviewText(item.contentBlocks?.[0]?.body);
 
-export const getParticipationProjectPreviewDate = (item: ParticipationProject) => {
+export const getParticipationProjectPreviewDate = (item: Pick<ParticipationProject, 'dates'>) => {
   const date = item.dates?.[0];
   const dateStart = date?.dateStart;
 
   if (!dateStart) return;
 
-  return [getParticipationProjectDatePrefix(date), momentFormatUtcToLocal(dateStart)]
+  return [getParticipationProjectListDatePrefix(date), momentFormatUtcToLocal(dateStart)]
     .filter(Boolean)
     .join(' ');
 };
