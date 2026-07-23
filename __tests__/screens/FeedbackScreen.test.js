@@ -253,10 +253,14 @@ describe('FeedbackScreen diagnostic payload', () => {
     });
   });
 
-  it('adds scheduled notifications beside unchanged appInfo', async () => {
+  it('adds minimized waste push diagnostics beside unchanged appInfo', async () => {
     const settings = { includeScheduledNotifications: true };
     const deviceInfo = {
-      scheduledNotifications: [{ identifier: 'one', content: {}, trigger: null }]
+      wastePushDiagnostics: {
+        schemaVersion: 1,
+        push: { token: { present: true } },
+        scheduling: { nativeWasteNotificationCount: 1 }
+      }
     };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
     mockFormData.includeDiagnosticInformation = true;
@@ -270,12 +274,12 @@ describe('FeedbackScreen diagnostic payload', () => {
   it('forwards both flags and submits only once', async () => {
     const settings = {
       includeSystemInformation: true,
-      includeScheduledNotifications: true
+      includeWastePushDiagnostics: true
     };
     const deviceInfo = {
       device: {},
       operatingSystem: {},
-      scheduledNotifications: []
+      wastePushDiagnostics: { schemaVersion: 1 }
     };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
     mockFormData.includeDiagnosticInformation = true;
@@ -288,13 +292,47 @@ describe('FeedbackScreen diagnostic payload', () => {
   });
 
   it('sends a stable collector failure status', async () => {
-    const deviceInfo = { collectionStatus: { scheduledNotifications: 'failed' } };
+    const deviceInfo = { collectionStatus: { wastePushDiagnostics: 'failed' } };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
     mockFormData.includeDiagnosticInformation = true;
 
     await renderAndSubmit({ includeScheduledNotifications: true });
 
     expect(sentPayload()).toEqual({ ...basePayload, deviceInfo });
+  });
+
+  it('never serializes forbidden diagnostic fixtures into GraphQL content', async () => {
+    const forbidden = [
+      'private-token',
+      'Private Street 12',
+      'Private notification title',
+      'Private notification body',
+      'raw-notification-id',
+      'raw-reminder-key'
+    ];
+    mockCollectDeviceInfo.mockResolvedValue({
+      wastePushDiagnostics: {
+        schemaVersion: 1,
+        push: { token: { present: true, ownerState: 'matches-current-token' } },
+        scheduling: { nativeWasteNotificationCount: 1 }
+      }
+    });
+    mockFormData.includeDiagnosticInformation = true;
+
+    await renderAndSubmit({
+      includeWastePushDiagnostics: true,
+      diagnosticSourceFixtures: {
+        token: forbidden[0],
+        street: forbidden[1],
+        title: forbidden[2],
+        body: forbidden[3],
+        identifier: forbidden[4],
+        reminderKey: forbidden[5]
+      }
+    });
+
+    const serializedContent = mockCreateAppUserContent.mock.calls[0][0].variables.content;
+    forbidden.forEach((value) => expect(serializedContent).not.toContain(value));
   });
 
   it('does not collect or submit without consent', async () => {

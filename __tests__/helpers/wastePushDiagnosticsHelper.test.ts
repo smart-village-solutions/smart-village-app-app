@@ -1,0 +1,334 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Calendar from 'expo-calendar';
+import { Camera } from 'expo-camera';
+import * as Location from 'expo-location';
+import * as MediaLibrary from 'expo-media-library';
+import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
+
+import { collectWastePushDiagnostics } from '../../src/helpers/wastePushDiagnosticsHelper';
+import { getInAppPermission } from '../../src/pushNotifications/PermissionHandling';
+import { getPushTokenFromStorage } from '../../src/pushNotifications/TokenHandling';
+import { getWasteReminderOwnerKey } from '../../src/pushNotifications/WasteReminderLocalStorage';
+
+jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn() }));
+jest.mock('expo-calendar', () => ({
+  getCalendarPermissionsAsync: jest.fn(),
+  getRemindersPermissionsAsync: jest.fn(),
+  requestCalendarPermissionsAsync: jest.fn(),
+  requestRemindersPermissionsAsync: jest.fn()
+}));
+jest.mock('expo-camera', () => ({
+  Camera: {
+    getCameraPermissionsAsync: jest.fn(),
+    getMicrophonePermissionsAsync: jest.fn(),
+    requestCameraPermissionsAsync: jest.fn(),
+    requestMicrophonePermissionsAsync: jest.fn()
+  }
+}));
+jest.mock('expo-location', () => ({
+  getForegroundPermissionsAsync: jest.fn(),
+  getBackgroundPermissionsAsync: jest.fn(),
+  requestForegroundPermissionsAsync: jest.fn(),
+  requestBackgroundPermissionsAsync: jest.fn()
+}));
+jest.mock('expo-media-library', () => ({
+  getPermissionsAsync: jest.fn(),
+  requestPermissionsAsync: jest.fn()
+}));
+jest.mock('expo-notifications', () => ({
+  getPermissionsAsync: jest.fn(),
+  getNotificationChannelAsync: jest.fn(),
+  getAllScheduledNotificationsAsync: jest.fn(),
+  requestPermissionsAsync: jest.fn()
+}));
+jest.mock('../../src/pushNotifications/PermissionHandling', () => ({
+  getInAppPermission: jest.fn()
+}));
+jest.mock('../../src/pushNotifications/TokenHandling', () => ({
+  getPushTokenFromStorage: jest.fn()
+}));
+jest.mock('../../src/pushNotifications/WasteReminderLocalStorage', () => ({
+  WASTE_REMINDER_LOCAL_STORAGE_KEY: 'WASTE_REMINDER_LOCAL_STATE',
+  getWasteReminderOwnerKey: jest.fn()
+}));
+const permission = (status = 'granted') => ({
+  status,
+  granted: status === 'granted',
+  canAskAgain: status !== 'denied',
+  expires: 'never'
+});
+
+describe('collectWastePushDiagnostics', () => {
+  const originalPlatform = Platform.OS;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: originalPlatform });
+    [
+      Notifications.getPermissionsAsync,
+      Location.getForegroundPermissionsAsync,
+      Location.getBackgroundPermissionsAsync,
+      Camera.getCameraPermissionsAsync,
+      Camera.getMicrophonePermissionsAsync,
+      MediaLibrary.getPermissionsAsync,
+      Calendar.getCalendarPermissionsAsync,
+      Calendar.getRemindersPermissionsAsync
+    ].forEach((getter) => (getter as jest.Mock).mockResolvedValue(permission()));
+    (Notifications.getNotificationChannelAsync as jest.Mock).mockResolvedValue(undefined);
+    (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+      {
+        identifier: 'private-id',
+        content: {
+          title: 'private-title',
+          body: 'private-street',
+          data: { query_type: 'WasteAddresses', reminderKey: 'private-reminder-key' }
+        }
+      },
+      { identifier: 'other-id', content: { body: 'other-private', data: {} } }
+    ]);
+    (getInAppPermission as jest.Mock).mockResolvedValue(true);
+    (getPushTokenFromStorage as jest.Mock).mockResolvedValue('private-token');
+    (getWasteReminderOwnerKey as jest.Mock).mockResolvedValue('owner-current');
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'owner-current',
+        scheduledNotificationIds: ['private-id'],
+        scheduledReminderKeys: ['private-reminder-key'],
+        scheduling: {
+          actualCount: 1,
+          attemptCount: 1,
+          expectedCount: 1,
+          lastAttemptAt: '2026-07-23T12:00:00.000Z',
+          status: 'scheduled'
+        },
+        serverSyncPayload: {
+          activeReminderRegistrations: [
+            {
+              active: true,
+              leadDays: 1,
+              slotId: 'morning',
+              storeId: 12,
+              time: '09:00',
+              typeKey: 'paper'
+            }
+          ],
+          locationData: { street: 'private-street' },
+          notificationSettings: { paper: true },
+          reminderTime: '2026-01-01',
+          usedTypeKeys: ['paper']
+        }
+      })
+    );
+  });
+
+  it('collects passive status and only a count from scheduled notifications', async () => {
+    const result = await collectWastePushDiagnostics();
+    const serialized = JSON.stringify(result);
+
+    expect(result.permissions.notifications).toMatchObject({ status: 'granted', granted: true });
+    expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
+    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+    expect(result.scheduling.lastAttempt).toMatchObject({
+      actualCount: 1,
+      expectedCount: 1,
+      status: 'scheduled'
+    });
+    expect(result.push.token).toEqual({
+      present: true,
+      ownerState: 'matches-current-token'
+    });
+    [
+      'private-token',
+      'private-street',
+      'private-title',
+      'private-id',
+      'private-reminder-key'
+    ].forEach((value) => expect(serialized).not.toContain(value));
+    expect(Notifications.requestPermissionsAsync).not.toHaveBeenCalled();
+    expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
+    expect(Camera.requestCameraPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('isolates a denied and a rejecting permission getter', async () => {
+    (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue(permission('denied'));
+    (Camera.getMicrophonePermissionsAsync as jest.Mock).mockRejectedValue(new Error('unavailable'));
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.permissions.locationBackground).toMatchObject({
+      status: 'denied',
+      granted: false
+    });
+    expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
+    expect(result.collectionStatus.permissions).toBe('failed');
+  });
+
+  it('keeps allowlisted Android notification metadata and channel state', async () => {
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'android' });
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValue({
+      ...permission(),
+      android: { importance: 0, interruptionFilter: 2 }
+    });
+    (Notifications.getNotificationChannelAsync as jest.Mock).mockResolvedValue({
+      importance: 0,
+      enableVibrate: false,
+      bypassDnd: false,
+      sound: null
+    });
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.permissions.notifications.platformDetails).toEqual({
+      importance: 0,
+      interruptionFilter: 2
+    });
+    expect(result.push.defaultChannel).toEqual({
+      exists: true,
+      importance: 0,
+      enableVibrate: false,
+      bypassDnd: false,
+      soundConfigured: false
+    });
+    expect(result.permissions.reminders).toEqual({ status: 'unavailable', granted: false });
+  });
+
+  it('reports a missing Android channel without treating it as a collector failure', async () => {
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'android' });
+    (Notifications.getNotificationChannelAsync as jest.Mock).mockResolvedValue(null);
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.push.defaultChannel).toEqual({ exists: false });
+    expect(result.collectionStatus.pushSettings).toBeUndefined();
+  });
+
+  it('keeps allowlisted iOS notification metadata and does not query a channel', async () => {
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'ios' });
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValue({
+      ...permission(),
+      ios: {
+        status: 3,
+        allowsAlert: true,
+        allowsBadge: false,
+        allowsSound: true,
+        allowsDisplayOnLockScreen: false,
+        allowsDisplayInNotificationCenter: true,
+        alertStyle: 1
+      }
+    });
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.permissions.notifications.platformDetails).toEqual({
+      authorizationStatus: 3,
+      alert: true,
+      badge: false,
+      sound: true,
+      lockScreen: false,
+      notificationCenter: true,
+      banner: 1
+    });
+    expect(Notifications.getNotificationChannelAsync).not.toHaveBeenCalled();
+  });
+
+  it('isolates scheduled-store failure from all other sections', async () => {
+    (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockRejectedValue(
+      new Error('native store unavailable')
+    );
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.collectionStatus.scheduledStore).toBe('failed');
+    expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
+    expect(result.push.inAppEnabled).toBe(true);
+  });
+
+  it.each([
+    ['pushSettings', getInAppPermission],
+    ['tokenOwner', getPushTokenFromStorage]
+  ])('isolates a %s section failure', async (statusKey, getter) => {
+    (getter as jest.Mock).mockRejectedValue(new Error('section unavailable'));
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.collectionStatus[statusKey]).toBe('failed');
+    expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
+    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+  });
+
+  it('isolates local state failure from all other sections', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockRejectedValue(new Error('storage unavailable'));
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.collectionStatus.wasteState).toBe('failed');
+    expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
+    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+  });
+
+  it('rejects an oversized but valid diagnostic object', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'owner-current',
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncPayload: {
+          notificationSettings: {},
+          reminderTime: '2026-01-01',
+          usedTypeKeys: Array.from({ length: 5000 }, (_, index) => `type-${index}`)
+        }
+      })
+    );
+
+    await expect(collectWastePushDiagnostics()).rejects.toThrow('exceed the allowed payload size');
+  });
+
+  it('reports corrupt local state without deleting it', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue('{');
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.wasteConfiguration.localStateStatus).toBe('corrupt');
+    expect(AsyncStorage.removeItem).toBeUndefined();
+  });
+
+  it('reports missing local state and preserves token presence', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.wasteConfiguration.localStateStatus).toBe('missing');
+    expect(result.push.token).toEqual({ present: true, ownerState: 'no-local-state' });
+  });
+
+  it('allowlists persisted scheduling fields before adding them to the report', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'persisted-private-owner',
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        scheduling: {
+          actualCount: 1,
+          attemptCount: 1,
+          expectedCount: 1,
+          lastAttemptAt: '2026-07-23T12:00:00.000Z',
+          status: 'scheduled',
+          token: 'persisted-private-token',
+          locationData: { street: 'Persisted Private Street' },
+          error: { secret: 'persisted-private-error-secret' }
+        }
+      })
+    );
+
+    const serialized = JSON.stringify(await collectWastePushDiagnostics());
+
+    [
+      'persisted-private-token',
+      'persisted-private-owner',
+      'Persisted Private Street',
+      'persisted-private-error-secret'
+    ].forEach((fixture) => expect(serialized).not.toContain(fixture));
+    expect(serialized).toContain('"status":"scheduled"');
+  });
+});

@@ -22,6 +22,9 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
+const shouldIncludeWasteDiagnostics = (settings) =>
+  settings.includeScheduledNotifications === true || settings.includeWastePushDiagnostics === true;
+
 export const FeedbackScreen = ({ route }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -29,7 +32,7 @@ export const FeedbackScreen = ({ route }) => {
   const feedbackSettings = globalSettings?.settings?.feedback || {};
   const hasDiagnosticInformation =
     feedbackSettings.includeSystemInformation === true ||
-    feedbackSettings.includeScheduledNotifications === true;
+    shouldIncludeWasteDiagnostics(feedbackSettings);
   const {
     link,
     linkDescription,
@@ -58,7 +61,7 @@ export const FeedbackScreen = ({ route }) => {
     feedbackSettings.includeSystemInformation === true
       ? texts.feedbackScreen.diagnosticInformationHint
       : null,
-    feedbackSettings.includeScheduledNotifications === true
+    shouldIncludeWasteDiagnostics(feedbackSettings)
       ? texts.feedbackScreen.scheduledNotificationsInformationHint
       : null
   ]

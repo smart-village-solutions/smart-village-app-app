@@ -489,7 +489,7 @@ export const texts = {
     diagnosticInformationHint:
       'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
     scheduledNotificationsInformationHint:
-      'Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt.',
+      'Es werden zusätzlich Statusinformationen zu App-Berechtigungen, Push-Einstellungen, konfigurierten Abfall-Erinnerungen und deren lokaler Planung übermittelt. Es werden keine Inhalte, Adressen, Tokens oder Roh-IDs übertragen.',
     inputsLabel: {
       address: 'Veranstaltungsort',
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',

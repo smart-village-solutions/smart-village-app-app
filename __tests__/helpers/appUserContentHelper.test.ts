@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
 
 import { collectDeviceInfo } from '../../src/helpers/appUserContentHelper';
+import { collectWastePushDiagnostics } from '../../src/helpers/wastePushDiagnosticsHelper';
 
 const deviceValues = {
   deviceName: 'Test Phone',
@@ -35,30 +35,16 @@ jest.mock('expo-device', () => {
   return mockedDevice;
 });
 
-jest.mock('expo-notifications', () => ({
-  getAllScheduledNotificationsAsync: jest.fn()
+jest.mock('../../src/helpers/wastePushDiagnosticsHelper', () => ({
+  collectWastePushDiagnostics: jest.fn()
 }));
 
 const deviceKeys = Object.keys(deviceValues) as (keyof typeof deviceValues)[];
 const originalDescriptors = new Map(
   deviceKeys.map((key) => [key, Object.getOwnPropertyDescriptor(Device, key)])
 );
-const getAllScheduledNotificationsAsync =
-  Notifications.getAllScheduledNotificationsAsync as jest.Mock;
-
-const scheduledNotifications = [
-  {
-    identifier: 'first',
-    content: { title: 'First', data: { example: true } },
-    trigger: { type: 'date', timestamp: 123 },
-    futureExpoField: 'must not be sent'
-  },
-  {
-    identifier: 'second',
-    content: { title: 'Second' },
-    trigger: null
-  }
-];
+const wastePushDiagnostics = { schemaVersion: 1, scheduling: { nativeWasteNotificationCount: 2 } };
+const collectWastePushDiagnosticsMock = collectWastePushDiagnostics as jest.Mock;
 
 const expectNoDeviceGetterRead = () => {
   deviceKeys.forEach((key) => {
@@ -70,7 +56,7 @@ const expectNoDeviceGetterRead = () => {
 describe('collectDeviceInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getAllScheduledNotificationsAsync.mockResolvedValue(scheduledNotifications);
+    collectWastePushDiagnosticsMock.mockResolvedValue(wastePushDiagnostics);
   });
 
   afterEach(() => {
@@ -89,7 +75,7 @@ describe('collectDeviceInfo', () => {
   ])('does not collect data for inactive settings %#', async (settings) => {
     expect(await collectDeviceInfo({ settings })).toBeUndefined();
     expectNoDeviceGetterRead();
-    expect(getAllScheduledNotificationsAsync).not.toHaveBeenCalled();
+    expect(collectWastePushDiagnosticsMock).not.toHaveBeenCalled();
   });
 
   it('collects exactly the configured system information', async () => {
@@ -128,30 +114,18 @@ describe('collectDeviceInfo', () => {
       expect(result?.device).not.toHaveProperty(key);
       expect(result?.operatingSystem).not.toHaveProperty(key);
     });
-    expect(getAllScheduledNotificationsAsync).not.toHaveBeenCalled();
+    expect(collectWastePushDiagnosticsMock).not.toHaveBeenCalled();
   });
 
-  it('collects and explicitly maps scheduled notifications only', async () => {
+  it('maps the legacy scheduled-notification setting to minimized diagnostics', async () => {
     const result = await collectDeviceInfo({
       settings: { includeScheduledNotifications: true }
     });
 
     expect(result).toEqual({
-      scheduledNotifications: scheduledNotifications.map(({ identifier, content, trigger }) => ({
-        identifier,
-        content,
-        trigger
-      }))
+      wastePushDiagnostics
     });
     expectNoDeviceGetterRead();
-  });
-
-  it('keeps an empty scheduled notification list', async () => {
-    getAllScheduledNotificationsAsync.mockResolvedValue([]);
-
-    await expect(
-      collectDeviceInfo({ settings: { includeScheduledNotifications: true } })
-    ).resolves.toEqual({ scheduledNotifications: [] });
   });
 
   it('collects both independently enabled blocks', async () => {
@@ -163,13 +137,13 @@ describe('collectDeviceInfo', () => {
       expect.objectContaining({
         device: expect.any(Object),
         operatingSystem: expect.any(Object),
-        scheduledNotifications: expect.any(Array)
+        wastePushDiagnostics
       })
     );
   });
 
   it('keeps system data when scheduled notification collection fails', async () => {
-    getAllScheduledNotificationsAsync.mockRejectedValue(new Error('private native error'));
+    collectWastePushDiagnosticsMock.mockRejectedValue(new Error('private native error'));
 
     const result = await collectDeviceInfo({
       settings: { includeSystemInformation: true, includeScheduledNotifications: true }
@@ -178,7 +152,7 @@ describe('collectDeviceInfo', () => {
     expect(result).toEqual({
       device: expect.any(Object),
       operatingSystem: expect.any(Object),
-      collectionStatus: { scheduledNotifications: 'failed' }
+      collectionStatus: { wastePushDiagnostics: 'failed' }
     });
     expect(JSON.stringify(result)).not.toContain('private native error');
   });
@@ -197,11 +171,7 @@ describe('collectDeviceInfo', () => {
     });
 
     expect(result).toEqual({
-      scheduledNotifications: scheduledNotifications.map(({ identifier, content, trigger }) => ({
-        identifier,
-        content,
-        trigger
-      })),
+      wastePushDiagnostics,
       collectionStatus: { systemInformation: 'failed' }
     });
     expect(JSON.stringify(result)).not.toContain('private getter error');
@@ -215,7 +185,7 @@ describe('collectDeviceInfo', () => {
         throw new Error('private getter error');
       })
     });
-    getAllScheduledNotificationsAsync.mockRejectedValue(new Error('private native error'));
+    collectWastePushDiagnosticsMock.mockRejectedValue(new Error('private native error'));
 
     const result = await collectDeviceInfo({
       settings: { includeSystemInformation: true, includeScheduledNotifications: true }
@@ -224,7 +194,7 @@ describe('collectDeviceInfo', () => {
     expect(result).toEqual({
       collectionStatus: {
         systemInformation: 'failed',
-        scheduledNotifications: 'failed'
+        wastePushDiagnostics: 'failed'
       }
     });
     expect(JSON.stringify(result)).not.toMatch(/private|Error|stack/);

@@ -1,9 +1,11 @@
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+
+import { collectWastePushDiagnostics } from './wastePushDiagnosticsHelper';
 
 type FeedbackInformationSettings = {
   includeSystemInformation?: boolean;
   includeScheduledNotifications?: boolean;
+  includeWastePushDiagnostics?: boolean;
 };
 
 type CollectDeviceInfoArgs = {
@@ -30,16 +32,11 @@ type OperatingSystemDetails = {
   platformApiLevel: number | null;
 };
 
-type ScheduledNotificationDetails = Pick<
-  Notifications.NotificationRequest,
-  'identifier' | 'content' | 'trigger'
->;
-
 type DeviceInfo = {
   device?: DeviceDetails;
   operatingSystem?: OperatingSystemDetails;
-  scheduledNotifications?: ScheduledNotificationDetails[];
-  collectionStatus?: Partial<Record<'systemInformation' | 'scheduledNotifications', 'failed'>>;
+  wastePushDiagnostics?: Awaited<ReturnType<typeof collectWastePushDiagnostics>>;
+  collectionStatus?: Partial<Record<'systemInformation' | 'wastePushDiagnostics', 'failed'>>;
 };
 
 type SystemInformation = Pick<DeviceInfo, 'device' | 'operatingSystem'>;
@@ -65,37 +62,31 @@ const collectSystemInformation = (): SystemInformation => ({
   }
 });
 
-const collectScheduledNotifications = async (): Promise<ScheduledNotificationDetails[]> => {
-  const notifications = await Notifications.getAllScheduledNotificationsAsync();
-
-  return notifications.map(({ identifier, content, trigger }) => ({
-    identifier,
-    content,
-    trigger
-  }));
-};
-
 export const collectDeviceInfo = async (
   args: CollectDeviceInfoArgs
 ): Promise<DeviceInfo | undefined> => {
   const includeSystemInformation = args.settings?.includeSystemInformation === true;
-  const includeScheduledNotifications = args.settings?.includeScheduledNotifications === true;
+  const includeWastePushDiagnostics =
+    args.settings?.includeWastePushDiagnostics === true ||
+    args.settings?.includeScheduledNotifications === true;
 
-  if (!includeSystemInformation && !includeScheduledNotifications) {
+  if (!includeSystemInformation && !includeWastePushDiagnostics) {
     return undefined;
   }
 
-  const collectors: Promise<SystemInformation | ScheduledNotificationDetails[]>[] = [];
-  const collectorNames: ('systemInformation' | 'scheduledNotifications')[] = [];
+  const collectors: Promise<
+    SystemInformation | Awaited<ReturnType<typeof collectWastePushDiagnostics>>
+  >[] = [];
+  const collectorNames: ('systemInformation' | 'wastePushDiagnostics')[] = [];
 
   if (includeSystemInformation) {
     collectorNames.push('systemInformation');
     collectors.push(Promise.resolve().then(() => collectSystemInformation()));
   }
 
-  if (includeScheduledNotifications) {
-    collectorNames.push('scheduledNotifications');
-    collectors.push(Promise.resolve().then(() => collectScheduledNotifications()));
+  if (includeWastePushDiagnostics) {
+    collectorNames.push('wastePushDiagnostics');
+    collectors.push(Promise.resolve().then(() => collectWastePushDiagnostics()));
   }
 
   const results = await Promise.allSettled(collectors);
@@ -115,7 +106,9 @@ export const collectDeviceInfo = async (
     if (collectorName === 'systemInformation') {
       Object.assign(deviceInfo, result.value as SystemInformation);
     } else {
-      deviceInfo.scheduledNotifications = result.value as ScheduledNotificationDetails[];
+      deviceInfo.wastePushDiagnostics = result.value as Awaited<
+        ReturnType<typeof collectWastePushDiagnostics>
+      >;
     }
   });
 
