@@ -1198,9 +1198,11 @@ const ReminderSettingsPanel = ({
       <WrapperVertical style={styles.mediumPaddingVertical}>
         <RegularText big>{wasteTexts.reminders}</RegularText>
         {showNotificationSettings && scheduledWasteReminderCount !== undefined && (
-          <RegularText small placeholder>
-            {wasteTexts.scheduledWasteReminderCount(scheduledWasteReminderCount)}
-          </RegularText>
+          <WrapperVertical noPaddingBottom>
+            <RegularText small placeholder>
+              {wasteTexts.scheduledWasteReminderCount(scheduledWasteReminderCount)}
+            </RegularText>
+          </WrapperVertical>
         )}
       </WrapperVertical>
       {areWasteReminderControlsDisabled && (
