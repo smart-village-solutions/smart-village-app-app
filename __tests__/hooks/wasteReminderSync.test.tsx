@@ -4,7 +4,7 @@ import renderer, { act } from 'react-test-renderer';
 
 import { NetworkContext } from '../../src/NetworkProvider';
 import {
-  clearWasteReminderLocalStateForChangedOwner,
+  migrateWasteReminderLocalStateToCurrentOwner,
   getInAppPermission,
   getReminderSettings,
   markWasteReminderServerSyncSynced,
@@ -34,10 +34,13 @@ const mockUsedTypes = {
 let appStateListener: ((state: string) => void) | undefined;
 let permissionChangeListener: ((isEnabled: boolean) => void) | undefined;
 let manualRetryListener: (() => void) | undefined;
+let tokenChangeListener: (() => void) | undefined;
+const listenerRemovers = new Map<string, jest.Mock>();
 
 jest.mock('../../src/pushNotifications', () => ({
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT: 'pushNotificationPermissionChanged',
-  clearWasteReminderLocalStateForChangedOwner: jest.fn(async () => false),
+  PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT: 'pushNotificationTokenChanged',
+  migrateWasteReminderLocalStateToCurrentOwner: jest.fn(async () => 'unchanged'),
   getInAppPermission: jest.fn(async () => true),
   getReminderSettings: jest.fn(async () => ({ settings: [], status: 'ok' })),
   getWasteReminderOwnerKey: jest.fn(async () => 'push:current'),
@@ -52,6 +55,7 @@ jest.mock('../../src/pushNotifications', () => ({
     },
     serverSyncStatus: 'pending'
   })),
+  reportWasteReminderMaintenanceSync: jest.fn(),
   rescheduleWasteReminderNotificationsFromLocalState: jest.fn(async () => undefined),
   retryPendingWasteReminderNotificationCancellations: jest.fn(async () => undefined),
   syncWasteReminderSettingsWithServer: jest.fn(async () => ({
@@ -102,8 +106,9 @@ const flushPromises = async () => {
 };
 
 const renderHook = async () => {
+  let tree: renderer.ReactTestRenderer | undefined;
   await act(async () => {
-    renderer.create(
+    tree = renderer.create(
       <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
         <SettingsContext.Provider
           value={{
@@ -119,14 +124,29 @@ const renderHook = async () => {
       </NetworkContext.Provider>
     );
   });
+
+  return tree;
 };
 
 describe('useWasteReminderSync', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockResolvedValue('unchanged');
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      localCoverageUntil: '2026-06-09T07:00:00.000Z',
+      serverSyncPayload: {
+        activeTypes: { paper: { active: true } },
+        notificationSettings: { paper: true },
+        reminderTime: '2000-01-01T08:00:00.000Z',
+        usedTypeKeys: ['paper']
+      },
+      serverSyncStatus: 'pending'
+    });
     appStateListener = undefined;
     permissionChangeListener = undefined;
     manualRetryListener = undefined;
+    tokenChangeListener = undefined;
+    listenerRemovers.clear();
     (getInAppPermission as jest.Mock).mockResolvedValue(true);
     jest.spyOn(AppState, 'addEventListener').mockImplementation((_, listener) => {
       appStateListener = listener as (state: string) => void;
@@ -136,20 +156,24 @@ describe('useWasteReminderSync', () => {
     jest.spyOn(DeviceEventEmitter, 'addListener').mockImplementation((event, listener) => {
       if (event === 'wasteReminderManualRetry') {
         manualRetryListener = listener as () => void;
+      } else if (event === 'pushNotificationTokenChanged') {
+        tokenChangeListener = listener as () => void;
       } else {
         permissionChangeListener = listener as (isEnabled: boolean) => void;
       }
 
-      return { remove: jest.fn() };
+      const remove = jest.fn();
+      listenerRemovers.set(event, remove);
+      return { remove };
     });
   });
 
   it('serializes owner cleanup, pending server sync, and local replan when app becomes active', async () => {
     const callOrder: string[] = [];
 
-    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockImplementation(async () => {
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockImplementation(async () => {
       callOrder.push('cleanup');
-      return false;
+      return 'unchanged';
     });
     (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async () => {
       callOrder.push('sync');
@@ -174,28 +198,32 @@ describe('useWasteReminderSync', () => {
     expect(callOrder).toEqual(['cleanup', 'sync', 'mark-synced', 'replan']);
   });
 
-  it('continues maintenance after owner cleanup so current-owner state can be reconstructed', async () => {
-    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockResolvedValue(
-      'changed-and-cleared'
-    );
+  it('continues maintenance after owner migration without reconstructing from the server', async () => {
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockResolvedValue('migrated');
 
     await renderHook();
     jest.clearAllMocks();
-    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockResolvedValue(
-      'changed-and-cleared'
-    );
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockResolvedValue('migrated');
 
     await act(async () => {
       appStateListener?.('active');
     });
 
     expect(rescheduleWasteReminderNotificationsFromLocalState).toHaveBeenCalled();
+    expect(getReminderSettings).not.toHaveBeenCalled();
   });
 
   it('reconstructs only current-street records from a mixed owner response', async () => {
-    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockResolvedValue(
-      'changed-and-cleared'
-    );
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      scheduledNotificationIds: [],
+      scheduledReminderKeys: [],
+      scheduling: {
+        attemptCount: 0,
+        expectedCount: 0,
+        lastAttemptAt: '2026-07-23T10:00:00.000Z',
+        status: 'waiting-for-data'
+      }
+    });
     (getReminderSettings as jest.Mock).mockResolvedValue({
       settings: [
         {
@@ -259,6 +287,7 @@ describe('useWasteReminderSync', () => {
 
     expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
     expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+    expect(migrateWasteReminderLocalStateToCurrentOwner).not.toHaveBeenCalled();
 
     jest.clearAllMocks();
     (getInAppPermission as jest.Mock).mockResolvedValue(false);
@@ -270,14 +299,40 @@ describe('useWasteReminderSync', () => {
 
     expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
     expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+    expect(migrateWasteReminderLocalStateToCurrentOwner).not.toHaveBeenCalled();
+  });
+
+  it('stops maintenance when owner migration is deferred without a token', async () => {
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockResolvedValue(
+      'deferred-no-token'
+    );
+
+    await renderHook();
+    await flushPromises();
+
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+    expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+  });
+
+  it('keeps failed server sync pending and does not mark it synced', async () => {
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockResolvedValue({
+      serverSyncPayload: {},
+      success: false
+    });
+
+    await renderHook();
+    await flushPromises();
+
+    expect(markWasteReminderServerSyncSynced).not.toHaveBeenCalled();
+    expect(rescheduleWasteReminderNotificationsFromLocalState).toHaveBeenCalled();
   });
 
   it('syncs and replans stored waste reminders when in-app push notifications are enabled', async () => {
     const callOrder: string[] = [];
 
-    (clearWasteReminderLocalStateForChangedOwner as jest.Mock).mockImplementation(async () => {
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockImplementation(async () => {
       callOrder.push('cleanup');
-      return false;
+      return 'unchanged';
     });
     (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async () => {
       callOrder.push('sync');
@@ -322,7 +377,7 @@ describe('useWasteReminderSync', () => {
 
     await act(async () => appStateListener?.('active'));
     expect(retryPendingWasteReminderNotificationCancellations).toHaveBeenCalledTimes(1);
-    expect(clearWasteReminderLocalStateForChangedOwner).toHaveBeenCalledTimes(1);
+    expect(migrateWasteReminderLocalStateToCurrentOwner).toHaveBeenCalledTimes(1);
     expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
 
     await act(async () => {
@@ -331,6 +386,42 @@ describe('useWasteReminderSync', () => {
       await Promise.resolve();
     });
     expect(rescheduleWasteReminderNotificationsFromLocalState).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs token-change maintenance once and bypasses failed-state backoff', async () => {
+    (readWasteReminderLocalState as jest.Mock).mockResolvedValue({
+      scheduling: {
+        attemptCount: 1,
+        expectedCount: 1,
+        lastAttemptAt: '2026-07-23T10:00:00.000Z',
+        nextRetryAt: '2999-07-23T10:01:00.000Z',
+        status: 'failed'
+      },
+      serverSyncPayload: {},
+      serverSyncStatus: 'synced'
+    });
+
+    await renderHook();
+    jest.clearAllMocks();
+
+    await act(async () => {
+      tokenChangeListener?.();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(migrateWasteReminderLocalStateToCurrentOwner).toHaveBeenCalledTimes(1);
+    expect(rescheduleWasteReminderNotificationsFromLocalState).toHaveBeenCalledTimes(1);
+  });
+
+  it('removes permission, token-change, and manual retry subscriptions on unmount', async () => {
+    const tree = await renderHook();
+
+    act(() => tree?.unmount());
+
+    expect(listenerRemovers.get('pushNotificationPermissionChanged')).toHaveBeenCalledTimes(1);
+    expect(listenerRemovers.get('pushNotificationTokenChanged')).toHaveBeenCalledTimes(1);
+    expect(listenerRemovers.get('wasteReminderManualRetry')).toHaveBeenCalledTimes(1);
   });
 
   it('does not replan a scheduled state when foreground verification succeeds', async () => {

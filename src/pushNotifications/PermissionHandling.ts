@@ -188,7 +188,7 @@ export const handleSystemPermissions = async (
 };
 
 export const updatePushToken = async () => {
-  await handleSystemPermissions(false)
+  return handleSystemPermissions(false)
     .then((hasPermission) => {
       if (hasPermission) return registerForPushNotificationsAsync();
     })

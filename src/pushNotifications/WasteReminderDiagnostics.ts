@@ -19,6 +19,9 @@ export type WasteReminderDiagnostic = {
   schedulingStatus: WasteReminderSchedulingStatus;
 };
 
+export type WasteReminderOwnerMigrationOutcome = 'deferred-no-token' | 'migrated';
+export type WasteReminderMaintenanceSyncOutcome = 'failed-pending' | 'skipped-no-token' | 'synced';
+
 export const buildWasteReminderDiagnostic = ({
   actualCount,
   errorClass,
@@ -47,6 +50,22 @@ export const reportWasteReminderSchedulingTransition = (
   Sentry.captureMessage('waste_reminder_scheduling', {
     contexts: { wasteReminder: buildWasteReminderDiagnostic(input) },
     level: input.schedulingStatus === 'scheduled' ? 'info' : 'warning'
+  });
+};
+
+export const reportWasteReminderOwnerMigration = (outcome: WasteReminderOwnerMigrationOutcome) => {
+  Sentry.captureMessage('waste_reminder_owner_migration', {
+    contexts: { wasteReminder: { outcome } },
+    level: outcome === 'migrated' ? 'info' : 'debug'
+  });
+};
+
+export const reportWasteReminderMaintenanceSync = (
+  outcome: WasteReminderMaintenanceSyncOutcome
+) => {
+  Sentry.captureMessage('waste_reminder_maintenance_sync', {
+    contexts: { wasteReminder: { outcome } },
+    level: outcome === 'failed-pending' ? 'warning' : 'info'
   });
 };
 

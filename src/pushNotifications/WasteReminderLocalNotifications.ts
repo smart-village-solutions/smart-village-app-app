@@ -9,7 +9,7 @@ import {
   getWasteReminderOwnerKey,
   readWasteReminderLocalState,
   readWasteReminderPendingCancellationIds,
-  removeWasteReminderLocalState,
+  removeWasteReminderServerStoreIds,
   WasteReminderLocalState,
   WasteReminderSchedulingErrorClass,
   WasteReminderSchedulingState,
@@ -26,6 +26,7 @@ import {
 } from './WasteReminderScheduler';
 import {
   classifyWasteReminderError,
+  reportWasteReminderOwnerMigration,
   reportWasteReminderSchedulingTransition
 } from './WasteReminderDiagnostics';
 
@@ -454,34 +455,39 @@ export const storeWasteReminderSettingsWithoutScheduling = async (
   return nextState;
 };
 
-export const clearWasteReminderLocalStateForChangedOwner = async () => {
-  const localState = await readWasteReminderLocalState();
+export type WasteReminderOwnerMigrationResult = 'unchanged' | 'migrated' | 'deferred-no-token';
 
-  if (!localState) {
-    return 'unchanged' as const;
-  }
+export const migrateWasteReminderLocalStateToCurrentOwner =
+  async (): Promise<WasteReminderOwnerMigrationResult> => {
+    const localState = await readWasteReminderLocalState();
 
-  const ownerKey = await getWasteReminderOwnerKey();
+    if (!localState) {
+      return 'unchanged' as const;
+    }
 
-  if (!localState.ownerKey || localState.ownerKey === 'anonymous') {
-    await writeWasteReminderLocalState({ ...localState, ownerKey });
+    const ownerKey = await getWasteReminderOwnerKey();
 
-    return 'adopted-anonymous' as const;
-  }
+    if (ownerKey === 'anonymous') {
+      reportWasteReminderOwnerMigration('deferred-no-token');
+      return 'deferred-no-token' as const;
+    }
 
-  if (ownerKey === 'anonymous') {
-    return 'unchanged' as const;
-  }
+    if (localState.ownerKey === ownerKey) {
+      return 'unchanged' as const;
+    }
 
-  if (localState.ownerKey === ownerKey) {
-    return 'unchanged' as const;
-  }
+    await writeWasteReminderLocalState({
+      ...localState,
+      ownerKey,
+      ...(localState.serverSyncPayload
+        ? { serverSyncPayload: removeWasteReminderServerStoreIds(localState.serverSyncPayload) }
+        : {}),
+      serverSyncStatus: 'pending'
+    });
+    reportWasteReminderOwnerMigration('migrated');
 
-  await cancelNotificationsBestEffort(localState.scheduledNotificationIds).catch(() => undefined);
-  await removeWasteReminderLocalState();
-
-  return 'changed-and-cleared' as const;
-};
+    return 'migrated' as const;
+  };
 
 export const rescheduleWasteReminderNotificationsFromLocalState = async ({
   now = new Date(),

@@ -169,4 +169,37 @@ describe('setInAppPermission', () => {
     expect(emitSpy).not.toHaveBeenCalled();
     emitSpy.mockRestore();
   });
+
+  it('waits for permission persistence before emitting', async () => {
+    let resolveWrite: (() => void) | undefined;
+    (addToStore as jest.Mock).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveWrite = resolve;
+      })
+    );
+    const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
+    (readFromStore as jest.Mock).mockResolvedValue(false);
+    (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+
+    const result = setInAppPermission(true);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(emitSpy).not.toHaveBeenCalled();
+
+    resolveWrite?.();
+    await expect(result).resolves.toBe(true);
+    expect(emitSpy).toHaveBeenCalledWith(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, true);
+    emitSpy.mockRestore();
+  });
+
+  it('does not emit when permission persistence fails', async () => {
+    const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
+    (readFromStore as jest.Mock).mockResolvedValue(false);
+    (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+    (addToStore as jest.Mock).mockRejectedValue(new Error('storage failed'));
+
+    await expect(setInAppPermission(true)).rejects.toThrow('storage failed');
+    expect(emitSpy).not.toHaveBeenCalled();
+    emitSpy.mockRestore();
+  });
 });

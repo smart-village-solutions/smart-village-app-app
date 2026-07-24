@@ -28,6 +28,7 @@ export const usePushNotifications = (
   const [isActive] = useState(active);
 
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
+  const pushTokenListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
   // Keep latest values available to listeners installed only once on mount.
@@ -95,6 +96,12 @@ export const usePushNotifications = (
           notificationHandlerRef.current?.(notification);
         }
       );
+      pushTokenListener.current = Notifications.addPushTokenListener(() => {
+        void updatePushToken().catch(() => {
+          // eslint-disable-next-line no-console
+          console.warn('An error occurred while refreshing the push notification token.');
+        });
+      });
     }
 
     // This listener is fired whenever a user taps on or interacts with a notification
@@ -117,6 +124,7 @@ export const usePushNotifications = (
 
     return () => {
       notificationListener.current && notificationListener.current.remove();
+      pushTokenListener.current && pushTokenListener.current.remove();
       responseListener.current && responseListener.current.remove();
 
       subscription?.remove();

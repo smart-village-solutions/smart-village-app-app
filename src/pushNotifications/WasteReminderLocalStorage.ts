@@ -172,6 +172,28 @@ export const getWasteReminderOwnerKey = async () => {
   return pushToken ? `push:${hashString(pushToken)}` : 'anonymous';
 };
 
+export const removeWasteReminderServerStoreIds = (
+  payload: WasteReminderServerSyncPayload
+): WasteReminderServerSyncPayload => ({
+  ...payload,
+  ...(payload.activeReminderRegistrations
+    ? {
+        activeReminderRegistrations: payload.activeReminderRegistrations.map((registration) => {
+          const sanitizedRegistration = { ...registration };
+          delete sanitizedRegistration.storeId;
+          return sanitizedRegistration;
+        })
+      }
+    : {}),
+  activeTypes: Object.fromEntries(
+    Object.entries(payload.activeTypes).map(([typeKey, type]) => {
+      const sanitizedType = { ...type };
+      delete sanitizedType.storeId;
+      return [typeKey, sanitizedType];
+    })
+  )
+});
+
 export const markWasteReminderServerSyncSynced = async (
   serverSyncPayload?: WasteReminderServerSyncPayload
 ) => {

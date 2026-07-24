@@ -2,6 +2,8 @@ import * as Sentry from '@sentry/react-native';
 
 import {
   buildWasteReminderDiagnostic,
+  reportWasteReminderMaintenanceSync,
+  reportWasteReminderOwnerMigration,
   reportWasteReminderSchedulingTransition
 } from '../../src/pushNotifications/WasteReminderDiagnostics';
 
@@ -19,6 +21,10 @@ jest.mock('expo-device', () => ({
 }));
 
 describe('WasteReminderDiagnostics', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('builds only aggregate allowlisted diagnostic fields', () => {
     expect(
       buildWasteReminderDiagnostic({
@@ -75,5 +81,23 @@ describe('WasteReminderDiagnostics', () => {
       'message',
       'stack'
     ].forEach((forbiddenField) => expect(serialized).not.toContain(forbiddenField));
+  });
+
+  it('reports lifecycle outcomes with fixed messages and enum-only contexts', () => {
+    reportWasteReminderOwnerMigration('migrated');
+    reportWasteReminderMaintenanceSync('failed-pending');
+
+    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(1, 'waste_reminder_owner_migration', {
+      contexts: { wasteReminder: { outcome: 'migrated' } },
+      level: 'info'
+    });
+    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(2, 'waste_reminder_maintenance_sync', {
+      contexts: { wasteReminder: { outcome: 'failed-pending' } },
+      level: 'warning'
+    });
+    const serialized = JSON.stringify((Sentry.captureMessage as jest.Mock).mock.calls);
+    ['token-a', 'token-b', 'ownerKey', 'storeId', 'payload', 'notificationId', 'stack'].forEach(
+      (value) => expect(serialized).not.toContain(value)
+    );
   });
 });

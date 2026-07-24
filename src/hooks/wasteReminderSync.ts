@@ -3,12 +3,14 @@ import { AppState, DeviceEventEmitter } from 'react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import {
-  clearWasteReminderLocalStateForChangedOwner,
+  migrateWasteReminderLocalStateToCurrentOwner,
   getReminderSettings,
   getWasteReminderOwnerKey,
   getInAppPermission,
   markWasteReminderServerSyncSynced,
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+  PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT,
+  reportWasteReminderMaintenanceSync,
   readWasteReminderLocalState,
   rescheduleWasteReminderNotificationsFromLocalState,
   retryPendingWasteReminderNotificationCancellations,
@@ -35,6 +37,7 @@ type WasteReminderMaintenanceTrigger =
   | 'data-ready'
   | 'foreground'
   | 'permission-change'
+  | 'token-change'
   | 'manual-retry';
 
 export const useWasteReminderSync = () => {
@@ -66,6 +69,9 @@ export const useWasteReminderSync = () => {
 
     if (success) {
       await markWasteReminderServerSyncSynced(serverSyncPayload);
+      reportWasteReminderMaintenanceSync('synced');
+    } else {
+      reportWasteReminderMaintenanceSync('failed-pending');
     }
   }, [isConnected, isMainserverUp]);
 
@@ -183,14 +189,24 @@ export const useWasteReminderSync = () => {
     (trigger: WasteReminderMaintenanceTrigger) => {
       maintenanceQueue.current = maintenanceQueue.current
         .catch(() => undefined)
+        // eslint-disable-next-line complexity
         .then(async () => {
           await retryPendingWasteReminderNotificationCancellations().catch(() => undefined);
-          const ownerResult = await clearWasteReminderLocalStateForChangedOwner();
+          const hasInAppPermission = await getInAppPermission();
+
+          if (!hasInAppPermission) {
+            return;
+          }
+
+          const ownerResult = await migrateWasteReminderLocalStateToCurrentOwner();
+          if (ownerResult === 'deferred-no-token') {
+            reportWasteReminderMaintenanceSync('skipped-no-token');
+            return;
+          }
           let stateBeforeAttempt = await readWasteReminderLocalState();
           if (
-            ownerResult === 'changed-and-cleared' ||
-            (!stateBeforeAttempt?.serverSyncPayload &&
-              stateBeforeAttempt?.scheduling?.status === 'waiting-for-data')
+            !stateBeforeAttempt?.serverSyncPayload &&
+            stateBeforeAttempt?.scheduling?.status === 'waiting-for-data'
           ) {
             const reconstructed = await reconstructCurrentOwnerSettings();
             if (!reconstructed) {
@@ -204,6 +220,8 @@ export const useWasteReminderSync = () => {
           const bypassBackoff =
             trigger === 'manual-retry' ||
             trigger === 'permission-change' ||
+            trigger === 'token-change' ||
+            ownerResult === 'migrated' ||
             (trigger === 'foreground' &&
               stateBeforeAttempt?.scheduling?.status === 'permission-required') ||
             (trigger === 'data-ready' &&
@@ -214,12 +232,6 @@ export const useWasteReminderSync = () => {
             !isRetryDue &&
             !bypassBackoff
           ) {
-            return;
-          }
-
-          const hasInAppPermission = await getInAppPermission();
-
-          if (!hasInAppPermission) {
             return;
           }
 
@@ -271,6 +283,14 @@ export const useWasteReminderSync = () => {
 
   useEffect(() => {
     enqueueWasteReminderMaintenance('startup');
+  }, [enqueueWasteReminderMaintenance]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT, () =>
+      enqueueWasteReminderMaintenance('token-change')
+    );
+
+    return () => subscription.remove();
   }, [enqueueWasteReminderMaintenance]);
 
   useEffect(() => {

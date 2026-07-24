@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { Alert } from 'react-native';
+import { Alert, DeviceEventEmitter } from 'react-native';
 
 import * as appJson from '../../app.json';
 import { device, secrets, texts } from '../config';
@@ -11,6 +11,8 @@ export enum PushNotificationStorageKeys {
   PUSH_TOKEN = 'PUSH_TOKEN',
   IN_APP_PERMISSION = 'IN_APP_PERMISSION'
 }
+
+export const PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT = 'pushNotificationTokenChanged';
 
 export const serverConnectionAlert = (
   isSuccess: boolean,
@@ -35,11 +37,21 @@ export const handleIncomingToken = async (token?: string) => {
 
     if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken);
     if (token) successfullyAdded = await addTokenToServer(token);
-    if (token ?? successfullyRemoved) storeTokenSecurely(token);
 
-    // if we want to remove the token (token === undefined) then return if we did.
-    // otherwise it is sufficient for the app to know that the new token has arrived on the server.
-    return (!token && successfullyRemoved) || successfullyAdded;
+    const serverTransitionSucceeded =
+      (!storedToken || successfullyRemoved) && (!token || successfullyAdded);
+
+    if (!serverTransitionSucceeded) {
+      return false;
+    }
+
+    await storeTokenSecurely(token);
+    DeviceEventEmitter.emit(
+      PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT,
+      token ? (storedToken ? 'rotated' : 'added') : 'removed'
+    );
+
+    return true;
   }
 
   // if the stored token and the new token coincide then there is nothing to do
@@ -107,10 +119,10 @@ const addTokenToServer = async (token: string) => {
 
 const storeTokenSecurely = (token?: string) => {
   if (token) {
-    SecureStore.setItemAsync(PushNotificationStorageKeys.PUSH_TOKEN, token);
-  } else {
-    SecureStore.deleteItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+    return SecureStore.setItemAsync(PushNotificationStorageKeys.PUSH_TOKEN, token);
   }
+
+  return SecureStore.deleteItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
 };
 
 export const addExcludeNotificationConfigurationOnServer = async (
