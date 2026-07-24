@@ -37,7 +37,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const EventRecord = ({ data, route }) => {
+export const EventRecord = ({ data, readAloudControls, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { eventDetail = {} } = settings;
@@ -124,6 +124,7 @@ export const EventRecord = ({ data, route }) => {
       <WrapperVertical style={styles.noPaddingTop}>
         <ImageSection mediaContents={mediaContents} />
       </WrapperVertical>
+      {readAloudControls}
 
       {!!category?.name && (
         <WrapperHorizontal>
@@ -217,5 +218,6 @@ const styles = StyleSheet.create({
 EventRecord.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

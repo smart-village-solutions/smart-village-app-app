@@ -11,6 +11,7 @@ import {
   Input,
   LoadingModal,
   RegularText,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper
@@ -94,6 +95,7 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 
           {!!dataLoginText && (
             <Wrapper noPaddingBottom>
+              <ReadAloudContent content={dataLoginText} contentId="voucher-login-content" />
               <HtmlView html={dataLoginText} />
             </Wrapper>
           )}

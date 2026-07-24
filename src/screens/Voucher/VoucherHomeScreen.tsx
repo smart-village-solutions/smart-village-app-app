@@ -9,6 +9,7 @@ import {
   HtmlView,
   Image,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   ServiceTiles,
   Wrapper
@@ -99,6 +100,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
 
         {!!dataHomeText && (
           <Wrapper>
+            <ReadAloudContent content={dataHomeText} contentId="voucher-home-content" />
             <HtmlView html={dataHomeText} />
           </Wrapper>
         )}

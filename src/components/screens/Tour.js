@@ -23,7 +23,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, navigation, route }) => {
+export const Tour = ({ data, navigation, readAloudControls, route }) => {
   const {
     addresses,
     categories,
@@ -71,6 +71,7 @@ export const Tour = ({ data, navigation, route }) => {
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
+      {readAloudControls}
       <SectionHeader title={title} />
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
@@ -115,5 +116,6 @@ export const Tour = ({ data, navigation, route }) => {
 Tour.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

@@ -8,6 +8,7 @@ import {
   EmptyMessage,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
@@ -44,6 +45,7 @@ export const ARInfoScreen = ({ route }) => {
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
         <Wrapper>
+          <ReadAloudContent content={arInfo} contentId="ar-info-content" />
           <HtmlView html={arInfo} />
         </Wrapper>
         <Wrapper>

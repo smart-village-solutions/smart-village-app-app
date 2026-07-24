@@ -14,6 +14,7 @@ import {
   ImageSection,
   LoadingSpinner,
   OperatingCompany,
+  ReadAloudContent,
   RegularText,
   SectionHeader,
   VoucherListItem,
@@ -176,7 +177,15 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
         contentBlocks.map((item: TVoucherContentBlock, index: number) => (
           <Wrapper key={index}>
             {!!item.title && <BoldText>{item.title}</BoldText>}
-            {!!item.body && <HtmlView html={item.body} />}
+            {!!item.body && (
+              <>
+                <ReadAloudContent
+                  content={item.body}
+                  contentId={`voucher-detail-content-block-${id || 'unknown'}-${index}`}
+                />
+                <HtmlView html={item.body} />
+              </>
+            )}
           </Wrapper>
         ))}
 

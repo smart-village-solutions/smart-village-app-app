@@ -9,6 +9,7 @@ import {
   HiddenModalAlert,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   WhatIsARButton,
   Wrapper
@@ -67,6 +68,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
       <ScrollView>
         {!!description && (
           <Wrapper>
+            <ReadAloudContent content={description} contentId="ar-artwork-description-content" />
             <HtmlView html={description} />
           </Wrapper>
         )}

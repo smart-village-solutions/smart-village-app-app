@@ -10,6 +10,7 @@ export * from './Bookmarks';
 export * from './Chatbot';
 export * from './constructionSites';
 export * from './DetailRefresh';
+export * from './useDetailSpeech';
 export * from './documentPicker';
 export * from './HomeRefresh';
 export * from './imagePicker';

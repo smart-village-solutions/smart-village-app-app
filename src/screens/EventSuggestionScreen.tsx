@@ -11,6 +11,7 @@ import {
   HeadlineText,
   HtmlView,
   Input,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
@@ -108,6 +109,7 @@ export const EventSuggestionScreen = ({
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <Wrapper>
+            <ReadAloudContent content={introText} contentId="event-suggestion-intro-content" />
             <HtmlView html={introText} />
 
             <WrapperVertical />

@@ -6,6 +6,7 @@ import {
   Button,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Wrapper
@@ -45,6 +46,7 @@ export const ConsulRegisteredScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
         <Wrapper>
+          <ReadAloudContent content={registeredHtml} contentId="consul-registered-content" />
           <HtmlView html={registeredHtml} />
         </Wrapper>
         <Wrapper>

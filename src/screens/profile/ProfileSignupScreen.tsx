@@ -2,7 +2,14 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { ScrollView } from 'react-native';
 
-import { Button, HtmlView, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../../components';
+import {
+  Button,
+  HtmlView,
+  LoadingSpinner,
+  ReadAloudContent,
+  SafeAreaViewFlex,
+  Wrapper
+} from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
@@ -39,6 +46,7 @@ export const ProfileSignupScreen = ({ navigation, route }: StackScreenProps<any>
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
         <Wrapper>
+          <ReadAloudContent content={data} contentId="profile-signup-content" />
           <HtmlView html={data} />
         </Wrapper>
         <Wrapper>

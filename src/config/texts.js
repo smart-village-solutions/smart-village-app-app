@@ -1257,7 +1257,19 @@ export const texts = {
       },
       readAloud: {
         title: 'Lesemodus in Details',
-        description: 'Ermöglicht das Vorlesen von Detailinhalten per Sprachausgabe.'
+        description: 'Ermöglicht das Vorlesen von Detailinhalten per Sprachausgabe.',
+        pause: 'Vorlesen pausieren',
+        progress: 'Abschnitt {{current}} von {{total}}',
+        currentTextLabel: 'Aktuell gelesen',
+        hideReadAlong: 'Mitlese-Text ausblenden',
+        resume: 'Vorlesen fortsetzen',
+        showReadAlong: 'Mitlese-Text anzeigen',
+        speedFast: '1.2x',
+        speedNormal: '1.0x',
+        speedSlow: '0.8x',
+        speedTitle: 'Vorlesegeschwindigkeit',
+        start: 'Vorlesen starten',
+        stop: 'Vorlesen stoppen'
       },
       reduceMotion: {
         title: 'Bewegung reduzieren',

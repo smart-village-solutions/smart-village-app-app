@@ -6,6 +6,7 @@ import {
   EmptyMessage,
   HtmlView,
   MultiButtonWithSubQuery,
+  ReadAloudContent,
   navigateWithSubQuery,
   SafeAreaViewFlex,
   Wrapper
@@ -24,21 +25,21 @@ export const HtmlScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const title = route.params?.title ?? '';
+  const isMissingQuery = !query || !queryVariables?.name;
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
 
-  if (!query || !queryVariables?.name) return <EmptyMessage title={texts.empty.content} />;
-
   const { data, loading, refetch } = useStaticContent({
-    name: queryVariables.name,
+    name: queryVariables?.name || '',
     type: 'html',
-    refreshTimeKey: `${query}-${queryVariables.name}`
+    refreshTimeKey: `${query}-${queryVariables?.name || ''}`,
+    skip: isMissingQuery
   });
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
   useEffect(() => {
     isConnected && title && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
-  }, [title]);
+  }, [isConnected, title, trackScreenViewAsync]);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
@@ -48,6 +49,9 @@ export const HtmlScreen = ({ navigation, route }) => {
 
   const subQuery = route.params?.subQuery ?? {};
   const rootRouteName = route.params?.rootRouteName ?? '';
+  const htmlContent = data || '';
+
+  if (isMissingQuery) return <EmptyMessage title={texts.empty.content} />;
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -68,8 +72,9 @@ export const HtmlScreen = ({ navigation, route }) => {
         }
       >
         <Wrapper>
+          <ReadAloudContent content={htmlContent} contentId="html-screen-content" />
           <HtmlView
-            html={trimNewLines(data)}
+            html={trimNewLines(htmlContent)}
             openWebScreen={
               navigation
                 ? (param) => navigateWithSubQuery({ params: param, navigation, subQuery })

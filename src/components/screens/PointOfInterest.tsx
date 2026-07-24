@@ -40,10 +40,17 @@ type PointOfInterestProps = {
   data: any;
   hideMap?: boolean;
   navigation?: any;
+  readAloudControls?: React.ReactNode;
   route: any;
 };
 
-export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInterestProps) => {
+export const PointOfInterest = ({
+  data,
+  hideMap,
+  navigation,
+  readAloudControls,
+  route
+}: PointOfInterestProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -138,6 +145,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
           <ImageSection mediaContents={mediaContents} />
         </WrapperVertical>
       )}
+      {readAloudControls}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
         <SectionHeader title={texts.pointOfInterest.overview} />

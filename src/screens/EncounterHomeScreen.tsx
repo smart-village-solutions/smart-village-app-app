@@ -12,6 +12,7 @@ import {
   EncounterWelcome,
   HtmlView,
   RegularText,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -180,8 +181,14 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
             <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
           )}
           {!!additionalInfo?.length && (
-            // @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred
-            <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
+            <>
+              <ReadAloudContent
+                content={additionalInfo}
+                contentId="encounter-home-additional-info"
+              />
+              {/* @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred */}
+              <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
+            </>
           )}
         </Wrapper>
       </ScrollView>

@@ -31,7 +31,14 @@ import { VolunteerAvatar } from '../../volunteer';
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 /* eslint-disable complexity */
-export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
+export const NoticeboardDetail = ({
+  data,
+  navigation,
+  fetchPolicy,
+  readAloudControls,
+  refetch,
+  route
+}) => {
   const {
     id,
     categories,
@@ -128,6 +135,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, rout
       <WrapperVertical style={styles.noPaddingTop}>
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
+      {readAloudControls}
 
       {isCurrentUser && (
         <Wrapper>
@@ -402,5 +410,6 @@ NoticeboardDetail.propTypes = {
   data: PropTypes.object.isRequired,
   fetchPolicy: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

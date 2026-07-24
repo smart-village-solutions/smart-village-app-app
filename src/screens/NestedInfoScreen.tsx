@@ -7,6 +7,7 @@ import {
   LoadingContainer,
   LoadingSpinner,
   MultiButtonWithSubQuery,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   WrapperVertical
@@ -53,6 +54,7 @@ export const ListHeaderComponent = ({
 
   return (
     <WrapperVertical style={styles.noPaddingBottom}>
+      <ReadAloudContent content={html} contentId="nested-info-header-content" />
       {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
       <HtmlView html={html} />
       {!!navigationTitle && (
@@ -90,7 +92,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
       await refetchHtml?.();
     }
     setRefreshing(false);
-  }, [isConnected, refetch]);
+  }, [isConnected, refetch, refetchHtml]);
 
   const renderItem = useRenderItem(QUERY_TYPES.PUBLIC_JSON_FILE, navigation);
 

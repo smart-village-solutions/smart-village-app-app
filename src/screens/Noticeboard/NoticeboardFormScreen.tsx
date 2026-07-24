@@ -12,6 +12,7 @@ import {
   NoticeboardCreateForm,
   NoticeboardMessageForm,
   ProfileNoticeboardCreateForm,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -95,6 +96,7 @@ export const NoticeboardFormScreen = ({
 
           {!!html && (
             <Wrapper>
+              <ReadAloudContent content={html} contentId="noticeboard-form-content" />
               {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
               <HtmlView html={html} />
             </Wrapper>

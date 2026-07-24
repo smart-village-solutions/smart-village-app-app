@@ -1,12 +1,13 @@
 import _kebabCase from 'lodash/kebabCase';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
   Button,
   DropdownSelect,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   ServiceTiles,
   Title,
@@ -56,20 +57,6 @@ export const CitySelectionScreen = () => {
     fetchStoredCity();
   }, []);
 
-  useEffect(() => {
-    if (citiesData?.length) {
-      updateDropdownData();
-    }
-  }, [citiesData]);
-
-  useEffect(() => {
-    setSelectedCity(
-      dropdownData?.[0]?.selected
-        ? null
-        : dropdownData[dropdownData.findIndex((item) => item.selected)]?.value
-    );
-  }, [dropdownData]);
-
   const updateDropdownData = useCallback(() => {
     const items =
       citiesData?.map((city, index) => ({
@@ -82,6 +69,20 @@ export const CitySelectionScreen = () => {
 
     setDropdownData(items);
   }, [citiesData, storedCity]);
+
+  useEffect(() => {
+    if (citiesData?.length) {
+      updateDropdownData();
+    }
+  }, [citiesData, updateDropdownData]);
+
+  useEffect(() => {
+    setSelectedCity(
+      dropdownData?.[0]?.selected
+        ? null
+        : dropdownData[dropdownData.findIndex((item) => item.selected)]?.value
+    );
+  }, [dropdownData]);
 
   const onResetPress = useCallback(async () => {
     setSelectedCity(null);
@@ -98,6 +99,7 @@ export const CitySelectionScreen = () => {
     return (
       <SafeAreaViewFlex>
         <Wrapper>
+          <ReadAloudContent content={htmlContent} contentId="city-selection-content" />
           <HtmlView html={htmlContent} />
 
           {!!dropdownData?.length && (
