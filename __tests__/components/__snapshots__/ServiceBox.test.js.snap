@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ServiceBox renders square big tile layout with dynamic columns 1`] = `
+<View
+  bigTile={true}
+  columns={2}
+  orientation="portrait"
+  style={
+    [
+      {
+        "aspectRatio": 1,
+        "flexBasis": "50%",
+        "marginBottom": 1.5,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginTop": 0,
+        "overflow": "hidden",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`ServiceBox renders square tile with default columns 1`] = `
+<View
+  style={
+    [
+      {
+        "aspectRatio": 1,
+        "flexBasis": "25%",
+        "marginBottom": 25,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginTop": 25,
+        "overflow": "hidden",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`ServiceBox renders styled tile with orientation-specific factor 1`] = `
+<View
+  columns={4}
+  hasTileStyle={true}
+  orientation="landscape"
+  style={
+    [
+      {
+        "aspectRatio": 1,
+        "flexBasis": "20%",
+        "marginBottom": 1.5,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginTop": 0,
+        "overflow": "hidden",
+      },
+    ]
+  }
+/>
+`;

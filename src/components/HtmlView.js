@@ -5,7 +5,7 @@ import TableRenderer, {
   tableModel
 } from '@native-html/table-plugin';
 import PropTypes from 'prop-types';
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext, useMemo } from 'react';
 import HTML from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
@@ -16,6 +16,26 @@ import { imageWidth, openLink } from '../helpers';
 import { RegularText } from './Text';
 
 const { HTML_REGEX } = consts;
+
+const scaleTypographyStyle = (style, textScaleMultiplier = 1) => {
+  if (!style || textScaleMultiplier === 1 || Array.isArray(style)) return style;
+
+  const scaledStyle = { ...style };
+  if (typeof style.fontSize === 'number') {
+    scaledStyle.fontSize = style.fontSize * textScaleMultiplier;
+  }
+  if (typeof style.lineHeight === 'number') {
+    scaledStyle.lineHeight = style.lineHeight * textScaleMultiplier;
+  }
+
+  return scaledStyle;
+};
+
+const scaleTagsStyles = (tagsStyles = {}, textScaleMultiplier = 1) =>
+  Object.entries(tagsStyles).reduce((acc, [tagName, style]) => {
+    acc[tagName] = scaleTypographyStyle(style, textScaleMultiplier);
+    return acc;
+  }, {});
 
 const getCssRules = (textScaleMultiplier = 1) =>
   cssRulesFromSpecs({
@@ -117,6 +137,26 @@ export const HtmlView = memo(
     width
   }) => {
     const { isBoldTextEnabled, textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+    const scaledBaseStyle = useMemo(
+      () => scaleTypographyStyle(styles.baseFontStyle, textScaleMultiplier),
+      [textScaleMultiplier]
+    );
+    const scaledTagStyles = useMemo(
+      () =>
+        scaleTagsStyles(
+          {
+            ...styles.html,
+            ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
+            ...tagsStyles
+          },
+          textScaleMultiplier
+        ),
+      [isBoldTextEnabled, tagsStyles, textScaleMultiplier]
+    );
+    const defaultTextProps = useMemo(
+      () => ({ allowFontScaling: true, selectable }),
+      [selectable]
+    );
 
     let calculatedWidth =
       width !== undefined
@@ -155,13 +195,9 @@ export const HtmlView = memo(
           },
           table: { cssRules: getCssRules(textScaleMultiplier) }
         }}
-        tagsStyles={{
-          ...styles.html,
-          ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
-          ...tagsStyles
-        }}
+        tagsStyles={scaledTagStyles}
         emSize={normalize(16) * textScaleMultiplier}
-        baseStyle={styles.baseFontStyle}
+        baseStyle={scaledBaseStyle}
         ignoredStyles={['width', 'height']}
         contentWidth={maxWidth}
         domVisitors={{
@@ -175,7 +211,7 @@ export const HtmlView = memo(
           }
         }}
         systemFonts={['regular', 'bold', 'condbold', 'italic', 'bold-italic', 'condbold-italic']}
-        defaultTextProps={{ selectable }}
+        defaultTextProps={defaultTextProps}
       />
     );
   }

@@ -1,4 +1,4 @@
-import React, { ReactNode, RefObject, useCallback, useContext } from 'react';
+import React, { ReactNode, RefObject, useCallback, useContext, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -13,7 +13,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, device, normalize } from '../../config';
+import { colors, normalize } from '../../config';
+import { getGridContentHeight } from '../../helpers/draggableGrid';
 import { getHeaderHeight, statusBarHeight } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 
@@ -47,25 +48,31 @@ export const DraggableItem = ({
   numberOfTiles,
   tileSize
 }: Props) => {
-  const { orientation } = useContext(OrientationContext);
+  const { dimensions, orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const containerHeight =
-    device.height -
+    dimensions.height -
     safeAreaInsets.top -
     safeAreaInsets.bottom -
     getHeaderHeight(orientation) -
     statusBarHeight(orientation);
 
   const isGestureActive = useSharedValue(false);
-  const contentHeight = (Object.keys(positions.value).length / numberOfTiles) * tileSize;
+  const contentHeight = getGridContentHeight(
+    Object.keys(positions.value).length,
+    numberOfTiles,
+    tileSize
+  );
 
   const getPosition = useCallback(
     (position: number) => {
       'worklet';
 
+      const safeColumns = Math.max(1, numberOfTiles);
+
       return {
-        x: position % numberOfTiles === 0 ? 0 : tileSize * (position % numberOfTiles),
-        y: Math.floor(position / numberOfTiles) * tileSize
+        x: (position % safeColumns) * tileSize,
+        y: Math.floor(position / safeColumns) * tileSize
       };
     },
     [numberOfTiles, tileSize]
@@ -74,12 +81,13 @@ export const DraggableItem = ({
   const getOrder = useCallback(
     (tx: number, ty: number, max: number) => {
       'worklet';
-
+      const safeColumns = Math.max(1, numberOfTiles);
       const x = Math.round(tx / tileSize) * tileSize;
       const y = Math.round(ty / tileSize) * tileSize;
       const row = Math.max(y, 0) / tileSize;
       const col = Math.max(x, 0) / tileSize;
-      return Math.min(row * numberOfTiles + col, max);
+
+      return Math.min(row * safeColumns + col, max);
     },
     [numberOfTiles, tileSize]
   );
@@ -87,6 +95,18 @@ export const DraggableItem = ({
   const position = getPosition(positions.value[id]);
   const translateX = useSharedValue(position.x);
   const translateY = useSharedValue(position.y);
+
+  useEffect(() => {
+    const safeColumns = Math.max(1, numberOfTiles);
+    const order = positions.value[id];
+    const nextPosition = {
+      x: (order % safeColumns) * tileSize,
+      y: Math.floor(order / safeColumns) * tileSize
+    };
+
+    translateX.value = withTiming(nextPosition.x, animationConfig);
+    translateY.value = withTiming(nextPosition.y, animationConfig);
+  }, [id, numberOfTiles, positions, tileSize, translateX, translateY]);
 
   useAnimatedReaction(
     () => positions.value[id],
@@ -103,7 +123,7 @@ export const DraggableItem = ({
   const offsetY = useSharedValue(0);
 
   const panGesture = Gesture.Pan()
-    .onStart((_e) => {
+    .onStart(() => {
       offsetX.value = translateX.value;
       offsetY.value = translateY.value;
     })
@@ -141,7 +161,7 @@ export const DraggableItem = ({
       // 3. Scroll up and down if necessary
       const lowerBound = scrollY.value;
       const upperBound = lowerBound + containerHeight - tileSize;
-      const maxScroll = contentHeight - containerHeight;
+      const maxScroll = Math.max(0, contentHeight - containerHeight);
       const leftToScrollDown = maxScroll - scrollY.value;
 
       if (translateY.value < lowerBound) {
