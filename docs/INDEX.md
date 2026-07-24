@@ -65,3 +65,7 @@ For detailed documentation see [the auth docs](./AUTH.md).
 ## Augmented Reality
 
 For detailed documentation see [the ar docs](./AR.md).
+
+## Accessibility
+
+For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).

@@ -1,4 +1,5 @@
 import { RouteProp } from '@react-navigation/core';
+import { NavigationProp } from '@react-navigation/native';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -6,15 +7,18 @@ import { StyleSheet } from 'react-native';
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import { colors, normalize } from '../config';
 
+type NavigationParams = Record<string, object | undefined>;
+
 type OptionProps = {
-  route: RouteProp<Record<string, any | undefined>, string>;
-  navigation: any;
+  route: RouteProp<NavigationParams, string>;
+  navigation: NavigationProp<NavigationParams>;
 };
 
 type OptionConfig = {
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
   noHeaderLeft?: boolean;
   withBookmark?: boolean;
+  withAccessibility?: boolean;
   withDelete?: boolean;
   withDrawer?: boolean;
   withFavorites?: boolean;
@@ -28,6 +32,7 @@ export const getScreenOptions =
     cardStyleInterpolator,
     noHeaderLeft = false,
     withBookmark,
+    withAccessibility = true,
     withDelete,
     withDrawer,
     withFavorites,
@@ -48,6 +53,7 @@ export const getScreenOptions =
             navigation,
             route,
             shareContent: route.params?.shareContent,
+            withAccessibility,
             withBookmark,
             withDelete,
             withDrawer,

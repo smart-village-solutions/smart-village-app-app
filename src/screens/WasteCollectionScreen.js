@@ -16,6 +16,7 @@ import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
 import {
+  AccessibilityHeader,
   BoldText,
   Button,
   CalendarListToggle,
@@ -86,6 +87,8 @@ export const WasteCollectionScreen = ({ navigation }) => {
     texts: wasteAddressesTexts = {},
     twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
+  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
+  const [isReset, setIsReset] = useState(false);
   const renderSuggestions = useRenderSuggestions((item) => {
     if (item?.id) {
       setSelectedStreetId(item.id);
@@ -96,7 +99,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { setInputValue, setInputValueCity, setInputValueCitySelected } = renderSuggestions;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [isRehydrating, setIsRehydrating] = useState(false);
-  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
   const [showCalendar, setShowCalendar] = useState(false);
   const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState('');
@@ -111,7 +113,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
     selectedTypes: selectedTypes || typesData
   });
   const keyboardHeight = useKeyboardHeight();
-  const [isReset, setIsReset] = useState(false);
   const query = QUERY_TYPES.WASTE_STREET;
 
   const listItems = useMemo(() => {
@@ -130,29 +131,39 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
       return item.listDate >= today && hasMatchesForItem;
     });
-  }, [markedDates, selectedTypes]);
+  }, [markedDates, query, selectedTypes]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (
       !!selectedStreetId &&
       _isArray(streetData?.wasteAddresses) &&
       !streetData.wasteAddresses.length
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedStreetId(undefined);
       setInputValue('');
       setInputValueCity('');
       setInputValueCitySelected(false);
     }
-  }, [selectedStreetId, streetData?.wasteAddresses]);
+  }, [
+    selectedStreetId,
+    setInputValue,
+    setInputValueCity,
+    setInputValueCitySelected,
+    streetData?.wasteAddresses
+  ]);
 
   // Initializes the `selectedTypes` state based on the available waste types (`usedTypes`)
   // and the user's previously selected type keys (`waste.selectedTypeKeys`).
   // If `selectedTypeKeys` is present, it maps the keys to the corresponding values in `usedTypes`.
   // Otherwise, it defaults to selecting all available types.
   // The effect triggers whenever `usedTypes` or `waste.selectedTypeKeys` change.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!usedTypes) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedTypes(
       Object.fromEntries(
         (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
@@ -186,6 +197,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
       headerRight: () =>
         !!streetData && !!usedTypes ? (
           <WrapperRow itemsCenter>
+            <AccessibilityHeader style={styles.icon} />
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
@@ -198,7 +210,10 @@ export const WasteCollectionScreen = ({ navigation }) => {
             )}
           </WrapperRow>
         ) : navigationType === 'drawer' ? (
-          <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+          <WrapperRow itemsCenter>
+            <AccessibilityHeader style={styles.icon} />
+            <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+          </WrapperRow>
         ) : null
     });
 
@@ -225,7 +240,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
         headerLeft: () => <HeaderLeft onPress={navigation.goBack} />
       });
     }
-  }, [goToReminder, showCalendar, streetData, usedTypes, isReset, waste.streetId]);
+  }, [
+    goToReminder,
+    isReset,
+    navigation,
+    navigationType,
+    showCalendar,
+    streetData,
+    usedTypes,
+    waste.streetId
+  ]);
 
   const resetSelectedStreetId = useCallback(async () => {
     setSelectedStreetId(undefined);
@@ -233,7 +257,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setInputValueCity('');
     setInputValueCitySelected(false);
     setIsReset(true);
-  }, []);
+  }, [setInputValue, setInputValueCity, setInputValueCitySelected]);
 
   const wasteHeader = useCallback(() => {
     return <WasteHeader locationData={locationData} onPress={resetSelectedStreetId} />;
@@ -247,7 +271,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
         selectedTypes={selectedTypes}
       />
     );
-  }, [selectedStreetId, listItems, wasteHeader, query, selectedTypes]);
+  }, [selectedStreetId, listItems, query, selectedTypes]);
 
   const onDayPress = useCallback((day) => {
     setSelectedDay(day.dateString);

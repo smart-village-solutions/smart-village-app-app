@@ -5,6 +5,7 @@ export * from './whistleblow';
 export * from './wallet';
 
 export * from './accessibilityListeners';
+export * from './accessibilitySettingsHelper';
 export * from './addressHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';

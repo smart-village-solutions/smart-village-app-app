@@ -1,9 +1,12 @@
+import type { Dispatch, SetStateAction } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
-import { Accessibility } from '../types';
+import { AccessibilitySystemState } from '../types';
 
 // for detailed information: https://reactnative.dev/docs/accessibilityinfo#addeventlistener
-export const accessibilityListeners = (setAccessibility: (prev: any) => void) => {
+export const accessibilityListeners = (
+  setAccessibility: Dispatch<SetStateAction<AccessibilitySystemState>>
+) => {
   /*
    * Fires when the state of the bold text toggle changes.
    * Is true when bold text is enabled and false otherwise.
@@ -11,7 +14,7 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   const boldTextChangedSubscription = AccessibilityInfo.addEventListener(
     'boldTextChanged',
     (isBoldTextEnabled) => {
-      setAccessibility((prev: Accessibility) => ({
+      setAccessibility((prev: AccessibilitySystemState) => ({
         ...prev,
         isBoldTextEnabled
       }));
@@ -25,7 +28,7 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   const grayscaleChangedSubscription = AccessibilityInfo.addEventListener(
     'grayscaleChanged',
     (isGrayscaleEnabled) => {
-      setAccessibility((prev: Accessibility) => ({
+      setAccessibility((prev: AccessibilitySystemState) => ({
         ...prev,
         isGrayscaleEnabled
       }));
@@ -39,7 +42,7 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   const invertColorsChangedSubscription = AccessibilityInfo.addEventListener(
     'invertColorsChanged',
     (isInvertColorsEnabled) => {
-      setAccessibility((prev: Accessibility) => ({
+      setAccessibility((prev: AccessibilitySystemState) => ({
         ...prev,
         isInvertColorsEnabled
       }));
@@ -54,7 +57,7 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   const reduceMotionChangedSubscription = AccessibilityInfo.addEventListener(
     'reduceMotionChanged',
     (isReduceMotionEnabled) => {
-      setAccessibility((prev: Accessibility) => ({
+      setAccessibility((prev: AccessibilitySystemState) => ({
         ...prev,
         isReduceMotionEnabled
       }));
@@ -68,7 +71,7 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   const reduceTransparencyChangedSubscription = AccessibilityInfo.addEventListener(
     'reduceTransparencyChanged',
     (isReduceTransparencyEnabled) => {
-      setAccessibility((prev: Accessibility) => ({
+      setAccessibility((prev: AccessibilitySystemState) => ({
         ...prev,
         isReduceTransparencyEnabled
       }));
@@ -82,7 +85,7 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   const screenReaderChangedSubscription = AccessibilityInfo.addEventListener(
     'screenReaderChanged',
     (isScreenReaderEnabled) => {
-      setAccessibility((prev: Accessibility) => ({
+      setAccessibility((prev: AccessibilitySystemState) => ({
         ...prev,
         isScreenReaderEnabled
       }));
@@ -90,22 +93,25 @@ export const accessibilityListeners = (setAccessibility: (prev: any) => void) =>
   );
 
   AccessibilityInfo.isBoldTextEnabled().then((isBoldTextEnabled) => {
-    setAccessibility((prev: Accessibility) => ({ ...prev, isBoldTextEnabled }));
+    setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isBoldTextEnabled }));
   });
   AccessibilityInfo.isGrayscaleEnabled().then((isGrayscaleEnabled) => {
-    setAccessibility((prev: Accessibility) => ({ ...prev, isGrayscaleEnabled }));
+    setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isGrayscaleEnabled }));
   });
   AccessibilityInfo.isInvertColorsEnabled().then((isInvertColorsEnabled) => {
-    setAccessibility((prev: Accessibility) => ({ ...prev, isInvertColorsEnabled }));
+    setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isInvertColorsEnabled }));
   });
   AccessibilityInfo.isReduceMotionEnabled().then((isReduceMotionEnabled) => {
-    setAccessibility((prev: Accessibility) => ({ ...prev, isReduceMotionEnabled }));
+    setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isReduceMotionEnabled }));
   });
   AccessibilityInfo.isReduceTransparencyEnabled().then((isReduceTransparencyEnabled) => {
-    setAccessibility((prev: Accessibility) => ({ ...prev, isReduceTransparencyEnabled }));
+    setAccessibility((prev: AccessibilitySystemState) => ({
+      ...prev,
+      isReduceTransparencyEnabled
+    }));
   });
   AccessibilityInfo.isScreenReaderEnabled().then((isScreenReaderEnabled) => {
-    setAccessibility((prev: Accessibility) => ({ ...prev, isScreenReaderEnabled }));
+    setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isScreenReaderEnabled }));
   });
 
   return () => {

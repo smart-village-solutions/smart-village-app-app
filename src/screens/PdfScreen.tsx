@@ -1,9 +1,9 @@
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 
-import { RegularText, SafeAreaViewFlex, WrapperRow } from '../components';
+import { AccessibilityHeader, RegularText, SafeAreaViewFlex, WrapperRow } from '../components';
 import { colors, consts, Icon, normalize } from '../config';
 import { onDownloadAndSharePdf } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
@@ -12,7 +12,7 @@ import { NetworkContext } from '../NetworkProvider';
 const { MATOMO_TRACKING } = consts;
 
 type PdfScreenProps = {
-  navigation: NavigationProp<any>;
+  navigation: NavigationProp<ParamListBase>;
   route: { params: { pdfUrl: string; title: string; injectedJavaScript: string } };
 };
 
@@ -27,13 +27,14 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
   //       dependency
   useEffect(() => {
     isConnected && pdfUrl && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.PDF} / ${pdfUrl}`);
-  }, [pdfUrl]);
+  }, [isConnected, pdfUrl, trackScreenViewAsync]);
 
   useEffect(() => {
     if (title) {
       navigation.setOptions({
         headerRight: () => (
           <WrapperRow style={styles.headerRight}>
+            <AccessibilityHeader style={styles.icon} />
             <TouchableOpacity
               accessibilityLabel={`PDF herunterladen ${consts.a11yLabel.button}`}
               accessibilityRole="button"
@@ -45,7 +46,7 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
         )
       });
     }
-  }, [title]);
+  }, [navigation, pdfUrl, title]);
 
   if (!pdfUrl) return null;
 

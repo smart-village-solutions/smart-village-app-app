@@ -219,18 +219,20 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <ConfigurationsProvider>
-          <OnboardingManager>
-            <ProfileProvider>
-              <UnreadMessagesProvider>
-                <RootView>
-                  <OtaUpdateManager />
-                  <Navigator navigationType={initialGlobalSettings.navigation} />
-                </RootView>
-              </UnreadMessagesProvider>
-            </ProfileProvider>
-          </OnboardingManager>
-        </ConfigurationsProvider>
+        <AccessibilityProvider>
+          <ConfigurationsProvider>
+            <OnboardingManager>
+              <ProfileProvider>
+                <UnreadMessagesProvider>
+                  <RootView>
+                    <OtaUpdateManager />
+                    <Navigator navigationType={initialGlobalSettings.navigation} />
+                  </RootView>
+                </UnreadMessagesProvider>
+              </ProfileProvider>
+            </OnboardingManager>
+          </ConfigurationsProvider>
+        </AccessibilityProvider>
       </SettingsProvider>
     </ApolloProvider>
   );
@@ -243,9 +245,7 @@ export const MainApp = () => (
         <PermanentFilterProvider>
           <ReactQueryProvider>
             <SafeAreaProvider>
-              <AccessibilityProvider>
-                <MainAppWithApolloProvider />
-              </AccessibilityProvider>
+              <MainAppWithApolloProvider />
             </SafeAreaProvider>
           </ReactQueryProvider>
         </PermanentFilterProvider>

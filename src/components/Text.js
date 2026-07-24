@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { Text as RNText } from 'react-native';
+import { StyleSheet, Text as RNText } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -33,15 +33,55 @@ function parseText(text) {
   return result;
 }
 
-export const Text = ({ children, style, italic, ...props }) => {
-  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+const scaleTypography = (style, scale = 1) => {
+  if (!style || scale === 1) return style;
+
+  const scaledStyle = { ...style };
+  if (typeof style.fontSize === 'number') {
+    scaledStyle.fontSize = style.fontSize * scale;
+  }
+  if (typeof style.lineHeight === 'number') {
+    scaledStyle.lineHeight = style.lineHeight * scale;
+  }
+
+  return scaledStyle;
+};
+
+const updateColorForHighContrast = (style, isHighContrastEnabled) => {
+  if (!style || !isHighContrastEnabled) return style;
+  if (!style.color) return style;
+
+  if (
+    style.color === colors.placeholder ||
+    style.color === colors.gray60 ||
+    style.color === colors.gray40
+  ) {
+    return {
+      ...style,
+      color: colors.darkText,
+      textDecorationColor: colors.darkText
+    };
+  }
+
+  return style;
+};
+
+export const Text = ({ children, style, italic, ignoreTextScale = false, ...props }) => {
+  const {
+    isBoldTextEnabled,
+    isHighContrastEnabled,
+    textScaleMultiplier = 1
+  } = useContext(AccessibilityContext);
+  const flattenedStyle = StyleSheet.flatten(style || {});
+  const baseStyle = scaleTypography(flattenedStyle, ignoreTextScale ? 1 : textScaleMultiplier);
+  const adjustedStyle = updateColorForHighContrast(baseStyle, isHighContrastEnabled);
 
   /* eslint-disable react-native/no-inline-styles */
   return (
     <RNText
       {...props}
       style={[
-        ...style,
+        adjustedStyle,
         isBoldTextEnabled && { fontFamily: 'bold' },
         italic && { fontFamily: 'bold-italic' }
       ]}
@@ -54,6 +94,7 @@ export const Text = ({ children, style, italic, ...props }) => {
 
 Text.propTypes = {
   children: PropTypes.node,
+  ignoreTextScale: PropTypes.bool,
   style: PropTypes.array,
   italic: PropTypes.bool
 };

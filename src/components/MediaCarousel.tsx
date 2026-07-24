@@ -6,6 +6,7 @@ import Carousel from 'react-native-snap-carousel';
 
 import { colors, Icon, normalize, texts } from '../config';
 import { imageWidth } from '../helpers';
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
 
@@ -46,6 +47,7 @@ const MediaCarouselItem = ({ item }: { item: MediaContent }) => {
 
 export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarouselProps) => {
   const { dimensions } = useContext(OrientationContext);
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { sliderPauseButton = {}, sliderSettings = {} } = settings as {
@@ -72,16 +74,21 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !isReduceMotionEnabled) {
       carouselRef.current?.startAutoplay();
     } else {
       carouselRef.current?.stopAutoplay();
     }
-  }, [isFocused]);
+  }, [isFocused, isReduceMotionEnabled]);
 
   useEffect(() => {
+    if (isReduceMotionEnabled) {
+      carouselRef.current?.stopAutoplay();
+      return;
+    }
+
     isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
-  }, [isPaused]);
+  }, [isPaused, isReduceMotionEnabled]);
 
   const filteredContents = _filter(
     mediaContents,
@@ -115,7 +122,7 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   return (
     <View>
       <Carousel
-        autoplay
+        autoplay={!isReduceMotionEnabled}
         autoplayDelay={0}
         autoplayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
         containerCustomStyle={styles.center}
@@ -134,6 +141,7 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
       />
 
       {showSliderPauseButton &&
+        !isReduceMotionEnabled &&
         pauseButton(
           horizontalPosition,
           isCopyrighted,

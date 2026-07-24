@@ -23,6 +23,8 @@ export * from './whistleblow';
 export * from './widgets';
 
 export * from './BackToTop';
+export * from './AccessibilityHeader';
+export * from './AccessibilitySettingsModal';
 export * from './Button';
 export * from './Calendar';
 export * from './calendarArrows';

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   ListRenderItem,
@@ -17,12 +17,16 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { colors, consts, device, Icon, normalize, texts } from '../config';
-import { addToStore, Initializer } from '../helpers';
+import { addToStore, Initializer, readFromStore } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
-import { HAS_TERMS_AND_CONDITIONS_STORE_KEY } from '../OnboardingManager';
+import {
+  HAS_TERMS_AND_CONDITIONS_STORE_KEY,
+  TERMS_AND_CONDITIONS_STORE_KEY
+} from '../OnboardingManager';
 import { QUERY_TYPES } from '../queries';
 import { AppIntroSlide } from '../types';
+import { AccessibilityContext } from '../AccessibilityProvider';
 
 import { HtmlScreen } from './HtmlScreen';
 
@@ -34,21 +38,6 @@ type SliderButtonProps = {
   style: StyleProp<ViewStyle>;
   isDisabled?: boolean;
   isLightest?: boolean;
-};
-
-type ButtonProps = {
-  hasAcceptedTerms: boolean;
-  setOnboardingComplete?: () => void;
-  sliderRef: React.RefObject<any>;
-  slides: AppIntroSlide[];
-  styles: {
-    skipButton: StyleProp<ViewStyle>;
-    sliderButtonContainer: StyleProp<ViewStyle>;
-    sliderButtonDisabled: StyleProp<ViewStyle>;
-  };
-  termsAndConditionsAlert: () => void;
-  termsSlideIndex?: number;
-  texts: { appIntro: { continue: string; skip: string } };
 };
 
 const SliderButton = ({
@@ -65,7 +54,8 @@ const SliderButton = ({
       accessibilityLabel={`${label} ${consts.a11yLabel.button}`}
       accessibilityRole="button"
       accessibilityState={{ disabled: isDisabled }}
-      onPress={onPress}
+      disabled={isDisabled}
+      onPress={isDisabled ? undefined : onPress}
       style={buttonStyle}
     >
       <BoldText lightest={isLightest}>{label.toUpperCase()}</BoldText>
@@ -73,116 +63,55 @@ const SliderButton = ({
   );
 };
 
-const NextButton = ({
-  hasAcceptedTerms,
-  sliderRef,
-  slides,
-  styles,
-  termsAndConditionsAlert,
-  texts
-}: ButtonProps) => {
-  const currentSlideIndex = sliderRef.current?.state?.activeIndex ?? 0;
-  const currentSlide = slides[currentSlideIndex];
-  const isTermsSlide =
-    slides[currentSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
+const goToIntroSlide = (
+  sliderRef: React.RefObject<any>,
+  pageNum: number,
+  triggerOnSlideChange = true,
+  reduceMotion = false
+) => {
+  const slider = sliderRef.current;
+  if (!slider) return;
 
-  const handlePress = () => {
-    if (isTermsSlide && !hasAcceptedTerms) {
-      termsAndConditionsAlert();
-      return;
-    }
+  if (!reduceMotion) {
+    slider.goToSlide(pageNum, triggerOnSlideChange);
+    return;
+  }
 
-    if (currentSlide.onLeaveSlide) {
-      currentSlide.onLeaveSlide(true);
-    }
+  const prevNum = slider.state?.activeIndex ?? 0;
+  slider.setState({ activeIndex: pageNum });
 
-    sliderRef.current?.goToSlide(currentSlideIndex + 1, true);
-  };
+  const width = slider.state?.width ?? 0;
+  const rtlSafeIndex = slider._rtlSafeIndex ? slider._rtlSafeIndex(pageNum) : pageNum;
 
-  return (
-    <SliderButton
-      label={texts.appIntro.continue}
-      onPress={handlePress}
-      style={styles.sliderButtonContainer}
-      isDisabled={isTermsSlide && !hasAcceptedTerms}
-      isLightest={!(isTermsSlide && !hasAcceptedTerms)}
-    />
-  );
+  slider.getListRef?.()?.scrollToOffset?.({
+    animated: false,
+    offset: rtlSafeIndex * width
+  });
+
+  if (triggerOnSlideChange && slider.props?.onSlideChange) {
+    slider.props.onSlideChange(pageNum, prevNum);
+  }
 };
-
-const SkipButton = ({
-  hasAcceptedTerms,
-  setOnboardingComplete,
-  sliderRef,
-  styles,
-  termsAndConditionsAlert,
-  termsSlideIndex,
-  texts
-}: ButtonProps) => {
-  const handlePress = () => {
-    if (termsSlideIndex !== -1 && !hasAcceptedTerms && sliderRef.current) {
-      sliderRef.current?.goToSlide(termsSlideIndex, true);
-      termsAndConditionsAlert();
-      return;
-    }
-
-    setOnboardingComplete();
-  };
-
-  return (
-    <SliderButton
-      label={texts.appIntro.skip}
-      onPress={handlePress}
-      style={[styles.sliderButtonContainer, styles.skipButton]}
-    />
-  );
-};
-
-const DoneButton = ({
-  hasAcceptedTerms,
-  setOnboardingComplete,
-  sliderRef,
-  slides,
-  styles,
-  termsAndConditionsAlert,
-  texts
-}: ButtonProps) => {
-  const handlePress = () => {
-    const currentSlideIndex = sliderRef.current?.state?.activeIndex ?? 0;
-    const isTermsSlide =
-      slides[currentSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
-
-    if (isTermsSlide && !hasAcceptedTerms) {
-      termsAndConditionsAlert();
-      return;
-    }
-
-    setOnboardingComplete();
-  };
-
-  return (
-    <SliderButton
-      label={texts.appIntro.continue}
-      onPress={handlePress}
-      style={styles.sliderButtonContainer}
-      isLightest
-    />
-  );
-};
-
-export default NextButton;
 
 const TermsAndConditionsSection = ({
   backgroundColor,
   contentName,
-  setShowButtonTermsAndConditions
+  hasAcceptedTerms,
+  onTermsAcceptanceChange,
+  reduceMotion
 }: {
   backgroundColor?: string;
   contentName?: string;
-  setShowButtonTermsAndConditions: (value: boolean) => void;
+  hasAcceptedTerms: boolean;
+  onTermsAcceptanceChange: (value: boolean) => void;
+  reduceMotion: boolean;
 }) => {
-  const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
+  const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(hasAcceptedTerms);
   const [isModalVisibleDataPrivacy, setModalVisibleDataPrivacy] = useState(false);
+
+  useEffect(() => {
+    setHasAcceptedDataPrivacy(hasAcceptedTerms);
+  }, [hasAcceptedTerms]);
 
   return (
     <View style={{ position: 'absolute', bottom: normalize(180), width: '100%' }}>
@@ -196,8 +125,9 @@ const TermsAndConditionsSection = ({
           navigate={() => setModalVisibleDataPrivacy(true)}
           linkDescription={texts.profile.privacyCheckLink}
           onPress={() => {
-            setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy);
-            setShowButtonTermsAndConditions(!hasAcceptedDataPrivacy);
+            const nextValue = !hasAcceptedDataPrivacy;
+            setHasAcceptedDataPrivacy(nextValue);
+            onTermsAcceptanceChange(nextValue);
           }}
           title={texts.profile.privacyChecked}
           uncheckedIcon={<Icon.Square color={colors.placeholder} />}
@@ -205,7 +135,7 @@ const TermsAndConditionsSection = ({
       </Wrapper>
 
       <Modal
-        animationType="slide"
+        animationType={reduceMotion ? 'none' : 'slide'}
         onRequestClose={() => setModalVisibleDataPrivacy(false)}
         presentationStyle="pageSheet"
         visible={isModalVisibleDataPrivacy}
@@ -252,12 +182,14 @@ type Props = {
 
 const renderSlide: ListRenderItem<AppIntroSlide> = ({
   backgroundColor,
+  hasAcceptedTerms,
   item,
-  setShowButtonTermsAndConditions
+  onTermsAcceptanceChange
 }: {
   backgroundColor?: string;
+  hasAcceptedTerms: boolean;
   item: AppIntroSlide;
-  setShowButtonTermsAndConditions: (value: boolean) => void;
+  onTermsAcceptanceChange: (value: boolean) => void;
 }) => {
   const ImageComponent = () => (
     <Image
@@ -305,7 +237,8 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({
         <TermsAndConditionsSection
           backgroundColor={backgroundColor}
           contentName={item.contentName}
-          setShowButtonTermsAndConditions={setShowButtonTermsAndConditions}
+          hasAcceptedTerms={hasAcceptedTerms}
+          onTermsAcceptanceChange={onTermsAcceptanceChange}
         />
       )}
     </ScrollView>
@@ -317,8 +250,10 @@ export const AppIntroScreen = ({
   onlyTermsAndConditions,
   backgroundColor = colors.surface
 }: Props) => {
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const [showDoneButtonTermsAndConditions, setShowDoneButtonTermsAndConditions] = useState(true);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const sliderRef = useRef<AppIntroSlider>(null);
 
   const { data, error, loading } = useStaticContent({
@@ -342,12 +277,26 @@ export const AppIntroScreen = ({
   const renderItem = ({ item }) =>
     renderSlide({
       backgroundColor,
+      hasAcceptedTerms,
       item,
-      setShowButtonTermsAndConditions: (value) => {
+      onTermsAcceptanceChange: (value) => {
         setShowDoneButtonTermsAndConditions(value);
         setHasAcceptedTerms(value);
-      }
+      },
+      reduceMotion: isReduceMotionEnabled
     });
+
+  useEffect(() => {
+    const hydrateTermsStatus = async () => {
+      const termsAndConditionsAccepted = await readFromStore(TERMS_AND_CONDITIONS_STORE_KEY);
+      const accepted = termsAndConditionsAccepted === 'accepted';
+
+      setHasAcceptedTerms(accepted);
+      setShowDoneButtonTermsAndConditions(accepted);
+    };
+
+    hydrateTermsStatus();
+  }, []);
 
   useEffect(() => {
     if (error || (!loading && !slides?.length)) {
@@ -367,6 +316,45 @@ export const AppIntroScreen = ({
     return null;
   }
 
+  const isTermsSlide =
+    slides?.[activeSlideIndex]?.onLeaveSlideName === Initializer.TermsAndConditions;
+  const isPrimaryActionDisabled = isTermsSlide && !hasAcceptedTerms;
+  const isLastSlide = activeSlideIndex === slides.length - 1;
+
+  const handleNext = () => {
+    if (isPrimaryActionDisabled) {
+      termsAndConditionsAlert();
+      return;
+    }
+
+    const currentSlide = slides[activeSlideIndex];
+
+    if (currentSlide?.onLeaveSlide) {
+      currentSlide.onLeaveSlide(true);
+    }
+
+    goToIntroSlide(sliderRef, activeSlideIndex + 1, true, isReduceMotionEnabled);
+  };
+
+  const handleSkip = () => {
+    if (termsSlideIndex !== -1 && !hasAcceptedTerms && sliderRef.current) {
+      goToIntroSlide(sliderRef, termsSlideIndex, true, isReduceMotionEnabled);
+      termsAndConditionsAlert();
+      return;
+    }
+
+    setOnboardingComplete();
+  };
+
+  const handleDone = () => {
+    if (isPrimaryActionDisabled) {
+      termsAndConditionsAlert();
+      return;
+    }
+
+    setOnboardingComplete();
+  };
+
   return (
     <SafeAreaViewFlex style={[styles.background, { backgroundColor }]} edges={['top', 'bottom']}>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
@@ -377,43 +365,44 @@ export const AppIntroScreen = ({
         dotClickEnabled={false}
         dotStyle={onlyTermsAndConditions ? styles.hiddenDot : styles.inactiveDot}
         keyExtractor={keyExtractor}
+        onSlideChange={(index) => setActiveSlideIndex(index)}
         renderDoneButton={() => (
-          <DoneButton
-            hasAcceptedTerms={hasAcceptedTerms}
-            setOnboardingComplete={setOnboardingComplete}
-            sliderRef={sliderRef}
-            slides={slides}
-            styles={styles}
-            termsAndConditionsAlert={termsAndConditionsAlert}
-            texts={texts}
+          <SliderButton
+            label={texts.appIntro.continue}
+            onPress={handleDone}
+            style={[
+              styles.sliderButtonContainer,
+              isPrimaryActionDisabled && styles.sliderButtonDisabled
+            ]}
+            isDisabled={false}
+            isLightest={!isPrimaryActionDisabled}
           />
         )}
         renderItem={renderItem}
         ref={sliderRef}
         renderNextButton={() => (
-          <NextButton
-            hasAcceptedTerms={hasAcceptedTerms}
-            sliderRef={sliderRef}
-            slides={slides}
-            styles={styles}
-            termsAndConditionsAlert={termsAndConditionsAlert}
-            texts={texts}
+          <SliderButton
+            label={texts.appIntro.continue}
+            onPress={handleNext}
+            style={[
+              styles.sliderButtonContainer,
+              isPrimaryActionDisabled && styles.sliderButtonDisabled
+            ]}
+            isDisabled={false}
+            isLightest={!isPrimaryActionDisabled}
           />
         )}
         renderSkipButton={() => (
-          <SkipButton
-            hasAcceptedTerms={hasAcceptedTerms}
-            setOnboardingComplete={setOnboardingComplete}
-            sliderRef={sliderRef}
-            styles={styles}
-            termsAndConditionsAlert={termsAndConditionsAlert}
-            termsSlideIndex={termsSlideIndex}
-            texts={texts}
+          <SliderButton
+            label={texts.appIntro.skip}
+            onPress={handleSkip}
+            style={[styles.sliderButtonContainer, styles.skipButton]}
           />
         )}
         scrollEnabled={false}
-        showDoneButton={showDoneButtonTermsAndConditions}
-        showSkipButton
+        showDoneButton={showDoneButtonTermsAndConditions && isLastSlide}
+        showNextButton={!isLastSlide}
+        showSkipButton={!isLastSlide}
         style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
     </SafeAreaViewFlex>

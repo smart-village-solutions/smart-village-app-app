@@ -5,6 +5,30 @@
 This document defines the accessibility baseline for React Native features in this project.
 It covers implementation rules, test expectations, and release checks.
 
+## Runtime Configuration Contract
+
+App-level accessibility behavior is configured from:
+
+- `globalSettings.settings.accessibility.enabledFeatures`
+- `globalSettings.settings.accessibility.defaults`
+
+User preferences are persisted separately in local storage:
+
+- `accessibilityUserSettings`
+
+This separation is required so server-side `globalSettings` refreshes do not overwrite user choices.
+
+## PR Gating Model
+
+Accessibility CI is PR-scoped for merge blocking:
+
+1. Detect changed files/components in PR diff.
+2. Run component-scoped checks for changed files.
+3. Publish JSON/Markdown reports as artifacts and PR comment.
+4. Fail PR only on scoped component findings.
+
+Full-scan tests still run for visibility but do not block PRs by themselves.
+
 ## Implementation Rules
 
 1. Every interactive control must have:
@@ -33,6 +57,15 @@ It covers implementation rules, test expectations, and release checks.
 3. Respect reduced-motion behavior where animations are non-essential.
 4. Validate large text behavior for clipping and overflow in fixed-height controls.
 
+### Reduced Motion Expectations
+
+When app-level `reduceMotionEnabled` is active (or OS reduced motion is active):
+
+1. Stack navigation transitions should be disabled.
+2. Non-essential carousel autoplay should be disabled.
+3. Motion-heavy modal transitions should use `animationType="none"` where practical.
+4. UX flow must remain functionally identical; only animation intensity should change.
+
 ## Test Requirements
 
 1. Add or update component tests when accessibility props are changed.
@@ -50,6 +83,8 @@ Run smoke checks on:
 4. Android font-size scaling
 5. Reduced Motion enabled
 6. High contrast / reduced transparency scenarios
+7. Settings screen and header accessibility modal state sync
+8. Onboarding terms gating (`continue/skip`) behavior
 
 ## PR Review Checklist
 
@@ -60,3 +95,4 @@ Before merge, confirm:
 3. Form changes expose error and disabled semantics.
 4. `npm run test:accessibility` passes.
 5. Any known accessibility tradeoff is documented in the PR description.
+6. If motion behavior changed, reduced-motion mode has been manually verified.

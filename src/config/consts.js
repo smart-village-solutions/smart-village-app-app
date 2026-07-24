@@ -7,6 +7,8 @@ export const consts = {
   a11yLabel: {
     address: '(Adresse)',
     appVersion: '(App-Version)',
+    accessibilityIcon: 'Barrierefreiheit (Taste)',
+    accessibilityIconHint: 'Öffnet die Barrierefreiheits-Einstellungen',
     backIcon: 'Zurück (Taste)',
     backIconHint: 'Navigieren zurück zur vorherigen Seite',
     birthDate: 'Geburtsdatum',

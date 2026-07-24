@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { consts, normalize, texts } from '../config';
 
 import { BoldText } from './Text';
@@ -30,9 +31,11 @@ export const Modal = ({
   onModalVisible,
   overlayStyle
 }: TModal) => {
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+
   return (
     <Overlay
-      animationType="fade"
+      animationType={isReduceMotionEnabled ? 'none' : 'fade'}
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}

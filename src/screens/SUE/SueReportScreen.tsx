@@ -621,7 +621,14 @@ export const SueReportScreen = ({
       });
     } else {
       navigation.setOptions({
-        headerRight: () => null
+        headerRight: () => (
+          <HeaderRight
+            {...{
+              navigation,
+              route
+            }}
+          />
+        )
       });
     }
   }, [storedValues, service, selectedPosition]);
