@@ -1841,6 +1841,10 @@ export const texts = {
     xDaysBefore: 'Tage vorher',
     reminder: 'Erinnerung',
     reminders: 'Erinnerungen',
+    scheduledWasteReminderCount: (count) =>
+      count === 1
+        ? 'Aktuell ist 1 Abfall-Push-Benachrichtigung lokal auf diesem Gerät vorausgeplant.'
+        : `Aktuell sind ${count} Abfall-Push-Benachrichtigungen lokal auf diesem Gerät vorausgeplant.`,
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     sameDay: 'selber Tag',
     save: 'Änderungen speichern',

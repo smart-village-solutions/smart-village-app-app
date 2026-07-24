@@ -17,6 +17,7 @@ import {
 
 const mockGetLocalNotificationPermission = jest.fn(async () => false);
 const mockGetInAppPermission = jest.fn(async () => true);
+const mockGetScheduledWasteReminderNotificationCount = jest.fn(async () => 2);
 const mockReadWasteReminderLocalState = jest.fn(async () => ({
   ownerKey: 'push:test',
   scheduledNotificationIds: [],
@@ -172,6 +173,8 @@ jest.mock('../../src/pushNotifications', () => ({
   getInAppPermission: (...args) => mockGetInAppPermission(...args),
   handleSystemPermissions: jest.fn(async () => false),
   getLocalNotificationPermission: (...args) => mockGetLocalNotificationPermission(...args),
+  getScheduledWasteReminderNotificationCount: (...args) =>
+    mockGetScheduledWasteReminderNotificationCount(...args),
   getReminderSettings: jest.fn(async () => ({ status: 'unavailable' })),
   getWasteReminderUiMode: jest.requireActual('../../src/pushNotifications/WasteReminderConfig')
     .getWasteReminderUiMode,
@@ -236,6 +239,8 @@ jest.mock('../../src/config', () => ({
       wasteReminderPermissionTitle: 'Waste reminders are not allowed',
       reminder: 'Reminder',
       reminders: 'Reminders',
+      scheduledWasteReminderCount: (count) =>
+        `${count} waste push notifications are currently scheduled locally on this device.`,
       sameDay: 'Same day',
       save: 'Save',
       timeOfDay: 'Time of day',
@@ -262,6 +267,7 @@ describe('WasteCollectionSettingsScreen', () => {
     jest.clearAllMocks();
     mockGetInAppPermission.mockResolvedValue(true);
     mockGetLocalNotificationPermission.mockResolvedValue(false);
+    mockGetScheduledWasteReminderNotificationCount.mockResolvedValue(2);
     mockReadWasteReminderLocalState.mockResolvedValue({
       ownerKey: 'push:test',
       scheduledNotificationIds: [],
@@ -348,6 +354,31 @@ describe('WasteCollectionSettingsScreen', () => {
         })
       ).toBe('empty');
     });
+  });
+
+  it('shows the number of locally scheduled waste notifications when reminders are enabled', async () => {
+    const globalSettings = {
+      ...initialContext.globalSettings,
+      navigation: 'tab',
+      waste: {
+        streetId: 1,
+        streetName: 'Test Street (12345 Berlin)',
+        selectedTypeKeys: ['paper']
+      }
+    };
+    let tree;
+
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    expect(collectText(tree.toJSON()).join(' ')).toContain(
+      '2 waste push notifications are currently scheduled locally on this device.'
+    );
   });
 
   it('keeps loaded flexible reminder times when waste types refresh with a new object reference', async () => {
@@ -469,7 +500,8 @@ describe('WasteCollectionSettingsScreen', () => {
 
     const renderedText = collectText(tree.toJSON()).join(' ');
 
-    expect(renderedText).toContain('Reminders Notifications switch:on:enabled');
+    expect(renderedText).toContain('Reminders');
+    expect(renderedText).toContain('Notifications switch:on:enabled');
     expect(renderedText).toContain('11:30');
   });
 

@@ -64,6 +64,7 @@ import {
   getInAppPermission,
   getLocalNotificationPermission,
   getReminderSettings,
+  getScheduledWasteReminderNotificationCount,
   getWasteReminderUiMode,
   markWasteReminderServerSyncSynced,
   normalizePushReminderSlots,
@@ -186,6 +187,7 @@ export const WasteCollectionSettingsScreen = () => {
   const [isInAppPushEnabled, setIsInAppPushEnabled] = useState(true);
   const [isPushPermissionGranted, setIsPushPermissionGranted] = useState(false);
   const [wasteReminderSchedulingStatus, setWasteReminderSchedulingStatus] = useState<string>();
+  const [scheduledWasteReminderCount, setScheduledWasteReminderCount] = useState<number>();
   const [state, dispatch] = useReducer(wasteSettingsReducer, initialWasteSettingsState);
   const {
     activeTypes,
@@ -223,9 +225,13 @@ export const WasteCollectionSettingsScreen = () => {
     void Linking.openSettings();
   }, []);
   const refreshWasteReminderSchedulingStatus = useCallback(async () => {
-    const localState = await readWasteReminderLocalState();
+    const [localState, scheduledCount] = await Promise.all([
+      readWasteReminderLocalState(),
+      getScheduledWasteReminderNotificationCount()
+    ]);
 
     setWasteReminderSchedulingStatus(localState?.scheduling?.status);
+    setScheduledWasteReminderCount(scheduledCount);
   }, []);
   const retryWasteReminderScheduling = useCallback(() => {
     DeviceEventEmitter.emit(WASTE_REMINDER_MANUAL_RETRY_EVENT);
@@ -495,6 +501,7 @@ export const WasteCollectionSettingsScreen = () => {
       wasteTypesData: usedTypes
     });
     setWasteReminderSchedulingStatus(schedulingResult?.status);
+    setScheduledWasteReminderCount(await getScheduledWasteReminderNotificationCount());
 
     return {
       reminderSyncRegistrations,
@@ -770,6 +777,7 @@ export const WasteCollectionSettingsScreen = () => {
         reminderTime={reminderTime}
         reminderUiMode={reminderUiMode}
         selectedTypeKeys={selectedTypeKeys}
+        scheduledWasteReminderCount={scheduledWasteReminderCount}
         setActiveFlexibleTimePicker={setActiveFlexibleTimePicker}
         setFlexibleLeadDays={setFlexibleLeadDays}
         setShowDatePicker={setShowDatePicker}
@@ -828,6 +836,7 @@ type SelectedStreetSettingsContentProps = {
   reminderTime: Date;
   reminderUiMode: ReturnType<typeof getWasteReminderUiMode>;
   selectedTypeKeys: string[];
+  scheduledWasteReminderCount?: number;
   setActiveFlexibleTimePicker: React.Dispatch<
     React.SetStateAction<{ slotId: string; typeKey: string } | undefined>
   >;
@@ -869,6 +878,7 @@ const SelectedStreetSettingsContent = ({
   reminderTime,
   reminderUiMode,
   selectedTypeKeys,
+  scheduledWasteReminderCount,
   setActiveFlexibleTimePicker,
   setFlexibleLeadDays,
   setShowDatePicker,
@@ -928,6 +938,7 @@ const SelectedStreetSettingsContent = ({
         reminderTime={reminderTime}
         reminderUiMode={reminderUiMode}
         selectedTypeKeys={selectedTypeKeys}
+        scheduledWasteReminderCount={scheduledWasteReminderCount}
         setActiveFlexibleTimePicker={setActiveFlexibleTimePicker}
         setFlexibleLeadDays={setFlexibleLeadDays}
         setShowDatePicker={setShowDatePicker}
@@ -1138,6 +1149,7 @@ type ReminderSettingsPanelProps = {
   reminderTime: Date;
   reminderUiMode: ReturnType<typeof getWasteReminderUiMode>;
   selectedTypeKeys: string[];
+  scheduledWasteReminderCount?: number;
   setActiveFlexibleTimePicker: React.Dispatch<
     React.SetStateAction<{ slotId: string; typeKey: string } | undefined>
   >;
@@ -1170,6 +1182,7 @@ const ReminderSettingsPanel = ({
   reminderTime,
   reminderUiMode,
   selectedTypeKeys,
+  scheduledWasteReminderCount,
   setActiveFlexibleTimePicker,
   setFlexibleLeadDays,
   setShowDatePicker,
@@ -1184,6 +1197,11 @@ const ReminderSettingsPanel = ({
     <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
       <WrapperVertical style={styles.mediumPaddingVertical}>
         <RegularText big>{wasteTexts.reminders}</RegularText>
+        {showNotificationSettings && scheduledWasteReminderCount !== undefined && (
+          <RegularText small placeholder>
+            {wasteTexts.scheduledWasteReminderCount(scheduledWasteReminderCount)}
+          </RegularText>
+        )}
       </WrapperVertical>
       {areWasteReminderControlsDisabled && (
         <WrapperVertical style={styles.pushDisabledHint}>

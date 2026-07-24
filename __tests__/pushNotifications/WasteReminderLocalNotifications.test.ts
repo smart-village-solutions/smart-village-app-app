@@ -4,6 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import {
   clearWasteReminderLocalNotifications,
+  getScheduledWasteReminderNotificationCount,
   migrateWasteReminderLocalStateToCurrentOwner,
   rescheduleWasteReminderNotificationsFromLocalState,
   retryPendingWasteReminderNotificationCancellations,
@@ -90,6 +91,27 @@ const paperWasteTypesData = {
 
 const parseStoredReminderState = async () =>
   JSON.parse((await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY)) || '{}');
+
+describe('getScheduledWasteReminderNotificationCount', () => {
+  it('counts only scheduled waste reminder notifications', async () => {
+    mockScheduledNotifications = [
+      {
+        content: { data: { query_type: 'WasteAddresses', reminderKey: 'waste:key-1' } },
+        identifier: 'waste-1'
+      },
+      {
+        content: { data: { query_type: 'WasteAddresses', reminderKey: 'waste:key-2' } },
+        identifier: 'waste-2'
+      },
+      {
+        content: { data: { query_type: 'OtherQuery', reminderKey: 'other:key-1' } },
+        identifier: 'other-1'
+      }
+    ];
+
+    await expect(getScheduledWasteReminderNotificationCount()).resolves.toBe(2);
+  });
+});
 
 describe('scheduleWasteReminderNotifications', () => {
   beforeEach(async () => {

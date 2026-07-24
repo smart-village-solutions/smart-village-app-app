@@ -757,6 +757,9 @@ const getScheduledWasteReminderNotificationIds = async () => {
   }
 };
 
+export const getScheduledWasteReminderNotificationCount = async () =>
+  (await getScheduledWasteReminderNotificationIds()).length;
+
 const logWasteReminderLocalState = (state: WasteReminderLocalState) => {
   if (!__DEV__) {
     return;
