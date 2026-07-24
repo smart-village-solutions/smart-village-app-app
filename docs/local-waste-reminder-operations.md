@@ -44,7 +44,12 @@ Ein sofortiger nativer Bestand von 0 ist kein Energiesparproblem.
 
 ## Datenschutz
 
-Für Diagnose und Testprotokolle sind nur Hersteller, Modell, Android-Version,
-App-Version, feste Fehlerklasse sowie erwartete und tatsächlich registrierte
-Anzahl zulässig. Keine Adresse, Abfallart, Push- oder Access-Token, Owner-Hashes,
-Notification-IDs, Reminder-Keys, Inhalte oder konkreten Termine aufzeichnen.
+Für interne System-, Diagnose- und Testprotokolle sind nur Hersteller, Modell,
+Android-Version, App-Version, feste Fehlerklasse, feste Status-/Outcome-Werte,
+unpersönliche Modus- und Verfügbarkeitswerte sowie aggregierte erwartete und
+tatsächlich registrierte Anzahlen zulässig. Keine Adresse, Abfallart, Push- oder
+Access-Token, Owner-Hashes, Server- oder Notification-IDs, Reminder-Keys,
+Inhalte oder konkreten Termine aufzeichnen. Daten, die Nutzerinnen und Nutzer
+über den bestehenden Feedback-/Diagnosebericht bewusst übermitteln, fallen
+nicht unter diese Einschränkung und werden durch diese interne Logging-Regel
+nicht verändert.

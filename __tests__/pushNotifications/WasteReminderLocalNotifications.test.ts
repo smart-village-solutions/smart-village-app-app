@@ -19,7 +19,10 @@ import {
 } from '../../src/pushNotifications/WasteReminderLocalStorage';
 import type { WasteReminderServerSyncPayload } from '../../src/pushNotifications/WasteReminderLocalStorage';
 import type { WasteReminderOccurrence } from '../../src/pushNotifications/WasteReminderScheduler';
-import { reportWasteReminderSchedulingTransition } from '../../src/pushNotifications/WasteReminderDiagnostics';
+import {
+  reportWasteReminderOwnerMigration,
+  reportWasteReminderSchedulingTransition
+} from '../../src/pushNotifications/WasteReminderDiagnostics';
 
 let mockScheduledNotifications: Array<{
   content: { data: { query_type: string; reminderKey: string } };
@@ -51,6 +54,7 @@ jest.mock('expo-secure-store', () => ({
 
 jest.mock('../../src/pushNotifications/WasteReminderDiagnostics', () => ({
   ...jest.requireActual('../../src/pushNotifications/WasteReminderDiagnostics'),
+  reportWasteReminderOwnerMigration: jest.fn(),
   reportWasteReminderSchedulingTransition: jest.fn()
 }));
 
@@ -902,6 +906,14 @@ describe('scheduleWasteReminderNotifications', () => {
               storeId: 45,
               time: '09:00',
               typeKey: 'paper'
+            },
+            {
+              active: false,
+              leadDays: 2,
+              slotId: 'second',
+              storeId: 46,
+              time: '18:00',
+              typeKey: 'organic'
             }
           ],
           activeTypes: {
@@ -925,7 +937,22 @@ describe('scheduleWasteReminderNotifications', () => {
       organic: { active: false },
       paper: { active: true }
     });
-    expect(state.serverSyncPayload.activeReminderRegistrations[0]).not.toHaveProperty('storeId');
+    expect(state.serverSyncPayload.activeReminderRegistrations).toEqual([
+      {
+        active: true,
+        leadDays: 1,
+        slotId: 'first',
+        time: '09:00',
+        typeKey: 'paper'
+      },
+      {
+        active: false,
+        leadDays: 2,
+        slotId: 'second',
+        time: '18:00',
+        typeKey: 'organic'
+      }
+    ]);
     expect(state.serverSyncPayload.locationData).toEqual({
       city: 'Berlin',
       street: 'Test Street',
@@ -959,6 +986,53 @@ describe('scheduleWasteReminderNotifications', () => {
     const writeCountAfterMigration = (AsyncStorage.setItem as jest.Mock).mock.calls.length;
     await expect(migrateWasteReminderLocalStateToCurrentOwner()).resolves.toBe('unchanged');
     expect(AsyncStorage.setItem).toHaveBeenCalledTimes(writeCountAfterMigration);
+    expect(reportWasteReminderOwnerMigration).toHaveBeenLastCalledWith('unchanged');
+  });
+
+  it('reports unchanged without writing when no local reminder state exists', async () => {
+    await expect(migrateWasteReminderLocalStateToCurrentOwner()).resolves.toBe('unchanged');
+
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+    expect(reportWasteReminderOwnerMigration).toHaveBeenCalledWith('unchanged');
+  });
+
+  it('logs only aggregate local-state and notification inventory fields', async () => {
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => undefined);
+
+    await storeWasteReminderSettingsWithoutScheduling(
+      createServerSyncPayload({
+        activeReminderRegistrations: [
+          {
+            active: true,
+            leadDays: 1,
+            slotId: 'private-slot',
+            storeId: 45,
+            time: '09:00',
+            typeKey: 'private-waste-type'
+          }
+        ],
+        locationData: {
+          city: 'private-city',
+          street: 'private-street',
+          zip: 'private-zip'
+        }
+      })
+    );
+
+    const serializedLogs = JSON.stringify(infoSpy.mock.calls);
+    [
+      'private-city',
+      'private-street',
+      'private-zip',
+      'private-waste-type',
+      'private-slot',
+      'access-token',
+      'storeId',
+      'notificationId'
+    ].forEach((forbiddenValue) => expect(serializedLogs).not.toContain(forbiddenValue));
+    expect(serializedLogs).toContain('activeRegistrationCount');
+    expect(serializedLogs).toContain('scheduledCount');
+    infoSpy.mockRestore();
   });
 
   it('does not report the same scheduling failure state more than once', async () => {
@@ -1007,10 +1081,20 @@ describe('scheduleWasteReminderNotifications', () => {
     await AsyncStorage.setItem(
       WASTE_REMINDER_LOCAL_STORAGE_KEY,
       JSON.stringify({
-        ownerKey: 'anonymous',
         scheduledNotificationIds: [],
         scheduledReminderKeys: [],
-        serverSyncPayload: createServerSyncPayload(),
+        serverSyncPayload: createServerSyncPayload({
+          activeReminderRegistrations: [
+            {
+              active: true,
+              leadDays: 1,
+              slotId: 'first',
+              storeId: 45,
+              time: '09:00',
+              typeKey: 'paper'
+            }
+          ]
+        }),
         serverSyncStatus: 'pending'
       })
     );
@@ -1021,7 +1105,10 @@ describe('scheduleWasteReminderNotifications', () => {
     const storedState = await parseStoredReminderState();
 
     expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalled();
-    expect(storedState.serverSyncPayload).toBeDefined();
+    expect(storedState.serverSyncPayload.activeTypes.paper).toEqual({ active: true });
+    expect(storedState.serverSyncPayload.activeReminderRegistrations[0]).not.toHaveProperty(
+      'storeId'
+    );
     expect(storedState.ownerKey).not.toBe('anonymous');
   });
 

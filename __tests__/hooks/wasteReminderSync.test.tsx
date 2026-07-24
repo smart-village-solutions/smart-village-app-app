@@ -414,6 +414,148 @@ describe('useWasteReminderSync', () => {
     expect(rescheduleWasteReminderNotificationsFromLocalState).toHaveBeenCalledTimes(1);
   });
 
+  it('self-heals one token rotation from opt-out through failed and successful sync', async () => {
+    type RotationState = {
+      activeReminderRegistrations: Array<{
+        active: boolean;
+        storeId?: number;
+        typeKey: string;
+      }>;
+      activeTypes: Record<string, { active: boolean; storeId?: number }>;
+      ownerKey: string;
+      scheduledNotificationIds: string[];
+      scheduledReminderKeys: string[];
+      serverSyncPayload: {
+        activeReminderRegistrations: Array<{
+          active: boolean;
+          storeId?: number;
+          typeKey: string;
+        }>;
+        activeTypes: Record<string, { active: boolean; storeId?: number }>;
+        notificationSettings: Record<string, boolean>;
+        reminderTime: string;
+        usedTypeKeys: string[];
+      };
+      serverSyncStatus: 'pending' | 'synced';
+    };
+    let inAppPermission = false;
+    let persistedToken: string | undefined;
+    let syncAttempt = 0;
+    const rotationState: RotationState = {
+      activeReminderRegistrations: [{ active: true, storeId: 31, typeKey: 'paper' }],
+      activeTypes: { paper: { active: true, storeId: 21 } },
+      ownerKey: 'push:token-a',
+      scheduledNotificationIds: [],
+      scheduledReminderKeys: [],
+      serverSyncPayload: {
+        activeReminderRegistrations: [{ active: true, storeId: 31, typeKey: 'paper' }],
+        activeTypes: { paper: { active: true, storeId: 21 } },
+        notificationSettings: { paper: true },
+        reminderTime: '2000-01-01T08:00:00.000Z',
+        usedTypeKeys: ['paper']
+      },
+      serverSyncStatus: 'pending'
+    };
+
+    (getInAppPermission as jest.Mock).mockImplementation(async () => inAppPermission);
+    (readWasteReminderLocalState as jest.Mock).mockImplementation(async () => rotationState);
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockImplementation(async () => {
+      if (!persistedToken) {
+        return 'deferred-no-token';
+      }
+      if (rotationState.ownerKey === 'push:token-b') {
+        return 'unchanged';
+      }
+      rotationState.ownerKey = 'push:token-b';
+      rotationState.activeTypes = { paper: { active: true } };
+      rotationState.activeReminderRegistrations = [{ active: true, typeKey: 'paper' }];
+      rotationState.serverSyncPayload = {
+        ...rotationState.serverSyncPayload,
+        activeTypes: { paper: { active: true } },
+        activeReminderRegistrations: [{ active: true, typeKey: 'paper' }]
+      };
+      rotationState.serverSyncStatus = 'pending';
+      return 'migrated';
+    });
+    (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async () => {
+      syncAttempt += 1;
+      return {
+        serverSyncPayload: {
+          ...rotationState.serverSyncPayload,
+          activeTypes: { paper: { active: true, storeId: 41 } },
+          activeReminderRegistrations: [{ active: true, storeId: 51, typeKey: 'paper' }]
+        },
+        success: syncAttempt > 1
+      };
+    });
+    (markWasteReminderServerSyncSynced as jest.Mock).mockImplementation(async (payload) => {
+      rotationState.serverSyncPayload = payload;
+      rotationState.serverSyncStatus = 'synced';
+    });
+    (rescheduleWasteReminderNotificationsFromLocalState as jest.Mock).mockImplementation(
+      async () => {
+        rotationState.scheduledNotificationIds = ['local-reminder'];
+        rotationState.scheduledReminderKeys = ['waste:paper'];
+      }
+    );
+
+    const tree = await renderHook();
+    await flushPromises();
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+
+    // The opt-in event is emitted only after token B has been persisted.
+    persistedToken = 'token-b';
+    inAppPermission = true;
+    await act(async () => {
+      permissionChangeListener?.(true);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(rotationState.ownerKey).toBe('push:token-b');
+    expect(rotationState.serverSyncPayload.activeTypes.paper).toEqual({ active: true });
+    expect(rotationState.serverSyncPayload.activeReminderRegistrations[0]).not.toHaveProperty(
+      'storeId'
+    );
+    expect(rotationState.serverSyncStatus).toBe('pending');
+    expect(rotationState.scheduledNotificationIds).toEqual(['local-reminder']);
+
+    await act(async () => {
+      tokenChangeListener?.();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(rotationState.serverSyncStatus).toBe('synced');
+    expect(rotationState.serverSyncPayload.activeTypes.paper.storeId).toBe(41);
+    expect(rotationState.scheduledNotificationIds).toEqual(['local-reminder']);
+
+    jest.clearAllMocks();
+    await act(async () => {
+      tokenChangeListener?.();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    expect(migrateWasteReminderLocalStateToCurrentOwner).toHaveBeenCalledTimes(1);
+    await expect(
+      (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mock.results[0].value
+    ).resolves.toBe('unchanged');
+
+    jest.clearAllMocks();
+    persistedToken = undefined;
+    rotationState.ownerKey = 'push:token-a';
+    await act(async () => {
+      tokenChangeListener?.();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+    expect(rescheduleWasteReminderNotificationsFromLocalState).not.toHaveBeenCalled();
+
+    act(() => tree?.unmount());
+    expect(listenerRemovers.get('pushNotificationTokenChanged')).toHaveBeenCalledTimes(1);
+  });
+
   it('removes permission, token-change, and manual retry subscriptions on unmount', async () => {
     const tree = await renderHook();
 

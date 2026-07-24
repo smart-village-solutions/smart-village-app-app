@@ -462,6 +462,7 @@ export const migrateWasteReminderLocalStateToCurrentOwner =
     const localState = await readWasteReminderLocalState();
 
     if (!localState) {
+      reportWasteReminderOwnerMigration('unchanged');
       return 'unchanged' as const;
     }
 
@@ -473,6 +474,7 @@ export const migrateWasteReminderLocalStateToCurrentOwner =
     }
 
     if (localState.ownerKey === ownerKey) {
+      reportWasteReminderOwnerMigration('unchanged');
       return 'unchanged' as const;
     }
 
@@ -755,13 +757,22 @@ const getScheduledWasteReminderNotificationIds = async () => {
   }
 };
 
-const logWasteReminderLocalState = (state: unknown) => {
+const logWasteReminderLocalState = (state: WasteReminderLocalState) => {
   if (!__DEV__) {
     return;
   }
 
   // eslint-disable-next-line no-console
-  console.info('[WasteReminder][local state]', JSON.stringify(state, null, 2));
+  console.info('[WasteReminder][local state]', {
+    activeRegistrationCount: state.serverSyncPayload?.activeReminderRegistrations?.length ?? 0,
+    activeTypeCount: Object.values(state.serverSyncPayload?.activeTypes ?? {}).filter(
+      ({ active }) => active
+    ).length,
+    scheduledCoverageReminderCount: state.scheduledCoverageReminderNotificationIds?.length ?? 0,
+    scheduledReminderCount: state.scheduledNotificationIds.length,
+    schedulingStatus: state.scheduling?.status,
+    serverSyncStatus: state.serverSyncStatus
+  });
 };
 
 const logWasteReminderScheduledIds = ({
@@ -776,10 +787,10 @@ const logWasteReminderScheduledIds = ({
   }
 
   // eslint-disable-next-line no-console
-  console.info(
-    '[WasteReminder][scheduled ids]',
-    JSON.stringify({ remindersCount, scheduledNotificationIds }, null, 2)
-  );
+  console.info('[WasteReminder][scheduled inventory]', {
+    expectedCount: remindersCount,
+    scheduledCount: scheduledNotificationIds.length
+  });
 };
 
 const logScheduledWasteReminderNotifications = async () => {
@@ -790,18 +801,9 @@ const logScheduledWasteReminderNotifications = async () => {
   const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
 
   // eslint-disable-next-line no-console
-  console.info(
-    '[WasteReminder][expo scheduled notifications]',
-    JSON.stringify(
-      scheduledNotifications.map((notification) => ({
-        content: notification.content,
-        identifier: notification.identifier,
-        trigger: notification.trigger
-      })),
-      null,
-      2
-    )
-  );
+  console.info('[WasteReminder][expo scheduled inventory]', {
+    scheduledCount: scheduledNotifications.length
+  });
 };
 
 const buildReminderBody = ({

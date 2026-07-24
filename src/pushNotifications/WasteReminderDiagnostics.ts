@@ -19,7 +19,7 @@ export type WasteReminderDiagnostic = {
   schedulingStatus: WasteReminderSchedulingStatus;
 };
 
-export type WasteReminderOwnerMigrationOutcome = 'deferred-no-token' | 'migrated';
+export type WasteReminderOwnerMigrationOutcome = 'deferred-no-token' | 'migrated' | 'unchanged';
 export type WasteReminderMaintenanceSyncOutcome = 'failed-pending' | 'skipped-no-token' | 'synced';
 
 export const buildWasteReminderDiagnostic = ({

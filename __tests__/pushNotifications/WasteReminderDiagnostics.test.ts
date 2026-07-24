@@ -85,13 +85,18 @@ describe('WasteReminderDiagnostics', () => {
 
   it('reports lifecycle outcomes with fixed messages and enum-only contexts', () => {
     reportWasteReminderOwnerMigration('migrated');
+    reportWasteReminderOwnerMigration('unchanged');
     reportWasteReminderMaintenanceSync('failed-pending');
 
     expect(Sentry.captureMessage).toHaveBeenNthCalledWith(1, 'waste_reminder_owner_migration', {
       contexts: { wasteReminder: { outcome: 'migrated' } },
       level: 'info'
     });
-    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(2, 'waste_reminder_maintenance_sync', {
+    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(2, 'waste_reminder_owner_migration', {
+      contexts: { wasteReminder: { outcome: 'unchanged' } },
+      level: 'debug'
+    });
+    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(3, 'waste_reminder_maintenance_sync', {
       contexts: { wasteReminder: { outcome: 'failed-pending' } },
       level: 'warning'
     });

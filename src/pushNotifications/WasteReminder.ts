@@ -51,25 +51,33 @@ type WasteReminderServerSyncActiveRegistration = NonNullable<
   WasteReminderServerSyncPayload['activeReminderRegistrations']
 >[number];
 
-const logWasteReminderServerRequest = (method: 'DELETE' | 'POST', payload: unknown) => {
-  if (!__DEV__) {
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.info(`[WasteReminder][server ${method}]`, JSON.stringify(payload, null, 2));
+type WasteReminderServerDebugDetails = {
+  activeReminderRegistrationsCount?: number;
+  hasAccessToken?: boolean;
+  hasLocalCoverageUntil?: boolean;
+  hasPushToken?: boolean;
+  mode?: 'flexible' | 'legacy';
 };
 
-const logWasteReminderServerDebug = (message: string, payload?: unknown) => {
+const logWasteReminderServerRequest = (method: 'DELETE' | 'POST') => {
   if (!__DEV__) {
     return;
   }
 
   // eslint-disable-next-line no-console
-  console.info(
-    `[WasteReminder][server] ${message}`,
-    payload ? JSON.stringify(payload, null, 2) : ''
-  );
+  console.info(`[WasteReminder][server ${method}]`, { outcome: 'started' });
+};
+
+const logWasteReminderServerDebug = (
+  message: string,
+  details?: WasteReminderServerDebugDetails
+) => {
+  if (!__DEV__) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.info(`[WasteReminder][server] ${message}`, details ?? {});
 };
 
 const getStoredWasteReminderPushToken = () => getPushTokenFromStorage();
@@ -177,13 +185,7 @@ const updateReminderSettings = async ({
   };
 
   if (accessToken && pushToken) {
-    logWasteReminderServerRequest('POST', {
-      ...requestBody,
-      notification_device: {
-        ...requestBody.notification_device,
-        token: '[present]'
-      }
-    });
+    logWasteReminderServerRequest('POST');
 
     try {
       const response = await fetch(requestPath, fetchObj);
@@ -198,8 +200,7 @@ const updateReminderSettings = async ({
 
   logWasteReminderServerDebug('POST skipped: missing credentials', {
     hasAccessToken: !!accessToken,
-    hasPushToken: !!pushToken,
-    wasteType
+    hasPushToken: !!pushToken
   });
 };
 
@@ -221,7 +222,7 @@ const deleteReminderSetting = async (id: number | string) => {
   };
 
   if (accessToken && pushToken) {
-    logWasteReminderServerRequest('DELETE', { id });
+    logWasteReminderServerRequest('DELETE');
 
     try {
       const response = await fetch(requestPath, fetchObj);
@@ -241,8 +242,7 @@ const deleteReminderSetting = async (id: number | string) => {
 
   logWasteReminderServerDebug('DELETE skipped: missing credentials', {
     hasAccessToken: !!accessToken,
-    hasPushToken: !!pushToken,
-    id
+    hasPushToken: !!pushToken
   });
 
   return false;
@@ -281,8 +281,7 @@ export const syncWasteReminderSettingsWithServer = async (
   logWasteReminderServerDebug('sync started', {
     activeReminderRegistrationsCount: payload.activeReminderRegistrations?.length,
     hasLocalCoverageUntil: !!localCoverageUntil,
-    mode: payload.activeReminderRegistrations ? 'flexible' : 'legacy',
-    usedTypeKeys: payload.usedTypeKeys
+    mode: payload.activeReminderRegistrations ? 'flexible' : 'legacy'
   });
 
   let errorOccurred = false;

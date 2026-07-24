@@ -70,6 +70,31 @@ describe('updateWasteReminderSettings server sync', () => {
     expect(requestBody.waste_registration.local_coverage_until).toBe('2026-10-15T07:00:00.000Z');
   });
 
+  it('does not include reminder payload fields in internal server logs', async () => {
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => undefined);
+
+    await updateWasteReminderSettings({
+      isActive: true,
+      localCoverageUntil: new Date('2026-10-15T09:00:00.000+02:00'),
+      locationData: { city: 'private-city', street: 'private-street', zip: 'private-zip' },
+      onDayBefore: true,
+      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
+      typeKey: 'private-waste-type'
+    });
+
+    const serializedLogs = JSON.stringify(infoSpy.mock.calls);
+    [
+      'private-city',
+      'private-street',
+      'private-zip',
+      'private-waste-type',
+      'push-token',
+      '2026-10-15'
+    ].forEach((forbiddenValue) => expect(serializedLogs).not.toContain(forbiddenValue));
+    expect(serializedLogs).toContain('"outcome":"started"');
+    infoSpy.mockRestore();
+  });
+
   it('keeps the old payload shape when local coverage is not provided', async () => {
     await updateWasteReminderSettings({
       isActive: true,

@@ -276,7 +276,12 @@ export const useWasteReminderSync = () => {
     if (__DEV__) {
       void readWasteReminderLocalState().then((localState) => {
         // eslint-disable-next-line no-console
-        console.info('[WasteReminder][app start local state]', JSON.stringify(localState, null, 2));
+        console.info('[WasteReminder][app start]', {
+          hasLocalState: !!localState,
+          scheduledReminderCount: localState?.scheduledNotificationIds?.length ?? 0,
+          schedulingStatus: localState?.scheduling?.status,
+          serverSyncStatus: localState?.serverSyncStatus
+        });
       });
     }
   }, []);
