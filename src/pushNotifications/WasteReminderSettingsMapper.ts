@@ -41,13 +41,15 @@ export const buildReminderSettingsFromRegistrations = (
     const typeSetting = reminderSettingsByType[registration.typeKey];
     const slotSetting = typeSetting?.reminders[registration.slotId];
 
-    if (!typeSetting || !slotSetting || registration.active === false) {
+    if (!typeSetting || !slotSetting) {
       return;
     }
 
-    typeSetting.enabled = true;
+    const enabled = registration.active !== false;
+
+    typeSetting.enabled ||= enabled;
     typeSetting.reminders[registration.slotId] = {
-      enabled: true,
+      enabled,
       leadDays: registration.leadDays,
       storeId: registration.storeId,
       time: registration.time

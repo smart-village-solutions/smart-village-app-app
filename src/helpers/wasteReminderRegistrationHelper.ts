@@ -76,7 +76,7 @@ export const buildReminderServerSyncRegistrations = (
     const isTypeActive = !!notificationSettings[typeKey];
 
     return Object.entries(typeSetting.reminders).map(([slotId, slotSetting]) => ({
-      active: isTypeActive && slotSetting.enabled,
+      active: isTypeActive,
       leadDays: slotSetting.leadDays,
       slotId,
       storeId: slotSetting.storeId,

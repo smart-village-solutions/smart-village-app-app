@@ -44,4 +44,43 @@ describe('buildReminderServerSyncRegistrations', () => {
       }
     ]);
   });
+
+  it('reactivates persisted slots through the visible type notification setting', () => {
+    const registrations = buildReminderServerSyncRegistrations(
+      {
+        paper: {
+          enabled: false,
+          reminders: {
+            first: {
+              enabled: false,
+              leadDays: 2,
+              time: '10:00'
+            }
+          }
+        }
+      },
+      {
+        paper: {
+          color: '#000000',
+          icon: 'paper',
+          label: 'Paper',
+          reminders: {
+            channels: { push: true },
+            push: {
+              slots: [{ default_lead_days: 1, id: 'first', max_lead_days: 7 }]
+            }
+          },
+          selected_color: '#111111'
+        }
+      },
+      ['paper'],
+      { paper: true }
+    );
+
+    expect(registrations[0]).toMatchObject({
+      active: true,
+      leadDays: 2,
+      time: '10:00'
+    });
+  });
 });

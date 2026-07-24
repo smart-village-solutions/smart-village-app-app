@@ -70,6 +70,25 @@ describe('WasteReminderSettingsMapper', () => {
     expect(Object.values(result.paper.reminders).every((setting) => !setting.enabled)).toBe(true);
   });
 
+  it('preserves configured values for inactive registrations', () => {
+    const result = buildReminderSettingsFromRegistrations(usedTypes, [
+      {
+        active: false,
+        leadDays: 4,
+        slotId: 'first',
+        time: '10:00',
+        typeKey: 'paper'
+      }
+    ]);
+
+    expect(result.paper.reminders.first).toEqual({
+      enabled: false,
+      leadDays: 4,
+      storeId: undefined,
+      time: '10:00'
+    });
+  });
+
   it('maps legacy records without a slot id to the default slot only', () => {
     const legacyTypes = {
       paper: {
