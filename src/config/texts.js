@@ -336,6 +336,7 @@ export const texts = {
   defectReport: {
     usePosition: 'Meine aktuelle Position verwenden',
     useMap: 'Auf der Karte auswählen',
+    continueWithoutLocation: 'Ohne Standortangabe fortfahren',
     abort: 'Abbrechen',
     alerts: {
       error: 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',

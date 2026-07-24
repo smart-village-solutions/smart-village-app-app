@@ -105,14 +105,16 @@ export const DefectReportCreateForm = ({
             }
           ],
           contentBlocks: [{ body: defectReportNewData.body, title: defectReportNewData.title }],
-          addresses: [
-            {
-              geoLocation: {
-                latitude: selectedPosition?.latitude,
-                longitude: selectedPosition?.longitude
-              }
-            }
-          ],
+          addresses: selectedPosition
+            ? [
+                {
+                  geoLocation: {
+                    latitude: selectedPosition.latitude,
+                    longitude: selectedPosition.longitude
+                  }
+                }
+              ]
+            : [],
           mediaContents: [
             {
               sourceUrl: {
