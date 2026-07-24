@@ -1,14 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { AccessibilityContext } from './AccessibilityProvider';
+import { AppWideGrayscaleFilter } from './components/AppWideGrayscaleFilter';
 import { fontConfig } from './config';
 import { SUE_REPORT_VALUES } from './screens';
 
 const RootView = ({ children }: { children: React.ReactNode }) => {
   const [isFontLoaded] = useFonts(fontConfig);
+  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
 
   const onLayoutRootView = useCallback(async () => {
     if (isFontLoaded) {
@@ -28,7 +31,9 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <View style={styles.flex} onLayout={onLayoutRootView}>
-      {children}
+      <AppWideGrayscaleFilter isGrayscaleEnabled={isGrayscaleEnabled}>
+        {children}
+      </AppWideGrayscaleFilter>
     </View>
   );
 };

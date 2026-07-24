@@ -8,6 +8,7 @@ export const useAccessibilityPreferences = () => {
   const {
     defaults,
     features,
+    isGrayscaleEnabled,
     preferences,
     resetPreferences,
     setPreference,
@@ -67,6 +68,7 @@ export const useAccessibilityPreferences = () => {
     availablePreferenceKeys,
     defaults,
     features,
+    isGrayscaleEnabled,
     isPreferenceAvailable,
     isTextScalingAvailable,
     preferences,

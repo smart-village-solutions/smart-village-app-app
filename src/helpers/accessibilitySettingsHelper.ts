@@ -9,6 +9,7 @@ export const ACCESSIBILITY_FEATURE_BY_PREFERENCE: Record<
   AccessibilityTogglePreferenceKey,
   AccessibilityFeatureKey
 > = {
+  isGrayscaleEnabled: 'isGrayscaleEnabled',
   highContrastEnabled: 'highContrast',
   readAloudEnabled: 'readAloud',
   reduceMotionEnabled: 'reduceMotion',
@@ -22,6 +23,7 @@ export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = 
   boldText: true,
   headerEntry: true,
   highContrast: true,
+  isGrayscaleEnabled: true,
   readAloud: true,
   reduceMotion: true,
   reduceTransparency: true,
@@ -30,6 +32,7 @@ export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = 
 };
 
 export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
+  isGrayscaleEnabled: false,
   highContrastEnabled: false,
   readAloudEnabled: false,
   reduceMotionEnabled: false,
@@ -112,6 +115,10 @@ export const resolveAccessibilityConfiguration = (
 
   const defaults: AccessibilityUserSettings = {
     ...DEFAULT_ACCESSIBILITY_USER_SETTINGS,
+    isGrayscaleEnabled:
+      typeof defaultSettings.isGrayscaleEnabled === 'boolean'
+        ? defaultSettings.isGrayscaleEnabled
+        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.isGrayscaleEnabled,
     highContrastEnabled:
       typeof defaultSettings.highContrastEnabled === 'boolean'
         ? defaultSettings.highContrastEnabled

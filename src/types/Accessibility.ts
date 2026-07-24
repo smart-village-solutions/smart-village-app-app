@@ -8,6 +8,7 @@ export type AccessibilitySystemState = {
 };
 
 export type AccessibilityTogglePreferenceKey =
+  | 'isGrayscaleEnabled'
   | 'highContrastEnabled'
   | 'readAloudEnabled'
   | 'reduceMotionEnabled'
@@ -16,6 +17,7 @@ export type AccessibilityTogglePreferenceKey =
 export type AccessibilityPreferenceKey = AccessibilityTogglePreferenceKey | 'textScaleLevel';
 
 export type AccessibilityUserSettings = {
+  isGrayscaleEnabled: boolean;
   highContrastEnabled: boolean;
   readAloudEnabled: boolean;
   reduceMotionEnabled: boolean;
@@ -24,6 +26,7 @@ export type AccessibilityUserSettings = {
 };
 
 export type AccessibilityFeatureKey =
+  | 'isGrayscaleEnabled'
   | 'textScaling'
   | 'boldText'
   | 'highContrast'
