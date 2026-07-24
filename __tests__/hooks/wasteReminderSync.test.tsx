@@ -1,4 +1,6 @@
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { AppState, DeviceEventEmitter } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
@@ -17,6 +19,17 @@ import {
 } from '../../src/pushNotifications';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 import { useWasteReminderSync } from '../../src/hooks/wasteReminderSync';
+import { migrateWasteReminderLocalStateToCurrentOwner as migrateWasteReminderLocalStateToCurrentOwnerActual } from '../../src/pushNotifications/WasteReminderLocalNotifications';
+import {
+  getWasteReminderOwnerKey,
+  markWasteReminderServerSyncSynced as markWasteReminderServerSyncSyncedActual,
+  readWasteReminderLocalState as readWasteReminderLocalStateActual,
+  writeWasteReminderLocalState as writeWasteReminderLocalStateActual
+} from '../../src/pushNotifications/WasteReminderLocalStorage';
+import {
+  handleIncomingToken,
+  PushNotificationStorageKeys
+} from '../../src/pushNotifications/TokenHandling';
 
 const mockStreetData = {
   wasteAddresses: [
@@ -36,6 +49,22 @@ let permissionChangeListener: ((isEnabled: boolean) => void) | undefined;
 let manualRetryListener: (() => void) | undefined;
 let tokenChangeListener: (() => void) | undefined;
 const listenerRemovers = new Map<string, jest.Mock>();
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+jest.mock('expo-secure-store', () => ({
+  deleteItemAsync: jest.fn(),
+  getItemAsync: jest.fn(),
+  setItemAsync: jest.fn()
+}));
+
+jest.mock('expo-notifications', () => ({
+  AndroidImportance: { DEFAULT: 'default' },
+  IosAuthorizationStatus: { PROVISIONAL: 3 },
+  SchedulableTriggerInputTypes: { DATE: 'date', TIME_INTERVAL: 'timeInterval' }
+}));
 
 jest.mock('../../src/pushNotifications', () => ({
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT: 'pushNotificationPermissionChanged',
@@ -415,36 +444,30 @@ describe('useWasteReminderSync', () => {
   });
 
   it('self-heals one token rotation from opt-out through failed and successful sync', async () => {
-    type RotationState = {
-      activeReminderRegistrations: Array<{
-        active: boolean;
-        storeId?: number;
-        typeKey: string;
-      }>;
-      activeTypes: Record<string, { active: boolean; storeId?: number }>;
-      ownerKey: string;
-      scheduledNotificationIds: string[];
-      scheduledReminderKeys: string[];
-      serverSyncPayload: {
-        activeReminderRegistrations: Array<{
-          active: boolean;
-          storeId?: number;
-          typeKey: string;
-        }>;
-        activeTypes: Record<string, { active: boolean; storeId?: number }>;
-        notificationSettings: Record<string, boolean>;
-        reminderTime: string;
-        usedTypeKeys: string[];
-      };
-      serverSyncStatus: 'pending' | 'synced';
-    };
     let inAppPermission = false;
-    let persistedToken: string | undefined;
     let syncAttempt = 0;
-    const rotationState: RotationState = {
-      activeReminderRegistrations: [{ active: true, storeId: 31, typeKey: 'paper' }],
-      activeTypes: { paper: { active: true, storeId: 21 } },
-      ownerKey: 'push:token-a',
+    const secureValues = new Map<string, string>([
+      [PushNotificationStorageKeys.ACCESS_TOKEN, 'access-token'],
+      [PushNotificationStorageKeys.PUSH_TOKEN, 'token-a']
+    ]);
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key: string) =>
+      secureValues.get(key)
+    );
+    (SecureStore.setItemAsync as jest.Mock).mockImplementation(
+      async (key: string, value: string) => {
+        secureValues.set(key, value);
+      }
+    );
+    (SecureStore.deleteItemAsync as jest.Mock).mockImplementation(async (key: string) => {
+      secureValues.delete(key);
+    });
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 204 })
+      .mockResolvedValueOnce({ status: 201 }) as jest.Mock;
+    await AsyncStorage.clear();
+    await writeWasteReminderLocalStateActual({
+      ownerKey: await getWasteReminderOwnerKey(),
       scheduledNotificationIds: [],
       scheduledReminderKeys: [],
       serverSyncPayload: {
@@ -455,47 +478,40 @@ describe('useWasteReminderSync', () => {
         usedTypeKeys: ['paper']
       },
       serverSyncStatus: 'pending'
-    };
+    });
 
     (getInAppPermission as jest.Mock).mockImplementation(async () => inAppPermission);
-    (readWasteReminderLocalState as jest.Mock).mockImplementation(async () => rotationState);
-    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockImplementation(async () => {
-      if (!persistedToken) {
-        return 'deferred-no-token';
-      }
-      if (rotationState.ownerKey === 'push:token-b') {
-        return 'unchanged';
-      }
-      rotationState.ownerKey = 'push:token-b';
-      rotationState.activeTypes = { paper: { active: true } };
-      rotationState.activeReminderRegistrations = [{ active: true, typeKey: 'paper' }];
-      rotationState.serverSyncPayload = {
-        ...rotationState.serverSyncPayload,
-        activeTypes: { paper: { active: true } },
-        activeReminderRegistrations: [{ active: true, typeKey: 'paper' }]
-      };
-      rotationState.serverSyncStatus = 'pending';
-      return 'migrated';
-    });
+    (readWasteReminderLocalState as jest.Mock).mockImplementation(
+      readWasteReminderLocalStateActual
+    );
+    (migrateWasteReminderLocalStateToCurrentOwner as jest.Mock).mockImplementation(
+      migrateWasteReminderLocalStateToCurrentOwnerActual
+    );
     (syncWasteReminderSettingsWithServer as jest.Mock).mockImplementation(async () => {
       syncAttempt += 1;
+      const state = await readWasteReminderLocalStateActual();
       return {
         serverSyncPayload: {
-          ...rotationState.serverSyncPayload,
+          ...state?.serverSyncPayload,
           activeTypes: { paper: { active: true, storeId: 41 } },
           activeReminderRegistrations: [{ active: true, storeId: 51, typeKey: 'paper' }]
         },
         success: syncAttempt > 1
       };
     });
-    (markWasteReminderServerSyncSynced as jest.Mock).mockImplementation(async (payload) => {
-      rotationState.serverSyncPayload = payload;
-      rotationState.serverSyncStatus = 'synced';
-    });
+    (markWasteReminderServerSyncSynced as jest.Mock).mockImplementation(
+      markWasteReminderServerSyncSyncedActual
+    );
     (rescheduleWasteReminderNotificationsFromLocalState as jest.Mock).mockImplementation(
       async () => {
-        rotationState.scheduledNotificationIds = ['local-reminder'];
-        rotationState.scheduledReminderKeys = ['waste:paper'];
+        const state = await readWasteReminderLocalStateActual();
+        if (state) {
+          await writeWasteReminderLocalStateActual({
+            ...state,
+            scheduledNotificationIds: ['local-reminder'],
+            scheduledReminderKeys: ['waste:paper']
+          });
+        }
       }
     );
 
@@ -503,8 +519,12 @@ describe('useWasteReminderSync', () => {
     await flushPromises();
     expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
 
-    // The opt-in event is emitted only after token B has been persisted.
-    persistedToken = 'token-b';
+    await act(async () => {
+      await handleIncomingToken();
+      await handleIncomingToken('token-b');
+    });
+    expect(secureValues.get(PushNotificationStorageKeys.PUSH_TOKEN)).toBe('token-b');
+
     inAppPermission = true;
     await act(async () => {
       permissionChangeListener?.(true);
@@ -512,13 +532,14 @@ describe('useWasteReminderSync', () => {
       await Promise.resolve();
     });
 
-    expect(rotationState.ownerKey).toBe('push:token-b');
-    expect(rotationState.serverSyncPayload.activeTypes.paper).toEqual({ active: true });
-    expect(rotationState.serverSyncPayload.activeReminderRegistrations[0]).not.toHaveProperty(
+    let rotationState = await readWasteReminderLocalStateActual();
+    expect(rotationState?.ownerKey).toBe(await getWasteReminderOwnerKey());
+    expect(rotationState?.serverSyncPayload?.activeTypes.paper).toEqual({ active: true });
+    expect(rotationState?.serverSyncPayload?.activeReminderRegistrations?.[0]).not.toHaveProperty(
       'storeId'
     );
-    expect(rotationState.serverSyncStatus).toBe('pending');
-    expect(rotationState.scheduledNotificationIds).toEqual(['local-reminder']);
+    expect(rotationState?.serverSyncStatus).toBe('pending');
+    expect(rotationState?.scheduledNotificationIds).toEqual(['local-reminder']);
 
     await act(async () => {
       tokenChangeListener?.();
@@ -526,9 +547,10 @@ describe('useWasteReminderSync', () => {
       await Promise.resolve();
     });
 
-    expect(rotationState.serverSyncStatus).toBe('synced');
-    expect(rotationState.serverSyncPayload.activeTypes.paper.storeId).toBe(41);
-    expect(rotationState.scheduledNotificationIds).toEqual(['local-reminder']);
+    rotationState = await readWasteReminderLocalStateActual();
+    expect(rotationState?.serverSyncStatus).toBe('synced');
+    expect(rotationState?.serverSyncPayload?.activeTypes.paper.storeId).toBe(41);
+    expect(rotationState?.scheduledNotificationIds).toEqual(['local-reminder']);
 
     jest.clearAllMocks();
     await act(async () => {
@@ -542,8 +564,7 @@ describe('useWasteReminderSync', () => {
     ).resolves.toBe('unchanged');
 
     jest.clearAllMocks();
-    persistedToken = undefined;
-    rotationState.ownerKey = 'push:token-a';
+    secureValues.delete(PushNotificationStorageKeys.PUSH_TOKEN);
     await act(async () => {
       tokenChangeListener?.();
       await Promise.resolve();
