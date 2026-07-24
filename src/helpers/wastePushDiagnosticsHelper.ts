@@ -309,7 +309,7 @@ const readLocalStateForDiagnostics = async (): Promise<{
 // Collection is deliberately isolated field-by-field, hence the orchestration branches.
 // eslint-disable-next-line complexity
 export const collectWastePushDiagnostics = async () => {
-  const collectionStatus: Record<string, 'failed' | 'unsupported'> = {};
+  const collectionStatus: Record<string, 'failed'> = {};
   const permissions: Record<string, PermissionDiagnostic> = {};
   const permissionCollectors: Array<[string, () => Promise<PermissionResponse>]> = [
     ['notifications', Notifications.getPermissionsAsync],
@@ -349,7 +349,7 @@ export const collectWastePushDiagnostics = async () => {
 
   const push: Record<string, unknown> = { token: {} };
   if (inAppResult.status === 'fulfilled') push.inAppEnabled = inAppResult.value;
-  else collectionStatus.pushSettings = 'failed';
+  else collectionStatus.inAppPushSetting = 'failed';
 
   const notificationPermission = permissions.notifications;
   if (notificationPermission) {
@@ -364,9 +364,7 @@ export const collectWastePushDiagnostics = async () => {
         : {})
     };
   }
-  if (Platform.OS !== 'android') {
-    if (!collectionStatus.pushSettings) collectionStatus.pushSettings = 'unsupported';
-  } else if (channelResult.status === 'fulfilled') {
+  if (Platform.OS === 'android' && channelResult.status === 'fulfilled') {
     const channel = channelResult.value;
     push.defaultChannel = {
       exists: !!channel,
@@ -379,7 +377,7 @@ export const collectWastePushDiagnostics = async () => {
           }
         : {})
     };
-  } else collectionStatus.pushSettings = 'failed';
+  } else if (Platform.OS === 'android') collectionStatus.androidPushChannel = 'failed';
 
   const wasteConfiguration: Record<string, unknown> = { localStateStatus: 'unavailable' };
   let localState: WasteReminderLocalState | undefined;

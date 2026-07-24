@@ -243,7 +243,7 @@ describe('collectWastePushDiagnostics', () => {
     const result = await collectWastePushDiagnostics();
 
     expect(result.push.defaultChannel).toEqual({ exists: false });
-    expect(result.collectionStatus.pushSettings).toBeUndefined();
+    expect(result.collectionStatus.androidPushChannel).toBeUndefined();
   });
 
   it('keeps allowlisted iOS notification metadata and does not query a channel', async () => {
@@ -273,7 +273,8 @@ describe('collectWastePushDiagnostics', () => {
       banner: 1
     });
     expect(Notifications.getNotificationChannelAsync).not.toHaveBeenCalled();
-    expect(result.collectionStatus.pushSettings).toBe('unsupported');
+    expect(result.collectionStatus.androidPushChannel).toBeUndefined();
+    expect(result.collectionStatus.pushSettings).toBeUndefined();
   });
 
   it('isolates scheduled-store failure from all other sections', async () => {
@@ -289,7 +290,7 @@ describe('collectWastePushDiagnostics', () => {
   });
 
   it.each([
-    ['pushSettings', getInAppPermission],
+    ['inAppPushSetting', getInAppPermission],
     ['tokenOwner', getPushTokenFromStorage]
   ])('isolates a %s section failure', async (statusKey, getter) => {
     (getter as jest.Mock).mockRejectedValue(new Error('section unavailable'));
@@ -299,6 +300,18 @@ describe('collectWastePushDiagnostics', () => {
     expect(result.collectionStatus[statusKey]).toBe('failed');
     expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
     expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+  });
+
+  it('reports Android channel collection failures under the Android-only status key', async () => {
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'android' });
+    (Notifications.getNotificationChannelAsync as jest.Mock).mockRejectedValue(
+      new Error('channel unavailable')
+    );
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.collectionStatus.androidPushChannel).toBe('failed');
+    expect(result.collectionStatus.pushSettings).toBeUndefined();
   });
 
   it('isolates local state failure from all other sections', async () => {
