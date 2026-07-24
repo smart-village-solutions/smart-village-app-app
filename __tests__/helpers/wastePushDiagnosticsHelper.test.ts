@@ -150,6 +150,23 @@ describe('collectWastePushDiagnostics', () => {
     expect(Camera.requestCameraPermissionsAsync).not.toHaveBeenCalled();
   });
 
+  it('matches the scheduler waste predicate for empty and truthy non-string reminder keys', async () => {
+    (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+      {
+        identifier: 'empty-key',
+        content: { data: { query_type: 'WasteAddresses', reminderKey: '' } }
+      },
+      {
+        identifier: 'truthy-non-string-key',
+        content: { data: { query_type: 'WasteAddresses', reminderKey: 7 } }
+      }
+    ]);
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+  });
+
   it('isolates a denied and a rejecting permission getter', async () => {
     (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue(permission('denied'));
     (Camera.getMicrophonePermissionsAsync as jest.Mock).mockRejectedValue(new Error('unavailable'));
@@ -268,15 +285,19 @@ describe('collectWastePushDiagnostics', () => {
   });
 
   it('rejects an oversized but valid diagnostic object', async () => {
+    const usedTypeKeys = Array.from(
+      { length: 200 },
+      (_, index) => `type-${index}-${'x'.repeat(85)}`
+    );
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
       JSON.stringify({
         ownerKey: 'owner-current',
         scheduledNotificationIds: [],
         scheduledReminderKeys: [],
         serverSyncPayload: {
-          notificationSettings: {},
+          notificationSettings: Object.fromEntries(usedTypeKeys.map((key) => [key, true])),
           reminderTime: '2026-01-01',
-          usedTypeKeys: Array.from({ length: 5000 }, (_, index) => `type-${index}`)
+          usedTypeKeys
         }
       })
     );
@@ -330,5 +351,51 @@ describe('collectWastePushDiagnostics', () => {
       'persisted-private-error-secret'
     ].forEach((fixture) => expect(serialized).not.toContain(fixture));
     expect(serialized).toContain('"status":"scheduled"');
+  });
+
+  it('treats malformed secret-bearing configuration primitives as corrupt', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'persisted-private-owner',
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncStatus: { secret: 'nested-private-sync-status' },
+        serverSyncPayload: {
+          usedTypeKeys: [{ token: 'nested-private-type-token' }],
+          notificationSettings: {
+            paper: { authorization: 'nested-private-setting-authorization' }
+          },
+          activeReminderRegistrations: [
+            {
+              active: true,
+              leadDays: { secret: 'nested-private-lead-days' },
+              slotId: { secret: 'nested-private-slot' },
+              time: { secret: 'nested-private-time' },
+              typeKey: { secret: 'nested-private-type' }
+            }
+          ],
+          locationData: {
+            street: { secret: 'nested-private-street' }
+          }
+        }
+      })
+    );
+
+    const result = await collectWastePushDiagnostics();
+    const serialized = JSON.stringify(result);
+
+    expect(result.wasteConfiguration.localStateStatus).toBe('corrupt');
+    expect(result.wasteConfiguration).toEqual({ localStateStatus: 'corrupt' });
+    [
+      'nested-private-type-token',
+      'nested-private-sync-status',
+      'nested-private-setting-authorization',
+      'nested-private-lead-days',
+      'nested-private-slot',
+      'nested-private-time',
+      'nested-private-type',
+      'nested-private-street'
+    ].forEach((fixture) => expect(serialized).not.toContain(fixture));
+    expect(AsyncStorage.removeItem).toBeUndefined();
   });
 });
