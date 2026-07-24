@@ -14,6 +14,7 @@ import { DrawerHeader } from './DrawerHeader';
 import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
 import { InfoHeader } from './InfoHeader';
+import { LoginHeader } from './LoginHeader';
 import { SearchHeader } from './SearchHeader';
 import { ShareHeader } from './ShareHeader';
 import { WrapperRow } from './Wrapper';
@@ -31,6 +32,7 @@ type Props = {
   withEdit?: boolean;
   withGroup?: boolean;
   withInfo?: boolean;
+  withProfile?: boolean;
   withSearch?: boolean;
   withShare?: boolean;
 };
@@ -49,6 +51,7 @@ export const HeaderRight = ({
   withEdit = false,
   withGroup = false,
   withInfo = false,
+  withProfile = false,
   withSearch = false,
   withShare = false
 }: Props) => (
@@ -60,6 +63,7 @@ export const HeaderRight = ({
     {withEdit && <EditHeader onPress={onPress} style={styles.icon} />}
     {withGroup && <GroupHeader navigation={navigation} style={styles.icon} />}
     {withInfo && <InfoHeader route={route} style={styles.icon} />}
+    {withProfile && <LoginHeader style={styles.icon} />}
     {withSearch && <SearchHeader navigation={navigation} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
     {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}

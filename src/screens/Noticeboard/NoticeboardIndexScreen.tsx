@@ -68,8 +68,11 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const { isLoading: isLoadingMember } = RQuseQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     enabled: isLoginRequired && isProfileLoggedIn,
     onSuccess: (responseData: ProfileMember) => {
-      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
+      if (!responseData?.member) {
         storeProfileAuthToken();
+        storeProfileUserData();
+        setIsProfileLoggedIn(false);
+        setUserData(null);
 
         return;
       }

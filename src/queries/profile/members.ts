@@ -159,11 +159,15 @@ export const profileEditMail = async ({ email }: { email: string }) => {
 export const member = async () => {
   const authToken = await profileAuthToken();
 
+  if (!authToken) {
+    return { member: null };
+  }
+
   const fetchObj = {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      Authorization: authToken ? `Bearer ${authToken}` : ''
+      Authorization: `Bearer ${authToken}`
     }
   };
 

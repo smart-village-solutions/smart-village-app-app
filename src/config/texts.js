@@ -1027,6 +1027,7 @@ export const texts = {
     loginFailedTitle: 'Fehler bei der Anmeldung',
     loginTitle: 'Login',
     logout: 'Abmelden',
+    logoutAlertBody: 'Möchten Sie sich wirklich abmelden?',
     next: 'Weiter',
     notYetRegistered: 'Sie sind noch nicht registriert? ',
     ok: 'OK',

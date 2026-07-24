@@ -5914,6 +5914,18 @@ expo-asset@~12.0.13:
     "@expo/image-utils" "^0.8.8"
     expo-constants "~18.0.13"
 
+expo-auth-session@~7.0.10:
+  version "7.0.11"
+  resolved "https://registry.yarnpkg.com/expo-auth-session/-/expo-auth-session-7.0.11.tgz#fa9510862030962eac0147708ef28d6c63df3f71"
+  integrity sha512-AhWtt/m9rb1Po77X/VBFbeE6UTgbm2vXP2iCblUSRsHCw2qD6lO0ulKUB8Xyxy9FtoI9yrNQ1iwCNgIIgo8VYQ==
+  dependencies:
+    expo-application "~7.0.8"
+    expo-constants "~18.0.13"
+    expo-crypto "~15.0.9"
+    expo-linking "~8.0.12"
+    expo-web-browser "~15.0.11"
+    invariant "^2.2.4"
+
 expo-blur@~15.0.8:
   version "15.0.8"
   resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-15.0.8.tgz#846cea275a6644639c5c338987b4cca54cf93eca"
