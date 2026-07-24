@@ -419,6 +419,7 @@ The four root-level tab bar color fields remain supported as legacy light-mode c
   "inactiveTintColor": "#666666",
   "activeBackgroundColor": "#FFFFFF",
   "inactiveBackgroundColor": "#FFFFFF",
+  "tabBarIconFillOnFocus": true,
   "themeColors": {
     "light": {
       "activeTintColor": "#005A8D"
@@ -435,6 +436,12 @@ The four root-level tab bar color fields remain supported as legacy light-mode c
 ```
 
 Mode-specific values are partial. Any omitted value falls back to the active semantic palette. `themeColors.light` takes precedence over the legacy root-level light value when both are present.
+
+Set `tabBarIconFillOnFocus` to `true` when inactive SVG tab icons should render as an
+outline and focused icons should use the active tint as their fill. This root value applies
+to every tab. A custom tab object can override it with its own
+`tabBarIconFillOnFocus: true` or `tabBarIconFillOnFocus: false` value, so mixed icon sets do
+not require app-specific navigation code.
 
 ## Read Aloud Coverage (Screen-by-Screen)
 

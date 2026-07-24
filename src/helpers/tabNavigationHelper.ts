@@ -27,3 +27,22 @@ export const resolveTabBarColors = (
   ...(mode === 'light' ? getValidColors(staticContent) : {}),
   ...getValidColors(staticContent?.themeColors?.[mode])
 });
+
+export const resolveTabIconColors = (
+  focused: boolean,
+  tintColor: string,
+  fillOnFocus: boolean,
+  configuredStrokeColor?: string
+) => {
+  if (!fillOnFocus) {
+    return {
+      color: tintColor,
+      strokeColor: configuredStrokeColor
+    };
+  }
+
+  return {
+    color: focused ? tintColor : 'transparent',
+    strokeColor: configuredStrokeColor || tintColor
+  };
+};

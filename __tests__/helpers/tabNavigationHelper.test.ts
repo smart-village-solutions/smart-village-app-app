@@ -1,4 +1,4 @@
-import { resolveTabBarColors } from '../../src/helpers/tabNavigationHelper';
+import { resolveTabBarColors, resolveTabIconColors } from '../../src/helpers/tabNavigationHelper';
 import { TabBarColorConfig, TabNavigationStaticContent } from '../../src/types';
 
 const lightDefaults: TabBarColorConfig = {
@@ -52,6 +52,29 @@ describe('resolveTabBarColors', () => {
       ...darkDefaults,
       activeTintColor: '#ffcc00',
       inactiveBackgroundColor: '#101820'
+    });
+  });
+});
+
+describe('resolveTabIconColors', () => {
+  it('keeps the outline visible but removes the fill when static content enables it', () => {
+    expect(resolveTabIconColors(false, '#595959', true)).toEqual({
+      color: 'transparent',
+      strokeColor: '#595959'
+    });
+  });
+
+  it('fills an active icon with its tint color when static content enables it', () => {
+    expect(resolveTabIconColors(true, '#141414', true)).toEqual({
+      color: '#141414',
+      strokeColor: '#141414'
+    });
+  });
+
+  it('preserves the default tint behavior when the option is disabled', () => {
+    expect(resolveTabIconColors(false, '#595959', false)).toEqual({
+      color: '#595959',
+      strokeColor: undefined
     });
   });
 });

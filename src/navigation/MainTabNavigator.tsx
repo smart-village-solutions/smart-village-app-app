@@ -27,14 +27,22 @@ export const useTabRoutes = () => {
 
     const { tabConfigs } = tabRoutesData || defaultTabRoutes;
     const tabBarColors = resolveTabBarColors(defaultTabRoutes, tabRoutesData, mode);
+    const defaultIconFillOnFocus = tabRoutesData?.tabBarIconFillOnFocus ?? false;
+    const configuredDefaultTabRoutes = createDefaultTabNavigatorConfig(
+      colors,
+      defaultIconFillOnFocus
+    );
 
     const dynamicTabs = (tabConfigs as (CustomTab | TabConfig | string)[])?.map(
       (tabConfig, index) => {
         if (typeof tabConfig === 'string') {
           // Here we compare default tabs with the array on main-server. A matching
           // initial route automatically selects the themed default tab definition.
-          return defaultTabRoutes.tabConfigs.find(
-            ({ stackConfig }) => stackConfig.initialRouteName === tabConfig
+          return configuredDefaultTabRoutes.tabConfigs.find(
+            (defaultTab): defaultTab is TabConfig =>
+              typeof defaultTab !== 'string' &&
+              'stackConfig' in defaultTab &&
+              defaultTab.stackConfig.initialRouteName === tabConfig
           );
         } else if ('stackConfig' in tabConfig) {
           return tabConfig;
@@ -54,7 +62,8 @@ export const useTabRoutes = () => {
             tabConfig.strokeColor,
             tabConfig.strokeWidth,
             tabConfig.tabBarLabelStyle,
-            tabConfig.tilesScreenParams
+            tabConfig.tilesScreenParams,
+            tabConfig.tabBarIconFillOnFocus ?? defaultIconFillOnFocus
           );
         }
       }
@@ -64,7 +73,7 @@ export const useTabRoutes = () => {
       ...tabBarColors,
       tabConfigs: dynamicTabs.filter(Boolean) as TabConfig[]
     };
-  }, [defaultTabRoutes, loading, mode, tabRoutesData]);
+  }, [colors, defaultTabRoutes, loading, mode, tabRoutesData]);
 
   return { defaultTabRoutes, loading, tabRoutes };
 };

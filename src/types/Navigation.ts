@@ -159,6 +159,7 @@ export type CustomTab = {
   screen: ScreenName;
   strokeColor?: string;
   strokeWidth?: number;
+  tabBarIconFillOnFocus?: boolean;
   tabBarLabelStyle?: ViewStyle;
   tilesScreenParams?: Record<string, any>;
 };
@@ -180,6 +181,7 @@ export type TabNavigatorConfig = TabBarColorConfig & {
 };
 
 export type TabNavigationStaticContent = Partial<TabBarColorConfig> & {
+  tabBarIconFillOnFocus?: boolean;
   tabConfigs: (CustomTab | string | TabConfig)[];
   themeColors?: Partial<Record<ResolvedThemeMode, Partial<TabBarColorConfig>>>;
 };
