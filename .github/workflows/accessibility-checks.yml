@@ -9,10 +9,16 @@ on:
 jobs:
   accessibility-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -23,11 +29,108 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Run accessibility unit tests
+      - name: Fetch PR base branch
+        if: github.event_name == 'pull_request'
+        run: git fetch --no-tags --prune --depth=1 origin ${{ github.base_ref }}
+
+      - name: Build PR accessibility scope report
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p .reports
+          node scripts/a11y-pr-diff.js \
+            --base origin/${{ github.base_ref }} \
+            --head ${{ github.sha }} \
+            --out-json .reports/a11y-pr-diff.json \
+            --out-md .reports/a11y-pr-diff.md \
+            --out-files .reports/a11y-pr-target-files.txt
+
+      - name: Run PR accessibility component gate
+        id: pr_a11y_gate
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          node scripts/check-a11y-pr-components.js \
+            --input-json .reports/a11y-pr-diff.json \
+            --out-json .reports/a11y-pr-report.json \
+            --out-md .reports/a11y-pr-report.md
+
+      - name: Run accessibility unit tests (full scan, non-blocking on PR)
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: yarn test:accessibility
 
-      - name: Run axe accessibility violation tests
+      - name: Run axe accessibility violation tests (full scan, non-blocking on PR)
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: yarn test:accessibility:axe
 
-      - name: Run accessibility coverage check
+      - name: Run accessibility coverage check (full scan, non-blocking on PR)
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: yarn a11y:coverage:ci
+
+      - name: Attach accessibility reports to job summary
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          if [ -f .reports/a11y-pr-diff.md ]; then
+            cat .reports/a11y-pr-diff.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f .reports/a11y-pr-report.md ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            cat .reports/a11y-pr-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload accessibility reports
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-pr-reports
+          path: .reports/
+          if-no-files-found: warn
+
+      - name: Comment PR with accessibility component report
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- a11y-pr-component-report -->';
+            const reportPath = '.reports/a11y-pr-report.md';
+            const fallback = '# Accessibility PR Component Report\n\nNo report produced.';
+            const body = `${marker}\n${fs.existsSync(reportPath) ? fs.readFileSync(reportPath, 'utf8') : fallback}`;
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const existing = comments.find(
+              (comment) =>
+                comment.user?.type === 'Bot' &&
+                typeof comment.body === 'string' &&
+                comment.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body
+              });
+            }
+
+      - name: Fail workflow if PR accessibility component gate failed
+        if: github.event_name == 'pull_request' && steps.pr_a11y_gate.outcome == 'failure'
+        run: |
+          echo "Accessibility PR component gate failed."
+          exit 1

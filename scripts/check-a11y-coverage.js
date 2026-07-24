@@ -10,6 +10,8 @@
  *   node scripts/check-a11y-coverage.js
  *   node scripts/check-a11y-coverage.js --threshold 80   (exit 1 if below 80%)
  *   node scripts/check-a11y-coverage.js --verbose        (also list labeled elements)
+ *   node scripts/check-a11y-coverage.js --files src/components/Button.js,src/screens/HomeScreen.js
+ *   node scripts/check-a11y-coverage.js --files-file .reports/a11y-pr-target-files.txt
  */
 
 const fs = require('fs');
@@ -35,6 +37,52 @@ const args = process.argv.slice(2);
 const verbose = args.includes('--verbose');
 const thresholdIdx = args.indexOf('--threshold');
 const threshold = thresholdIdx !== -1 ? parseInt(args[thresholdIdx + 1], 10) : null;
+const filesIdx = args.indexOf('--files');
+const filesArg = filesIdx !== -1 ? args[filesIdx + 1] : null;
+const filesFileIdx = args.indexOf('--files-file');
+const filesFileArg = filesFileIdx !== -1 ? args[filesFileIdx + 1] : null;
+const hasScopeArgs = !!filesArg || !!filesFileArg;
+
+function normalizeFilePath(filePath) {
+  if (!filePath) return '';
+  return path.isAbsolute(filePath) ? filePath : path.join(path.join(__dirname, '..'), filePath);
+}
+
+function getScopedFiles() {
+  const scopedFiles = new Set();
+
+  if (filesArg) {
+    filesArg
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .map(normalizeFilePath)
+      .forEach((file) => scopedFiles.add(file));
+  }
+
+  if (filesFileArg) {
+    let fileContents = '';
+    try {
+      fileContents = fs.readFileSync(normalizeFilePath(filesFileArg), 'utf8');
+    } catch {
+      fileContents = '';
+    }
+
+    fileContents
+      .split('\n')
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .map(normalizeFilePath)
+      .forEach((file) => scopedFiles.add(file));
+  }
+
+  return [...scopedFiles].filter(
+    (file) =>
+      fs.existsSync(file) &&
+      file.startsWith(SRC_DIR) &&
+      EXTENSIONS.includes(path.extname(file))
+  );
+}
 
 function getAllFiles(dir, files = []) {
   let entries;
@@ -92,7 +140,10 @@ function extractInteractiveElements(source, filePath) {
 // Main
 // ---------------------------------------------------------------------------
 const allElements = [];
-for (const file of getAllFiles(SRC_DIR)) {
+const scopedFiles = getScopedFiles();
+const filesToScan = hasScopeArgs ? scopedFiles : getAllFiles(SRC_DIR);
+
+for (const file of filesToScan) {
   const source = fs.readFileSync(file, 'utf8');
   allElements.push(...extractInteractiveElements(source, file));
 }
