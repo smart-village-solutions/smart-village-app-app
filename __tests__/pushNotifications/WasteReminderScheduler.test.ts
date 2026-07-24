@@ -16,6 +16,33 @@ const wasteLocationTypes = [
 ];
 
 describe('buildWasteReminderSchedule', () => {
+  it.each([
+    ['no-active-types', { selectedTypeKeys: [], wasteLocationTypes }],
+    ['no-matching-waste-types', { selectedTypeKeys: ['glass'], wasteLocationTypes }],
+    [
+      'no-pickup-dates',
+      {
+        selectedTypeKeys: ['paper'],
+        wasteLocationTypes: [{ wasteType: 'paper', pickUpTimes: [{}, { pickupDate: 'invalid' }] }]
+      }
+    ],
+    [
+      'no-future-reminders',
+      {
+        selectedTypeKeys: ['paper'],
+        wasteLocationTypes: [{ wasteType: 'paper', pickUpTimes: [{ pickupDate: '2026-01-01' }] }]
+      }
+    ]
+  ])('classifies %s when no reminder can be built', (reason, options) => {
+    const schedule = buildWasteReminderSchedule({
+      now: new Date('2026-06-01T08:00:00.000+02:00'),
+      ...options
+    });
+
+    expect(schedule.reminders).toEqual([]);
+    expect(schedule.reason).toBe(reason);
+  });
+
   it('builds reminders from multiple active reminder registrations per type', () => {
     const schedule = buildWasteReminderSchedule({
       activeReminderRegistrations: [
@@ -40,6 +67,7 @@ describe('buildWasteReminderSchedule', () => {
       reminderAt: new Date('2026-06-09T09:00:00.000+02:00'),
       wasteTypes: ['organic', 'paper']
     });
+    expect(schedule.reason).toBe('has-reminders');
   });
 
   it('groups waste types that share the same reminder timestamp', () => {

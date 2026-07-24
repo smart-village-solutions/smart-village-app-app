@@ -5,10 +5,7 @@ import {
   syncWasteReminderSettingsWithServer,
   updateWasteReminderSettings
 } from '../../src/pushNotifications/WasteReminder';
-import {
-  getPushTokenFromStorage,
-  serverConnectionAlert
-} from '../../src/pushNotifications/TokenHandling';
+import { getPushTokenFromStorage } from '../../src/pushNotifications/TokenHandling';
 import { ensurePushNotificationToken } from '../../src/pushNotifications/PermissionHandling';
 
 jest.mock('expo-secure-store', () => ({
@@ -49,119 +46,6 @@ jest.mock('../../src/pushNotifications/PermissionHandling', () => ({
 }));
 
 describe('updateWasteReminderSettings server sync', () => {
-  it('retains an active disruption as pending when the server returns 422', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue({
-      json: async () => ({ errors: ['invalid disruption registration'] }),
-      ok: false,
-      status: 422
-    }) as jest.Mock;
-
-    const result = await syncWasteReminderSettingsWithServer({
-      activeTypes: {},
-      disruptionRegistrations: { disruption_all_locations: { active: true } },
-      notificationSettings: {},
-      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-      usedTypeKeys: []
-    });
-
-    expect(result.success).toBe(false);
-    expect(result.serverSyncPayload.disruptionRegistrations?.disruption_all_locations).toEqual({
-      active: true
-    });
-    expect(serverConnectionAlert).not.toHaveBeenCalled();
-  });
-
-  it('shows the connection alert when the server returns 5xx', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue({
-      json: async () => ({ errors: ['temporary failure'] }),
-      ok: false,
-      status: 503
-    }) as jest.Mock;
-
-    const result = await syncWasteReminderSettingsWithServer({
-      activeTypes: {},
-      disruptionRegistrations: { disruption_all_locations: { active: true } },
-      notificationSettings: {},
-      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-      usedTypeKeys: []
-    });
-
-    expect(result.success).toBe(false);
-    expect(serverConnectionAlert).toHaveBeenCalledWith(false);
-  });
-
-  it('deletes a hydrated disruption registration by its stored id', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue({ ok: true, status: 202 }) as jest.Mock;
-
-    const result = await syncWasteReminderSettingsWithServer({
-      activeTypes: {},
-      disruptionRegistrations: {
-        disruption_all_locations: { active: false, storeId: 77 }
-      },
-      notificationSettings: {},
-      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-      usedTypeKeys: []
-    });
-
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://example.test/notification/wastes/77.json',
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          Authorization: 'Bearer access-token',
-          'X-Notification-Device-Token': 'push-token'
-        }),
-        method: 'DELETE'
-      })
-    );
-    expect(result.success).toBe(true);
-    expect(result.serverSyncPayload.disruptionRegistrations?.disruption_all_locations).toEqual({
-      active: false
-    });
-  });
-
-  it('posts canonical neutral local and global disruption registrations', async () => {
-    globalThis.fetch = jest
-      .fn()
-      .mockResolvedValue({ json: async () => ({ id: 44 }), ok: true, status: 201 }) as jest.Mock;
-
-    const result = await syncWasteReminderSettingsWithServer({
-      activeTypes: {},
-      disruptionRegistrations: {
-        disruption_all_locations: { active: true },
-        disruption_location: { active: true }
-      },
-      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-      notificationSettings: {},
-      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-      usedTypeKeys: []
-    });
-
-    const bodies = (globalThis.fetch as jest.Mock).mock.calls.map(
-      (call) => JSON.parse(call[1].body).waste_registration
-    );
-    expect(bodies).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          city: '',
-          notify_at: '00:00',
-          notify_days_before: '0',
-          notify_for_waste_type: 'disruption_all_locations',
-          street: '',
-          zip: ''
-        }),
-        expect.objectContaining({
-          city: 'Berlin',
-          notify_at: '00:00',
-          notify_days_before: '0',
-          notify_for_waste_type: 'disruption_location',
-          street: 'Test Street',
-          zip: '12345'
-        })
-      ])
-    );
-    expect(result.success).toBe(true);
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
     globalThis.fetch = jest.fn(async () => ({
@@ -200,16 +84,6 @@ describe('updateWasteReminderSettings server sync', () => {
     expect(requestBody.waste_registration).not.toHaveProperty('local_coverage_until');
     expect(requestBody.waste_registration).not.toHaveProperty('reminder_slot_id');
     expect(requestBody.waste_registration.notify_at).toBe('10:01');
-    expect(requestBody.notification_device).toEqual({ device_type: 'ios' });
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
-      'https://example.test/notification/wastes.json'
-    );
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
-      expect.objectContaining({
-        Authorization: 'Bearer access-token',
-        'X-Notification-Device-Token': 'push-token'
-      })
-    );
     expect(SecureStore.getItemAsync).toHaveBeenCalledWith('ACCESS_TOKEN');
   });
 
@@ -224,11 +98,9 @@ describe('updateWasteReminderSettings server sync', () => {
       typeKey: 'paper'
     });
 
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
-      expect.objectContaining({
-        'X-Notification-Device-Token': 'ExponentPushToken[dev-waste-reminder]'
-      })
-    );
+    const requestBody = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
+
+    expect(requestBody.notification_device.token).toBe('ExponentPushToken[dev-waste-reminder]');
   });
 
   it('does not create or fake a push token when only reading reminder settings', async () => {
@@ -236,23 +108,44 @@ describe('updateWasteReminderSettings server sync', () => {
 
     const result = await getReminderSettings();
 
-    expect(result).toBeUndefined();
+    expect(result).toEqual({ status: 'unavailable' });
     expect(ensurePushNotificationToken).not.toHaveBeenCalled();
     expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
-  it('reads reminder settings with the token header and no token in the URL', async () => {
-    await getReminderSettings();
+  it('distinguishes valid empty settings from an unavailable request', async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => [],
+      ok: true,
+      status: 200
+    })) as jest.Mock;
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://example.test/notification/wastes.json',
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          Authorization: 'Bearer access-token',
-          'X-Notification-Device-Token': 'push-token'
-        })
-      })
-    );
+    await expect(getReminderSettings()).resolves.toEqual({ status: 'ok', settings: [] });
+  });
+
+  it('reports malformed reminder settings as invalid', async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => [{ id: 'not-a-number' }],
+      ok: true,
+      status: 200
+    })) as jest.Mock;
+
+    await expect(getReminderSettings()).resolves.toEqual({ status: 'invalid' });
+  });
+
+  it('reports non-success responses and transport failures as unavailable', async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      ok: false,
+      status: 500
+    })) as jest.Mock;
+
+    await expect(getReminderSettings()).resolves.toEqual({ status: 'unavailable' });
+
+    globalThis.fetch = jest.fn(async () => {
+      throw new Error('offline');
+    }) as jest.Mock;
+
+    await expect(getReminderSettings()).resolves.toEqual({ status: 'unavailable' });
   });
 
   it('reports a failed sync when deleting a disabled server registration fails', async () => {
@@ -338,15 +231,9 @@ describe('updateWasteReminderSettings server sync', () => {
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
-      'https://example.test/notification/wastes/456.json'
+      'https://example.test/notification/wastes/456.json?token=push-token'
     );
     expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
-      expect.objectContaining({
-        Authorization: 'Bearer access-token',
-        'X-Notification-Device-Token': 'push-token'
-      })
-    );
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
       active: false,
@@ -403,12 +290,18 @@ describe('updateWasteReminderSettings server sync', () => {
     ]);
   });
 
-  it('updates an existing active flexible registration without deleting it first', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValueOnce({
-      json: async () => ({ id: 987 }),
-      ok: true,
-      status: 201
-    }) as jest.Mock;
+  it('replaces existing active flexible registrations before creating updated server fallback ids', async () => {
+    globalThis.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 204
+      })
+      .mockResolvedValueOnce({
+        json: async () => ({ id: 987 }),
+        ok: true,
+        status: 201
+      }) as jest.Mock;
 
     const result = await syncWasteReminderSettingsWithServer({
       activeReminderRegistrations: [
@@ -428,70 +321,18 @@ describe('updateWasteReminderSettings server sync', () => {
       usedTypeKeys: ['paper']
     });
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('POST');
-    expect(JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body)).toEqual(
-      expect.objectContaining({
-        notification_device: { device_type: 'ios' },
-        waste_registration: expect.objectContaining({
-          city: 'Berlin',
-          notify_for_waste_type: 'paper',
-          reminder_slot_id: 'first',
-          street: 'Test Street',
-          zip: '12345'
-        })
-      })
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
+      'https://example.test/notification/wastes/456.json?token=push-token'
     );
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].headers).toEqual(
-      expect.objectContaining({
-        Authorization: 'Bearer access-token',
-        'X-Notification-Device-Token': 'push-token'
-      })
-    );
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('DELETE');
+    expect((globalThis.fetch as jest.Mock).mock.calls[1][1].method).toBe('POST');
     expect(result.success).toBe(true);
     expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
       active: true,
       leadDays: 2,
       slotId: 'first',
       storeId: 987,
-      time: '10:15',
-      typeKey: 'paper'
-    });
-  });
-
-  it('keeps an existing active flexible registration when its update fails', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValueOnce({
-      json: async () => ({ errors: ['temporary failure'] }),
-      ok: false,
-      status: 500
-    }) as jest.Mock;
-
-    const result = await syncWasteReminderSettingsWithServer({
-      activeReminderRegistrations: [
-        {
-          active: true,
-          leadDays: 2,
-          slotId: 'first',
-          storeId: 456,
-          time: '10:15',
-          typeKey: 'paper'
-        }
-      ],
-      activeTypes: { paper: { active: true, storeId: 456 } },
-      locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
-      notificationSettings: { paper: true },
-      reminderTime: new Date('2000-01-01T09:00:00.000+01:00'),
-      usedTypeKeys: ['paper']
-    });
-
-    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
-    expect((globalThis.fetch as jest.Mock).mock.calls[0][1].method).toBe('POST');
-    expect(result.success).toBe(false);
-    expect(result.serverSyncPayload?.activeReminderRegistrations?.[0]).toEqual({
-      active: true,
-      leadDays: 2,
-      slotId: 'first',
-      storeId: 456,
       time: '10:15',
       typeKey: 'paper'
     });

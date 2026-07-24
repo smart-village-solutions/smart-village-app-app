@@ -1827,6 +1827,14 @@ export const texts = {
       'Die Push-Benachrichtigungen sind in den App-Einstellungen deaktiviert. Daher werden auch keine Push-Benachrichtigungen für die Abfallarten gesendet.',
     notificationsOn: 'Benachrichtigungen an',
     notificationSettingsLink: 'Zu den App-Einstellungen',
+    wasteReminderFailedAction: 'Erneut versuchen',
+    wasteReminderFailedBody:
+      'Deine Einstellungen bleiben gespeichert. Wir versuchen es beim nächsten App-Start erneut.',
+    wasteReminderFailedTitle: 'Abfall-Erinnerungen konnten nicht geplant werden',
+    wasteReminderPermissionAction: 'Systemeinstellungen öffnen',
+    wasteReminderPermissionBody:
+      'Bitte erlaube Benachrichtigungen in den Systemeinstellungen, damit deine Abfall-Erinnerungen geplant werden können.',
+    wasteReminderPermissionTitle: 'Abfall-Erinnerungen sind nicht erlaubt',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     oneDayBefore: '1 Tag vorher',

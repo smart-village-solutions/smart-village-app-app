@@ -4,28 +4,38 @@ import { AppState, DeviceEventEmitter } from 'react-native';
 import { NetworkContext } from '../NetworkProvider';
 import {
   clearWasteReminderLocalStateForChangedOwner,
+  getReminderSettings,
+  getWasteReminderOwnerKey,
   getInAppPermission,
   markWasteReminderServerSyncSynced,
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
   readWasteReminderLocalState,
   rescheduleWasteReminderNotificationsFromLocalState,
-  storeWasteReminderSettingsWithoutScheduling,
-  syncWasteReminderSettingsWithServer
+  retryPendingWasteReminderNotificationCancellations,
+  syncWasteReminderSettingsWithServer,
+  updateWasteReminderSchedulingState,
+  verifyWasteReminderNotificationsFromLocalState,
+  writeWasteReminderLocalState
 } from '../pushNotifications';
-import type { WasteReminderServerSyncPayload } from '../pushNotifications';
 import { getLocationData } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 
 import { useStreetString, useWasteStreet, useWasteTypes, useWasteUsedTypes } from './waste';
 
-const overlayCurrentLocation = (
-  desiredPayload: WasteReminderServerSyncPayload,
-  storedPayload?: WasteReminderServerSyncPayload
-) => ({
-  ...desiredPayload,
-  ...storedPayload,
-  locationData: desiredPayload.locationData || storedPayload?.locationData
-});
+export const WASTE_REMINDER_MANUAL_RETRY_EVENT = 'wasteReminderManualRetry';
+export const WASTE_REMINDER_SCHEDULING_STATUS_CHANGED_EVENT =
+  'wasteReminderSchedulingStatusChanged';
+
+export const requestWasteReminderManualRetry = () => {
+  DeviceEventEmitter.emit(WASTE_REMINDER_MANUAL_RETRY_EVENT);
+};
+
+type WasteReminderMaintenanceTrigger =
+  | 'startup'
+  | 'data-ready'
+  | 'foreground'
+  | 'permission-change'
+  | 'manual-retry';
 
 export const useWasteReminderSync = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -38,83 +48,41 @@ export const useWasteReminderSync = () => {
   const hasRefreshedLocalNotificationsInitially = useRef(false);
   const maintenanceQueue = useRef(Promise.resolve());
 
-  const buildDisruptionPayload = useCallback(() => {
-    const settings = globalSettings.waste?.disruptionNotificationSettings as
-      | { disruption_all_locations?: boolean; disruption_location?: boolean }
-      | undefined;
-    if (!settings) return undefined;
+  const syncPendingWasteReminderSettings = useCallback(async () => {
+    if (!isConnected || !isMainserverUp) {
+      return;
+    }
 
-    const locationData = streetData ? getLocationData(streetData) : undefined;
-    return {
-      activeTypes: {},
-      disruptionRegistrations: {
-        disruption_all_locations: { active: !!settings.disruption_all_locations },
-        disruption_location: { active: !!locationData && !!settings.disruption_location }
-      },
-      locationData,
-      notificationSettings: {},
-      reminderTime: new Date('2000-01-01T00:00:00.000+01:00'),
-      usedTypeKeys: []
-    };
-  }, [globalSettings.waste?.disruptionNotificationSettings, streetData]);
+    const localState = await readWasteReminderLocalState();
 
-  const syncPendingWasteReminderSettings = useCallback(
-    async (forceIntentReconcile = false) => {
-      if (!isConnected || !isMainserverUp) {
-        return;
-      }
+    if (localState?.serverSyncStatus !== 'pending' || !localState.serverSyncPayload) {
+      return;
+    }
 
-      // A missing street while the query is still loading does not mean that the
-      // user removed their pickup location. Reconcile only once that distinction
-      // is known, otherwise an existing location subscription could be deleted.
-      if (streetLoading) {
-        return;
-      }
+    const { serverSyncPayload, success } = await syncWasteReminderSettingsWithServer(
+      localState.serverSyncPayload,
+      localState.localCoverageUntil ? new Date(localState.localCoverageUntil) : undefined
+    );
 
-      const localState = await readWasteReminderLocalState();
-
-      let payload = localState?.serverSyncPayload;
-      if (localState?.serverSyncStatus !== 'pending' || !payload) {
-        const desiredPayload = buildDisruptionPayload();
-        if (!desiredPayload) return;
-        const currentDisruptions = payload?.disruptionRegistrations;
-        const intentChanged = (['disruption_all_locations', 'disruption_location'] as const).some(
-          (key) =>
-            !!currentDisruptions?.[key]?.active !==
-            !!desiredPayload.disruptionRegistrations[key]?.active
-        );
-        if (!forceIntentReconcile && !intentChanged) return;
-
-        payload = {
-          ...overlayCurrentLocation(desiredPayload, payload),
-          disruptionRegistrations: {
-            disruption_all_locations: {
-              ...desiredPayload.disruptionRegistrations.disruption_all_locations,
-              storeId: currentDisruptions?.disruption_all_locations?.storeId
-            },
-            disruption_location: {
-              ...desiredPayload.disruptionRegistrations.disruption_location,
-              storeId: currentDisruptions?.disruption_location?.storeId
-            }
-          }
-        };
-        await storeWasteReminderSettingsWithoutScheduling(payload);
-      }
-
-      const { serverSyncPayload, success } = await syncWasteReminderSettingsWithServer(
-        payload,
-        localState?.localCoverageUntil ? new Date(localState.localCoverageUntil) : undefined
-      );
-
-      if (success) {
-        await markWasteReminderServerSyncSynced(serverSyncPayload);
-      }
-    },
-    [buildDisruptionPayload, isConnected, isMainserverUp, streetLoading]
-  );
+    if (success) {
+      await markWasteReminderServerSyncSynced(serverSyncPayload);
+    }
+  }, [isConnected, isMainserverUp]);
 
   const refreshLocalWasteReminderNotifications = useCallback(async () => {
     if (streetLoading || typesLoading || !streetData || !usedTypes) {
+      const localState = await readWasteReminderLocalState();
+
+      if (localState?.serverSyncPayload && localState.scheduling?.status !== 'waiting-for-data') {
+        await updateWasteReminderSchedulingState({
+          attemptCount: 0,
+          expectedCount: localState.scheduling?.expectedCount ?? 0,
+          lastAttemptAt: new Date().toISOString(),
+          reason: 'data-unavailable',
+          status: 'waiting-for-data'
+        });
+      }
+
       return;
     }
 
@@ -128,42 +96,165 @@ export const useWasteReminderSync = () => {
     });
   }, [getStreetString, streetData, streetLoading, typesLoading, usedTypes]);
 
+  const reconstructCurrentOwnerSettings = useCallback(async () => {
+    if (streetLoading || typesLoading || !streetData || !usedTypes) {
+      return false;
+    }
+
+    const fetchResult = await getReminderSettings();
+    const locationData = getLocationData(streetData);
+
+    if (fetchResult.status !== 'ok' || !locationData) {
+      await writeWasteReminderLocalState({
+        ownerKey: await getWasteReminderOwnerKey(),
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        scheduling: {
+          attemptCount: 0,
+          expectedCount: 0,
+          lastAttemptAt: new Date().toISOString(),
+          reason: 'data-unavailable',
+          status: 'waiting-for-data'
+        }
+      });
+      return false;
+    }
+
+    const settings = fetchResult.settings.filter(
+      ({ city, street, zip, notify_for_waste_type: typeKey }) =>
+        city === locationData.city &&
+        street === locationData.street &&
+        zip === locationData.zip &&
+        !!usedTypes[typeKey]
+    );
+    const registrations = settings.map((setting) => ({
+      active: true,
+      leadDays: setting.notify_days_before,
+      slotId: setting.reminder_slot_id ?? 'default',
+      storeId: setting.id,
+      time: new Date(setting.notify_at).toLocaleTimeString('de-DE', {
+        hour: '2-digit',
+        hour12: false,
+        minute: '2-digit'
+      }),
+      typeKey: setting.notify_for_waste_type
+    }));
+    const notificationSettings = Object.fromEntries(
+      Object.keys(usedTypes).map((typeKey) => [
+        typeKey,
+        registrations.some((registration) => registration.typeKey === typeKey)
+      ])
+    );
+    const activeTypes = Object.fromEntries(
+      Object.keys(usedTypes).map((typeKey) => {
+        const registration = registrations.find((item) => item.typeKey === typeKey);
+        return [typeKey, { active: !!registration, storeId: registration?.storeId }];
+      })
+    );
+
+    await writeWasteReminderLocalState({
+      ownerKey: await getWasteReminderOwnerKey(),
+      scheduledNotificationIds: [],
+      scheduledReminderKeys: [],
+      scheduling: {
+        attemptCount: 0,
+        expectedCount: 0,
+        lastAttemptAt: new Date().toISOString(),
+        status: registrations.length ? 'waiting-for-data' : 'inactive'
+      },
+      serverSyncPayload: {
+        activeReminderRegistrations: registrations,
+        activeTypes,
+        locationData,
+        notificationSettings,
+        reminderTime: registrations[0]?.time ?? '2000-01-01T09:00:00.000+01:00',
+        usedTypeKeys: Object.keys(usedTypes)
+      },
+      serverSyncStatus: 'synced'
+    });
+
+    return true;
+  }, [streetData, streetLoading, typesLoading, usedTypes]);
+
+  // The branches mirror the persisted maintenance state machine and stay centralized so every
+  // trigger observes the same ordering and backoff rules.
+  // eslint-disable-next-line complexity
   const enqueueWasteReminderMaintenance = useCallback(
-    (options: { forceIntentReconcile?: boolean; shouldRefreshLocalNotifications: boolean }) => {
+    (trigger: WasteReminderMaintenanceTrigger) => {
       maintenanceQueue.current = maintenanceQueue.current
         .catch(() => undefined)
         .then(async () => {
+          await retryPendingWasteReminderNotificationCancellations().catch(() => undefined);
+          const ownerResult = await clearWasteReminderLocalStateForChangedOwner();
+          let stateBeforeAttempt = await readWasteReminderLocalState();
+          if (
+            ownerResult === 'changed-and-cleared' ||
+            (!stateBeforeAttempt?.serverSyncPayload &&
+              stateBeforeAttempt?.scheduling?.status === 'waiting-for-data')
+          ) {
+            const reconstructed = await reconstructCurrentOwnerSettings();
+            if (!reconstructed) {
+              return;
+            }
+            stateBeforeAttempt = await readWasteReminderLocalState();
+          }
+
+          const nextRetryAt = stateBeforeAttempt?.scheduling?.nextRetryAt;
+          const isRetryDue = !nextRetryAt || new Date(nextRetryAt).getTime() <= Date.now();
+          const bypassBackoff =
+            trigger === 'manual-retry' ||
+            trigger === 'permission-change' ||
+            (trigger === 'foreground' &&
+              stateBeforeAttempt?.scheduling?.status === 'permission-required') ||
+            (trigger === 'data-ready' &&
+              stateBeforeAttempt?.scheduling?.status === 'waiting-for-data');
+
+          if (
+            stateBeforeAttempt?.scheduling?.status === 'failed' &&
+            !isRetryDue &&
+            !bypassBackoff
+          ) {
+            return;
+          }
+
           const hasInAppPermission = await getInAppPermission();
 
           if (!hasInAppPermission) {
             return;
           }
 
-          const clearedStateForChangedOwner = await clearWasteReminderLocalStateForChangedOwner();
+          await syncPendingWasteReminderSettings();
 
-          if (clearedStateForChangedOwner) {
-            const payload = buildDisruptionPayload();
-            if (payload) {
-              await storeWasteReminderSettingsWithoutScheduling(payload);
-              const result = await syncWasteReminderSettingsWithServer(payload);
-              if (result.success) {
-                await markWasteReminderServerSyncSynced(result.serverSyncPayload);
+          if (trigger === 'foreground' || trigger === 'startup') {
+            const currentState = await readWasteReminderLocalState();
+            if (currentState?.scheduling?.status === 'scheduled') {
+              const verificationResult = await verifyWasteReminderNotificationsFromLocalState({
+                force: trigger === 'startup'
+              });
+
+              if (verificationResult.status === 'failed') {
+                await refreshLocalWasteReminderNotifications();
               }
+            } else {
+              await refreshLocalWasteReminderNotifications();
             }
-            return;
+          } else {
+            await refreshLocalWasteReminderNotifications();
           }
 
-          await syncPendingWasteReminderSettings(!!options.forceIntentReconcile);
-
-          if (options.shouldRefreshLocalNotifications) {
-            await refreshLocalWasteReminderNotifications();
+          const stateAfterAttempt = await readWasteReminderLocalState();
+          if (stateAfterAttempt?.scheduling?.status !== stateBeforeAttempt?.scheduling?.status) {
+            DeviceEventEmitter.emit(
+              WASTE_REMINDER_SCHEDULING_STATUS_CHANGED_EVENT,
+              stateAfterAttempt?.scheduling?.status
+            );
           }
         });
 
       return maintenanceQueue.current;
     },
     [
-      buildDisruptionPayload,
+      reconstructCurrentOwnerSettings,
       refreshLocalWasteReminderNotifications,
       syncPendingWasteReminderSettings
     ]
@@ -179,7 +270,7 @@ export const useWasteReminderSync = () => {
   }, []);
 
   useEffect(() => {
-    enqueueWasteReminderMaintenance({ shouldRefreshLocalNotifications: false });
+    enqueueWasteReminderMaintenance('startup');
   }, [enqueueWasteReminderMaintenance]);
 
   useEffect(() => {
@@ -192,13 +283,13 @@ export const useWasteReminderSync = () => {
     }
 
     hasRefreshedLocalNotificationsInitially.current = true;
-    enqueueWasteReminderMaintenance({ shouldRefreshLocalNotifications: true });
+    enqueueWasteReminderMaintenance('data-ready');
   }, [enqueueWasteReminderMaintenance, streetData, streetLoading, typesLoading, usedTypes]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState) => {
       if (nextState === 'active') {
-        enqueueWasteReminderMaintenance({ shouldRefreshLocalNotifications: true });
+        enqueueWasteReminderMaintenance('foreground');
       }
     });
 
@@ -210,13 +301,18 @@ export const useWasteReminderSync = () => {
       PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
       (isEnabled: boolean) => {
         if (isEnabled) {
-          enqueueWasteReminderMaintenance({
-            forceIntentReconcile: true,
-            shouldRefreshLocalNotifications: true
-          });
+          enqueueWasteReminderMaintenance('permission-change');
         }
       }
     );
+
+    return () => subscription.remove();
+  }, [enqueueWasteReminderMaintenance]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(WASTE_REMINDER_MANUAL_RETRY_EVENT, () => {
+      enqueueWasteReminderMaintenance('manual-retry');
+    });
 
     return () => subscription.remove();
   }, [enqueueWasteReminderMaintenance]);

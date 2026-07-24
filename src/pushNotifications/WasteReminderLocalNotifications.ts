@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 import { texts } from '../config';
 import { WasteTypeData } from '../types';
@@ -7,17 +8,26 @@ import {
   buildPendingWasteReminderState,
   getWasteReminderOwnerKey,
   readWasteReminderLocalState,
+  readWasteReminderPendingCancellationIds,
   removeWasteReminderLocalState,
   WasteReminderLocalState,
+  WasteReminderSchedulingErrorClass,
+  WasteReminderSchedulingState,
   WasteReminderServerSyncPayload,
-  writeWasteReminderLocalState
+  writeWasteReminderLocalState,
+  writeWasteReminderPendingCancellationIds
 } from './WasteReminderLocalStorage';
 import {
   buildWasteReminderSchedule,
   WasteLocationTypeReminderData,
   WasteReminderOccurrence,
-  WasteReminderRegistration
+  WasteReminderRegistration,
+  WasteReminderScheduleReason
 } from './WasteReminderScheduler';
+import {
+  classifyWasteReminderError,
+  reportWasteReminderSchedulingTransition
+} from './WasteReminderDiagnostics';
 
 const WASTE_REMINDER_COVERAGE_ONE_MONTH_KEY = 'waste-sync:one-month-before';
 const WASTE_REMINDER_COVERAGE_ONE_WEEK_KEY = 'waste-sync:one-week-before';
@@ -27,37 +37,92 @@ type ScheduleWasteReminderNotificationsParams = {
   localCoverageUntil?: Date;
   now?: Date;
   reminders: WasteReminderOccurrence[];
+  scheduleReason?: WasteReminderScheduleReason;
   serverSyncPayload: WasteReminderServerSyncPayload;
   serverSyncStatus?: NonNullable<WasteReminderLocalState['serverSyncStatus']>;
   streetName?: string;
   wasteTypesData?: WasteTypeData;
 };
 
+export type WasteReminderSchedulingResult =
+  | { actualCount: number; expectedCount: number; status: 'scheduled' }
+  | { reason: WasteReminderScheduleReason; status: 'inactive' | 'no-future-reminders' }
+  | { status: 'permission-required' }
+  | { status: 'waiting-for-data' }
+  | { errorClass: WasteReminderSchedulingErrorClass; status: 'failed' };
+
 export const scheduleWasteReminderNotifications = async ({
   hasMoreReminders = false,
   localCoverageUntil,
   now = new Date(),
   reminders,
+  scheduleReason = reminders.length ? 'has-reminders' : 'no-active-types',
   serverSyncPayload,
   serverSyncStatus = 'pending',
   streetName,
   wasteTypesData = {}
-}: ScheduleWasteReminderNotificationsParams) => {
+}: ScheduleWasteReminderNotificationsParams): Promise<WasteReminderSchedulingResult> => {
   const previousState = await readWasteReminderLocalState();
   const ownerKey = await getWasteReminderOwnerKey();
   const scheduledNotificationIds: string[] = [];
   const scheduledCoverageReminderNotificationIds: string[] = [];
-  const reminderPlanFingerprint = buildReminderPlanFingerprint({
+  const coverageReminders = buildCoverageReminderNotifications({
     hasMoreReminders,
     localCoverageUntil,
-    now,
-    reminders,
-    serverSyncPayload,
-    streetName,
-    wasteTypesData
+    now
   });
+  const expectedCount = reminders.length + coverageReminders.length;
+
+  if (expectedCount === 0) {
+    const status = scheduleReason === 'no-active-types' ? 'inactive' : 'no-future-reminders';
+    const scheduling = buildSchedulingState({
+      expectedCount,
+      now,
+      reason: scheduleReason,
+      status
+    });
+    await cancelNotificationsBestEffort(previousState?.scheduledNotificationIds ?? []).catch(
+      () => undefined
+    );
+    await writeWasteReminderLocalState(
+      buildPendingWasteReminderState({
+        localCoverageUntil,
+        ownerKey,
+        reminders,
+        scheduledNotificationIds: [],
+        scheduling,
+        serverSyncPayload,
+        serverSyncStatus
+      })
+    );
+
+    return { reason: scheduleReason, status };
+  }
 
   try {
+    const availability = await getSchedulingAvailability();
+
+    if (!availability.available) {
+      const scheduling = buildSchedulingState({
+        errorClass: availability.errorClass,
+        expectedCount,
+        now,
+        previousState,
+        status: availability.status
+      });
+      await persistUnsuccessfulReplacement({
+        previousState,
+        scheduling,
+        serverSyncPayload,
+        serverSyncStatus
+      });
+      reportSchedulingTransition(scheduling, previousState?.scheduling);
+
+      return availability.status === 'permission-required'
+        ? { status: 'permission-required' }
+        : { errorClass: availability.errorClass, status: 'failed' };
+    }
+
     for (const reminder of reminders) {
       const notificationId = await scheduleWasteReminderNotification({
         reminder,
@@ -69,62 +134,274 @@ export const scheduleWasteReminderNotifications = async ({
       scheduledNotificationIds.push(notificationId);
     }
 
-    for (const reminder of buildCoverageReminderNotifications({
-      hasMoreReminders,
-      localCoverageUntil,
-      now
-    })) {
+    for (const reminder of coverageReminders) {
       const notificationId = await scheduleWasteReminderCoverageNotification(reminder);
 
       scheduledNotificationIds.push(notificationId);
       scheduledCoverageReminderNotificationIds.push(notificationId);
     }
-  } catch (error) {
-    await cancelScheduledNotificationsBestEffort(scheduledNotificationIds);
+    const actualCount = await verifyScheduledWasteReminders(scheduledNotificationIds);
+    const scheduling = buildSchedulingState({
+      actualCount,
+      expectedCount,
+      now,
+      status: 'scheduled'
+    });
 
-    throw error;
-  }
-
-  let nextState: WasteReminderLocalState;
-
-  try {
-    await Promise.all(
-      (previousState?.scheduledNotificationIds ?? []).map((notificationId) =>
-        Notifications.cancelScheduledNotificationAsync(notificationId)
-      )
-    );
-
-    nextState = buildPendingWasteReminderState({
+    const nextState = buildPendingWasteReminderState({
       localCoverageUntil,
       ownerKey,
-      reminderPlanFingerprint,
       reminders,
       scheduledCoverageReminderNotificationIds,
       scheduledNotificationIds,
+      scheduling,
       serverSyncPayload,
       serverSyncStatus
     });
 
-    await writeWasteReminderLocalState(nextState);
+    try {
+      await writeWasteReminderLocalState(nextState);
+    } catch {
+      throw new WasteReminderStorageError();
+    }
+
+    await cancelNotificationsBestEffort(
+      (previousState?.scheduledNotificationIds ?? []).filter(
+        (notificationId) => !scheduledNotificationIds.includes(notificationId)
+      )
+    ).catch(() => undefined);
+    if (previousState?.scheduling) {
+      reportSchedulingTransition(scheduling, previousState.scheduling);
+    }
+
+    return { actualCount, expectedCount, status: 'scheduled' };
   } catch (error) {
-    await cancelScheduledNotificationsBestEffort(scheduledNotificationIds);
+    await cancelNotificationsBestEffort(scheduledNotificationIds).catch(() => undefined);
+    const errorClass = classifyWasteReminderError(
+      error,
+      error instanceof WasteReminderVerificationError
+        ? error.errorClass
+        : error instanceof WasteReminderStorageError
+        ? 'storage-error'
+        : 'native-schedule-error'
+    );
+    const scheduling = buildSchedulingState({
+      actualCount: error instanceof WasteReminderVerificationError ? error.actualCount : undefined,
+      errorClass,
+      expectedCount,
+      now,
+      previousState,
+      status: 'failed'
+    });
 
-    throw error;
+    await persistUnsuccessfulReplacement({
+      previousState,
+      scheduling,
+      serverSyncPayload,
+      serverSyncStatus
+    });
+    reportSchedulingTransition(scheduling, previousState?.scheduling);
+
+    return { errorClass, status: 'failed' };
   }
-
-  logWasteReminderLocalState(nextState);
-  logWasteReminderScheduledIds({ remindersCount: reminders.length, scheduledNotificationIds });
-  await logScheduledWasteReminderNotifications();
-
-  return nextState;
 };
 
-const cancelScheduledNotificationsBestEffort = async (notificationIds: string[]) => {
-  await Promise.allSettled(
-    notificationIds.map((notificationId) =>
-      Notifications.cancelScheduledNotificationAsync(notificationId)
-    )
+class WasteReminderVerificationError extends Error {
+  actualCount?: number;
+  errorClass: WasteReminderSchedulingErrorClass;
+
+  constructor(errorClass: WasteReminderSchedulingErrorClass, actualCount?: number) {
+    super(errorClass);
+    this.actualCount = actualCount;
+    this.errorClass = errorClass;
+  }
+}
+
+class WasteReminderStorageError extends Error {}
+
+const verifyScheduledWasteReminders = async (expectedIds: string[]) => {
+  let scheduledNotifications: Notifications.NotificationRequest[];
+
+  try {
+    scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+  } catch {
+    throw new WasteReminderVerificationError('native-verification-error');
+  }
+
+  const registeredIds = new Set(
+    scheduledNotifications
+      .filter(
+        ({ content, identifier }) =>
+          expectedIds.includes(identifier) &&
+          content.data?.query_type === 'WasteAddresses' &&
+          !!content.data?.reminderKey
+      )
+      .map(({ identifier }) => identifier)
   );
+
+  if (registeredIds.size !== expectedIds.length) {
+    throw new WasteReminderVerificationError('native-verification-mismatch', registeredIds.size);
+  }
+
+  return registeredIds.size;
+};
+
+const getSchedulingAvailability = async (): Promise<
+  | { available: true }
+  | {
+      available: false;
+      errorClass: 'channel-unavailable' | 'permission-denied';
+      status: 'failed' | 'permission-required';
+    }
+> => {
+  const permission = await Notifications.getPermissionsAsync();
+
+  if (
+    !permission.granted &&
+    permission.status !== 'granted' &&
+    permission.ios?.status !== Notifications.IosAuthorizationStatus.PROVISIONAL
+  ) {
+    return {
+      available: false,
+      errorClass: 'permission-denied',
+      status: 'permission-required'
+    };
+  }
+
+  if (Platform.OS === 'android') {
+    const channel = await Notifications.getNotificationChannelAsync('default');
+
+    if (!channel || channel.importance === Notifications.AndroidImportance.NONE) {
+      return {
+        available: false,
+        errorClass: 'channel-unavailable',
+        status: 'failed'
+      };
+    }
+  }
+
+  return { available: true };
+};
+
+const RETRY_DELAYS_MS = [60_000, 300_000, 1_800_000, 21_600_000];
+
+const buildSchedulingState = ({
+  actualCount,
+  errorClass,
+  expectedCount,
+  now,
+  previousState,
+  reason,
+  status
+}: {
+  actualCount?: number;
+  errorClass?: WasteReminderSchedulingErrorClass;
+  expectedCount: number;
+  now: Date;
+  previousState?: WasteReminderLocalState;
+  reason?: WasteReminderScheduleReason;
+  status: WasteReminderSchedulingState['status'];
+}): WasteReminderSchedulingState => {
+  const attemptCount =
+    status === 'failed' || status === 'permission-required'
+      ? (previousState?.scheduling?.attemptCount ?? 0) + 1
+      : 0;
+  const retryDelay = RETRY_DELAYS_MS[Math.min(Math.max(attemptCount - 1, 0), 3)];
+
+  return {
+    ...(actualCount === undefined ? {} : { actualCount }),
+    attemptCount,
+    ...(errorClass ? { errorClass } : {}),
+    expectedCount,
+    lastAttemptAt: now.toISOString(),
+    ...(retryDelay && attemptCount
+      ? { nextRetryAt: new Date(now.getTime() + retryDelay).toISOString() }
+      : {}),
+    ...(reason ? { reason } : {}),
+    status
+  };
+};
+
+const persistUnsuccessfulReplacement = async ({
+  previousState,
+  scheduling,
+  serverSyncPayload,
+  serverSyncStatus
+}: {
+  previousState?: WasteReminderLocalState;
+  scheduling: WasteReminderSchedulingState;
+  serverSyncPayload: WasteReminderServerSyncPayload;
+  serverSyncStatus: NonNullable<WasteReminderLocalState['serverSyncStatus']>;
+}) => {
+  const ownerKey = await getWasteReminderOwnerKey();
+
+  try {
+    await writeWasteReminderLocalState({
+      ownerKey,
+      scheduledCoverageReminderNotificationIds:
+        previousState?.scheduledCoverageReminderNotificationIds ?? [],
+      scheduledNotificationIds: previousState?.scheduledNotificationIds ?? [],
+      scheduledReminderKeys: previousState?.scheduledReminderKeys ?? [],
+      scheduling,
+      serverSyncPayload,
+      serverSyncStatus
+    });
+  } catch (error) {
+    reportWasteReminderSchedulingTransition({
+      actualCount: scheduling.actualCount,
+      errorClass: 'storage-error',
+      expectedCount: scheduling.expectedCount,
+      schedulingStatus: 'failed'
+    });
+    throw error;
+  }
+};
+
+let cancellationMaintenanceQueue: Promise<string[]> = Promise.resolve([]);
+
+const cancelNotificationsBestEffort = (notificationIds: string[]) => {
+  cancellationMaintenanceQueue = cancellationMaintenanceQueue
+    .catch(() => [])
+    .then(async () => {
+      const pendingCancellationIds = await readWasteReminderPendingCancellationIds();
+      const idsToCancel = Array.from(new Set([...pendingCancellationIds, ...notificationIds]));
+      const results = await Promise.allSettled(
+        idsToCancel.map((notificationId) =>
+          Notifications.cancelScheduledNotificationAsync(notificationId)
+        )
+      );
+      const failedCancellationIds = idsToCancel.filter(
+        (_, index) => results[index].status === 'rejected'
+      );
+
+      await writeWasteReminderPendingCancellationIds(failedCancellationIds);
+
+      return failedCancellationIds;
+    });
+
+  return cancellationMaintenanceQueue;
+};
+
+export const retryPendingWasteReminderNotificationCancellations = () =>
+  cancelNotificationsBestEffort([]);
+
+const reportSchedulingTransition = (
+  scheduling: WasteReminderSchedulingState,
+  previousScheduling?: WasteReminderSchedulingState
+) => {
+  if (
+    previousScheduling?.status === scheduling.status &&
+    previousScheduling.errorClass === scheduling.errorClass
+  ) {
+    return;
+  }
+
+  reportWasteReminderSchedulingTransition({
+    actualCount: scheduling.actualCount,
+    errorClass: scheduling.errorClass,
+    expectedCount: scheduling.expectedCount,
+    schedulingStatus: scheduling.status
+  });
 };
 
 export const clearWasteReminderLocalNotifications = async () => {
@@ -147,7 +424,6 @@ export const clearWasteReminderLocalNotifications = async () => {
 
   await writeWasteReminderLocalState({
     ...localState,
-    reminderPlanFingerprint: undefined,
     scheduledCoverageReminderNotificationIds: [],
     scheduledNotificationIds: [],
     scheduledReminderKeys: []
@@ -182,7 +458,7 @@ export const clearWasteReminderLocalStateForChangedOwner = async () => {
   const localState = await readWasteReminderLocalState();
 
   if (!localState) {
-    return false;
+    return 'unchanged' as const;
   }
 
   const ownerKey = await getWasteReminderOwnerKey();
@@ -190,25 +466,21 @@ export const clearWasteReminderLocalStateForChangedOwner = async () => {
   if (!localState.ownerKey || localState.ownerKey === 'anonymous') {
     await writeWasteReminderLocalState({ ...localState, ownerKey });
 
-    return false;
+    return 'adopted-anonymous' as const;
   }
 
   if (ownerKey === 'anonymous') {
-    return false;
+    return 'unchanged' as const;
   }
 
   if (localState.ownerKey === ownerKey) {
-    return false;
+    return 'unchanged' as const;
   }
 
-  await Promise.all(
-    localState.scheduledNotificationIds.map((notificationId) =>
-      Notifications.cancelScheduledNotificationAsync(notificationId)
-    )
-  );
+  await cancelNotificationsBestEffort(localState.scheduledNotificationIds).catch(() => undefined);
   await removeWasteReminderLocalState();
 
-  return true;
+  return 'changed-and-cleared' as const;
 };
 
 export const rescheduleWasteReminderNotificationsFromLocalState = async ({
@@ -225,8 +497,22 @@ export const rescheduleWasteReminderNotificationsFromLocalState = async ({
   const localState = await readWasteReminderLocalState();
   const serverSyncPayload = localState?.serverSyncPayload;
 
-  if (!localState || !serverSyncPayload || !wasteLocationTypes?.length) {
-    return;
+  if (!localState || !serverSyncPayload) {
+    return { status: 'waiting-for-data' } as const;
+  }
+
+  if (!wasteLocationTypes) {
+    await writeWasteReminderLocalState({
+      ...localState,
+      scheduling: buildSchedulingState({
+        expectedCount: 0,
+        now,
+        reason: 'no-pickup-dates',
+        status: 'waiting-for-data'
+      })
+    });
+
+    return { status: 'waiting-for-data' } as const;
   }
 
   const activeReminderRegistrations = buildActiveReminderRegistrations(serverSyncPayload);
@@ -239,36 +525,12 @@ export const rescheduleWasteReminderNotificationsFromLocalState = async ({
     wasteLocationTypes
   });
 
-  const reminderPlanFingerprint = buildReminderPlanFingerprint({
-    hasMoreReminders: schedule.hasMoreReminders,
-    localCoverageUntil: schedule.localCoverageUntil,
-    now,
-    reminders: schedule.reminders,
-    serverSyncPayload,
-    streetName,
-    wasteTypesData
-  });
-
-  if (
-    localState.reminderPlanFingerprint === reminderPlanFingerprint &&
-    hasConsistentScheduledReminderIds({
-      localState,
-      coverageReminderCount: buildCoverageReminderNotifications({
-        hasMoreReminders: schedule.hasMoreReminders,
-        localCoverageUntil: schedule.localCoverageUntil,
-        now
-      }).length,
-      reminders: schedule.reminders
-    })
-  ) {
-    return localState;
-  }
-
   return scheduleWasteReminderNotifications({
     hasMoreReminders: schedule.hasMoreReminders,
     localCoverageUntil: schedule.localCoverageUntil,
     now,
     reminders: schedule.reminders,
+    scheduleReason: schedule.reason,
     serverSyncPayload,
     serverSyncStatus: localState.serverSyncStatus,
     streetName,
@@ -276,83 +538,75 @@ export const rescheduleWasteReminderNotificationsFromLocalState = async ({
   });
 };
 
-const hasConsistentScheduledReminderIds = ({
-  coverageReminderCount,
-  localState,
-  reminders
+const WASTE_REMINDER_FOREGROUND_VERIFICATION_INTERVAL_MS = 6 * 60 * 60 * 1000;
+
+export const verifyWasteReminderNotificationsFromLocalState = async ({
+  force = false,
+  now = new Date()
 }: {
-  coverageReminderCount: number;
-  localState: WasteReminderLocalState;
-  reminders: WasteReminderOccurrence[];
-}) => {
-  const coverageIds = localState.scheduledCoverageReminderNotificationIds ?? [];
+  force?: boolean;
+  now?: Date;
+} = {}) => {
+  const localState = await readWasteReminderLocalState();
 
-  return (
-    localState.scheduledReminderKeys.length === reminders.length &&
-    localState.scheduledReminderKeys.every((key, index) => key === reminders[index].id) &&
-    coverageIds.length === coverageReminderCount &&
-    localState.scheduledNotificationIds.length === reminders.length + coverageReminderCount &&
-    new Set(localState.scheduledNotificationIds).size ===
-      localState.scheduledNotificationIds.length &&
-    coverageIds.every((id) => localState.scheduledNotificationIds.includes(id))
-  );
+  if (!localState?.serverSyncPayload || localState.scheduling?.status !== 'scheduled') {
+    return { checked: false, status: localState?.scheduling?.status } as const;
+  }
+
+  try {
+    const availability = await getSchedulingAvailability();
+    if (!availability.available) {
+      const scheduling = buildSchedulingState({
+        errorClass: availability.errorClass,
+        expectedCount: localState.scheduledNotificationIds.length,
+        now,
+        previousState: localState,
+        status: availability.status
+      });
+      await writeWasteReminderLocalState({ ...localState, scheduling });
+      reportSchedulingTransition(scheduling, localState.scheduling);
+
+      return { checked: true, status: availability.status } as const;
+    }
+
+    const lastVerificationAt = new Date(localState.scheduling.lastAttemptAt).getTime();
+    if (
+      !force &&
+      Number.isFinite(lastVerificationAt) &&
+      now.getTime() - lastVerificationAt < WASTE_REMINDER_FOREGROUND_VERIFICATION_INTERVAL_MS
+    ) {
+      return { checked: false, status: 'scheduled' } as const;
+    }
+
+    const actualCount = await verifyScheduledWasteReminders(localState.scheduledNotificationIds);
+    const scheduling = buildSchedulingState({
+      actualCount,
+      expectedCount: localState.scheduledNotificationIds.length,
+      now,
+      status: 'scheduled'
+    });
+    await writeWasteReminderLocalState({ ...localState, scheduling });
+
+    return { checked: true, status: 'scheduled' } as const;
+  } catch (error) {
+    const errorClass =
+      error instanceof WasteReminderVerificationError
+        ? error.errorClass
+        : 'native-verification-error';
+    const scheduling = buildSchedulingState({
+      actualCount: error instanceof WasteReminderVerificationError ? error.actualCount : undefined,
+      errorClass,
+      expectedCount: localState.scheduledNotificationIds.length,
+      now,
+      previousState: localState,
+      status: 'failed'
+    });
+    await writeWasteReminderLocalState({ ...localState, scheduling });
+    reportSchedulingTransition(scheduling, localState.scheduling);
+
+    return { checked: true, errorClass, status: 'failed' } as const;
+  }
 };
-
-const buildReminderPlanFingerprint = ({
-  hasMoreReminders,
-  localCoverageUntil,
-  now,
-  reminders,
-  serverSyncPayload,
-  streetName,
-  wasteTypesData
-}: Required<Pick<ScheduleWasteReminderNotificationsParams, 'hasMoreReminders' | 'now'>> &
-  Omit<ScheduleWasteReminderNotificationsParams, 'hasMoreReminders' | 'now'>) => {
-  const coverageReminders = buildCoverageReminderNotifications({
-    hasMoreReminders,
-    localCoverageUntil,
-    now
-  });
-  const activeRegistrations = buildActiveReminderRegistrations(serverSyncPayload) ?? [];
-
-  return JSON.stringify({
-    coverage: {
-      hasMoreReminders,
-      localCoverageUntil: localCoverageUntil?.toISOString(),
-      notifications: coverageReminders.map(({ id, reminderAt }) => ({
-        body: texts.wasteCalendar.localReminderCoverageNotificationBody,
-        id,
-        reminderAt: reminderAt.toISOString(),
-        title: texts.wasteCalendar.localReminderCoverageNotificationTitle
-      }))
-    },
-    intent: {
-      activeRegistrations: activeRegistrations
-        .map(({ leadDays, slotId, time, typeKey }) => ({ leadDays, slotId, time, typeKey }))
-        .sort((left, right) =>
-          `${left.typeKey}:${left.slotId}:${left.time}:${left.leadDays}`.localeCompare(
-            `${right.typeKey}:${right.slotId}:${right.time}:${right.leadDays}`
-          )
-        ),
-      onDayBefore: !!serverSyncPayload.onDayBefore,
-      reminderTime:
-        serverSyncPayload.reminderTime instanceof Date
-          ? serverSyncPayload.reminderTime.toISOString()
-          : serverSyncPayload.reminderTime,
-      selectedTypeKeys: buildSelectedReminderTypeKeys(serverSyncPayload).sort(compareAlphabetically)
-    },
-    reminders: reminders.map((reminder) => ({
-      body: buildReminderBody({ reminder, streetName, wasteTypesData }),
-      id: reminder.id,
-      pickupDates: reminder.pickupDates,
-      reminderAt: reminder.reminderAt.toISOString(),
-      title: texts.wasteCalendar.localReminderNotificationTitle,
-      wasteTypes: reminder.wasteTypes
-    }))
-  });
-};
-
-const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
 
 const buildActiveReminderRegistrations = ({
   activeReminderRegistrations

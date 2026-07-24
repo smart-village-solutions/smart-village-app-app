@@ -13,7 +13,9 @@ import React, {
 } from 'react';
 import {
   Alert,
+  DeviceEventEmitter,
   FlatList,
+  Linking,
   Modal,
   Platform,
   RefreshControl,
@@ -77,6 +79,10 @@ import {
   WasteReminderServerSyncRegistration
 } from '../pushNotifications';
 import {
+  buildReminderSettingsFromRegistrations,
+  buildReminderSettingsFromServerSettings
+} from '../pushNotifications/WasteReminderSettingsMapper';
+import {
   WasteReminderSettingsByType,
   WasteSettingsActions,
   wasteSettingsReducer,
@@ -84,9 +90,11 @@ import {
 } from '../reducers';
 import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
-import { ScreenName, WasteReminderSettingJson, WasteTypeData } from '../types';
+import { ScreenName, WasteTypeData } from '../types';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
+const WASTE_REMINDER_MANUAL_RETRY_EVENT = 'wasteReminderManualRetry';
+const WASTE_REMINDER_SCHEDULING_STATUS_CHANGED_EVENT = 'wasteReminderSchedulingStatusChanged';
 const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
 const renderWasteTypeLabel = (wasteType: WasteTypeData[string]) => (
   <WrapperRow itemsCenter>
@@ -114,38 +122,10 @@ type TooltipRef = {
   toggleTooltip: () => void;
 };
 
-type WasteCollectionSettingsViewState =
-  | 'loading'
-  | 'suggestions'
-  | 'settings'
-  | 'disruption-settings'
-  | 'empty';
-
-type DisruptionNotificationSettings = {
-  disruption_all_locations: boolean;
-  disruption_location: boolean;
-};
-
-export const getDisruptionSettingsFromSyncPayload = (
-  registrations?: WasteReminderServerSyncPayload['disruptionRegistrations']
-) => ({
-  notificationSettings: {
-    disruption_all_locations: !!registrations?.disruption_all_locations?.active,
-    disruption_location: !!registrations?.disruption_location?.active
-  },
-  storeIds: {
-    ...(registrations?.disruption_all_locations?.storeId
-      ? { disruption_all_locations: registrations.disruption_all_locations.storeId }
-      : {}),
-    ...(registrations?.disruption_location?.storeId
-      ? { disruption_location: registrations.disruption_location.storeId }
-      : {})
-  }
-});
+type WasteCollectionSettingsViewState = 'loading' | 'suggestions' | 'settings' | 'empty';
 
 type WasteCollectionSettingsViewStateParams = {
   hasSelectedStreet: boolean;
-  hasDisruptionTypes?: boolean;
   hasStreetSuggestions: boolean;
   isLoading: boolean;
   isStreetSelected: boolean;
@@ -164,7 +144,6 @@ const initialWasteSettingsState: WasteSettingsState = {
 
 export const getWasteCollectionSettingsViewState = ({
   hasSelectedStreet,
-  hasDisruptionTypes,
   hasStreetSuggestions,
   isLoading,
   isStreetSelected
@@ -179,10 +158,6 @@ export const getWasteCollectionSettingsViewState = ({
 
   if (hasSelectedStreet) {
     return 'settings';
-  }
-
-  if (hasDisruptionTypes) {
-    return 'disruption-settings';
   }
 
   return 'empty';
@@ -210,6 +185,7 @@ export const WasteCollectionSettingsScreen = () => {
   }>();
   const [isInAppPushEnabled, setIsInAppPushEnabled] = useState(true);
   const [isPushPermissionGranted, setIsPushPermissionGranted] = useState(false);
+  const [wasteReminderSchedulingStatus, setWasteReminderSchedulingStatus] = useState<string>();
   const [state, dispatch] = useReducer(wasteSettingsReducer, initialWasteSettingsState);
   const {
     activeTypes,
@@ -227,62 +203,34 @@ export const WasteCollectionSettingsScreen = () => {
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
   const usedTypes = useWasteUsedTypes({ streetData, typesData });
-  const disruptionTypes = useMemo(() => {
-    const entries = Object.entries(typesData ?? {}).filter(
-      ([key, type]) =>
-        type.notification_kind === 'disruption' &&
-        ['disruption_location', 'disruption_all_locations'].includes(key)
-    );
-    entries.forEach(([key, type]) => {
-      if (__DEV__ && !type.label?.trim()) {
-        console.warn(`[WasteReminder] disruption type ${key} has no label and is omitted`);
-      }
-    });
-    return Object.fromEntries(entries.filter(([, type]) => !!type.label?.trim())) as WasteTypeData;
-  }, [typesData]);
-  const [disruptionNotificationSettings, setDisruptionNotificationSettings] =
-    useState<DisruptionNotificationSettings>(() => ({
-      disruption_all_locations: !!(
-        waste.disruptionNotificationSettings as Partial<DisruptionNotificationSettings> | undefined
-      )?.disruption_all_locations,
-      disruption_location: !!(
-        waste.disruptionNotificationSettings as Partial<DisruptionNotificationSettings> | undefined
-      )?.disruption_location
-    }));
-  const [disruptionStoreIds, setDisruptionStoreIds] = useState<
-    Partial<Record<keyof DisruptionNotificationSettings, number | string>>
-  >({});
   const usedTypeKeys: string[] = useMemo(
     () => (usedTypes ? Object.keys(usedTypes) : []),
     [usedTypes]
   );
   const reminderUiMode = useMemo(() => getWasteReminderUiMode(usedTypes), [usedTypes]);
   const locationData = getLocationData(streetData);
-  const disruptionRegistrationsForSync = useMemo(
-    () => ({
-      disruption_all_locations: {
-        active: disruptionNotificationSettings.disruption_all_locations,
-        storeId: disruptionStoreIds.disruption_all_locations
-      },
-      disruption_location: {
-        active: !!locationData && disruptionNotificationSettings.disruption_location,
-        storeId: disruptionStoreIds.disruption_location
-      }
-    }),
-    [disruptionNotificationSettings, disruptionStoreIds, locationData]
-  );
   const { getStreetString } = useStreetString();
   const streetName = locationData ? getStreetString(locationData) : undefined;
   const effectiveStreetName =
     streetName || (selectedStreetId === waste.streetId ? waste.streetName : undefined);
   const areWasteReminderControlsDisabled = !isInAppPushEnabled;
-  const areDisruptionOnlyControlsDisabled =
-    !isInAppPushEnabled || loadingStoredSettings || !loadedStoredSettingsInitially;
   const { filterStreets } = useFilterStreets('', false);
   const tooltipRef = useRef<TooltipRef | null>(null);
   const openNotificationSettings = useCallback(() => {
     navigation.navigate(ScreenName.Settings);
   }, [navigation]);
+  const openSystemSettings = useCallback(() => {
+    void Linking.openSettings();
+  }, []);
+  const refreshWasteReminderSchedulingStatus = useCallback(async () => {
+    const localState = await readWasteReminderLocalState();
+
+    setWasteReminderSchedulingStatus(localState?.scheduling?.status);
+  }, []);
+  const retryWasteReminderScheduling = useCallback(() => {
+    DeviceEventEmitter.emit(WASTE_REMINDER_MANUAL_RETRY_EVENT);
+    void refreshWasteReminderSchedulingStatus();
+  }, [refreshWasteReminderSchedulingStatus]);
 
   useFocusEffect(
     useCallback(() => {
@@ -293,12 +241,22 @@ export const WasteCollectionSettingsScreen = () => {
           setIsInAppPushEnabled(permission);
         }
       });
+      void refreshWasteReminderSchedulingStatus();
 
       return () => {
         isActive = false;
       };
-    }, [])
+    }, [refreshWasteReminderSchedulingStatus])
   );
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      WASTE_REMINDER_SCHEDULING_STATUS_CHANGED_EVENT,
+      refreshWasteReminderSchedulingStatus
+    );
+
+    return () => subscription.remove();
+  }, [refreshWasteReminderSchedulingStatus]);
 
   const applyInitialStoredSettingsFallback = useCallback(async () => {
     dispatch({ type: WasteSettingsActions.setInitialWasteSettings, payload: usedTypeKeys });
@@ -318,6 +276,8 @@ export const WasteCollectionSettingsScreen = () => {
   }, [usedTypeKeys, usedTypes]);
 
   const loadStoredSettingsFromServer = useCallback(async () => {
+    if (isInitial) return;
+
     setLoadingStoredSettings(true);
 
     const localReminderState = await readWasteReminderLocalState();
@@ -326,12 +286,6 @@ export const WasteCollectionSettingsScreen = () => {
     const localStreetName = localLocation ? getStreetString(localLocation) : undefined;
 
     if (localServerSyncPayload && localStreetName && localStreetName === effectiveStreetName) {
-      const localDisruptions = localServerSyncPayload.disruptionRegistrations;
-      if (localDisruptions) {
-        const hydratedDisruptions = getDisruptionSettingsFromSyncPayload(localDisruptions);
-        setDisruptionNotificationSettings(hydratedDisruptions.notificationSettings);
-        setDisruptionStoreIds(hydratedDisruptions.storeIds);
-      }
       if (usedTypes && localServerSyncPayload.activeReminderRegistrations?.length) {
         dispatch({
           type: WasteSettingsActions.setReminderSettingsByType,
@@ -364,60 +318,30 @@ export const WasteCollectionSettingsScreen = () => {
       return;
     }
 
-    const completeSettings = ((await getReminderSettings()) ?? []) as WasteReminderSettingJson[];
-    const disruptionSettings = completeSettings.filter((setting) =>
-      ['disruption_location', 'disruption_all_locations'].includes(setting.notify_for_waste_type)
-    );
-    const matchingLocalDisruption = disruptionSettings.find(
-      (setting) =>
-        setting.notify_for_waste_type === 'disruption_location' &&
-        !!locationData &&
-        ['street', 'zip', 'city'].every(
-          (field) =>
-            String(setting[field as keyof WasteReminderSettingJson] ?? '')
-              .trim()
-              .toLowerCase() ===
-            String(locationData[field] ?? '')
-              .trim()
-              .toLowerCase()
-        )
-    );
-    const globalDisruption = disruptionSettings.find(
-      (setting) => setting.notify_for_waste_type === 'disruption_all_locations'
-    );
-    setDisruptionNotificationSettings((current) => ({
-      disruption_all_locations: !!globalDisruption || current.disruption_all_locations,
-      disruption_location: !!matchingLocalDisruption || current.disruption_location
-    }));
-    setDisruptionStoreIds({
-      ...(globalDisruption ? { disruption_all_locations: globalDisruption.id } : {}),
-      ...(matchingLocalDisruption ? { disruption_location: matchingLocalDisruption.id } : {})
-    });
+    const reminderSettingsResult = await getReminderSettings();
+    const storedSettingsOnServer =
+      reminderSettingsResult.status === 'ok'
+        ? reminderSettingsResult.settings.map((setting) => ({
+            ...setting,
+            street: getStreetString(setting),
+            // Replace null values with empty strings for city and zip in storedSettings to prevent
+            // validation issues
+            city: setting.city ?? '',
+            zip: setting.zip ?? ''
+          }))
+        : undefined;
 
-    const storedSettingsOnServer = completeSettings
-      .filter(
-        (setting) =>
-          !['disruption_location', 'disruption_all_locations'].includes(
-            setting.notify_for_waste_type
-          )
-      )
-      .map((setting: WasteReminderSettingJson) => ({
-        ...setting,
-        street: getStreetString(setting),
-        // Replace null values with empty strings for city and zip in storedSettings to prevent
-        // validation issues
-        city: setting.city ?? '',
-        zip: setting.zip ?? ''
-      }));
-
-    if (!areValidReminderSettings(storedSettingsOnServer)) {
+    if (
+      reminderSettingsResult.status !== 'ok' ||
+      !areValidReminderSettings(storedSettingsOnServer)
+    ) {
       Alert.alert(texts.errors.errorTitle, texts.errors.noData);
       await applyInitialStoredSettingsFallback();
       setLoadingStoredSettings(false);
       return;
     }
 
-    if (!selectedStreetId || waste.streetId !== selectedStreetId) {
+    if (waste.streetId !== selectedStreetId) {
       await applyInitialStoredSettingsFallback();
     } else {
       const streetSettings = storedSettingsOnServer.filter(
@@ -443,14 +367,17 @@ export const WasteCollectionSettingsScreen = () => {
     setLoadingStoredSettings(false);
   }, [
     getStreetString,
+    isInitial,
     waste.streetId,
+    waste.streetName,
     waste.selectedTypeKeys,
     reminderUiMode,
+    streetName,
     effectiveStreetName,
     selectedStreetId,
+    usedTypeKeys,
     usedTypes,
-    applyInitialStoredSettingsFallback,
-    locationData
+    applyInitialStoredSettingsFallback
   ]);
 
   const updateSettings = useCallback(
@@ -470,7 +397,6 @@ export const WasteCollectionSettingsScreen = () => {
         {
           activeReminderRegistrations: reminderSyncRegistrations,
           activeTypes,
-          disruptionRegistrations: disruptionRegistrationsForSync,
           locationData,
           notificationSettings,
           onDayBefore,
@@ -499,9 +425,7 @@ export const WasteCollectionSettingsScreen = () => {
       locationData,
       onDayBefore,
       reminderTime,
-      isInAppPushEnabled,
-      disruptionNotificationSettings,
-      disruptionRegistrationsForSync
+      isInAppPushEnabled
     ]
   );
 
@@ -520,7 +444,6 @@ export const WasteCollectionSettingsScreen = () => {
       await storeWasteReminderSettingsWithoutScheduling({
         activeReminderRegistrations: reminderSyncRegistrations,
         activeTypes,
-        disruptionRegistrations: disruptionRegistrationsForSync,
         locationData,
         notificationSettings,
         onDayBefore,
@@ -554,14 +477,14 @@ export const WasteCollectionSettingsScreen = () => {
       wasteLocationTypes: streetData?.wasteAddresses?.[0]?.wasteLocationTypes
     });
 
-    await scheduleWasteReminderNotifications({
+    const schedulingResult = await scheduleWasteReminderNotifications({
       hasMoreReminders: schedule.hasMoreReminders,
       localCoverageUntil: schedule.localCoverageUntil,
       reminders: schedule.reminders,
+      scheduleReason: schedule.reason,
       serverSyncPayload: {
         activeReminderRegistrations: reminderSyncRegistrations,
         activeTypes,
-        disruptionRegistrations: disruptionRegistrationsForSync,
         locationData,
         notificationSettings,
         onDayBefore,
@@ -571,10 +494,12 @@ export const WasteCollectionSettingsScreen = () => {
       streetName,
       wasteTypesData: usedTypes
     });
+    setWasteReminderSchedulingStatus(schedulingResult?.status);
 
     return {
       reminderSyncRegistrations,
-      localCoverageUntil: schedule.localCoverageUntil
+      localCoverageUntil: schedule.localCoverageUntil,
+      schedulingResult
     };
   }, [
     activeTypes,
@@ -589,9 +514,7 @@ export const WasteCollectionSettingsScreen = () => {
     streetName,
     usedTypeKeys,
     usedTypes,
-    isInAppPushEnabled,
-    disruptionNotificationSettings,
-    disruptionRegistrationsForSync
+    isInAppPushEnabled
   ]);
 
   const saveSettings = useCallback(async () => {
@@ -599,7 +522,6 @@ export const WasteCollectionSettingsScreen = () => {
 
     try {
       await saveWasteReminderSettings({
-        disruptionNotificationSettings,
         dispatchActiveType: (typeKey, value) =>
           dispatch({
             type: WasteSettingsActions.setActiveType,
@@ -617,7 +539,12 @@ export const WasteCollectionSettingsScreen = () => {
         waste
       });
 
-      navigation.goBack();
+      const schedulingStatus = (await readWasteReminderLocalState())?.scheduling?.status;
+
+      setWasteReminderSchedulingStatus(schedulingStatus);
+      if (schedulingStatus !== 'failed' && schedulingStatus !== 'permission-required') {
+        navigation.goBack();
+      }
     } catch (error) {
       console.warn('An error occurred while saving waste reminder settings:', error);
 
@@ -634,51 +561,7 @@ export const WasteCollectionSettingsScreen = () => {
     scheduleLocalReminderSettings,
     setGlobalSettings,
     updateSettings,
-    navigation,
-    disruptionNotificationSettings
-  ]);
-
-  const saveDisruptionOnlySettings = useCallback(async () => {
-    if (loadingStoredSettings || !loadedStoredSettingsInitially) {
-      return;
-    }
-
-    setIsSavingSettings(true);
-    const nextGlobalSettings = {
-      ...globalSettings,
-      waste: { ...waste, disruptionNotificationSettings }
-    };
-    const payload: WasteReminderServerSyncPayload = {
-      activeTypes: {},
-      disruptionRegistrations: disruptionRegistrationsForSync,
-      notificationSettings: {},
-      reminderTime: new Date('2000-01-01T00:00:00.000+01:00'),
-      usedTypeKeys: []
-    };
-
-    try {
-      await storageHelper.setGlobalSettings(nextGlobalSettings);
-      setGlobalSettings(nextGlobalSettings);
-      await storeWasteReminderSettingsWithoutScheduling(payload);
-      if (isInAppPushEnabled) {
-        const result = await syncWasteReminderSettingsWithServer(payload);
-        if (result.success) await markWasteReminderServerSyncSynced(result.serverSyncPayload);
-      }
-      navigation.goBack();
-    } catch (error) {
-      console.warn('An error occurred while saving disruption settings:', error);
-      setIsSavingSettings(false);
-    }
-  }, [
-    disruptionNotificationSettings,
-    disruptionRegistrationsForSync,
-    globalSettings,
-    isInAppPushEnabled,
-    loadedStoredSettingsInitially,
-    loadingStoredSettings,
-    navigation,
-    setGlobalSettings,
-    waste
+    navigation
   ]);
 
   // Set initial waste types used in the selected street
@@ -702,9 +585,8 @@ export const WasteCollectionSettingsScreen = () => {
       if (
         !hasStartedLoadingStoredSettingsFromServer.current &&
         !loadedStoredSettingsInitially &&
-        ((!_isEmpty(typeSettings) &&
-          (!!effectiveStreetName || waste.streetId !== selectedStreetId)) ||
-          (!selectedStreetId && !_isEmpty(disruptionTypes)))
+        !_isEmpty(typeSettings) &&
+        (!!effectiveStreetName || waste.streetId !== selectedStreetId)
       ) {
         hasStartedLoadingStoredSettingsFromServer.current = true;
         await loadStoredSettingsFromServer();
@@ -719,7 +601,6 @@ export const WasteCollectionSettingsScreen = () => {
     loadedStoredSettingsInitially,
     selectedStreetId,
     typeSettings,
-    disruptionTypes,
     waste.streetId
   ]);
 
@@ -808,12 +689,9 @@ export const WasteCollectionSettingsScreen = () => {
   }, [isPushPermissionGranted, showNotificationSettings]);
 
   const viewState = getWasteCollectionSettingsViewState({
-    hasDisruptionTypes: !_isEmpty(disruptionTypes),
     hasSelectedStreet: !!selectedStreetId,
     hasStreetSuggestions: !!inputValue,
-    isLoading:
-      typesLoading ||
-      (!!selectedStreetId && (loading || streetLoading || !loadedStoredSettingsInitially)),
+    isLoading: loading || typesLoading || streetLoading || !loadedStoredSettingsInitially,
     isStreetSelected
   });
 
@@ -842,17 +720,12 @@ export const WasteCollectionSettingsScreen = () => {
         activeFlexibleSlotTime={activeFlexibleSlotTime}
         activeFlexibleTimePicker={activeFlexibleTimePicker}
         areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
-        disruptionNotificationSettings={disruptionNotificationSettings}
-        disruptionTypes={disruptionTypes}
         isSavingSettings={isSavingSettings}
         loadingStoredSettings={loadingStoredSettings}
         locationData={locationData}
         navigationType={navigationType}
         notificationSettings={notificationSettings}
         onDatePickerChange={onDatePickerChange}
-        onToggleDisruption={(typeKey, value) =>
-          setDisruptionNotificationSettings((current) => ({ ...current, [typeKey]: value }))
-        }
         onFlexibleDatePickerChange={onFlexibleDatePickerChange}
         onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
         onSaveSettings={saveSettings}
@@ -890,6 +763,9 @@ export const WasteCollectionSettingsScreen = () => {
           dispatch({ type: WasteSettingsActions.toggleNotifications });
         }}
         openNotificationSettings={openNotificationSettings}
+        openSystemSettings={openSystemSettings}
+        onRetryWasteReminderScheduling={retryWasteReminderScheduling}
+        wasteReminderSchedulingStatus={wasteReminderSchedulingStatus}
         reminderSettingsByType={reminderSettingsByType}
         reminderTime={reminderTime}
         reminderUiMode={reminderUiMode}
@@ -923,32 +799,6 @@ export const WasteCollectionSettingsScreen = () => {
     );
   }
 
-  if (viewState === 'disruption-settings') {
-    return (
-      <SafeAreaViewFlex>
-        <ScrollView style={styles.container}>
-          <DisruptionNotificationSection
-            areControlsDisabled={areDisruptionOnlyControlsDisabled}
-            hasLocation={false}
-            notificationSettings={disruptionNotificationSettings}
-            onToggle={(typeKey, value) =>
-              setDisruptionNotificationSettings((current) => ({ ...current, [typeKey]: value }))
-            }
-            types={disruptionTypes}
-            wasteTexts={wasteTexts}
-          />
-        </ScrollView>
-        <Wrapper noPaddingBottom>
-          <Button
-            disabled={isSavingSettings || areDisruptionOnlyControlsDisabled}
-            onPress={saveDisruptionOnlySettings}
-            title={wasteTexts.save}
-          />
-        </Wrapper>
-      </SafeAreaViewFlex>
-    );
-  }
-
   return null;
 };
 /* eslint-enable complexity */
@@ -957,15 +807,12 @@ type SelectedStreetSettingsContentProps = {
   activeFlexibleSlotTime?: string;
   activeFlexibleTimePicker?: { slotId: string; typeKey: string };
   areWasteReminderControlsDisabled: boolean;
-  disruptionNotificationSettings: DisruptionNotificationSettings;
-  disruptionTypes: WasteTypeData;
   isSavingSettings: boolean;
   loadingStoredSettings: boolean;
   locationData?: { [key: string]: unknown };
   navigationType: string;
   notificationSettings: { [key: string]: boolean };
   onDatePickerChange: (_: unknown, newTime?: Date) => void;
-  onToggleDisruption: (typeKey: keyof DisruptionNotificationSettings, value: boolean) => void;
   onFlexibleDatePickerChange: (_: unknown, newTime?: Date) => void;
   onPressUpdateOnDayBefore: (value: boolean) => void;
   onRefreshStoredSettings: () => Promise<void>;
@@ -975,6 +822,8 @@ type SelectedStreetSettingsContentProps = {
   onToggleTypeSetting: (typeKey: string, value: boolean) => void;
   onDayBefore: boolean;
   openNotificationSettings: () => void;
+  openSystemSettings: () => void;
+  onRetryWasteReminderScheduling: () => void;
   reminderSettingsByType: WasteReminderSettingsByType;
   reminderTime: Date;
   reminderUiMode: ReturnType<typeof getWasteReminderUiMode>;
@@ -992,21 +841,19 @@ type SelectedStreetSettingsContentProps = {
   usedTypeKeys: string[];
   usedTypes?: WasteTypeData;
   wasteTexts: { [key: string]: string };
+  wasteReminderSchedulingStatus?: string;
 };
 
 const SelectedStreetSettingsContent = ({
   activeFlexibleSlotTime,
   activeFlexibleTimePicker,
   areWasteReminderControlsDisabled,
-  disruptionNotificationSettings,
-  disruptionTypes,
   isSavingSettings,
   loadingStoredSettings,
   locationData,
   navigationType,
   notificationSettings,
   onDatePickerChange,
-  onToggleDisruption,
   onFlexibleDatePickerChange,
   onPressUpdateOnDayBefore,
   onRefreshStoredSettings,
@@ -1016,6 +863,8 @@ const SelectedStreetSettingsContent = ({
   onToggleTypeSetting,
   onDayBefore,
   openNotificationSettings,
+  openSystemSettings,
+  onRetryWasteReminderScheduling,
   reminderSettingsByType,
   reminderTime,
   reminderUiMode,
@@ -1030,7 +879,8 @@ const SelectedStreetSettingsContent = ({
   typeSettings,
   usedTypeKeys,
   usedTypes,
-  wasteTexts
+  wasteTexts,
+  wasteReminderSchedulingStatus
 }: SelectedStreetSettingsContentProps) => (
   <SafeAreaViewFlex>
     <ScrollView
@@ -1072,6 +922,8 @@ const SelectedStreetSettingsContent = ({
         onToggleNotificationSetting={onToggleNotificationSetting}
         onDayBefore={onDayBefore}
         openNotificationSettings={openNotificationSettings}
+        openSystemSettings={openSystemSettings}
+        onRetryWasteReminderScheduling={onRetryWasteReminderScheduling}
         reminderSettingsByType={reminderSettingsByType}
         reminderTime={reminderTime}
         reminderUiMode={reminderUiMode}
@@ -1084,14 +936,7 @@ const SelectedStreetSettingsContent = ({
         tooltipRef={tooltipRef}
         usedTypes={usedTypes}
         wasteTexts={wasteTexts}
-      />
-      <DisruptionNotificationSection
-        areControlsDisabled={areWasteReminderControlsDisabled}
-        hasLocation={!!locationData}
-        notificationSettings={disruptionNotificationSettings}
-        onToggle={onToggleDisruption}
-        types={disruptionTypes}
-        wasteTexts={wasteTexts}
+        wasteReminderSchedulingStatus={wasteReminderSchedulingStatus}
       />
 
       <View style={styles.spacer} />
@@ -1115,69 +960,6 @@ const SelectedStreetSettingsContent = ({
     </View>
   </SafeAreaViewFlex>
 );
-
-type DisruptionNotificationSectionProps = {
-  areControlsDisabled: boolean;
-  hasLocation: boolean;
-  notificationSettings: DisruptionNotificationSettings;
-  onToggle: (typeKey: keyof DisruptionNotificationSettings, value: boolean) => void;
-  types: WasteTypeData;
-  wasteTexts: { [key: string]: string };
-};
-
-const DisruptionNotificationSection = ({
-  areControlsDisabled,
-  hasLocation,
-  notificationSettings,
-  onToggle,
-  types,
-  wasteTexts
-}: DisruptionNotificationSectionProps) => {
-  const entries = Object.entries(types) as [
-    keyof DisruptionNotificationSettings,
-    WasteTypeData[string]
-  ][];
-  if (!entries.length) return null;
-
-  return (
-    <Wrapper style={styles.paddingHorizontal}>
-      <WrapperVertical style={styles.mediumPaddingVertical}>
-        <RegularText big>{wasteTexts.disruptionNotificationsHeading}</RegularText>
-      </WrapperVertical>
-      <View style={styles.borderRadius}>
-        {entries.map(([typeKey, type], index) => {
-          const needsLocation = typeKey === 'disruption_location';
-          const disabled = areControlsDisabled || (needsLocation && !hasLocation);
-          return (
-            <View key={typeKey}>
-              <ListItem
-                bottomDivider={index < entries.length - 1}
-                containerStyle={styles.listItemContainer}
-                accessibilityLabel={`(${type.label}) ${consts.a11yLabel.button}`}
-              >
-                <ListItem.Content>
-                  <BoldText small>{type.label}</BoldText>
-                </ListItem.Content>
-                <Switch
-                  isDisabled={disabled}
-                  switchValue={notificationSettings[typeKey]}
-                  toggleSwitch={() =>
-                    disabled ? undefined : onToggle(typeKey, !notificationSettings[typeKey])
-                  }
-                />
-              </ListItem>
-              {needsLocation && !hasLocation && (
-                <RegularText small placeholder>
-                  {wasteTexts.selectWasteLocationForDisruptionsHint}
-                </RegularText>
-              )}
-            </View>
-          );
-        })}
-      </View>
-    </Wrapper>
-  );
-};
 
 type LegacyGlobalReminderSettingsProps = {
   areWasteReminderControlsDisabled: boolean;
@@ -1350,6 +1132,8 @@ type ReminderSettingsPanelProps = {
   onToggleNotificationSetting: (typeKey: string, value: boolean) => void;
   onDayBefore: boolean;
   openNotificationSettings: () => void;
+  openSystemSettings: () => void;
+  onRetryWasteReminderScheduling: () => void;
   reminderSettingsByType: WasteReminderSettingsByType;
   reminderTime: Date;
   reminderUiMode: ReturnType<typeof getWasteReminderUiMode>;
@@ -1364,8 +1148,10 @@ type ReminderSettingsPanelProps = {
   tooltipRef: React.MutableRefObject<TooltipRef | null>;
   usedTypes?: WasteTypeData;
   wasteTexts: { [key: string]: string };
+  wasteReminderSchedulingStatus?: string;
 };
 
+// eslint-disable-next-line complexity
 const ReminderSettingsPanel = ({
   activeFlexibleSlotTime,
   activeFlexibleTimePicker,
@@ -1378,6 +1164,8 @@ const ReminderSettingsPanel = ({
   onToggleNotificationSetting,
   onDayBefore,
   openNotificationSettings,
+  openSystemSettings,
+  onRetryWasteReminderScheduling,
   reminderSettingsByType,
   reminderTime,
   reminderUiMode,
@@ -1389,7 +1177,8 @@ const ReminderSettingsPanel = ({
   showNotificationSettings,
   tooltipRef,
   usedTypes,
-  wasteTexts
+  wasteTexts,
+  wasteReminderSchedulingStatus
 }: ReminderSettingsPanelProps) => (
   <>
     <Wrapper style={[styles.noPaddingBottom, styles.paddingHorizontal]}>
@@ -1406,6 +1195,48 @@ const ReminderSettingsPanel = ({
               {wasteTexts.notificationSettingsLink}
             </RegularText>
           </TouchableOpacity>
+        </WrapperVertical>
+      )}
+      {(wasteReminderSchedulingStatus === 'permission-required' ||
+        wasteReminderSchedulingStatus === 'failed') && (
+        <WrapperVertical
+          accessibilityLiveRegion="polite"
+          accessibilityRole="alert"
+          style={styles.pushDisabledHint}
+        >
+          <BoldText small>
+            {wasteReminderSchedulingStatus === 'permission-required'
+              ? wasteTexts.wasteReminderPermissionTitle
+              : wasteTexts.wasteReminderFailedTitle}
+          </BoldText>
+          <RegularText small placeholder>
+            {wasteReminderSchedulingStatus === 'permission-required'
+              ? wasteTexts.wasteReminderPermissionBody
+              : wasteTexts.wasteReminderFailedBody}
+          </RegularText>
+          {wasteReminderSchedulingStatus === 'failed' && (
+            <TouchableOpacity
+              accessibilityLabel={wasteTexts.wasteReminderFailedAction}
+              accessibilityRole="button"
+              onPress={onRetryWasteReminderScheduling}
+            >
+              <RegularText small primary underline>
+                {wasteTexts.wasteReminderFailedAction}
+              </RegularText>
+            </TouchableOpacity>
+          )}
+          {(wasteReminderSchedulingStatus === 'permission-required' ||
+            device.platform === 'android') && (
+            <TouchableOpacity
+              accessibilityLabel={wasteTexts.wasteReminderPermissionAction}
+              accessibilityRole="button"
+              onPress={openSystemSettings}
+            >
+              <RegularText small primary underline>
+                {wasteTexts.wasteReminderPermissionAction}
+              </RegularText>
+            </TouchableOpacity>
+          )}
         </WrapperVertical>
       )}
       <ListItem
@@ -1763,55 +1594,6 @@ const FlexiblePerTypeReminderSettings = ({
       })}
   </WrapperHorizontal>
 );
-
-const buildReminderSettingsFromRegistrations = (
-  usedTypes: WasteTypeData,
-  registrations: Array<WasteReminderRegistration & { active?: boolean }>
-): WasteReminderSettingsByType => {
-  const reminderSettingsByType = buildDefaultReminderSettingsByType(usedTypes);
-
-  Object.entries(reminderSettingsByType).forEach(([, typeSetting]) => {
-    Object.keys(typeSetting.reminders).forEach((slotId) => {
-      typeSetting.reminders[slotId].enabled = false;
-    });
-    typeSetting.enabled = false;
-  });
-
-  registrations.forEach((registration) => {
-    const typeSetting = reminderSettingsByType[registration.typeKey];
-    const slotSetting = typeSetting?.reminders[registration.slotId];
-
-    if (!typeSetting || !slotSetting || registration.active === false) {
-      return;
-    }
-
-    typeSetting.enabled = true;
-    typeSetting.reminders[registration.slotId] = {
-      enabled: true,
-      leadDays: registration.leadDays,
-      storeId: registration.storeId,
-      time: registration.time
-    };
-  });
-
-  return reminderSettingsByType;
-};
-
-const buildReminderSettingsFromServerSettings = (
-  usedTypes: WasteTypeData,
-  serverSettings: WasteReminderSettingJson[]
-): WasteReminderSettingsByType =>
-  buildReminderSettingsFromRegistrations(
-    usedTypes,
-    serverSettings.map((setting) => ({
-      active: true,
-      leadDays: setting.notify_days_before,
-      slotId: setting.reminder_slot_id ?? 'default',
-      storeId: setting.id,
-      time: formatDateAsReminderTime(new Date(setting.notify_at)),
-      typeKey: setting.notify_for_waste_type
-    }))
-  );
 
 const buildStoredSettingsFromLocalPayload = (
   payload: WasteReminderServerSyncPayload

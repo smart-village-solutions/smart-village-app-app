@@ -2,9 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 
 import { PushNotificationStorageKeys } from './TokenHandling';
-import { WasteReminderOccurrence, WasteReminderRegistration } from './WasteReminderScheduler';
+import {
+  WasteReminderOccurrence,
+  WasteReminderRegistration,
+  WasteReminderScheduleReason
+} from './WasteReminderScheduler';
 
 export const WASTE_REMINDER_LOCAL_STORAGE_KEY = 'WASTE_REMINDER_LOCAL_STATE';
+export const WASTE_REMINDER_PENDING_CANCELLATION_STORAGE_KEY =
+  'WASTE_REMINDER_PENDING_CANCELLATION_IDS';
 
 export type WasteReminderServerSyncPayload = {
   disruptionRegistrations?: {
@@ -37,6 +43,34 @@ export type WasteReminderServerSyncRegistration = WasteReminderRegistration & {
   active: boolean;
 };
 
+export type WasteReminderSchedulingStatus =
+  | 'scheduled'
+  | 'permission-required'
+  | 'failed'
+  | 'no-future-reminders'
+  | 'inactive'
+  | 'waiting-for-data';
+
+export type WasteReminderSchedulingErrorClass =
+  | 'permission-denied'
+  | 'channel-unavailable'
+  | 'native-schedule-error'
+  | 'native-verification-error'
+  | 'native-verification-mismatch'
+  | 'storage-error'
+  | 'unknown';
+
+export type WasteReminderSchedulingState = {
+  actualCount?: number;
+  attemptCount: number;
+  errorClass?: WasteReminderSchedulingErrorClass;
+  expectedCount: number;
+  lastAttemptAt: string;
+  nextRetryAt?: string;
+  reason?: WasteReminderScheduleReason | 'data-unavailable';
+  status: WasteReminderSchedulingStatus;
+};
+
 export type WasteReminderLocalState = {
   localCoverageUntil?: string;
   ownerKey?: string;
@@ -44,6 +78,7 @@ export type WasteReminderLocalState = {
   scheduledCoverageReminderNotificationIds?: string[];
   scheduledNotificationIds: string[];
   scheduledReminderKeys: string[];
+  scheduling?: WasteReminderSchedulingState;
   serverSyncPayload?: WasteReminderServerSyncPayload;
   serverSyncStatus?: 'pending' | 'synced';
 };
@@ -69,8 +104,67 @@ export const readWasteReminderLocalState = async (): Promise<
 export const writeWasteReminderLocalState = async (state: WasteReminderLocalState) =>
   AsyncStorage.setItem(WASTE_REMINDER_LOCAL_STORAGE_KEY, JSON.stringify(state));
 
+export const updateWasteReminderSchedulingState = async (
+  scheduling: WasteReminderSchedulingState,
+  stateUpdates: Partial<WasteReminderLocalState> = {}
+) => {
+  const currentState = await readWasteReminderLocalState();
+
+  if (!currentState && !stateUpdates.serverSyncPayload) {
+    return undefined;
+  }
+
+  const nextState = {
+    scheduledNotificationIds: [],
+    scheduledReminderKeys: [],
+    ...currentState,
+    ...stateUpdates,
+    scheduling
+  } as WasteReminderLocalState;
+
+  await writeWasteReminderLocalState(nextState);
+
+  return nextState;
+};
+
 export const removeWasteReminderLocalState = async () =>
   AsyncStorage.removeItem(WASTE_REMINDER_LOCAL_STORAGE_KEY);
+
+export const readWasteReminderPendingCancellationIds = async () => {
+  const storedIds = await AsyncStorage.getItem(WASTE_REMINDER_PENDING_CANCELLATION_STORAGE_KEY);
+
+  if (!storedIds) {
+    return [];
+  }
+
+  try {
+    const parsedIds = JSON.parse(storedIds);
+
+    return Array.isArray(parsedIds)
+      ? parsedIds.filter((notificationId): notificationId is string => {
+          return typeof notificationId === 'string';
+        })
+      : [];
+  } catch {
+    await AsyncStorage.removeItem(WASTE_REMINDER_PENDING_CANCELLATION_STORAGE_KEY);
+
+    return [];
+  }
+};
+
+export const writeWasteReminderPendingCancellationIds = async (notificationIds: string[]) => {
+  const uniqueIds = Array.from(new Set(notificationIds));
+
+  if (!uniqueIds.length) {
+    await AsyncStorage.removeItem(WASTE_REMINDER_PENDING_CANCELLATION_STORAGE_KEY);
+    return;
+  }
+
+  await AsyncStorage.setItem(
+    WASTE_REMINDER_PENDING_CANCELLATION_STORAGE_KEY,
+    JSON.stringify(uniqueIds)
+  );
+};
 
 export const getWasteReminderOwnerKey = async () => {
   const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
@@ -101,6 +195,7 @@ export const buildPendingWasteReminderState = ({
   reminders,
   scheduledCoverageReminderNotificationIds = [],
   scheduledNotificationIds,
+  scheduling,
   serverSyncPayload,
   serverSyncStatus = 'pending'
 }: {
@@ -112,6 +207,7 @@ export const buildPendingWasteReminderState = ({
   scheduledNotificationIds: string[];
   serverSyncPayload: WasteReminderServerSyncPayload;
   serverSyncStatus?: NonNullable<WasteReminderLocalState['serverSyncStatus']>;
+  scheduling?: WasteReminderSchedulingState;
 }): WasteReminderLocalState => ({
   localCoverageUntil: localCoverageUntil?.toISOString(),
   ownerKey,
@@ -119,6 +215,7 @@ export const buildPendingWasteReminderState = ({
   scheduledCoverageReminderNotificationIds,
   scheduledNotificationIds,
   scheduledReminderKeys: reminders.map((reminder) => reminder.id),
+  ...(scheduling ? { scheduling } : {}),
   serverSyncPayload,
   serverSyncStatus
 });

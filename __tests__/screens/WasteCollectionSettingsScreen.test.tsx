@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { DeviceEventEmitter, Linking } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import {
   getWasteCollectionSettingsViewState,
-  getDisruptionSettingsFromSyncPayload,
   WasteCollectionSettingsScreen
 } from '../../src/screens/WasteCollectionSettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
@@ -45,12 +44,11 @@ const mockNavigation = {
   goBack: jest.fn(),
   navigate: jest.fn()
 };
-let mockRouteParams: { currentSelectedStreetId?: number } = { currentSelectedStreetId: 1 };
 
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: (callback) => callback(),
   useNavigation: () => mockNavigation,
-  useRoute: () => ({ params: mockRouteParams })
+  useRoute: () => ({ params: { currentSelectedStreetId: 1 } })
 }));
 
 jest.mock('@react-native-community/datetimepicker', () => 'DateTimePicker');
@@ -85,8 +83,7 @@ jest.mock('../../src/components', () => {
 
   return {
     BoldText: textComponent(),
-    Button: ({ disabled, onPress, title }) =>
-      React.createElement(TouchableOpacity, { disabled, onPress }, title),
+    Button: ({ onPress, title }) => React.createElement(TouchableOpacity, { onPress }, title),
     Dot: () => React.createElement(View),
     LoadingSpinner: () => React.createElement(Text, null, 'loading'),
     RegularText: textComponent(),
@@ -175,7 +172,7 @@ jest.mock('../../src/pushNotifications', () => ({
   getInAppPermission: (...args) => mockGetInAppPermission(...args),
   handleSystemPermissions: jest.fn(async () => false),
   getLocalNotificationPermission: (...args) => mockGetLocalNotificationPermission(...args),
-  getReminderSettings: jest.fn(async () => undefined),
+  getReminderSettings: jest.fn(async () => ({ status: 'unavailable' })),
   getWasteReminderUiMode: jest.requireActual('../../src/pushNotifications/WasteReminderConfig')
     .getWasteReminderUiMode,
   markWasteReminderServerSyncSynced: jest.fn(async () => undefined),
@@ -231,6 +228,12 @@ jest.mock('../../src/config', () => ({
         'Main push notifications are disabled. Waste reminders will not be sent.',
       notificationsOn: 'Notifications',
       notificationSettingsLink: 'Open notification settings',
+      wasteReminderFailedAction: 'Try again',
+      wasteReminderFailedBody: 'Your settings remain saved.',
+      wasteReminderFailedTitle: 'Waste reminders could not be scheduled',
+      wasteReminderPermissionAction: 'Open system settings',
+      wasteReminderPermissionBody: 'Allow notifications in system settings.',
+      wasteReminderPermissionTitle: 'Waste reminders are not allowed',
       reminder: 'Reminder',
       reminders: 'Reminders',
       sameDay: 'Same day',
@@ -259,7 +262,6 @@ describe('WasteCollectionSettingsScreen', () => {
     jest.clearAllMocks();
     mockGetInAppPermission.mockResolvedValue(true);
     mockGetLocalNotificationPermission.mockResolvedValue(false);
-    mockRouteParams = { currentSelectedStreetId: 1 };
     mockReadWasteReminderLocalState.mockResolvedValue({
       ownerKey: 'push:test',
       scheduledNotificationIds: [],
@@ -309,32 +311,7 @@ describe('WasteCollectionSettingsScreen', () => {
   });
 
   describe('getWasteCollectionSettingsViewState', () => {
-    it('hydrates disruption intent and deletion ids from a matching local payload', () => {
-      expect(
-        getDisruptionSettingsFromSyncPayload({
-          disruption_all_locations: { active: true, storeId: 41 },
-          disruption_location: { active: true, storeId: 42 }
-        })
-      ).toEqual({
-        notificationSettings: {
-          disruption_all_locations: true,
-          disruption_location: true
-        },
-        storeIds: { disruption_all_locations: 41, disruption_location: 42 }
-      });
-    });
-
     it('returns the expected screen state for loading, suggestions, settings, and empty cases', () => {
-      expect(
-        getWasteCollectionSettingsViewState({
-          hasDisruptionTypes: true,
-          hasSelectedStreet: false,
-          hasStreetSuggestions: false,
-          isLoading: false,
-          isStreetSelected: true
-        })
-      ).toBe('disruption-settings');
-
       expect(
         getWasteCollectionSettingsViewState({
           hasSelectedStreet: false,
@@ -433,7 +410,7 @@ describe('WasteCollectionSettingsScreen', () => {
     };
     let tree;
 
-    mockStreetData = undefined as unknown as typeof mockStreetData;
+    mockStreetData = undefined as any;
 
     await act(async () => {
       tree = renderer.create(
@@ -466,58 +443,6 @@ describe('WasteCollectionSettingsScreen', () => {
 
     expect(renderedText).toContain('11:30');
     expect(renderedText).not.toContain('09:00');
-  });
-
-  it('disables disruption-only controls and saving until stored settings are hydrated', async () => {
-    const globalSettings = {
-      ...initialContext.globalSettings,
-      navigation: 'tab',
-      waste: {}
-    };
-    let resolveLocalState: (value: undefined) => void;
-    const pendingLocalState = new Promise<undefined>((resolve) => {
-      resolveLocalState = resolve;
-    });
-    let tree;
-
-    mockRouteParams = {};
-    mockStreetData = undefined as unknown as typeof mockStreetData;
-    mockUsedTypes = {
-      disruption_all_locations: {
-        color: '#000000',
-        label: 'All locations',
-        notification_kind: 'disruption',
-        selected_color: '#111111'
-      }
-    } as unknown as typeof mockUsedTypes;
-    mockReadWasteReminderLocalState.mockReturnValue(pendingLocalState);
-
-    act(() => {
-      tree = renderer.create(
-        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
-          <WasteCollectionSettingsScreen />
-        </SettingsContext.Provider>
-      );
-    });
-
-    expect(collectText(tree.toJSON()).join(' ')).toContain('All locations switch:off:disabled');
-    expect(
-      tree.root
-        .findAllByType(TouchableOpacity)
-        .find((node) => collectText(node).join(' ').includes('Save')).props.disabled
-    ).toBe(true);
-
-    await act(async () => {
-      resolveLocalState(undefined);
-      await pendingLocalState;
-    });
-
-    expect(collectText(tree.toJSON()).join(' ')).toContain('All locations switch:off:enabled');
-    expect(
-      tree.root
-        .findAllByType(TouchableOpacity)
-        .find((node) => collectText(node).join(' ').includes('Save')).props.disabled
-    ).toBe(false);
   });
 
   it('does not switch stored active reminders off when permission checks resolve during hydration', async () => {
@@ -691,5 +616,111 @@ describe('WasteCollectionSettingsScreen', () => {
     expect(renderedText).toContain('Days before');
     expect(renderedText).toContain('2 days before');
     expect(renderedText).toContain('09:00');
+  });
+
+  it.each([['scheduled'], ['inactive'], ['no-future-reminders'], ['waiting-for-data']])(
+    'does not show a false recovery hint for %s health',
+    async (status) => {
+      mockReadWasteReminderLocalState.mockResolvedValue({
+        ...(await mockReadWasteReminderLocalState()),
+        scheduling: { status }
+      });
+
+      let tree;
+      await act(async () => {
+        tree = renderer.create(
+          <SettingsContext.Provider
+            value={{
+              ...initialContext,
+              globalSettings: {
+                ...initialContext.globalSettings,
+                navigation: 'tab',
+                waste: { streetId: 1, selectedTypeKeys: ['paper'] }
+              }
+            }}
+          >
+            <WasteCollectionSettingsScreen />
+          </SettingsContext.Provider>
+        );
+      });
+
+      expect(collectText(tree.toJSON()).join(' ')).not.toContain(
+        'Waste reminders could not be scheduled'
+      );
+    }
+  );
+
+  it('shows a persistent accessible failure hint and emits manual retry', async () => {
+    const emitSpy = jest.spyOn(DeviceEventEmitter, 'emit');
+    const state = await mockReadWasteReminderLocalState();
+
+    mockReadWasteReminderLocalState.mockResolvedValue({
+      ...state,
+      scheduling: { status: 'failed' }
+    });
+
+    let tree;
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider
+          value={{
+            ...initialContext,
+            globalSettings: {
+              ...initialContext.globalSettings,
+              navigation: 'tab',
+              waste: { streetId: 1, selectedTypeKeys: ['paper'] }
+            }
+          }}
+        >
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const alert = tree.root.findByProps({ accessibilityRole: 'alert' });
+    const retry = tree.root.findByProps({
+      accessibilityLabel: 'Try again',
+      accessibilityRole: 'button'
+    });
+
+    expect(collectText(alert).join(' ')).toContain('Your settings remain saved.');
+    await act(async () => retry.props.onPress());
+    expect(emitSpy).toHaveBeenCalledWith('wasteReminderManualRetry');
+  });
+
+  it('shows the permission recovery copy and opens system settings', async () => {
+    const openSettingsSpy = jest.spyOn(Linking, 'openSettings').mockResolvedValue(undefined);
+    const state = await mockReadWasteReminderLocalState();
+
+    mockReadWasteReminderLocalState.mockResolvedValue({
+      ...state,
+      scheduling: { status: 'permission-required' }
+    });
+
+    let tree;
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider
+          value={{
+            ...initialContext,
+            globalSettings: {
+              ...initialContext.globalSettings,
+              navigation: 'tab',
+              waste: { streetId: 1, selectedTypeKeys: ['paper'] }
+            }
+          }}
+        >
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    expect(collectText(tree.toJSON()).join(' ')).toContain('Waste reminders are not allowed');
+    const settingsButton = tree.root.findByProps({
+      accessibilityLabel: 'Open system settings',
+      accessibilityRole: 'button'
+    });
+    await act(async () => settingsButton.props.onPress());
+    expect(openSettingsSpy).toHaveBeenCalled();
   });
 });

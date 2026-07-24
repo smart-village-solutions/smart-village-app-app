@@ -2,6 +2,8 @@ export * from './PermissionHandling';
 export * from './TokenHandling';
 export * from './WasteReminder';
 export * from './WasteReminderConfig';
+export * from './WasteReminderDiagnostics';
 export * from './WasteReminderLocalNotifications';
 export * from './WasteReminderLocalStorage';
 export * from './WasteReminderScheduler';
+export * from './WasteReminderSettingsMapper';
