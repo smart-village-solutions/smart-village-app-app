@@ -28,6 +28,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
   const icon = data?.weatherMap?.current?.weather?.[0]?.icon ?? '02d';
   const description = data?.weatherMap?.current?.weather?.[0]?.description;
   const temperature = data?.weatherMap?.current?.temp;
+  const roundedTemperature = temperature?.toFixed(0) ?? '—';
 
   const onPress = useCallback(
     () => navigation?.navigate('Weather', { title: text ?? texts.screenTitles.weather }),
@@ -44,9 +45,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
 
   return (
     <TouchableOpacity
-      accessibilityLabel={`${text ?? texts.widgets.weather}: ${
-        temperature?.toFixed(0) ?? '—'
-      } Grad ${consts.a11yLabel.button}`}
+      accessibilityLabel={`${text ?? texts.widgets.weather} (Aktuell ${roundedTemperature} °C) (Gehe zur Wetterübersicht) ${consts.a11yLabel.button}`}
       accessibilityRole="button"
       onPress={onPress}
       style={[styles.widget, normalizedWidgetStyle]}
@@ -65,7 +64,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
           </View>
           <View>
             <BoldText primary big>
-              {temperature?.toFixed(0) ?? '—'}°C
+              {roundedTemperature}°C
             </BoldText>
             <RegularText primary small style={normalizedFontStyle}>
               {text ?? texts.widgets.weather}

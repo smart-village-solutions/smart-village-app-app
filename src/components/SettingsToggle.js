@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, device, normalize, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 import { NetworkContext } from '../NetworkProvider';
 import { serverConnectionAlert } from '../pushNotifications';
 
@@ -58,11 +58,12 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
 
   return (
     <ListItem
-      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+      accessible={false}
       bottomDivider={bottomDivider ?? false}
       Component={!isDisabled ? Touchable : undefined}
       containerStyle={styles.container}
       delayPressIn={0}
+      importantForAccessibility="no"
       onPress={!isDisabled ? onPress : undefined}
       topDivider={topDivider ?? false}
     >
@@ -72,8 +73,19 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
       </ListItem.Content>
 
       <WrapperRow>
-        {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
-        <Switch isDisabled={isDisabled} switchValue={switchValue} toggleSwitch={toggleSwitch} />
+        <ActivityIndicator
+          color={colors.refreshControl}
+          style={[
+            styles.loadingIndicator,
+            !loading && styles.loadingIndicatorHidden
+          ]}
+        />
+        <Switch
+          accessibilityLabel={title}
+          isDisabled={isDisabled}
+          switchValue={switchValue}
+          toggleSwitch={toggleSwitch}
+        />
       </WrapperRow>
     </ListItem>
   );
@@ -85,8 +97,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: device.isTablet ? normalize(16) : normalize(10)
   },
-  marginRight: {
-    marginRight: device.isTablet ? normalize(7) : -normalize(2)
+  loadingIndicator: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: device.isTablet ? normalize(7) : -normalize(2),
+    width: normalize(18)
+  },
+  loadingIndicatorHidden: {
+    opacity: 0
   }
 });
 

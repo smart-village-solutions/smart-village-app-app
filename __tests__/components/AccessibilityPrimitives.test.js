@@ -36,7 +36,7 @@ jest.mock('../../src/config', () => {
       a11yLabel: {
         button: '(Taste)',
         checkbox: '(Checkbox)',
-        textInput: 'Texteingabe'
+        textInput: '(Texteingabe)'
       },
       DIMENSIONS: {
         FULL_SCREEN_MAX_WIDTH: 504
@@ -149,10 +149,16 @@ describe('Accessibility primitives', () => {
 
   it('Switch exposes switch semantics', () => {
     const tree = renderWithAct(
-      <AppSwitch isDisabled={true} switchValue={false} toggleSwitch={onPress} />
+      <AppSwitch
+        accessibilityLabel="Filtereinstellungen dauerhaft speichern"
+        isDisabled={true}
+        switchValue={false}
+        toggleSwitch={onPress}
+      />
     );
     const node = tree.root.findByProps({ accessibilityRole: 'switch' });
 
     expect(node.props.accessibilityState).toEqual({ checked: false, disabled: true });
+    expect(node.props.accessibilityLabel).toBe('Filtereinstellungen dauerhaft speichern');
   });
 });

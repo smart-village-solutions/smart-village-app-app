@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { AccessibilityHeader, RegularText, SafeAreaViewFlex, WrapperRow } from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { colors, consts, Icon, normalize } from '../config';
 import { onDownloadAndSharePdf } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
@@ -40,7 +41,11 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
               accessibilityRole="button"
               onPress={() => onDownloadAndSharePdf({ title, url: pdfUrl })}
             >
-              <Icon.ArrowDownCircle color={colors.lightestText} style={styles.icon} />
+              <Icon.ArrowDownCircle
+                color={colors.lightestText}
+                style={styles.icon}
+                strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+              />
             </TouchableOpacity>
           </WrapperRow>
         )

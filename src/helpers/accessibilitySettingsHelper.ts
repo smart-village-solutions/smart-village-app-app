@@ -9,6 +9,7 @@ export const ACCESSIBILITY_FEATURE_BY_PREFERENCE: Record<
   AccessibilityTogglePreferenceKey,
   AccessibilityFeatureKey
 > = {
+  boldTextEnabled: 'boldText',
   isGrayscaleEnabled: 'isGrayscaleEnabled',
   highContrastEnabled: 'highContrast',
   readAloudEnabled: 'readAloud',
@@ -20,18 +21,19 @@ export const ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS = [0.9, 0.95, 1, 1.1, 1.2, 1.3
 export const DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL = 2;
 
 export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = {
-  boldText: true,
-  headerEntry: true,
-  highContrast: true,
-  isGrayscaleEnabled: true,
-  readAloud: true,
-  reduceMotion: true,
-  reduceTransparency: true,
-  settingsEntry: true,
-  textScaling: true
+  boldText: false,
+  headerEntry: false,
+  highContrast: false,
+  isGrayscaleEnabled: false,
+  readAloud: false,
+  reduceMotion: false,
+  reduceTransparency: false,
+  settingsEntry: false,
+  textScaling: false
 };
 
 export const DEFAULT_ACCESSIBILITY_USER_SETTINGS: AccessibilityUserSettings = {
+  boldTextEnabled: false,
   isGrayscaleEnabled: false,
   highContrastEnabled: false,
   readAloudEnabled: false,
@@ -44,7 +46,8 @@ type AccessibilityGlobalSettings = {
   settings?: {
     accessibility?: {
       defaults?: Partial<AccessibilityUserSettings> & {
-        boldTextEnabled?: boolean;
+        boldText?: boolean;
+        textScaling?: number;
       };
       enabledFeatures?: Partial<AccessibilityFeatureAvailability>;
     };
@@ -75,16 +78,40 @@ export const normalizeTextScaleLevel = (value: unknown) => {
   return Math.min(maxLevel, Math.max(minLevel, Math.round(value)));
 };
 
-const getLegacyTextScaleLevel = (legacyBoldTextEnabled: unknown) => {
-  if (typeof legacyBoldTextEnabled !== 'boolean') return DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL;
-
-  return legacyBoldTextEnabled
-    ? DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL + 2
-    : DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL;
-};
-
 export const getTextScaleMultiplier = (textScaleLevel: number) =>
   ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS[normalizeTextScaleLevel(textScaleLevel)];
+
+type AccessibilityDefaultsInput = Partial<AccessibilityUserSettings> & {
+  boldText?: unknown;
+  textScaling?: unknown;
+};
+
+const getBooleanSetting = (value: unknown, fallback: boolean) =>
+  typeof value === 'boolean' ? value : fallback;
+
+const getBoldTextDefault = (defaultSettings: AccessibilityDefaultsInput) => {
+  if (typeof defaultSettings.boldTextEnabled === 'boolean') {
+    return defaultSettings.boldTextEnabled;
+  }
+
+  if (typeof defaultSettings.boldText === 'boolean') {
+    return defaultSettings.boldText;
+  }
+
+  return DEFAULT_ACCESSIBILITY_USER_SETTINGS.boldTextEnabled;
+};
+
+const getTextScaleDefault = (defaultSettings: AccessibilityDefaultsInput) => {
+  if (typeof defaultSettings.textScaleLevel === 'number') {
+    return normalizeTextScaleLevel(defaultSettings.textScaleLevel);
+  }
+
+  if (typeof defaultSettings.textScaling === 'number') {
+    return normalizeTextScaleLevel(defaultSettings.textScaling);
+  }
+
+  return DEFAULT_ACCESSIBILITY_USER_SETTINGS.textScaleLevel;
+};
 
 /* eslint-disable complexity */
 export const resolveAccessibilityConfiguration = (
@@ -99,46 +126,30 @@ export const resolveAccessibilityConfiguration = (
     DEFAULT_ACCESSIBILITY_FEATURES
   );
 
-  if (
-    typeof featureSettings.textScaling !== 'boolean' &&
-    typeof featureSettings.boldText === 'boolean'
-  ) {
-    enabledFeatures.textScaling = featureSettings.boldText;
-  }
-
-  if (
-    typeof featureSettings.boldText !== 'boolean' &&
-    typeof featureSettings.textScaling === 'boolean'
-  ) {
-    enabledFeatures.boldText = featureSettings.textScaling;
-  }
-
   const defaults: AccessibilityUserSettings = {
     ...DEFAULT_ACCESSIBILITY_USER_SETTINGS,
-    isGrayscaleEnabled:
-      typeof defaultSettings.isGrayscaleEnabled === 'boolean'
-        ? defaultSettings.isGrayscaleEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.isGrayscaleEnabled,
-    highContrastEnabled:
-      typeof defaultSettings.highContrastEnabled === 'boolean'
-        ? defaultSettings.highContrastEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.highContrastEnabled,
-    readAloudEnabled:
-      typeof defaultSettings.readAloudEnabled === 'boolean'
-        ? defaultSettings.readAloudEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.readAloudEnabled,
-    reduceMotionEnabled:
-      typeof defaultSettings.reduceMotionEnabled === 'boolean'
-        ? defaultSettings.reduceMotionEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceMotionEnabled,
-    reduceTransparencyEnabled:
-      typeof defaultSettings.reduceTransparencyEnabled === 'boolean'
-        ? defaultSettings.reduceTransparencyEnabled
-        : DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceTransparencyEnabled,
-    textScaleLevel:
-      typeof defaultSettings.textScaleLevel === 'number'
-        ? normalizeTextScaleLevel(defaultSettings.textScaleLevel)
-        : getLegacyTextScaleLevel(defaultSettings.boldTextEnabled)
+    boldTextEnabled: getBoldTextDefault(defaultSettings),
+    isGrayscaleEnabled: getBooleanSetting(
+      defaultSettings.isGrayscaleEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.isGrayscaleEnabled
+    ),
+    highContrastEnabled: getBooleanSetting(
+      defaultSettings.highContrastEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.highContrastEnabled
+    ),
+    readAloudEnabled: getBooleanSetting(
+      defaultSettings.readAloudEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.readAloudEnabled
+    ),
+    reduceMotionEnabled: getBooleanSetting(
+      defaultSettings.reduceMotionEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceMotionEnabled
+    ),
+    reduceTransparencyEnabled: getBooleanSetting(
+      defaultSettings.reduceTransparencyEnabled,
+      DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceTransparencyEnabled
+    ),
+    textScaleLevel: getTextScaleDefault(defaultSettings)
   };
 
   return {

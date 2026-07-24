@@ -26,6 +26,7 @@ import { storeProfileUserData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { profileUpdate } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileUpdate, ScreenName } from '../../types';
 
 const showUpdateFailAlert = () =>
@@ -47,6 +48,7 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { currentUserData } = useProfileContext();
   const member = route.params?.member ?? {};
   const from = route.params?.from ?? '';
@@ -130,6 +132,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

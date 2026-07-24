@@ -16,9 +16,11 @@ import {
 } from '../../components';
 import { texts } from '../../config';
 import { DOWNLOAD_TYPE, checkDownloadedData, downloadObject } from '../../helpers';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName } from '../../types';
 
 export const ArtworkDetailScreen = ({ route, navigation }) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState(route?.params?.data ?? []);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +67,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView contentContainerStyle={scrollContentContainerStyle}>
         {!!description && (
           <Wrapper>
             <ReadAloudContent content={description} contentId="ar-artwork-description-content" />

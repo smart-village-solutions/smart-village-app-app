@@ -28,6 +28,7 @@ const defaultSystemAccessibility: AccessibilitySystemState = {
 const defaultAccessibility: AccessibilityContextValue = {
   ...defaultSystemAccessibility,
   defaults: {
+    boldTextEnabled: false,
     isGrayscaleEnabled: false,
     highContrastEnabled: false,
     readAloudEnabled: false,
@@ -36,19 +37,20 @@ const defaultAccessibility: AccessibilityContextValue = {
     textScaleLevel: 2
   },
   features: {
-    boldText: true,
-    headerEntry: true,
-    highContrast: true,
-    isGrayscaleEnabled: true,
-    readAloud: true,
-    reduceMotion: true,
-    reduceTransparency: true,
-    settingsEntry: true,
-    textScaling: true
+    boldText: false,
+    headerEntry: false,
+    highContrast: false,
+    isGrayscaleEnabled: false,
+    readAloud: false,
+    reduceMotion: false,
+    reduceTransparency: false,
+    settingsEntry: false,
+    textScaling: false
   },
   isHighContrastEnabled: false,
   isReadAloudEnabled: false,
   preferences: {
+    boldTextEnabled: false,
     isGrayscaleEnabled: false,
     highContrastEnabled: false,
     readAloudEnabled: false,
@@ -83,10 +85,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
 
   const normalizePreferences = useCallback(
     (
-      values: Partial<AccessibilityUserSettings> & {
-        boldTextEnabled?: boolean;
-        textScaleLevel?: number;
-      },
+      values: Partial<AccessibilityUserSettings>,
       basePreferences: AccessibilityUserSettings
     ): AccessibilityUserSettings => {
       const nextPreferences: AccessibilityUserSettings = { ...basePreferences };
@@ -106,16 +105,12 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
       if (features.textScaling) {
         if (typeof values.textScaleLevel === 'number') {
           nextPreferences.textScaleLevel = normalizeTextScaleLevel(values.textScaleLevel);
-        } else if (typeof values.boldTextEnabled === 'boolean') {
-          nextPreferences.textScaleLevel = normalizeTextScaleLevel(
-            defaults.textScaleLevel + (values.boldTextEnabled ? 2 : 0)
-          );
         }
       }
 
       return nextPreferences;
     },
-    [defaults.textScaleLevel, features]
+    [features]
   );
 
   useEffect(() => {
@@ -134,13 +129,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
         if (storedSettings && typeof storedSettings === 'object') {
           setHasStoredPreferences(true);
           setPreferencesState((prev) =>
-            normalizePreferences(
-              storedSettings as Partial<AccessibilityUserSettings> & {
-                boldTextEnabled?: boolean;
-                textScaleLevel?: number;
-              },
-              prev
-            )
+            normalizePreferences(storedSettings as Partial<AccessibilityUserSettings>, prev)
           );
         }
       } catch (error) {
@@ -217,7 +206,8 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
   }, [defaults]);
 
   const accessibility = useMemo<AccessibilityContextValue>(() => {
-    const isBoldTextEnabled = systemAccessibility.isBoldTextEnabled;
+    const isBoldTextEnabled =
+      systemAccessibility.isBoldTextEnabled || (features.boldText && preferences.boldTextEnabled);
     const isGrayscaleEnabled =
       systemAccessibility.isGrayscaleEnabled ||
       (features.isGrayscaleEnabled && preferences.isGrayscaleEnabled);

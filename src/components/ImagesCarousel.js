@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 
-import { colors, Icon, normalize, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -38,12 +38,21 @@ export const ImagesCarousel = ({
     size: sizeSliderPauseButton = 25,
     verticalPosition = 'bottom'
   } = sliderPauseButton;
+  const { showNavigationButtons = false } = sliderSettings;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
   const [, setCarouselImageIndex] = useState(0);
 
   const carouselRef = useRef();
   const isFocused = useIsFocused();
+
+  const showPreviousItem = useCallback(() => {
+    carouselRef.current?.snapToPrev();
+  }, []);
+
+  const showNextItem = useCallback(() => {
+    carouselRef.current?.snapToNext();
+  }, []);
 
   useEffect(() => {
     if (!isFocused || isReduceMotionEnabled) {
@@ -63,6 +72,7 @@ export const ImagesCarousel = ({
     isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
   }, [isPaused, isReduceMotionEnabled]);
 
+  const shouldShowNavigationButtons = showNavigationButtons && !isDisturber;
   const shouldShowPauseButton = showSliderPauseButton && !isDisturber && !isReduceMotionEnabled;
 
   const fetchPolicy = graphqlFetchPolicy({
@@ -181,11 +191,15 @@ export const ImagesCarousel = ({
         sliderWidth={dimensions.width}
       />
 
-      {shouldShowPauseButton &&
-        pauseButton(
+      {(shouldShowNavigationButtons || shouldShowPauseButton) &&
+        carouselControls(
           horizontalPosition,
           isCopyrighted,
           isPaused,
+          shouldShowNavigationButtons,
+          shouldShowPauseButton,
+          showNextItem,
+          showPreviousItem,
           setIsPaused,
           sizeSliderPauseButton,
           verticalPosition
@@ -194,35 +208,76 @@ export const ImagesCarousel = ({
   );
 };
 
-const pauseButton = (
+const carouselControls = (
   horizontalPosition,
   isCopyrighted,
   isPaused,
+  showNavigationButtons,
+  showPauseButton,
+  showNextItem,
+  showPreviousItem,
   setIsPaused,
   size,
   verticalPosition
 ) => (
-  <TouchableOpacity
-    activeOpacity={0.8}
-    accessibilityLabel={
-      isPaused
-        ? texts.accessibilityLabels.actions.startPlayback
-        : texts.accessibilityLabels.actions.pausePlayback
-    }
+  <View
+    pointerEvents="box-none"
     style={[
-      styles.pauseButton,
+      styles.carouselControls,
       {
         [horizontalPosition]: normalize(12),
-        [verticalPosition]: isCopyrighted ? normalize(36) : normalize(12),
-        borderRadius: normalize(size * 2),
-        padding: normalize(size / 2)
+        [verticalPosition]: isCopyrighted ? normalize(36) : normalize(12)
       }
     ]}
-    onPress={() => setIsPaused(!isPaused)}
   >
-    {isPaused ? <Icon.Play size={normalize(size)} /> : <Icon.Pause size={normalize(size)} />}
+    {showNavigationButtons &&
+      navigationButton(
+        texts.accessibilityLabels.actions.previousCarouselItem,
+        <Icon.ArrowLeft color={colors.darkText} size={normalize(size)} />,
+        showPreviousItem,
+        size
+      )}
+    {showPauseButton && (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        accessibilityLabel={
+          isPaused
+            ? `${texts.accessibilityLabels.actions.startPlayback} ${consts.a11yLabel.button}`
+            : `${texts.accessibilityLabels.actions.pausePlayback} ${consts.a11yLabel.button}`
+        }
+        accessibilityRole="button"
+        style={[styles.controlButton, controlButtonSize(size)]}
+        onPress={() => setIsPaused(!isPaused)}
+      >
+        {isPaused ? <Icon.Play size={normalize(size)} /> : <Icon.Pause size={normalize(size)} />}
+      </TouchableOpacity>
+    )}
+    {showNavigationButtons &&
+      navigationButton(
+        texts.accessibilityLabels.actions.nextCarouselItem,
+        <Icon.ArrowRight color={colors.darkText} size={normalize(size)} />,
+        showNextItem,
+        size
+      )}
+  </View>
+);
+
+const navigationButton = (accessibilityLabel, icon, onPress, size) => (
+  <TouchableOpacity
+    activeOpacity={0.8}
+    accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
+    accessibilityRole="button"
+    onPress={onPress}
+    style={[styles.controlButton, controlButtonSize(size)]}
+  >
+    {icon}
   </TouchableOpacity>
 );
+
+const controlButtonSize = (size) => ({
+  borderRadius: normalize(size * 2),
+  padding: normalize(size / 2)
+});
 
 const styles = StyleSheet.create({
   center: {
@@ -233,13 +288,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%'
   },
-  pauseButton: {
+  carouselControls: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: normalize(4),
+    position: 'absolute',
+    zIndex: 1
+  },
+  controlButton: {
     alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: colors.surface,
-    justifyContent: 'center',
-    position: 'absolute',
-    zIndex: 1
+    justifyContent: 'center'
   }
 });
 

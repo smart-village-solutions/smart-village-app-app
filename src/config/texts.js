@@ -29,6 +29,7 @@ export const texts = {
       listView: 'Listenansicht',
       loadMore: 'Mehr laden',
       loadPreviousComments: 'Frühere Kommentare laden',
+      nextCarouselItem: 'Nächstes Bild im Bilderkarussell',
       nextDay: 'Nächster Tag',
       openAddress: 'Adresse öffnen',
       openAccessibilitySettings: 'Barrierefreiheit öffnen',
@@ -38,13 +39,16 @@ export const texts = {
       openRoutePlanner: 'Routenplaner öffnen',
       openScanner: 'Scanner öffnen',
       openSettings: 'Einstellungen öffnen',
-      pausePlayback: 'Wiedergabe pausieren',
+      pausePlayback: 'BilderkarussellWiedergabe pausieren',
+      previousMonth: 'Vorheriger Monat',
+      previousCarouselItem: 'Vorheriges Bild im Bilderkarussell',
       previousDay: 'Vorheriger Tag',
       redeemVoucher: 'Gutschein einlösen',
       registerNow: 'Jetzt registrieren',
       reportProfile: 'Profil melden',
       scrollToTop: 'Nach oben scrollen',
       search: 'Suchen',
+      nextMonth: 'Nächster Monat',
       selectAnswer: 'Antwort auswählen',
       selectDate: 'Datum auswählen',
       sendComment: 'Kommentar senden',
@@ -59,7 +63,7 @@ export const texts = {
       showOnMap: 'Auf Karte anzeigen',
       showParticipants: 'Teilnehmer anzeigen',
       showVersionInfo: 'Versionsinformationen anzeigen',
-      startPlayback: 'Wiedergabe starten',
+      startPlayback: 'Bilderkarussell Wiedergabe starten',
       toggleCommunication: 'Kommunikation ein-/ausklappen',
       toggleLinks: 'Links ein-/ausklappen',
       unlike: 'Gefällt mir nicht mehr',
@@ -1251,6 +1255,10 @@ export const texts = {
         levelLargest: 'Extra groß',
         levelMaximum: 'Maximum'
       },
+      boldText: {
+        title: 'Fetter Text',
+        description: 'Stellt App-Texte in fetter Schrift dar.'
+      },
       isGrayscaleEnabled: {
         title: 'Graustufenmodus',
         description: 'Stellt die App-Inhalte in Graustufen dar.'
@@ -1262,6 +1270,10 @@ export const texts = {
       readAloud: {
         title: 'Lesemodus in Details',
         description: 'Ermöglicht das Vorlesen von Detailinhalten per Sprachausgabe.',
+        collapsePlayer: 'Lesemodus-Player verkleinern',
+        disableQuickToggle: 'Lesemodus ausschalten',
+        enableQuickToggle: 'Lesemodus einschalten',
+        expandPlayer: 'Lesemodus-Player vergrößern',
         pause: 'Vorlesen pausieren',
         progress: 'Abschnitt {{current}} von {{total}}',
         currentTextLabel: 'Aktuell gelesen',

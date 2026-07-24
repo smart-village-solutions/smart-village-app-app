@@ -30,13 +30,14 @@ export const SectionHeader = ({
   const { flat = true, uppercase = false } = settings;
 
   if (!title) return null;
+  const headingAccessibilityLabel = `(${title}) ${consts.a11yLabel.heading}`;
+  const pressableAccessibilityLabel = `${headingAccessibilityLabel} ${consts.a11yLabel.button}`;
 
   const innerComponent = (
     <WrapperRow spaceBetween>
       <Title
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
-          onPress ? consts.a11yLabel.button : ''
-        } `}
+        accessibilityLabel={onPress ? pressableAccessibilityLabel : headingAccessibilityLabel}
+        accessibilityRole={onPress ? undefined : 'header'}
         big={big}
         center={center}
         small={small}
@@ -53,7 +54,13 @@ export const SectionHeader = ({
   return (
     <>
       <TitleContainer flat={flat} style={containerStyle}>
-        {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+        {onPress ? (
+          <Touchable accessibilityLabel={pressableAccessibilityLabel} onPress={onPress}>
+            {innerComponent}
+          </Touchable>
+        ) : (
+          innerComponent
+        )}
       </TitleContainer>
       {!flat && device.platform === 'ios' && <TitleShadow />}
     </>

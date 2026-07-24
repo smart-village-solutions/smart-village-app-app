@@ -34,6 +34,7 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts, device, Icon, normalize, texts } from '../config';
@@ -133,14 +134,12 @@ export const WasteCollectionScreen = ({ navigation }) => {
     });
   }, [markedDates, query, selectedTypes]);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (
       !!selectedStreetId &&
       _isArray(streetData?.wasteAddresses) &&
       !streetData.wasteAddresses.length
     ) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedStreetId(undefined);
       setInputValue('');
       setInputValueCity('');
@@ -159,11 +158,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
   // If `selectedTypeKeys` is present, it maps the keys to the corresponding values in `usedTypes`.
   // Otherwise, it defaults to selecting all available types.
   // The effect triggers whenever `usedTypes` or `waste.selectedTypeKeys` change.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!usedTypes) return;
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedTypes(
       Object.fromEntries(
         (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
@@ -196,21 +193,26 @@ export const WasteCollectionScreen = ({ navigation }) => {
     navigation.setOptions({
       headerRight: () =>
         !!streetData && !!usedTypes ? (
-          <WrapperRow itemsCenter>
-            <AccessibilityHeader style={styles.icon} />
+          <WrapperRow itemsCenter style={styles.headerRight}>
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
-                <Icon.EditSetting color={tintColor} style={styles.icon} />
+                <Icon.EditSetting
+                  color={tintColor}
+                  size={normalize(20)}
+                  style={styles.icon}
+                  strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+                />
               )}
             />
+            <AccessibilityHeader style={styles.icon} />
 
             {navigationType === 'drawer' && (
               <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
             )}
           </WrapperRow>
         ) : navigationType === 'drawer' ? (
-          <WrapperRow itemsCenter>
+          <WrapperRow itemsCenter style={styles.headerRight}>
             <AccessibilityHeader style={styles.icon} />
             <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
           </WrapperRow>
@@ -429,6 +431,10 @@ const styles = StyleSheet.create({
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
+  },
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(8)
   },
   icon: {
     paddingHorizontal: normalize(16)

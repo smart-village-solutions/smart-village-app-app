@@ -13,6 +13,7 @@ const getAccessibilityState = ({ accessibilityState, checked, disabled, expanded
 });
 
 export const Touchable = ({
+  accessibilityLabel,
   accessibilityRole = 'button',
   accessibilityState,
   checked,
@@ -31,17 +32,23 @@ export const Touchable = ({
       selected
     }),
     disabled,
+    accessibilityLabel,
     ...props
   };
+  const { accessibilityLabel: touchableAccessibilityLabel, ...touchableRestProps } = touchableProps;
 
   return device.platform === 'ios' ? (
-    <TouchableOpacity {...touchableProps} />
+    <TouchableOpacity accessibilityLabel={touchableAccessibilityLabel} {...touchableRestProps} />
   ) : (
-    <TouchableNativeFeedback {...touchableProps} />
+    <TouchableNativeFeedback
+      accessibilityLabel={touchableAccessibilityLabel}
+      {...touchableRestProps}
+    />
   );
 };
 
 Touchable.propTypes = {
+  accessibilityLabel: PropTypes.string,
   accessibilityRole: PropTypes.string,
   accessibilityState: PropTypes.object,
   checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),

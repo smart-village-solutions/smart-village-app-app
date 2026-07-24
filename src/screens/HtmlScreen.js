@@ -16,6 +16,7 @@ import { colors, consts, texts } from '../config';
 import { trimNewLines } from '../helpers';
 import { useStaticContent, useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -28,6 +29,7 @@ export const HtmlScreen = ({ navigation, route }) => {
   const isMissingQuery = !query || !queryVariables?.name;
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   const { data, loading, refetch } = useStaticContent({
     name: queryVariables?.name || '',
@@ -57,11 +59,12 @@ export const HtmlScreen = ({ navigation, route }) => {
     return <LoadingSpinner loading />;
   }
 
-  if (!data) return null;
+  if (data === null || data === undefined) return null;
 
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

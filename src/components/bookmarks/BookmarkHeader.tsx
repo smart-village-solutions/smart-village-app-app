@@ -6,6 +6,7 @@ import { BookmarkContext } from '../../BookmarkProvider';
 import { colors, consts, Icon } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { togglePushDeviceAssignment } from '../../pushNotifications';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../headerIconConfig';
 
 type Props = {
   route: RouteProp<any, any>;
@@ -45,9 +46,19 @@ export const BookmarkHeader = ({ route, style }: Props) => {
       accessibilityHint={a11yLabel.bookmarkListHint}
     >
       {isBookmarked ? (
-        <Icon.HeartFilled color={colors.darkText} style={style} hasNoHitSlop />
+        <Icon.HeartFilled
+          color={colors.darkText}
+          style={style}
+          hasNoHitSlop
+          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+        />
       ) : (
-        <Icon.HeartEmpty color={colors.darkText} style={style} hasNoHitSlop />
+        <Icon.HeartEmpty
+          color={colors.darkText}
+          style={style}
+          hasNoHitSlop
+          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+        />
       )}
     </TouchableOpacity>
   );

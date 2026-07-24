@@ -24,12 +24,14 @@ import {
 } from '../../helpers/voucherHelper';
 import { useStaticContent, useVoucher } from '../../hooks';
 import { profileLogIn as logIn } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VoucherLogin } from '../../types';
 
 const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
 
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { refresh, isLoading, isLoggedIn, memberId } = useVoucher();
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [loadingAccountCheck, setLoadingAccountCheck] = useState(true);
 
   const imageUri = route?.params?.headerImage;
@@ -85,6 +87,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={false}

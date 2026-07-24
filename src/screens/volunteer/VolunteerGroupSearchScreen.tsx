@@ -22,6 +22,7 @@ import { colors, consts, normalize, texts } from '../../config';
 import { volunteerAuthToken } from '../../helpers';
 import { useOpenWebScreen, useStaticContent } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 
 const { FILTER_TYPES } = consts;
 
@@ -52,6 +53,7 @@ const ORDER_OPTIONS = [
 /* eslint-disable complexity */
 export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => {
   const query = QUERY_TYPES.VOLUNTEER.GROUP_SEARCH;
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const headerTitle = route.params?.title ?? '';
   const contentContainerId = route.params?.contentContainerId ?? '';
   const guid = route.params?.guid ?? '';
@@ -208,6 +210,7 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <FlatList
+          contentContainerStyle={listContentContainerStyle}
           keyExtractor={keyExtractor}
           data={results}
           renderItem={({ item: post }) => (

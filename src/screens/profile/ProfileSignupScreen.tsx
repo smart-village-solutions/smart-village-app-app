@@ -12,10 +12,12 @@ import {
 } from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName } from '../../types';
 
 // eslint-disable-next-line complexity
 export const ProfileSignupScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const email = route.params?.email ?? '';
   const password = route.params?.password ?? '';
   const dataPrivacyLink = route.params?.webUrl ?? '';
@@ -44,7 +46,10 @@ export const ProfileSignupScreen = ({ navigation, route }: StackScreenProps<any>
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={RefreshControl}>
+      <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
+        refreshControl={RefreshControl}
+      >
         <Wrapper>
           <ReadAloudContent content={data} contentId="profile-signup-content" />
           <HtmlView html={data} />

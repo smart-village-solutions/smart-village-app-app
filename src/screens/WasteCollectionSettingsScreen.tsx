@@ -374,21 +374,26 @@ export const WasteCollectionSettingsScreen = () => {
                 renderItem={({ item, index }) => {
                   return (
                     <ListItem
+                      accessible={false}
                       bottomDivider={index < usedTypeKeys.length - 1}
                       containerStyle={styles.listItemContainer}
-                      accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+                      importantForAccessibility="no"
                     >
                       <ListItem.Content>
-                        <WrapperRow itemsCenter>
+                        <WrapperRow accessible={false} importantForAccessibility="no" itemsCenter>
                           <Dot color={usedTypes[item].color} />
                           {usedTypes[item].color !== usedTypes[item].selected_color && (
                             <Dot color={usedTypes[item].selected_color} />
                           )}
-                          <BoldText small> {usedTypes[item].label}</BoldText>
+                          <BoldText accessible={false} small>
+                            {' '}
+                            {usedTypes[item].label}
+                          </BoldText>
                         </WrapperRow>
                       </ListItem.Content>
 
                       <Switch
+                        accessibilityLabel={usedTypes[item].label}
                         switchValue={typeSettings[item]}
                         toggleSwitch={() => {
                           dispatch({
@@ -410,13 +415,17 @@ export const WasteCollectionSettingsScreen = () => {
               <RegularText big>{wasteTexts.notifications}</RegularText>
             </WrapperVertical>
             <ListItem
+              accessible={false}
               containerStyle={[styles.borderRadius, styles.listItemContainer]}
-              accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
+              importantForAccessibility="no"
             >
               <ListItem.Content>
-                <BoldText small>{wasteTexts.notificationsOn}</BoldText>
+                <BoldText accessible={false} small>
+                  {wasteTexts.notificationsOn}
+                </BoldText>
               </ListItem.Content>
               <Switch
+                accessibilityLabel={wasteTexts.notificationsOn}
                 switchValue={showNotificationSettings}
                 toggleSwitch={async () => {
                   if (!isPushPermissionGranted) {
@@ -568,21 +577,26 @@ export const WasteCollectionSettingsScreen = () => {
                   renderItem={({ item, index }) => {
                     return (
                       <ListItem
+                        accessible={false}
                         bottomDivider={index < selectedTypeKeys.length - 1}
                         containerStyle={styles.listItemContainer}
-                        accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+                        importantForAccessibility="no"
                       >
                         <ListItem.Content>
-                          <WrapperRow itemsCenter>
+                          <WrapperRow accessible={false} importantForAccessibility="no" itemsCenter>
                             <Dot color={usedTypes[item].color} />
                             {usedTypes[item].color !== usedTypes[item].selected_color && (
                               <Dot color={usedTypes[item].selected_color} />
                             )}
-                            <BoldText small> {usedTypes[item].label}</BoldText>
+                            <BoldText accessible={false} small>
+                              {' '}
+                              {usedTypes[item].label}
+                            </BoldText>
                           </WrapperRow>
                         </ListItem.Content>
 
                         <Switch
+                          accessibilityLabel={usedTypes[item].label}
                           switchValue={notificationSettings[item]}
                           toggleSwitch={() => {
                             dispatch({

@@ -3,6 +3,7 @@ import { ShareContent, StyleProp, TouchableOpacity, ViewStyle } from 'react-nati
 
 import { colors, consts, Icon } from '../config';
 import { openShare } from '../helpers';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel } = consts;
 
@@ -24,7 +25,12 @@ export const ShareHeader = ({ shareContent, style }: Props) => {
         accessibilityHint={a11yLabel.shareHint}
         accessibilityRole="button"
       >
-        <Icon.Share color={colors.darkText} style={style} hasNoHitSlop />
+        <Icon.Share
+          color={colors.darkText}
+          style={style}
+          hasNoHitSlop
+          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+        />
       </TouchableOpacity>
     )
   );

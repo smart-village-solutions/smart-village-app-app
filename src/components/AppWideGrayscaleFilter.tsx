@@ -1,27 +1,37 @@
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
+import { colors } from '../config';
 
 type AppWideGrayscaleFilterProps = {
   children: React.ReactNode;
+  fillContainer?: boolean;
   isGrayscaleEnabled: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const AppWideGrayscaleFilter = ({
   children,
-  isGrayscaleEnabled
+  fillContainer = true,
+  isGrayscaleEnabled,
+  style
 }: AppWideGrayscaleFilterProps) => {
-  if (!isGrayscaleEnabled) {
-    return <View style={styles.flex}>{children}</View>;
-  }
-
-  if (Platform.OS === 'android') {
-    return <View style={[styles.flex, styles.androidGrayscale]}>{children}</View>;
-  }
+  const baseStyle = fillContainer ? styles.flex : undefined;
+  const isAndroid = Platform.OS === 'android';
 
   return (
-    <View style={[styles.flex, styles.isolationContext]}>
-      <View style={styles.flex}>{children}</View>
-      <View pointerEvents="none" style={styles.iosSaturationOverlay} />
+    <View
+      style={[
+        style,
+        baseStyle,
+        !isAndroid && isGrayscaleEnabled && styles.isolationContext,
+        isAndroid && isGrayscaleEnabled && styles.androidGrayscale
+      ]}
+    >
+      <View style={baseStyle}>{children}</View>
+      {!isAndroid && isGrayscaleEnabled ? (
+        <View pointerEvents="none" style={styles.iosSaturationOverlay} />
+      ) : null}
     </View>
   );
 };
@@ -35,7 +45,7 @@ const styles = StyleSheet.create({
   },
   iosSaturationOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#808080',
+    backgroundColor: colors.placeholder,
     mixBlendMode: 'saturation'
   },
   isolationContext: {

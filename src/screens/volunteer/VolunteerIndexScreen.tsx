@@ -39,6 +39,7 @@ import {
   VOLUNTEER_SORT_BY
 } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VolunteerUser } from '../../types';
 
 const { FILTER_TYPES, ROOT_ROUTE_NAMES } = consts;
@@ -100,6 +101,7 @@ const SORT_OPTIONS = [
 
 /* eslint-disable complexity */
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { calendarToggle = false } = settings;
@@ -205,6 +207,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           </WrapperHorizontal>
         )}
         <ListComponent
+          contentContainerStyle={listContentContainerStyle}
           ListHeaderComponent={
             <>
               {isGroups && (

@@ -12,7 +12,7 @@ import {
 import { Divider, Header } from 'react-native-elements';
 import { useMutation, useQueryClient } from 'react-query';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { VOLUNTEER_GROUP_REFRESH_EVENT, VOLUNTEER_STREAM_REFRESH_EVENT } from '../../hooks';
 import { postDelete, postEdit, postNew, uploadFile } from '../../queries/volunteer';
 import { VolunteerFileObject, VolunteerPost } from '../../types';
@@ -23,6 +23,7 @@ import { BoldText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_SELECTOR_TYPES } = consts;
+const { a11yLabel } = consts;
 
 export const VolunteerPostModal = ({
   authToken,
@@ -140,12 +141,16 @@ export const VolunteerPostModal = ({
             lineHeight: normalize(23)
           }
         }}
-        rightComponent={{
-          color: colors.darkText,
-          icon: 'close',
-          onPress: handleModalClose,
-          type: 'ionicon'
-        }}
+        rightComponent={
+          <TouchableOpacity
+            accessibilityLabel={`${texts.accessibilityLabels.actions.close} ${a11yLabel.button}`}
+            accessibilityRole="button"
+            onPress={handleModalClose}
+            style={styles.closeButton}
+          >
+            <Icon.Close color={colors.darkText} size={normalize(20)} />
+          </TouchableOpacity>
+        }
         rightContainerStyle={styles.headerRightContainer}
       />
 
@@ -252,6 +257,12 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     padding: 8
+  },
+  closeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(32),
+    minWidth: normalize(32)
   },
   headerRightContainer: {
     justifyContent: 'center'

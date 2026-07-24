@@ -9,6 +9,52 @@ import { Label } from '../Label';
 
 const { a11yLabel } = consts;
 
+const getTextFromAccessibilitySource = (value?: React.ReactNode) => {
+  if (typeof value !== 'string') {
+    return '';
+  }
+
+  return value.replace(/\s*\*/g, '').trim();
+};
+
+const isRequiredRule = (required: unknown) => {
+  if (typeof required === 'object' && required !== null && 'value' in required) {
+    return Boolean(required.value);
+  }
+
+  return Boolean(required);
+};
+
+const getInputAccessibilityLabel = ({
+  accessibilityLabel,
+  fieldValue,
+  label,
+  name,
+  placeholder,
+  required
+}: {
+  accessibilityLabel?: string;
+  fieldValue?: string;
+  label?: React.ReactNode;
+  name?: string;
+  placeholder?: string;
+  required?: unknown;
+}) => {
+  if (accessibilityLabel) {
+    return accessibilityLabel;
+  }
+
+  const descriptiveLabel =
+    getTextFromAccessibilitySource(label) ||
+    getTextFromAccessibilitySource(placeholder) ||
+    a11yLabel[name];
+  const requiredSuffix = isRequiredRule(required) ? ` ${a11yLabel.required}` : '';
+
+  const valueSuffix = fieldValue ? `: ${fieldValue}` : '';
+
+  return `${descriptiveLabel}${requiredSuffix} ${a11yLabel.textInput}${valueSuffix}`.trim();
+};
+
 type Props = InputProps &
   UseControllerProps & {
     validate?: boolean;
@@ -96,10 +142,14 @@ export const Input = forwardRef(
             styles.chatInput,
             multiline && device.platform === 'ios' && styles.chatMultiline
           ]}
-          accessibilityLabel={
-            accessibilityLabel ||
-            `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
-          }
+          accessibilityLabel={getInputAccessibilityLabel({
+            accessibilityLabel,
+            fieldValue: field.value,
+            label,
+            name,
+            placeholder: furtherProps.placeholder,
+            required: rules?.required
+          })}
           accessibilityState={inputAccessibilityState}
         />
       );
@@ -161,10 +211,14 @@ export const Input = forwardRef(
         errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
         placeholderTextColor={colors.placeholder}
         disabledInputStyle={styles.inputDisabled}
-        accessibilityLabel={
-          accessibilityLabel ||
-          `${a11yLabel[name] ? a11yLabel[name] : ''} ${a11yLabel.textInput}: ${field.value}`
-        }
+        accessibilityLabel={getInputAccessibilityLabel({
+          accessibilityLabel,
+          fieldValue: field.value,
+          label,
+          name,
+          placeholder: furtherProps.placeholder,
+          required: rules?.required
+        })}
         accessibilityState={inputAccessibilityState}
       />
     );

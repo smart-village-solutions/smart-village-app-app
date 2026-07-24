@@ -13,9 +13,11 @@ import {
 } from '../../../components';
 import { texts } from '../../../config';
 import { usePullToRefetch, useStaticContent } from '../../../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../../../ReadAloudAvailabilityProvider';
 import { ScreenName } from '../../../types';
 
 export const ConsulRegisteredScreen = ({ navigation }) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     data: registeredHtml = '',
     error,
@@ -44,7 +46,10 @@ export const ConsulRegisteredScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={RefreshControl}>
+      <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
+        refreshControl={RefreshControl}
+      >
         <Wrapper>
           <ReadAloudContent content={registeredHtml} contentId="consul-registered-content" />
           <HtmlView html={registeredHtml} />

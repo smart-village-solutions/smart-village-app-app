@@ -13,9 +13,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('node:child_process');
 
 const EXTENSIONS = new Set(['.js', '.jsx', '.ts', '.tsx']);
+const TRUSTED_GIT_EXECUTABLE = '/usr/bin/git';
 const TARGET_ROOTS = [
   'src/components/',
   'src/screens/',
@@ -47,19 +48,13 @@ const isTargetSourceFile = (file) => {
 };
 
 const getComponentName = (file) => {
-  const segments = file.split('/');
-
-  if (file.startsWith('src/components/')) {
-    const segment = segments[2] || path.basename(file, path.extname(file));
-    return segment.includes('.') ? path.basename(segment, path.extname(segment)) : segment;
+  const baseName = path.basename(file, path.extname(file));
+  if (baseName.toLowerCase() !== 'index') {
+    return baseName;
   }
 
-  if (file.startsWith('src/screens/')) {
-    const segment = segments[2] || path.basename(file, path.extname(file));
-    return segment.includes('.') ? path.basename(segment, path.extname(segment)) : segment;
-  }
-
-  return path.basename(file, path.extname(file));
+  const parentDirectory = path.basename(path.dirname(file));
+  return parentDirectory || baseName;
 };
 
 const getFileType = (file) => {
@@ -70,9 +65,39 @@ const getFileType = (file) => {
   return 'unknown';
 };
 
+const GIT_REF_REGEX = /^[A-Za-z0-9./_-]+$/;
+
+const validateGitRef = (refName, value) => {
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error(`Invalid git ref for ${refName}: value is empty.`);
+  }
+
+  const normalizedValue = value.trim();
+
+  if (normalizedValue.startsWith('-')) {
+    throw new Error(`Invalid git ref for ${refName}: "${value}"`);
+  }
+
+  if (!GIT_REF_REGEX.test(normalizedValue)) {
+    throw new Error(`Invalid git ref for ${refName}: "${value}"`);
+  }
+
+  return normalizedValue;
+};
+
 const runDiff = () => {
-  const diffCommand = `git diff --name-only --diff-filter=ACMRTUXB ${base}...${head}`;
-  const output = execSync(diffCommand, { encoding: 'utf8' });
+  const safeBase = validateGitRef('base', base);
+  const safeHead = validateGitRef('head', head);
+
+  if (!fs.existsSync(TRUSTED_GIT_EXECUTABLE)) {
+    throw new Error(`Trusted git executable not found at "${TRUSTED_GIT_EXECUTABLE}".`);
+  }
+
+  const output = execFileSync(
+    TRUSTED_GIT_EXECUTABLE,
+    ['diff', '--name-only', '--diff-filter=ACMRTUXB', `${safeBase}...${safeHead}`, '--'],
+    { encoding: 'utf8' }
+  );
   return output
     .split('\n')
     .map((line) => line.trim())

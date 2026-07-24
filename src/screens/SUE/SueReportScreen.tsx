@@ -591,7 +591,7 @@ export const SueReportScreen = ({
 
   useEffect(() => {
     configRefetch();
-  }, []);
+  }, [configRefetch]);
 
   useLayoutEffect(() => {
     if (storedValues) {
@@ -631,7 +631,7 @@ export const SueReportScreen = ({
         )
       });
     }
-  }, [storedValues, service, selectedPosition]);
+  }, [navigation, resetStoredValues, route, storedValues]);
 
   if (!sueProgressWithConfig.length) {
     return null;

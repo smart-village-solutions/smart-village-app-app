@@ -5,7 +5,6 @@ import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import {
-  DetailReadAloudControls,
   EmptyMessage,
   EventRecord,
   LoadingContainer,
@@ -20,11 +19,15 @@ import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
-import { useDetailSpeech, useRefreshTime } from '../hooks';
+import { useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
+import {
+  useReadAloudScrollContentContainerStyle,
+  useRegisterReadAloudContent
+} from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
@@ -86,9 +89,9 @@ const useRootRouteByCategory = (details, navigation) => {
   }, [id, categoriesNews]);
 };
 
-/* eslint-disable complexity */
+/* eslint-disable complexity, react-hooks/static-components */
 export const DetailScreen = ({ navigation, route }) => {
-  const { isReadAloudEnabled } = useContext(AccessibilityContext);
+  const { features } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { conversations = false } = settings;
@@ -97,20 +100,14 @@ export const DetailScreen = ({ navigation, route }) => {
   const id = route.params?.id;
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const details = route.params?.details ?? {};
+  const hasValidDetailParams = !!query && !!queryVariables?.id;
+  const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
 
   const [refreshing, setRefreshing] = useState(false);
-  const [speechRate, setSpeechRate] = useState(1);
-
-  if (!query || !queryVariables || !queryVariables.id) return null;
-
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
-
-  // Render SUE detail screen without the need of processing the rest of the code here
-  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID) {
-    return <SueDetailScreen navigation={navigation} route={route} />;
-  }
 
   const refresh = async (refetch) => {
     setRefreshing(true);
@@ -141,7 +138,7 @@ export const DetailScreen = ({ navigation, route }) => {
       return await client.request(getQuery(query), { id: queryVariables.id });
     },
     {
-      enabled: !!refreshTime
+      enabled: !!refreshTime && hasValidDetailParams && !isSueDetail
     }
   );
   const detailData = (data && data[query]) || details;
@@ -149,38 +146,18 @@ export const DetailScreen = ({ navigation, route }) => {
     () => getDetailSpeechItems({ detail: detailData, query }),
     [detailData, query]
   );
-  const {
-    activeItemId,
-    activeWordRange,
-    canStart: canStartReadAloud,
-    currentItemIndex,
-    currentItemText,
-    isPaused: isReadAloudPaused,
-    isSpeaking: isReadAloudSpeaking,
-    pause: pauseReadAloud,
-    resume: resumeReadAloud,
-    start: startReadAloud,
-    stop: stopReadAloud,
-    totalItems: readAloudTotalItems
-  } = useDetailSpeech(detailSpeechItems, isReadAloudEnabled, speechRate);
-  const readAloudControls = isReadAloudEnabled ? (
-    <DetailReadAloudControls
-      activeItemId={activeItemId}
-      activeWordRange={activeWordRange}
-      canStart={canStartReadAloud}
-      currentItemIndex={currentItemIndex}
-      currentItemText={currentItemText}
-      isPaused={isReadAloudPaused}
-      isSpeaking={isReadAloudSpeaking}
-      onPause={pauseReadAloud}
-      onResume={resumeReadAloud}
-      onStart={startReadAloud}
-      onStop={stopReadAloud}
-      onSpeechRateChange={setSpeechRate}
-      speechRate={speechRate}
-      totalItems={readAloudTotalItems}
-    />
-  ) : null;
+  useRegisterReadAloudContent(
+    `detail-${queryVariables.id}`,
+    detailSpeechItems,
+    features.readAloud && detailSpeechItems.length > 0
+  );
+
+  if (!hasValidDetailParams) return null;
+
+  // Render SUE detail screen without the need of processing the rest of the code here
+  if (isSueDetail) {
+    return <SueDetailScreen navigation={navigation} route={route} />;
+  }
 
   if (!refreshTime) {
     return (
@@ -222,7 +199,6 @@ export const DetailScreen = ({ navigation, route }) => {
         navigation={navigation}
         fetchPolicy={fetchPolicy}
         refetch={refetch}
-        readAloudControls={readAloudControls}
         route={route}
       />
     );
@@ -236,6 +212,7 @@ export const DetailScreen = ({ navigation, route }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -250,7 +227,6 @@ export const DetailScreen = ({ navigation, route }) => {
           navigation={navigation}
           fetchPolicy={fetchPolicy}
           refetch={refetch}
-          readAloudControls={readAloudControls}
           route={route}
         />
         <FeedbackFooter />
@@ -258,7 +234,7 @@ export const DetailScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
-/* eslint-enable complexity */
+/* eslint-enable complexity, react-hooks/static-components */
 
 DetailScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

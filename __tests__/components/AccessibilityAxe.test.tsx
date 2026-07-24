@@ -126,7 +126,7 @@ jest.mock('../../src/config', () => ({
     a11yLabel: {
       button: '(Taste)',
       checkbox: '(Checkbox)',
-      textInput: 'Texteingabe',
+      textInput: '(Texteingabe)',
       loading: 'Wird geladen',
       loadingModal: 'Ladevorgang'
     },

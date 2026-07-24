@@ -34,6 +34,7 @@ export type ItemData = {
 };
 
 type Props = {
+  accessibilityLabel?: string;
   containerStyle?: ViewStyle;
   imageContainerStyle?: ViewStyle;
   imageStyle?: ImageStyle;
@@ -56,6 +57,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(
   ({
+    accessibilityLabel,
     containerStyle,
     imageContainerStyle,
     imageStyle,
@@ -103,6 +105,10 @@ export const TextListItem: NamedExoticComponent<Props> & {
       status = isOpen(params?.details?.openingHours)?.open ? 'Jetzt geöffnet' : 'Geschlossen';
     }
 
+    const defaultAccessibilityLabel = overtitle
+      ? `${trimNewLines(overtitle)} (${trimNewLines(title)}) ${consts.a11yLabel.button}`
+      : `(${trimNewLines(title)}) ${consts.a11yLabel.button}`;
+
     if (teaserTitle) {
       titleText = (
         <>
@@ -138,7 +144,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         disabled={!navigation}
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+        accessibilityLabel={accessibilityLabel || defaultAccessibilityLabel}
       >
         {leftIcon ||
           (leftImage && !!picture?.url ? (

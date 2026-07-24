@@ -2,9 +2,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, device, Icon, normalize } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel } = consts;
 
@@ -34,7 +35,7 @@ export const SearchHeader = ({ navigation, style }: Props) => {
       <Icon.Search
         color={colors.darkerPrimary}
         style={[style, styles.icon]}
-        strokeWidth={device.platform === 'ios' ? 1.3 : undefined}
+        strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
       />
     </TouchableOpacity>
   );

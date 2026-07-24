@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { IconProps, normalize } from '../../config';
+import { consts, IconProps, normalize } from '../../config';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 import { normalizeStyleValues } from '../../helpers';
 
 type Props = {
+  accessibilityLabel?: string;
   count?: number | string;
   Icon: (props: IconProps) => JSX.Element;
   image?: {
@@ -18,14 +19,26 @@ type Props = {
   onPress: () => void;
   text: string;
   widgetStyle?: {
-    fontStyle?: any;
-    iconStyle?: any;
-    widgetStyle?: any;
+    fontStyle?: unknown;
+    iconStyle?: unknown;
+    widgetStyle?: unknown;
   };
 };
 
-export const DefaultWidget = ({ Icon, count, onPress, text, image, widgetStyle }: Props) => {
+export const DefaultWidget = ({
+  accessibilityLabel,
+  Icon,
+  count,
+  onPress,
+  text,
+  image,
+  widgetStyle
+}: Props) => {
   const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
+  const baseAccessibilityLabel = accessibilityLabel ?? text;
+  const buttonAccessibilityLabel = baseAccessibilityLabel.includes(consts.a11yLabel.button)
+    ? baseAccessibilityLabel
+    : `${baseAccessibilityLabel} ${consts.a11yLabel.button}`;
 
   const normalizedFontStyle = normalizeStyleValues(fontStyle);
   const normalizedIconStyle = normalizeStyleValues(iconStyle);
@@ -33,7 +46,7 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image, widgetStyle }
 
   return (
     <TouchableOpacity
-      accessibilityLabel={text}
+      accessibilityLabel={buttonAccessibilityLabel}
       accessibilityRole="button"
       onPress={onPress}
       style={normalizedWidgetStyle}

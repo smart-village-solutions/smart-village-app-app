@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem, Slider } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../../config';
 import { ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS, normalizeTextScaleLevel } from '../../helpers';
 import { useAccessibilityPreferences } from '../../hooks';
-import { Button } from '../Button';
 import { SettingsToggle } from '../SettingsToggle';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 
 type Props = {
   hideIntro?: boolean;
   withResetButton?: boolean;
+  withScrollView?: boolean;
 };
 
 type Definition = {
@@ -27,6 +27,12 @@ type Definition = {
 };
 
 const SETTINGS_DEFINITIONS: Definition[] = [
+  {
+    key: 'boldTextEnabled',
+    featureKey: 'boldText',
+    title: texts.settingsContents.accessibility.boldText.title,
+    description: texts.settingsContents.accessibility.boldText.description
+  },
   {
     key: 'isGrayscaleEnabled',
     featureKey: 'isGrayscaleEnabled',
@@ -59,9 +65,19 @@ const SETTINGS_DEFINITIONS: Definition[] = [
   }
 ];
 
-export const AccessibilitySettings = ({ hideIntro = false, withResetButton = true }: Props) => {
-  const { features, preferences, resetPreferences, setPreference, setTextScaleLevel } =
-    useAccessibilityPreferences();
+export const AccessibilitySettings = ({
+  hideIntro = false,
+  withResetButton = true,
+  withScrollView = true
+}: Props) => {
+  const {
+    features,
+    isHighContrastEnabled,
+    preferences,
+    resetPreferences,
+    setPreference,
+    setTextScaleLevel
+  } = useAccessibilityPreferences();
 
   const availableSettings = SETTINGS_DEFINITIONS.filter((setting) => features[setting.featureKey]);
   const textScaleLevel = normalizeTextScaleLevel(preferences.textScaleLevel);
@@ -82,8 +98,8 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
   const showTextScaleControl = features.textScaling;
   const hasControls = showTextScaleControl || availableSettings.length > 0;
 
-  return (
-    <ScrollView>
+  const content = (
+    <>
       {!hideIntro && (
         <WrapperHorizontal>
           <WrapperVertical>
@@ -98,7 +114,6 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
             accessibilityLabel={`${texts.settingsContents.accessibility.textSize.title} ${consts.a11yLabel.button}`}
             bottomDivider={!availableSettings.length}
             containerStyle={styles.listItem}
-            topDivider
           >
             <ListItem.Content>
               <BoldText small>{texts.settingsContents.accessibility.textSize.title}</BoldText>
@@ -106,7 +121,7 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
                 {texts.settingsContents.accessibility.textSize.description}
               </RegularText>
 
-              <WrapperVertical noPaddingBottom>
+              <WrapperVertical noPaddingBottom noPaddingTop>
                 <View style={styles.textScaleRow}>
                   <Touchable
                     accessibilityLabel={texts.accessibilityLabels.actions.decreaseTextSize}
@@ -115,6 +130,7 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
                     onPress={() => setTextScaleLevel(textScaleLevel - 1)}
                     style={[
                       styles.textScaleButton,
+                      isHighContrastEnabled && styles.textScaleButtonHighContrast,
                       !canDecreaseTextScale && styles.textScaleButtonDisabled
                     ]}
                   >
@@ -146,6 +162,7 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
                     onPress={() => setTextScaleLevel(textScaleLevel + 1)}
                     style={[
                       styles.textScaleButton,
+                      isHighContrastEnabled && styles.textScaleButtonHighContrast,
                       !canIncreaseTextScale && styles.textScaleButtonDisabled
                     ]}
                   >
@@ -172,12 +189,10 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
           <SettingsToggle
             needsConnection={false}
             item={{
-              bottomDivider: index === availableSettings.length - 1,
               description: setting.description,
               onActivate: () => setPreference(setting.key, true),
               onDeactivate: () => setPreference(setting.key, false),
               title: setting.title,
-              topDivider: !showTextScaleControl && index === 0,
               value: preferences[setting.key]
             }}
           />
@@ -185,18 +200,27 @@ export const AccessibilitySettings = ({ hideIntro = false, withResetButton = tru
       ))}
 
       {withResetButton && hasControls && (
-        <WrapperHorizontal>
-          <WrapperVertical>
-            <Button
-              invert
-              title={texts.settingsContents.accessibility.reset}
-              onPress={resetPreferences}
-            />
-          </WrapperVertical>
-        </WrapperHorizontal>
+        <Wrapper itemsCenter>
+          <TouchableOpacity
+            accessibilityLabel={`${texts.settingsContents.accessibility.reset} ${consts.a11yLabel.button}`}
+            accessibilityRole="button"
+            onPress={resetPreferences}
+            style={styles.resetLink}
+          >
+            <RegularText primary underline>
+              {texts.settingsContents.accessibility.reset}
+            </RegularText>
+          </TouchableOpacity>
+        </Wrapper>
       )}
-    </ScrollView>
+    </>
   );
+
+  if (!withScrollView) {
+    return content;
+  }
+
+  return <ScrollView>{content}</ScrollView>;
 };
 
 const styles = StyleSheet.create({
@@ -204,6 +228,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
     paddingVertical: normalize(10)
+  },
+  resetLink: {
+    minHeight: normalize(32),
+    justifyContent: 'center'
   },
   slider: {
     marginHorizontal: 0,
@@ -229,6 +257,9 @@ const styles = StyleSheet.create({
     minHeight: normalize(36),
     minWidth: normalize(72),
     paddingHorizontal: normalize(8)
+  },
+  textScaleButtonHighContrast: {
+    borderColor: colors.darkText
   },
   textScaleButtonDisabled: {
     opacity: 0.5

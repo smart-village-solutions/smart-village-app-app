@@ -14,6 +14,7 @@ const renderFloatingButton = (props) => {
   return testRenderer;
 };
 
+const mockUseAccessibilityPreferences = jest.fn();
 const mockUseStaticContent = jest.fn();
 const mockUseHomeRefresh = jest.fn();
 const mockGetCurrentRoute = jest.fn();
@@ -21,6 +22,7 @@ const mockIsReady = jest.fn();
 const mockNavigate = jest.fn();
 
 jest.mock('../../src/hooks', () => ({
+  useAccessibilityPreferences: (...args) => mockUseAccessibilityPreferences(...args),
   useHomeRefresh: (...args) => mockUseHomeRefresh(...args),
   useStaticContent: (...args) => mockUseStaticContent(...args)
 }));
@@ -33,6 +35,17 @@ jest.mock('../../src/navigation/navigationRef', () => ({
   }
 }));
 
+jest.mock('../../src/ReadAloudAvailabilityProvider', () => ({
+  useReadAloudAvailability: () => ({
+    getRouteItems: () => [],
+    isRouteAvailable: () => false
+  })
+}));
+
+jest.mock('../../src/components/FloatingReadAloudPlayer', () => ({
+  FloatingReadAloudPlayer: () => null
+}));
+
 jest.mock('@react-navigation/native', () => ({
   useNavigationState: (selector) => selector({})
 }));
@@ -40,10 +53,21 @@ jest.mock('@react-navigation/native', () => ({
 jest.mock('../../src/config', () => ({
   colors: {
     primary: '#000000',
+    darkText: '#111111',
     lightestText: '#ffffff',
     shadow: '#000000'
   },
   normalize: (value) => value,
+  texts: {
+    settingsContents: {
+      accessibility: {
+        readAloud: {
+          disableQuickToggle: 'Disable read aloud',
+          enableQuickToggle: 'Enable read aloud'
+        }
+      }
+    }
+  },
   Icon: {
     NamedIcon: () => null
   }
@@ -61,6 +85,11 @@ describe('FloatingButton', () => {
       data: [],
       loading: false,
       refetch: jest.fn()
+    });
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: false },
+      preferences: { readAloudEnabled: false },
+      setPreference: jest.fn()
     });
 
     mockGetCurrentRoute.mockReturnValue({ name: 'Home' });
@@ -123,6 +152,33 @@ describe('FloatingButton', () => {
       'Visible everywhere'
     ]);
     expect(testRenderer.toJSON()).toMatchSnapshot();
+  });
+
+  it('does not read the current route before navigation is ready', () => {
+    mockIsReady.mockReturnValue(false);
+    mockUseStaticContent.mockReturnValue({
+      data: [
+        {
+          accessibilityLabel: 'Visible on Home',
+          routeName: 'Home',
+          visibleScreens: ['Home']
+        },
+        {
+          accessibilityLabel: 'Visible everywhere',
+          routeName: 'Search'
+        }
+      ],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+
+    const buttons = testRenderer.root.findAllByType(TouchableOpacity);
+
+    expect(mockGetCurrentRoute).not.toHaveBeenCalled();
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].props.accessibilityLabel).toBe('Visible everywhere');
   });
 
   it('navigates on press with configured route and params', () => {

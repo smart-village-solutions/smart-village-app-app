@@ -1,6 +1,9 @@
+import { texts } from '../../config';
+import { momentFormatUtcToLocal } from '../momentHelper';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType } from '../../types';
-import { removeHtml, trimNewLines } from '../htmlViewHelper';
+
+import { normalizeSpeechText } from './speechTextFormatter';
 
 type DetailRecord = Record<string, unknown>;
 
@@ -26,8 +29,7 @@ const asString = (value: unknown): string | undefined =>
   typeof value === 'string' ? value : undefined;
 
 const normalizeText = (value?: string) => {
-  if (!value) return '';
-  return trimNewLines(removeHtml(value))?.replace(/\s+/g, ' ').trim();
+  return normalizeSpeechText(value);
 };
 
 const pushText = (items: DetailSpeechItem[], id: string, value?: string) => {
@@ -66,13 +68,25 @@ const parseContentBlocks = (items: DetailSpeechItem[], contentBlocks: unknown) =
 };
 
 const parseNewsItem = (items: DetailSpeechItem[], detail: DetailRecord) => {
-  const firstContentBlock = asRecordArray(detail.contentBlocks)[0];
+  const contentBlocks = asRecordArray(detail.contentBlocks);
+  const firstContentBlock = contentBlocks[0];
   const dataProvider = asRecord(detail.dataProvider);
+  const spokenTitle = asString(detail.mainTitle) || asString(firstContentBlock?.title);
 
-  pushText(items, 'title', asString(detail.mainTitle) || asString(firstContentBlock?.title));
+  pushText(items, 'title', spokenTitle);
   pushText(items, 'subtitle', asString(dataProvider?.name));
-  pushText(items, 'publishedAt', asString(detail.publishedAt));
-  parseContentBlocks(items, detail.contentBlocks);
+  pushText(items, 'publishedAt', momentFormatUtcToLocal(asString(detail.publishedAt)));
+
+  contentBlocks.forEach((block, index) => {
+    const blockTitle = asString(block.title);
+
+    if (!(index === 0 && blockTitle === spokenTitle)) {
+      pushText(items, `contentBlockTitle-${index}`, blockTitle);
+    }
+
+    pushText(items, `contentBlockIntro-${index}`, asString(block.intro));
+    pushText(items, `contentBlockBody-${index}`, asString(block.body));
+  });
 };
 
 const parseEventRecord = (items: DetailSpeechItem[], detail: DetailRecord) => {

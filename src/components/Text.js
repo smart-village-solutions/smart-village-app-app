@@ -95,7 +95,7 @@ export const Text = ({ children, style, italic, ignoreTextScale = false, ...prop
 Text.propTypes = {
   children: PropTypes.node,
   ignoreTextScale: PropTypes.bool,
-  style: PropTypes.array,
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.number, PropTypes.object]),
   italic: PropTypes.bool
 };
 

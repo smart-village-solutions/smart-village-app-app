@@ -23,6 +23,7 @@ import {
 import { colors, Icon, normalize, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 
 export const WhistleblowFormScreen = ({
   navigation,
@@ -32,6 +33,7 @@ export const WhistleblowFormScreen = ({
   route: any;
 }) => {
   const { isConnected } = useContext(NetworkContext);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [reportCode, setReportCode] = useState<string>('');
   const [isCopied, setIsCopied] = useState(false);
@@ -81,6 +83,7 @@ export const WhistleblowFormScreen = ({
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

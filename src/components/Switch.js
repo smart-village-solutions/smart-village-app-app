@@ -30,11 +30,12 @@ const disabledThumbColor = Platform.select({
   ios: colors.lightestText
 });
 
-export const Switch = ({ isDisabled, switchValue, toggleSwitch }) => {
+export const Switch = ({ accessibilityLabel, isDisabled, switchValue, toggleSwitch }) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
   return (
     <RNSwitch
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole="switch"
       accessibilityState={{ checked: switchValue, disabled: isDisabled }}
       disabled={isDisabled}
@@ -55,6 +56,7 @@ export const Switch = ({ isDisabled, switchValue, toggleSwitch }) => {
 };
 
 Switch.propTypes = {
+  accessibilityLabel: PropTypes.string,
   isDisabled: PropTypes.bool,
   switchValue: PropTypes.bool.isRequired,
   toggleSwitch: PropTypes.func.isRequired

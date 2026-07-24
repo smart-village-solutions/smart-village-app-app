@@ -21,8 +21,10 @@ import { colors, Icon, texts } from '../../config';
 import { useAppInfo, useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { createQuery, QUERY_TYPES } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 
 export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [loading, setLoading] = useState(false);
   const { currentUserData } = useProfileContext();
 
@@ -97,6 +99,7 @@ export const ProfileDeleteScreen = ({ navigation }: StackScreenProps<any>) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

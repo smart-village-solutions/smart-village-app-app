@@ -16,6 +16,7 @@ import {
 import { colors, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
 
 export type Report = {
@@ -37,6 +38,7 @@ export const WhistleblowCodeScreen = ({
 }) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { whistleblow = {} } = globalSettings;
   const { globaleaks: globaleaksConfig = {} } = whistleblow;
   const { form: formConfig = {}, editInfo } = globaleaksConfig;
@@ -78,6 +80,7 @@ export const WhistleblowCodeScreen = ({
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

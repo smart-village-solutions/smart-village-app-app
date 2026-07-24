@@ -21,6 +21,7 @@ import { colors, consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { profileEditMail } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileEditMail, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
@@ -41,6 +42,7 @@ const showUpdateSuccessAlert = ({ onPress }: { onPress: () => void }) =>
   );
 
 export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     control,
     formState: { errors },
@@ -104,6 +106,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl

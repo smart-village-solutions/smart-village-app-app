@@ -1,6 +1,15 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  Insets,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle
+} from 'react-native';
 import { Calendar, CalendarProps } from 'react-native-calendars';
+import { Direction } from 'react-native-calendars/src/types';
 import Collapsible from 'react-native-collapsible';
 
 import { Icon, colors, consts, device, normalize, texts } from '../../config';
@@ -9,11 +18,118 @@ import { DatesTypes, FilterProps } from '../../types';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
-import { renderArrow } from '../calendarArrows';
+import { renderArrow as defaultRenderArrow } from '../calendarArrows';
 
 const {
   CALENDAR: { DOT_SIZE }
 } = consts;
+
+const DateFilterCalendarHeader = ({
+  addMonth,
+  arrowsHitSlop = 20,
+  disableArrowLeft,
+  disableArrowRight,
+  displayLoadingIndicator,
+  hideArrows,
+  month,
+  onPressArrowLeft,
+  onPressArrowRight,
+  renderArrow,
+  theme
+}: {
+  addMonth?: (count: number) => void;
+  arrowsHitSlop?: Insets | number;
+  disableArrowLeft?: boolean;
+  disableArrowRight?: boolean;
+  displayLoadingIndicator?: boolean;
+  hideArrows?: boolean;
+  month?: { toString: (format: string) => string };
+  onPressArrowLeft?: (method: () => void, month?: { toString: (format: string) => string }) => void;
+  onPressArrowRight?: (method: () => void, month?: { toString: (format: string) => string }) => void;
+  renderArrow?: (direction: Direction) => React.ReactNode;
+  theme?: {
+    arrowColor?: string;
+    disabledArrowColor?: string;
+    indicatorColor?: string;
+  };
+}) => {
+  const hitSlop =
+    typeof arrowsHitSlop === 'number'
+      ? {
+          top: arrowsHitSlop,
+          left: arrowsHitSlop,
+          bottom: arrowsHitSlop,
+          right: arrowsHitSlop
+        }
+      : arrowsHitSlop;
+
+  const handlePressLeft = useCallback(() => {
+    const goToPreviousMonth = () => addMonth?.(-1);
+
+    if (typeof onPressArrowLeft === 'function') {
+      return onPressArrowLeft(goToPreviousMonth, month);
+    }
+
+    return goToPreviousMonth();
+  }, [addMonth, month, onPressArrowLeft]);
+
+  const handlePressRight = useCallback(() => {
+    const goToNextMonth = () => addMonth?.(1);
+
+    if (typeof onPressArrowRight === 'function') {
+      return onPressArrowRight(goToNextMonth, month);
+    }
+
+    return goToNextMonth();
+  }, [addMonth, month, onPressArrowRight]);
+
+  const renderHeaderArrow = (direction: Direction, disabled?: boolean) => {
+    if (hideArrows) return <View style={styles.emptyArrow} />;
+
+    const label =
+      direction === 'left'
+        ? `${texts.accessibilityLabels.actions.previousMonth} ${consts.a11yLabel.button}`
+        : `${texts.accessibilityLabels.actions.nextMonth} ${consts.a11yLabel.button}`;
+
+    const color = disabled
+      ? theme?.disabledArrowColor || colors.placeholder
+      : theme?.arrowColor || undefined;
+
+    return (
+      <TouchableOpacity
+        accessibilityLabel={label}
+        accessibilityRole="button"
+        disabled={!!disabled}
+        hitSlop={hitSlop}
+        onPress={
+          disabled ? undefined : direction === 'left' ? handlePressLeft : handlePressRight
+        }
+        style={styles.headerArrow}
+      >
+        {renderArrow
+          ? renderArrow(direction)
+          : defaultRenderArrow(direction, color) || (
+              direction === 'left' ? <Icon.ArrowLeft color={color} /> : <Icon.ArrowRight color={color} />
+            )}
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <View style={styles.header}>
+      {renderHeaderArrow('left', disableArrowLeft)}
+
+      <View style={styles.headerContainer} importantForAccessibility="no-hide-descendants">
+        <RegularText style={styles.headerTitle}>{month?.toString('MMMM yyyy')}</RegularText>
+        {displayLoadingIndicator ? (
+          <ActivityIndicator color={theme?.indicatorColor || colors.refreshControl} />
+        ) : null}
+      </View>
+
+      {renderHeaderArrow('right', disableArrowRight)}
+    </View>
+  );
+};
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -83,6 +199,7 @@ const CalendarView = ({
   return (
     <Collapsible collapsed={isCollapsed}>
       <Calendar
+        customHeader={DateFilterCalendarHeader}
         firstDay={1}
         markedDates={markedDates}
         markingType="dot"
@@ -91,7 +208,6 @@ const CalendarView = ({
         onDayPress={(date: { dateString: string }) =>
           setDate(momentFormat(date.dateString, 'YYYY-MM-DD'))
         }
-        renderArrow={renderArrow}
         theme={{
           todayTextColor: colors.calendarTodayText,
           selectedDayTextColor: colors.calendarSelectedDayText,
@@ -124,6 +240,13 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
 
   if (!data.length) return null;
 
+  const getAccessibilityLabel = (name: string) => {
+    if (name === 'start_date') return `Startdatum auswählen ${consts.a11yLabel.button}`;
+    if (name === 'end_date') return `Enddatum auswählen ${consts.a11yLabel.button}`;
+
+    return `${texts.accessibilityLabels.actions.selectDate} ${consts.a11yLabel.button}`;
+  };
+
   return (
     <>
       <Label bold>{texts.filter.date}</Label>
@@ -145,7 +268,8 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
           return (
             <View key={item.name} style={[styles.container, containerStyle]}>
               <TouchableOpacity
-                accessibilityLabel={texts.accessibilityLabels.actions.selectDate}
+                accessibilityLabel={getAccessibilityLabel(item.name)}
+                accessibilityRole="button"
                 style={styles.button}
                 onPress={() => {
                   setIsCollapsed((prev) =>
@@ -205,6 +329,29 @@ const styles = StyleSheet.create({
     borderWidth: normalize(1),
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: normalize(6),
+    paddingHorizontal: normalize(10)
+  },
+  headerContainer: {
+    flexDirection: 'row'
+  },
+  headerArrow: {
+    padding: normalize(10)
+  },
+  headerTitle: {
+    color: colors.darkText,
+    fontFamily: 'regular',
+    fontSize: normalize(16),
+    fontWeight: '300',
+    margin: normalize(10)
+  },
+  emptyArrow: {
+    padding: normalize(10)
   },
   buttonText: {
     paddingLeft: normalize(16),

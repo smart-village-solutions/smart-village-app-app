@@ -4,9 +4,14 @@ import TableRenderer, {
   defaultTableStylesSpecs,
   tableModel
 } from '@native-html/table-plugin';
+import { removeElement, textContent } from 'domutils';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useMemo } from 'react';
-import HTML from 'react-native-render-html';
+import HTML, {
+  defaultHTMLElementModels,
+  IMGElement,
+  useIMGElementProps
+} from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -78,15 +83,226 @@ table {
 }
 `;
 
+const HtmlImageRenderer = (props) => {
+  const imgProps = useIMGElementProps(props);
+  const altText = imgProps.alt?.trim?.();
+  const accessibilityLabel = altText || consts.a11yLabel.image;
+
+  return (
+    <IMGElement
+      {...imgProps}
+      containerProps={{
+        ...imgProps.containerProps,
+        accessible: true,
+        accessibilityRole: 'image',
+        accessibilityLabel
+      }}
+    />
+  );
+};
+
+const hasMeaningfulNonTextNode = (node) => {
+  if (!node?.children?.length) {
+    return false;
+  }
+
+  return node.children.some((child) => {
+    if (child.type === 'text') {
+      return false;
+    }
+
+    if (child.name === 'br') {
+      return false;
+    }
+
+    if (child.children?.length) {
+      return true;
+    }
+
+    return true;
+  });
+};
+
+const isAccessibilityEmptyParagraph = (domNode) => {
+  if (!domNode) {
+    return false;
+  }
+
+  const normalizedTextContent = textContent(domNode)
+    .replace(/\u00A0/g, ' ')
+    .trim();
+
+  return normalizedTextContent.length === 0 && !hasMeaningfulNonTextNode(domNode);
+};
+
+const isWhitespaceOnlyTextNodeInList = (node) =>
+  node?.type === 'text' &&
+  node.data?.trim?.().length === 0 &&
+  (node.parent?.name === 'ul' || node.parent?.name === 'ol');
+
+const BLOCK_ELEMENT_NAMES = new Set(['div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'p']);
+
+const FORMATTING_KEY_BY_TAG = {
+  b: 'bold',
+  del: 'lineThrough',
+  em: 'italic',
+  i: 'italic',
+  s: 'lineThrough',
+  strike: 'lineThrough',
+  strong: 'bold',
+  u: 'underline'
+};
+
+const FORMATTING_KEY_BY_STYLE = [
+  ['bold', /font-weight\s*:\s*(bold|[6-9]00)/],
+  ['italic', /font-style\s*:\s*italic/],
+  ['underline', /text-decoration[^:]*:\s*[^;]*underline/],
+  ['lineThrough', /text-decoration[^:]*:\s*[^;]*line-through/],
+  ['color', /(?:^|;)\s*color\s*:\s*[^;]+/]
+];
+
+const getFormattingLabels = (node) => {
+  const tagName = node?.name?.toLowerCase?.();
+  const inlineStyle = node?.attribs?.style?.toLowerCase?.() || '';
+  const { formatting } = consts.a11yLabel;
+  const formattingKeys = new Set();
+  const tagFormattingKey = FORMATTING_KEY_BY_TAG[tagName];
+
+  if (tagFormattingKey) {
+    formattingKeys.add(tagFormattingKey);
+  }
+
+  if (node?.attribs?.color) {
+    formattingKeys.add('color');
+  }
+
+  FORMATTING_KEY_BY_STYLE.forEach(([formattingKey, pattern]) => {
+    if (pattern.test(inlineStyle)) formattingKeys.add(formattingKey);
+  });
+
+  return Array.from(formattingKeys, (formattingKey) => formatting[formattingKey]);
+};
+
+const hasInlineFormatting = (node) =>
+  node?.children?.some((child) => {
+    if (child.type === 'text') return false;
+    if (BLOCK_ELEMENT_NAMES.has(child.name)) return false;
+
+    return getFormattingLabels(child).length > 0 || hasInlineFormatting(child);
+  }) || false;
+
+const getFormattedAccessibilityText = (node, isRoot = true) => {
+  if (!node) return '';
+  if (node.type === 'text') return node.data || '';
+
+  if (!isRoot && BLOCK_ELEMENT_NAMES.has(node.name)) {
+    return textContent(node);
+  }
+
+  const childText = (node.children || [])
+    .map((child) => getFormattedAccessibilityText(child, false))
+    .join('');
+
+  return getFormattingLabels(node).reduce(
+    (formattedText, label) => `${label} Anfang, ${formattedText.trim()}, ${label} Ende`,
+    childText
+  );
+};
+
+const getFormattingAccessibilityProps = (domNode) => {
+  if (!hasInlineFormatting(domNode)) return {};
+
+  return {
+    accessible: true,
+    accessibilityLabel: getFormattedAccessibilityText(domNode).replace(/\s+/g, ' ').trim()
+  };
+};
+
 const renderers = {
+  img: HtmlImageRenderer,
   iframe: IframeRenderer,
   table: TableRenderer
+};
+
+const mergeNativeProps = (baseNativeProps, additionalNativeProps) => ({
+  ...(baseNativeProps || {}),
+  ...(additionalNativeProps || {})
+});
+
+const getListNativeProps =
+  (role, model, accessible = true) =>
+  (tnode, preGeneratedProps = {}) => {
+    const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+
+    return {
+      ...modelProps,
+      native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
+        accessible,
+        accessibilityRole: role,
+        ...getFormattingAccessibilityProps(tnode.domNode)
+      })
+    };
+  };
+
+const getBlockNativeProps =
+  (model) =>
+  (tnode, preGeneratedProps = {}) => {
+    const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+    const formattingProps = getFormattingAccessibilityProps(tnode.domNode);
+
+    if (!formattingProps.accessible) return modelProps;
+
+    return {
+      ...modelProps,
+      native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, formattingProps)
+    };
+  };
+
+const htmlElementModels = {
+  div: defaultHTMLElementModels.div.extend((model) => ({
+    getReactNativeProps: getBlockNativeProps(model)
+  })),
+  p: defaultHTMLElementModels.p.extend((model) => ({
+    getReactNativeProps(tnode, preGeneratedProps = {}) {
+      const modelProps = model.getReactNativeProps?.(tnode, preGeneratedProps) ?? {};
+
+      if (!isAccessibilityEmptyParagraph(tnode.domNode)) {
+        const formattingProps = getFormattingAccessibilityProps(tnode.domNode);
+
+        if (!formattingProps.accessible) return modelProps;
+
+        return {
+          ...modelProps,
+          native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, formattingProps)
+        };
+      }
+
+      return {
+        ...modelProps,
+        native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
+          accessible: false,
+          accessibilityElementsHidden: true,
+          importantForAccessibility: 'no-hide-descendants'
+        })
+      };
+    }
+  })),
+  ul: defaultHTMLElementModels.ul.extend((model) => ({
+    getReactNativeProps: getListNativeProps('list', model, false)
+  })),
+  ol: defaultHTMLElementModels.ol.extend((model) => ({
+    getReactNativeProps: getListNativeProps('list', model, false)
+  })),
+  li: defaultHTMLElementModels.li.extend((model) => ({
+    getReactNativeProps: getListNativeProps('listitem', model)
+  }))
 };
 
 const htmlConfig = {
   WebView,
   renderers,
   customHTMLElementModels: {
+    ...htmlElementModels,
     iframe: iframeModel,
     table: tableModel
   }
@@ -153,10 +369,7 @@ export const HtmlView = memo(
         ),
       [isBoldTextEnabled, tagsStyles, textScaleMultiplier]
     );
-    const defaultTextProps = useMemo(
-      () => ({ allowFontScaling: true, selectable }),
-      [selectable]
-    );
+    const defaultTextProps = useMemo(() => ({ allowFontScaling: true, selectable }), [selectable]);
 
     let calculatedWidth =
       width !== undefined
@@ -170,7 +383,7 @@ export const HtmlView = memo(
 
     const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
-    if (!html.match(HTML_REGEX)) {
+    if (!html?.match(HTML_REGEX)) {
       return (
         <RegularText big={big} selectable={selectable}>
           {html}
@@ -208,6 +421,11 @@ export const HtmlView = memo(
             }
 
             return node.children;
+          },
+          onText: (node) => {
+            if (isWhitespaceOnlyTextNodeInList(node)) {
+              removeElement(node);
+            }
           }
         }}
         systemFonts={['regular', 'bold', 'condbold', 'italic', 'bold-italic', 'condbold-italic']}

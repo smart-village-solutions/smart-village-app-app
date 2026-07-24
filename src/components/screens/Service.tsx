@@ -52,12 +52,14 @@ export const Service = ({
     () => resolveTileGridLayout(orientation as 'portrait' | 'landscape', textScaleMultiplier),
     [orientation, textScaleMultiplier]
   );
+  const defaultColumnsByOrientation =
+    orientation === 'portrait'
+      ? DEFAULT_TILE_GRID_COLUMNS.portrait
+      : DEFAULT_TILE_GRID_COLUMNS.landscape;
   const itemsPerRow =
     typeof tileGridLayout.columns === 'number' && tileGridLayout.columns > 0
       ? tileGridLayout.columns
-      : orientation === 'portrait'
-      ? DEFAULT_TILE_GRID_COLUMNS.portrait
-      : DEFAULT_TILE_GRID_COLUMNS.landscape;
+      : defaultColumnsByOrientation;
 
   const onPress = useCallback(
     () =>

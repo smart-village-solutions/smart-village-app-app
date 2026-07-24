@@ -61,19 +61,29 @@ function getScopedFiles() {
   }
 
   if (filesFileArg) {
+    const resolvedPath = normalizeFilePath(filesFileArg);
     let fileContents = '';
     try {
-      fileContents = fs.readFileSync(normalizeFilePath(filesFileArg), 'utf8');
-    } catch {
-      fileContents = '';
+      fileContents = fs.readFileSync(resolvedPath, 'utf8');
+    } catch (error) {
+      throw new Error(
+        `Failed to read --files-file "${filesFileArg}": ${error.message || error}`
+      );
     }
 
-    fileContents
+    const listedFiles = fileContents
       .split('\n')
       .map((value) => value.trim())
       .filter(Boolean)
-      .map(normalizeFilePath)
-      .forEach((file) => scopedFiles.add(file));
+      .map(normalizeFilePath);
+
+    if (!listedFiles.length) {
+      console.warn(
+        `Warning: --files-file "${filesFileArg}" is empty. Scoped run will scan zero files.`
+      );
+    }
+
+    listedFiles.forEach((file) => scopedFiles.add(file));
   }
 
   return [...scopedFiles].filter(
@@ -140,7 +150,13 @@ function extractInteractiveElements(source, filePath) {
 // Main
 // ---------------------------------------------------------------------------
 const allElements = [];
-const scopedFiles = getScopedFiles();
+let scopedFiles = [];
+try {
+  scopedFiles = getScopedFiles();
+} catch (error) {
+  console.error(error.message || error);
+  process.exit(1);
+}
 const filesToScan = hasScopeArgs ? scopedFiles : getAllFiles(SRC_DIR);
 
 for (const file of filesToScan) {

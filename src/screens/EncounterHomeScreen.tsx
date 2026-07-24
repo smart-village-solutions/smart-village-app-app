@@ -28,6 +28,7 @@ import {
   useStaticContent
 } from '../hooks';
 import { QUERY_TYPES } from '../queries';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 const { a11yLabel, HOST_NAMES } = consts;
@@ -37,6 +38,7 @@ const INFO_ICON_SIZE = normalize(16);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line complexity
 export const EncounterHomeScreen = ({ navigation, route }: any) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   // @ts-expect-error settings are not properly typed
   const categoryId = useContext(SettingsContext).globalSettings?.settings?.encounter?.categoryId;
   const {
@@ -126,7 +128,10 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
+      <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
+        refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
+      >
         <SectionHeader title={texts.encounter.homeTitle} />
         <DiagonalGradient style={styles.gradient}>
           <View style={styles.container}>

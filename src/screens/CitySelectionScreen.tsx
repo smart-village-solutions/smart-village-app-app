@@ -17,10 +17,12 @@ import {
 import { colors, consts, Icon, normalize, texts } from '../config';
 import { readFromStore, SELECTED_CITY, storeSelectedCity } from '../helpers';
 import { useStaticContent } from '../hooks';
+import { useReadAloudPlayerBottomSpacing } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { DropdownProps } from '../types';
 
 export const CitySelectionScreen = () => {
+  const readAloudPlayerBottomSpacing = useReadAloudPlayerBottomSpacing();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { citySelection = {} } = settings;
@@ -97,7 +99,7 @@ export const CitySelectionScreen = () => {
 
   if (!storedCity && !contentName) {
     return (
-      <SafeAreaViewFlex>
+      <SafeAreaViewFlex style={{ paddingBottom: readAloudPlayerBottomSpacing }}>
         <Wrapper>
           <ReadAloudContent content={htmlContent} contentId="city-selection-content" />
           <HtmlView html={htmlContent} />
