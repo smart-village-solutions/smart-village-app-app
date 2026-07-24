@@ -14,7 +14,7 @@ export const Title = styled(Text)`
   ${(props) =>
     props.onPress &&
     css`
-      color: ${colors.primary};
+      color: ${(props) => props.theme?.text || lightColors.text};
     `};
 
   ${(props) =>

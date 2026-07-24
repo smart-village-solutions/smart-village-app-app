@@ -43,6 +43,20 @@ describe('Icon', () => {
     expect(renderIcon(<Icon.ArrowDown />).toJSON()).not.toBeNull();
   });
 
+  it('renders stateful tab icons with independent fill and stroke colors', () => {
+    const tree = renderIcon(<Icon.Trash color="transparent" strokeColor="#595959" />);
+    const serializedTree = JSON.stringify(tree.toJSON());
+
+    expect(serializedTree).toContain('transparent');
+    expect(serializedTree).toContain('#595959');
+  });
+
+  it('uses the fill color as the default SVG stroke color', () => {
+    const tree = renderIcon(<Icon.About color="#123456" />);
+
+    expect(JSON.stringify(tree.toJSON())).toContain('#123456');
+  });
+
   it('uses the active theme for its default color', () => {
     const tree = renderIcon(
       <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>

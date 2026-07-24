@@ -101,7 +101,7 @@ const SvgIcon = ({
 }: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
   const { colors } = useTheme();
   const color = colorProp || colors.primary;
-  const strokeColor = strokeColorProp || colors.transparent;
+  const strokeColor = strokeColorProp || color;
 
   return (
     <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
