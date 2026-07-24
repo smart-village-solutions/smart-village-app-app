@@ -11,6 +11,12 @@ export const Title = styled(Text)`
   line-height: ${normalize(26)};
 
   ${(props) =>
+    props.onPress &&
+    css`
+      color: ${colors.primary};
+    `};
+
+  ${(props) =>
     props.uppercase &&
     css`
       text-transform: uppercase;

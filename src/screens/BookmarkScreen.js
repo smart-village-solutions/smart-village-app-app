@@ -24,6 +24,9 @@ const getInitialConnectionState = (categoriesNews) => {
   initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Deadline)] = true;
   initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Job)] = true;
   initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Noticeboard)] = true;
+  initialState[
+    getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.ParticipationProject)
+  ] = true;
   initialState[QUERY_TYPES.POINTS_OF_INTEREST] = true;
   initialState[QUERY_TYPES.TOURS] = true;
 
@@ -161,6 +164,11 @@ export const BookmarkScreen = ({ navigation, route }) => {
             getGenericItemSectionTitle(GenericType.Noticeboard),
             GenericType.Noticeboard
           )}
+        {getSection(
+          QUERY_TYPES.GENERIC_ITEMS,
+          getGenericItemSectionTitle(GenericType.ParticipationProject),
+          GenericType.ParticipationProject
+        )}
       </ScrollView>
     </SafeAreaViewFlex>
   );

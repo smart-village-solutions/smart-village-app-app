@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 
 import { colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -18,14 +18,21 @@ const TimeBox = styled.View`
 const DateBox = styled(TimeBox)`
   align-items: flex-end;
   flex-direction: column;
+
+  ${(props) =>
+    props.leftAligned &&
+    css`
+      align-items: flex-start;
+    `};
 `;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const OpeningTimesCard = ({
-  openingHours,
+  appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton,
+  leftAligned = false,
   MAX_INITIAL_NUM_TO_RENDER = 15,
-  appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton
+  openingHours
 }) => {
   const [moreData, setMoreData] = useState(1);
 
@@ -43,6 +50,7 @@ export const OpeningTimesCard = ({
             timeFrom,
             timeTo,
             dateFrom,
+            datePrefix,
             dateTo,
             description,
             open,
@@ -81,10 +89,10 @@ export const OpeningTimesCard = ({
                     </TimeBox>
                   )}
                   {(!!dateFrom || !!dateTo) && (
-                    <DateBox>
+                    <DateBox leftAligned={leftAligned}>
                       {!!dateFrom && (
                         <RegularText>
-                          <RegularText small />
+                          {!!datePrefix && <RegularText small>{datePrefix} </RegularText>}
                           {momentFormat(dateFrom, returnFormatDate)}
                         </RegularText>
                       )}
@@ -150,5 +158,20 @@ const styles = StyleSheet.create({
 });
 
 OpeningTimesCard.propTypes = {
-  openingHours: PropTypes.array
+  appointmentsShowMoreButton: PropTypes.string,
+  leftAligned: PropTypes.bool,
+  MAX_INITIAL_NUM_TO_RENDER: PropTypes.number,
+  openingHours: PropTypes.arrayOf(
+    PropTypes.shape({
+      dateFrom: PropTypes.string,
+      datePrefix: PropTypes.string,
+      dateTo: PropTypes.string,
+      description: PropTypes.string,
+      open: PropTypes.bool,
+      timeFrom: PropTypes.string,
+      timeTo: PropTypes.string,
+      useYear: PropTypes.bool,
+      weekday: PropTypes.string
+    })
+  )
 };

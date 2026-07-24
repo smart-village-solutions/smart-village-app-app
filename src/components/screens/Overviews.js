@@ -11,7 +11,7 @@ import React, {
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
@@ -21,6 +21,7 @@ import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
   isOpen,
+  isParticipationProjectMapEligible,
   openLink,
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
@@ -39,7 +40,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { CategoryList } from '../CategoryList';
 import { EmptyMessage } from '../EmptyMessage';
@@ -98,13 +99,48 @@ const getAdditionalQueryVariables = (
   return additionalQueryVariables;
 };
 
+const toFiniteNumber = (value) => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) {
+      return null;
+    }
+
+    const parsedValue = Number(trimmedValue);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  }
+
+  return null;
+};
+
+const ParticipationProjectIndexMapButton = ({ navigationType, onPress }) => (
+  <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
+    <Button
+      icon={<Icon.Map color={colors.surface} />}
+      iconPosition="left"
+      onPress={onPress}
+      title={texts.locationOverview.map}
+      notFullWidth
+    />
+  </View>
+);
+
+ParticipationProjectIndexMapButton.propTypes = {
+  navigationType: PropTypes.string,
+  onPress: PropTypes.func.isRequired
+};
+
 /* eslint-disable complexity */
 export const Overviews = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {}, sections = {}, settings = {} } = globalSettings;
+  const { filter = {}, navigation: navigationType, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER, locationService = {} } =
     settings;
@@ -230,6 +266,45 @@ export const Overviews = ({ navigation, route }) => {
         setIsLocationAlertShow
       });
     }
+    if (
+      queryVariables?.genericType === GenericType.ParticipationProject &&
+      !!queryVariables.participationOrder
+    ) {
+      // Keep ordering numeric when possible and deterministic for mixed/non-numeric values.
+      parsedListItems = [...parsedListItems].sort((leftEntry, rightEntry) => {
+        const leftRawValue =
+          leftEntry.params?.details?.payload?.[queryVariables.participationOrder];
+        const rightRawValue =
+          rightEntry.params?.details?.payload?.[queryVariables.participationOrder];
+
+        const leftNumericValue = toFiniteNumber(leftRawValue);
+        const rightNumericValue = toFiniteNumber(rightRawValue);
+        const leftIsNumeric = leftNumericValue !== null;
+        const rightIsNumeric = rightNumericValue !== null;
+
+        if (leftIsNumeric && rightIsNumeric && leftNumericValue !== rightNumericValue) {
+          return leftNumericValue - rightNumericValue;
+        }
+
+        if (leftIsNumeric !== rightIsNumeric) {
+          return leftIsNumeric ? -1 : 1;
+        }
+
+        const leftText = leftRawValue == null ? '' : String(leftRawValue);
+        const rightText = rightRawValue == null ? '' : String(rightRawValue);
+        const textComparison = leftText.localeCompare(rightText, undefined, {
+          sensitivity: 'base'
+        });
+
+        if (textComparison !== 0) {
+          return textComparison;
+        }
+
+        const leftFallback = String(leftEntry.id ?? leftEntry.params?.details?.id ?? '');
+        const rightFallback = String(rightEntry.id ?? rightEntry.params?.details?.id ?? '');
+        return leftFallback.localeCompare(rightFallback, undefined, { sensitivity: 'base' });
+      });
+    }
 
     return parsedListItems;
   }, [
@@ -246,6 +321,11 @@ export const Overviews = ({ navigation, route }) => {
     locationSettings,
     navigation
   ]);
+
+  const hasParticipationProjectMapItems =
+    query === QUERY_TYPES.GENERIC_ITEMS &&
+    queryVariables?.genericType === GenericType.ParticipationProject &&
+    !!data?.[QUERY_TYPES.GENERIC_ITEMS]?.some(isParticipationProjectMapEligible);
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -471,10 +551,39 @@ export const Overviews = ({ navigation, route }) => {
         filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
           <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
         )}
+      {!loading && hasParticipationProjectMapItems && (
+        <ParticipationProjectIndexMapButton
+          navigationType={navigationType}
+          onPress={() =>
+            navigation.navigate(ScreenName.ParticipationProjectMap, {
+              queryVariables,
+              rootRouteName: route.params?.rootRouteName,
+              title
+            })
+          }
+        />
+      )}
     </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  floatingButtonContainer: {
+    alignSelf: 'center',
+    position: 'absolute'
+  }
+});
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesWithProps = ({ navigationType }) =>
+  StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '5%' : 0
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 Overviews.propTypes = {
   navigation: PropTypes.object.isRequired,

@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignSelf: 'flex-end',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.gray40,
     borderColor: colors.gray40,
     borderRadius: normalize(8),
     borderWidth: StyleSheet.hairlineWidth,
@@ -394,6 +394,7 @@ const styles = StyleSheet.create({
     paddingBottom: normalize(10)
   },
   expandedContainer: {
+    borderBottomRightRadius: normalize(35),
     marginRight: -EXPANDED_PLAYER_OVERLAP,
     width: EXPANDED_PLAYER_WIDTH
   },

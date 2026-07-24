@@ -10,4 +10,5 @@ export type DataProvider = {
   id: string;
   logo?: WebUrl;
   name?: string;
+  notice?: string;
 };

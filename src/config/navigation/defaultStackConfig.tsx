@@ -49,6 +49,8 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  ParticipationProjectHomeScreen,
+  ParticipationProjectMapScreen,
   PdfScreen,
   ProfileConversationsScreen,
   ProfileDeleteScreen,
@@ -413,6 +415,16 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.Pdf,
       screenComponent: PdfScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.participationProject.home },
+      routeName: ScreenName.ParticipationProjectHome,
+      screenComponent: ParticipationProjectHomeScreen
+    },
+    {
+      initialParams,
+      routeName: ScreenName.ParticipationProjectMap,
+      screenComponent: ParticipationProjectMapScreen
     },
     {
       initialParams: initialParams || {

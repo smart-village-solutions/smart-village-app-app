@@ -25,13 +25,29 @@ export const GET_GENERIC_ITEMS = gql`
     ) {
       id
       createdAt
+      updatedAt
+      description
       genericType
       title
+      teaser
       externalId
       visible
       categories {
         id
         name
+      }
+      addresses {
+        id
+        city
+        street
+        zip
+        kind
+        addition
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
       }
       companies {
         id
@@ -95,6 +111,7 @@ export const GET_GENERIC_ITEMS = gql`
         }
         name
         dataType
+        notice
       }
       mediaContents {
         id
@@ -112,9 +129,44 @@ export const GET_GENERIC_ITEMS = gql`
         dateStart
         dateFrom: dateStart
         dateTo: dateEnd
+        timeDescription
+        timeEnd
+        timeStart
+        timeFrom: timeStart
+        timeTo: timeEnd
+        weekday
+      }
+      locations {
+        id
+        name
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
+      }
+      openingHours {
+        id
+        dateFrom
+        dateTo
+        description
+        open
+        timeFrom
+        timeTo
+        useYear
+        weekday
       }
       publicationDate
+      webUrls {
+        id
+        url
+        description
+      }
       payload
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
+      }
       memberId
     }
   }
@@ -128,9 +180,25 @@ export const GET_GENERIC_ITEM = gql`
         id
         name
       }
+      addresses {
+        id
+        city
+        street
+        zip
+        kind
+        addition
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
+      }
       createdAt
+      updatedAt
+      description
       genericType
       title
+      teaser
       externalId
       companies {
         id
@@ -194,6 +262,7 @@ export const GET_GENERIC_ITEM = gql`
         }
         name
         dataType
+        notice
       }
       mediaContents {
         id
@@ -211,9 +280,44 @@ export const GET_GENERIC_ITEM = gql`
         dateStart
         dateFrom: dateStart
         dateTo: dateEnd
+        timeDescription
+        timeEnd
+        timeStart
+        timeFrom: timeStart
+        timeTo: timeEnd
+        weekday
+      }
+      locations {
+        id
+        name
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
+      }
+      openingHours {
+        id
+        dateFrom
+        dateTo
+        description
+        open
+        timeFrom
+        timeTo
+        useYear
+        weekday
       }
       publicationDate
+      webUrls {
+        id
+        url
+        description
+      }
       payload
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
+      }
       priceInformations {
         description
       }

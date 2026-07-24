@@ -69,3 +69,7 @@ For detailed documentation see [the ar docs](./AR.md).
 ## Accessibility
 
 For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).
+
+## Participation Projects
+
+For module setup and static content examples see [the Participation Project docs](./PARTICIPATION_PROJECT.md).
