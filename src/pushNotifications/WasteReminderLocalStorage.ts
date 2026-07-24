@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { PushNotificationStorageKeys } from './TokenHandling';
 import {
+  WASTE_REMINDER_SCHEDULE_REASONS,
   WasteReminderOccurrence,
   WasteReminderRegistration,
   WasteReminderScheduleReason
@@ -43,22 +44,34 @@ export type WasteReminderServerSyncRegistration = WasteReminderRegistration & {
   active: boolean;
 };
 
-export type WasteReminderSchedulingStatus =
-  | 'scheduled'
-  | 'permission-required'
-  | 'failed'
-  | 'no-future-reminders'
-  | 'inactive'
-  | 'waiting-for-data';
+export const WASTE_REMINDER_SCHEDULING_STATUSES = [
+  'scheduled',
+  'permission-required',
+  'failed',
+  'no-future-reminders',
+  'inactive',
+  'waiting-for-data'
+] as const;
+
+export type WasteReminderSchedulingStatus = (typeof WASTE_REMINDER_SCHEDULING_STATUSES)[number];
+
+export const WASTE_REMINDER_SCHEDULING_ERROR_CLASSES = [
+  'permission-denied',
+  'channel-unavailable',
+  'native-schedule-error',
+  'native-verification-error',
+  'native-verification-mismatch',
+  'storage-error',
+  'unknown'
+] as const;
 
 export type WasteReminderSchedulingErrorClass =
-  | 'permission-denied'
-  | 'channel-unavailable'
-  | 'native-schedule-error'
-  | 'native-verification-error'
-  | 'native-verification-mismatch'
-  | 'storage-error'
-  | 'unknown';
+  (typeof WASTE_REMINDER_SCHEDULING_ERROR_CLASSES)[number];
+
+export const WASTE_REMINDER_SCHEDULING_REASONS = [
+  ...WASTE_REMINDER_SCHEDULE_REASONS,
+  'data-unavailable'
+] as const;
 
 export type WasteReminderSchedulingState = {
   actualCount?: number;
@@ -166,10 +179,13 @@ export const writeWasteReminderPendingCancellationIds = async (notificationIds: 
   );
 };
 
+export const getWasteReminderOwnerKeyForToken = (pushToken?: string | null) =>
+  pushToken ? `push:${hashString(pushToken)}` : 'anonymous';
+
 export const getWasteReminderOwnerKey = async () => {
   const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
 
-  return pushToken ? `push:${hashString(pushToken)}` : 'anonymous';
+  return getWasteReminderOwnerKeyForToken(pushToken);
 };
 
 export const removeWasteReminderServerStoreIds = (

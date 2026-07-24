@@ -10,7 +10,10 @@ import { Platform } from 'react-native';
 import { getInAppPermission } from '../pushNotifications/PermissionHandling';
 import { getPushTokenFromStorage } from '../pushNotifications/TokenHandling';
 import {
-  getWasteReminderOwnerKey,
+  getWasteReminderOwnerKeyForToken,
+  WASTE_REMINDER_SCHEDULING_ERROR_CLASSES,
+  WASTE_REMINDER_SCHEDULING_REASONS,
+  WASTE_REMINDER_SCHEDULING_STATUSES,
   WASTE_REMINDER_LOCAL_STORAGE_KEY,
   WasteReminderLocalState
 } from '../pushNotifications/WasteReminderLocalStorage';
@@ -52,38 +55,18 @@ const isReminderTime = (value: unknown): value is string => {
   return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
 };
 
-const SCHEDULING_STATUSES = [
-  'scheduled',
-  'permission-required',
-  'failed',
-  'no-future-reminders',
-  'inactive',
-  'waiting-for-data'
-] as const;
-const SCHEDULING_ERRORS = [
-  'permission-denied',
-  'channel-unavailable',
-  'native-schedule-error',
-  'native-verification-error',
-  'native-verification-mismatch',
-  'storage-error',
-  'unknown'
-] as const;
-const SCHEDULING_REASONS = [
-  'has-reminders',
-  'no-active-types',
-  'no-matching-waste-types',
-  'no-pickup-dates',
-  'no-future-reminders',
-  'data-unavailable'
-] as const;
-
 const isOptionalCount = (value: unknown) => value === undefined || isCount(value);
 const isOptionalIsoTimestamp = (value: unknown) => value === undefined || isIsoTimestamp(value);
 const isOptionalSchedulingError = (value: unknown) =>
-  value === undefined || SCHEDULING_ERRORS.includes(value as (typeof SCHEDULING_ERRORS)[number]);
+  value === undefined ||
+  WASTE_REMINDER_SCHEDULING_ERROR_CLASSES.includes(
+    value as (typeof WASTE_REMINDER_SCHEDULING_ERROR_CLASSES)[number]
+  );
 const isOptionalSchedulingReason = (value: unknown) =>
-  value === undefined || SCHEDULING_REASONS.includes(value as (typeof SCHEDULING_REASONS)[number]);
+  value === undefined ||
+  WASTE_REMINDER_SCHEDULING_REASONS.includes(
+    value as (typeof WASTE_REMINDER_SCHEDULING_REASONS)[number]
+  );
 
 const hasValidRequiredSchedulingFields = ({
   attemptCount,
@@ -114,9 +97,9 @@ const sanitizeScheduling = (value: unknown) => {
     nextRetryAt,
     reason
   } = value;
-  const status = value.status as (typeof SCHEDULING_STATUSES)[number];
+  const status = value.status as (typeof WASTE_REMINDER_SCHEDULING_STATUSES)[number];
 
-  if (!SCHEDULING_STATUSES.includes(status)) return undefined;
+  if (!WASTE_REMINDER_SCHEDULING_STATUSES.includes(status)) return undefined;
   if (!hasValidRequiredSchedulingFields(value)) return undefined;
   if (!hasValidOptionalSchedulingFields(value)) return undefined;
 
@@ -381,22 +364,21 @@ export const collectWastePushDiagnostics = async () => {
         : {})
     };
   }
-  if (channelResult.status === 'fulfilled') {
+  if (Platform.OS !== 'android') {
+    if (!collectionStatus.pushSettings) collectionStatus.pushSettings = 'unsupported';
+  } else if (channelResult.status === 'fulfilled') {
     const channel = channelResult.value;
-    push.defaultChannel =
-      Platform.OS === 'android'
+    push.defaultChannel = {
+      exists: !!channel,
+      ...(channel
         ? {
-            exists: !!channel,
-            ...(channel
-              ? {
-                  importance: channel.importance,
-                  enableVibrate: channel.enableVibrate,
-                  bypassDnd: channel.bypassDnd,
-                  soundConfigured: !!channel.sound
-                }
-              : {})
+            importance: channel.importance,
+            enableVibrate: channel.enableVibrate,
+            bypassDnd: channel.bypassDnd,
+            soundConfigured: !!channel.sound
           }
-        : undefined;
+        : {})
+    };
   } else collectionStatus.pushSettings = 'failed';
 
   const wasteConfiguration: Record<string, unknown> = { localStateStatus: 'unavailable' };
@@ -410,7 +392,7 @@ export const collectWastePushDiagnostics = async () => {
   } else collectionStatus.wasteState = 'failed';
 
   if (tokenResult.status === 'fulfilled') {
-    const currentOwner = await getWasteReminderOwnerKey().catch(() => undefined);
+    const currentOwner = getWasteReminderOwnerKeyForToken(tokenResult.value);
     (push.token as Record<string, unknown>).present = !!tokenResult.value;
     (push.token as Record<string, unknown>).ownerState = getOwnerState({
       currentOwner,

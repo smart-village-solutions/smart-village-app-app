@@ -28,12 +28,15 @@ export type WasteReminderRegistration = {
   typeKey: string;
 };
 
-export type WasteReminderScheduleReason =
-  | 'has-reminders'
-  | 'no-active-types'
-  | 'no-matching-waste-types'
-  | 'no-pickup-dates'
-  | 'no-future-reminders';
+export const WASTE_REMINDER_SCHEDULE_REASONS = [
+  'has-reminders',
+  'no-active-types',
+  'no-matching-waste-types',
+  'no-pickup-dates',
+  'no-future-reminders'
+] as const;
+
+export type WasteReminderScheduleReason = (typeof WASTE_REMINDER_SCHEDULE_REASONS)[number];
 
 export type WasteReminderSchedule = {
   hasMoreReminders: boolean;

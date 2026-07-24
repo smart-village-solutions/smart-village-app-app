@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 import { collectWastePushDiagnostics } from '../../src/helpers/wastePushDiagnosticsHelper';
 import { getInAppPermission } from '../../src/pushNotifications/PermissionHandling';
 import { getPushTokenFromStorage } from '../../src/pushNotifications/TokenHandling';
-import { getWasteReminderOwnerKey } from '../../src/pushNotifications/WasteReminderLocalStorage';
+import { getWasteReminderOwnerKeyForToken } from '../../src/pushNotifications/WasteReminderLocalStorage';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn() }));
 jest.mock('expo-calendar', () => ({
@@ -50,7 +50,32 @@ jest.mock('../../src/pushNotifications/TokenHandling', () => ({
 }));
 jest.mock('../../src/pushNotifications/WasteReminderLocalStorage', () => ({
   WASTE_REMINDER_LOCAL_STORAGE_KEY: 'WASTE_REMINDER_LOCAL_STATE',
-  getWasteReminderOwnerKey: jest.fn()
+  WASTE_REMINDER_SCHEDULING_ERROR_CLASSES: [
+    'permission-denied',
+    'channel-unavailable',
+    'native-schedule-error',
+    'native-verification-error',
+    'native-verification-mismatch',
+    'storage-error',
+    'unknown'
+  ],
+  WASTE_REMINDER_SCHEDULING_REASONS: [
+    'has-reminders',
+    'no-active-types',
+    'no-matching-waste-types',
+    'no-pickup-dates',
+    'no-future-reminders',
+    'data-unavailable'
+  ],
+  WASTE_REMINDER_SCHEDULING_STATUSES: [
+    'scheduled',
+    'permission-required',
+    'failed',
+    'no-future-reminders',
+    'inactive',
+    'waiting-for-data'
+  ],
+  getWasteReminderOwnerKeyForToken: jest.fn()
 }));
 const permission = (status = 'granted') => ({
   status,
@@ -89,7 +114,7 @@ describe('collectWastePushDiagnostics', () => {
     ]);
     (getInAppPermission as jest.Mock).mockResolvedValue(true);
     (getPushTokenFromStorage as jest.Mock).mockResolvedValue('private-token');
-    (getWasteReminderOwnerKey as jest.Mock).mockResolvedValue('owner-current');
+    (getWasteReminderOwnerKeyForToken as jest.Mock).mockReturnValue('owner-current');
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
       JSON.stringify({
         ownerKey: 'owner-current',
@@ -138,6 +163,7 @@ describe('collectWastePushDiagnostics', () => {
       present: true,
       ownerState: 'matches-current-token'
     });
+    expect(getWasteReminderOwnerKeyForToken).toHaveBeenCalledWith('private-token');
     [
       'private-token',
       'private-street',
@@ -247,6 +273,7 @@ describe('collectWastePushDiagnostics', () => {
       banner: 1
     });
     expect(Notifications.getNotificationChannelAsync).not.toHaveBeenCalled();
+    expect(result.collectionStatus.pushSettings).toBe('unsupported');
   });
 
   it('isolates scheduled-store failure from all other sections', async () => {

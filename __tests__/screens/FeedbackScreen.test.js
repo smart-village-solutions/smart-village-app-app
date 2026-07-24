@@ -1,10 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Calendar from 'expo-calendar';
+import { Camera } from 'expo-camera';
+import * as Location from 'expo-location';
+import * as MediaLibrary from 'expo-media-library';
+import * as Notifications from 'expo-notifications';
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { Alert } from 'react-native';
 
 import { FeedbackScreen } from '../../src/screens/FeedbackScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
+import { getInAppPermission } from '../../src/pushNotifications/PermissionHandling';
+import { getPushTokenFromStorage } from '../../src/pushNotifications/TokenHandling';
 
 const mockAlert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
 
@@ -19,6 +27,35 @@ const mockFormData = {
   consent: true,
   includeDiagnosticInformation: false
 };
+
+jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn() }));
+jest.mock('expo-calendar', () => ({
+  getCalendarPermissionsAsync: jest.fn(),
+  getRemindersPermissionsAsync: jest.fn()
+}));
+jest.mock('expo-camera', () => ({
+  Camera: {
+    getCameraPermissionsAsync: jest.fn(),
+    getMicrophonePermissionsAsync: jest.fn()
+  }
+}));
+jest.mock('expo-location', () => ({
+  getForegroundPermissionsAsync: jest.fn(),
+  getBackgroundPermissionsAsync: jest.fn()
+}));
+jest.mock('expo-media-library', () => ({ getPermissionsAsync: jest.fn() }));
+jest.mock('expo-notifications', () => ({
+  getAllScheduledNotificationsAsync: jest.fn(),
+  getNotificationChannelAsync: jest.fn(),
+  getPermissionsAsync: jest.fn()
+}));
+jest.mock('../../src/pushNotifications/PermissionHandling', () => ({
+  getInAppPermission: jest.fn()
+}));
+jest.mock('../../src/pushNotifications/TokenHandling', () => ({
+  PushNotificationStorageKeys: { PUSH_TOKEN: 'PUSH_TOKEN' },
+  getPushTokenFromStorage: jest.fn()
+}));
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({ goBack: mockGoBack, navigate: jest.fn() })
@@ -310,28 +347,66 @@ describe('FeedbackScreen diagnostic payload', () => {
       'raw-notification-id',
       'raw-reminder-key'
     ];
-    mockCollectDeviceInfo.mockResolvedValue({
-      wastePushDiagnostics: {
-        schemaVersion: 1,
-        push: { token: { present: true, ownerState: 'matches-current-token' } },
-        scheduling: { nativeWasteNotificationCount: 1 }
+    const permission = {
+      status: 'granted',
+      granted: true,
+      canAskAgain: true,
+      expires: 'never'
+    };
+    [
+      Notifications.getPermissionsAsync,
+      Location.getForegroundPermissionsAsync,
+      Location.getBackgroundPermissionsAsync,
+      Camera.getCameraPermissionsAsync,
+      Camera.getMicrophonePermissionsAsync,
+      MediaLibrary.getPermissionsAsync,
+      Calendar.getCalendarPermissionsAsync,
+      Calendar.getRemindersPermissionsAsync
+    ].forEach((getter) => getter.mockResolvedValue(permission));
+    getInAppPermission.mockResolvedValue(true);
+    getPushTokenFromStorage.mockResolvedValue(forbidden[0]);
+    Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+      {
+        identifier: forbidden[4],
+        content: {
+          title: forbidden[2],
+          body: forbidden[3],
+          data: { query_type: 'WasteAddresses', reminderKey: forbidden[5] }
+        }
       }
-    });
+    ]);
+    AsyncStorage.getItem.mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'anonymous',
+        scheduledNotificationIds: [forbidden[4]],
+        scheduledReminderKeys: [forbidden[5]],
+        scheduling: {
+          actualCount: 1,
+          attemptCount: 1,
+          expectedCount: 1,
+          lastAttemptAt: '2026-07-24T12:00:00.000Z',
+          status: 'scheduled'
+        },
+        serverSyncPayload: {
+          activeTypes: { paper: { active: true } },
+          locationData: { street: forbidden[1] },
+          notificationSettings: { paper: true },
+          reminderTime: '2026-01-01',
+          usedTypeKeys: ['paper']
+        }
+      })
+    );
+    const { collectDeviceInfo } = jest.requireActual('../../src/helpers/appUserContentHelper');
+    mockCollectDeviceInfo.mockImplementation(collectDeviceInfo);
     mockFormData.includeDiagnosticInformation = true;
 
-    await renderAndSubmit({
-      includeWastePushDiagnostics: true,
-      diagnosticSourceFixtures: {
-        token: forbidden[0],
-        street: forbidden[1],
-        title: forbidden[2],
-        body: forbidden[3],
-        identifier: forbidden[4],
-        reminderKey: forbidden[5]
-      }
-    });
+    await renderAndSubmit({ includeWastePushDiagnostics: true });
 
     const serializedContent = mockCreateAppUserContent.mock.calls[0][0].variables.content;
+    expect(sentPayload().deviceInfo.wastePushDiagnostics).toMatchObject({
+      push: { token: { present: true, ownerState: 'anonymous' } },
+      scheduling: { nativeWasteNotificationCount: 1 }
+    });
     forbidden.forEach((value) => expect(serializedContent).not.toContain(value));
   });
 
