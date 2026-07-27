@@ -30,6 +30,8 @@
     "a11y:pr:check": "node scripts/check-a11y-pr-components.js",
     "a11y:coverage": "node scripts/check-a11y-coverage.js",
     "a11y:coverage:ci": "node scripts/check-a11y-coverage.js --threshold 35",
+    "theme:migrate": "node scripts/migrate-theme-colors.js",
+    "theme:migrate:dry": "node scripts/migrate-theme-colors.js --dry-run",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
     "test:coverage": "node_modules/.bin/jest --coverage",
     "postinstall": "patch-package"
