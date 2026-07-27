@@ -13,6 +13,7 @@ import { OrientationContext } from '../OrientationProvider';
 import { CustomTab, TabConfig, TabNavigationStaticContent } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
+import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 
 export const useTabRoutes = () => {
   const { colors, mode } = useTheme();
@@ -93,6 +94,7 @@ export const MainTabNavigator = () => {
 
   return (
     <Tab.Navigator
+      tabBar={renderThemeAwareBottomTabBar}
       screenOptions={{
         headerShown: false,
         tabBarAllowFontScaling: false,
