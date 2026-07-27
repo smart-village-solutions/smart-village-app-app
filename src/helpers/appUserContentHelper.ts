@@ -165,11 +165,14 @@ const assignWasteDiagnostics = (
 
   const wastePush = { ...(push as Record<string, unknown>) };
   delete wastePush.systemPermission;
+  const selectedCollectionStatus = selectWasteCollectionStatus(wasteCollectionStatus, selection);
 
   deviceInfo.wastePushDiagnostics = {
     ...deviceInfo.wastePushDiagnostics,
     collectedAt,
-    collectionStatus: selectWasteCollectionStatus(wasteCollectionStatus, selection),
+    ...(Object.keys(selectedCollectionStatus).length
+      ? { collectionStatus: selectedCollectionStatus }
+      : {}),
     ...(selection.includePushInformation ? { push: wastePush } : {}),
     ...(selection.includeWasteConfiguration ? { wasteConfiguration } : {}),
     ...(selection.includeWasteReminderScheduling ? { scheduling } : {})

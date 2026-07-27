@@ -72,7 +72,6 @@ const wastePushDiagnostics = {
   }
 };
 const expectedWastePushDiagnostics = {
-  collectionStatus: {},
   push: { inAppEnabled: true },
   scheduling: wastePushDiagnostics.scheduling
 };
@@ -184,7 +183,6 @@ describe('collectDeviceInfo', () => {
       {
         wastePushDiagnostics: {
           collectedAt: undefined,
-          collectionStatus: {},
           push: { inAppEnabled: true }
         }
       }
@@ -194,7 +192,6 @@ describe('collectDeviceInfo', () => {
       {
         wastePushDiagnostics: {
           collectedAt: undefined,
-          collectionStatus: {},
           wasteConfiguration: undefined
         }
       }
@@ -204,7 +201,6 @@ describe('collectDeviceInfo', () => {
       {
         wastePushDiagnostics: {
           collectedAt: undefined,
-          collectionStatus: {},
           scheduling: wastePushDiagnostics.scheduling
         }
       }
@@ -275,11 +271,25 @@ describe('collectDeviceInfo', () => {
       {
         wastePushDiagnostics: {
           collectedAt: undefined,
-          collectionStatus: {},
           scheduling: wastePushDiagnostics.scheduling
         }
       }
     );
+  });
+
+  it('keeps a non-empty collection status for the enabled category', async () => {
+    collectWastePushDiagnosticsMock.mockResolvedValue({
+      ...wastePushDiagnostics,
+      collectionStatus: { scheduledStore: 'failed' }
+    });
+
+    const result = await collectDeviceInfo({
+      settings: { includeWasteReminderScheduling: true }
+    });
+
+    expect(result?.wastePushDiagnostics).toMatchObject({
+      collectionStatus: { scheduledStore: 'failed' }
+    });
   });
 
   it('moves permission collection failures out of waste push diagnostics', async () => {
