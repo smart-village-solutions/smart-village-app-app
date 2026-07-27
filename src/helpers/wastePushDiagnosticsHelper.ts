@@ -19,6 +19,8 @@ import {
 } from '../pushNotifications/WasteReminderLocalStorage';
 
 const WASTE_PUSH_DIAGNOSTICS_MAX_BYTES = 16 * 1024;
+const WASTE_PUSH_DIAGNOSTICS_MAX_SCHEDULED_REMINDERS = 50;
+const WASTE_PUSH_DIAGNOSTICS_MAX_VALUES_PER_REMINDER = 20;
 
 export type PermissionDiagnostic = {
   status: 'granted' | 'denied' | 'undetermined' | 'limited' | 'unavailable';
@@ -172,13 +174,26 @@ const sanitizeTypeSettings = (usedTypeKeysValue: unknown, settingsValue: unknown
   return { usedTypeKeys, enabledTypeKeys };
 };
 
-const getSelectedStreetConfigured = (locationData: unknown) => {
-  if (locationData === undefined) return { valid: true as const, configured: false };
+const sanitizeLocation = (locationData: unknown) => {
+  if (locationData === undefined) {
+    return { valid: true as const, configured: false, location: undefined };
+  }
   if (!isRecord(locationData)) return { valid: false as const };
-  if (locationData.street === undefined) return { valid: true as const, configured: false };
-  if (!isBoundedString(locationData.street, 300)) return { valid: false as const };
+  const limits = { city: 150, street: 300, zip: 20 } as const;
+  const location: Record<string, string> = {};
 
-  return { valid: true as const, configured: !!locationData.street };
+  for (const [field, maxLength] of Object.entries(limits)) {
+    const value = locationData[field];
+    if (value === undefined) continue;
+    if (!isBoundedString(value, maxLength)) return { valid: false as const };
+    location[field] = value;
+  }
+
+  return {
+    valid: true as const,
+    configured: !!location.street,
+    location: Object.keys(location).length ? location : undefined
+  };
 };
 
 const sanitizeConfigurationPayload = (payload: unknown) => {
@@ -187,15 +202,65 @@ const sanitizeConfigurationPayload = (payload: unknown) => {
   if (!typeSettings) return undefined;
   const activeSlots = sanitizeActiveSlots(payload.activeReminderRegistrations);
   if (!activeSlots.valid) return undefined;
-  const street = getSelectedStreetConfigured(payload.locationData);
-  if (!street.valid) return undefined;
+  const location = sanitizeLocation(payload.locationData);
+  if (!location.valid) return undefined;
 
   return {
     ...typeSettings,
     ...(activeSlots.slots ? { activeSlots: activeSlots.slots } : {}),
-    selectedStreetConfigured: street.configured
+    ...(location.location ? { location: location.location } : {}),
+    selectedStreetConfigured: location.configured
   };
 };
+
+const sanitizeStringArray = (
+  value: unknown,
+  validator: (item: unknown) => item is string
+): string[] | undefined => {
+  if (!Array.isArray(value) || value.length > WASTE_PUSH_DIAGNOSTICS_MAX_VALUES_PER_REMINDER) {
+    return undefined;
+  }
+
+  return value.every(validator) ? value : undefined;
+};
+
+const sanitizeScheduledReminder = (
+  notification: Notifications.NotificationRequest
+): Record<string, unknown> | undefined => {
+  const data = notification.content.data;
+  const pickupDates = sanitizeStringArray(
+    data?.pickupDates,
+    (value): value is string => isBoundedString(value, 10) && /^\d{4}-\d{2}-\d{2}$/.test(value)
+  );
+  const wasteTypeKeys = sanitizeStringArray(data?.wasteTypes, (value): value is string =>
+    isBoundedString(value, 100)
+  );
+  const trigger = notification.trigger;
+  const triggerDate = isRecord(trigger) ? trigger.date : undefined;
+  const reminderDate =
+    triggerDate instanceof Date ||
+    typeof triggerDate === 'number' ||
+    typeof triggerDate === 'string'
+      ? new Date(triggerDate)
+      : undefined;
+
+  if (!pickupDates || !wasteTypeKeys || !reminderDate || Number.isNaN(reminderDate.getTime())) {
+    return undefined;
+  }
+
+  return {
+    reminderAt: reminderDate.toISOString(),
+    pickupDates,
+    wasteTypeKeys
+  };
+};
+
+const sanitizeScheduledReminders = (notifications: Notifications.NotificationRequest[]) =>
+  notifications
+    .filter(isWasteReminderNotification)
+    .map(sanitizeScheduledReminder)
+    .filter((reminder): reminder is Record<string, unknown> => !!reminder)
+    .slice(0, WASTE_PUSH_DIAGNOSTICS_MAX_SCHEDULED_REMINDERS);
 
 const isValidServerSyncStatus = (value: unknown) =>
   value === undefined || value === 'pending' || value === 'synced';
@@ -402,19 +467,26 @@ export const collectWastePushDiagnostics = async () => {
   if (localState?.scheduling) {
     const sanitizedScheduling = sanitizeScheduling(localState.scheduling);
     if (sanitizedScheduling) {
-      scheduling.lastAttempt = sanitizedScheduling;
-      scheduling.calculatedReminderCount = sanitizedScheduling.expectedCount;
-      scheduling.successfullyScheduledCount = sanitizedScheduling.actualCount;
+      const { actualCount, expectedCount, ...lastSchedulingAttempt } = sanitizedScheduling;
+
+      scheduling.lastSchedulingAttempt = {
+        ...lastSchedulingAttempt,
+        calculatedCount: expectedCount,
+        ...(actualCount === undefined ? {} : { verifiedScheduledCount: actualCount })
+      };
     }
   }
   if (scheduledResult.status === 'fulfilled') {
-    scheduling.nativeWasteNotificationCount = scheduledResult.value.filter(
-      isWasteReminderNotification
-    ).length;
+    const scheduledReminders = sanitizeScheduledReminders(scheduledResult.value);
+
+    scheduling.currentNativeInventory = {
+      ...(scheduledReminders.length ? { scheduledReminders } : {}),
+      scheduledWasteNotificationCount: scheduledResult.value.filter(isWasteReminderNotification)
+        .length
+    };
   } else collectionStatus.scheduledStore = 'failed';
 
   const result = {
-    schemaVersion: 1 as const,
     collectedAt: new Date().toISOString(),
     collectionStatus,
     permissions,

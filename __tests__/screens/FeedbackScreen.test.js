@@ -294,7 +294,6 @@ describe('FeedbackScreen diagnostic payload', () => {
     const settings = { includeScheduledNotifications: true };
     const deviceInfo = {
       wastePushDiagnostics: {
-        schemaVersion: 1,
         push: { token: { present: true } },
         scheduling: { nativeWasteNotificationCount: 1 }
       }
@@ -316,7 +315,7 @@ describe('FeedbackScreen diagnostic payload', () => {
     const deviceInfo = {
       device: {},
       operatingSystem: {},
-      wastePushDiagnostics: { schemaVersion: 1 }
+      wastePushDiagnostics: {}
     };
     mockCollectDeviceInfo.mockResolvedValue(deviceInfo);
     mockFormData.includeDiagnosticInformation = true;
@@ -339,9 +338,9 @@ describe('FeedbackScreen diagnostic payload', () => {
   });
 
   it('never serializes forbidden diagnostic fixtures into GraphQL content', async () => {
+    const diagnosticStreet = 'Private Street 12';
     const forbidden = [
       'private-token',
-      'Private Street 12',
       'Private notification title',
       'Private notification body',
       'raw-notification-id',
@@ -367,19 +366,19 @@ describe('FeedbackScreen diagnostic payload', () => {
     getPushTokenFromStorage.mockResolvedValue(forbidden[0]);
     Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([
       {
-        identifier: forbidden[4],
+        identifier: forbidden[3],
         content: {
-          title: forbidden[2],
-          body: forbidden[3],
-          data: { query_type: 'WasteAddresses', reminderKey: forbidden[5] }
+          title: forbidden[1],
+          body: forbidden[2],
+          data: { query_type: 'WasteAddresses', reminderKey: forbidden[4] }
         }
       }
     ]);
     AsyncStorage.getItem.mockResolvedValue(
       JSON.stringify({
         ownerKey: 'anonymous',
-        scheduledNotificationIds: [forbidden[4]],
-        scheduledReminderKeys: [forbidden[5]],
+        scheduledNotificationIds: [forbidden[3]],
+        scheduledReminderKeys: [forbidden[4]],
         scheduling: {
           actualCount: 1,
           attemptCount: 1,
@@ -389,7 +388,7 @@ describe('FeedbackScreen diagnostic payload', () => {
         },
         serverSyncPayload: {
           activeTypes: { paper: { active: true } },
-          locationData: { street: forbidden[1] },
+          locationData: { street: diagnosticStreet },
           notificationSettings: { paper: true },
           reminderTime: '2026-01-01',
           usedTypeKeys: ['paper']
@@ -405,7 +404,14 @@ describe('FeedbackScreen diagnostic payload', () => {
     const serializedContent = mockCreateAppUserContent.mock.calls[0][0].variables.content;
     expect(sentPayload().deviceInfo.wastePushDiagnostics).toMatchObject({
       push: { token: { present: true, ownerState: 'anonymous' } },
-      scheduling: { nativeWasteNotificationCount: 1 }
+      wasteConfiguration: { location: { street: diagnosticStreet } },
+      scheduling: {
+        currentNativeInventory: { scheduledWasteNotificationCount: 1 },
+        lastSchedulingAttempt: {
+          calculatedCount: 1,
+          verifiedScheduledCount: 1
+        }
+      }
     });
     forbidden.forEach((value) => expect(serializedContent).not.toContain(value));
   });

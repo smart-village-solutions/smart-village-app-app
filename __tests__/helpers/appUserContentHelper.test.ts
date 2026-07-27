@@ -43,7 +43,11 @@ const deviceKeys = Object.keys(deviceValues) as (keyof typeof deviceValues)[];
 const originalDescriptors = new Map(
   deviceKeys.map((key) => [key, Object.getOwnPropertyDescriptor(Device, key)])
 );
-const wastePushDiagnostics = { schemaVersion: 1, scheduling: { nativeWasteNotificationCount: 2 } };
+const wastePushDiagnostics = {
+  scheduling: {
+    currentNativeInventory: { scheduledWasteNotificationCount: 2 }
+  }
+};
 const collectWastePushDiagnosticsMock = collectWastePushDiagnostics as jest.Mock;
 
 const expectNoDeviceGetterRead = () => {

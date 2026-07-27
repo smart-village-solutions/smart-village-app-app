@@ -107,8 +107,14 @@ describe('collectWastePushDiagnostics', () => {
         content: {
           title: 'private-title',
           body: 'private-street',
-          data: { query_type: 'WasteAddresses', reminderKey: 'private-reminder-key' }
-        }
+          data: {
+            pickupDates: ['2026-08-05'],
+            query_type: 'WasteAddresses',
+            reminderKey: 'private-reminder-key',
+            wasteTypes: ['bio']
+          }
+        },
+        trigger: { date: new Date('2026-08-03T08:00:00.000Z'), type: 'date' }
       },
       { identifier: 'other-id', content: { body: 'other-private', data: {} } }
     ]);
@@ -138,7 +144,7 @@ describe('collectWastePushDiagnostics', () => {
               typeKey: 'paper'
             }
           ],
-          locationData: { street: 'private-street' },
+          locationData: { city: 'Private City', street: 'private-street', zip: '12345' },
           notificationSettings: { paper: true },
           reminderTime: '2026-01-01',
           usedTypeKeys: ['paper']
@@ -153,10 +159,24 @@ describe('collectWastePushDiagnostics', () => {
 
     expect(result.permissions.notifications).toMatchObject({ status: 'granted', granted: true });
     expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
-    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
-    expect(result.scheduling.lastAttempt).toMatchObject({
-      actualCount: 1,
-      expectedCount: 1,
+    expect(result.scheduling.currentNativeInventory).toEqual({
+      scheduledReminders: [
+        {
+          pickupDates: ['2026-08-05'],
+          reminderAt: '2026-08-03T08:00:00.000Z',
+          wasteTypeKeys: ['bio']
+        }
+      ],
+      scheduledWasteNotificationCount: 1
+    });
+    expect(result.wasteConfiguration.location).toEqual({
+      city: 'Private City',
+      street: 'private-street',
+      zip: '12345'
+    });
+    expect(result.scheduling.lastSchedulingAttempt).toMatchObject({
+      calculatedCount: 1,
+      verifiedScheduledCount: 1,
       status: 'scheduled'
     });
     expect(result.push.token).toEqual({
@@ -164,13 +184,9 @@ describe('collectWastePushDiagnostics', () => {
       ownerState: 'matches-current-token'
     });
     expect(getWasteReminderOwnerKeyForToken).toHaveBeenCalledWith('private-token');
-    [
-      'private-token',
-      'private-street',
-      'private-title',
-      'private-id',
-      'private-reminder-key'
-    ].forEach((value) => expect(serialized).not.toContain(value));
+    ['private-token', 'private-title', 'private-id', 'private-reminder-key'].forEach((value) =>
+      expect(serialized).not.toContain(value)
+    );
     expect(Notifications.requestPermissionsAsync).not.toHaveBeenCalled();
     expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
     expect(Camera.requestCameraPermissionsAsync).not.toHaveBeenCalled();
@@ -190,7 +206,9 @@ describe('collectWastePushDiagnostics', () => {
 
     const result = await collectWastePushDiagnostics();
 
-    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+    expect(result.scheduling.currentNativeInventory).toMatchObject({
+      scheduledWasteNotificationCount: 1
+    });
   });
 
   it('isolates a denied and a rejecting permission getter', async () => {
@@ -299,7 +317,9 @@ describe('collectWastePushDiagnostics', () => {
 
     expect(result.collectionStatus[statusKey]).toBe('failed');
     expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
-    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+    expect(result.scheduling.currentNativeInventory).toMatchObject({
+      scheduledWasteNotificationCount: 1
+    });
   });
 
   it('reports Android channel collection failures under the Android-only status key', async () => {
@@ -321,7 +341,9 @@ describe('collectWastePushDiagnostics', () => {
 
     expect(result.collectionStatus.wasteState).toBe('failed');
     expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
-    expect(result.scheduling.nativeWasteNotificationCount).toBe(1);
+    expect(result.scheduling.currentNativeInventory).toMatchObject({
+      scheduledWasteNotificationCount: 1
+    });
   });
 
   it('rejects an oversized but valid diagnostic object', async () => {
