@@ -486,10 +486,16 @@ export const texts = {
       ok: 'OK'
     },
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
-    diagnosticInformationHint:
-      'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
-    scheduledNotificationsInformationHint:
-      'Es werden zusätzlich Statusinformationen zu App-Berechtigungen, Push-Einstellungen, konfigurierten Abfall-Erinnerungen und deren lokaler Planung übermittelt. Es werden keine Inhalte, Adressen, Tokens oder Roh-IDs übertragen.',
+    diagnosticInformationHints: {
+      permissions: 'App-Berechtigungen werden übermittelt.',
+      pushInformation:
+        'Der Status der Push-Einstellungen, des Push-Tokens und – unter Android – des Push-Kanals wird übermittelt.',
+      systemInformation: 'Geräte- und Betriebssysteminformationen werden übermittelt.',
+      wasteConfiguration:
+        'Die konfigurierte Adresse, Abfallarten und Erinnerungszeiten werden übermittelt.',
+      wasteReminderScheduling:
+        'Status, Anzahl und Termine der lokal geplanten Abfall-Erinnerungen werden übermittelt.'
+    },
     inputsLabel: {
       address: 'Veranstaltungsort',
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',

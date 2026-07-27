@@ -177,6 +177,59 @@ describe('collectDeviceInfo', () => {
     );
   });
 
+  it.each([
+    [{ includePermissions: true }, { permissions: expectedPermissions }],
+    [
+      { includePushInformation: true },
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          collectionStatus: {},
+          push: { inAppEnabled: true }
+        }
+      }
+    ],
+    [
+      { includeWasteConfiguration: true },
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          collectionStatus: {},
+          wasteConfiguration: undefined
+        }
+      }
+    ],
+    [
+      { includeWasteReminderScheduling: true },
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          collectionStatus: {},
+          scheduling: wastePushDiagnostics.scheduling
+        }
+      }
+    ]
+  ])('only returns the granularly enabled diagnostic category %#', async (settings, expected) => {
+    expect(await collectDeviceInfo({ settings })).toEqual(expected);
+  });
+
+  it('does not expose a disabled permission failure', async () => {
+    collectWastePushDiagnosticsMock.mockResolvedValue({
+      ...wastePushDiagnostics,
+      collectionStatus: { permissions: 'failed' }
+    });
+
+    expect(await collectDeviceInfo({ settings: { includeWasteReminderScheduling: true } })).toEqual(
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          collectionStatus: {},
+          scheduling: wastePushDiagnostics.scheduling
+        }
+      }
+    );
+  });
+
   it('moves permission collection failures out of waste push diagnostics', async () => {
     collectWastePushDiagnosticsMock.mockResolvedValue({
       ...wastePushDiagnostics,

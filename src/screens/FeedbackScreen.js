@@ -22,17 +22,51 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
-const shouldIncludeWasteDiagnostics = (settings) =>
-  settings.includeScheduledNotifications === true || settings.includeWastePushDiagnostics === true;
+const diagnosticSettingKeys = [
+  'includePermissions',
+  'includePushInformation',
+  'includeSystemInformation',
+  'includeScheduledNotifications',
+  'includeWasteConfiguration',
+  'includeWastePushDiagnostics',
+  'includeWasteReminderScheduling'
+];
+
+const hasEnabledDiagnosticSetting = (settings) =>
+  diagnosticSettingKeys.some((key) => settings[key] === true);
+
+const diagnosticInformationHints = (settings) => {
+  const legacyWasteDiagnostics =
+    settings.includeScheduledNotifications === true ||
+    settings.includeWastePushDiagnostics === true;
+
+  return [
+    settings.includeSystemInformation === true
+      ? texts.feedbackScreen.diagnosticInformationHints.systemInformation
+      : null,
+    settings.includePermissions === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.permissions
+      : null,
+    settings.includePushInformation === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.pushInformation
+      : null,
+    settings.includeWasteConfiguration === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.wasteConfiguration
+      : null,
+    settings.includeWasteReminderScheduling === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.wasteReminderScheduling
+      : null
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
 
 export const FeedbackScreen = ({ route }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const { globalSettings } = useContext(SettingsContext);
   const feedbackSettings = globalSettings?.settings?.feedback || {};
-  const hasDiagnosticInformation =
-    feedbackSettings.includeSystemInformation === true ||
-    shouldIncludeWasteDiagnostics(feedbackSettings);
+  const hasDiagnosticInformation = hasEnabledDiagnosticSetting(feedbackSettings);
   const {
     link,
     linkDescription,
@@ -57,19 +91,8 @@ export const FeedbackScreen = ({ route }) => {
     }
   });
   const includeDiagnosticInformation = watch('includeDiagnosticInformation');
-  const diagnosticInformationHint = [
-    feedbackSettings.includeSystemInformation === true
-      ? texts.feedbackScreen.diagnosticInformationHint
-      : null,
-    shouldIncludeWasteDiagnostics(feedbackSettings)
-      ? texts.feedbackScreen.scheduledNotificationsInformationHint
-      : null
-  ]
-    .filter(Boolean)
-    .join(' ');
-  const consentTitle = `${title.replace(/\s*\*$/, '')}${
-    includeDiagnosticInformation ? ` ${diagnosticInformationHint}` : ''
-  } *`;
+  const diagnosticInformationHint = diagnosticInformationHints(feedbackSettings);
+  const consentTitle = `${title.replace(/\s*\*$/, '')} *`;
 
   const appInfo = useAppInfo();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
@@ -190,20 +213,32 @@ export const FeedbackScreen = ({ route }) => {
 
           <Wrapper noPaddingTop>
             {hasDiagnosticInformation && (
-              <Controller
-                name="includeDiagnosticInformation"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    checked={value}
-                    checkedIcon={<Icon.SquareCheckFilled />}
-                    onPress={() => onChange(!value)}
-                    testID="diagnostic-information-checkbox"
-                    title={texts.feedbackScreen.inputsLabel.includeDiagnosticInformation}
-                    uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-                  />
+              <>
+                <Controller
+                  name="includeDiagnosticInformation"
+                  render={({ field: { onChange, value } }) => (
+                    <Checkbox
+                      checked={value}
+                      checkedIcon={<Icon.SquareCheckFilled />}
+                      onPress={() => onChange(!value)}
+                      testID="diagnostic-information-checkbox"
+                      title={texts.feedbackScreen.inputsLabel.includeDiagnosticInformation}
+                      uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+                    />
+                  )}
+                  control={control}
+                />
+                {includeDiagnosticInformation && (
+                  <RegularText
+                    smallest
+                    placeholder
+                    style={styles.diagnosticInformationHint}
+                    testID="diagnostic-information-hint"
+                  >
+                    {diagnosticInformationHint}
+                  </RegularText>
                 )}
-                control={control}
-              />
+              </>
             )}
 
             <Controller
@@ -246,6 +281,9 @@ export const FeedbackScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  diagnosticInformationHint: {
+    marginBottom: normalize(12)
+  },
   textArea: {
     height: normalize(100),
     padding: normalize(10)

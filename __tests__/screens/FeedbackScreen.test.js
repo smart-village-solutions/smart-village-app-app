@@ -119,10 +119,13 @@ jest.mock('../../src/config', () => ({
         message: 'Sent',
         ok: 'OK'
       },
-      diagnosticInformationHint:
-        'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
-      scheduledNotificationsInformationHint:
-        'Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt.',
+      diagnosticInformationHints: {
+        permissions: 'Berechtigungen werden übermittelt.',
+        pushInformation: 'Push-Informationen werden übermittelt.',
+        systemInformation: 'Systeminformationen werden übermittelt.',
+        wasteConfiguration: 'Abfall-Konfiguration wird übermittelt.',
+        wasteReminderScheduling: 'Geplante Abfall-Erinnerungen werden übermittelt.'
+      },
       inputsErrorMessages: {
         hint: 'Hint',
         checkbox: 'Consent',
@@ -220,36 +223,48 @@ describe('FeedbackScreen diagnostic payload', () => {
     ).toHaveLength(0);
   });
 
-  it.each([{ includeSystemInformation: true }, { includeScheduledNotifications: true }])(
-    'offers diagnostic information for active feedback settings %#',
-    async (settings) => {
-      const component = await renderAndSubmit(settings);
+  it.each([
+    { includeSystemInformation: true },
+    { includePermissions: true },
+    { includePushInformation: true },
+    { includeWasteConfiguration: true },
+    { includeWasteReminderScheduling: true },
+    { includeScheduledNotifications: true }
+  ])('offers diagnostic information for active feedback settings %#', async (settings) => {
+    const component = await renderAndSubmit(settings);
 
-      expect(
-        component.root.findByProps({
-          children: 'Diagnoseinformationen mitsenden'
-        })
-      ).toBeTruthy();
-      expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
-      expect(mockCollectDeviceInfo).not.toHaveBeenCalled();
-    }
-  );
+    expect(
+      component.root.findByProps({
+        children: 'Diagnoseinformationen mitsenden'
+      })
+    ).toBeTruthy();
+    expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
+    expect(mockCollectDeviceInfo).not.toHaveBeenCalled();
+  });
 
-  it('appends diagnostic information inline before the required marker after opt-in', async () => {
+  it('shows the configured diagnostic information separately before consent', async () => {
     mockFormData.includeDiagnosticInformation = true;
 
     const component = await renderAndSubmit({ includeSystemInformation: true });
-    const consentTitle =
-      'Consent Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt. *';
 
-    expect(component.root.findByProps({ children: consentTitle })).toBeTruthy();
-    expect(consentTitle).not.toContain('\n');
+    expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
+    expect(
+      component.root.findByProps({
+        children: 'Systeminformationen werden übermittelt.'
+      })
+    ).toMatchObject({
+      props: {
+        placeholder: true,
+        smallest: true,
+        testID: 'diagnostic-information-hint'
+      }
+    });
     expect(mockCollectDeviceInfo).toHaveBeenCalledWith({
       settings: { includeSystemInformation: true }
     });
   });
 
-  it('describes scheduled notifications inline when they are included', async () => {
+  it('describes every enabled legacy diagnostic category outside the consent label', async () => {
     mockFormData.includeDiagnosticInformation = true;
 
     const component = await renderAndSubmit({ includeScheduledNotifications: true });
@@ -257,7 +272,24 @@ describe('FeedbackScreen diagnostic payload', () => {
     expect(
       component.root.findByProps({
         children:
-          'Consent Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt. *'
+          'Berechtigungen werden übermittelt. Push-Informationen werden übermittelt. Abfall-Konfiguration wird übermittelt. Geplante Abfall-Erinnerungen werden übermittelt.'
+      })
+    ).toBeTruthy();
+    expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
+  });
+
+  it('describes only the granularly enabled diagnostic categories', async () => {
+    mockFormData.includeDiagnosticInformation = true;
+
+    const component = await renderAndSubmit({
+      includePermissions: true,
+      includeWasteReminderScheduling: true
+    });
+
+    expect(
+      component.root.findByProps({
+        children:
+          'Berechtigungen werden übermittelt. Geplante Abfall-Erinnerungen werden übermittelt.'
       })
     ).toBeTruthy();
   });
