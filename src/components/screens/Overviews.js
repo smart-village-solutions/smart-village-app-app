@@ -319,7 +319,8 @@ export const Overviews = ({ navigation, route }) => {
     radiusSearchByDistance,
     isLocationAlertShow,
     locationSettings,
-    navigation
+    navigation,
+    setIsLocationAlertShow
   ]);
 
   const hasParticipationProjectMapItems =
@@ -345,7 +346,15 @@ export const Overviews = ({ navigation, route }) => {
       queryVariables,
       resourceFilters
     });
-  }, [data]);
+  }, [
+    data,
+    categories,
+    excludeDataProviderIds,
+    initialQueryVariables?.category,
+    queryVariables,
+    resourceFilters,
+    resourceFiltersQuery
+  ]);
 
   useEffect(() => {
     updateResourceFiltersStateHelper({
@@ -419,7 +428,7 @@ export const Overviews = ({ navigation, route }) => {
         };
       }
     });
-  }, [data, query, queryVariables]);
+  }, [data, query, queryVariables, fetchMore]);
 
   if (!query) return null;
 
@@ -558,7 +567,9 @@ export const Overviews = ({ navigation, route }) => {
             navigation.navigate(ScreenName.ParticipationProjectMap, {
               queryVariables,
               rootRouteName: route.params?.rootRouteName,
-              title
+              subtitleNumberOfLines: queryVariables?.subtitleNumberOfLines,
+              title,
+              titleNumberOfLines: queryVariables?.titleNumberOfLines
             })
           }
         />

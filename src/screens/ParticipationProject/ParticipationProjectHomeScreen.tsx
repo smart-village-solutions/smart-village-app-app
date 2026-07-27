@@ -25,6 +25,8 @@ import {
   trimNewLines
 } from '../../helpers';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { GenericItem, GenericType, ScreenName } from '../../types';
@@ -224,7 +226,9 @@ const buildAllProjectsParams = (homeConfig: ParticipationProjectHomeConfig) => (
   queryVariables: {
     genericType: GenericType.ParticipationProject,
     limit: homeConfig.indexLimit,
-    participationOrder: homeConfig.indexOrder
+    participationOrder: homeConfig.indexOrder,
+    subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
+    titleNumberOfLines: homeConfig.titleNumberOfLines
   },
   rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
 });

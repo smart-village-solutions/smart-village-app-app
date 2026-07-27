@@ -1,19 +1,12 @@
 /* eslint-disable react/prop-types */
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useLayoutEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
-import {
-  HeaderLeft,
-  LoadingSpinner,
-  MapLibre,
-  RegularText,
-  TextListItem,
-  Wrapper
-} from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { LoadingSpinner, MapLibre, RegularText, TextListItem, Wrapper } from '../../components';
+import { consts, normalize } from '../../config';
 import {
   buildParticipationProjectPreviewItem,
   getParticipationProjectGeoLocation,
@@ -27,7 +20,9 @@ type ParticipationProjectMapParamList = Record<string, object | undefined> & {
   [ScreenName.ParticipationProjectMap]: {
     queryVariables?: Record<string, unknown>;
     rootRouteName?: string;
+    subtitleNumberOfLines?: number;
     title?: string;
+    titleNumberOfLines?: number;
   };
 };
 
@@ -43,7 +38,8 @@ export const ParticipationProjectMapScreen = ({
   route
 }: StackScreenProps<ParticipationProjectMapParamList, ScreenName.ParticipationProjectMap>) => {
   const [selectedMarker, setSelectedMarker] = useState<string>();
-  const title = route.params?.title || texts.locationOverview.map;
+  const titleNumberOfLines = route.params?.titleNumberOfLines;
+  const subtitleNumberOfLines = route.params?.subtitleNumberOfLines;
   const rootRouteName = route.params?.rootRouteName;
   const mapQueryVariables = useMemo(
     () => ({
@@ -65,24 +61,6 @@ export const ParticipationProjectMapScreen = ({
       );
     }
   );
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <HeaderLeft
-          onPress={() => navigation.goBack()}
-          backImage={({ tintColor }) => (
-            <Icon.Close
-              color={tintColor}
-              size={normalize(22)}
-              style={{ paddingHorizontal: normalize(14) }}
-            />
-          )}
-        />
-      ),
-      title
-    });
-  }, [navigation, title]);
 
   const eligibleProjects = useMemo(
     () => (data?.[QUERY_TYPES.GENERIC_ITEMS] || []).filter(isParticipationProjectMapEligible),
@@ -138,7 +116,12 @@ export const ParticipationProjectMapScreen = ({
 
       {!!selectedPreviewItem && (
         <Wrapper small style={styles.listItemContainer}>
-          <TextListItem item={selectedPreviewItem} navigation={navigation} />
+          <TextListItem
+            item={selectedPreviewItem}
+            navigation={navigation}
+            subtitleNumberOfLines={subtitleNumberOfLines}
+            titleNumberOfLines={titleNumberOfLines}
+          />
         </Wrapper>
       )}
     </View>

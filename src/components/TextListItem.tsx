@@ -266,5 +266,7 @@ TextListItem.propTypes = {
   noSubtitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
+  subtitleNumberOfLines: PropTypes.number,
+  titleNumberOfLines: PropTypes.number,
   withCard: PropTypes.bool
 };
