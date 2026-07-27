@@ -493,6 +493,8 @@ export const texts = {
       systemInformation: 'Geräte- und Betriebssysteminformationen werden übermittelt.',
       wasteConfiguration:
         'Der Zustand des Abfall-Push-Schalters sowie die konfigurierte Adresse, Abfallarten und Erinnerungszeiten werden übermittelt.',
+      wasteDisruptionNotifications:
+        'Es wird übermittelt, ob Störungshinweise für den eigenen Abholort und für alle Abholorte aktiviert sind.',
       wasteReminderScheduling:
         'Status, Anzahl und Termine der lokal geplanten Abfall-Erinnerungen werden übermittelt.'
     },

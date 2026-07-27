@@ -28,12 +28,18 @@ const diagnosticSettingKeys = [
   'includeSystemInformation',
   'includeScheduledNotifications',
   'includeWasteConfiguration',
+  'includeWasteDisruptionNotifications',
   'includeWastePushDiagnostics',
   'includeWasteReminderScheduling'
 ];
 
 const hasEnabledDiagnosticSetting = (settings) =>
   diagnosticSettingKeys.some((key) => settings[key] === true);
+
+const wasteDisruptionNotificationHint = (settings) =>
+  settings.includeWasteDisruptionNotifications === true
+    ? texts.feedbackScreen.diagnosticInformationHints.wasteDisruptionNotifications
+    : null;
 
 const diagnosticInformationHints = (settings) => {
   const legacyWasteDiagnostics =
@@ -53,6 +59,7 @@ const diagnosticInformationHints = (settings) => {
     settings.includeWasteConfiguration === true || legacyWasteDiagnostics
       ? texts.feedbackScreen.diagnosticInformationHints.wasteConfiguration
       : null,
+    wasteDisruptionNotificationHint(settings),
     settings.includeWasteReminderScheduling === true || legacyWasteDiagnostics
       ? texts.feedbackScreen.diagnosticInformationHints.wasteReminderScheduling
       : null
@@ -116,7 +123,10 @@ export const FeedbackScreen = ({ route }) => {
 
       if (includeDiagnosticInformation === true) {
         try {
-          deviceInfo = await collectDeviceInfo({ settings: feedbackSettings });
+          deviceInfo = await collectDeviceInfo({
+            settings: feedbackSettings,
+            wasteSettings: globalSettings?.waste
+          });
         } catch (error) {
           console.error(error);
         }

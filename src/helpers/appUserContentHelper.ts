@@ -8,12 +8,19 @@ type FeedbackInformationSettings = {
   includeSystemInformation?: boolean;
   includeScheduledNotifications?: boolean;
   includeWasteConfiguration?: boolean;
+  includeWasteDisruptionNotifications?: boolean;
   includeWastePushDiagnostics?: boolean;
   includeWasteReminderScheduling?: boolean;
 };
 
 type CollectDeviceInfoArgs = {
   settings?: FeedbackInformationSettings;
+  wasteSettings?: {
+    disruptionNotificationSettings?: {
+      disruption_all_locations?: unknown;
+      disruption_location?: unknown;
+    };
+  };
 };
 
 type DeviceDetails = {
@@ -53,6 +60,7 @@ type DiagnosticSelection = {
   includePushInformation: boolean;
   includeSystemInformation: boolean;
   includeWasteConfiguration: boolean;
+  includeWasteDisruptionNotifications: boolean;
   includeWasteReminderScheduling: boolean;
 };
 
@@ -90,8 +98,24 @@ const resolveDiagnosticSelection = (
     includeSystemInformation: settings?.includeSystemInformation === true,
     includeWasteConfiguration:
       settings?.includeWasteConfiguration === true || includeLegacyDiagnostics,
+    includeWasteDisruptionNotifications: settings?.includeWasteDisruptionNotifications === true,
     includeWasteReminderScheduling:
       settings?.includeWasteReminderScheduling === true || includeLegacyDiagnostics
+  };
+};
+
+const assignWasteDisruptionNotificationDiagnostics = (
+  deviceInfo: DeviceInfo,
+  wasteSettings: CollectDeviceInfoArgs['wasteSettings']
+) => {
+  const settings = wasteSettings?.disruptionNotificationSettings;
+
+  deviceInfo.wastePushDiagnostics = {
+    ...deviceInfo.wastePushDiagnostics,
+    disruptionNotifications: {
+      allLocationsEnabled: settings?.disruption_all_locations === true,
+      ownLocationEnabled: settings?.disruption_location === true
+    }
   };
 };
 
@@ -143,6 +167,7 @@ const assignWasteDiagnostics = (
   delete wastePush.systemPermission;
 
   deviceInfo.wastePushDiagnostics = {
+    ...deviceInfo.wastePushDiagnostics,
     collectedAt,
     collectionStatus: selectWasteCollectionStatus(wasteCollectionStatus, selection),
     ...(selection.includePushInformation ? { push: wastePush } : {}),
@@ -161,8 +186,12 @@ export const collectDeviceInfo = async (
     selection.includePushInformation ||
     selection.includeWasteConfiguration ||
     selection.includeWasteReminderScheduling;
+  const hasDiagnosticInformation =
+    includeSystemInformation ||
+    includeWastePushDiagnostics ||
+    selection.includeWasteDisruptionNotifications;
 
-  if (!includeSystemInformation && !includeWastePushDiagnostics) {
+  if (!hasDiagnosticInformation) {
     return undefined;
   }
 
@@ -183,6 +212,10 @@ export const collectDeviceInfo = async (
 
   const results = await Promise.allSettled(collectors);
   const deviceInfo: DeviceInfo = {};
+
+  if (selection.includeWasteDisruptionNotifications) {
+    assignWasteDisruptionNotificationDiagnostics(deviceInfo, args.wasteSettings);
+  }
 
   results.forEach((result, index) => {
     const collectorName = collectorNames[index];

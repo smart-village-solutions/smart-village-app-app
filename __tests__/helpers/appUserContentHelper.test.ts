@@ -213,6 +213,58 @@ describe('collectDeviceInfo', () => {
     expect(await collectDeviceInfo({ settings })).toEqual(expected);
   });
 
+  it('collects only the two persisted waste disruption notification switches', async () => {
+    const result = await collectDeviceInfo({
+      settings: { includeWasteDisruptionNotifications: true },
+      wasteSettings: {
+        disruptionNotificationSettings: {
+          disruption_all_locations: false,
+          disruption_location: true
+        }
+      }
+    });
+
+    expect(result).toEqual({
+      wastePushDiagnostics: {
+        disruptionNotifications: {
+          allLocationsEnabled: false,
+          ownLocationEnabled: true
+        }
+      }
+    });
+    expectNoDeviceGetterRead();
+    expect(collectWastePushDiagnosticsMock).not.toHaveBeenCalled();
+  });
+
+  it('matches the UI defaults when disruption notification settings are missing', async () => {
+    expect(
+      await collectDeviceInfo({
+        settings: { includeWasteDisruptionNotifications: true }
+      })
+    ).toEqual({
+      wastePushDiagnostics: {
+        disruptionNotifications: {
+          allLocationsEnabled: false,
+          ownLocationEnabled: false
+        }
+      }
+    });
+  });
+
+  it('does not expose disruption notification switches through another waste category', async () => {
+    const result = await collectDeviceInfo({
+      settings: { includeWasteConfiguration: true },
+      wasteSettings: {
+        disruptionNotificationSettings: {
+          disruption_all_locations: true,
+          disruption_location: true
+        }
+      }
+    });
+
+    expect(result?.wastePushDiagnostics).not.toHaveProperty('disruptionNotifications');
+  });
+
   it('does not expose a disabled permission failure', async () => {
     collectWastePushDiagnosticsMock.mockResolvedValue({
       ...wastePushDiagnostics,

@@ -124,6 +124,7 @@ jest.mock('../../src/config', () => ({
         pushInformation: 'Push-Informationen werden übermittelt.',
         systemInformation: 'Systeminformationen werden übermittelt.',
         wasteConfiguration: 'Abfall-Konfiguration wird übermittelt.',
+        wasteDisruptionNotifications: 'Störungshinweis-Schalter werden übermittelt.',
         wasteReminderScheduling: 'Geplante Abfall-Erinnerungen werden übermittelt.'
       },
       inputsErrorMessages: {
@@ -177,10 +178,11 @@ const basePayload = {
   appInfo
 };
 
-const renderAndSubmit = async (feedback) => {
+const renderAndSubmit = async (feedback, waste = {}) => {
   const globalSettings = {
     ...initialContext.globalSettings,
-    settings: { feedback }
+    settings: { feedback },
+    waste
   };
   let component;
 
@@ -228,6 +230,7 @@ describe('FeedbackScreen diagnostic payload', () => {
     { includePermissions: true },
     { includePushInformation: true },
     { includeWasteConfiguration: true },
+    { includeWasteDisruptionNotifications: true },
     { includeWasteReminderScheduling: true },
     { includeScheduledNotifications: true }
   ])('offers diagnostic information for active feedback settings %#', async (settings) => {
@@ -260,7 +263,8 @@ describe('FeedbackScreen diagnostic payload', () => {
       }
     });
     expect(mockCollectDeviceInfo).toHaveBeenCalledWith({
-      settings: { includeSystemInformation: true }
+      settings: { includeSystemInformation: true },
+      wasteSettings: {}
     });
   });
 
@@ -294,6 +298,31 @@ describe('FeedbackScreen diagnostic payload', () => {
     ).toBeTruthy();
   });
 
+  it('describes and forwards the separately enabled disruption notification switches', async () => {
+    mockFormData.includeDiagnosticInformation = true;
+    const wasteSettings = {
+      disruptionNotificationSettings: {
+        disruption_all_locations: true,
+        disruption_location: false
+      }
+    };
+
+    const component = await renderAndSubmit(
+      { includeWasteDisruptionNotifications: true },
+      wasteSettings
+    );
+
+    expect(
+      component.root.findByProps({
+        children: 'Störungshinweis-Schalter werden übermittelt.'
+      })
+    ).toBeTruthy();
+    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({
+      settings: { includeWasteDisruptionNotifications: true },
+      wasteSettings
+    });
+  });
+
   it('adds system information beside unchanged appInfo', async () => {
     const settings = { includeSystemInformation: true };
     const deviceInfo = {
@@ -305,7 +334,7 @@ describe('FeedbackScreen diagnostic payload', () => {
 
     await renderAndSubmit(settings);
 
-    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings });
+    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings, wasteSettings: {} });
     expect(sentPayload()).toEqual({ ...basePayload, deviceInfo });
     const forbiddenKeys = [
       'appVersion',
@@ -335,7 +364,7 @@ describe('FeedbackScreen diagnostic payload', () => {
 
     await renderAndSubmit(settings);
 
-    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings });
+    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings, wasteSettings: {} });
     expect(sentPayload()).toEqual({ ...basePayload, deviceInfo });
   });
 
@@ -354,7 +383,7 @@ describe('FeedbackScreen diagnostic payload', () => {
 
     await renderAndSubmit(settings);
 
-    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings });
+    expect(mockCollectDeviceInfo).toHaveBeenCalledWith({ settings, wasteSettings: {} });
     expect(mockCreateAppUserContent).toHaveBeenCalledTimes(1);
     expect(sentPayload()).toEqual({ ...basePayload, deviceInfo });
   });
@@ -431,10 +460,25 @@ describe('FeedbackScreen diagnostic payload', () => {
     mockCollectDeviceInfo.mockImplementation(collectDeviceInfo);
     mockFormData.includeDiagnosticInformation = true;
 
-    await renderAndSubmit({ includeWastePushDiagnostics: true });
+    await renderAndSubmit(
+      {
+        includeWasteDisruptionNotifications: true,
+        includeWastePushDiagnostics: true
+      },
+      {
+        disruptionNotificationSettings: {
+          disruption_all_locations: true,
+          disruption_location: false
+        }
+      }
+    );
 
     const serializedContent = mockCreateAppUserContent.mock.calls[0][0].variables.content;
     expect(sentPayload().deviceInfo.wastePushDiagnostics).toMatchObject({
+      disruptionNotifications: {
+        allLocationsEnabled: true,
+        ownLocationEnabled: false
+      },
       push: { token: { present: true, ownerState: 'anonymous' } },
       wasteConfiguration: { location: { street: diagnosticStreet } },
       scheduling: {
