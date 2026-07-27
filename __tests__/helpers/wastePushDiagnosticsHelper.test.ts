@@ -215,6 +215,38 @@ describe('collectWastePushDiagnostics', () => {
     });
   });
 
+  it('treats omitted settings for non-push waste types as disabled', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'owner-current',
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncPayload: {
+          activeTypes: {
+            biocleaning: { active: true },
+            paper: { active: true }
+          },
+          notificationSettings: { paper: true },
+          reminderTime: '2026-01-01',
+          usedTypeKeys: ['biocleaning', 'paper']
+        }
+      })
+    );
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.wasteConfiguration).toMatchObject({
+      enabledTypeKeys: ['paper'],
+      localStateStatus: 'valid',
+      usedTypeKeys: ['biocleaning', 'paper'],
+      wastePushEnabled: true
+    });
+    expect(result.push.token).toEqual({
+      present: true,
+      ownerState: 'matches-current-token'
+    });
+  });
+
   it('matches the scheduler waste predicate for empty and truthy non-string reminder keys', async () => {
     (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
       {

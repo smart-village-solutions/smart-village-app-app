@@ -167,7 +167,7 @@ const sanitizeTypeSettings = (usedTypeKeysValue: unknown, settingsValue: unknown
   const enabledTypeKeys: string[] = [];
   for (const typeKey of usedTypeKeys) {
     const enabled = settingsValue[typeKey];
-    if (typeof enabled !== 'boolean') return undefined;
+    if (enabled !== undefined && typeof enabled !== 'boolean') return undefined;
     if (enabled) enabledTypeKeys.push(typeKey);
   }
 
