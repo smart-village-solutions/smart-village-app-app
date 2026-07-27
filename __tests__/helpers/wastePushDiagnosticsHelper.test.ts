@@ -174,6 +174,7 @@ describe('collectWastePushDiagnostics', () => {
       street: 'private-street',
       zip: '12345'
     });
+    expect(result.wasteConfiguration.wastePushEnabled).toBe(true);
     expect(result.scheduling.lastSchedulingAttempt).toMatchObject({
       calculatedCount: 1,
       verifiedScheduledCount: 1,
@@ -190,6 +191,28 @@ describe('collectWastePushDiagnostics', () => {
     expect(Notifications.requestPermissionsAsync).not.toHaveBeenCalled();
     expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
     expect(Camera.requestCameraPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('reports the waste-area master push switch as disabled when no waste type is enabled', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncPayload: {
+          activeTypes: { paper: { active: true } },
+          notificationSettings: { bio: false, paper: false },
+          reminderTime: '2026-01-01',
+          usedTypeKeys: ['bio', 'paper']
+        }
+      })
+    );
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.wasteConfiguration).toMatchObject({
+      enabledTypeKeys: [],
+      wastePushEnabled: false
+    });
   });
 
   it('matches the scheduler waste predicate for empty and truthy non-string reminder keys', async () => {

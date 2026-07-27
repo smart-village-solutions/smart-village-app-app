@@ -209,7 +209,8 @@ const sanitizeConfigurationPayload = (payload: unknown) => {
     ...typeSettings,
     ...(activeSlots.slots ? { activeSlots: activeSlots.slots } : {}),
     ...(location.location ? { location: location.location } : {}),
-    selectedStreetConfigured: location.configured
+    selectedStreetConfigured: location.configured,
+    wastePushEnabled: typeSettings.enabledTypeKeys.length > 0
   };
 };
 

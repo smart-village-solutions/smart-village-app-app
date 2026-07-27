@@ -492,7 +492,7 @@ export const texts = {
         'Der Status der Push-Einstellungen, des Push-Tokens und – unter Android – des Push-Kanals wird übermittelt.',
       systemInformation: 'Geräte- und Betriebssysteminformationen werden übermittelt.',
       wasteConfiguration:
-        'Die konfigurierte Adresse, Abfallarten und Erinnerungszeiten werden übermittelt.',
+        'Der Zustand des Abfall-Push-Schalters sowie die konfigurierte Adresse, Abfallarten und Erinnerungszeiten werden übermittelt.',
       wasteReminderScheduling:
         'Status, Anzahl und Termine der lokal geplanten Abfall-Erinnerungen werden übermittelt.'
     },
