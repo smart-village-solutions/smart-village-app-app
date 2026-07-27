@@ -40,6 +40,16 @@ export const normalizePushReminderSlots = (wasteType?: WasteType): NormalizedPus
   };
 };
 
+export const filterPushReminderNotificationSettings = (
+  wasteTypes: WasteTypeData | undefined,
+  notificationSettings: Record<string, boolean>
+): Record<string, boolean> =>
+  Object.fromEntries(
+    Object.entries(wasteTypes ?? {})
+      .filter(([, wasteType]) => normalizePushReminderSlots(wasteType).slots.length > 0)
+      .map(([typeKey]) => [typeKey, notificationSettings[typeKey] === true])
+  );
+
 export const getWasteReminderUiMode = (wasteTypes?: WasteTypeData): WasteReminderUiMode => {
   const hasFlexiblePushSlots = Object.values(wasteTypes ?? {}).some((wasteType) => {
     const normalized = normalizePushReminderSlots(wasteType);

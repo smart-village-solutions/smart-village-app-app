@@ -1,4 +1,5 @@
 import {
+  filterPushReminderNotificationSettings,
   getWasteReminderUiMode,
   normalizePushReminderSlots
 } from '../../src/pushNotifications/WasteReminderConfig';
@@ -53,6 +54,23 @@ describe('WasteReminderConfig', () => {
         }
       })
     ).toEqual({ isFallback: false, slots: [] });
+  });
+
+  it('removes enabled settings for waste types without a push channel', () => {
+    expect(
+      filterPushReminderNotificationSettings(
+        {
+          biocleaning: {
+            ...legacyWasteType,
+            reminders: {
+              channels: { calendar: false, email: false, push: false }
+            }
+          },
+          paper: flexibleWasteType
+        },
+        { biocleaning: true, paper: true }
+      )
+    ).toEqual({ paper: true });
   });
 
   it('keeps fallback out of flexible mode when mixed with configured non-push reminders', () => {

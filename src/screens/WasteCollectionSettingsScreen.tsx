@@ -61,6 +61,7 @@ import {
 import { areValidReminderSettings } from '../jsonValidation';
 import {
   buildWasteReminderSchedule,
+  filterPushReminderNotificationSettings,
   getInAppPermission,
   getLocalNotificationPermission,
   getReminderSettings,
@@ -210,6 +211,10 @@ export const WasteCollectionSettingsScreen = () => {
     [usedTypes]
   );
   const reminderUiMode = useMemo(() => getWasteReminderUiMode(usedTypes), [usedTypes]);
+  const pushReminderNotificationSettings = useMemo(
+    () => filterPushReminderNotificationSettings(usedTypes, notificationSettings),
+    [notificationSettings, usedTypes]
+  );
   const locationData = getLocationData(streetData);
   const { getStreetString } = useStreetString();
   const streetName = locationData ? getStreetString(locationData) : undefined;
@@ -305,7 +310,10 @@ export const WasteCollectionSettingsScreen = () => {
       dispatch({
         type: WasteSettingsActions.updateWasteSettings,
         payload: {
-          notificationSettings: localServerSyncPayload.notificationSettings,
+          notificationSettings: filterPushReminderNotificationSettings(
+            usedTypes,
+            localServerSyncPayload.notificationSettings
+          ),
           serverSettings: buildStoredSettingsFromLocalPayload(localServerSyncPayload).map(
             (registration) => ({
               city: localLocation?.city ?? '',
@@ -404,7 +412,7 @@ export const WasteCollectionSettingsScreen = () => {
           activeReminderRegistrations: reminderSyncRegistrations,
           activeTypes,
           locationData,
-          notificationSettings,
+          notificationSettings: pushReminderNotificationSettings,
           onDayBefore,
           reminderTime,
           usedTypeKeys
@@ -427,7 +435,7 @@ export const WasteCollectionSettingsScreen = () => {
     [
       usedTypeKeys,
       activeTypes,
-      notificationSettings,
+      pushReminderNotificationSettings,
       locationData,
       onDayBefore,
       reminderTime,
@@ -442,7 +450,7 @@ export const WasteCollectionSettingsScreen = () => {
             reminderSettingsByType,
             usedTypes,
             selectedTypeKeys,
-            notificationSettings
+            pushReminderNotificationSettings
           )
         : undefined;
 
@@ -451,7 +459,7 @@ export const WasteCollectionSettingsScreen = () => {
         activeReminderRegistrations: reminderSyncRegistrations,
         activeTypes,
         locationData,
-        notificationSettings,
+        notificationSettings: pushReminderNotificationSettings,
         onDayBefore,
         reminderTime,
         usedTypeKeys
@@ -464,7 +472,7 @@ export const WasteCollectionSettingsScreen = () => {
     }
 
     const activeReminderTypeKeys = usedTypeKeys.filter(
-      (typeKey) => !!notificationSettings[typeKey]
+      (typeKey) => !!pushReminderNotificationSettings[typeKey]
     );
     const activeReminderRegistrations = reminderSyncRegistrations
       ?.filter((registration) => registration.active)
@@ -492,7 +500,7 @@ export const WasteCollectionSettingsScreen = () => {
         activeReminderRegistrations: reminderSyncRegistrations,
         activeTypes,
         locationData,
-        notificationSettings,
+        notificationSettings: pushReminderNotificationSettings,
         onDayBefore,
         reminderTime,
         usedTypeKeys
@@ -511,7 +519,7 @@ export const WasteCollectionSettingsScreen = () => {
   }, [
     activeTypes,
     locationData,
-    notificationSettings,
+    pushReminderNotificationSettings,
     onDayBefore,
     reminderTime,
     reminderSettingsByType,
@@ -535,7 +543,7 @@ export const WasteCollectionSettingsScreen = () => {
             payload: { key: typeKey, value }
           }),
         globalSettings,
-        notificationSettings,
+        notificationSettings: pushReminderNotificationSettings,
         persistGlobalSettings: storageHelper.setGlobalSettings,
         scheduleLocalReminderSettings,
         selectedStreetId,
@@ -564,7 +572,7 @@ export const WasteCollectionSettingsScreen = () => {
     streetName,
     selectedStreetId,
     selectedTypeKeys,
-    notificationSettings,
+    pushReminderNotificationSettings,
     scheduleLocalReminderSettings,
     setGlobalSettings,
     updateSettings,
@@ -731,7 +739,7 @@ export const WasteCollectionSettingsScreen = () => {
         loadingStoredSettings={loadingStoredSettings}
         locationData={locationData}
         navigationType={navigationType}
-        notificationSettings={notificationSettings}
+        notificationSettings={pushReminderNotificationSettings}
         onDatePickerChange={onDatePickerChange}
         onFlexibleDatePickerChange={onFlexibleDatePickerChange}
         onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}

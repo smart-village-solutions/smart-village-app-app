@@ -178,6 +178,9 @@ jest.mock('../../src/pushNotifications', () => ({
   getReminderSettings: jest.fn(async () => ({ status: 'unavailable' })),
   getWasteReminderUiMode: jest.requireActual('../../src/pushNotifications/WasteReminderConfig')
     .getWasteReminderUiMode,
+  filterPushReminderNotificationSettings: jest.requireActual(
+    '../../src/pushNotifications/WasteReminderConfig'
+  ).filterPushReminderNotificationSettings,
   markWasteReminderServerSyncSynced: jest.fn(async () => undefined),
   normalizePushReminderSlots: jest.requireActual('../../src/pushNotifications/WasteReminderConfig')
     .normalizePushReminderSlots,
@@ -581,7 +584,7 @@ describe('WasteCollectionSettingsScreen', () => {
     });
 
     const saveButton = tree.root
-      .findAllByType(require('react-native').TouchableOpacity)
+      .findAllByType(TouchableOpacity)
       .find((node) => collectText(node).join(' ').includes('Save'));
 
     await act(async () => {
@@ -615,6 +618,84 @@ describe('WasteCollectionSettingsScreen', () => {
       })
     );
     expect(syncWasteReminderSettingsWithServer).not.toHaveBeenCalled();
+  });
+
+  it('does not persist an enabled reminder for a waste type without a push channel', async () => {
+    const globalSettings = {
+      ...initialContext.globalSettings,
+      navigation: 'tab',
+      waste: {
+        streetId: 1,
+        streetName: 'Test Street (12345 Berlin)',
+        selectedTypeKeys: ['paper', 'biocleaning']
+      }
+    };
+    mockUsedTypes = {
+      ...mockUsedTypes,
+      biocleaning: {
+        color: '#008000',
+        label: 'Bin cleaning',
+        reminders: {
+          channels: { calendar: false, email: false, push: false }
+        },
+        selected_color: '#008000'
+      }
+    };
+    mockStreetData = {
+      wasteAddresses: [
+        {
+          city: 'Berlin',
+          street: 'Test Street',
+          wasteLocationTypes: [{ wasteType: 'paper' }, { wasteType: 'biocleaning' }],
+          zip: '12345'
+        }
+      ]
+    };
+    mockReadWasteReminderLocalState.mockResolvedValue({
+      ownerKey: 'push:test',
+      scheduledNotificationIds: [],
+      scheduledReminderKeys: [],
+      serverSyncPayload: {
+        activeTypes: {
+          biocleaning: { active: true },
+          paper: { active: true, storeId: 1 }
+        },
+        locationData: { city: 'Berlin', street: 'Test Street', zip: '12345' },
+        notificationSettings: { biocleaning: true, paper: true },
+        reminderTime: '2000-01-01T08:00:00.000Z',
+        usedTypeKeys: ['paper', 'biocleaning']
+      },
+      serverSyncStatus: 'synced'
+    });
+    mockGetInAppPermission.mockResolvedValue(false);
+    (saveWasteReminderSettings as jest.Mock).mockImplementation(
+      async ({ scheduleLocalReminderSettings }) => {
+        await scheduleLocalReminderSettings();
+      }
+    );
+    let tree;
+
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const saveButton = tree.root
+      .findAllByType(TouchableOpacity)
+      .find((node) => collectText(node).join(' ').includes('Save'));
+
+    await act(async () => {
+      await saveButton.props.onPress();
+    });
+
+    expect(storeWasteReminderSettingsWithoutScheduling).toHaveBeenCalledWith(
+      expect.objectContaining({
+        notificationSettings: { paper: true }
+      })
+    );
   });
 
   it('shows active default reminder details for a newly selected street while global push is disabled', async () => {
