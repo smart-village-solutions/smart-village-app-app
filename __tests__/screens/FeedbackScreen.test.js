@@ -413,6 +413,14 @@ describe('FeedbackScreen diagnostic payload', () => {
         }
       }
     });
+    expect(sentPayload().deviceInfo.permissions.notifications).toMatchObject({
+      granted: true,
+      status: 'granted'
+    });
+    expect(sentPayload().deviceInfo.wastePushDiagnostics).not.toHaveProperty('permissions');
+    expect(sentPayload().deviceInfo.wastePushDiagnostics.push).not.toHaveProperty(
+      'systemPermission'
+    );
     forbidden.forEach((value) => expect(serializedContent).not.toContain(value));
   });
 

@@ -44,10 +44,39 @@ const originalDescriptors = new Map(
   deviceKeys.map((key) => [key, Object.getOwnPropertyDescriptor(Device, key)])
 );
 const wastePushDiagnostics = {
+  collectionStatus: {},
+  permissions: {
+    camera: {
+      canAskAgain: true,
+      expires: 'never',
+      granted: false,
+      status: 'undetermined'
+    },
+    notifications: {
+      canAskAgain: true,
+      expires: 'never',
+      granted: true,
+      status: 'granted'
+    }
+  },
+  push: {
+    inAppEnabled: true,
+    systemPermission: {
+      canAskAgain: true,
+      granted: true,
+      status: 'granted'
+    }
+  },
   scheduling: {
     currentNativeInventory: { scheduledWasteNotificationCount: 2 }
   }
 };
+const expectedWastePushDiagnostics = {
+  collectionStatus: {},
+  push: { inAppEnabled: true },
+  scheduling: wastePushDiagnostics.scheduling
+};
+const expectedPermissions = wastePushDiagnostics.permissions;
 const collectWastePushDiagnosticsMock = collectWastePushDiagnostics as jest.Mock;
 
 const expectNoDeviceGetterRead = () => {
@@ -127,7 +156,8 @@ describe('collectDeviceInfo', () => {
     });
 
     expect(result).toEqual({
-      wastePushDiagnostics
+      permissions: expectedPermissions,
+      wastePushDiagnostics: expectedWastePushDiagnostics
     });
     expectNoDeviceGetterRead();
   });
@@ -141,9 +171,27 @@ describe('collectDeviceInfo', () => {
       expect.objectContaining({
         device: expect.any(Object),
         operatingSystem: expect.any(Object),
-        wastePushDiagnostics
+        permissions: expectedPermissions,
+        wastePushDiagnostics: expectedWastePushDiagnostics
       })
     );
+  });
+
+  it('moves permission collection failures out of waste push diagnostics', async () => {
+    collectWastePushDiagnosticsMock.mockResolvedValue({
+      ...wastePushDiagnostics,
+      collectionStatus: { permissions: 'failed' }
+    });
+
+    const result = await collectDeviceInfo({
+      settings: { includeScheduledNotifications: true }
+    });
+
+    expect(result).toEqual({
+      collectionStatus: { permissions: 'failed' },
+      permissions: expectedPermissions,
+      wastePushDiagnostics: expectedWastePushDiagnostics
+    });
   });
 
   it('keeps system data when scheduled notification collection fails', async () => {
@@ -175,7 +223,8 @@ describe('collectDeviceInfo', () => {
     });
 
     expect(result).toEqual({
-      wastePushDiagnostics,
+      permissions: expectedPermissions,
+      wastePushDiagnostics: expectedWastePushDiagnostics,
       collectionStatus: { systemInformation: 'failed' }
     });
     expect(JSON.stringify(result)).not.toContain('private getter error');

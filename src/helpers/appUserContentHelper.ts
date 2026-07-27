@@ -35,8 +35,11 @@ type OperatingSystemDetails = {
 type DeviceInfo = {
   device?: DeviceDetails;
   operatingSystem?: OperatingSystemDetails;
-  wastePushDiagnostics?: Awaited<ReturnType<typeof collectWastePushDiagnostics>>;
-  collectionStatus?: Partial<Record<'systemInformation' | 'wastePushDiagnostics', 'failed'>>;
+  permissions?: Awaited<ReturnType<typeof collectWastePushDiagnostics>>['permissions'];
+  wastePushDiagnostics?: Record<string, unknown>;
+  collectionStatus?: Partial<
+    Record<'permissions' | 'systemInformation' | 'wastePushDiagnostics', 'failed'>
+  >;
 };
 
 type SystemInformation = Pick<DeviceInfo, 'device' | 'operatingSystem'>;
@@ -106,9 +109,26 @@ export const collectDeviceInfo = async (
     if (collectorName === 'systemInformation') {
       Object.assign(deviceInfo, result.value as SystemInformation);
     } else {
-      deviceInfo.wastePushDiagnostics = result.value as Awaited<
-        ReturnType<typeof collectWastePushDiagnostics>
-      >;
+      const diagnostics = result.value as Awaited<ReturnType<typeof collectWastePushDiagnostics>>;
+      const { collectionStatus, permissions, push, ...wastePushDiagnostics } = diagnostics;
+      const { permissions: permissionStatus, ...wasteCollectionStatus } = collectionStatus;
+      const wastePush = { ...(push as Record<string, unknown>) };
+
+      delete wastePush.systemPermission;
+
+      deviceInfo.permissions = permissions;
+      deviceInfo.wastePushDiagnostics = {
+        ...wastePushDiagnostics,
+        collectionStatus: wasteCollectionStatus,
+        push: wastePush
+      };
+
+      if (permissionStatus === 'failed') {
+        deviceInfo.collectionStatus = {
+          ...deviceInfo.collectionStatus,
+          permissions: 'failed'
+        };
+      }
     }
   });
 
