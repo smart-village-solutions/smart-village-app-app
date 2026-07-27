@@ -19,6 +19,7 @@ const mockAlert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined)
 const mockCreateAppUserContent = jest.fn();
 const mockCollectDeviceInfo = jest.fn();
 const mockGoBack = jest.fn();
+let mockPlatform = 'ios';
 const mockFormData = {
   name: 'Erika Beispiel',
   email: 'erika@example.org',
@@ -106,6 +107,11 @@ jest.mock('../../src/components', () => {
 });
 
 jest.mock('../../src/config', () => ({
+  device: {
+    get platform() {
+      return mockPlatform;
+    }
+  },
   Icon: { Square: () => null, SquareCheckFilled: () => null },
   colors: { placeholder: '#000000' },
   consts: { MATOMO_TRACKING: { SCREEN_VIEW: { FEEDBACK: 'feedback' } }, EMAIL_REGEX: /.+/ },
@@ -120,12 +126,14 @@ jest.mock('../../src/config', () => ({
         ok: 'OK'
       },
       diagnosticInformationHints: {
-        permissions: 'Berechtigungen werden übermittelt.',
-        pushInformation: 'Push-Informationen werden übermittelt.',
-        systemInformation: 'Systeminformationen werden übermittelt.',
-        wasteConfiguration: 'Abfall-Konfiguration wird übermittelt.',
-        wasteDisruptionNotifications: 'Störungshinweis-Schalter werden übermittelt.',
-        wasteReminderScheduling: 'Geplante Abfall-Erinnerungen werden übermittelt.'
+        permissions: 'Die Diagnose zeigt die App-Berechtigungen.',
+        pushInformation: 'Die Push-Diagnose enthält App-Einstellung und Token-Status.',
+        pushInformationAndroid:
+          'Die Push-Diagnose enthält App-Einstellung, Token-Status und Push-Kanal.',
+        systemInformation: 'Die Diagnose enthält Systeminformationen.',
+        wasteConfiguration: 'Die Diagnose enthält die Abfall-Konfiguration.',
+        wasteDisruptionNotifications: 'Die Diagnose enthält die Störungshinweis-Schalter.',
+        wasteReminderScheduling: 'Die Diagnose dokumentiert die geplanten Erinnerungen.'
       },
       inputsErrorMessages: {
         hint: 'Hint',
@@ -210,6 +218,7 @@ describe('FeedbackScreen diagnostic payload', () => {
     mockCollectDeviceInfo.mockResolvedValue(undefined);
     mockFormData.consent = true;
     mockFormData.includeDiagnosticInformation = false;
+    mockPlatform = 'ios';
   });
 
   it('sends the unchanged payload without active flags', async () => {
@@ -242,18 +251,17 @@ describe('FeedbackScreen diagnostic payload', () => {
       })
     ).toBeTruthy();
     expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
+    expect(component.root.findByProps({ testID: 'diagnostic-information-hint' })).toBeTruthy();
     expect(mockCollectDeviceInfo).not.toHaveBeenCalled();
   });
 
-  it('shows the configured diagnostic information separately before consent', async () => {
-    mockFormData.includeDiagnosticInformation = true;
-
+  it('always shows the configured diagnostic information separately before consent', async () => {
     const component = await renderAndSubmit({ includeSystemInformation: true });
 
     expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
     expect(
       component.root.findByProps({
-        children: 'Systeminformationen werden übermittelt.'
+        children: 'Die Diagnose enthält Systeminformationen.'
       })
     ).toMatchObject({
       props: {
@@ -262,6 +270,14 @@ describe('FeedbackScreen diagnostic payload', () => {
         testID: 'diagnostic-information-hint'
       }
     });
+    expect(mockCollectDeviceInfo).not.toHaveBeenCalled();
+  });
+
+  it('collects diagnostics only after opt-in', async () => {
+    mockFormData.includeDiagnosticInformation = true;
+
+    await renderAndSubmit({ includeSystemInformation: true });
+
     expect(mockCollectDeviceInfo).toHaveBeenCalledWith({
       settings: { includeSystemInformation: true },
       wasteSettings: {}
@@ -276,7 +292,7 @@ describe('FeedbackScreen diagnostic payload', () => {
     expect(
       component.root.findByProps({
         children:
-          'Berechtigungen werden übermittelt. Push-Informationen werden übermittelt. Abfall-Konfiguration wird übermittelt. Geplante Abfall-Erinnerungen werden übermittelt.'
+          'Die Diagnose zeigt die App-Berechtigungen. Die Push-Diagnose enthält App-Einstellung und Token-Status. Die Diagnose enthält die Abfall-Konfiguration. Die Diagnose dokumentiert die geplanten Erinnerungen.'
       })
     ).toBeTruthy();
     expect(component.root.findByProps({ children: 'Consent *' })).toBeTruthy();
@@ -293,7 +309,7 @@ describe('FeedbackScreen diagnostic payload', () => {
     expect(
       component.root.findByProps({
         children:
-          'Berechtigungen werden übermittelt. Geplante Abfall-Erinnerungen werden übermittelt.'
+          'Die Diagnose zeigt die App-Berechtigungen. Die Diagnose dokumentiert die geplanten Erinnerungen.'
       })
     ).toBeTruthy();
   });
@@ -314,13 +330,32 @@ describe('FeedbackScreen diagnostic payload', () => {
 
     expect(
       component.root.findByProps({
-        children: 'Störungshinweis-Schalter werden übermittelt.'
+        children: 'Die Diagnose enthält die Störungshinweis-Schalter.'
       })
     ).toBeTruthy();
     expect(mockCollectDeviceInfo).toHaveBeenCalledWith({
       settings: { includeWasteDisruptionNotifications: true },
       wasteSettings
     });
+  });
+
+  it('mentions the push channel normally on Android and omits it on iOS', async () => {
+    const iosComponent = await renderAndSubmit({ includePushInformation: true });
+
+    expect(
+      iosComponent.root.findByProps({
+        children: 'Die Push-Diagnose enthält App-Einstellung und Token-Status.'
+      })
+    ).toBeTruthy();
+
+    mockPlatform = 'android';
+    const androidComponent = await renderAndSubmit({ includePushInformation: true });
+
+    expect(
+      androidComponent.root.findByProps({
+        children: 'Die Push-Diagnose enthält App-Einstellung, Token-Status und Push-Kanal.'
+      })
+    ).toBeTruthy();
   });
 
   it('adds system information beside unchanged appInfo', async () => {

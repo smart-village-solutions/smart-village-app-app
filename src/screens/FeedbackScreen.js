@@ -14,7 +14,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { Icon, colors, consts, normalize, texts } from '../config';
+import { Icon, colors, consts, device, normalize, texts } from '../config';
 import { collectDeviceInfo } from '../helpers';
 import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
@@ -41,6 +41,11 @@ const wasteDisruptionNotificationHint = (settings) =>
     ? texts.feedbackScreen.diagnosticInformationHints.wasteDisruptionNotifications
     : null;
 
+const pushInformationHint = () =>
+  device.platform === 'android'
+    ? texts.feedbackScreen.diagnosticInformationHints.pushInformationAndroid
+    : texts.feedbackScreen.diagnosticInformationHints.pushInformation;
+
 const diagnosticInformationHints = (settings) => {
   const legacyWasteDiagnostics =
     settings.includeScheduledNotifications === true ||
@@ -54,7 +59,7 @@ const diagnosticInformationHints = (settings) => {
       ? texts.feedbackScreen.diagnosticInformationHints.permissions
       : null,
     settings.includePushInformation === true || legacyWasteDiagnostics
-      ? texts.feedbackScreen.diagnosticInformationHints.pushInformation
+      ? pushInformationHint()
       : null,
     settings.includeWasteConfiguration === true || legacyWasteDiagnostics
       ? texts.feedbackScreen.diagnosticInformationHints.wasteConfiguration
@@ -238,16 +243,14 @@ export const FeedbackScreen = ({ route }) => {
                   )}
                   control={control}
                 />
-                {includeDiagnosticInformation && (
-                  <RegularText
-                    smallest
-                    placeholder
-                    style={styles.diagnosticInformationHint}
-                    testID="diagnostic-information-hint"
-                  >
-                    {diagnosticInformationHint}
-                  </RegularText>
-                )}
+                <RegularText
+                  smallest
+                  placeholder
+                  style={styles.diagnosticInformationHint}
+                  testID="diagnostic-information-hint"
+                >
+                  {diagnosticInformationHint}
+                </RegularText>
               </>
             )}
 

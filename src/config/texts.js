@@ -487,16 +487,18 @@ export const texts = {
     },
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
     diagnosticInformationHints: {
-      permissions: 'App-Berechtigungen werden übermittelt.',
+      permissions: 'Die Diagnose zeigt den aktuellen Status der App-Berechtigungen.',
       pushInformation:
-        'Der Status der Push-Einstellungen, des Push-Tokens und – unter Android – des Push-Kanals wird übermittelt.',
-      systemInformation: 'Geräte- und Betriebssysteminformationen werden übermittelt.',
+        'Für die Push-Diagnose werden die App-Einstellung und der Status des Push-Tokens berücksichtigt.',
+      pushInformationAndroid:
+        'Für die Push-Diagnose werden die App-Einstellung, der Status des Push-Tokens und der konfigurierte Push-Kanal berücksichtigt.',
+      systemInformation: 'Die Diagnose enthält Angaben zum Gerät und Betriebssystem.',
       wasteConfiguration:
-        'Der Zustand des Abfall-Push-Schalters sowie die konfigurierte Adresse, Abfallarten und Erinnerungszeiten werden übermittelt.',
+        'Zu den Abfall-Erinnerungen werden der Zustand des Push-Schalters sowie die gewählte Adresse, Abfallarten und Erinnerungszeiten aufgeführt.',
       wasteDisruptionNotifications:
-        'Es wird übermittelt, ob Störungshinweise für den eigenen Abholort und für alle Abholorte aktiviert sind.',
+        'Bei den Störungshinweisen wird ausgewiesen, ob sie für den eigenen oder für alle Abholorte aktiviert sind.',
       wasteReminderScheduling:
-        'Status, Anzahl und Termine der lokal geplanten Abfall-Erinnerungen werden übermittelt.'
+        'Die lokale Planung wird anhand von Status, Anzahl und Terminen der vorgesehenen Abfall-Erinnerungen dokumentiert.'
     },
     inputsLabel: {
       address: 'Veranstaltungsort',
