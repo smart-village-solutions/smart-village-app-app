@@ -35,7 +35,8 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
     imageBorderRadius = normalize(8),
     imageStyle,
     textsStyle = {}
-  } = sueListItem;
+  } = isSue ? sueListItem : appDesignSystem;
+
   const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
