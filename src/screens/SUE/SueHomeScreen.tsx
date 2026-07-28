@@ -1,8 +1,9 @@
-import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, RouteProp, useNavigation } from '@react-navigation/native';
 import React, { useContext, useLayoutEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
+  AccessibilityHeader,
   Button,
   ConnectedImagesCarousel,
   HeaderLeft,
@@ -12,6 +13,7 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
+  WrapperRow,
   WrapperVertical
 } from '../../components';
 import { normalize, texts } from '../../config';
@@ -22,8 +24,8 @@ import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 
 type HomeScreenProps = {
-  navigation: NavigationProp<any>;
-  route: RouteProp<any, any>;
+  navigation: NavigationProp<ParamListBase>;
+  route: RouteProp<ParamListBase, string>;
 };
 
 const LIST_NAVIGATION_BUTTON = {
@@ -32,7 +34,7 @@ const LIST_NAVIGATION_BUTTON = {
 };
 
 const ReportListNavigationButton = () => {
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
     <Button
@@ -79,7 +81,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     let listItem = data;
 
     if (appDesignSystem?.staticContentList) {
-      listItem = listItem?.map((item: any) => ({
+      listItem = listItem?.map((item: Record<string, unknown>) => ({
         ...item,
         appDesignSystem: appDesignSystem.staticContentList
       }));
@@ -91,18 +93,21 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <HeaderLeft
-          backImage={() => (
-            <Image
-              source={require('../../../assets/sue-icon-pin.png')}
-              style={styles.logo}
-              borderRadius={normalize(20)}
-            />
-          )}
-        />
+        <WrapperRow style={styles.headerRight}>
+          <AccessibilityHeader style={styles.headerIcon} />
+          <HeaderLeft
+            backImage={() => (
+              <Image
+                source={require('../../../assets/sue-icon-pin.png')}
+                style={styles.logo}
+                borderRadius={normalize(20)}
+              />
+            )}
+          />
+        </WrapperRow>
       )
     });
-  }, []);
+  }, [navigation]);
 
   return (
     <SafeAreaViewFlex>
@@ -158,10 +163,17 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
 };
 
 const styles = StyleSheet.create({
+  headerIcon: {
+    paddingHorizontal: normalize(6)
+  },
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(10)
+  },
   logo: {
     height: normalize(30),
-    width: normalize(30),
-    marginRight: normalize(16)
+    marginHorizontal: normalize(6),
+    width: normalize(30)
   },
   noPaddingBottom: {
     paddingBottom: 0

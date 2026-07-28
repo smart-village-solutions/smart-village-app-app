@@ -35,7 +35,7 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { consts, device, normalize, texts } from '../../config';
+import { SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
 import { addToStore, formatSizeStandard, readFromStore } from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -43,7 +43,7 @@ import { postRequests } from '../../queries/SUE';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
 
-export const SUE_REPORT_VALUES = 'sueReportValues';
+export { SUE_REPORT_VALUES } from '../../config';
 
 const { INPUT_KEYS, MB_TO_BYTES } = consts;
 

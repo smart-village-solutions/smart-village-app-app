@@ -16,8 +16,9 @@ import {
   defaultResourceFiltersConfig
 } from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
-import { storageHelper } from './helpers';
+import { resolveAppDesignSystem, storageHelper } from './helpers';
 import { useHomeRefresh, useStaticContent } from './hooks';
+import { useTheme } from './hooks/useTheme';
 import { QUERY_TYPES, getQuery } from './queries';
 import { GenericType } from './types';
 
@@ -59,7 +60,12 @@ export const ConfigurationsContext = createContext(defaultConfiguration);
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = {} } = globalSettings;
+  const { mode } = useTheme();
   const { sue = {} } = settings || {};
+  const themedAppDesignSystem = useMemo(
+    () => resolveAppDesignSystem(appDesignSystem, mode),
+    [appDesignSystem, mode]
+  );
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,8 +90,9 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const mergedConfig = useMemo(() => {
     const isSueConfigEmpty = !Object.keys(sue).length;
     const isResourceFiltersEmpty = !resourceFiltersData?.resourceFilters?.length;
+    const isAppDesignSystemEmpty = !Object.keys(themedAppDesignSystem).length;
 
-    if (isSueConfigEmpty && isResourceFiltersEmpty) {
+    if (isSueConfigEmpty && isResourceFiltersEmpty && isAppDesignSystemEmpty) {
       return defaultConfiguration;
     }
 
@@ -95,11 +102,11 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     }));
 
     return mergeDefaultConfiguration(defaultConfiguration, {
-      appDesignSystem,
+      appDesignSystem: themedAppDesignSystem,
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [sueConfigData, sueProgress, resourceFiltersData]);
+  }, [resourceFiltersData, sue, sueConfigData, sueProgress, themedAppDesignSystem]);
 
   const reloadCallback = useCallback(async () => {
     setIsLoading(true);

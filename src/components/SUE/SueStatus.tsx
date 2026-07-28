@@ -30,6 +30,7 @@ export const SueStatus = ({
   const { sueStatus = {} } = appDesignSystem;
   const {
     containerStyle = {},
+    statusBorderColors = {},
     statusTextColors = {},
     statusTextColorsFilter = {},
     statusViewColors = {},
@@ -46,7 +47,15 @@ export const SueStatus = ({
       ? statusViewColors?.disabled
       : statusViewColors?.[status];
 
-  const borderColor = isFilter && disabled ? colors.placeholder : colors.primary;
+  let borderColor = colors.primary;
+
+  if (isFilter && disabled) {
+    borderColor = colors.placeholder;
+  } else if (!isFilter) {
+    borderColor = disabled
+      ? statusBorderColors?.disabled || colors.primary
+      : statusBorderColors?.[status] || colors.primary;
+  }
 
   const textColor =
     isFilter && disabled

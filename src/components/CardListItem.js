@@ -223,8 +223,8 @@ export const CardListItem = memo(
             <View
               style={[
                 stylesWithProps({ horizontal }).contentContainer,
-                contentContainerStyle,
-                isSue && [styles.sueContentContainer, themedStyles.sueContentContainer]
+                isSue && [styles.sueContentContainer, themedStyles.sueContentContainer],
+                contentContainerStyle
               ]}
             >
               {renderCardContent(

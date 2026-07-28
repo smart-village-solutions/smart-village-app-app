@@ -11,7 +11,7 @@ import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { SettingsContext } from '../../../SettingsProvider';
-import { consts, device, normalize, texts } from '../../../config';
+import { SUE_STATUS, consts, device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
 import {
   useLastKnownPosition,
@@ -68,13 +68,15 @@ export const locationServiceEnabledAlert = ({
   }
 };
 
-enum SueStatus {
-  IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
-  INVALID = 'TICKET_STATUS_INVALID',
-  OPEN = 'TICKET_STATUS_OPEN',
-  WAIT_REQUESTOR = 'TICKET_STATUS_WAIT_REQUESTOR',
-  WAIT_THIRDPARTY = 'TICKET_STATUS_WAIT_THIRDPARTY'
-}
+export { SUE_STATUS } from '../../../config';
+
+const SUE_MAP_STATUSES = [
+  SUE_STATUS.IN_PROCESS,
+  SUE_STATUS.INVALID,
+  SUE_STATUS.OPEN,
+  SUE_STATUS.WAIT_REQUESTOR,
+  SUE_STATUS.WAIT_THIRDPARTY
+];
 
 /* eslint-disable complexity */
 export const SueReportLocation = ({
@@ -149,7 +151,7 @@ export const SueReportLocation = ({
 
   const queryVariables = {
     start_date: '1900-01-01T00:00:00+01:00',
-    status: Object.values(SueStatus).map((status) => status)
+    status: SUE_MAP_STATUSES
   };
 
   const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>

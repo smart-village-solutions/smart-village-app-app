@@ -7,6 +7,7 @@ export * from './wallet';
 export * from './accessibilityListeners';
 export * from './accessibilitySettingsHelper';
 export * from './addressHelper';
+export * from './appDesignSystemHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';
 export * from './cameraHelper';
