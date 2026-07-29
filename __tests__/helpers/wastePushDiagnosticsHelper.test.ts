@@ -175,6 +175,7 @@ describe('collectWastePushDiagnostics', () => {
       zip: '12345'
     });
     expect(result.wasteConfiguration.wastePushEnabled).toBe(true);
+    expect(result.wasteConfiguration).not.toHaveProperty('localStateErrors');
     expect(result.scheduling.lastSchedulingAttempt).toMatchObject({
       calculatedCount: 1,
       verifiedScheduledCount: 1,
@@ -395,6 +396,8 @@ describe('collectWastePushDiagnostics', () => {
     const result = await collectWastePushDiagnostics();
 
     expect(result.collectionStatus.wasteState).toBe('failed');
+    expect(result.wasteConfiguration).toEqual({ localStateStatus: 'unavailable' });
+    expect(result.push.token).toEqual({ present: true, ownerState: 'unavailable' });
     expect(result.permissions.locationForeground).toMatchObject({ status: 'granted' });
     expect(result.scheduling.currentNativeInventory).toMatchObject({
       scheduledWasteNotificationCount: 1
@@ -427,8 +430,136 @@ describe('collectWastePushDiagnostics', () => {
 
     const result = await collectWastePushDiagnostics();
 
-    expect(result.wasteConfiguration.localStateStatus).toBe('corrupt');
+    expect(result.wasteConfiguration).toEqual({
+      localStateStatus: 'corrupt',
+      localStateErrors: ['invalid-json']
+    });
+    expect(result.push.token).toEqual({ present: true, ownerState: 'invalid-local-state' });
     expect(AsyncStorage.removeItem).toBeUndefined();
+  });
+
+  it.each([null, [], 'private-primitive-state', 7, false])(
+    'reports a non-record persisted state as invalid-state-shape',
+    async (state) => {
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(state));
+
+      const result = await collectWastePushDiagnostics();
+
+      expect(result.wasteConfiguration).toEqual({
+        localStateStatus: 'corrupt',
+        localStateErrors: ['invalid-state-shape']
+      });
+      expect(result.push.token).toEqual({ present: true, ownerState: 'invalid-local-state' });
+    }
+  );
+
+  it.each([
+    ['missing-notification-ids', { scheduledNotificationIds: undefined }],
+    ['missing-reminder-keys', { scheduledReminderKeys: undefined }],
+    ['invalid-coverage', { localCoverageUntil: 'private-invalid-coverage' }],
+    ['invalid-server-sync-status', { serverSyncStatus: 'private-invalid-sync-status' }],
+    ['invalid-server-sync-payload', { serverSyncPayload: 'private-invalid-payload' }],
+    [
+      'invalid-type-settings',
+      { serverSyncPayload: { notificationSettings: {}, usedTypeKeys: [7] } }
+    ],
+    [
+      'invalid-type-settings',
+      { serverSyncPayload: { notificationSettings: { paper: 'private-invalid-setting' } } }
+    ],
+    [
+      'invalid-active-registration',
+      {
+        serverSyncPayload: {
+          activeReminderRegistrations: {},
+          notificationSettings: { paper: true },
+          usedTypeKeys: ['paper']
+        }
+      }
+    ],
+    [
+      'invalid-active-registration',
+      {
+        serverSyncPayload: {
+          activeReminderRegistrations: [
+            {
+              active: 'private-invalid-active',
+              leadDays: 1,
+              slotId: 'morning',
+              time: '09:00',
+              typeKey: 'paper'
+            }
+          ],
+          notificationSettings: { paper: true },
+          usedTypeKeys: ['paper']
+        }
+      }
+    ],
+    [
+      'invalid-location',
+      {
+        serverSyncPayload: {
+          locationData: 'private-invalid-location',
+          notificationSettings: { paper: true },
+          usedTypeKeys: ['paper']
+        }
+      }
+    ],
+    ['invalid-scheduling', { scheduling: { status: 'private-invalid-scheduling' } }]
+  ])('reports %s without including rejected local-state data', async (error, invalidFields) => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        scheduledNotificationIds: [],
+        scheduledReminderKeys: [],
+        serverSyncPayload: {
+          notificationSettings: { paper: true },
+          usedTypeKeys: ['paper']
+        },
+        ...invalidFields
+      })
+    );
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.wasteConfiguration).toEqual({
+      localStateStatus: 'corrupt',
+      localStateErrors: [error]
+    });
+    expect(result.push.token).toEqual({ present: true, ownerState: 'invalid-local-state' });
+  });
+
+  it('collects every independently detectable validation error once in stable order', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+      JSON.stringify({
+        localCoverageUntil: 'private-invalid-coverage',
+        scheduledNotificationIds: 'private-invalid-notification-ids',
+        scheduledReminderKeys: 'private-invalid-reminder-keys',
+        scheduling: 'private-invalid-scheduling',
+        serverSyncPayload: {
+          activeReminderRegistrations: [{ active: 'private-invalid-active' }],
+          locationData: 'private-invalid-location',
+          notificationSettings: { paper: 'private-invalid-setting' },
+          usedTypeKeys: [7]
+        },
+        serverSyncStatus: 'private-invalid-sync-status'
+      })
+    );
+
+    const result = await collectWastePushDiagnostics();
+
+    expect(result.wasteConfiguration).toEqual({
+      localStateStatus: 'corrupt',
+      localStateErrors: [
+        'missing-notification-ids',
+        'missing-reminder-keys',
+        'invalid-coverage',
+        'invalid-server-sync-status',
+        'invalid-type-settings',
+        'invalid-active-registration',
+        'invalid-location',
+        'invalid-scheduling'
+      ]
+    });
   });
 
   it('reports missing local state and preserves token presence', async () => {
@@ -437,6 +568,7 @@ describe('collectWastePushDiagnostics', () => {
     const result = await collectWastePushDiagnostics();
 
     expect(result.wasteConfiguration.localStateStatus).toBe('missing');
+    expect(result.wasteConfiguration).not.toHaveProperty('localStateErrors');
     expect(result.push.token).toEqual({ present: true, ownerState: 'no-local-state' });
   });
 
@@ -502,7 +634,15 @@ describe('collectWastePushDiagnostics', () => {
     const serialized = JSON.stringify(result);
 
     expect(result.wasteConfiguration.localStateStatus).toBe('corrupt');
-    expect(result.wasteConfiguration).toEqual({ localStateStatus: 'corrupt' });
+    expect(result.wasteConfiguration).toEqual({
+      localStateStatus: 'corrupt',
+      localStateErrors: [
+        'invalid-server-sync-status',
+        'invalid-type-settings',
+        'invalid-active-registration',
+        'invalid-location'
+      ]
+    });
     [
       'nested-private-type-token',
       'nested-private-sync-status',

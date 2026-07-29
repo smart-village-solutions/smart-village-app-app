@@ -21,6 +21,25 @@ import {
 const WASTE_PUSH_DIAGNOSTICS_MAX_BYTES = 16 * 1024;
 const WASTE_PUSH_DIAGNOSTICS_MAX_SCHEDULED_REMINDERS = 50;
 const WASTE_PUSH_DIAGNOSTICS_MAX_VALUES_PER_REMINDER = 20;
+const WASTE_STATE_VALIDATION_ERRORS = [
+  'invalid-json',
+  'invalid-state-shape',
+  'missing-notification-ids',
+  'missing-reminder-keys',
+  'invalid-coverage',
+  'invalid-server-sync-status',
+  'invalid-server-sync-payload',
+  'invalid-type-settings',
+  'invalid-active-registration',
+  'invalid-location',
+  'invalid-scheduling'
+] as const;
+
+type WasteStateValidationError = (typeof WASTE_STATE_VALIDATION_ERRORS)[number];
+type NonEmptyWasteStateValidationErrors = [
+  WasteStateValidationError,
+  ...WasteStateValidationError[]
+];
 
 export type PermissionDiagnostic = {
   status: 'granted' | 'denied' | 'undetermined' | 'limited' | 'unavailable';
@@ -287,14 +306,43 @@ const sanitizeConfiguration = (state: WasteReminderLocalState) => {
   };
 };
 
+const collectConfigurationValidationErrors = (
+  state: WasteReminderLocalState
+): WasteStateValidationError[] => {
+  const errors: WasteStateValidationError[] = [];
+  if (!isOptionalIsoTimestamp(state.localCoverageUntil)) errors.push('invalid-coverage');
+
+  const payload = state.serverSyncPayload;
+  if (!payload) return errors;
+
+  if (!isValidServerSyncStatus(state.serverSyncStatus)) errors.push('invalid-server-sync-status');
+  if (!isRecord(payload)) {
+    errors.push('invalid-server-sync-payload');
+    return errors;
+  }
+  if (!sanitizeTypeSettings(payload.usedTypeKeys, payload.notificationSettings)) {
+    errors.push('invalid-type-settings');
+  }
+  if (!sanitizeActiveSlots(payload.activeReminderRegistrations).valid) {
+    errors.push('invalid-active-registration');
+  }
+  if (!sanitizeLocation(payload.locationData).valid) errors.push('invalid-location');
+
+  return errors;
+};
+
 const getOwnerState = ({
   currentOwner,
-  localState
+  localState,
+  localStateStatus
 }: {
   currentOwner?: string;
   localState?: WasteReminderLocalState;
+  localStateStatus: 'missing' | 'valid' | 'corrupt' | 'unavailable';
 }) => {
-  if (!localState) return 'no-local-state';
+  if (localStateStatus === 'corrupt') return 'invalid-local-state';
+  if (localStateStatus === 'missing') return 'no-local-state';
+  if (localStateStatus === 'unavailable' || !localState) return 'unavailable';
   if (!localState.ownerKey || localState.ownerKey === 'anonymous') return 'anonymous';
   if (!currentOwner || currentOwner === 'anonymous') return 'not-comparable';
 
@@ -346,29 +394,37 @@ const normalizePermission = (permission: PermissionResponse): PermissionDiagnost
     : {})
 });
 
-const readLocalStateForDiagnostics = async (): Promise<{
-  status: 'missing' | 'valid' | 'corrupt';
-  state?: WasteReminderLocalState;
-}> => {
+type LocalStateDiagnosticResult =
+  | { status: 'missing' }
+  | { status: 'valid'; state: WasteReminderLocalState }
+  | { status: 'corrupt'; errors: NonEmptyWasteStateValidationErrors };
+
+const readLocalStateForDiagnostics = async (): Promise<LocalStateDiagnosticResult> => {
   const serialized = await AsyncStorage.getItem(WASTE_REMINDER_LOCAL_STORAGE_KEY);
 
   if (!serialized) return { status: 'missing' };
 
   try {
-    const state = JSON.parse(serialized) as WasteReminderLocalState;
+    const parsedState: unknown = JSON.parse(serialized);
+    if (!isRecord(parsedState)) {
+      return { status: 'corrupt', errors: ['invalid-state-shape'] };
+    }
+    const state = parsedState as WasteReminderLocalState;
+    const errors: WasteStateValidationError[] = [];
 
-    if (
-      !Array.isArray(state?.scheduledNotificationIds) ||
-      !Array.isArray(state?.scheduledReminderKeys) ||
-      !sanitizeConfiguration(state) ||
-      (state.scheduling !== undefined && !sanitizeScheduling(state.scheduling))
-    ) {
-      return { status: 'corrupt' };
+    if (!Array.isArray(state.scheduledNotificationIds)) errors.push('missing-notification-ids');
+    if (!Array.isArray(state.scheduledReminderKeys)) errors.push('missing-reminder-keys');
+    errors.push(...collectConfigurationValidationErrors(state));
+    if (state.scheduling !== undefined && !sanitizeScheduling(state.scheduling)) {
+      errors.push('invalid-scheduling');
+    }
+    if (errors.length) {
+      return { status: 'corrupt', errors: errors as NonEmptyWasteStateValidationErrors };
     }
 
     return { status: 'valid', state };
   } catch {
-    return { status: 'corrupt' };
+    return { status: 'corrupt', errors: ['invalid-json'] };
   }
 };
 
@@ -447,10 +503,15 @@ export const collectWastePushDiagnostics = async () => {
 
   const wasteConfiguration: Record<string, unknown> = { localStateStatus: 'unavailable' };
   let localState: WasteReminderLocalState | undefined;
+  let localStateStatus: 'missing' | 'valid' | 'corrupt' | 'unavailable' = 'unavailable';
   if (localStateResult.status === 'fulfilled') {
-    localState = localStateResult.value.state;
-    wasteConfiguration.localStateStatus = localStateResult.value.status;
-    if (localState) {
+    const diagnosticState = localStateResult.value;
+    localStateStatus = diagnosticState.status;
+    wasteConfiguration.localStateStatus = localStateStatus;
+    if (diagnosticState.status === 'corrupt') {
+      wasteConfiguration.localStateErrors = diagnosticState.errors;
+    } else if (diagnosticState.status === 'valid') {
+      localState = diagnosticState.state;
       Object.assign(wasteConfiguration, sanitizeConfiguration(localState));
     }
   } else collectionStatus.wasteState = 'failed';
@@ -460,7 +521,8 @@ export const collectWastePushDiagnostics = async () => {
     (push.token as Record<string, unknown>).present = !!tokenResult.value;
     (push.token as Record<string, unknown>).ownerState = getOwnerState({
       currentOwner,
-      localState
+      localState,
+      localStateStatus
     });
   } else collectionStatus.tokenOwner = 'failed';
 

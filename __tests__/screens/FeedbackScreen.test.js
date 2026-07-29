@@ -535,6 +535,87 @@ describe('FeedbackScreen diagnostic payload', () => {
     forbidden.forEach((value) => expect(serializedContent).not.toContain(value));
   });
 
+  it('serializes only the corrupt active-registration reason code into GraphQL content', async () => {
+    const forbidden = [
+      'private-token',
+      'Private notification title',
+      'Private notification body',
+      'raw-notification-id',
+      'raw-reminder-key',
+      'rejected-registration-secret',
+      'rejected-registration-slot',
+      'rejected-registration-time',
+      'rejected-registration-type'
+    ];
+    const permission = {
+      status: 'granted',
+      granted: true,
+      canAskAgain: true,
+      expires: 'never'
+    };
+    [
+      Notifications.getPermissionsAsync,
+      Location.getForegroundPermissionsAsync,
+      Location.getBackgroundPermissionsAsync,
+      Camera.getCameraPermissionsAsync,
+      Camera.getMicrophonePermissionsAsync,
+      MediaLibrary.getPermissionsAsync,
+      Calendar.getCalendarPermissionsAsync,
+      Calendar.getRemindersPermissionsAsync
+    ].forEach((getter) => getter.mockResolvedValue(permission));
+    getInAppPermission.mockResolvedValue(true);
+    getPushTokenFromStorage.mockResolvedValue(forbidden[0]);
+    Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+      {
+        identifier: forbidden[3],
+        content: {
+          title: forbidden[1],
+          body: forbidden[2],
+          data: { query_type: 'WasteAddresses', reminderKey: forbidden[4] }
+        }
+      }
+    ]);
+    AsyncStorage.getItem.mockResolvedValue(
+      JSON.stringify({
+        ownerKey: 'anonymous',
+        scheduledNotificationIds: [forbidden[3]],
+        scheduledReminderKeys: [forbidden[4]],
+        serverSyncPayload: {
+          activeReminderRegistrations: [
+            {
+              active: 'rejected-registration-secret',
+              leadDays: 1,
+              slotId: 'rejected-registration-slot',
+              time: 'rejected-registration-time',
+              typeKey: 'rejected-registration-type'
+            }
+          ],
+          notificationSettings: { paper: true },
+          reminderTime: '2026-01-01',
+          usedTypeKeys: ['paper']
+        }
+      })
+    );
+    const { collectDeviceInfo } = jest.requireActual('../../src/helpers/appUserContentHelper');
+    mockCollectDeviceInfo.mockImplementation(collectDeviceInfo);
+    mockFormData.includeDiagnosticInformation = true;
+
+    await renderAndSubmit({ includeWastePushDiagnostics: true });
+
+    const serializedContent = mockCreateAppUserContent.mock.calls[0][0].variables.content;
+    expect(sentPayload().deviceInfo.wastePushDiagnostics).toMatchObject({
+      push: { token: { present: true, ownerState: 'invalid-local-state' } },
+      wasteConfiguration: {
+        localStateErrors: ['invalid-active-registration'],
+        localStateStatus: 'corrupt'
+      },
+      scheduling: {
+        currentNativeInventory: { scheduledWasteNotificationCount: 1 }
+      }
+    });
+    forbidden.forEach((value) => expect(serializedContent).not.toContain(value));
+  });
+
   it('does not collect or submit without consent', async () => {
     mockFormData.consent = false;
 
