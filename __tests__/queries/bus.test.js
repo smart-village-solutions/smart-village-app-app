@@ -63,7 +63,7 @@ const expectBusFetchNthCall = (callNumber, url) => {
   expect(globalThis.fetch).toHaveBeenNthCalledWith(callNumber, url, expect.any(Object));
 };
 
-const expectBusFetch = (url, options = {}, expectFederalState = true) => {
+const expectBusFetch = (url, options = {}) => {
   const { headers, ...restOptions } = options;
 
   expect(globalThis.fetch).toHaveBeenCalledWith(
@@ -72,7 +72,7 @@ const expectBusFetch = (url, options = {}, expectFederalState = true) => {
       ...restOptions,
       headers: expect.objectContaining({
         'x-api-key': bus.apiKey,
-        ...(expectFederalState ? { 'x-federal-state': bus.federalState } : {}),
+        'x-federal-state': bus.federalState,
         ...headers
       })
     })
@@ -154,10 +154,8 @@ describe('BUS queries', () => {
           'Accept-Language': 'de-DE'
         },
         method: 'GET'
-      },
-      false
+      }
     );
-    expect(globalThis.fetch.mock.calls[0][1].headers).not.toHaveProperty('x-federal-state');
     expect(result).toEqual([
       {
         id: '3679',
@@ -184,8 +182,7 @@ describe('BUS queries', () => {
 
     expectBusFetch(
       'https://server.int-development.smart-village.app/api/v1/political-area/search?searchWords=bad*&searchWords=bel*',
-      {},
-      false
+      {}
     );
   });
 
@@ -205,8 +202,7 @@ describe('BUS queries', () => {
 
     expectBusFetch(
       'https://server.int-development.smart-village.app/api/v1/political-area/search?searchWords=Dessau*&searchWords=Ro%C3%9Flau*&searchWords=Meinsdorf*',
-      {},
-      false
+      {}
     );
   });
 
@@ -229,10 +225,8 @@ describe('BUS queries', () => {
           'Accept-Language': 'de-DE'
         },
         method: 'GET'
-      },
-      false
+      }
     );
-    expect(globalThis.fetch.mock.calls[0][1].headers).not.toHaveProperty('x-federal-state');
     expect(result).toEqual({
       ags: '12069020',
       id: '10004',

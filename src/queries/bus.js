@@ -16,7 +16,7 @@ const CHILD_CATEGORY_SELECT_ATTRIBUTES = buildSelectAttributesQuery([
   'publicServiceTypes'
 ]);
 
-const createRequestOptions = (bus, { requiresFederalState = true } = {}) => {
+const createRequestOptions = (bus) => {
   const { apiKey, federalState } = bus;
 
   return {
@@ -24,7 +24,7 @@ const createRequestOptions = (bus, { requiresFederalState = true } = {}) => {
       Accept: 'application/json',
       'Accept-Language': 'de-DE',
       ...(apiKey ? { 'x-api-key': apiKey } : {}),
-      ...(requiresFederalState ? { 'x-federal-state': normalizeBusFederalState(federalState) } : {})
+      'x-federal-state': normalizeBusFederalState(federalState)
     },
     method: 'GET'
   };
@@ -276,9 +276,7 @@ export const getPublicService = async ({ areaId, bus, id }) => {
 export const getPoliticalArea = async ({ areaId, bus }) => {
   const { uri: baseUrl } = bus;
   const encodedAreaId = encodeURIComponent(areaId);
-  const { payload } = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, bus, {
-    requiresFederalState: false
-  });
+  const { payload } = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, bus);
 
   return mapPoliticalArea(payload);
 };
@@ -301,8 +299,7 @@ export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
     .join('&');
   const { payload } = await requestJson(
     `${baseUrl}/political-area/search?${searchWordsQuery}`,
-    bus,
-    { requiresFederalState: false }
+    bus
   );
 
   return Array.isArray(payload?.values) ? payload.values : [];
