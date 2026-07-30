@@ -10,9 +10,11 @@ import {
   getPublicService,
   searchPoliticalAreas
 } from '../../src/queries/bus';
+import { FEDERAL_STATE_CODES, normalizeBusFederalState } from '../../src/config/bus';
 
 const bus = {
   apiKey: 'test-api-key',
+  federalState: 'BB',
   uri: 'https://server.int-development.smart-village.app/api/v1'
 };
 
@@ -61,7 +63,7 @@ const expectBusFetchNthCall = (callNumber, url) => {
   expect(globalThis.fetch).toHaveBeenNthCalledWith(callNumber, url, expect.any(Object));
 };
 
-const expectBusFetch = (url, options = {}) => {
+const expectBusFetch = (url, options = {}, expectFederalState = true) => {
   const { headers, ...restOptions } = options;
 
   expect(globalThis.fetch).toHaveBeenCalledWith(
@@ -70,6 +72,7 @@ const expectBusFetch = (url, options = {}) => {
       ...restOptions,
       headers: expect.objectContaining({
         'x-api-key': bus.apiKey,
+        ...(expectFederalState ? { 'x-federal-state': bus.federalState } : {}),
         ...headers
       })
     })
@@ -81,6 +84,44 @@ describe('BUS queries', () => {
     jest.restoreAllMocks();
     jest.useRealTimers();
   });
+
+  it.each(FEDERAL_STATE_CODES)('accepts the federal state code %s', (federalState) => {
+    expect(normalizeBusFederalState(federalState)).toBe(federalState);
+  });
+
+  it('normalizes a configured federal state before sending a generic request', async () => {
+    mockFetchFindOnce({ items: [], totalItemCount: 0 });
+
+    await findPublicServicesPage({
+      areaId: '10004',
+      bus: { ...bus, federalState: ' bb ' }
+    });
+
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'x-api-key': bus.apiKey,
+          'x-federal-state': 'BB'
+        })
+      })
+    );
+  });
+
+  it.each([undefined, '', 'XX'])(
+    'fails before a generic request for invalid federal state %p',
+    async (federalState) => {
+      const fetchSpy = jest.spyOn(globalThis, 'fetch');
+
+      await expect(
+        findPublicServicesPage({
+          areaId: '10004',
+          bus: { ...bus, federalState }
+        })
+      ).rejects.toThrow(/settings\.bus\.federalState/);
+      expect(fetchSpy).not.toHaveBeenCalled();
+    }
+  );
 
   it('does not call the autocomplete endpoint below the minimum search length', async () => {
     const fetchSpy = jest.spyOn(globalThis, 'fetch');
@@ -113,8 +154,10 @@ describe('BUS queries', () => {
           'Accept-Language': 'de-DE'
         },
         method: 'GET'
-      }
+      },
+      false
     );
+    expect(globalThis.fetch.mock.calls[0][1].headers).not.toHaveProperty('x-federal-state');
     expect(result).toEqual([
       {
         id: '3679',
@@ -141,7 +184,8 @@ describe('BUS queries', () => {
 
     expectBusFetch(
       'https://server.int-development.smart-village.app/api/v1/political-area/search?searchWords=bad*&searchWords=bel*',
-      {}
+      {},
+      false
     );
   });
 
@@ -161,7 +205,8 @@ describe('BUS queries', () => {
 
     expectBusFetch(
       'https://server.int-development.smart-village.app/api/v1/political-area/search?searchWords=Dessau*&searchWords=Ro%C3%9Flau*&searchWords=Meinsdorf*',
-      {}
+      {},
+      false
     );
   });
 
@@ -176,13 +221,18 @@ describe('BUS queries', () => {
 
     const result = await getPoliticalArea({ areaId: '10004', bus });
 
-    expectBusFetch('https://server.int-development.smart-village.app/api/v1/political-area/10004', {
-      headers: {
-        Accept: 'application/json',
-        'Accept-Language': 'de-DE'
+    expectBusFetch(
+      'https://server.int-development.smart-village.app/api/v1/political-area/10004',
+      {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Language': 'de-DE'
+        },
+        method: 'GET'
       },
-      method: 'GET'
-    });
+      false
+    );
+    expect(globalThis.fetch.mock.calls[0][1].headers).not.toHaveProperty('x-federal-state');
     expect(result).toEqual({
       ags: '12069020',
       id: '10004',

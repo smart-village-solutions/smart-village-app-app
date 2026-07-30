@@ -76,8 +76,13 @@ const getHashedKeyPart = (value?: string) => {
 
 // Include the BUS endpoint and a non-reversible API key fingerprint in query keys so cached
 // results are separated when BUS settings change at runtime.
-export const getBusQueryConfigKey = (bus: Pick<BusSettings, 'apiKey' | 'uri'> = {}) => {
-  return `${bus.uri ?? ''}::${getHashedKeyPart(bus.apiKey)}`;
+export const getBusQueryConfigKey = (
+  bus: Pick<BusSettings, 'apiKey' | 'federalState' | 'uri'> = {}
+) => {
+  const federalState = bus.federalState?.trim().toUpperCase() ?? '';
+  const federalStateKeyPart = federalState ? `::${federalState}` : '';
+
+  return `${bus.uri ?? ''}::${getHashedKeyPart(bus.apiKey)}${federalStateKeyPart}`;
 };
 
 export const getBusLifeSituationsRootSearchWord = (bus?: BusSettings) => {

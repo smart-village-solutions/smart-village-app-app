@@ -1,8 +1,11 @@
+import type { FederalStateCode } from '../config/bus';
+
 export type AreaId = string | number | undefined | null;
 
 export type BusSettings = {
   apiKey?: string;
   areaId?: string | number;
+  federalState?: FederalStateCode;
   initialFilter?: string[];
   lifeSituationsRootSearchWord?: string;
   uri?: string;

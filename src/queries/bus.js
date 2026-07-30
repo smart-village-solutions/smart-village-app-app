@@ -1,3 +1,5 @@
+import { normalizeBusFederalState } from '../config/bus';
+
 export const DEFAULT_LIST_LIMIT = 500;
 export const BUS_REQUEST_TIMEOUT_MS = 15000;
 const buildSelectAttributesQuery = (attributes) =>
@@ -14,16 +16,21 @@ const CHILD_CATEGORY_SELECT_ATTRIBUTES = buildSelectAttributesQuery([
   'publicServiceTypes'
 ]);
 
-const createRequestOptions = (apiKey) => ({
-  headers: {
-    Accept: 'application/json',
-    'Accept-Language': 'de-DE',
-    ...(apiKey ? { 'x-api-key': apiKey } : {})
-  },
-  method: 'GET'
-});
+const createRequestOptions = (bus, { requiresFederalState = true } = {}) => {
+  const { apiKey, federalState } = bus;
 
-const requestJson = async (url, apiKey) => {
+  return {
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': 'de-DE',
+      ...(apiKey ? { 'x-api-key': apiKey } : {}),
+      ...(requiresFederalState ? { 'x-federal-state': normalizeBusFederalState(federalState) } : {})
+    },
+    method: 'GET'
+  };
+};
+
+const requestJson = async (url, bus, requestOptions) => {
   const controller = new AbortController();
   let timeoutId;
   const timeoutPromise = new Promise((_, reject) => {
@@ -38,7 +45,7 @@ const requestJson = async (url, apiKey) => {
   try {
     const response = await Promise.race([
       fetch(url, {
-        ...createRequestOptions(apiKey),
+        ...createRequestOptions(bus, requestOptions),
         signal: controller.signal
       }),
       timeoutPromise
@@ -99,7 +106,7 @@ const mapPagedResults = ({ headers, payload }) => {
 };
 
 const findPagedRelatedEntityItemsPage = async ({ areaId, bus, endpoint, id, limit, offset }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const requestUrl = buildRelatedEntityFindUrl({
     areaId,
     baseUrl,
@@ -109,7 +116,7 @@ const findPagedRelatedEntityItemsPage = async ({ areaId, bus, endpoint, id, limi
     offset
   });
 
-  return mapPagedResults(await requestJson(requestUrl, apiKey));
+  return mapPagedResults(await requestJson(requestUrl, bus));
 };
 
 const findAllPagedRelatedEntityItems = async ({
@@ -168,7 +175,7 @@ export const findPublicServicesPage = async ({
   offset = 0,
   searchWord = ''
 }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const normalizedSearchWord = normalizePublicServiceSearchWord(searchWord);
   const endpoint = normalizedSearchWord ? 'pstExtended/find' : 'pst/find';
   const requestUrl = buildPublicServiceFindUrl({
@@ -180,7 +187,7 @@ export const findPublicServicesPage = async ({
     searchWord: normalizedSearchWord
   });
 
-  return mapPagedResults(await requestJson(requestUrl, apiKey));
+  return mapPagedResults(await requestJson(requestUrl, bus));
 };
 
 export const getBusServiceOrganisationalUnits = async ({ areaId, bus, id, limit }) =>
@@ -211,7 +218,7 @@ export const getBusServiceForms = async ({ areaId, bus, id, limit }) =>
   });
 
 export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const normalizedSearchWord = searchWord?.trim();
 
   if (!normalizedSearchWord) return null;
@@ -220,7 +227,7 @@ export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
   const areaIdQuery = areaId ? `&areaId=${encodeURIComponent(areaId)}` : '';
   const { payload } = await requestJson(
     `${baseUrl}/pstCategory/find?searchWord=${encodedSearchWord}&limit=${DEFAULT_LIST_LIMIT}${areaIdQuery}${ROOT_CATEGORY_SELECT_ATTRIBUTES}`,
-    apiKey
+    bus
   );
   const results = Array.isArray(payload?.results) ? payload.results : [];
 
@@ -232,12 +239,12 @@ export const findBusCategoryRoot = async ({ areaId, bus, searchWord }) => {
 };
 
 export const findBusCategoryChildren = async ({ areaId, bus, parentId }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const encodedParentId = encodeURIComponent(parentId);
   const areaIdQuery = areaId ? `&areaId=${encodeURIComponent(areaId)}` : '';
   const { payload } = await requestJson(
     `${baseUrl}/pstCategory/find?parentId=${encodedParentId}&limit=${DEFAULT_LIST_LIMIT}${areaIdQuery}${CHILD_CATEGORY_SELECT_ATTRIBUTES}`,
-    apiKey
+    bus
   );
   const results = Array.isArray(payload?.results) ? payload.results : [];
 
@@ -245,7 +252,7 @@ export const findBusCategoryChildren = async ({ areaId, bus, parentId }) => {
 };
 
 export const getPublicService = async ({ areaId, bus, id }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const encodedAreaId = encodeURIComponent(areaId);
   const encodedId = encodeURIComponent(id);
   let payload;
@@ -253,32 +260,31 @@ export const getPublicService = async ({ areaId, bus, id }) => {
   try {
     ({ payload } = await requestJson(
       `${baseUrl}/pstExtended/${encodedId}?areaId=${encodedAreaId}`,
-      apiKey
+      bus
     ));
   } catch (error) {
     if (!BUS_LEGACY_DETAIL_FALLBACK_STATUSES.has(error?.status)) {
       throw error;
     }
 
-    ({ payload } = await requestJson(
-      `${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`,
-      apiKey
-    ));
+    ({ payload } = await requestJson(`${baseUrl}/pst/${encodedId}?areaId=${encodedAreaId}`, bus));
   }
 
   return payload?.object || payload;
 };
 
 export const getPoliticalArea = async ({ areaId, bus }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const encodedAreaId = encodeURIComponent(areaId);
-  const { payload } = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, apiKey);
+  const { payload } = await requestJson(`${baseUrl}/political-area/${encodedAreaId}`, bus, {
+    requiresFederalState: false
+  });
 
   return mapPoliticalArea(payload);
 };
 
 export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
-  const { apiKey, uri: baseUrl } = bus;
+  const { uri: baseUrl } = bus;
   const query = searchTerm.trim();
 
   if (query.length < 3) return [];
@@ -295,7 +301,8 @@ export const searchPoliticalAreas = async ({ searchTerm = '', bus }) => {
     .join('&');
   const { payload } = await requestJson(
     `${baseUrl}/political-area/search?${searchWordsQuery}`,
-    apiKey
+    bus,
+    { requiresFederalState: false }
   );
 
   return Array.isArray(payload?.values) ? payload.values : [];

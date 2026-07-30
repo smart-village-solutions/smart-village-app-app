@@ -162,6 +162,20 @@ describe('getBusQueryConfigKey', () => {
     expect(getBusQueryConfigKey({ uri: 'https://one.example', apiKey: 'alpha' })).not.toEqual(
       getBusQueryConfigKey({ uri: 'https://one.example', apiKey: 'beta' })
     );
+
+    expect(
+      getBusQueryConfigKey({
+        uri: 'https://one.example',
+        apiKey: 'alpha',
+        federalState: 'BB'
+      })
+    ).not.toEqual(
+      getBusQueryConfigKey({
+        uri: 'https://one.example',
+        apiKey: 'alpha',
+        federalState: 'BE'
+      })
+    );
   });
 
   it('stays stable for equal relevant configuration', () => {
