@@ -1,6 +1,6 @@
 import type { FederalStateCode } from '../config/bus';
 
-export type AreaId = string | number | undefined | null;
+export type AreaId = string | number | null;
 
 export type BusSettings = {
   apiKey?: string;

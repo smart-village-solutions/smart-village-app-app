@@ -65,6 +65,16 @@ const shouldShowLoadingSpinner = ({
   isResolvingServices: boolean;
 }) => (isLoading || isResolvingServices) && !hasListData;
 
+const getEmptyStateMessage = (isError: boolean, isRootCategory: boolean) => {
+  if (!isError) {
+    return texts.bus.emptyStates.lifeSituations;
+  }
+
+  return isRootCategory
+    ? texts.bus.emptyStates.lifeSituationsRoot
+    : texts.bus.emptyStates.lifeSituationsNested;
+};
+
 const getListData = ({
   category,
   childCategories = [],
@@ -123,11 +133,7 @@ export const LifeSituationsList = ({
     [category, childCategories, services]
   );
   const hasListData = !!listData.length;
-  const emptyStateMessage = isError
-    ? isRootCategory
-      ? texts.bus.emptyStates.lifeSituationsRoot
-      : texts.bus.emptyStates.lifeSituationsNested
-    : texts.bus.emptyStates.lifeSituations;
+  const emptyStateMessage = getEmptyStateMessage(isError, isRootCategory);
   const shouldRenderLoadingSpinner = shouldShowLoadingSpinner({
     isLoading,
     isResolvingServices: false,

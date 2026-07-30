@@ -1,4 +1,3 @@
-import _filter from 'lodash/filter';
 import _sortBy from 'lodash/sortBy';
 import { Keyboard } from 'react-native';
 
@@ -41,7 +40,7 @@ export const resolveBusCategoryServices = (category, services = []) => {
 
 export const mapBusServicesToListItems = (areaId, services = []) =>
   _sortBy(
-    _filter(services, (busService) => !!busService?.name),
+    services.filter((busService) => !!busService?.name),
     (busService) => busService.name.toUpperCase()
   ).map((busService) => ({
     id: busService.id,
