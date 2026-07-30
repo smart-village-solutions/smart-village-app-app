@@ -1,6 +1,5 @@
-import { NavigationState, PartialState, useNavigationState } from '@react-navigation/native';
 import _filter from 'lodash/filter';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize } from '../config';
@@ -20,6 +19,9 @@ type TButton = {
   visibleScreens?: string[];
 };
 
+const getActiveRouteName = () =>
+  navigationRef.isReady() ? navigationRef.getCurrentRoute()?.name ?? '' : '';
+
 export const FloatingButton = ({
   bottomOffset = 0,
   publicJsonFile
@@ -30,15 +32,17 @@ export const FloatingButton = ({
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
 
-  // Subscribe to navigation state to trigger re-renders on every route change.
-  // We intentionally do NOT use the returned value because on the initial render
-  // the parent navigator's nested stack state is not yet populated, causing a
-  // recursive traversal to resolve to a stack name (e.g. "AppStack") instead of
-  // the actual screen name (e.g. "Home").
-  // `navigationRef.getCurrentRoute()` traverses the full navigation tree via the
-  // root NavigationContainer ref and always returns the focused leaf route.
-  useNavigationState((state: NavigationState | PartialState<NavigationState>) => state);
-  const activeRouteName = navigationRef.getCurrentRoute()?.name ?? '';
+  // FloatingButton is rendered next to the navigator, so navigator-bound hooks
+  // cannot be used here. Subscribe through the root ref to track the focused route.
+  const [activeRouteName, setActiveRouteName] = useState(getActiveRouteName);
+
+  useEffect(() => {
+    const updateActiveRoute = () => setActiveRouteName(getActiveRouteName());
+
+    updateActiveRoute();
+    return navigationRef.addListener('state', updateActiveRoute);
+  }, []);
+
   const positionStyle = useMemo(
     () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
     [bottomOffset, navigationType]

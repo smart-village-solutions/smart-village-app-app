@@ -19,6 +19,8 @@ const mockUseHomeRefresh = jest.fn();
 const mockGetCurrentRoute = jest.fn();
 const mockIsReady = jest.fn();
 const mockNavigate = jest.fn();
+const mockAddListener = jest.fn();
+const mockRemoveListener = jest.fn();
 
 jest.mock('../../src/hooks', () => ({
   useHomeRefresh: (...args) => mockUseHomeRefresh(...args),
@@ -27,14 +29,11 @@ jest.mock('../../src/hooks', () => ({
 
 jest.mock('../../src/navigation/navigationRef', () => ({
   navigationRef: {
+    addListener: (...args) => mockAddListener(...args),
     getCurrentRoute: (...args) => mockGetCurrentRoute(...args),
     isReady: (...args) => mockIsReady(...args),
     navigate: (...args) => mockNavigate(...args)
   }
-}));
-
-jest.mock('@react-navigation/native', () => ({
-  useNavigationState: (selector) => selector({})
 }));
 
 jest.mock('../../src/config', () => ({
@@ -65,6 +64,7 @@ describe('FloatingButton', () => {
 
     mockGetCurrentRoute.mockReturnValue({ name: 'Home' });
     mockIsReady.mockReturnValue(true);
+    mockAddListener.mockReturnValue(mockRemoveListener);
   });
 
   it('renders null while loading', () => {
@@ -89,6 +89,40 @@ describe('FloatingButton', () => {
     const tree = renderFloatingButton({ bottomOffset: 0 }).toJSON();
 
     expect(tree).toBeNull();
+  });
+
+  it('renders outside a navigator context and subscribes through navigationRef', () => {
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+
+    expect(testRenderer.toJSON()).toBeNull();
+    expect(mockAddListener).toHaveBeenCalledWith('state', expect.any(Function));
+
+    renderer.act(() => {
+      testRenderer.unmount();
+    });
+    expect(mockRemoveListener).toHaveBeenCalled();
+  });
+
+  it('does not read the current route before navigation is ready', () => {
+    mockIsReady.mockReturnValue(false);
+    mockGetCurrentRoute.mockImplementation(() => {
+      throw new Error('navigation is not ready');
+    });
+    mockUseStaticContent.mockReturnValue({
+      data: [
+        {
+          accessibilityLabel: 'Visible everywhere',
+          routeName: 'Search'
+        }
+      ],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const tree = renderFloatingButton({ bottomOffset: 0 }).toJSON();
+
+    expect(tree).not.toBeNull();
+    expect(mockGetCurrentRoute).not.toHaveBeenCalled();
   });
 
   it('filters items by active route and keeps global items', () => {
@@ -123,6 +157,31 @@ describe('FloatingButton', () => {
       'Visible everywhere'
     ]);
     expect(testRenderer.toJSON()).toMatchSnapshot();
+  });
+
+  it('updates visible items when navigationRef reports a route change', () => {
+    mockUseStaticContent.mockReturnValue({
+      data: [
+        {
+          accessibilityLabel: 'Visible on Index',
+          routeName: 'Index',
+          visibleScreens: ['Index']
+        }
+      ],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+    expect(testRenderer.root.findAllByType(TouchableOpacity)).toHaveLength(0);
+
+    mockGetCurrentRoute.mockReturnValue({ name: 'Index' });
+    const stateListener = mockAddListener.mock.calls[0][1];
+    renderer.act(() => {
+      stateListener();
+    });
+
+    expect(testRenderer.root.findAllByType(TouchableOpacity)).toHaveLength(1);
   });
 
   it('navigates on press with configured route and params', () => {

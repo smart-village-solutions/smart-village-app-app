@@ -103,7 +103,7 @@ The changes on this branch add the following integrations to the app:
 
 ### 3. Visibility Control
 
-The FloatingButton component subscribes to navigation state changes via the `useNavigationState` hook, causing a re-render on every screen transition. The active screen name is obtained through `navigationRef.getCurrentRoute()` and compared against the `visibleScreens` array from the server data.
+The FloatingButton component subscribes to navigation state changes via the `state` listener on `navigationRef`, causing a re-render on every screen transition without requiring a navigator context. The active screen name is obtained through `navigationRef.getCurrentRoute()` and compared against the `visibleScreens` array from the server data.
 
 - `visibleScreens` **is defined**: Button appears only on the listed screens
 - `visibleScreens` **is empty or undefined**: Button appears on all screens
