@@ -16,7 +16,7 @@ import {
   defaultResourceFiltersConfig
 } from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
-import { getSueApiConfig, storageHelper } from './helpers';
+import { hasSueApiConfiguration, storageHelper } from './helpers';
 import { useHomeRefresh, useStaticContent } from './hooks';
 import { QUERY_TYPES, getQuery } from './queries';
 import { GenericType } from './types';
@@ -55,13 +55,6 @@ const defaultConfiguration = {
 };
 
 export const ConfigurationsContext = createContext(defaultConfiguration);
-
-const hasSueApiConfiguration = (sueConfig: Record<string, any> = {}) => {
-  const { apiConfig = {} } = sueConfig;
-  const selectedApiConfig = getSueApiConfig(apiConfig);
-
-  return !!(selectedApiConfig?.apiKey && selectedApiConfig?.serverUrl);
-};
 
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);

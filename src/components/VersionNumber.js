@@ -4,6 +4,7 @@ import { Alert, StyleSheet } from 'react-native';
 import appJson from '../../app.json';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { colors, consts, device } from '../config';
+import { hasSueApiConfiguration } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
 
 import { RegularText } from './Text.js';
@@ -16,7 +17,8 @@ export const VersionNumber = () => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { search } = settings;
+  const { search, sue } = settings;
+  const isSueEnabled = hasSueApiConfiguration(sue);
   const buildNumber =
     device.platform === 'ios' ? appJson.expo.ios.buildNumber : appJson.expo.android.versionCode;
 
@@ -31,7 +33,8 @@ export const VersionNumber = () => {
               `Smart Village App: ${appJson.expo.version}`,
               `Build: ${buildNumber}`,
               `OTA: ${appJson.expo.extra.otaVersion}`,
-              search ? `Suche: ${appJson.expo.extra.searchVersion}` : undefined
+              search ? `Suche: ${appJson.expo.extra.searchVersion}` : undefined,
+              isSueEnabled ? `SUE: ${appJson.expo.extra.sueVersion}` : undefined
             ]
               .filter(Boolean)
               .join('\n')

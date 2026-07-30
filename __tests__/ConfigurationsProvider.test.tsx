@@ -19,7 +19,7 @@ jest.mock('react-query', () => ({
 }));
 
 jest.mock('../src/helpers', () => ({
-  getSueApiConfig: jest.requireActual('../src/helpers/sueHelper').getSueApiConfig,
+  hasSueApiConfiguration: jest.requireActual('../src/helpers/sueHelper').hasSueApiConfiguration,
   storageHelper: {
     setConfigurations: (...args) => mockSetConfigurations(...args)
   }

@@ -1,4 +1,4 @@
-import { getSueApiConfig } from '../../src/helpers/sueHelper';
+import { getSueApiConfig, hasSueApiConfiguration } from '../../src/helpers/sueHelper';
 
 describe('getSueApiConfig', () => {
   it('returns the selected nested api config when whichApi points to an existing key', () => {
@@ -42,5 +42,30 @@ describe('getSueApiConfig', () => {
       apiKey: 'base-api-key',
       serverUrl: 'https://base.example.com'
     });
+  });
+});
+
+describe('hasSueApiConfiguration', () => {
+  it('returns true for a complete selected api config', () => {
+    expect(
+      hasSueApiConfiguration({
+        apiConfig: {
+          whichApi: 'secondary',
+          secondary: {
+            apiKey: 'secondary-api-key',
+            serverUrl: 'https://secondary.example.com'
+          }
+        }
+      })
+    ).toBe(true);
+  });
+
+  it.each([
+    {},
+    { apiConfig: {} },
+    { apiConfig: { apiKey: 'api-key' } },
+    { apiConfig: { serverUrl: 'https://example.com' } }
+  ])('returns false without a complete api config', (sueConfig) => {
+    expect(hasSueApiConfiguration(sueConfig)).toBe(false);
   });
 });

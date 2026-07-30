@@ -3,6 +3,14 @@ import { storageHelper } from './storageHelper';
 export const getSueApiConfig = (apiConfig: Record<string, any> = {}) =>
   (apiConfig?.whichApi ? apiConfig?.[apiConfig.whichApi] : undefined) || apiConfig;
 
+export const hasSueApiConfiguration = (
+  sueConfig: { apiConfig?: Record<string, unknown> } = {}
+) => {
+  const { apiKey, serverUrl } = getSueApiConfig(sueConfig.apiConfig);
+
+  return !!(apiKey && serverUrl);
+};
+
 export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   const configurations = await storageHelper.configurations();
   const { sueConfig = {} } = configurations;
