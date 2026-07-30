@@ -30,7 +30,7 @@ const createRequestOptions = (bus) => {
   };
 };
 
-const requestJson = async (url, bus, requestOptions) => {
+const requestJson = async (url, bus) => {
   const controller = new AbortController();
   let timeoutId;
   const timeoutPromise = new Promise((_, reject) => {
@@ -45,7 +45,7 @@ const requestJson = async (url, bus, requestOptions) => {
   try {
     const response = await Promise.race([
       fetch(url, {
-        ...createRequestOptions(bus, requestOptions),
+        ...createRequestOptions(bus),
         signal: controller.signal
       }),
       timeoutPromise
