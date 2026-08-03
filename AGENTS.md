@@ -31,7 +31,7 @@ yarn test
 
 For AI-assisted development work, commits are required and must follow these rules:
 
-1. **Before every commit, ask the user for a ticket number** (e.g. `SVA-1723`, `SVAK-183`, `SVASD-537`, `MQGB-208`).
+1. **Before every commit, determine the ticket number**. First inspect the current branch name for a ticket pattern such as `SVA-1723`, `SVAK-183`, `SVASD-537`, or `MQGB-208`. If the branch name contains a ticket, use it. If not, ask the user for one before committing.
 2. Use **Conventional Commit** format in the subject:
    - `type(scope): short summary`
    - or `type: short summary` when scope is not needed
@@ -50,7 +50,7 @@ feat(map): upgrade marker clustering behavior
 SVAK-183
 ```
 
-If no ticket number is provided yet, do not guess one. Ask the user first.
+If no ticket number can be found in the branch name and the user has not provided one, do not guess one. Ask the user first.
 
 ## 5) Branch and PR Expectations
 
@@ -82,4 +82,3 @@ Note: `.gitignore` already covers these rules; this section makes the agent beha
 - Main docs index: `docs/INDEX.md`
 - Changelog policy and release notes: `CHANGELOG.md`
 - Contribution and commit guidance: `CONTRIBUTING.md`
-

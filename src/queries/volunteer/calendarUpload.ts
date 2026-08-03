@@ -1,26 +1,18 @@
-import * as FileSystem from 'expo-file-system/legacy';
-
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import { uploadMultipartFile, volunteerApiV1Url, volunteerAuthToken } from '../../helpers';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
 export const calendarUpload = async (uri: string, entryId: number, mimeType: string) => {
   const authToken = await volunteerAuthToken();
 
-  const fetchObj = {
-    method: 'POST',
+  return await uploadMultipartFile({
+    fieldName: 'files',
+    fileUri: uri,
     headers: {
       Authorization: authToken ? `Bearer ${authToken}` : ''
     },
-    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-    fieldName: 'files',
-    mimeType
-  };
-
-  return await FileSystem.uploadAsync(
-    `${volunteerApiV1Url}calendar/entry/${entryId}/upload-files`,
-    uri,
-    fetchObj
-  );
+    mimeType,
+    url: `${volunteerApiV1Url}calendar/entry/${entryId}/upload-files`
+  });
 };
 
 export const calendarDeleteFile = async (fileId: number, entryId: number) => {

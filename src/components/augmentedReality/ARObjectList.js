@@ -1,6 +1,6 @@
-import * as FileSystem from 'expo-file-system/legacy';
+import { Paths } from 'expo-file-system';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Alert, FlatList } from 'react-native';
 
 import { texts } from '../../config';
@@ -63,16 +63,7 @@ export const ARObjectList = ({
   showOnDetailPage,
   showTitle
 }) => {
-  const [freeSize, setFreeSize] = useState(0);
-
-  useEffect(() => {
-    checkFreeStorage();
-  }, [data]);
-
-  const checkFreeStorage = async () => {
-    const storage = await FileSystem.getFreeDiskStorageAsync();
-    setFreeSize(formatSizeStandard(storage));
-  };
+  const freeSize = formatSizeStandard(Paths.availableDiskSpace);
 
   const downloadAll = async () => {
     await downloadAllData({ data, setData });

@@ -135,15 +135,19 @@
           "icon": "./assets/notification-icon.png"
         }
       ],
-      "@maplibre/maplibre-react-native",
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
+      "@maplibre/maplibre-react-native",
+      "@react-native-community/datetimepicker",
       "@rnrepo/expo-config-plugin",
+      "@sentry/react-native",
       "expo-asset",
       "expo-font",
       "expo-image-picker",
+      "expo-image",
       "expo-localization",
       "expo-secure-store",
+      "expo-sharing",
       "expo-video",
       "expo-web-browser",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"

@@ -1,4 +1,5 @@
-import * as FileSystem from 'expo-file-system/legacy';
+import { Directory, File } from 'expo-file-system';
+import * as LegacyFileSystem from 'expo-file-system/legacy';
 
 import { addToStore } from '../storageHelper';
 
@@ -46,7 +47,7 @@ export const downloadObject = async ({ index, data, setData }) => {
         sceneIndex
       });
 
-      const downloadResumable = FileSystem.createDownloadResumable(
+      const downloadResumable = LegacyFileSystem.createDownloadResumable(
         uri,
         directoryName,
         {},
@@ -60,9 +61,9 @@ export const downloadObject = async ({ index, data, setData }) => {
         the display of the 3D object. If the folder does not exist at the time of downloading the
         object, this folder must be created on the device before downloading.
         */
-        const dirInfo = await FileSystem.getInfoAsync(folderName);
-        if (!dirInfo.exists) {
-          await FileSystem.makeDirectoryAsync(folderName, { intermediates: true });
+        const directory = new Directory(folderName);
+        if (!directory.exists) {
+          directory.create({ intermediates: true });
         }
 
         let size = 0;
@@ -70,8 +71,7 @@ export const downloadObject = async ({ index, data, setData }) => {
 
         if (uri) {
           fileSystemDownload = await downloadResumable.downloadAsync();
-          const fileSystemInfo = await FileSystem.getInfoAsync(fileSystemDownload.uri);
-          size = fileSystemInfo.size;
+          size = new File(fileSystemDownload.uri).size;
         }
 
         downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;

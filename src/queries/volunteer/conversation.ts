@@ -1,10 +1,9 @@
-import * as FileSystem from 'expo-file-system/legacy';
-
 import {
+  uploadMultipartFile,
   volunteerApiV1Url,
   volunteerApiV2Url,
   volunteerAuthToken
-} from '../../helpers/volunteerHelper';
+} from '../../helpers';
 import { VolunteerConversation } from '../../types';
 
 export const conversations = async () => {
@@ -97,20 +96,14 @@ export const conversationNewEntry = async ({ id, message }: VolunteerConversatio
 export const conversationUpload = async (uri: string, conversationId: number, mimeType: string) => {
   const authToken = await volunteerAuthToken();
 
-  const fetchObj = {
-    method: 'POST',
+  return await uploadMultipartFile({
+    fieldName: 'files',
+    fileUri: uri,
     headers: {
       Accept: 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     },
-    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-    fieldName: 'files',
-    mimeType
-  };
-
-  return await FileSystem.uploadAsync(
-    `${volunteerApiV2Url}mail/${conversationId}/upload-files`,
-    uri,
-    fetchObj
-  );
+    mimeType,
+    url: `${volunteerApiV2Url}mail/${conversationId}/upload-files`
+  });
 };

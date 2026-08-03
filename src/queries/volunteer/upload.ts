@@ -1,10 +1,9 @@
-import * as FileSystem from 'expo-file-system/legacy';
-
 import {
+  uploadMultipartFile,
   volunteerApiV1Url,
   volunteerApiV2Url,
   volunteerAuthToken
-} from '../../helpers/volunteerHelper';
+} from '../../helpers';
 import { VolunteerObjectModelType } from '../../types';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
@@ -21,24 +20,18 @@ export const uploadFile = async ({
 }) => {
   const authToken = await volunteerAuthToken();
 
-  const fetchObj = {
-    method: 'POST',
-    headers: {
-      Authorization: authToken ? `Bearer ${authToken}` : ''
-    },
-    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-    fieldName: 'files',
-    mimeType
-  };
-
   const apiUrl =
     objectModel === VolunteerObjectModelType.POST ? volunteerApiV1Url : volunteerApiV2Url;
 
-  return await FileSystem.uploadAsync(
-    `${apiUrl}${objectModel.split('\\').pop()?.toLowerCase()}/${id}/upload-files`,
+  return await uploadMultipartFile({
+    fieldName: 'files',
     fileUri,
-    fetchObj
-  );
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    mimeType,
+    url: `${apiUrl}${objectModel.split('\\').pop()?.toLowerCase()}/${id}/upload-files`
+  });
 };
 
 export const deleteFile = async (guid: string) => {

@@ -1,4 +1,3 @@
-import * as FileSystem from 'expo-file-system/legacy';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { Alert } from 'react-native';
 
@@ -7,6 +6,7 @@ import { deleteMediaContent } from '../../queries/mediaContent';
 import { calendarDeleteFile } from '../../queries/volunteer';
 import { errorTextGenerator } from '../consul';
 import { deleteArrayItem } from '../deleteArrayItem';
+import { getFileSize } from '../fileSystem';
 
 const { IMAGE_FROM, IMAGE_TYPE_REGEX, URL_REGEX, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -47,7 +47,7 @@ export const onImageSelect = async ({
   if (!uri) return;
 
   const { GPSLatitude, GPSLongitude } = exif || {};
-  const { size } = (await FileSystem.getInfoAsync(uri)) as { size: number };
+  const size = getFileSize(uri);
 
   let location = { latitude: undefined, longitude: undefined };
 
