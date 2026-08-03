@@ -1,11 +1,12 @@
 import { useIsFocused } from '@react-navigation/native';
 import _filter from 'lodash/filter';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import { Easing } from 'react-native-reanimated';
+import Carousel from 'react-native-reanimated-carousel';
 
 import { colors, Icon, normalize } from '../config';
-import { imageWidth } from '../helpers';
+import { imageHeight, imageWidth } from '../helpers';
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
 
@@ -29,16 +30,26 @@ type MediaCarouselProps = {
   mediaContents?: MediaContent[];
 };
 
-const MediaCarouselItem = ({ item }: { item: MediaContent }) => {
+const MediaCarouselItem = ({
+  containerStyle,
+  item
+}: {
+  containerStyle?: object;
+  item: MediaContent;
+}) => {
   if (item.contentType === 'image' || item.contentType === 'thumbnail') {
+    const imageContainerStyle = containerStyle
+      ? [styles.imageContainer, containerStyle]
+      : styles.imageContainer;
+
     return (
-      <Image source={{ uri: item.sourceUrl?.url ?? '' }} containerStyle={styles.imageContainer} />
+      <Image source={{ uri: item.sourceUrl?.url ?? '' }} containerStyle={imageContainerStyle} />
     );
   }
 
   // video or audio – render via MediaItem (same look as MediaSection)
   return (
-    <WrapperHorizontal>
+    <WrapperHorizontal style={containerStyle}>
       <MediaItem mediaContent={item} />
     </WrapperHorizontal>
   );
@@ -65,23 +76,8 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   };
 
   const [isPaused, setIsPaused] = useState(false);
-  const [, setCarouselIndex] = useState(0);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const carouselRef = useRef<any>(null);
   const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused) {
-      carouselRef.current?.startAutoplay();
-    } else {
-      carouselRef.current?.stopAutoplay();
-    }
-  }, [isFocused]);
-
-  useEffect(() => {
-    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
-  }, [isPaused]);
 
   const filteredContents = _filter(
     mediaContents,
@@ -94,10 +90,32 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   );
 
   const itemWidth = imageWidth();
+  const itemHeight = Math.max(imageHeight(itemWidth), normalize(210));
+  const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const carouselItemContainerStyle = useMemo(
+    () => ({
+      marginLeft: centerOffset
+    }),
+    [centerOffset]
+  );
+  const withAnimation = useMemo(
+    () => ({
+      type: 'timing' as const,
+      config: {
+        duration: 850,
+        easing: Easing.inOut(Easing.cubic)
+      }
+    }),
+    []
+  );
 
   const renderItem = useCallback(
-    ({ item }: { item: unknown }) => <MediaCarouselItem item={item as MediaContent} />,
-    []
+    (info: { item: unknown }) => {
+      const mediaContent = info.item as MediaContent;
+
+      return <MediaCarouselItem containerStyle={carouselItemContainerStyle} item={mediaContent} />;
+    },
+    [carouselItemContainerStyle]
   );
 
   if (!filteredContents?.length) return null;
@@ -115,22 +133,16 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   return (
     <View>
       <Carousel
-        autoplay
-        autoplayDelay={0}
-        autoplayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
-        containerCustomStyle={styles.center}
+        autoPlay={isFocused && !isPaused}
+        autoPlayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
         data={filteredContents}
-        firstItem={-filteredContents.length}
-        inactiveSlideOpacity={1}
-        inactiveSlideScale={1}
+        defaultIndex={0}
         itemWidth={itemWidth}
         loop
-        loopClonesPerSide={filteredContents.length}
-        onScrollIndexChanged={setCarouselIndex}
-        ref={carouselRef}
         renderItem={renderItem}
-        sliderWidth={dimensions.width}
+        style={[styles.center, { height: itemHeight, width: dimensions.width }]}
         vertical={false}
+        withAnimation={withAnimation}
       />
 
       {showSliderPauseButton &&

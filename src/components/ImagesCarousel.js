@@ -1,12 +1,13 @@
 import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import { Easing } from 'react-native-reanimated';
+import Carousel from 'react-native-reanimated-carousel';
 
 import { colors, Icon, normalize } from '../config';
-import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
+import { graphqlFetchPolicy, imageHeight, imageWidth, isActive, shareMessage } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
@@ -38,20 +39,8 @@ export const ImagesCarousel = ({
   } = sliderPauseButton;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
-  const [carouselImageIndex, setCarouselImageIndex] = useState(0);
 
-  const carouselRef = useRef();
   const isFocused = useIsFocused();
-
-  if (isFocused) {
-    carouselRef.current?.startAutoplay();
-  } else {
-    carouselRef.current?.stopAutoplay();
-  }
-
-  useEffect(() => {
-    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
-  }, [isPaused]);
 
   const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
 
@@ -61,6 +50,22 @@ export const ImagesCarousel = ({
     refreshTime
   });
   const itemWidth = imageWidth(isImageFullWidth);
+  const itemHeight = imageHeight(itemWidth, aspectRatio);
+  const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const carouselItemContainerStyle = useMemo(
+    () => StyleSheet.flatten([styles.imageContainer, { marginLeft: centerOffset }]),
+    [centerOffset]
+  );
+  const withAnimation = useMemo(
+    () => ({
+      type: 'timing',
+      config: {
+        duration: 850,
+        easing: Easing.inOut(Easing.cubic)
+      }
+    }),
+    []
+  );
 
   const renderItem = useCallback(
     ({ item, refreshInterval }) => {
@@ -88,8 +93,7 @@ export const ImagesCarousel = ({
 
               if (!details) return null;
 
-              // extend the item.picture with new params data containing shareContent and details
-              item.picture = {
+              const source = {
                 ...item.picture,
                 params: {
                   ...params,
@@ -103,12 +107,12 @@ export const ImagesCarousel = ({
                   aspectRatio={aspectRatio}
                   button={item.button}
                   buttons={item.buttons}
-                  containerStyle={styles.imageContainer}
+                  containerStyle={carouselItemContainerStyle}
                   isImageFullWidth={isImageFullWidth}
                   message={item.message}
                   navigation={navigation}
                   refreshInterval={item.refreshInterval || refreshInterval}
-                  source={item.picture}
+                  source={source}
                 />
               );
             }}
@@ -121,7 +125,7 @@ export const ImagesCarousel = ({
           aspectRatio={aspectRatio}
           button={item.button}
           buttons={item.buttons}
-          containerStyle={styles.imageContainer}
+          containerStyle={carouselItemContainerStyle}
           isImageFullWidth={isImageFullWidth}
           message={item.message}
           navigation={navigation}
@@ -130,7 +134,7 @@ export const ImagesCarousel = ({
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio]
+    [navigation, fetchPolicy, aspectRatio, isImageFullWidth, carouselItemContainerStyle]
   );
 
   if (!data || data.length === 0) return null;
@@ -150,25 +154,17 @@ export const ImagesCarousel = ({
   return (
     <View>
       <Carousel
-        autoplay
-        autoplayDelay={0}
-        autoplayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
-        containerCustomStyle={styles.center}
+        autoPlay={isFocused && !isPaused}
+        autoPlayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
         data={carouselData}
-        enableMomentum
-        firstItem={-carouselData.length}
-        inactiveSlideOpacity={1}
-        inactiveSlideScale={1}
+        defaultIndex={0}
         itemWidth={itemWidth}
         loop
-        loopClonesPerSide={carouselData.length}
-        onScrollIndexChanged={setCarouselImageIndex}
-        ref={carouselRef}
-        removeClippedSubviews={false}
         renderItem={({ item }) =>
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
-        sliderWidth={dimensions.width}
+        style={[styles.center, { height: itemHeight, width: dimensions.width }]}
+        withAnimation={withAnimation}
       />
 
       {shouldShowPauseButton &&

@@ -1,6 +1,6 @@
 import _shuffle from 'lodash/shuffle';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ActivityIndicator } from 'react-native';
 
 import { colors } from '../config';
@@ -18,6 +18,7 @@ export const ConnectedImagesCarousel = ({ isImageFullWidth, navigation, publicJs
     type: 'json'
   });
   const { globalSettings } = useContext(SettingsContext);
+  const carouselData = useMemo(() => _shuffle(data), [data]);
 
   useHomeRefresh(refetch);
 
@@ -32,7 +33,7 @@ export const ConnectedImagesCarousel = ({ isImageFullWidth, navigation, publicJs
   return (
     <ImagesCarousel
       navigation={navigation}
-      data={_shuffle(data)}
+      data={carouselData}
       refreshTimeKey={`publicJsonFile-${publicJsonFile}`}
       isImageFullWidth={isImageFullWidth}
       aspectRatio={
