@@ -978,6 +978,16 @@
     - publisher: Expensify
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-qrcode-svg
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-qrcode-svg/LICENSE
+- **[react-native-reanimated-carousel@5.0.0-beta.5](https://github.com/dohooo/react-native-reanimated-carousel)**
+    - name: react-native-reanimated-carousel
+    - version: 5.0.0-beta.5
+    - description: Simple carousel component.fully implemented using Reanimated 2.Infinitely scrolling, very smooth.
+    - copyright: Copyright (c) 2020 Doho
+    - licenses: MIT
+    - repository: https://github.com/dohooo/react-native-reanimated-carousel
+    - publisher: Doho
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-reanimated-carousel
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-reanimated-carousel/LICENSE
 - **[react-native-reanimated@4.1.2](https://github.com/software-mansion/react-native-reanimated)**
     - name: react-native-reanimated
     - version: 4.1.2
@@ -1018,16 +1028,6 @@
     - publisher: Krzysztof Magiera
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-screens
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-screens/LICENSE
-- **[react-native-snap-carousel@4.0.0-beta.6](github.com/archriss/react-native-snap-carousel)**
-    - name: react-native-snap-carousel
-    - version: 4.0.0-beta.6
-    - description: Swiper/carousel component for React Native with previews, multiple layouts, parallax images, performant handling of huge numbers of items, and more. Compatible with Android & iOS.
-    - copyright: Copyright (c) 2017, Archriss. All rights reserved.
-    - licenses: BSD-3-Clause
-    - repository: github.com/archriss/react-native-snap-carousel
-    - publisher: Benoit Delmaire
-    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-snap-carousel
-    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-snap-carousel/LICENSE
 - **[react-native-status-bar-height@2.6.0](https://github.com/ovr/react-native-status-bar-height)**
     - name: react-native-status-bar-height
     - version: 2.6.0

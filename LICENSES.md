@@ -10,10 +10,10 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 986 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 977 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 73 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 24 |
-| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 24 |
+| [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 22 |
 | [BlueOak-1.0.0](https://spdx.org/licenses/BlueOak-1.0.0.html) | 11 |
 | [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html) | 5 |
@@ -3150,16 +3150,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "",
     "publisher": ""
   },
-  "@types/react-addons-shallow-compare@0.14.25": {
-    "licenses": "MIT",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "licenseText": "MIT License\n\n    Copyright (c) Microsoft Corporation.\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in all\n    copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n    SOFTWARE",
-    "name": "@types/react-addons-shallow-compare",
-    "version": "0.14.25",
-    "description": "TypeScript definitions for react-addons-shallow-compare",
-    "copyright": "",
-    "publisher": ""
-  },
   "@types/react-native-vector-icons@6.4.18": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
@@ -4630,16 +4620,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.40.0",
     "description": "core-js compat"
   },
-  "core-js@1.2.7": {
-    "licenses": "MIT",
-    "repository": "https://github.com/zloirock/core-js",
-    "licenseText": "Copyright (c) 2015 Denis Pushkarev\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) 2015 Denis Pushkarev",
-    "name": "core-js",
-    "version": "1.2.7",
-    "description": "Standard library",
-    "publisher": ""
-  },
   "cosmiconfig@5.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/davidtheclark/cosmiconfig",
@@ -5288,16 +5268,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "2.0.0",
     "description": "Encode a URL to a percent-encoded form, excluding already-encoded sequences",
     "publisher": ""
-  },
-  "encoding@0.1.13": {
-    "licenses": "MIT",
-    "repository": "https://github.com/andris9/encoding",
-    "publisher": "Andris Reinman",
-    "licenseText": "Copyright (c) 2012-2014 Andris Reinman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2012-2014 Andris Reinman",
-    "name": "encoding",
-    "version": "0.1.13",
-    "description": "Convert encodings, uses iconv-lite"
   },
   "engine.io-client@6.6.4": {
     "licenses": "MIT",
@@ -6146,16 +6116,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "description": "This package exports a few of the CSS variables that we use in Facebook projects. This is not the full list we have internally but focused on making available the minimum set needed by our open source projects.",
     "publisher": ""
   },
-  "fbjs@0.8.18": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/fbjs",
-    "licenseText": "MIT License\n\nCopyright (c) 2013-present, Facebook, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2013-present, Facebook, Inc.",
-    "name": "fbjs",
-    "version": "0.8.18",
-    "description": "A collection of utility libraries used by other Facebook JS projects",
-    "publisher": ""
-  },
   "fbjs@3.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/fbjs",
@@ -6734,17 +6694,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.1.0",
     "description": "Hyphenates a camelcased CSS property name"
   },
-  "iconv-lite@0.6.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/ashtuchkin/iconv-lite",
-    "publisher": "Alexander Shtuchkin",
-    "email": "ashtuchkin@gmail.com",
-    "licenseText": "Copyright (c) 2011 Alexander Shtuchkin\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "copyright": "Copyright (c) 2011 Alexander Shtuchkin",
-    "name": "iconv-lite",
-    "version": "0.6.3",
-    "description": "Convert character encodings in pure javascript."
-  },
   "ieee754@1.2.1": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/feross/ieee754",
@@ -7001,17 +6950,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.2.1",
     "description": "Is this value a JS regex? Works cross-realm/iframe, and despite ES6 @@toStringTag"
   },
-  "is-stream@1.1.0": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/is-stream",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
-    "copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
-    "name": "is-stream",
-    "version": "1.1.0",
-    "description": "Check if something is a Node.js stream"
-  },
   "is-typed-array@1.1.15": {
     "licenses": "MIT",
     "repository": "https://github.com/inspect-js/is-typed-array",
@@ -7065,17 +7003,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "isexe",
     "version": "2.0.0",
     "description": "Minimal module to check if a file is executable."
-  },
-  "isomorphic-fetch@2.2.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/matthew-andrews/isomorphic-fetch",
-    "publisher": "Matt Andrews",
-    "email": "matt@mattandre.ws",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 Matt Andrews\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2015 Matt Andrews",
-    "name": "isomorphic-fetch",
-    "version": "2.2.1",
-    "description": "Isomorphic WHATWG Fetch API, for Node & Browserify"
   },
   "istanbul-lib-coverage@3.2.2": {
     "licenses": "BSD-3-Clause",
@@ -8501,16 +8428,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.0.4",
     "description": "Transform into a lower cased string with spaces between words"
   },
-  "node-fetch@1.7.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/bitinn/node-fetch",
-    "publisher": "David Frank",
-    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2016 David Frank\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2016 David Frank",
-    "name": "node-fetch",
-    "version": "1.7.3",
-    "description": "A light-weight module that brings window.fetch to node.js and io.js"
-  },
   "node-fetch@2.7.0": {
     "licenses": "MIT",
     "repository": "https://github.com/bitinn/node-fetch",
@@ -9403,16 +9320,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.2.8",
     "description": "hardwired configuration loader"
   },
-  "react-addons-shallow-compare@15.6.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/facebook/react",
-    "licenseText": "MIT License\n\nCopyright (c) 2013-present, Facebook, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2013-present, Facebook, Inc.",
-    "name": "react-addons-shallow-compare",
-    "version": "15.6.2",
-    "description": ">**Note:** >This is a legacy React addon, and is no longer maintained. > >We don't encourage using it in new code, but it exists for backwards compatibility.   >The recommended migration path is to use [`React.PureComponent`](https://facebook.github.io/react/docs/react-api.html#react.purecomponent) instead.",
-    "publisher": ""
-  },
   "react-apollo@3.1.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apollographql/react-apollo",
@@ -9778,6 +9685,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "8.0.4",
     "description": "The standard Ratings component for React Native"
   },
+  "react-native-reanimated-carousel@5.0.0-beta.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/dohooo/react-native-reanimated-carousel",
+    "publisher": "Doho",
+    "email": "zhaodonghao586@outlook.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2020 Doho\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2020 Doho",
+    "name": "react-native-reanimated-carousel",
+    "version": "5.0.0-beta.5",
+    "description": "Simple carousel component.fully implemented using Reanimated 2.Infinitely scrolling, very smooth."
+  },
   "react-native-reanimated@4.1.2": {
     "licenses": "MIT",
     "repository": "https://github.com/software-mansion/react-native-reanimated",
@@ -9852,17 +9770,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "react-native-size-matters",
     "version": "0.3.1",
     "description": "A React-Native utility belt for scaling the size your apps UI across different sized devices"
-  },
-  "react-native-snap-carousel@4.0.0-beta.6": {
-    "licenses": "BSD-3-Clause",
-    "repository": "github.com/archriss/react-native-snap-carousel",
-    "publisher": "Benoit Delmaire",
-    "email": "bdelmaire@archriss.com",
-    "licenseText": "BSD 3-Clause License\n\nCopyright (c) 2017, Archriss\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\n* Neither the name of the copyright holder nor the names of its\n  contributors may be used to endorse or promote products derived from\n  this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
-    "copyright": "Copyright (c) 2017, Archriss. All rights reserved.",
-    "name": "react-native-snap-carousel",
-    "version": "4.0.0-beta.6",
-    "description": "Swiper/carousel component for React Native with previews, multiple layouts, parallax images, performant handling of huge numbers of items, and more. Compatible with Android & iOS."
   },
   "react-native-status-bar-height@2.6.0": {
     "licenses": "MIT",
@@ -10330,17 +10237,6 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "safe-regex-test",
     "version": "1.1.0",
     "description": "Give a regex, get a robust predicate function that tests it against a string."
-  },
-  "safer-buffer@2.1.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/ChALkeR/safer-buffer",
-    "publisher": "Nikita Skovoroda",
-    "email": "chalkerx@gmail.com",
-    "licenseText": "MIT License\n\nCopyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
-    "copyright": "Copyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>",
-    "name": "safer-buffer",
-    "version": "2.1.2",
-    "description": "Modern Buffer API polyfill without footguns"
   },
   "sax@1.4.1": {
     "licenses": "ISC",
