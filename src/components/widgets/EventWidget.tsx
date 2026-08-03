@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from 'expo-router/react-navigation';
 import moment from 'moment';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-query';

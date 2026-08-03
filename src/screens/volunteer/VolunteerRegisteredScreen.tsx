@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/core';
+import { NavigationProp } from 'expo-router/react-navigation';
 import React from 'react';
 import { ScrollView } from 'react-native';
 

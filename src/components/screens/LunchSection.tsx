@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/core';
+import { NavigationProp } from 'expo-router/react-navigation';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';

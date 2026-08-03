@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp } from 'expo-router/react-navigation';
 import React, { useRef } from 'react';
 import { useQuery } from 'react-apollo';
 import { ScrollView, StyleSheet, View } from 'react-native';

@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from 'expo-router/build/react-navigation/bottom-tabs';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { LoadingSpinner } from '../components';

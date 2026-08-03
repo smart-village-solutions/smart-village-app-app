@@ -3,9 +3,9 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { colors, consts, device, normalize } from '../../../config';
-import { imageHeight } from '../../../helpers';
+import { imageHeight } from '../../../helpers/imageHelper';
 import { QUERY_TYPES, getQuery } from '../../../queries';
-import { TService } from '../../../screens';
+import { TService } from '../../../screens/SUE/SueReportScreen';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
 

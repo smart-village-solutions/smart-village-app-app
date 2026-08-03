@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DeviceEventEmitter, FlatList, StyleSheet } from 'react-native';
 import { useInfiniteQuery } from 'react-query';

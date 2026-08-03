@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
 import React from 'react';
 import { useMutation } from 'react-apollo';

@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import _isArray from 'lodash/isArray';
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';

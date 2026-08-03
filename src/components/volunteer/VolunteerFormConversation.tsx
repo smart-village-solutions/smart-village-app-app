@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { useIsFocused } from 'expo-router/react-navigation';
+import { StackScreenProps } from 'expo-router/js-stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';

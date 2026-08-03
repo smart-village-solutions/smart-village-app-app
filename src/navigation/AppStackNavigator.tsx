@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator } from 'expo-router/build/react-navigation/stack';
 import React from 'react';
 
 import { StackConfig } from '../types';

@@ -1,5 +1,5 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { StackScreenProps } from '@react-navigation/stack';
+import { useBottomTabBarHeight } from 'expo-router/js-tabs';
+import { StackScreenProps } from 'expo-router/js-stack';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';

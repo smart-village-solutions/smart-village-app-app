@@ -15,7 +15,7 @@ import {
   type PressEventWithFeatures,
   ViewAnnotation
 } from '@maplibre/maplibre-react-native';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 import { featureCollection, point } from '@turf/helpers';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _isEmpty from 'lodash/isEmpty';

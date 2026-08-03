@@ -1,4 +1,4 @@
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import React from 'react';
 import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 

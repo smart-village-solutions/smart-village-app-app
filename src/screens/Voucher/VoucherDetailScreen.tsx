@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, ScrollView } from 'react-native';
 import { useQuery as RQuseQuery } from 'react-query';

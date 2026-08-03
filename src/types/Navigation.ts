@@ -1,6 +1,6 @@
-import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationOptions } from '@react-navigation/stack';
+import { BottomTabNavigationOptions } from 'expo-router/js-tabs';
+import { RouteProp } from 'expo-router/react-navigation';
+import { StackNavigationOptions } from 'expo-router/js-stack';
 import { ViewStyle } from 'react-native';
 
 import { Icon } from '../config';

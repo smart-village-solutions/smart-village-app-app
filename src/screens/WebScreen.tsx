@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router/react-navigation';
 import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser';
 import { noop } from 'lodash';
 import React, { useContext, useEffect } from 'react';

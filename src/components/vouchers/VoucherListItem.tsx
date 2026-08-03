@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { memo } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';

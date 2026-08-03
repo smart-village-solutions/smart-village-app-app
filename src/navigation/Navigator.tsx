@@ -1,4 +1,4 @@
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from 'expo-router/react-navigation';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -39,7 +39,7 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
       linking={linkingConfig}
     >
       <View style={styles.flex}>
-        <StatusBar style="dark" translucent backgroundColor="transparent" />
+        <StatusBar style="dark" />
         {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
         <FloatingButton publicJsonFile="floatingButton" bottomOffset={tabBottomOffset} />
       </View>

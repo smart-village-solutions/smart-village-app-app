@@ -1,4 +1,4 @@
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { StackNavigationProp, StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SectionList, StyleSheet } from 'react-native';
 

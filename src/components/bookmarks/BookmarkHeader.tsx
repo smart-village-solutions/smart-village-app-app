@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 

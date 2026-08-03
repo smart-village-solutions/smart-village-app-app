@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router/react-navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';

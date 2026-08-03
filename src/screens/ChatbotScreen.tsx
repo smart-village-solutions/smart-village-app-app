@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router/react-navigation';
 import React, { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 

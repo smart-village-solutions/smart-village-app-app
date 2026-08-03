@@ -1,5 +1,5 @@
-import { RouteProp } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
 

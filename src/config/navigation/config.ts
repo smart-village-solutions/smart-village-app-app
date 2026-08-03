@@ -1,4 +1,4 @@
-import { LinkingOptions } from '@react-navigation/native';
+import { LinkingOptions } from 'expo-router/react-navigation';
 import * as Linking from 'expo-linking';
 
 import { NavigatorConfig, ScreenName } from '../../types';

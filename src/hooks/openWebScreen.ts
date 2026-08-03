@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from 'expo-router/react-navigation';
 import { useCallback } from 'react';
 import { ShareContent } from 'react-native';
 

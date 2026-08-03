@@ -1,13 +1,24 @@
+import { NavigationContainer } from 'expo-router/react-navigation';
 import React from 'react';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 
-import { IndexScreen } from '../../src/screens';
+import { IndexScreen } from '../../src/screens/IndexScreen';
 
 describe('IndexScreen', () => {
   const navigation = { navigate: jest.fn() };
 
   it('renders correctly', () => {
-    const tree = renderer.create(<IndexScreen navigation={navigation} route={{}} />).toJSON();
+    let component;
+
+    act(() => {
+      component = renderer.create(
+        <NavigationContainer>
+          <IndexScreen navigation={navigation} route={{}} />
+        </NavigationContainer>
+      );
+    });
+
+    const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 

@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, TouchableOpacity } from 'react-native';

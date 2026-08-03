@@ -1,6 +1,6 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useBottomTabBarHeight } from 'expo-router/js-tabs';
+import { useNavigation } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
@@ -21,7 +21,9 @@ import {
   useSystemPermission
 } from '../../../hooks';
 import { QUERY_TYPES, getQuery } from '../../../queries';
-import { SETTINGS_SCREENS, TValues, mapToMapMarkers } from '../../../screens';
+import { SETTINGS_SCREENS } from '../../../screens/SettingsScreen';
+import { mapToMapMarkers } from '../../../screens/SUE/SueMapScreen';
+import { TValues } from '../../../screens/SUE/SueReportScreen';
 import { MapMarker, ScreenName } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';

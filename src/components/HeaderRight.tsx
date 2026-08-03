@@ -1,6 +1,6 @@
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { DrawerNavigationProp } from 'expo-router/drawer';
+import { RouteProp } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React from 'react';
 import { ShareContent, StyleSheet } from 'react-native';
 
