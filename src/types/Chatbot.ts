@@ -43,7 +43,7 @@ export interface SessionRequest {
 
 export interface ChatbotMessage {
   _id: string | number;
-  createdAt: Date;
+  createdAt: number;
   text: string;
   user?: {
     _id: number;

@@ -3,8 +3,8 @@ import 'dayjs/locale/de';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { Keyboard, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   Actions,
   Bubble,
@@ -18,7 +18,7 @@ import {
 } from 'react-native-gifted-chat';
 import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, getFileSize, momentFormat, openLink } from '../helpers';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
 import { ScreenName } from '../types';
@@ -74,6 +74,33 @@ export const Chat = ({
   useEffect(() => {
     setMessages(data);
   }, [data]);
+
+  const messageTextMatchers = useMemo(
+    () => [
+      {
+        type: 'hashtag',
+        pattern: /\*\*([^*]+)\*\*/g,
+        getLinkText: (text) => text.replace(/^\*\*|\*\*$/g, ''),
+        renderLink: (text, _url, index) => (
+          <Text key={`bold-${index}`} style={styles.boldText}>
+            {text}
+          </Text>
+        )
+      },
+      {
+        type: 'mention',
+        pattern: /\[([^\]]+)\]\(([^)]+)\)/g,
+        getLinkText: (text) => text.match(/\[([^\]]+)\]/)?.[1] || text,
+        getLinkUrl: (text) => text.match(/\(([^)]+)\)/)?.[1] || '',
+        onPress: (url) => {
+          const webUrl = url.startsWith('http') ? url : `https://${url}`;
+
+          navigation.navigate(ScreenName.Web, { webUrl });
+        }
+      }
+    ],
+    [navigation]
+  );
 
   const onSendMessages = (text, onSend) => {
     const message = { text, medias };
@@ -134,60 +161,66 @@ export const Chat = ({
 
   return (
     <GiftedChat
-      alwaysShowSend
+      isSendButtonAlwaysVisible
       isScrollToBottomEnabled
-      isStatusBarTranslucentAndroid
       isTyping={isTyping}
-      keyboardShouldPersistTaps="handled"
       locale="de"
       messages={messages}
       minInputToolbarHeight={normalize(96)}
-      placeholder={placeholder}
+      dateFormatCalendar={{ sameDay: '[Heute]' }}
       scrollToBottomComponent={() => <Icon.ArrowDown />}
-      listViewProps={{
+      listProps={{
         contentContainerStyle: {
           paddingBottom: keyboardHeight
-        }
+        },
+        keyboardShouldPersistTaps: 'handled'
       }}
+      textInputProps={{ ...textInputProps, placeholder }}
       user={{ _id: parseInt(userId) }}
       onQuickReply={onQuickReply}
       renderActions={(props) => {
         if (!showActionButton) return null;
 
-        const mediaActionSheet = {
-          'Foto wählen': async () => {
-            const { uri, type } = await selectImage();
-            const mediaType = (IMAGE_TYPE_REGEX.exec(uri) || VIDEO_TYPE_REGEX.exec(uri))[1];
+        const mediaActions = [
+          {
+            title: 'Foto wählen',
+            action: async () => {
+              const { uri, type } = await selectImage();
+              const mediaType = (IMAGE_TYPE_REGEX.exec(uri) || VIDEO_TYPE_REGEX.exec(uri))[1];
 
-            try {
-              await errorHandler(uri);
-            } catch (error) {
-              console.error(error);
-              return;
+              try {
+                await errorHandler(uri);
+              } catch (error) {
+                console.error(error);
+                return;
+              }
+
+              setMedias((prev) => [...prev, { mimeType: `${type}/${mediaType}`, type, uri }]);
             }
-
-            setMedias((prev) => [...prev, { mimeType: `${type}/${mediaType}`, type, uri }]);
           },
-          'Dokument wählen': async () => {
-            const { mimeType, uri } = await selectDocument();
+          {
+            title: 'Dokument wählen',
+            action: async () => {
+              const { mimeType, uri } = await selectDocument();
 
-            try {
-              await errorHandler(uri);
-            } catch (error) {
-              console.error(error);
-              return;
+              try {
+                await errorHandler(uri);
+              } catch (error) {
+                console.error(error);
+                return;
+              }
+
+              setMedias((prev) => [...prev, { mimeType, type: 'pdf', uri }]);
             }
-
-            setMedias((prev) => [...prev, { mimeType, type: 'pdf', uri }]);
           },
-          Abbrechen: () => null
-        };
+          { title: 'Abbrechen', action: () => null }
+        ];
 
         return (
           <Actions
             {...props}
-            options={mediaActionSheet}
-            containerStyle={styles.actionButtonContainer}
+            actions={mediaActions}
+            buttonStyle={styles.actionButtonContainer}
             icon={() => <Icon.Plus color={colors.darkText} />}
           />
         );
@@ -212,9 +245,11 @@ export const Chat = ({
       renderComposer={(props) => (
         <Composer
           {...props}
-          multiline
-          textInputStyle={styles.textInputStyle}
-          textInputProps={textInputProps}
+          textInputProps={{
+            ...props.textInputProps,
+            multiline: true,
+            style: styles.textInputStyle
+          }}
         />
       )}
       renderCustomView={(props) =>
@@ -261,21 +296,7 @@ export const Chat = ({
       )}
       renderMessageImage={(props) =>
         props?.currentMessage?.image?.map(({ uri }, index) => (
-          <MessageImage
-            {...props}
-            key={`image-${index}`}
-            currentMessage={{ image: uri }}
-            lightboxProps={{
-              springConfig: { useNativeDriver: false },
-              activeProps: {
-                style: {
-                  flex: 1,
-                  resizeMode: 'contain',
-                  width: device.width
-                }
-              }
-            }}
-          />
+          <MessageImage {...props} key={`image-${index}`} currentMessage={{ image: uri }} />
         ))
       }
       renderMessageVideo={(props) =>
@@ -304,36 +325,7 @@ export const Chat = ({
             left: [styles.textStyle, messageTextStyleLeft],
             right: [styles.textStyle, messageTextStyleRight]
           }}
-          parsePatterns={(linkStyle) => [
-            // Bold text pattern (**text**)
-            {
-              pattern: /\*\*([^*]+)\*\*/g,
-              style: { fontFamily: 'bold', fontWeight: 'bold' },
-              renderText: (text) => {
-                const match = text.match(/\*\*([^*]+)\*\*/);
-                return match ? match[1] : text;
-              }
-            },
-            // Markdown link pattern ([text](url))
-            {
-              pattern: /\[([^\]]+)\]\(([^)]+)\)/g,
-              style: linkStyle,
-              onPress: (text) => {
-                const match = text.match(/\[([^\]]+)\]\(([^)]+)\)/);
-                if (match) {
-                  const url = match[2];
-                  // Add protocol if missing
-                  const fullUrl = url.startsWith('http') ? url : `https://${url}`;
-
-                  navigation.navigate(ScreenName.Web, { webUrl: fullUrl });
-                }
-              },
-              renderText: (text) => {
-                const match = text.match(/\[([^\]]+)\]\(([^)]+)\)/);
-                return match ? match[1] : text;
-              }
-            }
-          ]}
+          matchers={messageTextMatchers}
         />
       )}
       renderSend={({ onSend, text, sendButtonProps, ...props }) => (
@@ -347,7 +339,7 @@ export const Chat = ({
       )}
       renderTime={(props) => (
         <View style={styles.spacingTime}>
-          <RegularText small>{momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}</RegularText>
+          <RegularText small>{formatMessageTime(props?.currentMessage?.createdAt)}</RegularText>
         </View>
       )}
       renderQuickReplies={(props) => (
@@ -364,6 +356,9 @@ export const Chat = ({
     />
   );
 };
+
+const formatMessageTime = (createdAt) =>
+  momentFormat(createdAt, 'HH:mm', typeof createdAt === 'number' ? 'x' : undefined);
 
 const renderFooter = (medias, setMedias) => (
   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.footerStyle}>
@@ -410,6 +405,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: normalize(30),
     justifyContent: 'center'
+  },
+  boldText: {
+    fontFamily: 'bold',
+    fontWeight: 'bold'
   },
   footerStyle: {
     borderTopWidth: normalize(1),

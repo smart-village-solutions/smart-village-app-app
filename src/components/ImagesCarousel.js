@@ -145,14 +145,18 @@ export const ImagesCarousel = ({
   // if there is one entry in the data, we do not want to render a whole carousel, we than just
   // need the one item to render
   if (carouselData.length === 1) {
-    return renderItem({ item: carouselData[0] });
+    return (
+      <View style={[styles.carouselContainer, { height: itemHeight }]}>
+        {renderItem({ item: carouselData[0] })}
+      </View>
+    );
   }
 
   // to change the style of the pause button, the images in the slider are checked for copyright
   const isCopyrighted = data.some((item) => item.picture?.copyright);
 
   return (
-    <View>
+    <View style={[styles.carouselContainer, { height: itemHeight }]}>
       <Carousel
         autoPlay={isFocused && !isPaused}
         autoPlayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
@@ -206,8 +210,13 @@ const pauseButton = (
 );
 
 const styles = StyleSheet.create({
-  center: {
-    alignSelf: 'center'
+  carousel: {
+    flex: 0,
+    height: '100%'
+  },
+  carouselContainer: {
+    alignSelf: 'center',
+    width: '100%'
   },
   imageContainer: {
     alignItems: 'center',
