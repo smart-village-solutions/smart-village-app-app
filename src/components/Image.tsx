@@ -29,6 +29,7 @@ type ImageProps = {
   imageRightsPosition?: 'inside-bottom-right' | 'outside-bottom';
   isImageFullWidth?: boolean;
   message?: string;
+  onContentHeightChange?: (height: number) => void;
   PlaceholderContent?: React.ReactNode;
   placeholderStyle?: object | object[];
   refreshInterval?: number;
@@ -47,6 +48,7 @@ export const Image = ({
   imageRightsPosition,
   isImageFullWidth,
   message,
+  onContentHeightChange,
   PlaceholderContent = <ActivityIndicator color={colors.refreshControl} />,
   placeholderStyle = styles.placeholderStyle,
   refreshInterval,
@@ -55,6 +57,7 @@ export const Image = ({
   style
 }: ImageProps) => {
   const [source, setSource] = useState(null);
+  const [contentHeight, setContentHeight] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const { globalSettings } = useContext(SettingsContext);
@@ -92,16 +95,25 @@ export const Image = ({
     };
   }, [timestamp, refreshInterval, sourceProp, apiKey]);
 
-  if (source?.uri === NO_IMAGE.uri) return null;
-
   const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
-  const showChildren = !!message || !!button || showImageRights;
+  const additionalButtons = buttons.filter(
+    (item) => !button || item.routeName !== button.routeName || item.title !== button.title
+  );
+  const showChildren = !!message || !!button || !!additionalButtons.length || showImageRights;
   const defaultImageStyle = stylesForImage(aspectRatio, isImageFullWidth).defaultStyle;
 
   const imageStyle = useMemo(
     () => [style || defaultImageStyle, { borderRadius }],
     [style, defaultImageStyle, borderRadius]
   );
+  const imageDimensions = useMemo(() => {
+    const { height, width } = StyleSheet.flatten(imageStyle);
+
+    return { height, width };
+  }, [imageStyle]);
+  const overlayStyle = [styles.overlayFill, imageDimensions];
+
+  if (source?.uri === NO_IMAGE.uri) return null;
 
   return (
     <View style={[containerStyle, placeholderStyle]}>
@@ -117,24 +129,34 @@ export const Image = ({
         onLoadEnd={() => setLoading(false)}
       />
 
-      {(loading || showChildren) && (
-        <View style={styles.overlayFill} pointerEvents="box-none">
-          {loading && (
-            <View style={[styles.overlayFill, styles.loadingStyle]}>{PlaceholderContent}</View>
-          )}
-          {showChildren && (
-            <View style={[styles.overlayFill, styles.contentContainerStyle]}>
-              {!!message && <ImageMessage message={message} />}
-              {!!button && <ImageButton button={button} />}
-              {!!buttons?.length &&
-                buttons.map((button, index) => (
-                  <ImageButton key={`${button.title}-${index}`} button={button} />
-                ))}
-              {!imageRightsPosition && showImageRights && (
-                <ImageRights imageRights={sourceProp.copyright} />
-              )}
-            </View>
-          )}
+      {loading && (
+        <View style={[overlayStyle, styles.loadingStyle]} pointerEvents="none">
+          {PlaceholderContent}
+        </View>
+      )}
+      {showChildren && (
+        <View style={[overlayStyle, styles.contentContainerStyle]} pointerEvents="box-none">
+          <View
+            style={[styles.content, { top: Math.max(imageDimensions.height - contentHeight, 0) }]}
+            onLayout={({ nativeEvent }) => {
+              const nextContentHeight = nativeEvent.layout.height;
+
+              if (nextContentHeight === contentHeight) return;
+
+              setContentHeight(nextContentHeight);
+              onContentHeightChange?.(nextContentHeight);
+            }}
+          >
+            {!!message && <ImageMessage message={message} />}
+            {!!button && <ImageButton button={button} />}
+            {!!additionalButtons.length &&
+              additionalButtons.map((button, index) => (
+                <ImageButton key={`${button.title}-${index}`} button={button} />
+              ))}
+            {!imageRightsPosition && showImageRights && (
+              <ImageRights imageRights={sourceProp.copyright} />
+            )}
+          </View>
         </View>
       )}
       {!!imageRightsPosition && showImageRights && (
@@ -146,16 +168,23 @@ export const Image = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  content: {
+    left: 0,
+    position: 'absolute',
+    right: 0
+  },
   contentContainerStyle: {
-    height: '100%',
-    justifyContent: 'flex-end'
+    zIndex: 1
   },
   loadingStyle: {
     alignItems: 'center',
     justifyContent: 'center'
   },
   overlayFill: {
-    ...StyleSheet.absoluteFillObject
+    left: 0,
+    position: 'absolute',
+    top: 0,
+    zIndex: 1
   },
   placeholderStyle: {
     backgroundColor: colors.transparent

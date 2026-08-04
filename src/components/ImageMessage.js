@@ -14,7 +14,7 @@ export const ImageMessage = ({ message }) => (
 
 const styles = StyleSheet.create({
   containerStyle: {
-    bottom: normalize(24),
+    marginBottom: normalize(24),
     marginLeft: normalize(14),
     marginRight: normalize(14)
   }

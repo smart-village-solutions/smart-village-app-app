@@ -68,7 +68,7 @@ export const ImagesCarousel = ({
   );
 
   const renderItem = useCallback(
-    ({ item, refreshInterval }) => {
+    ({ height = itemHeight, item, onContentHeightChange, refreshInterval }) => {
       const { routeName: name, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
@@ -111,6 +111,7 @@ export const ImagesCarousel = ({
                   isImageFullWidth={isImageFullWidth}
                   message={item.message}
                   navigation={navigation}
+                  onContentHeightChange={onContentHeightChange}
                   refreshInterval={item.refreshInterval || refreshInterval}
                   source={source}
                 />
@@ -129,8 +130,10 @@ export const ImagesCarousel = ({
           isImageFullWidth={isImageFullWidth}
           message={item.message}
           navigation={navigation}
+          onContentHeightChange={onContentHeightChange}
           refreshInterval={item.refreshInterval || refreshInterval}
           source={item.picture}
+          style={{ height, width: itemWidth }}
         />
       );
     },
@@ -146,8 +149,12 @@ export const ImagesCarousel = ({
   // need the one item to render
   if (carouselData.length === 1) {
     return (
-      <View style={[styles.carouselContainer, { height: itemHeight }]}>
-        {renderItem({ item: carouselData[0] })}
+      <View style={[styles.carouselContainer, { height: singleItemHeight }]}>
+        {renderItem({
+          height: singleItemHeight,
+          item: carouselData[0],
+          onContentHeightChange: setSingleItemContentHeight
+        })}
       </View>
     );
   }
@@ -221,6 +228,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
     alignSelf: 'center',
+    overflow: 'hidden',
+    position: 'relative',
     width: '100%'
   },
   pauseButton: {
