@@ -5,9 +5,9 @@ This document defines how AI agents should work in this repository.
 ## 1) Project Context
 
 - Project: `smart-village-app`
-- Stack: React Native + Expo (SDK 54), TypeScript/JavaScript
+- Stack: React Native + Expo (SDK 57), TypeScript/JavaScript
 - Package manager: Yarn (`1.22.22`)
-- Node version: `20.19.4`
+- Node version: `22.13.0`
 
 ## 2) Core Working Rules
 
