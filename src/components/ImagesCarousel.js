@@ -148,15 +148,7 @@ export const ImagesCarousel = ({
   // if there is one entry in the data, we do not want to render a whole carousel, we than just
   // need the one item to render
   if (carouselData.length === 1) {
-    return (
-      <View style={[styles.carouselContainer, { height: singleItemHeight }]}>
-        {renderItem({
-          height: singleItemHeight,
-          item: carouselData[0],
-          onContentHeightChange: setSingleItemContentHeight
-        })}
-      </View>
-    );
+    return renderItem({ item: carouselData[0] });
   }
 
   // to change the style of the pause button, the images in the slider are checked for copyright
