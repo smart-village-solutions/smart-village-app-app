@@ -18,15 +18,19 @@ import {
 import { colors, consts, normalize, texts } from '../../config';
 import {
   subtitle as formatSubtitle,
+  getParticipationProjectStatus,
   getParticipationProjectPreviewDate,
+  isParticipationProjectCompleted,
+  isParticipationProjectCurrent,
   mainImageOfMediaContents,
   matomoTrackingString,
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+  PARTICIPATION_PROJECT_STATUS_FILTER,
+  ParticipationProject,
   removeHtml,
   trimNewLines
 } from '../../helpers';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
-import { useTheme } from '../../hooks/useTheme';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { GenericItem, GenericType, ScreenName } from '../../types';
@@ -71,6 +75,7 @@ type ParticipationProjectPayload = {
   category?: string;
   categoryName?: string;
   itemIndex?: number | string;
+  status?: string;
   theme?: string;
   type?: string;
 };
@@ -101,7 +106,8 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
 
 type CategoryGroup = {
   categoryId?: string;
-  count: number;
+  completedCount: number;
+  currentCount: number;
   id: string;
   itemIds: string[];
   title: string;
@@ -227,6 +233,7 @@ const buildAllProjectsParams = (homeConfig: ParticipationProjectHomeConfig) => (
     genericType: GenericType.ParticipationProject,
     limit: homeConfig.indexLimit,
     participationOrder: homeConfig.indexOrder,
+    [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
     subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
     titleNumberOfLines: homeConfig.titleNumberOfLines
   },
@@ -254,13 +261,21 @@ const buildCategoryItems = ({
 
       const currentGroup = groups.get(id) || {
         categoryId,
-        count: 0,
+        completedCount: 0,
+        currentCount: 0,
         id,
         itemIds: [],
         title: category.name || config.fallbackCategoryTitle
       };
 
-      currentGroup.count += 1;
+      const status = getParticipationProjectStatus(item as ParticipationProject);
+
+      if (PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(status)) {
+        currentGroup.currentCount += 1;
+      } else if (isParticipationProjectCompleted(item as ParticipationProject)) {
+        currentGroup.completedCount += 1;
+      }
+
       currentGroup.itemIds.push(item.id);
       groups.set(id, currentGroup);
     });
@@ -276,7 +291,14 @@ const buildCategoryItems = ({
       orderedGroups.push({ ...group, title: title || group.title });
       groups.delete(id);
     } else if (config.showEmptyCategories && !hiddenCategoryIds.has(id)) {
-      orderedGroups.push({ categoryId: id, count: 0, id, itemIds: [], title: title || id });
+      orderedGroups.push({
+        categoryId: id,
+        completedCount: 0,
+        currentCount: 0,
+        id,
+        itemIds: [],
+        title: title || id
+      });
     }
   });
 
@@ -316,10 +338,10 @@ export const ParticipationProjectHomeScreen = ({
   const queryVariables = useMemo(
     () => ({
       genericType: GenericType.ParticipationProject,
-      limit: homeConfig.homeLimit,
+      limit: undefined,
       participationOrder: homeConfig.indexOrder
     }),
-    [homeConfig.homeLimit, homeConfig.indexOrder]
+    [homeConfig.indexOrder]
   );
 
   const {
@@ -345,13 +367,17 @@ export const ParticipationProjectHomeScreen = ({
     const categoryGroups = buildCategoryItems({ config: homeConfig, items: genericItems });
 
     return categoryGroups.map((category) => {
-      const countText = texts.participationProject.categoryCount(category.count);
+      const currentCountText = texts.participationProject.categoryCount(category.currentCount);
+      const completedCountText = category.completedCount
+        ? texts.participationProject.completedCount(category.completedCount)
+        : undefined;
       const categoryQueryVariables = category.categoryId
         ? {
             categoryId: category.categoryId,
             genericType: GenericType.ParticipationProject,
             limit: homeConfig.indexLimit,
             participationOrder: homeConfig.indexOrder,
+            [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
             subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
             titleNumberOfLines: homeConfig.titleNumberOfLines
           }
@@ -360,13 +386,16 @@ export const ParticipationProjectHomeScreen = ({
             ids: category.itemIds,
             limit: homeConfig.indexLimit,
             participationOrder: homeConfig.indexOrder,
+            [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
             subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
             titleNumberOfLines: homeConfig.titleNumberOfLines
           };
 
       return {
-        accessibilityLabel: `(${category.title}) ${countText} ${consts.a11yLabel.button}`,
-        count: category.count,
+        accessibilityLabel: `(${category.title}) ${[currentCountText, completedCountText]
+          .filter(Boolean)
+          .join(', ')} ${consts.a11yLabel.button}`,
+        count: category.currentCount,
         id: category.id,
         params: {
           title: category.title,
@@ -375,6 +404,7 @@ export const ParticipationProjectHomeScreen = ({
           rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
         },
         routeName: ScreenName.Index,
+        subtitle: completedCountText,
         title: category.title
       };
     });
@@ -385,7 +415,9 @@ export const ParticipationProjectHomeScreen = ({
   const featuredItems = useMemo(() => {
     if (!homeConfig.showFeatured) return [];
 
-    return sortProjectsByItemIndex(genericItems)
+    return sortProjectsByItemIndex(
+      genericItems.filter((item) => isParticipationProjectCurrent(item as ParticipationProject))
+    )
       .slice(0, homeConfig.featuredLimit)
       .map((item, index, items) => buildProjectListItem(item, index !== items.length - 1));
   }, [genericItems, homeConfig.featuredLimit, homeConfig.showFeatured]);

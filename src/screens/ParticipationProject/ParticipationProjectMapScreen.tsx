@@ -1,16 +1,26 @@
 /* eslint-disable react/prop-types */
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useMemo, useState } from 'react';
-import { View } from 'react-native';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
-import { LoadingSpinner, MapLibre, RegularText, TextListItem, Wrapper } from '../../components';
-import { consts, normalize } from '../../config';
+import {
+  HeaderLeft,
+  LoadingSpinner,
+  MapLibre,
+  RegularText,
+  TextListItem,
+  Wrapper
+} from '../../components';
+import { colors, consts, Icon, normalize } from '../../config';
 import {
   buildParticipationProjectPreviewItem,
   getParticipationProjectGeoLocation,
   isParticipationProjectMapEligible,
+  isParticipationProjectStatus,
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+  PARTICIPATION_PROJECT_STATUS_FILTER,
   ParticipationProject
 } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -41,14 +51,44 @@ export const ParticipationProjectMapScreen = ({
   const titleNumberOfLines = route.params?.titleNumberOfLines;
   const subtitleNumberOfLines = route.params?.subtitleNumberOfLines;
   const rootRouteName = route.params?.rootRouteName;
-  const mapQueryVariables = useMemo(
-    () => ({
-      ...(route.params?.queryVariables || {}),
+  const selectedMapStatuses = useMemo(() => {
+    const selectedStatuses = route.params?.queryVariables?.[PARTICIPATION_PROJECT_STATUS_FILTER];
+    const statuses = Array.isArray(selectedStatuses)
+      ? selectedStatuses
+      : typeof selectedStatuses === 'string'
+      ? [selectedStatuses]
+      : PARTICIPATION_PROJECT_DEFAULT_STATUSES;
+
+    return statuses.filter((status): status is string => typeof status === 'string');
+  }, [route.params?.queryVariables]);
+  const mapQueryVariables = useMemo(() => {
+    const queryVariables = { ...(route.params?.queryVariables || {}) };
+    delete queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+
+    return {
+      ...queryVariables,
       genericType: GenericType.ParticipationProject,
       limit: undefined
-    }),
-    [route.params?.queryVariables]
-  );
+    };
+  }, [route.params?.queryVariables]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HeaderLeft
+          backImage={({ tintColor }) => (
+            <Icon.Close
+              color={tintColor}
+              size={normalize(22)}
+              style={{ paddingHorizontal: normalize(14) }}
+            />
+          )}
+          onPress={() => navigation.goBack()}
+        />
+      ),
+      title: route.params?.title
+    });
+  }, [navigation, route.params?.title]);
 
   const { data, isLoading } = useQuery<ParticipationProjectItemsResponse>(
     [QUERY_TYPES.GENERIC_ITEMS, mapQueryVariables],
@@ -63,8 +103,13 @@ export const ParticipationProjectMapScreen = ({
   );
 
   const eligibleProjects = useMemo(
-    () => (data?.[QUERY_TYPES.GENERIC_ITEMS] || []).filter(isParticipationProjectMapEligible),
-    [data]
+    () =>
+      (data?.[QUERY_TYPES.GENERIC_ITEMS] || []).filter(
+        (item) =>
+          isParticipationProjectMapEligible(item) &&
+          selectedMapStatuses.some((status) => isParticipationProjectStatus(item, status))
+      ),
+    [data, selectedMapStatuses]
   );
 
   const markers = useMemo<MapMarker[]>(

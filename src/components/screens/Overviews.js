@@ -19,11 +19,15 @@ import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
   geoLocationFilteredListItem,
+  getParticipationProjectStatusCounts,
   graphqlFetchPolicy,
   isOpen,
   isParticipationProjectMapEligible,
+  isParticipationProjectStatus,
   openLink,
   parseListItemsFromQuery,
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+  PARTICIPATION_PROJECT_STATUS_FILTER,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
@@ -117,6 +121,41 @@ const toFiniteNumber = (value) => {
   return null;
 };
 
+const getSelectedParticipationProjectStatuses = (selectedStatuses) => {
+  if (Array.isArray(selectedStatuses)) return selectedStatuses;
+
+  return selectedStatuses ? [selectedStatuses] : [...PARTICIPATION_PROJECT_DEFAULT_STATUSES];
+};
+
+const getParticipationProjectStatusFilter = (statusCounts, selectedStatuses) => {
+  if (
+    !statusCounts.length ||
+    (statusCounts.length === 1 &&
+      PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(statusCounts[0].status))
+  ) {
+    return;
+  }
+
+  return {
+    data: statusCounts.map(({ count, label, status }, index) => {
+      const statusLabel = texts.participationProject.statuses?.[status] || label;
+
+      return {
+        filterValue: status,
+        id: index + 1,
+        index,
+        selected: selectedStatuses.includes(status),
+        value: `${statusLabel} (${count})`
+      };
+    }),
+    isMultiselect: true,
+    label: texts.participationProject.status,
+    name: PARTICIPATION_PROJECT_STATUS_FILTER,
+    placeholder: texts.participationProject.statusFilter,
+    type: consts.FILTER_TYPES.DROPDOWN
+  };
+};
+
 const ParticipationProjectIndexMapButton = ({ navigationType, onPress }) => (
   <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
     <Button
@@ -166,6 +205,25 @@ export const Overviews = ({ navigation, route }) => {
   ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const initialQueryVariables = route?.params?.queryVariables || {};
+  const isParticipationProjectOverview =
+    query === QUERY_TYPES.GENERIC_ITEMS &&
+    initialQueryVariables.genericType === GenericType.ParticipationProject;
+  const initialParticipationStatus = initialQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+  const initialParticipationStatuses = useMemo(
+    () =>
+      initialParticipationStatus
+        ? Array.isArray(initialParticipationStatus)
+          ? initialParticipationStatus
+          : [initialParticipationStatus]
+        : PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+    [initialParticipationStatus]
+  );
+  const participationInitialQueryVariables = isParticipationProjectOverview
+    ? {
+        ...initialQueryVariables,
+        [PARTICIPATION_PROJECT_STATUS_FILTER]: initialParticipationStatuses
+      }
+    : initialQueryVariables;
   const resourceFiltersQuery =
     query === QUERY_TYPES.GENERIC_ITEMS ? initialQueryVariables.genericType : query;
   const filterQuery =
@@ -176,10 +234,14 @@ export const Overviews = ({ navigation, route }) => {
       : query === QUERY_TYPES.NEWS_ITEMS
       ? _camelCase(route.params?.title)
       : query;
-  const [queryVariables, setQueryVariables] = useState({
-    ...initialQueryVariables,
-    ...resourceFiltersState[filterQuery]
-  });
+  const [queryVariables, setQueryVariables] = useState(() => ({
+    ...participationInitialQueryVariables,
+    ...resourceFiltersState[filterQuery],
+    ...(isParticipationProjectOverview && {
+      [PARTICIPATION_PROJECT_STATUS_FILTER]:
+        participationInitialQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER]
+    })
+  }));
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
@@ -213,11 +275,19 @@ export const Overviews = ({ navigation, route }) => {
     skip: !htmlContentName
   });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
+  const networkQueryVariables = useMemo(() => {
+    if (!isParticipationProjectOverview) return queryVariables;
+
+    const participationQueryVariables = { ...queryVariables };
+    delete participationQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+
+    return participationQueryVariables;
+  }, [isParticipationProjectOverview, queryVariables]);
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     fetchPolicy,
     variables: {
-      ...queryVariables,
+      ...networkQueryVariables,
       // if we want to sort by distance, we need to fetch all the entries at once. this is not a
       // big issue if we want to sort by distance, because getting the location usually takes longer
       // than fetching all entries.
@@ -225,11 +295,24 @@ export const Overviews = ({ navigation, route }) => {
       // have any open POIs in the next batch that would result in the list not getting any new
       // items and not reliably triggering another `fetchMore`
       limit:
-        sortByDistance || queryVariables.onlyCurrentlyOpen
+        isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
           ? undefined
           : route.params?.queryVariables?.limit
     }
   });
+
+  const participationProjectStatusCounts = useMemo(
+    () =>
+      isParticipationProjectOverview
+        ? getParticipationProjectStatusCounts(data?.[QUERY_TYPES.GENERIC_ITEMS] || [])
+        : [],
+    [data, isParticipationProjectOverview]
+  );
+  const selectedParticipationProjectStatuses = useMemo(
+    () =>
+      getSelectedParticipationProjectStatuses(queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER]),
+    [queryVariables]
+  );
 
   const listItems = useMemo(() => {
     let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
@@ -248,6 +331,14 @@ export const Overviews = ({ navigation, route }) => {
     if (queryVariables?.genericType === GenericType.Voucher) {
       parsedListItems = parsedListItems?.filter(
         (entry) => !!entry.params?.details?.vouchers?.length
+      );
+    }
+
+    if (isParticipationProjectOverview) {
+      parsedListItems = parsedListItems?.filter((entry) =>
+        selectedParticipationProjectStatuses.some((status) =>
+          isParticipationProjectStatus(entry.params?.details, status)
+        )
       );
     }
 
@@ -313,6 +404,8 @@ export const Overviews = ({ navigation, route }) => {
     titleDetail,
     bookmarkable,
     queryVariables,
+    isParticipationProjectOverview,
+    selectedParticipationProjectStatuses,
     subQuery,
     sortByDistance,
     currentPosition,
@@ -324,9 +417,16 @@ export const Overviews = ({ navigation, route }) => {
   ]);
 
   const hasParticipationProjectMapItems =
-    query === QUERY_TYPES.GENERIC_ITEMS &&
-    queryVariables?.genericType === GenericType.ParticipationProject &&
-    !!data?.[QUERY_TYPES.GENERIC_ITEMS]?.some(isParticipationProjectMapEligible);
+    isParticipationProjectOverview &&
+    !!data?.[QUERY_TYPES.GENERIC_ITEMS]?.some(
+      (item) =>
+        isParticipationProjectMapEligible(item) &&
+        selectedParticipationProjectStatuses.some(
+          (status) =>
+            PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(status) &&
+            isParticipationProjectStatus(item, status)
+        )
+    );
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -337,7 +437,7 @@ export const Overviews = ({ navigation, route }) => {
   }, [isConnected, setRefreshing, refetch]);
 
   const filterTypes = useMemo(() => {
-    return filterTypesHelper({
+    const configuredFilterTypes = filterTypesHelper({
       categories,
       category: initialQueryVariables?.category,
       data,
@@ -346,14 +446,28 @@ export const Overviews = ({ navigation, route }) => {
       queryVariables,
       resourceFilters
     });
+
+    if (!isParticipationProjectOverview) return configuredFilterTypes;
+
+    const participationStatusFilter = getParticipationProjectStatusFilter(
+      participationProjectStatusCounts,
+      selectedParticipationProjectStatuses
+    );
+
+    return participationStatusFilter
+      ? [...configuredFilterTypes, participationStatusFilter]
+      : configuredFilterTypes;
   }, [
     data,
     categories,
     excludeDataProviderIds,
-    initialQueryVariables?.category,
+    initialQueryVariables.category,
     queryVariables,
+    isParticipationProjectOverview,
+    participationProjectStatusCounts,
     resourceFilters,
-    resourceFiltersQuery
+    resourceFiltersQuery,
+    selectedParticipationProjectStatuses
   ]);
 
   useEffect(() => {
@@ -378,9 +492,19 @@ export const Overviews = ({ navigation, route }) => {
         undefined,
         excludeDataProviderIds,
         excludeMowasRegionalKeys
-      )
+      ),
+      ...(isParticipationProjectOverview && {
+        [PARTICIPATION_PROJECT_STATUS_FILTER]: initialParticipationStatuses
+      })
     });
-  }, [excludeDataProviderIds, excludeMowasRegionalKeys, query, route.params?.queryVariables]);
+  }, [
+    excludeDataProviderIds,
+    excludeMowasRegionalKeys,
+    isParticipationProjectOverview,
+    initialParticipationStatuses,
+    query,
+    route.params?.queryVariables
+  ]);
 
   useLayoutEffect(() => {
     if (
@@ -414,7 +538,7 @@ export const Overviews = ({ navigation, route }) => {
     return fetchMore({
       query: getFetchMoreQuery(query),
       variables: {
-        ...queryVariables,
+        ...networkQueryVariables,
         offset: data?.[query]?.length
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
@@ -428,7 +552,7 @@ export const Overviews = ({ navigation, route }) => {
         };
       }
     });
-  }, [data, query, queryVariables, fetchMore]);
+  }, [data, query, networkQueryVariables, fetchMore]);
 
   if (!query) return null;
 
@@ -452,7 +576,7 @@ export const Overviews = ({ navigation, route }) => {
       {!showMapFilter && (
         <Filter
           filterTypes={filterTypes}
-          initialQueryVariables={initialQueryVariables}
+          initialQueryVariables={participationInitialQueryVariables}
           isOverlay
           queryVariables={queryVariables}
           setQueryVariables={setQueryVariables}
@@ -540,7 +664,7 @@ export const Overviews = ({ navigation, route }) => {
             sectionByDate
             query={query}
             queryVariables={queryVariables}
-            fetchMoreData={fetchMoreData}
+            fetchMoreData={isParticipationProjectOverview ? undefined : fetchMoreData}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}

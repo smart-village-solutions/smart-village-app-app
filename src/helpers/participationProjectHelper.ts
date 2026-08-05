@@ -12,6 +12,7 @@ import { subtitle as formatSubtitle } from './textHelper';
 
 export type ParticipationProjectPayload = {
   capacity?: string | number;
+  color?: string;
   contact?: string;
   email?: string;
   endTime?: string;
@@ -22,10 +23,46 @@ export type ParticipationProjectPayload = {
   registrationRequired?: boolean | string;
   startTime?: string;
   statistics?: string;
-  status?: string;
+  status?:
+    | string
+    | {
+        color?: string;
+        label?: string;
+        name?: string;
+        status?: string;
+        text?: string;
+        title?: string;
+        value?: string;
+      };
   tags?: string[] | string;
   theme?: string;
   type?: string;
+};
+
+export const PARTICIPATION_PROJECT_STATUS = {
+  ACTIVE: 'active',
+  ANNOUNCED: 'announced',
+  COMPLETED: 'completed',
+  ENDED: 'ended',
+  RECENTLY_ENDED: 'recently_ended',
+  EMPTY: 'empty'
+} as const;
+
+export const PARTICIPATION_PROJECT_STATUS_FILTER = 'participationStatus';
+export const PARTICIPATION_PROJECT_DEFAULT_STATUSES: string[] = [
+  PARTICIPATION_PROJECT_STATUS.ACTIVE,
+  PARTICIPATION_PROJECT_STATUS.ANNOUNCED
+];
+export const PARTICIPATION_PROJECT_COMPLETED_STATUSES: string[] = [
+  PARTICIPATION_PROJECT_STATUS.COMPLETED,
+  PARTICIPATION_PROJECT_STATUS.ENDED,
+  PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED
+];
+
+export type ParticipationProjectStatusCount = {
+  count: number;
+  label: string;
+  status: string;
 };
 
 export type ParticipationProject = GenericItem<ParticipationProjectPayload> & {
@@ -64,6 +101,129 @@ export const normalizeParticipationProjectValue = (value?: unknown) => {
   if (!text || text === 'null' || text === 'undefined') return;
 
   return text;
+};
+
+const PARTICIPATION_PROJECT_STATUS_ALIASES: Record<string, string> = {
+  abgeschlossen: PARTICIPATION_PROJECT_STATUS.COMPLETED,
+  aktiv: PARTICIPATION_PROJECT_STATUS.ACTIVE,
+  beendet: PARTICIPATION_PROJECT_STATUS.ENDED,
+  finished: PARTICIPATION_PROJECT_STATUS.ENDED,
+  'kürzlich abgeschlossen': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'kürzlich beendet': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'kuerzlich abgeschlossen': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'kuerzlich beendet': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'recently completed': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'recently ended': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'recently-completed': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  'recently-ended': PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  recently_completed: PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  recently_ended: PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+  recentlycompleted: PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED
+};
+
+export const normalizeParticipationProjectStatus = (value?: unknown) => {
+  const status = normalizeParticipationProjectValue(value)?.toLowerCase();
+
+  if (!status) return PARTICIPATION_PROJECT_STATUS.EMPTY;
+
+  return PARTICIPATION_PROJECT_STATUS_ALIASES[status] || status;
+};
+
+const getParticipationProjectStatusRecord = (status: ParticipationProjectPayload['status']) =>
+  status && typeof status === 'object' ? status : undefined;
+
+export const getParticipationProjectStatusValue = ({ payload }: ParticipationProject) => {
+  const status = payload?.status;
+  const statusRecord = getParticipationProjectStatusRecord(status);
+
+  return normalizeParticipationProjectValue(
+    statusRecord?.label ||
+      statusRecord?.text ||
+      statusRecord?.title ||
+      statusRecord?.name ||
+      statusRecord?.status ||
+      statusRecord?.value ||
+      status
+  );
+};
+
+export const getParticipationProjectStatusColor = ({ payload }: ParticipationProject) => {
+  const statusRecord = getParticipationProjectStatusRecord(payload?.status);
+
+  return normalizeParticipationProjectValue(payload?.color || statusRecord?.color)?.toLowerCase();
+};
+
+export const getParticipationProjectStatus = (item: ParticipationProject) => {
+  const status = normalizeParticipationProjectStatus(getParticipationProjectStatusValue(item));
+  const color = getParticipationProjectStatusColor(item);
+
+  if (
+    ['gray', 'grey', 'grau'].includes(color || '') &&
+    !PARTICIPATION_PROJECT_COMPLETED_STATUSES.includes(status)
+  ) {
+    return PARTICIPATION_PROJECT_STATUS.COMPLETED;
+  }
+
+  return status;
+};
+
+export const getParticipationProjectStatusLabel = (item: ParticipationProject) => {
+  const status = getParticipationProjectStatus(item);
+  const statusLabels = texts.participationProject.statuses as Record<string, string>;
+  const configuredLabel = statusLabels?.[status];
+
+  return configuredLabel || getParticipationProjectStatusValue(item);
+};
+
+export const isParticipationProjectStatus = (item: ParticipationProject, status?: unknown) =>
+  getParticipationProjectStatus(item) === normalizeParticipationProjectStatus(status);
+
+export const isParticipationProjectActive = (item: ParticipationProject) =>
+  isParticipationProjectStatus(item, PARTICIPATION_PROJECT_STATUS.ACTIVE);
+
+export const isParticipationProjectCurrent = (item: ParticipationProject) =>
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES.some((status) =>
+    isParticipationProjectStatus(item, status)
+  );
+
+export const isParticipationProjectCompleted = (item: ParticipationProject) =>
+  PARTICIPATION_PROJECT_COMPLETED_STATUSES.includes(getParticipationProjectStatus(item));
+
+export const getParticipationProjectStatusCounts = (
+  items: ParticipationProject[]
+): ParticipationProjectStatusCount[] => {
+  const statusCounts = new Map<string, ParticipationProjectStatusCount>();
+
+  items.forEach((item) => {
+    const status = getParticipationProjectStatus(item);
+    const label = getParticipationProjectStatusLabel(item) || '';
+
+    const statusCount = statusCounts.get(status);
+
+    statusCounts.set(status, {
+      count: (statusCount?.count || 0) + 1,
+      label: statusCount?.label || label,
+      status
+    });
+  });
+
+  const statusOrder: string[] = [
+    PARTICIPATION_PROJECT_STATUS.ACTIVE,
+    PARTICIPATION_PROJECT_STATUS.ANNOUNCED,
+    PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED,
+    PARTICIPATION_PROJECT_STATUS.ENDED,
+    PARTICIPATION_PROJECT_STATUS.COMPLETED,
+    PARTICIPATION_PROJECT_STATUS.EMPTY
+  ];
+
+  return Array.from(statusCounts.values()).sort((first, second) => {
+    const firstIndex = statusOrder.indexOf(first.status);
+    const secondIndex = statusOrder.indexOf(second.status);
+    const firstOrder = firstIndex === -1 ? statusOrder.length : firstIndex;
+    const secondOrder = secondIndex === -1 ? statusOrder.length : secondIndex;
+
+    return firstOrder - secondOrder || first.label.localeCompare(second.label);
+  });
 };
 
 export const PARTICIPATION_PROJECT_OPEN_START_DATE_PREFIX = 'ab';

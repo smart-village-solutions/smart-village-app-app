@@ -706,6 +706,7 @@ export const texts = {
     categoryCount: (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'}`,
     calendarExport: 'Termin speichern',
     capacity: 'Kapazität',
+    completedCount: (count) => `${count} beendet`,
     contact: 'Kontakt',
     date: 'Zeitraum',
     email: 'E-Mail',
@@ -727,6 +728,15 @@ export const texts = {
     showAll: 'Alle Beteiligungen ansehen',
     statistics: 'Statistik',
     status: 'Status',
+    statusFilter: 'Status auswählen',
+    statuses: {
+      active: 'Aktiv',
+      announced: 'Angekündigt',
+      completed: 'Abgeschlossen',
+      ended: 'Beendet',
+      recently_ended: 'Kürzlich beendet',
+      empty: 'Ohne Status'
+    },
     tags: 'Schlagworte',
     theme: 'Thema',
     time: 'Uhrzeit',

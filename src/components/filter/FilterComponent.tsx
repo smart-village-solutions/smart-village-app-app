@@ -58,6 +58,7 @@ export const FilterComponent = ({
 
             {item.type === FILTER_TYPES.DROPDOWN && (
               <DropdownFilter
+                key={`${item.name}-${String(filters[item.name])}`}
                 filters={filters}
                 setFilters={setFilters}
                 {...item}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { colors, normalize } from '../../config';
@@ -33,34 +33,45 @@ export const DropdownFilter = ({
   setFilters,
   showSearch
 }: Props) => {
-  const initiallySelectedItem = !data.some((item) => item.selected)
-    ? {
-        id: 0,
-        index: 0,
-        value: placeholder || '',
-        selected: filters[name] ? false : true
-      }
-    : undefined;
+  const hasSelectedItem = data.some((item) => item.selected);
+  const initiallySelectedItem =
+    multipleSelect || !hasSelectedItem
+      ? {
+          id: 0,
+          index: 0,
+          value: placeholder || '',
+          selected: multipleSelect ? !hasSelectedItem : !filters[name]
+        }
+      : undefined;
+  const multipleFilterValues = Array.isArray(filters[name])
+    ? (filters[name] as Array<string | number>)
+    : [];
 
   const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
     ...(initiallySelectedItem ? [initiallySelectedItem] : []),
     ...data.map((item) => ({
       ...item,
       selected: multipleSelect
-        ? // TODO: test if this still works for multi select
-          Array.isArray(filters[name]) && filters[name]?.includes(item.id || item.value)
+        ? multipleFilterValues.includes(item.filterValue || item.id || item.value)
         : item.filterValue === filters[name] || item.value === filters[name]
     }))
   ]);
+  const isFirstDropdownDataEffect = useRef(true);
 
   useEffect(() => {
+    if (isFirstDropdownDataEffect.current) {
+      isFirstDropdownDataEffect.current = false;
+
+      if (multipleSelect) return;
+    }
+
     if (multipleSelect) {
       const selectedItems = dropdownData
         ?.filter(
-          (item: { selected: boolean; value: string; id: string | number }) =>
+          (item: DropdownProps) =>
             item.selected && item.value && parseInt(item?.id?.toString()) !== 0
         )
-        ?.map((item) => item.id || item.value);
+        ?.map((item) => item.filterValue || item.id || item.value) as string[] | number[];
 
       setFilters(
         updateFilters({
@@ -83,13 +94,6 @@ export const DropdownFilter = ({
       );
     }
   }, [dropdownData]);
-
-  // added to make the placeholder data appear in the dropdown after resetting the filter
-  useEffect(() => {
-    if (!filters[name]?.length && !dropdownData[0].selected) {
-      setDropdownData([...(initiallySelectedItem ? [initiallySelectedItem] : []), ...data]);
-    }
-  }, [filters]);
 
   return (
     <>

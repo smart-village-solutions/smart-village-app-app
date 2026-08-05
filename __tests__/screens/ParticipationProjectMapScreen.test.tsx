@@ -23,6 +23,8 @@ jest.mock('../../src/queries', () => ({
 }));
 
 jest.mock('../../src/helpers', () => ({
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
+  PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
   buildParticipationProjectPreviewItem: jest.fn((item, options) => ({
     accessibilityLabel: `${item.title} button`,
     bottomDivider: false,
@@ -44,6 +46,9 @@ jest.mock('../../src/helpers', () => ({
   ),
   isParticipationProjectMapEligible: jest.fn(
     (item) => !!(item.locations?.[0]?.geoLocation || item.addresses?.[0]?.geoLocation)
+  ),
+  isParticipationProjectStatus: jest.fn(
+    (item, status) => item.payload?.status?.trim().toLowerCase() === status
   )
 }));
 
@@ -121,13 +126,19 @@ describe('ParticipationProjectMapScreen', () => {
     useQuery.mockReset();
   });
 
-  it('renders markers only for active items with geo coordinates and opens the detail preview', () => {
+  it('renders markers only for current items with geo coordinates and opens the detail preview', () => {
     useQuery.mockReturnValue({
       data: {
         genericItems: [
           buildItem({
             id: 'active-1',
-            position: { latitude: 52.1, longitude: 11.6 }
+            position: { latitude: 52.1, longitude: 11.6 },
+            status: 'active'
+          }),
+          buildItem({
+            id: 'announced-1',
+            position: { latitude: 52.15, longitude: 11.65 },
+            status: 'announced'
           }),
           buildItem({
             id: 'inactive-1',
@@ -151,7 +162,10 @@ describe('ParticipationProjectMapScreen', () => {
 
     const route = {
       params: {
-        queryVariables: { categoryId: '7' },
+        queryVariables: {
+          categoryId: '7',
+          participationStatus: ['active', 'announced']
+        },
         rootRouteName: 'participation-projects',
         title: 'Aktive Projekte'
       }
@@ -173,7 +187,7 @@ describe('ParticipationProjectMapScreen', () => {
           expect.objectContaining({
             activeIconName: 'defaultPinActive',
             iconName: 'defaultPin',
-            id: 'inactive-1'
+            id: 'announced-1'
           })
         ],
         selectedMarker: undefined
@@ -194,6 +208,7 @@ describe('ParticipationProjectMapScreen', () => {
       rootRouteName: 'participation-projects',
       title: 'Beteiligungsprojekt'
     });
+    expect(useQuery.mock.calls[0][0][1]).not.toHaveProperty('participationStatus');
   });
 
   it('renders the empty state and wires the close button to goBack', () => {
@@ -227,5 +242,43 @@ describe('ParticipationProjectMapScreen', () => {
 
     fireEvent.press(getByTestId('header-left'));
     expect(navigation.goBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders completed projects when the status is selected in the list filter', () => {
+    useQuery.mockReturnValue({
+      data: {
+        genericItems: [
+          buildItem({
+            id: 'completed-1',
+            position: { latitude: 52.1, longitude: 11.6 },
+            status: 'completed'
+          })
+        ]
+      },
+      isLoading: false
+    });
+
+    const navigation = {
+      goBack: jest.fn(),
+      navigate: jest.fn(),
+      setOptions: jest.fn()
+    };
+
+    render(
+      <ParticipationProjectMapScreen
+        navigation={navigation as never}
+        route={{
+          params: {
+            queryVariables: { participationStatus: ['active', 'announced', 'completed'] }
+          }
+        } as never}
+      />
+    );
+
+    expect(mockMapLibre).toHaveBeenCalledWith(
+      expect.objectContaining({
+        locations: [expect.objectContaining({ id: 'completed-1' })]
+      })
+    );
   });
 });

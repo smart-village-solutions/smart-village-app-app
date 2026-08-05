@@ -57,6 +57,7 @@ export type FilterProps = {
   locations?: string;
   onlyCurrentlyOpen?: string;
   orderBy?: string;
+  participationStatus?: string | string[];
   radiusSearch?: {
     currentPosition?: boolean;
     distance?: number;

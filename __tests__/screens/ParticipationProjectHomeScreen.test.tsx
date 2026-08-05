@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import { ParticipationProjectHomeScreen } from '../../src/screens/ParticipationProject/ParticipationProjectHomeScreen';
 
@@ -42,7 +42,11 @@ jest.mock('../../src/components', () => {
     ReadAloudContent: ({ contentId }) => <View testID={contentId} />,
     SafeAreaViewFlex: ({ children }) => <View>{children}</View>,
     SectionHeader: ({ title }) => <Text>{title}</Text>,
-    TextListItem: ({ item }) => <Text>{item.title}</Text>,
+    TextListItem: ({ item }) => (
+      <Text testID={`list-item-${item.id}`}>
+        {[item.title, item.count, item.subtitle].filter((value) => value !== undefined).join('|')}
+      </Text>
+    ),
     WrapperVertical: ({ children }) => <View>{children}</View>
   };
 });
@@ -69,6 +73,7 @@ jest.mock('../../src/config', () => ({
     participationProject: {
       categories: 'Beteiligungsarten',
       categoryCount: (count: number) => `${count} Projekte`,
+      completedCount: (count: number) => `${count} beendet`,
       empty: 'Keine Beteiligungsprojekte gefunden.',
       featuredProjects: 'Empfohlen',
       participationProject: 'Beteiligungsprojekt',
@@ -85,8 +90,39 @@ jest.mock('../../src/config', () => ({
 }));
 
 jest.mock('../../src/helpers', () => ({
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
+  PARTICIPATION_PROJECT_STATUS: {
+    ACTIVE: 'active',
+    ANNOUNCED: 'announced',
+    COMPLETED: 'completed',
+    ENDED: 'ended',
+    RECENTLY_ENDED: 'recently_ended',
+    EMPTY: 'empty'
+  },
+  PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
   subtitle: jest.fn((...parts) => parts.filter(Boolean).join(' | ')),
+  getParticipationProjectStatus: jest.fn(
+    (item) =>
+      ({
+        beendet: 'ended',
+        'kürzlich beendet': 'recently_ended'
+      }[item.payload?.status?.trim().toLowerCase()] ||
+      item.payload?.status?.trim().toLowerCase() ||
+      'empty')
+  ),
   getParticipationProjectPreviewDate: jest.fn(),
+  isParticipationProjectCurrent: jest.fn(
+    (item) =>
+      item.payload?.status &&
+      ['active', 'announced'].includes(item.payload.status.trim().toLowerCase())
+  ),
+  isParticipationProjectCompleted: jest.fn(
+    (item) =>
+      item.payload?.color === 'gray' ||
+      ['completed', 'ended', 'recently_ended', 'beendet', 'kürzlich beendet'].includes(
+        item.payload?.status?.trim().toLowerCase()
+      )
+  ),
   mainImageOfMediaContents: jest.fn(),
   matomoTrackingString: jest.fn((parts) => parts.join(' / ')),
   removeHtml: jest.fn((value) => value),
@@ -131,5 +167,92 @@ describe('ParticipationProjectHomeScreen', () => {
 
     expect(getByText('<p>Intro zum Beteiligungsportal</p>')).toBeTruthy();
     expect(queryByTestId('participation-project-home-content')).toBeNull();
+  });
+
+  it('counts and features active and announced projects while reporting completed projects', () => {
+    useQuery.mockReturnValue({
+      data: {
+        genericItems: [
+          {
+            categories: [{ id: 'dialog', name: 'Dialog' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'active-project',
+            mediaContents: [],
+            payload: { itemIndex: 2, status: 'active', type: 'Dialog' },
+            title: 'Aktives Projekt',
+            webUrls: []
+          },
+          {
+            categories: [{ id: 'dialog', name: 'Dialog' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'announced-project',
+            mediaContents: [],
+            payload: { itemIndex: 1, status: 'announced', type: 'Dialog' },
+            title: 'Angekündigtes Projekt',
+            webUrls: []
+          },
+          {
+            categories: [{ id: 'dialog', name: 'Dialog' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'completed-project',
+            mediaContents: [],
+            payload: { itemIndex: 3, status: 'completed', type: 'Dialog' },
+            title: 'Abgeschlossenes Projekt',
+            webUrls: []
+          },
+          {
+            categories: [{ id: 'dialog', name: 'Dialog' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'ended-project',
+            mediaContents: [],
+            payload: { color: 'gray', itemIndex: 4, status: 'Beendet', type: 'Dialog' },
+            title: 'Beendetes Projekt',
+            webUrls: []
+          },
+          {
+            categories: [{ id: 'dialog', name: 'Dialog' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'recently-ended-project',
+            mediaContents: [],
+            payload: {
+              color: 'gray',
+              itemIndex: 5,
+              status: 'Kürzlich beendet',
+              type: 'Dialog'
+            },
+            title: 'Kürzlich beendetes Projekt',
+            webUrls: []
+          }
+        ]
+      },
+      isLoading: false,
+      refetch: jest.fn()
+    });
+
+    const navigation = { navigate: jest.fn() };
+    const screen = render(<ParticipationProjectHomeScreen navigation={navigation as never} />);
+
+    expect(screen.getByText('Dialog|2|3 beendet')).toBeTruthy();
+    expect(screen.getByText('Aktives Projekt')).toBeTruthy();
+    expect(screen.getByText('Angekündigtes Projekt')).toBeTruthy();
+    expect(screen.queryByText('Abgeschlossenes Projekt')).toBeNull();
+    expect(screen.queryByText('Beendetes Projekt')).toBeNull();
+    expect(screen.queryByText('Kürzlich beendetes Projekt')).toBeNull();
+
+    fireEvent.press(screen.getByText('Alle Beteiligungen ansehen'));
+
+    expect(navigation.navigate).toHaveBeenCalledWith(
+      'Index',
+      expect.objectContaining({
+        queryVariables: expect.objectContaining({
+          participationStatus: ['active', 'announced']
+        })
+      })
+    );
   });
 });
