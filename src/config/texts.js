@@ -1203,10 +1203,11 @@ export const texts = {
   search: {
     abort: 'Abbrechen',
     noResults: 'Keine Ergebnisse gefunden.',
-    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren',
+    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten, Touren und Beteiligungen',
     pleaseSearch: 'Bitte geben Sie einen Suchbegriff ein.',
     recordTypes: {
       eventRecord: 'Veranstaltungen',
+      genericItem: 'Weitere Inhalte',
       newsItem: 'Nachrichten',
       pointOfInterest: 'Orte',
       tour: 'Touren'

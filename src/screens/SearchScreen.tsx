@@ -13,30 +13,17 @@ import {
   Wrapper
 } from '../components';
 import { colors, device, Icon, texts } from '../config';
-import { parseListItemsFromQuery } from '../helpers';
+import {
+  DEFAULT_SEARCH_FILTER,
+  parseListItemsFromQuery,
+  pluralizeSearchRecordType
+} from '../helpers';
 import { useRenderItem } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
-const defaultFilter = ['news_item', 'event_record', 'point_of_interest', 'tour'];
-
-const pluralizeRecordType = (recordType: string) => {
-  switch (_camelCase(recordType)) {
-    case QUERY_TYPES.NEWS_ITEM:
-      return QUERY_TYPES.NEWS_ITEMS;
-    case QUERY_TYPES.EVENT_RECORD:
-      return QUERY_TYPES.EVENT_RECORDS;
-    case QUERY_TYPES.POINT_OF_INTEREST:
-      return QUERY_TYPES.POINTS_OF_INTEREST;
-    case QUERY_TYPES.TOUR:
-      return QUERY_TYPES.TOURS;
-    default:
-      return recordType;
-  }
-};
-
 const keyExtractor = (item: { id?: any } | string, index: any) => {
   if (typeof item === 'string') {
     return `index${index}-header${item}`;
@@ -51,7 +38,7 @@ export const SearchScreen = ({ navigation }) => {
   const { search: searchSettings = {} } = settings;
   const {
     minSearchLength = 3,
-    filter = defaultFilter,
+    filter = DEFAULT_SEARCH_FILTER,
     texts: searchSettingsTexts = {}
   } = searchSettings;
   const searchTexts = { ...texts.search, ...searchSettingsTexts };
@@ -138,7 +125,7 @@ export const SearchScreen = ({ navigation }) => {
         }
 
         return reactQueryClientRef.current.request(
-          getQuery(pluralizeRecordType(section.recordType)),
+          getQuery(pluralizeSearchRecordType(section.recordType)),
           {
             ids: section.ids
           }
@@ -153,7 +140,7 @@ export const SearchScreen = ({ navigation }) => {
 
     sections.forEach((section, index) => {
       const recordTypeQuery = recordTypeQueries[index];
-      const innerQuery = pluralizeRecordType(section.recordType);
+      const innerQuery = pluralizeSearchRecordType(section.recordType);
       const items = parseListItemsFromQuery(
         innerQuery,
         recordTypeQuery?.data,
