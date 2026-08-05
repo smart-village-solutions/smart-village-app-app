@@ -87,6 +87,7 @@ Recommended fields for a good first test:
     "startTime": "16:00",
     "statistics": "42 submissions",
     "status": "Aktiv",
+    "color": "green",
     "tags": ["Stadtentwicklung", "Dialog"],
     "theme": "Stadtentwicklung und Ländlicher Raum",
     "type": "Veranstaltung"
@@ -129,7 +130,7 @@ In this mapping:
 - `categoryName` creates or assigns the server-side category used by the home screen.
 - `payload.type` keeps the participation type available in the detail/list payload.
 - `payload.theme` keeps the source theme as metadata. It is not the home-screen category.
-- Optional structured fields such as `payload.status`, `payload.tags`, `payload.organizer`,
+- Optional structured fields such as `payload.status`, `payload.color`, `payload.tags`, `payload.organizer`,
   `payload.contact`, `payload.email`, `payload.phone`, `payload.capacity`,
   `payload.registrationRequired`, `payload.startTime` and `payload.endTime` improve the
   detail overview but are not required for the module to render.
@@ -468,6 +469,8 @@ The detail screen displays:
 - a shared `InfoCard` overview section for addresses, contacts and web URLs
 - theme from `payload.theme`
 - status from `payload.status`
+- a status color from `payload.color` or `payload.status.color`, rendered together with
+  the status text and exposed as one screen-reader label
 - instance, organizer, contact, email, phone, capacity, registration state and statistics
 - tags from `payload.tags`
 - appointment/date information through the shared `OpeningTimesCard`
@@ -532,6 +535,16 @@ The implementation includes:
 - existing accessible list item and button components
 - shared accessible detail components such as `InfoCard`, `OpeningTimesCard` and `MapLibre`
 - explicit accessibility labels for tag text and the calendar export action
+- a text-based accessibility label for the colored Participation status indicator
+
+### Participation Status and Search
+
+The client treats `active` and `announced` as the default visible statuses. Terminal
+statuses such as `completed`, `Beendet` and `Kürzlich beendet`, as well as otherwise
+unknown statuses marked with `"color": "gray"`, are excluded from the default list
+and map. They remain available through the status filter. The global search includes
+`generic_item` records and does not apply the list status filter, so terminal
+Participation Projects remain searchable.
 
 After changing this module, run:
 
