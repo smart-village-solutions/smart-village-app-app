@@ -59,14 +59,16 @@ describe('resolveTabBarColors', () => {
 describe('resolveTabIconColors', () => {
   it('keeps the outline visible but removes the fill when static content enables it', () => {
     expect(resolveTabIconColors(false, '#595959', true)).toEqual({
-      color: 'transparent',
+      color: undefined,
+      fillColor: 'transparent',
       strokeColor: '#595959'
     });
   });
 
   it('fills an active icon with its tint color when static content enables it', () => {
     expect(resolveTabIconColors(true, '#141414', true)).toEqual({
-      color: '#141414',
+      color: undefined,
+      fillColor: '#141414',
       strokeColor: '#141414'
     });
   });
@@ -74,6 +76,7 @@ describe('resolveTabIconColors', () => {
   it('preserves the default tint behavior when the option is disabled', () => {
     expect(resolveTabIconColors(false, '#595959', false)).toEqual({
       color: '#595959',
+      fillColor: undefined,
       strokeColor: undefined
     });
   });

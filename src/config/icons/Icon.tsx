@@ -66,6 +66,7 @@ import { normalize } from '../normalize';
 export type IconProps = {
   accessibilityLabel?: string;
   color?: string;
+  fillColor?: string;
   hasNoHitSlop?: boolean;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
@@ -92,6 +93,7 @@ export const getHitSlops = (size: number) => {
 const SvgIcon = ({
   accessibilityLabel,
   color: colorProp,
+  fillColor: fillColorProp,
   iconStyle,
   size = normalize(24),
   strokeColor: strokeColorProp,
@@ -100,7 +102,7 @@ const SvgIcon = ({
   xml
 }: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
   const { colors } = useTheme();
-  const color = colorProp || colors.primary;
+  const color = fillColorProp ?? colorProp ?? colors.primary;
   const strokeColor = strokeColorProp || color;
 
   return (
@@ -120,6 +122,7 @@ type TablerIconName = keyof typeof Tabler;
 const NamedIcon = ({
   accessibilityLabel,
   color: colorProp,
+  fillColor,
   hasNoHitSlop = false,
   iconStyle,
   name,
@@ -132,8 +135,7 @@ const NamedIcon = ({
   strokeWidth?: number;
 }) => {
   const { colors } = useTheme();
-  const fillColor = colorProp || colors.primary;
-  const strokeColor = strokeColorProp || fillColor;
+  const strokeColor = strokeColorProp ?? colorProp ?? colors.primary;
   let IconComponent: any;
 
   if (IconSet === Tabler) {
@@ -151,7 +153,7 @@ const NamedIcon = ({
     >
       <IconComponent
         color={strokeColor}
-        fill={strokeColorProp ? fillColor : undefined}
+        {...(fillColor !== undefined ? { fill: fillColor } : {})}
         name={name}
         size={size}
         style={iconStyle}
@@ -188,8 +190,12 @@ export const Icon = {
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
   Copy: (props: IconProps) => <NamedIcon name="copy" {...props} />,
   Document: (props: IconProps) => <NamedIcon name="file-description" {...props} />,
-  DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
-  EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
+  DrawerMenu: (props: IconProps) => (
+    <SvgIcon xml={drawerMenu} {...props} strokeWidth={props.strokeWidth ?? 1.75} />
+  ),
+  EditSetting: (props: IconProps) => (
+    <SvgIcon xml={editSetting} {...props} strokeWidth={props.strokeWidth ?? 1.75} />
+  ),
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <NamedIcon name="maximize" {...props} />,
   Flag: (props: IconProps) => <NamedIcon name="flag-2" {...props} />,
@@ -204,8 +210,12 @@ export const Icon = {
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
-  Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
-  LocationActive: (props: IconProps) => <SvgIcon xml={locationActive} {...props} />,
+  Location: (props: IconProps) => (
+    <SvgIcon xml={location} {...props} strokeWidth={props.strokeWidth ?? 1} />
+  ),
+  LocationActive: (props: IconProps) => (
+    <SvgIcon xml={locationActive} {...props} strokeWidth={props.strokeWidth ?? 1} />
+  ),
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Lupe: (props: IconProps) => <SvgIcon xml={lupe} {...props} />,
@@ -220,9 +230,13 @@ export const Icon = {
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
-  OwnLocation: (props: IconProps) => <SvgIcon xml={ownLocation} {...props} />,
+  OwnLocation: (props: IconProps) => (
+    <SvgIcon xml={ownLocation} {...props} strokeWidth={props.strokeWidth ?? 1} />
+  ),
   Pause: (props: IconProps) => <NamedIcon name="player-pause" {...props} />,
-  Pen: (props: IconProps) => <SvgIcon xml={pen} {...props} />,
+  Pen: (props: IconProps) => (
+    <SvgIcon xml={pen} {...props} strokeWidth={props.strokeWidth ?? 1.75} />
+  ),
   Pencil: (props: IconProps) => <NamedIcon name="pencil" {...props} />,
   PencilPlus: (props: IconProps) => <NamedIcon name="pencil-plus" {...props} />,
   Phone: (props: IconProps) => <NamedIcon name="phone" {...props} />,

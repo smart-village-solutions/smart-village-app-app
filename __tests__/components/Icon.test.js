@@ -44,12 +44,41 @@ describe('Icon', () => {
   });
 
   it('renders stateful tab icons with independent fill and stroke colors', () => {
-    const tree = renderIcon(<Icon.Trash color="transparent" strokeColor="#595959" />);
-    const serializedTree = JSON.stringify(tree.toJSON());
+    const tree = renderIcon(<Icon.Trash fillColor="transparent" strokeColor="#595959" />);
+    const svg = tree.root.findByType('RNSVGSvgView');
 
-    expect(serializedTree).toContain('transparent');
-    expect(serializedTree).toContain('#595959');
+    expect(svg.props.fill).toBe('transparent');
+    expect(svg.props.stroke).toBe('#595959');
   });
+
+  it('does not override the no-fill default of named outline icons', () => {
+    const tree = renderIcon(<Icon.HeartEmpty color="#00822b" />);
+    const svg = tree.root.findByType('RNSVGSvgView');
+
+    expect(svg.props.fill).toBe('none');
+    expect(svg.props.stroke).toBe('#00822b');
+  });
+
+  it.each([Icon.DrawerMenu, Icon.EditSetting, Icon.Pen])(
+    'uses a visible default stroke width for local outline icons',
+    (OutlineIcon) => {
+      const tree = renderIcon(<OutlineIcon />);
+
+      expect(JSON.stringify(tree.toJSON())).toContain('1.75');
+    }
+  );
+
+  it.each([Icon.Location, Icon.LocationActive, Icon.OwnLocation])(
+    'keeps fill-aware local icons visible when only their outline is enabled',
+    (OutlineIcon) => {
+      const tree = renderIcon(<OutlineIcon fillColor="transparent" strokeColor="#00822b" />);
+      const serializedTree = JSON.stringify(tree.toJSON());
+
+      expect(serializedTree).toContain('transparent');
+      expect(serializedTree).toContain('#00822b');
+      expect(serializedTree).toContain('"strokeWidth":1');
+    }
+  );
 
   it('uses the fill color as the default SVG stroke color', () => {
     const tree = renderIcon(<Icon.About color="#123456" />);

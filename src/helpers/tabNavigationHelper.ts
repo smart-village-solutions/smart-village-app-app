@@ -37,12 +37,14 @@ export const resolveTabIconColors = (
   if (!fillOnFocus) {
     return {
       color: tintColor,
+      fillColor: undefined,
       strokeColor: configuredStrokeColor
     };
   }
 
   return {
-    color: focused ? tintColor : 'transparent',
+    color: undefined,
+    fillColor: focused ? tintColor : 'transparent',
     strokeColor: configuredStrokeColor || tintColor
   };
 };
