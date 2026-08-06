@@ -123,6 +123,7 @@ const NamedIcon = ({
   hasNoHitSlop = false,
   iconStyle,
   name,
+  strokeColor: strokeColorProp,
   strokeWidth = 1,
   size = normalize(24),
   style
@@ -131,7 +132,8 @@ const NamedIcon = ({
   strokeWidth?: number;
 }) => {
   const { colors } = useTheme();
-  const color = colorProp || colors.primary;
+  const fillColor = colorProp || colors.primary;
+  const strokeColor = strokeColorProp || fillColor;
   let IconComponent: any;
 
   if (IconSet === Tabler) {
@@ -147,7 +149,14 @@ const NamedIcon = ({
       style={style}
       hitSlop={hasNoHitSlop ? undefined : getHitSlops(size)}
     >
-      <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={strokeWidth} />
+      <IconComponent
+        color={strokeColor}
+        fill={strokeColorProp ? fillColor : undefined}
+        name={name}
+        size={size}
+        style={iconStyle}
+        stroke={strokeWidth}
+      />
     </View>
   );
 };
