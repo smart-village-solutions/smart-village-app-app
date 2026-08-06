@@ -25,10 +25,6 @@ jest.mock('../../src/hooks', () => ({
   useStaticContent: jest.fn()
 }));
 
-jest.mock('../../src/ReadAloudAvailabilityProvider', () => ({
-  useReadAloudScrollContentContainerStyle: jest.fn((style) => style)
-}));
-
 jest.mock('../../src/components', () => {
   const React = require('react');
   const { Text, View } = require('react-native');
@@ -39,7 +35,6 @@ jest.mock('../../src/components', () => {
     EmptyMessage: ({ title }) => <Text>{title}</Text>,
     HtmlView: ({ html }) => <Text>{html}</Text>,
     LoadingSpinner: () => <Text>loading</Text>,
-    ReadAloudContent: ({ contentId }) => <View testID={contentId} />,
     SafeAreaViewFlex: ({ children }) => <View>{children}</View>,
     SectionHeader: ({ title }) => <Text>{title}</Text>,
     TextListItem: ({ item }) => (
