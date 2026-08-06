@@ -121,8 +121,6 @@ export const ServiceTile = ({
     tileStyle: itemTileStyle = {}
   } = itemStyle || {};
 
-  const hasTileStyle = !!Object.keys(itemTileStyle).length || !!Object.keys(tileStyle).length;
-
   const normalizedFontStyle = normalizeStyleValues(
     Object.keys(itemFontStyle).length ? itemFontStyle : fontStyle
   );
@@ -131,6 +129,16 @@ export const ServiceTile = ({
   );
   const normalizedTileStyle = omitTileDimensionOverrides(
     normalizeStyleValues(Object.keys(itemTileStyle).length ? itemTileStyle : tileStyle)
+  );
+  const hasTileStyle = !!Object.keys(itemTileStyle).length || !!Object.keys(tileStyle).length;
+  const serviceIconColor = normalizedIconStyle.color
+    ? normalizedIconStyle.color
+    : hasDiagonalGradientBackground
+    ? colors.lightestText
+    : colors.primary;
+  const serviceIconSize = normalizedIconStyle.size || normalize(30);
+  const serviceIconFallback = (
+    <Icon.NamedIcon color={serviceIconColor} hasNoHitSlop name="photo-off" size={serviceIconSize} />
   );
 
   return (
@@ -165,41 +173,33 @@ export const ServiceTile = ({
         <View style={[!isVisible && styles.invisible]}>
           {item.iconName ? (
             <Icon.NamedIcon
-              color={
-                normalizedIconStyle.color
-                  ? normalizedIconStyle.color
-                  : hasDiagonalGradientBackground
-                  ? colors.lightestText
-                  : undefined
-              }
+              color={serviceIconColor}
+              fillColor={normalizedIconStyle.fillColor}
               name={item.iconName}
-              size={normalizedIconStyle.size || normalize(30)}
+              size={serviceIconSize}
               strokeColor={normalizedIconStyle.strokeColor}
               strokeWidth={normalizedIconStyle.strokeWidth}
               style={[styles.serviceIcon, normalizedIconStyle]}
             />
           ) : item.svg ? (
             <IconUrl
-              color={
-                normalizedIconStyle.color
-                  ? normalizedIconStyle.color
-                  : hasDiagonalGradientBackground
-                  ? colors.lightestText
-                  : undefined
-              }
+              color={serviceIconColor}
+              fallback={serviceIconFallback}
+              fillColor={normalizedIconStyle.fillColor}
               iconName={item.svg}
-              size={normalizedIconStyle.size || normalize(30)}
+              size={serviceIconSize}
               strokeColor={normalizedIconStyle.strokeColor}
               strokeWidth={normalizedIconStyle.strokeWidth}
               style={[styles.serviceIcon, normalizedIconStyle]}
             />
-          ) : (
+          ) : item.icon || item.tile ? (
             <Image
+              FallbackContent={serviceIconFallback}
               source={{ uri: item.icon || item.tile }}
               style={[
                 styles.serviceImage,
                 !!item.icon && {
-                  height: normalizedIconStyle.size || normalize(30)
+                  height: serviceIconSize
                 },
                 !!item.tile &&
                   stylesWithProps({
@@ -212,6 +212,8 @@ export const ServiceTile = ({
               PlaceholderContent={null}
               resizeMode="contain"
             />
+          ) : (
+            <View style={[styles.serviceIcon, normalizedIconStyle]}>{serviceIconFallback}</View>
           )}
 
           {!!item?.query && <Badge />}

@@ -1,6 +1,7 @@
 import { Image as ExpoImage } from 'expo-image';
+import type { ImageSource } from 'expo-image';
 import { Grayscale } from 'react-native-color-matrix-image-filters';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -24,12 +25,18 @@ const addQueryParam = (url, param) => {
 
 const NO_IMAGE = { uri: 'NO_IMAGE' };
 
+type AppImageSource = ImageSource & {
+  captionText?: string;
+  copyright?: string;
+};
+
 type ImageProps = {
   aspectRatio?: { width: number; height: number };
   borderRadius?: number;
   button?: TImageButton;
   buttons?: TImageButton[];
   containerStyle?: object | object[];
+  FallbackContent?: React.ReactNode;
   imageRightsPosition?: 'inside-bottom-right' | 'outside-bottom';
   isImageFullWidth?: boolean;
   message?: string;
@@ -37,8 +44,14 @@ type ImageProps = {
   placeholderStyle?: object | object[];
   refreshInterval?: number;
   resizeMode?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
-  source: { uri: string; headers?: object } | number;
+  source: AppImageSource | number;
   style?: object | object[];
+};
+
+type ImageLoadState = {
+  hasError: boolean;
+  key: string;
+  loading: boolean;
 };
 
 /* eslint-disable complexity */
@@ -48,6 +61,7 @@ export const Image = ({
   button,
   buttons = [],
   containerStyle,
+  FallbackContent: fallbackContent,
   imageRightsPosition,
   isImageFullWidth,
   message,
@@ -61,12 +75,13 @@ export const Image = ({
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
-  const PlaceholderContent = placeholderContent || (
-    <ActivityIndicator color={colors.refreshControl} />
-  );
+  const PlaceholderContent =
+    placeholderContent === undefined ? (
+      <ActivityIndicator color={colors.refreshControl} />
+    ) : (
+      placeholderContent
+    );
   const placeholderStyle = placeholderStyleProp || styles.placeholderStyle;
-  const [source, setSource] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -75,17 +90,14 @@ export const Image = ({
   const { apiConfig = {} } = sueConfig;
   const { apiKey = '' } = apiConfig[apiConfig?.whichApi] || apiConfig;
 
-  useEffect(() => {
-    let mounted = true;
-
+  const source = useMemo(() => {
     const next =
-      typeof sourceProp === 'object' && sourceProp.uri
+      typeof sourceProp !== 'number' && sourceProp.uri
         ? { ...sourceProp, uri: sourceProp.uri.trim?.() }
         : sourceProp;
 
-    if (!next?.uri || next.uri.startsWith('file:///') || typeof next === 'number') {
-      mounted && setSource(next);
-      return () => (mounted = false);
+    if (typeof next === 'number' || !next.uri || next.uri.startsWith('file:///')) {
+      return next;
     }
 
     const uriWithTick =
@@ -95,15 +107,28 @@ export const Image = ({
 
     const headers = {
       ...(next.headers || {}),
-      ...(apiKey ? { api_key: apiKey } : {})
+      ...(apiKey ? { api_key: String(apiKey) } : {})
     };
 
-    mounted && setSource({ uri: uriWithTick, headers });
-
-    return () => {
-      mounted = false;
-    };
+    return { ...next, uri: uriWithTick, headers };
   }, [timestamp, refreshInterval, sourceProp, apiKey]);
+
+  const hasRenderableSource =
+    typeof source === 'number' || (typeof source?.uri === 'string' && source.uri.trim().length > 0);
+  const sourceKey =
+    typeof source === 'number'
+      ? `asset:${source}`
+      : `${source?.uri || ''}:${JSON.stringify(source?.headers || {})}`;
+  const [loadState, setLoadState] = useState<ImageLoadState>(() => ({
+    hasError: !hasRenderableSource,
+    key: sourceKey,
+    loading: hasRenderableSource
+  }));
+  const currentLoadState =
+    loadState.key === sourceKey
+      ? loadState
+      : { hasError: !hasRenderableSource, key: sourceKey, loading: hasRenderableSource };
+  const { hasError, loading } = currentLoadState;
 
   const defaultImageStyle = stylesForImage(aspectRatio, isImageFullWidth).defaultStyle;
 
@@ -112,33 +137,49 @@ export const Image = ({
     [style, defaultImageStyle, borderRadius]
   );
 
-  if (source?.uri === NO_IMAGE.uri) return null;
+  if (typeof source !== 'number' && source?.uri === NO_IMAGE.uri) return null;
 
-  const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
+  const sourceMetadata = typeof sourceProp === 'number' ? undefined : sourceProp;
+  const showImageRights = !!globalSettings?.showImageRights && !!sourceMetadata?.copyright;
   const showChildren = !!message || !!button || showImageRights;
+  const showFallback = hasError && fallbackContent !== undefined;
 
-  const imageElement = (
+  const imageElement = hasRenderableSource ? (
     <ExpoImage
       source={source}
       style={imageStyle}
       contentFit={resizeMode}
-      accessible={!!sourceProp?.captionText}
-      accessibilityLabel={`${sourceProp?.captionText ? sourceProp.captionText : ''} ${
+      accessible={!!sourceMetadata?.captionText}
+      accessibilityLabel={`${sourceMetadata?.captionText ? sourceMetadata.captionText : ''} ${
         device.platform === 'ios' ? consts.a11yLabel.image : ''
       }`}
-      onLoadStart={() => setLoading(true)}
-      onLoadEnd={() => setLoading(false)}
+      onLoadStart={() => {
+        setLoadState({ hasError: false, key: sourceKey, loading: true });
+      }}
+      onError={() => {
+        setLoadState({ hasError: true, key: sourceKey, loading: false });
+      }}
+      onLoadEnd={() =>
+        setLoadState((state) => ({
+          hasError: state.key === sourceKey && state.hasError,
+          key: sourceKey,
+          loading: false
+        }))
+      }
     />
-  );
+  ) : null;
 
   return (
     <View style={[containerStyle, placeholderStyle]}>
       {isGrayscaleEnabled ? <Grayscale>{imageElement}</Grayscale> : imageElement}
 
-      {(loading || showChildren) && (
+      {(loading || showFallback || showChildren) && (
         <View style={styles.overlayFill} pointerEvents="box-none">
           {loading && (
             <View style={[styles.overlayFill, styles.loadingStyle]}>{PlaceholderContent}</View>
+          )}
+          {showFallback && (
+            <View style={[styles.overlayFill, styles.loadingStyle]}>{fallbackContent}</View>
           )}
           {showChildren && (
             <View style={[styles.overlayFill, styles.contentContainerStyle]}>
@@ -149,14 +190,17 @@ export const Image = ({
                   <ImageButton key={`${button.title}-${index}`} button={button} />
                 ))}
               {!imageRightsPosition && showImageRights && (
-                <ImageRights imageRights={sourceProp.copyright} />
+                <ImageRights imageRights={sourceMetadata?.copyright || ''} />
               )}
             </View>
           )}
         </View>
       )}
       {!!imageRightsPosition && showImageRights && (
-        <ImageRights imageRights={sourceProp.copyright} imageRightsPosition={imageRightsPosition} />
+        <ImageRights
+          imageRights={sourceMetadata?.copyright || ''}
+          imageRightsPosition={imageRightsPosition}
+        />
       )}
     </View>
   );

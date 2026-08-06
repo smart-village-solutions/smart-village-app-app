@@ -31,6 +31,13 @@ A complete copy-ready configuration fragment is available in
 The current card-list configuration names are `overtitleStyle` and `overtitle`; the legacy
 `topTitleStyle` and `topTitle` names should not be used in new remote configurations.
 Service-tile icon dimensions use the React Native icon-style key `size`, not `iconSize`.
+For named outline icons, `color` is the normal line color and `strokeColor` is an optional
+override. Use `fillColor` only when the icon should intentionally have a separate fill. Omitting
+`fillColor` keeps Tabler outline icons transparent in both themes.
+
+Remote service SVGs inherit the configured icon color. Monochrome black `fill` and `stroke` values
+are converted to that color; invalid, missing, or timed-out icon sources render a themed fallback
+icon instead of remaining blank or showing an endless loading indicator.
 
 ## Static-content carousel button icons
 
