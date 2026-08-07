@@ -11,6 +11,10 @@ type SpeechChunk = {
 };
 
 const DEFAULT_TTS_LANGUAGE = 'de-DE';
+const NATIVE_SPEECH_RATE_SCALE = 0.9;
+
+export const getNativeSpeechRate = (speechRate: number) =>
+  Math.min(Math.max(speechRate * NATIVE_SPEECH_RATE_SCALE, 0.1), 2);
 
 type ChunkPart = {
   start: number;
@@ -174,7 +178,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
 
         Speech.speak(speechText, {
           language: DEFAULT_TTS_LANGUAGE,
-          rate: speechRate,
+          rate: getNativeSpeechRate(speechRate),
           onBoundary: (event: { charIndex?: number; charLength?: number }) => {
             if (generationRef.current !== generation || !mountedRef.current) return;
 
@@ -268,7 +272,6 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     setIsSpeaking(false);
     setIsPaused(true);
     setCurrentItemIndex(queue[resumeChunkIndexRef.current]?.sourceIndex || 0);
-    setActiveWordRange(null);
   }, [isSpeaking, queue]);
 
   const resume = useCallback(() => {
@@ -278,6 +281,44 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     pausedByUserRef.current = false;
     playFromIndex(resumeChunkIndexRef.current, resumeChunkOffsetRef.current);
   }, [enabled, isPaused, playFromIndex, queue.length]);
+
+  const skipToItem = useCallback(
+    async (targetItemIndex: number) => {
+      if (!enabled || !queue.length || !items.length) return;
+
+      const nextItemIndex = Math.min(Math.max(targetItemIndex, 0), items.length - 1);
+      const nextChunkIndex = queue.findIndex((chunk) => chunk.sourceIndex === nextItemIndex);
+      if (nextChunkIndex < 0) return;
+
+      generationRef.current += 1;
+      pausedByUserRef.current = false;
+      resumeChunkIndexRef.current = nextChunkIndex;
+      resumeChunkOffsetRef.current = 0;
+      activeChunkIndexRef.current = nextChunkIndex;
+      activeChunkResumeOffsetRef.current = 0;
+
+      try {
+        await Speech.stop();
+      } catch (error) {
+        console.warn('Could not skip to the requested speech section.', error);
+      }
+
+      if (!mountedRef.current) return;
+      setCurrentItemIndex(nextItemIndex);
+      setActiveWordRange(null);
+      playFromIndex(nextChunkIndex);
+    },
+    [enabled, items.length, playFromIndex, queue]
+  );
+
+  const skipPrevious = useCallback(
+    () => skipToItem(currentItemIndex - 1),
+    [currentItemIndex, skipToItem]
+  );
+  const skipNext = useCallback(
+    () => skipToItem(currentItemIndex + 1),
+    [currentItemIndex, skipToItem]
+  );
 
   useEffect(() => {
     if (enabled) return;
@@ -363,12 +404,16 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     activeItemId: items[currentItemIndex]?.id,
     activeWordRange,
     canStart: enabled && queue.length > 0,
+    canSkipNext: currentItemIndex < items.length - 1,
+    canSkipPrevious: currentItemIndex > 0,
     currentItemIndex,
     currentItemText: items[currentItemIndex]?.text || '',
     isPaused,
     isSpeaking,
     pause,
     resume,
+    skipNext,
+    skipPrevious,
     start,
     stop,
     totalItems: items.length

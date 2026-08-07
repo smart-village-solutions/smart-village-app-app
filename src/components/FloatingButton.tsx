@@ -3,7 +3,7 @@ import _filter from 'lodash/filter';
 import React, { useContext, useMemo } from 'react';
 import { Platform, TouchableOpacity, View } from 'react-native';
 
-import { Icon, normalize, texts } from '../config';
+import { Icon, normalize } from '../config';
 import { useAccessibilityPreferences, useHomeRefresh, useStaticContent } from '../hooks';
 import { navigationRef, type RootNavigationParamList } from '../navigation/navigationRef';
 import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
@@ -54,9 +54,6 @@ export const FloatingButton = ({
   const isReadAloudQuickToggleEnabled = preferences.readAloudEnabled;
   const readAloudItems = getRouteItems(activeRouteKey);
   const showReadAloudQuickToggle = features.readAloud && isRouteAvailable(activeRouteKey);
-  const readAloudQuickToggleLabel = isReadAloudQuickToggleEnabled
-    ? texts.settingsContents.accessibility.readAloud.disableQuickToggle
-    : texts.settingsContents.accessibility.readAloud.enableQuickToggle;
   const positionStyle = useMemo(
     () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
     [bottomOffset, navigationType]
@@ -82,56 +79,49 @@ export const FloatingButton = ({
   if (!showReadAloudQuickToggle && !visibleItems.length) return null;
 
   return (
-    <View style={[styles.container, positionStyle]}>
+    <View pointerEvents="box-none" style={[styles.container, positionStyle]}>
       {showReadAloudQuickToggle && (
-        <View style={styles.readAloudRow}>
-          {isReadAloudQuickToggleEnabled && (
-            <FloatingReadAloudPlayer key={activeRouteKey} items={readAloudItems} />
-          )}
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            accessibilityLabel={readAloudQuickToggleLabel}
-            accessibilityRole="switch"
-            accessibilityState={{ checked: isReadAloudQuickToggleEnabled }}
-            onPress={() => setPreference('readAloudEnabled', !isReadAloudQuickToggleEnabled)}
-            style={[
-              styles.button,
-              styles.readAloudButton,
-              isReadAloudQuickToggleEnabled ? styles.buttonEnabled : styles.buttonDisabled
-            ]}
-          >
-            <Icon.NamedIcon
-              name={isReadAloudQuickToggleEnabled ? 'volume' : 'volume-off'}
-              color={colors.lightestText}
-              size={normalize(24)}
-            />
-          </TouchableOpacity>
+        <View pointerEvents="box-none" style={styles.readAloudRow}>
+          <FloatingReadAloudPlayer
+            isEnabled={isReadAloudQuickToggleEnabled}
+            items={readAloudItems}
+            key={activeRouteKey}
+            onDisable={() => setPreference('readAloudEnabled', false)}
+            onEnable={() => setPreference('readAloudEnabled', true)}
+          />
         </View>
       )}
 
-      {visibleItems.map((item, index) => (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          accessibilityLabel={item.accessibilityLabel}
-          accessibilityRole="button"
-          key={`${item.accessibilityLabel}-${index}`}
-          onPress={() => {
-            if (!navigationRef.isReady()) {
-              return;
-            }
+      {!!visibleItems.length && (
+        <View pointerEvents="box-none" style={styles.additionalButtons}>
+          {visibleItems.map((item, index) => (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              accessibilityLabel={item.accessibilityLabel}
+              accessibilityRole="button"
+              key={`${item.accessibilityLabel}-${index}`}
+              onPress={() => {
+                if (!navigationRef.isReady()) {
+                  return;
+                }
 
-            navigationRef.navigate(item.routeName, item.params);
-          }}
-          style={[styles.button, styles.buttonEnabled]}
-        >
-          {item.icon ? (
-            <Image source={{ uri: item.icon }} style={styles.icon} />
-          ) : item.iconName ? (
-            <Icon.NamedIcon name={item.iconName} color={colors.lightestText} size={normalize(24)} />
-          ) : null}
-        </TouchableOpacity>
-      ))}
+                navigationRef.navigate(item.routeName, item.params);
+              }}
+              style={[styles.button, styles.buttonEnabled]}
+            >
+              {item.icon ? (
+                <Image source={{ uri: item.icon }} style={styles.icon} />
+              ) : item.iconName ? (
+                <Icon.NamedIcon
+                  name={item.iconName}
+                  color={colors.lightestText}
+                  size={normalize(24)}
+                />
+              ) : null}
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
@@ -159,8 +149,9 @@ const createStyles = (colors) => ({
     })
   },
 
-  buttonDisabled: {
-    backgroundColor: colors.darkText
+  additionalButtons: {
+    alignItems: 'flex-end',
+    alignSelf: 'flex-end'
   },
 
   buttonEnabled: {
@@ -168,7 +159,7 @@ const createStyles = (colors) => ({
   },
 
   container: {
-    alignItems: 'flex-end',
+    left: normalize(16),
     position: 'absolute',
     right: normalize(16)
   },
@@ -178,13 +169,10 @@ const createStyles = (colors) => ({
     width: normalize(24)
   },
 
-  readAloudButton: {
-    marginTop: 0
-  },
-
   readAloudRow: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    marginTop: normalize(8)
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    zIndex: 1
   }
 });

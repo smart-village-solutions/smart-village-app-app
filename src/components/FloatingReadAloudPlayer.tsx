@@ -1,60 +1,153 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Animated, Easing, Platform, Pressable, TextStyle, View, ViewStyle } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { device, Icon, normalize, texts } from '../config';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 import { useDetailSpeech } from '../hooks';
-import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
-import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
+import { ThemeColorPalette } from '../types/Theme';
 
 import { RegularText } from './Text';
 
 type Props = {
+  isEnabled: boolean;
   items: DetailSpeechItem[];
+  onDisable: () => void;
+  onEnable: () => void;
 };
 
-const CONTROL_SIZE = normalize(40);
+type PlayerControlProps = {
+  disabled?: boolean;
+  expanded?: boolean;
+  iconName?: string;
+  label: string;
+  onPress: () => void;
+  text?: string;
+};
+
+type ReadAlongWord = {
+  active: boolean;
+  key: string;
+  text: string;
+};
+
 const FLOATING_BUTTON_SIZE = normalize(56);
-const PLAYER_WIDTH = Math.min(device.width - normalize(95), normalize(390));
-const EXPANDED_PLAYER_WIDTH = device.width - normalize(32);
-const EXPANDED_PLAYER_OVERLAP = FLOATING_BUTTON_SIZE;
-const EXPANDED_CONTROLS_INSET = FLOATING_BUTTON_SIZE + normalize(8);
-const SMALL_PLAYER_HEIGHT = normalize(56);
-const EXPANDED_PLAYER_HEIGHT = Math.min(device.height * 0.52, normalize(360));
-const TEXT_SCROLL_END_PADDING = normalize(16);
-const PLAYER_BOTTOM_SPACING = {
-  collapsed: SMALL_PLAYER_HEIGHT + normalize(40),
-  expanded: EXPANDED_PLAYER_HEIGHT + normalize(40)
+const CONTROL_TOUCH_SIZE = normalize(44);
+const CONTROL_VISUAL_SIZE = normalize(36);
+const COMPACT_PLAYER_HEIGHT = normalize(56);
+const EXPANDED_PLAYER_HEIGHT = normalize(112);
+const PLAYER_WIDTH = device.width - normalize(32);
+const PLAYER_BOTTOM_CLEARANCE = normalize(16);
+const SPEED_OPTIONS = [1, 1.2, 1.5, 1.8, 2, 0.5, 0.8];
+const TICKER_WORD_COUNT = 7;
+
+const formatSpeechRate = (rate: number) => `${rate.toFixed(1).replace('.', ',')}x`;
+
+export const getNextSpeechRate = (currentRate: number) => {
+  const currentIndex = SPEED_OPTIONS.findIndex((rate) => Math.abs(rate - currentRate) < 0.001);
+
+  return SPEED_OPTIONS[(currentIndex + 1) % SPEED_OPTIONS.length];
 };
 
-const SPEED_OPTIONS = [
-  { label: texts.settingsContents.accessibility.readAloud.speedSlow, value: 0.8 },
-  { label: texts.settingsContents.accessibility.readAloud.speedNormal, value: 1.0 },
-  { label: texts.settingsContents.accessibility.readAloud.speedFast, value: 1.2 }
-];
+export const getReadAlongWords = (
+  text: string,
+  activeWordRange?: { length: number; start: number } | null
+): ReadAlongWord[] => {
+  const matches = Array.from(text.matchAll(/\S+/g)).map((match, index) => ({
+    end: (match.index || 0) + match[0].length,
+    key: `${match.index || 0}-${index}`,
+    start: match.index || 0,
+    text: match[0]
+  }));
+
+  if (!matches.length) return [];
+
+  const activeStart = Math.max(activeWordRange?.start ?? 0, 0);
+  const activeIndex = Math.max(
+    matches.findIndex(({ end, start }) => activeStart >= start && activeStart < end),
+    0
+  );
+  const maxStartIndex = Math.max(matches.length - TICKER_WORD_COUNT, 0);
+  const startIndex = Math.min(
+    Math.max(activeIndex - Math.floor(TICKER_WORD_COUNT / 2), 0),
+    maxStartIndex
+  );
+
+  return matches.slice(startIndex, startIndex + TICKER_WORD_COUNT).map((word, index) => ({
+    active: startIndex + index === activeIndex,
+    key: word.key,
+    text: word.text
+  }));
+};
+
+const PlayerControl = ({
+  disabled = false,
+  expanded,
+  iconName,
+  label,
+  onPress,
+  text
+}: PlayerControlProps) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <Pressable
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ disabled, expanded }}
+      disabled={disabled}
+      onPress={onPress}
+      style={styles.controlTouchTarget}
+    >
+      {({ pressed }) => (
+        <View
+          style={[
+            styles.controlVisual,
+            disabled && styles.controlVisualDisabled,
+            pressed && !disabled && styles.controlVisualPressed
+          ]}
+        >
+          {text ? (
+            <RegularText ignoreTextScale style={styles.speedText}>
+              {text}
+            </RegularText>
+          ) : (
+            <Icon.NamedIcon
+              color={pressed && !disabled ? colors.onPrimary : colors.background}
+              hasNoHitSlop
+              name={iconName}
+              size={normalize(18)}
+              strokeWidth={2}
+            />
+          )}
+        </View>
+      )}
+    </Pressable>
+  );
+};
 
 // eslint-disable-next-line complexity
-export const FloatingReadAloudPlayer = ({ items }: Props) => {
-  const { colors: colors } = useTheme();
-
+export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable }: Props) => {
+  const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const { isHighContrastEnabled } = useContext(AccessibilityContext);
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { setPlayerBottomSpacing } = useReadAloudAvailability();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isControlsVisible, setIsControlsVisible] = useState(false);
+  const [isReadAlongRendered, setIsReadAlongRendered] = useState(false);
+  const [showReadAlong, setShowReadAlong] = useState(false);
   const [speechRate, setSpeechRate] = useState(1);
-  const [textContentHeight, setTextContentHeight] = useState(0);
-  const [textViewportHeight, setTextViewportHeight] = useState(0);
-  const [previewContentWidth, setPreviewContentWidth] = useState(0);
-  const [previewViewportWidth, setPreviewViewportWidth] = useState(0);
-  const [heightAnimation] = useState(() => new Animated.Value(SMALL_PLAYER_HEIGHT));
-  const scrollViewRef = useRef<ScrollView>(null);
-  const previewScrollViewRef = useRef<ScrollView>(null);
+  const [width] = useState(() => new Animated.Value(FLOATING_BUTTON_SIZE));
+  const [height] = useState(() => new Animated.Value(COMPACT_PLAYER_HEIGHT));
+  const [readAlongProgress] = useState(() => new Animated.Value(0));
 
   const {
-    activeItemId,
     activeWordRange,
+    canSkipNext,
+    canSkipPrevious,
     canStart,
     currentItemIndex,
     currentItemText,
@@ -62,92 +155,116 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
     isSpeaking,
     pause,
     resume,
+    skipNext,
+    skipPrevious,
     start,
-    stop
-  } = useDetailSpeech(items, true, speechRate);
+    stop,
+    totalItems
+  } = useDetailSpeech(items, isEnabled, speechRate);
 
-  const itemOffsets = useMemo(() => {
-    return items.reduce<{ offset: number; values: number[] }>(
-      (acc, item, index) => ({
-        offset: acc.offset + item.text.length + (index < items.length - 1 ? 2 : 0),
-        values: [...acc.values, acc.offset]
+  const animationDuration = isReduceMotionEnabled ? 0 : 240;
+  const rateLabel = formatSpeechRate(speechRate);
+  const primaryLabel = isSpeaking
+    ? texts.settingsContents.accessibility.readAloud.pause
+    : isPaused
+    ? texts.settingsContents.accessibility.readAloud.resume
+    : texts.settingsContents.accessibility.readAloud.start;
+  const progressLabel = texts.settingsContents.accessibility.readAloud.progress
+    .replace('{{current}}', String(Math.min(currentItemIndex + 1, totalItems)))
+    .replace('{{total}}', String(totalItems));
+  const readAlongWords = useMemo(
+    () => getReadAlongWords(currentItemText, activeWordRange),
+    [activeWordRange, currentItemText]
+  );
+
+  const collapsePlayer = useCallback(() => {
+    width.stopAnimation();
+    height.stopAnimation();
+    readAlongProgress.stopAnimation();
+
+    Animated.parallel([
+      Animated.timing(width, {
+        duration: animationDuration,
+        easing: Easing.inOut(Easing.cubic),
+        toValue: FLOATING_BUTTON_SIZE,
+        useNativeDriver: false
       }),
-      { offset: 0, values: [] }
-    ).values;
-  }, [items]);
-
-  const allText = useMemo(() => items.map((item) => item.text).join('\n\n'), [items]);
-  const activeGlobalWordRange = useMemo(() => {
-    if (!activeWordRange) return null;
-
-    return {
-      length: activeWordRange.length,
-      start: (itemOffsets[currentItemIndex] || 0) + activeWordRange.start
-    };
-  }, [activeWordRange, currentItemIndex, itemOffsets]);
+      Animated.timing(height, {
+        duration: animationDuration,
+        easing: Easing.inOut(Easing.cubic),
+        toValue: COMPACT_PLAYER_HEIGHT,
+        useNativeDriver: false
+      }),
+      Animated.timing(readAlongProgress, {
+        duration: animationDuration,
+        easing: Easing.in(Easing.cubic),
+        toValue: 0,
+        useNativeDriver: false
+      })
+    ]).start(({ finished }) => {
+      if (!finished) return;
+      setIsControlsVisible(false);
+      setIsReadAlongRendered(false);
+      setShowReadAlong(false);
+    });
+  }, [animationDuration, height, readAlongProgress, width]);
 
   useEffect(() => {
-    Animated.timing(heightAnimation, {
-      duration: 220,
+    if (isEnabled) return;
+
+    collapsePlayer();
+  }, [collapsePlayer, isEnabled]);
+
+  useEffect(() => {
+    const targetWidth = isControlsVisible ? PLAYER_WIDTH : FLOATING_BUTTON_SIZE;
+
+    Animated.timing(width, {
+      duration: animationDuration,
       easing: Easing.out(Easing.cubic),
-      toValue: isExpanded ? EXPANDED_PLAYER_HEIGHT : SMALL_PLAYER_HEIGHT,
+      toValue: targetWidth,
       useNativeDriver: false
     }).start();
+  }, [animationDuration, isControlsVisible, width]);
 
+  useEffect(() => {
     setPlayerBottomSpacing(
-      isExpanded ? PLAYER_BOTTOM_SPACING.expanded : PLAYER_BOTTOM_SPACING.collapsed
+      (isReadAlongRendered ? EXPANDED_PLAYER_HEIGHT : COMPACT_PLAYER_HEIGHT) +
+        PLAYER_BOTTOM_CLEARANCE
     );
 
     return () => setPlayerBottomSpacing(0);
-  }, [heightAnimation, isExpanded, setPlayerBottomSpacing]);
+  }, [isReadAlongRendered, setPlayerBottomSpacing]);
 
-  useEffect(() => {
-    if (!isExpanded || !activeGlobalWordRange || !allText.length) return;
-    if (textContentHeight <= textViewportHeight) return;
+  const toggleReadAlong = useCallback(() => {
+    const shouldShowReadAlong = !showReadAlong;
 
-    const activeWordEnd = activeGlobalWordRange.start + activeGlobalWordRange.length;
-    const readProgress = Math.min(activeWordEnd / allText.length, 1);
-    const visibleTextRatio = Math.min(textViewportHeight / textContentHeight, 1);
-    const scrollStartProgress = Math.min(0.18, Math.max(0.06, visibleTextRatio * 0.45));
-    const adjustedProgress =
-      readProgress <= scrollStartProgress
-        ? 0
-        : (readProgress - scrollStartProgress) / (1 - scrollStartProgress);
-    const maxScrollY = Math.max(textContentHeight - textViewportHeight, 0);
+    height.stopAnimation();
+    readAlongProgress.stopAnimation();
 
-    scrollViewRef.current?.scrollTo({
-      animated: true,
-      y: Math.max(0, maxScrollY * adjustedProgress)
-    });
-  }, [activeGlobalWordRange, allText.length, isExpanded, textContentHeight, textViewportHeight]);
-
-  useEffect(() => {
-    if (!isSpeaking || !activeWordRange || !currentItemText.length) {
-      previewScrollViewRef.current?.scrollTo({ animated: true, x: 0 });
-      return;
+    if (shouldShowReadAlong) {
+      setIsReadAlongRendered(true);
     }
+    setShowReadAlong(shouldShowReadAlong);
 
-    if (previewContentWidth <= previewViewportWidth) return;
-
-    const activeWordEnd = Math.min(
-      activeWordRange.start + activeWordRange.length,
-      currentItemText.length
-    );
-    const readProgress = activeWordEnd / currentItemText.length;
-    const maxScrollX = Math.max(previewContentWidth - previewViewportWidth, 0);
-    const targetScrollX = readProgress * previewContentWidth - previewViewportWidth + normalize(20);
-
-    previewScrollViewRef.current?.scrollTo({
-      animated: true,
-      x: Math.min(Math.max(0, targetScrollX), maxScrollX)
+    Animated.parallel([
+      Animated.timing(height, {
+        duration: animationDuration,
+        easing: Easing.inOut(Easing.cubic),
+        toValue: shouldShowReadAlong ? EXPANDED_PLAYER_HEIGHT : COMPACT_PLAYER_HEIGHT,
+        useNativeDriver: false
+      }),
+      Animated.timing(readAlongProgress, {
+        duration: animationDuration,
+        easing: Easing.inOut(Easing.cubic),
+        toValue: shouldShowReadAlong ? 1 : 0,
+        useNativeDriver: false
+      })
+    ]).start(({ finished }) => {
+      if (finished && !shouldShowReadAlong) {
+        setIsReadAlongRendered(false);
+      }
     });
-  }, [
-    activeWordRange,
-    currentItemText.length,
-    isSpeaking,
-    previewContentWidth,
-    previewViewportWidth
-  ]);
+  }, [animationDuration, height, readAlongProgress, showReadAlong]);
 
   const primaryAction = useCallback(() => {
     if (isSpeaking) return pause();
@@ -155,271 +272,224 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
     return start();
   }, [isPaused, isSpeaking, pause, resume, start]);
 
-  const primaryLabel = isSpeaking
-    ? texts.settingsContents.accessibility.readAloud.pause
-    : isPaused
-    ? texts.settingsContents.accessibility.readAloud.resume
-    : texts.settingsContents.accessibility.readAloud.start;
+  const disableReadAloud = useCallback(() => {
+    void stop();
+    onDisable();
+  }, [onDisable, stop]);
 
-  const shouldHighlightActiveWord =
-    isHighContrastEnabled &&
-    isSpeaking &&
-    !!activeItemId &&
-    !!activeGlobalWordRange &&
-    activeGlobalWordRange.length > 0 &&
-    activeGlobalWordRange.start >= 0;
-  const shouldHighlightPreviewWord =
-    isHighContrastEnabled &&
-    isSpeaking &&
-    !!activeItemId &&
-    !!activeWordRange &&
-    activeWordRange.length > 0 &&
-    activeWordRange.start >= 0;
+  const expandPlayer = useCallback(() => {
+    if (!isEnabled) onEnable();
+    setIsControlsVisible(true);
+  }, [isEnabled, onEnable]);
 
-  const renderedPreviewText = useMemo(() => {
-    const previewText = currentItemText || texts.settingsContents.accessibility.readAloud.title;
+  const controlsOpacity = width.interpolate({
+    extrapolate: 'clamp',
+    inputRange: [FLOATING_BUTTON_SIZE, PLAYER_WIDTH],
+    outputRange: [0, 1]
+  });
+  const readAlongTranslateY = readAlongProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [normalize(12), 0]
+  });
 
-    if (!currentItemText.length || !shouldHighlightPreviewWord || !activeWordRange) {
-      return (
-        <RegularText numberOfLines={1} small style={styles.previewText}>
-          {previewText}
-        </RegularText>
-      );
-    }
+  if (!items.length) return null;
 
-    const safeStart = Math.min(activeWordRange.start, currentItemText.length);
-    const safeEnd = Math.min(safeStart + activeWordRange.length, currentItemText.length);
-
+  if (!isControlsVisible) {
     return (
-      <RegularText numberOfLines={1} small style={styles.previewText}>
-        {currentItemText.slice(0, safeStart)}
-        <RegularText small style={styles.activeWord}>
-          {currentItemText.slice(safeStart, safeEnd)}
-        </RegularText>
-        {currentItemText.slice(safeEnd)}
-      </RegularText>
-    );
-  }, [activeWordRange, currentItemText, shouldHighlightPreviewWord]);
-
-  const renderedFullText = useMemo(() => {
-    if (!allText.length) return null;
-
-    if (!shouldHighlightActiveWord || !activeGlobalWordRange) {
-      return <RegularText small>{allText}</RegularText>;
-    }
-
-    const safeStart = Math.min(activeGlobalWordRange.start, allText.length);
-    const safeEnd = Math.min(safeStart + activeGlobalWordRange.length, allText.length);
-
-    return (
-      <RegularText small>
-        {allText.slice(0, safeStart)}
-        <RegularText small style={styles.activeWord}>
-          {allText.slice(safeStart, safeEnd)}
-        </RegularText>
-        {allText.slice(safeEnd)}
-      </RegularText>
-    );
-  }, [activeGlobalWordRange, allText, shouldHighlightActiveWord]);
-
-  if (!canStart) return null;
-
-  return (
-    <Animated.View
-      style={[
-        styles.container,
-        isExpanded && styles.expandedContainer,
-        { height: heightAnimation }
-      ]}
-    >
-      {isExpanded && (
-        <View style={styles.expandedBody}>
+      <Animated.View style={[styles.shadowContainer, { height, width }]}>
+        <View style={[styles.container, styles.floatingContainer]}>
           <Pressable
-            accessibilityLabel={texts.settingsContents.accessibility.readAloud.collapsePlayer}
+            accessibilityLabel={
+              isEnabled
+                ? texts.settingsContents.accessibility.readAloud.expandPlayer
+                : texts.settingsContents.accessibility.readAloud.enableQuickToggle
+            }
             accessibilityRole="button"
-            onPress={() => setIsExpanded(false)}
-            style={styles.collapseButton}
-          >
-            <Icon.NamedIcon color={colors.darkText} name="chevron-down" size={normalize(22)} />
-          </Pressable>
-
-          <ScrollView
-            ref={scrollViewRef}
-            contentContainerStyle={styles.textScrollContent}
-            onContentSizeChange={(_, height) => setTextContentHeight(height)}
-            onLayout={(event) => setTextViewportHeight(event.nativeEvent.layout.height)}
-            showsVerticalScrollIndicator
-            style={styles.textScrollView}
-          >
-            {renderedFullText}
-          </ScrollView>
-        </View>
-      )}
-
-      <View style={[styles.controlsRow, isExpanded && styles.expandedControlsRow]}>
-        <View style={styles.leftControls}>
-          <Pressable
-            accessibilityLabel={primaryLabel}
-            accessibilityRole="button"
-            onPress={primaryAction}
-            style={[styles.iconButton, styles.primaryButton]}
-          >
-            <Icon.NamedIcon
-              color={colors.lightestText}
-              name={isSpeaking ? 'player-pause' : 'player-play'}
-              size={normalize(22)}
-            />
-          </Pressable>
-          <Pressable
-            accessibilityLabel={texts.settingsContents.accessibility.readAloud.stop}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !isSpeaking && !isPaused }}
-            disabled={!isSpeaking && !isPaused}
-            onPress={stop}
-            style={[
-              styles.iconButton,
-              styles.stopButton,
-              !isSpeaking && !isPaused && styles.disabledButton
+            onPress={expandPlayer}
+            style={({ pressed }) => [
+              styles.floatingButton,
+              pressed && styles.floatingButtonPressed
             ]}
           >
             <Icon.NamedIcon
-              color={colors.darkText}
-              name="player-stop-filled"
-              size={normalize(20)}
+              color={colors.text}
+              hasNoHitSlop
+              name="volume"
+              size={normalize(24)}
+              strokeWidth={2}
             />
           </Pressable>
         </View>
+      </Animated.View>
+    );
+  }
 
-        {isExpanded ? (
-          <View style={styles.speedOptions}>
-            {SPEED_OPTIONS.map((option) => {
-              const isSelected = Math.abs(speechRate - option.value) < 0.001;
-
-              return (
-                <Pressable
-                  accessibilityLabel={`${option.label} ${texts.settingsContents.accessibility.readAloud.speedTitle}`}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isSelected }}
-                  key={option.value}
-                  onPress={() => setSpeechRate(option.value)}
-                  style={[styles.speedChip, isSelected && styles.speedChipSelected]}
-                >
-                  <RegularText
-                    ignoreTextScale
-                    small
-                    style={[styles.speedChipText, isSelected && styles.speedChipTextSelected]}
-                  >
-                    {option.label}
-                  </RegularText>
-                </Pressable>
-              );
-            })}
-          </View>
-        ) : (
-          <Pressable
-            accessibilityLabel={texts.settingsContents.accessibility.readAloud.expandPlayer}
-            accessibilityRole="button"
-            onPress={() => setIsExpanded(true)}
-            style={styles.currentTextPreview}
-          >
-            <ScrollView
-              ref={previewScrollViewRef}
-              contentContainerStyle={styles.previewScrollContent}
-              horizontal
-              onContentSizeChange={(width) => setPreviewContentWidth(width)}
-              onLayout={(event) => setPreviewViewportWidth(event.nativeEvent.layout.width)}
-              scrollEnabled={false}
-              showsHorizontalScrollIndicator={false}
-              style={styles.previewScrollView}
+  return (
+    <Animated.View style={[styles.shadowContainer, { height, width }]}>
+      <View style={[styles.container, styles.expandedContainer]}>
+        <Animated.View style={[styles.controlsContent, { opacity: controlsOpacity }]}>
+          {isReadAlongRendered && (
+            <Animated.View
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+              style={[
+                styles.readAlongRow,
+                { opacity: readAlongProgress, transform: [{ translateY: readAlongTranslateY }] }
+              ]}
             >
-              {renderedPreviewText}
-            </ScrollView>
-          </Pressable>
-        )}
+              <View style={styles.readAlongWords}>
+                {readAlongWords.map((word) => (
+                  <RegularText
+                    key={word.key}
+                    numberOfLines={1}
+                    style={[styles.readAlongWord, word.active && styles.activeWord]}
+                    testID={word.active ? 'active-read-along-word' : undefined}
+                  >
+                    {word.text}
+                  </RegularText>
+                ))}
+              </View>
+            </Animated.View>
+          )}
+
+          <View accessibilityLabel={progressLabel} style={styles.controlsRow}>
+            <View style={styles.leftControls}>
+              <PlayerControl
+                label={`${texts.settingsContents.accessibility.readAloud.speedTitle}: ${rateLabel}`}
+                onPress={() => setSpeechRate((currentRate) => getNextSpeechRate(currentRate))}
+                text={rateLabel}
+              />
+              <PlayerControl
+                disabled={!canSkipPrevious}
+                iconName="player-skip-back"
+                label={texts.settingsContents.accessibility.readAloud.previous}
+                onPress={() => void skipPrevious()}
+              />
+              <PlayerControl
+                disabled={!canStart}
+                iconName={isSpeaking ? 'player-pause' : 'player-play'}
+                label={primaryLabel}
+                onPress={() => void primaryAction()}
+              />
+              <PlayerControl
+                disabled={!canSkipNext}
+                iconName="player-skip-forward"
+                label={texts.settingsContents.accessibility.readAloud.next}
+                onPress={() => void skipNext()}
+              />
+              <PlayerControl
+                expanded={showReadAlong}
+                iconName={showReadAlong ? 'eye' : 'eye-off'}
+                label={
+                  showReadAlong
+                    ? texts.settingsContents.accessibility.readAloud.hideReadAlong
+                    : texts.settingsContents.accessibility.readAloud.showReadAlong
+                }
+                onPress={toggleReadAlong}
+              />
+            </View>
+
+            <PlayerControl
+              iconName="volume-off"
+              label={texts.settingsContents.accessibility.readAloud.disableQuickToggle}
+              onPress={disableReadAloud}
+            />
+          </View>
+        </Animated.View>
       </View>
     </Animated.View>
   );
 };
 
-const createStyles = (colors) => ({
+const createStyles = (colors: ThemeColorPalette): Record<string, TextStyle | ViewStyle> => ({
   activeWord: {
-    backgroundColor: colors.darkText,
-    color: colors.lightestText
-  },
-
-  collapseButton: {
-    alignItems: 'center',
-    height: CONTROL_SIZE,
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    width: CONTROL_SIZE,
-    zIndex: 1
+    borderBottomColor: colors.primary,
+    borderBottomWidth: normalize(4),
+    color: colors.text,
+    paddingBottom: normalize(1)
   },
 
   container: {
-    alignSelf: 'flex-end',
-    backgroundColor: colors.surface,
-    borderColor: colors.gray40,
-    borderRadius: normalize(8),
-    borderWidth: StyleSheet.hairlineWidth,
-    marginRight: normalize(8),
-    overflow: 'hidden',
-    padding: normalize(8),
-    width: PLAYER_WIDTH,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: FLOATING_BUTTON_SIZE / 2,
+    flex: 1,
+    overflow: 'hidden'
+  },
+
+  controlsContent: {
+    flex: 1
+  },
+
+  expandedContainer: {
+    borderColor: colors.text,
+    borderWidth: normalize(1.5)
+  },
+
+  shadowContainer: {
+    alignSelf: 'center',
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: FLOATING_BUTTON_SIZE / 2,
     ...Platform.select({
       ios: {
         shadowColor: colors.shadow,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.28,
-        shadowRadius: 8
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.32,
+        shadowRadius: 14
       },
       android: {
-        elevation: 8
+        elevation: 10
       }
     })
   },
 
+  controlTouchTarget: {
+    alignItems: 'center',
+    height: CONTROL_TOUCH_SIZE,
+    justifyContent: 'center',
+    width: CONTROL_TOUCH_SIZE
+  },
+
+  controlVisual: {
+    alignItems: 'center',
+    backgroundColor: colors.text,
+    borderRadius: CONTROL_VISUAL_SIZE / 2,
+    height: CONTROL_VISUAL_SIZE,
+    justifyContent: 'center',
+    width: CONTROL_VISUAL_SIZE
+  },
+
+  controlVisualDisabled: {
+    backgroundColor: colors.gray60
+  },
+
+  controlVisualPressed: {
+    backgroundColor: colors.primary
+  },
+
   controlsRow: {
     alignItems: 'center',
+    bottom: 0,
     flexDirection: 'row',
-    height: CONTROL_SIZE
+    height: COMPACT_PLAYER_HEIGHT,
+    justifyContent: 'space-between',
+    left: 0,
+    paddingHorizontal: normalize(8),
+    position: 'absolute',
+    right: 0
   },
 
-  currentTextPreview: {
+  floatingButton: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
-    minHeight: CONTROL_SIZE,
-    minWidth: 0,
-    paddingHorizontal: normalize(10)
+    justifyContent: 'center'
   },
 
-  disabledButton: {
-    opacity: 0.45
+  floatingButtonPressed: {
+    backgroundColor: colors.gray20
   },
 
-  expandedBody: {
-    flex: 1,
-    paddingBottom: normalize(10)
-  },
-
-  expandedContainer: {
-    marginRight: -EXPANDED_PLAYER_OVERLAP,
-    width: EXPANDED_PLAYER_WIDTH
-  },
-
-  expandedControlsRow: {
-    paddingRight: EXPANDED_CONTROLS_INSET
-  },
-
-  iconButton: {
-    alignItems: 'center',
-    borderRadius: CONTROL_SIZE / 2,
-    height: CONTROL_SIZE,
-    justifyContent: 'center',
-    width: CONTROL_SIZE
+  floatingContainer: {
+    borderRadius: FLOATING_BUTTON_SIZE / 2
   },
 
   leftControls: {
@@ -427,67 +497,34 @@ const createStyles = (colors) => ({
     flexDirection: 'row'
   },
 
-  previewText: {
-    color: colors.darkText
-  },
-
-  previewScrollContent: {
-    alignItems: 'center'
-  },
-
-  previewScrollView: {
-    flex: 1
-  },
-
-  primaryButton: {
-    backgroundColor: colors.primary,
-    marginRight: normalize(8)
-  },
-
-  speedChip: {
+  readAlongRow: {
     alignItems: 'center',
-    borderColor: colors.gray40,
-    borderRadius: normalize(14),
-    borderWidth: StyleSheet.hairlineWidth,
-    flex: 1,
+    height: COMPACT_PLAYER_HEIGHT,
     justifyContent: 'center',
-    marginLeft: normalize(6),
-    minWidth: 0,
-    paddingHorizontal: normalize(4),
-    paddingVertical: normalize(6)
+    overflow: 'hidden',
+    paddingHorizontal: normalize(20)
   },
 
-  speedChipSelected: {
-    backgroundColor: colors.gray20,
-    borderColor: colors.darkText
-  },
-
-  speedChipText: {
-    color: colors.darkText
-  },
-
-  speedChipTextSelected: {
-    color: colors.darkText
-  },
-
-  speedOptions: {
-    alignItems: 'center',
-    flex: 1,
+  readAlongWords: {
+    alignItems: 'flex-start',
     flexDirection: 'row',
-    minWidth: 0,
-    paddingLeft: normalize(4)
+    justifyContent: 'center'
   },
 
-  stopButton: {
-    backgroundColor: colors.gray40
+  readAlongWord: {
+    color: colors.textMuted,
+    fontSize: normalize(14),
+    fontWeight: '400',
+    lineHeight: normalize(24),
+    marginHorizontal: normalize(2),
+    paddingBottom: normalize(1)
   },
 
-  textScrollContent: {
-    paddingBottom: TEXT_SCROLL_END_PADDING,
-    paddingRight: normalize(30)
-  },
-
-  textScrollView: {
-    flex: 1
+  speedText: {
+    color: colors.background,
+    fontSize: normalize(11),
+    fontWeight: '600',
+    letterSpacing: -0.3,
+    lineHeight: normalize(14)
   }
 });

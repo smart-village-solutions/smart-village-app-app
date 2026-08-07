@@ -157,12 +157,10 @@ export const useRegisterReadAloudContent = (
 
 export const useReadAloudPlayerBottomSpacing = () => {
   const route = useRoute<RouteProp<Record<string, object | undefined>, string>>();
-  const { features, isReadAloudEnabled } = useContext(AccessibilityContext);
+  const { features } = useContext(AccessibilityContext);
   const { isRouteAvailable, playerBottomSpacing } = useReadAloudAvailability();
 
-  return features.readAloud && isReadAloudEnabled && isRouteAvailable(route.key)
-    ? playerBottomSpacing
-    : 0;
+  return features.readAloud && isRouteAvailable(route.key) ? playerBottomSpacing : 0;
 };
 
 export const useReadAloudScrollContentContainerStyle = <T extends StyleProp<ViewStyle>>(

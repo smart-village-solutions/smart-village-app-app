@@ -34,6 +34,8 @@ const mockUseHomeRefresh = jest.fn();
 const mockGetCurrentRoute = jest.fn();
 const mockIsReady = jest.fn();
 const mockNavigate = jest.fn();
+const mockGetRouteItems = jest.fn();
+const mockIsRouteAvailable = jest.fn();
 
 jest.mock('../../src/hooks', () => ({
   useAccessibilityPreferences: (...args) => mockUseAccessibilityPreferences(...args),
@@ -51,13 +53,13 @@ jest.mock('../../src/navigation/navigationRef', () => ({
 
 jest.mock('../../src/ReadAloudAvailabilityProvider', () => ({
   useReadAloudAvailability: () => ({
-    getRouteItems: () => [],
-    isRouteAvailable: () => false
+    getRouteItems: (...args) => mockGetRouteItems(...args),
+    isRouteAvailable: (...args) => mockIsRouteAvailable(...args)
   })
 }));
 
 jest.mock('../../src/components/FloatingReadAloudPlayer', () => ({
-  FloatingReadAloudPlayer: () => null
+  FloatingReadAloudPlayer: 'mock-read-aloud-player'
 }));
 
 jest.mock('@react-navigation/native', () => ({
@@ -106,7 +108,9 @@ describe('FloatingButton', () => {
       setPreference: jest.fn()
     });
 
-    mockGetCurrentRoute.mockReturnValue({ name: 'Home' });
+    mockGetRouteItems.mockReturnValue([]);
+    mockIsRouteAvailable.mockReturnValue(false);
+    mockGetCurrentRoute.mockReturnValue({ key: 'home-key', name: 'Home' });
     mockIsReady.mockReturnValue(true);
   });
 
@@ -216,5 +220,37 @@ describe('FloatingButton', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledWith('Web', { webUrl: 'https://example.com' });
+  });
+
+  it('keeps the centered player visible and lets it enable the global feature', () => {
+    const setPreference = jest.fn();
+    mockIsRouteAvailable.mockReturnValue(true);
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: true },
+      preferences: { readAloudEnabled: false },
+      setPreference
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+    const player = testRenderer.root.findByType('mock-read-aloud-player');
+
+    renderer.act(() => player.props.onEnable());
+
+    expect(player.props.isEnabled).toBe(false);
+    expect(setPreference).toHaveBeenCalledWith('readAloudEnabled', true);
+  });
+
+  it('shows the redesigned player while global read aloud is enabled', () => {
+    mockIsRouteAvailable.mockReturnValue(true);
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: true },
+      preferences: { readAloudEnabled: true },
+      setPreference: jest.fn()
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+
+    expect(testRenderer.root.findAllByType(TouchableOpacity)).toHaveLength(0);
+    expect(testRenderer.root.findByType('mock-read-aloud-player').props.isEnabled).toBe(true);
   });
 });
