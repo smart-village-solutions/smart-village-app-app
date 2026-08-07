@@ -243,7 +243,7 @@ export const defaultStackConfig = ({
       initialParams,
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: true, withShare: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer })
     },
     {
       initialParams,

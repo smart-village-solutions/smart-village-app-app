@@ -10,11 +10,12 @@ import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 const { a11yLabel } = consts;
 
 type Props = {
+  buttonStyle?: StyleProp<ViewStyle>;
   shareContent?: ShareContent;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
-export const ShareHeader = ({ shareContent, style }: Props) => {
+export const ShareHeader = ({ buttonStyle, shareContent, style }: Props) => {
   const { colors } = useTheme();
 
   if (!shareContent) {
@@ -28,6 +29,7 @@ export const ShareHeader = ({ shareContent, style }: Props) => {
         accessibilityLabel={a11yLabel.shareIcon}
         accessibilityHint={a11yLabel.shareHint}
         accessibilityRole="button"
+        style={buttonStyle}
       >
         <Icon.Share
           color={colors.darkText}

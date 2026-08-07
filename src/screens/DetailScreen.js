@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import {
+  DetailActions,
   EmptyMessage,
   EventRecord,
   LoadingContainer,
@@ -212,6 +213,8 @@ export const DetailScreen = ({ navigation, route }) => {
 
   if (!Component) return null;
 
+  const detailActions = <DetailActions route={route} />;
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -229,6 +232,7 @@ export const DetailScreen = ({ navigation, route }) => {
           data={detailData}
           navigation={navigation}
           fetchPolicy={fetchPolicy}
+          readAloudControls={detailActions}
           refetch={refetch}
           route={route}
         />

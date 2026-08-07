@@ -10,13 +10,21 @@ import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../headerIconConfig';
 import { useTheme } from '../../hooks/useTheme';
 
 type Props = {
-  route: RouteProp<any, any>;
-  style: StyleProp<ViewStyle>;
+  buttonStyle?: StyleProp<ViewStyle>;
+  route: RouteProp<Record<string, BookmarkRouteParams | undefined>, string>;
+  style?: StyleProp<ViewStyle>;
+};
+
+type BookmarkRouteParams = {
+  bookmarkable?: boolean;
+  query?: string;
+  queryVariables?: { id?: string };
+  suffix?: number | string;
 };
 
 const a11yLabel = consts.a11yLabel;
 
-export const BookmarkHeader = ({ route, style }: Props) => {
+export const BookmarkHeader = ({ buttonStyle, route, style }: Props) => {
   const { colors } = useTheme();
 
   const { toggleBookmark } = useContext(BookmarkContext);
@@ -24,7 +32,7 @@ export const BookmarkHeader = ({ route, style }: Props) => {
   const suffix = route.params?.suffix ?? '';
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
-  const id = queryVariables.id;
+  const id = queryVariables.id ?? '';
   const bookmarkable = route.params?.bookmarkable ?? true;
 
   const isBookmarked = useBookmarkedStatus(query, id, suffix);
@@ -36,7 +44,7 @@ export const BookmarkHeader = ({ route, style }: Props) => {
       query.charAt(0).toUpperCase() + query.slice(1), // convert first character to uppercase
       isBookmarked ? 'DELETE' : 'POST'
     );
-  }, [suffix, id, query]);
+  }, [id, isBookmarked, query, suffix, toggleBookmark]);
 
   if (!(bookmarkable && query && id)) {
     return null;
@@ -44,9 +52,12 @@ export const BookmarkHeader = ({ route, style }: Props) => {
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      accessibilityRole="button"
       accessibilityLabel={a11yLabel.bookmarkList}
       accessibilityHint={a11yLabel.bookmarkListHint}
+      accessibilityState={{ selected: isBookmarked }}
+      onPress={onPress}
+      style={buttonStyle}
     >
       {isBookmarked ? (
         <Icon.HeartFilled

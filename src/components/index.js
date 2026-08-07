@@ -42,6 +42,7 @@ export * from './CrossData';
 export * from './DataListSection';
 export * from './DataProviderButton';
 export * from './detail/DetailReadAloudControls';
+export * from './detail/DetailActions';
 export * from './DateTimePicker';
 export * from './DefaultKeyboardAvoidingView';
 export * from './DeleteHeader';

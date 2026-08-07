@@ -75,12 +75,13 @@ export const NewsItem = ({ data, readAloudControls, route }) => {
         </Wrapper>
       )}
 
+      {readAloudControls}
+
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection
         imageRightsPosition={imageRightsPosition}
         mediaContents={contentBlocks?.[0]?.mediaContents}
       />
-      {readAloudControls}
 
       {!!contentBlocks?.length &&
         contentBlocks.map((contentBlock, index) => (
