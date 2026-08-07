@@ -108,21 +108,68 @@ const sanitizeOverrides = (basePalette: ThemeColorPalette, overrides?: ThemePale
   }, {} as Partial<ThemeColorPalette>);
 };
 
+const synchronizePrimaryAliases = (
+  palette: ThemeColorPalette,
+  overrides: Partial<ThemeColorPalette>
+) => {
+  if (!overrides.primary) return;
+
+  const primaryColor = parseColor(palette.primary);
+  const lighterPrimaryAlpha = parseColor(palette.lighterPrimaryRgba)?.alpha ?? 0.1;
+  const darkerPrimaryAlpha = parseColor(palette.darkerPrimaryRgba)?.alpha ?? 0.6;
+
+  if (!overrides.lighterPrimary) palette.lighterPrimary = palette.primary;
+  if (!overrides.darkerPrimary) palette.darkerPrimary = palette.primary;
+  if (!overrides.refreshControl) palette.refreshControl = palette.primary;
+  if (!primaryColor) return;
+
+  const rgbaPrimary = (alpha: number) =>
+    `rgba(${primaryColor.red}, ${primaryColor.green}, ${primaryColor.blue}, ${alpha})`;
+
+  if (!overrides.lighterPrimaryRgba) {
+    palette.lighterPrimaryRgba = rgbaPrimary(lighterPrimaryAlpha);
+  }
+  if (!overrides.darkerPrimaryRgba) {
+    palette.darkerPrimaryRgba = rgbaPrimary(darkerPrimaryAlpha);
+  }
+};
+
 const synchronizeLegacyAliases = (
   palette: ThemeColorPalette,
   overrides: Partial<ThemeColorPalette>
 ) => {
+  synchronizePrimaryAliases(palette, overrides);
+
   if (overrides.text) palette.darkText = palette.text;
   if (overrides.onPrimary) palette.lightestText = palette.onPrimary;
 };
+
+const findAccessibleForeground = (
+  palette: ThemeColorPalette,
+  basePalette: ThemeColorPalette,
+  foregroundToken: keyof ThemeColorPalette,
+  backgroundToken: keyof ThemeColorPalette
+) =>
+  [basePalette[foregroundToken], basePalette.text, '#141414', '#FFFFFF'].find((candidate) => {
+    const candidateContrast = getContrastRatio(candidate, palette[backgroundToken]);
+    return candidateContrast !== undefined && candidateContrast >= MINIMUM_NORMAL_TEXT_CONTRAST;
+  });
 
 const applyContrastFallbacks = (palette: ThemeColorPalette, basePalette: ThemeColorPalette) => {
   CRITICAL_CONTRAST_PAIRS.forEach(([foregroundToken, backgroundToken]) => {
     const contrastRatio = getContrastRatio(palette[foregroundToken], palette[backgroundToken]);
 
     if (contrastRatio === undefined || contrastRatio < MINIMUM_NORMAL_TEXT_CONTRAST) {
-      palette[foregroundToken] = basePalette[foregroundToken];
-      palette[backgroundToken] = basePalette[backgroundToken];
+      const accessibleForeground = findAccessibleForeground(
+        palette,
+        basePalette,
+        foregroundToken,
+        backgroundToken
+      );
+
+      if (accessibleForeground) {
+        palette[foregroundToken] = accessibleForeground;
+      }
     }
   });
 };

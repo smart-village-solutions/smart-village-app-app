@@ -1,4 +1,4 @@
-import { darkColors, lightColors } from '../../src/config';
+import { darkColors, lightColors } from '../../src/config/colors';
 import {
   getContrastRatio,
   isValidThemeColor,
@@ -45,7 +45,7 @@ describe('themeHelper', () => {
     expect(Object.isFrozen(palette)).toBe(true);
   });
 
-  it('ignores malformed colors and falls back for inaccessible critical pairs', () => {
+  it('ignores malformed colors and repairs foreground contrast without replacing brand colors', () => {
     const palette = resolveThemePalette(lightColors, {
       border: 'not-a-color',
       onPrimary: '#FFFFFF',
@@ -54,9 +54,48 @@ describe('themeHelper', () => {
     });
 
     expect(palette.border).toBe(lightColors.border);
-    expect(palette.primary).toBe(lightColors.primary);
-    expect(palette.onPrimary).toBe(lightColors.onPrimary);
+    expect(palette.primary).toBe('#FFFFFF');
+    expect(palette.onPrimary).toBe('#141414');
     expect(palette.text).toBe(lightColors.text);
+  });
+
+  it('keeps Magdeburg GlobalSettings colors instead of reverting to the base palette', () => {
+    const palettes = resolveThemePalettes({
+      settings: {
+        accessibility: {
+          themePalettes: {
+            dark: {
+              background: '#121212',
+              border: '#54545A',
+              onPrimary: '#141414',
+              placeholder: '#AFAFB5',
+              primary: '#C44D36',
+              surface: '#1E1E1E',
+              surfaceElevated: '#2A2A2A',
+              text: '#F5F5F5',
+              textMuted: '#C7C7CC'
+            }
+          }
+        }
+      }
+    });
+
+    expect(palettes.dark).toMatchObject({
+      background: '#121212',
+      border: '#54545A',
+      darkerPrimary: '#C44D36',
+      lighterPrimary: '#C44D36',
+      placeholder: '#AFAFB5',
+      primary: '#C44D36',
+      refreshControl: '#C44D36',
+      surface: '#1E1E1E',
+      surfaceElevated: '#2A2A2A',
+      text: '#F5F5F5',
+      textMuted: '#C7C7CC'
+    });
+    expect(getContrastRatio(palettes.dark.onPrimary, palettes.dark.primary)).toBeGreaterThanOrEqual(
+      4.5
+    );
   });
 
   it('resolves light and dark overrides from GlobalSettings independently', () => {

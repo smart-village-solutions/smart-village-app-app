@@ -21,6 +21,8 @@ import { SettingsContext } from '../SettingsProvider';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
 
+import { createSearchStyles } from './searchStyles';
+
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 const defaultFilter = ['news_item', 'event_record', 'point_of_interest', 'tour'];
 
@@ -48,9 +50,9 @@ const keyExtractor = (item: { id?: any } | string, index: any) => {
 };
 
 export const SearchScreen = ({ navigation }) => {
-  const { colors: colors } = useTheme();
+  const { colors, isDark } = useTheme();
 
-  const styles = useThemeStyles(createStyles);
+  const styles = useThemeStyles(createSearchStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { sections: sectionsGlobalSettings = {}, settings = {} } = globalSettings;
   const { search: searchSettings = {} } = settings;
@@ -206,7 +208,7 @@ export const SearchScreen = ({ navigation }) => {
         <SearchBar
           cancelButtonProps={{
             accessibilityLabel: searchTexts.abort,
-            color: colors.darkerPrimary
+            color: colors.primary
           }}
           cancelButtonTitle={searchTexts.abort}
           clearIcon={() => (
@@ -216,20 +218,23 @@ export const SearchScreen = ({ navigation }) => {
               activeOpacity={1}
               onPress={() => searchBarRef?.current?.clear?.()}
             >
-              <Icon.Close color={colors.darkerPrimary} />
+              <Icon.Close color={colors.primary} />
             </TouchableOpacity>
           )}
+          containerStyle={styles.searchBarContainer}
           inputContainerStyle={styles.inputContainerStyle}
-          lightTheme
+          inputStyle={styles.inputStyle}
+          keyboardAppearance={isDark ? 'dark' : 'light'}
           loadingProps={{
-            color: colors.darkerPrimary
+            color: colors.primary
           }}
           onChangeText={setSearch}
           placeholder={searchTexts.placeholder}
           placeholderTextColor={colors.placeholder}
           platform={device.platform === 'ios' ? device.platform : 'default'}
           ref={searchBarRef}
-          searchIcon={() => <Icon.Search color={colors.darkerPrimary} />}
+          searchIcon={() => <Icon.Search color={colors.primary} />}
+          selectionColor={colors.primary}
           showCancel
           showLoading={isLoading}
           value={search}
@@ -261,9 +266,3 @@ export const SearchScreen = ({ navigation }) => {
     </SafeAreaViewFlex>
   );
 };
-
-const createStyles = (colors) => ({
-  inputContainerStyle: {
-    backgroundColor: colors.backgroundRgba
-  }
-});
