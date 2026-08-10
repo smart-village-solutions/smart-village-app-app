@@ -90,6 +90,30 @@ import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName, WasteReminderSettingJson, WasteTypeData } from '../types';
 
+type WasteLocationData = {
+  city?: string | null;
+  street?: string | null;
+  zip?: string | null;
+};
+
+const findMatchingLocationDisruption = (
+  disruptionSettings: WasteReminderSettingJson[],
+  locationData?: WasteLocationData
+) => {
+  if (!locationData) return undefined;
+
+  const locationFields: Array<keyof WasteLocationData> = ['street', 'zip', 'city'];
+
+  return disruptionSettings.find(
+    (setting) =>
+      setting.notify_for_waste_type === 'disruption_location' &&
+      locationFields.every(
+        (field) =>
+          setting[field].trim().toLowerCase() === (locationData[field] ?? '').trim().toLowerCase()
+      )
+  );
+};
+
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 const compareAlphabetically = (left: string, right: string) => left.localeCompare(right);
 const renderWasteTypeLabel = (wasteType: WasteTypeData[string]) => (
@@ -387,19 +411,9 @@ export const WasteCollectionSettingsScreen = () => {
     const disruptionSettings = completeSettings.filter((setting) =>
       ['disruption_location', 'disruption_all_locations'].includes(setting.notify_for_waste_type)
     );
-    const matchingLocalDisruption = disruptionSettings.find(
-      (setting) =>
-        setting.notify_for_waste_type === 'disruption_location' &&
-        !!locationData &&
-        ['street', 'zip', 'city'].every(
-          (field) =>
-            String(setting[field as keyof WasteReminderSettingJson] ?? '')
-              .trim()
-              .toLowerCase() ===
-            String(locationData[field] ?? '')
-              .trim()
-              .toLowerCase()
-        )
+    const matchingLocalDisruption = findMatchingLocationDisruption(
+      disruptionSettings,
+      locationData
     );
     const globalDisruption = disruptionSettings.find(
       (setting) => setting.notify_for_waste_type === 'disruption_all_locations'
@@ -1072,9 +1086,7 @@ const SelectedStreetSettingsContent = ({
         />
       }
     >
-      {!!locationData && (
-        <WasteHeader locationData={locationData} onPress={onEditStreet} />
-      )}
+      {!!locationData && <WasteHeader locationData={locationData} onPress={onEditStreet} />}
       {!!usedTypeKeys?.length && !!usedTypes && !_isEmpty(typeSettings) && (
         <WasteTypeSelectionList
           onToggleTypeSetting={onToggleTypeSetting}

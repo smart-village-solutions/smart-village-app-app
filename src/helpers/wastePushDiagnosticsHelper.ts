@@ -428,10 +428,7 @@ const readLocalStateForDiagnostics = async (): Promise<LocalStateDiagnosticResul
   }
 };
 
-// Collection is deliberately isolated field-by-field, hence the orchestration branches.
-// eslint-disable-next-line complexity
-export const collectWastePushDiagnostics = async () => {
-  const collectionStatus: Record<string, 'failed'> = {};
+const collectPermissionDiagnostics = async (collectionStatus: Record<string, 'failed'>) => {
   const permissions: Record<string, PermissionDiagnostic> = {};
   const permissionCollectors: Array<[string, () => Promise<PermissionResponse>]> = [
     ['notifications', Notifications.getPermissionsAsync],
@@ -449,14 +446,107 @@ export const collectWastePushDiagnostics = async () => {
     permissions.reminders = unavailable();
   }
 
-  const permissionResults = await Promise.allSettled(
-    permissionCollectors.map(([, collect]) => collect())
-  );
-  permissionResults.forEach((result, index) => {
+  const results = await Promise.allSettled(permissionCollectors.map(([, collect]) => collect()));
+  results.forEach((result, index) => {
     const name = permissionCollectors[index][0];
     if (result.status === 'fulfilled') permissions[name] = normalizePermission(result.value);
     else collectionStatus.permissions = 'failed';
   });
+
+  return permissions;
+};
+
+const addSystemPermissionDiagnostic = (
+  push: Record<string, unknown>,
+  notificationPermission?: PermissionDiagnostic
+) => {
+  if (!notificationPermission) return;
+  const details = notificationPermission.platformDetails;
+  push.systemPermission = {
+    status: notificationPermission.status,
+    granted: notificationPermission.granted,
+    canAskAgain: notificationPermission.canAskAgain,
+    ...(typeof details?.importance === 'number' ? { androidImportance: details.importance } : {}),
+    ...(typeof details?.interruptionFilter === 'number'
+      ? { androidInterruptionFilter: details.interruptionFilter }
+      : {})
+  };
+};
+
+const addAndroidChannelDiagnostic = (
+  push: Record<string, unknown>,
+  channelResult: PromiseSettledResult<Notifications.NotificationChannel | null | undefined>,
+  collectionStatus: Record<string, 'failed'>
+) => {
+  if (Platform.OS !== 'android') return;
+  if (channelResult.status === 'rejected') {
+    collectionStatus.androidPushChannel = 'failed';
+    return;
+  }
+
+  const channel = channelResult.value;
+  push.defaultChannel = {
+    exists: !!channel,
+    ...(channel
+      ? {
+          importance: channel.importance,
+          enableVibrate: channel.enableVibrate,
+          bypassDnd: channel.bypassDnd,
+          soundConfigured: !!channel.sound
+        }
+      : {})
+  };
+};
+
+const addTokenDiagnostic = (
+  push: Record<string, unknown>,
+  tokenResult: PromiseSettledResult<string | null>,
+  localState: WasteReminderLocalState | undefined,
+  localStateStatus: 'missing' | 'valid' | 'corrupt' | 'unavailable',
+  collectionStatus: Record<string, 'failed'>
+) => {
+  if (tokenResult.status === 'rejected') {
+    collectionStatus.tokenOwner = 'failed';
+    return;
+  }
+
+  const currentOwner = getWasteReminderOwnerKeyForToken(tokenResult.value);
+  (push.token as Record<string, unknown>).present = !!tokenResult.value;
+  (push.token as Record<string, unknown>).ownerState = getOwnerState({
+    currentOwner,
+    localState,
+    localStateStatus
+  });
+};
+
+const collectLocalStateDiagnostic = (
+  localStateResult: PromiseSettledResult<LocalStateDiagnosticResult>,
+  collectionStatus: Record<string, 'failed'>
+) => {
+  const wasteConfiguration: Record<string, unknown> = { localStateStatus: 'unavailable' };
+  if (localStateResult.status === 'rejected') {
+    collectionStatus.wasteState = 'failed';
+    return { localState: undefined, localStateStatus: 'unavailable' as const, wasteConfiguration };
+  }
+
+  const diagnosticState = localStateResult.value;
+  wasteConfiguration.localStateStatus = diagnosticState.status;
+  if (diagnosticState.status === 'corrupt') {
+    wasteConfiguration.localStateErrors = diagnosticState.errors;
+  } else if (diagnosticState.status === 'valid') {
+    Object.assign(wasteConfiguration, sanitizeConfiguration(diagnosticState.state));
+  }
+
+  return {
+    localState: diagnosticState.status === 'valid' ? diagnosticState.state : undefined,
+    localStateStatus: diagnosticState.status,
+    wasteConfiguration
+  };
+};
+
+export const collectWastePushDiagnostics = async () => {
+  const collectionStatus: Record<string, 'failed'> = {};
+  const permissions = await collectPermissionDiagnostics(collectionStatus);
 
   const [inAppResult, channelResult, tokenResult, localStateResult, scheduledResult] =
     await Promise.allSettled([
@@ -473,58 +563,15 @@ export const collectWastePushDiagnostics = async () => {
   if (inAppResult.status === 'fulfilled') push.inAppEnabled = inAppResult.value;
   else collectionStatus.inAppPushSetting = 'failed';
 
-  const notificationPermission = permissions.notifications;
-  if (notificationPermission) {
-    const details = notificationPermission.platformDetails;
-    push.systemPermission = {
-      status: notificationPermission.status,
-      granted: notificationPermission.granted,
-      canAskAgain: notificationPermission.canAskAgain,
-      ...(typeof details?.importance === 'number' ? { androidImportance: details.importance } : {}),
-      ...(typeof details?.interruptionFilter === 'number'
-        ? { androidInterruptionFilter: details.interruptionFilter }
-        : {})
-    };
-  }
-  if (Platform.OS === 'android' && channelResult.status === 'fulfilled') {
-    const channel = channelResult.value;
-    push.defaultChannel = {
-      exists: !!channel,
-      ...(channel
-        ? {
-            importance: channel.importance,
-            enableVibrate: channel.enableVibrate,
-            bypassDnd: channel.bypassDnd,
-            soundConfigured: !!channel.sound
-          }
-        : {})
-    };
-  } else if (Platform.OS === 'android') collectionStatus.androidPushChannel = 'failed';
+  addSystemPermissionDiagnostic(push, permissions.notifications);
+  addAndroidChannelDiagnostic(push, channelResult, collectionStatus);
 
-  const wasteConfiguration: Record<string, unknown> = { localStateStatus: 'unavailable' };
-  let localState: WasteReminderLocalState | undefined;
-  let localStateStatus: 'missing' | 'valid' | 'corrupt' | 'unavailable' = 'unavailable';
-  if (localStateResult.status === 'fulfilled') {
-    const diagnosticState = localStateResult.value;
-    localStateStatus = diagnosticState.status;
-    wasteConfiguration.localStateStatus = localStateStatus;
-    if (diagnosticState.status === 'corrupt') {
-      wasteConfiguration.localStateErrors = diagnosticState.errors;
-    } else if (diagnosticState.status === 'valid') {
-      localState = diagnosticState.state;
-      Object.assign(wasteConfiguration, sanitizeConfiguration(localState));
-    }
-  } else collectionStatus.wasteState = 'failed';
+  const { localState, localStateStatus, wasteConfiguration } = collectLocalStateDiagnostic(
+    localStateResult,
+    collectionStatus
+  );
 
-  if (tokenResult.status === 'fulfilled') {
-    const currentOwner = getWasteReminderOwnerKeyForToken(tokenResult.value);
-    (push.token as Record<string, unknown>).present = !!tokenResult.value;
-    (push.token as Record<string, unknown>).ownerState = getOwnerState({
-      currentOwner,
-      localState,
-      localStateStatus
-    });
-  } else collectionStatus.tokenOwner = 'failed';
+  addTokenDiagnostic(push, tokenResult, localState, localStateStatus, collectionStatus);
 
   const scheduling: Record<string, unknown> = {};
   if (localState?.scheduling) {

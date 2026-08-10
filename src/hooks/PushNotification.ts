@@ -123,9 +123,9 @@ export const usePushNotifications = (
     }
 
     return () => {
-      notificationListener.current && notificationListener.current.remove();
-      pushTokenListener.current && pushTokenListener.current.remove();
-      responseListener.current && responseListener.current.remove();
+      notificationListener.current?.remove();
+      pushTokenListener.current?.remove();
+      responseListener.current?.remove();
 
       subscription?.remove();
     };

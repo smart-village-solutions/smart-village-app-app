@@ -52,6 +52,55 @@ export type WasteReminderSchedulingResult =
   | { status: 'waiting-for-data' }
   | { errorClass: WasteReminderSchedulingErrorClass; status: 'failed' };
 
+const getUnavailableSchedulingResult = (
+  availability: Extract<Awaited<ReturnType<typeof getSchedulingAvailability>>, { available: false }>
+): WasteReminderSchedulingResult => {
+  if (availability.status === 'permission-required') {
+    return { status: 'permission-required' };
+  }
+
+  return { errorClass: availability.errorClass, status: 'failed' };
+};
+
+const getSchedulingErrorFallback = (error: unknown): WasteReminderSchedulingErrorClass => {
+  if (error instanceof WasteReminderVerificationError) return error.errorClass;
+  if (error instanceof WasteReminderStorageError) return 'storage-error';
+
+  return 'native-schedule-error';
+};
+
+const scheduleWasteReminderBatch = async ({
+  coverageReminders,
+  reminders,
+  scheduledCoverageReminderNotificationIds,
+  scheduledNotificationIds,
+  streetName,
+  wasteTypesData
+}: {
+  coverageReminders: ReturnType<typeof buildCoverageReminderNotifications>;
+  reminders: WasteReminderOccurrence[];
+  scheduledCoverageReminderNotificationIds: string[];
+  scheduledNotificationIds: string[];
+  streetName?: string;
+  wasteTypesData: WasteTypeData;
+}) => {
+  for (const reminder of reminders) {
+    const notificationId = await scheduleWasteReminderNotification({
+      reminder,
+      reminderAt: reminder.reminderAt,
+      streetName,
+      wasteTypesData
+    });
+    scheduledNotificationIds.push(notificationId);
+  }
+
+  for (const reminder of coverageReminders) {
+    const notificationId = await scheduleWasteReminderCoverageNotification(reminder);
+    scheduledNotificationIds.push(notificationId);
+    scheduledCoverageReminderNotificationIds.push(notificationId);
+  }
+};
+
 export const scheduleWasteReminderNotifications = async ({
   hasMoreReminders = false,
   localCoverageUntil,
@@ -119,28 +168,17 @@ export const scheduleWasteReminderNotifications = async ({
       });
       reportSchedulingTransition(scheduling, previousState?.scheduling);
 
-      return availability.status === 'permission-required'
-        ? { status: 'permission-required' }
-        : { errorClass: availability.errorClass, status: 'failed' };
+      return getUnavailableSchedulingResult(availability);
     }
 
-    for (const reminder of reminders) {
-      const notificationId = await scheduleWasteReminderNotification({
-        reminder,
-        reminderAt: reminder.reminderAt,
-        streetName,
-        wasteTypesData
-      });
-
-      scheduledNotificationIds.push(notificationId);
-    }
-
-    for (const reminder of coverageReminders) {
-      const notificationId = await scheduleWasteReminderCoverageNotification(reminder);
-
-      scheduledNotificationIds.push(notificationId);
-      scheduledCoverageReminderNotificationIds.push(notificationId);
-    }
+    await scheduleWasteReminderBatch({
+      coverageReminders,
+      reminders,
+      scheduledCoverageReminderNotificationIds,
+      scheduledNotificationIds,
+      streetName,
+      wasteTypesData
+    });
     const actualCount = await verifyScheduledWasteReminders(scheduledNotificationIds);
     const scheduling = buildSchedulingState({
       actualCount,
@@ -178,14 +216,7 @@ export const scheduleWasteReminderNotifications = async ({
     return { actualCount, expectedCount, status: 'scheduled' };
   } catch (error) {
     await cancelNotificationsBestEffort(scheduledNotificationIds).catch(() => undefined);
-    const errorClass = classifyWasteReminderError(
-      error,
-      error instanceof WasteReminderVerificationError
-        ? error.errorClass
-        : error instanceof WasteReminderStorageError
-        ? 'storage-error'
-        : 'native-schedule-error'
-    );
+    const errorClass = classifyWasteReminderError(error, getSchedulingErrorFallback(error));
     const scheduling = buildSchedulingState({
       actualCount: error instanceof WasteReminderVerificationError ? error.actualCount : undefined,
       errorClass,

@@ -104,7 +104,7 @@ export const FeedbackScreen = ({ route }) => {
   });
   const includeDiagnosticInformation = watch('includeDiagnosticInformation');
   const diagnosticInformationHint = diagnosticInformationHints(feedbackSettings);
-  const consentTitle = `${title.replace(/\s*\*$/, '')} *`;
+  const consentTitle = `${title.trimEnd().replace(/\*$/, '').trimEnd()} *`;
 
   const appInfo = useAppInfo();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);

@@ -40,6 +40,26 @@ type WasteReminderMaintenanceTrigger =
   | 'token-change'
   | 'manual-retry';
 
+const shouldBypassMaintenanceBackoff = (
+  trigger: WasteReminderMaintenanceTrigger,
+  ownerWasMigrated: boolean,
+  schedulingStatus?: string
+) =>
+  ['manual-retry', 'permission-change', 'token-change'].includes(trigger) ||
+  ownerWasMigrated ||
+  (trigger === 'foreground' && schedulingStatus === 'permission-required') ||
+  (trigger === 'data-ready' && schedulingStatus === 'waiting-for-data');
+
+const isMaintenanceRetryDeferred = (
+  schedulingStatus: string | undefined,
+  nextRetryAt: string | undefined,
+  bypassBackoff: boolean
+) =>
+  schedulingStatus === 'failed' &&
+  !!nextRetryAt &&
+  new Date(nextRetryAt).getTime() > Date.now() &&
+  !bypassBackoff;
+
 export const useWasteReminderSync = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -215,22 +235,19 @@ export const useWasteReminderSync = () => {
             stateBeforeAttempt = await readWasteReminderLocalState();
           }
 
-          const nextRetryAt = stateBeforeAttempt?.scheduling?.nextRetryAt;
-          const isRetryDue = !nextRetryAt || new Date(nextRetryAt).getTime() <= Date.now();
-          const bypassBackoff =
-            trigger === 'manual-retry' ||
-            trigger === 'permission-change' ||
-            trigger === 'token-change' ||
-            ownerResult === 'migrated' ||
-            (trigger === 'foreground' &&
-              stateBeforeAttempt?.scheduling?.status === 'permission-required') ||
-            (trigger === 'data-ready' &&
-              stateBeforeAttempt?.scheduling?.status === 'waiting-for-data');
+          const schedulingStatus = stateBeforeAttempt?.scheduling?.status;
+          const bypassBackoff = shouldBypassMaintenanceBackoff(
+            trigger,
+            ownerResult === 'migrated',
+            schedulingStatus
+          );
 
           if (
-            stateBeforeAttempt?.scheduling?.status === 'failed' &&
-            !isRetryDue &&
-            !bypassBackoff
+            isMaintenanceRetryDeferred(
+              schedulingStatus,
+              stateBeforeAttempt?.scheduling?.nextRetryAt,
+              bypassBackoff
+            )
           ) {
             return;
           }

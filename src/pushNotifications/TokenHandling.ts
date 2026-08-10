@@ -14,6 +14,12 @@ export enum PushNotificationStorageKeys {
 
 export const PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT = 'pushNotificationTokenChanged';
 
+const getTokenChangeType = (storedToken: string | null, token?: string) => {
+  if (!token) return 'removed';
+
+  return storedToken ? 'rotated' : 'added';
+};
+
 export const serverConnectionAlert = (
   isSuccess: boolean,
   message: string = texts.weather.noData
@@ -48,7 +54,7 @@ export const handleIncomingToken = async (token?: string) => {
     await storeTokenSecurely(token);
     DeviceEventEmitter.emit(
       PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT,
-      token ? (storedToken ? 'rotated' : 'added') : 'removed'
+      getTokenChangeType(storedToken, token)
     );
 
     return true;

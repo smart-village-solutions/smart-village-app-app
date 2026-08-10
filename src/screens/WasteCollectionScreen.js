@@ -69,6 +69,32 @@ export const getLocationData = (streetData) => {
   };
 };
 
+const renderWasteHeaderRight = ({
+  goToReminder,
+  navigation,
+  navigationType,
+  streetData,
+  usedTypes
+}) => {
+  if (!streetData || !usedTypes) {
+    return navigationType === 'drawer' ? (
+      <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+    ) : null;
+  }
+
+  return (
+    <WrapperRow itemsCenter>
+      <HeaderLeft
+        onPress={goToReminder}
+        backImage={({ tintColor }) => <Icon.EditSetting color={tintColor} style={styles.icon} />}
+      />
+      {navigationType === 'drawer' && (
+        <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+      )}
+    </WrapperRow>
+  );
+};
+
 /**
  * WasteCollectionScreen component handles the waste collection screen functionality.
  * It manages the state and logic for displaying waste collection information, including
@@ -87,6 +113,14 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     texts: wasteAddressesTexts = {},
     twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
+  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
+  const [isRehydrating, setIsRehydrating] = useState(false);
+  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
+  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState();
+  const [isReset, setIsReset] = useState(false);
   const renderSuggestions = useRenderSuggestions((item) => {
     if (item?.id) {
       setSelectedStreetId(item.id);
@@ -95,24 +129,16 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     }
   });
   const { setInputValue, setInputValueCity, setInputValueCitySelected } = renderSuggestions;
-  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
-  const [isRehydrating, setIsRehydrating] = useState(false);
-  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
-  const [selectedDay, setSelectedDay] = useState('');
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
   const locationData = getLocationData(streetData);
   const usedTypes = useWasteUsedTypes({ streetData, typesData });
   const { triggerExport } = useTriggerExport({ streetData, wasteTexts });
-  const [selectedTypes, setSelectedTypes] = useState();
   const markedDates = useWasteMarkedDates({
     streetData,
     selectedTypes: selectedTypes || typesData
   });
   const keyboardHeight = useKeyboardHeight();
-  const [isReset, setIsReset] = useState(false);
   const query = QUERY_TYPES.WASTE_STREET;
 
   const listItems = useMemo(() => {
@@ -156,9 +182,10 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
 
     setSelectedTypes(
       Object.fromEntries(
-        (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
-          (typeKey) => [typeKey, usedTypes[typeKey]]
-        )
+        (waste.selectedTypeKeys ?? Object.keys(usedTypes)).map((typeKey) => [
+          typeKey,
+          usedTypes[typeKey]
+        ])
       )
     );
   }, [usedTypes, waste.selectedTypeKeys]);
@@ -168,7 +195,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
   // state. The `isRehydrating` flag prevents unnecessary UI updates during this process.
   const rehydrateSelectedStreet = useCallback(() => {
     setIsRehydrating(true);
-    !!waste.streetId && setSelectedStreetId(waste.streetId);
+    if (waste.streetId) setSelectedStreetId(waste.streetId);
     setIsRehydrating(false);
   }, [waste.streetId]);
 
@@ -189,22 +216,13 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        !!streetData && !!usedTypes ? (
-          <WrapperRow itemsCenter>
-            <HeaderLeft
-              onPress={goToReminder}
-              backImage={({ tintColor }) => (
-                <Icon.EditSetting color={tintColor} style={styles.icon} />
-              )}
-            />
-
-            {navigationType === 'drawer' && (
-              <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
-            )}
-          </WrapperRow>
-        ) : navigationType === 'drawer' ? (
-          <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
-        ) : null
+        renderWasteHeaderRight({
+          goToReminder,
+          navigation,
+          navigationType,
+          streetData,
+          usedTypes
+        })
     });
 
     if (isReset) {
