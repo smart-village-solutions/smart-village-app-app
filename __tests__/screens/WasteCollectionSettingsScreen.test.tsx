@@ -43,7 +43,8 @@ const mockReadWasteReminderLocalState = jest.fn(async () => ({
 }));
 const mockNavigation = {
   goBack: jest.fn(),
-  navigate: jest.fn()
+  navigate: jest.fn(),
+  popTo: jest.fn()
 };
 
 jest.mock('@react-navigation/native', () => ({
@@ -94,6 +95,12 @@ jest.mock('../../src/components', () => {
         Text,
         null,
         `${switchValue ? 'switch:on' : 'switch:off'}:${isDisabled ? 'disabled' : 'enabled'}`
+      ),
+    WasteHeader: ({ locationData, onPress }) =>
+      React.createElement(
+        TouchableOpacity,
+        { accessibilityLabel: 'Edit waste location', onPress },
+        locationData.street
       ),
     Wrapper: ({ children }) => React.createElement(View, null, children),
     WrapperHorizontal: ({ children }) => React.createElement(View, null, children),
@@ -382,6 +389,37 @@ describe('WasteCollectionSettingsScreen', () => {
     expect(collectText(tree.toJSON()).join(' ')).toContain(
       '2 waste push notifications are currently scheduled locally on this device.'
     );
+  });
+
+  it('opens the existing street selection from the settings screen', async () => {
+    const globalSettings = {
+      ...initialContext.globalSettings,
+      navigation: 'tab',
+      waste: {
+        streetId: 1,
+        streetName: 'Test Street (12345 Berlin)',
+        selectedTypeKeys: ['paper']
+      }
+    };
+    let tree;
+
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const editStreetButton = tree.root.findByProps({
+      accessibilityLabel: 'Edit waste location'
+    });
+
+    act(() => editStreetButton.props.onPress());
+
+    expect(mockNavigation.popTo).toHaveBeenCalledWith(ScreenName.WasteCollection, {
+      editStreet: true
+    });
   });
 
   it('keeps loaded flexible reminder times when waste types refresh with a new object reference', async () => {

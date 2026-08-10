@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native';
 import _isArray from 'lodash/isArray';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
@@ -42,6 +41,8 @@ import {
   useKeyboardHeight,
   useRenderSuggestions,
   useTriggerExport,
+  useWasteStreetEditRequest,
+  useWasteStreetRehydration,
   useWasteMarkedDates,
   useWasteStreet,
   useWasteTypes,
@@ -75,7 +76,7 @@ export const getLocationData = (streetData) => {
  * reminder screen and handles user interactions for selecting city and street inputs.
  */
 /* eslint-disable complexity */
-export const WasteCollectionScreen = ({ navigation }) => {
+export const WasteCollectionScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -165,13 +166,17 @@ export const WasteCollectionScreen = ({ navigation }) => {
   // Ensures that when the screen comes into focus, the state is properly reset and rehydrated.
   // If a street id already exists in the waste settings, it is used to set the `selectedStreetId`
   // state. The `isRehydrating` flag prevents unnecessary UI updates during this process.
-  useFocusEffect(
-    useCallback(() => {
-      setIsRehydrating(true);
-      !!waste.streetId && setSelectedStreetId(waste.streetId);
-      setIsRehydrating(false);
-    }, [waste.streetId])
-  );
+  const rehydrateSelectedStreet = useCallback(() => {
+    setIsRehydrating(true);
+    !!waste.streetId && setSelectedStreetId(waste.streetId);
+    setIsRehydrating(false);
+  }, [waste.streetId]);
+
+  useWasteStreetRehydration({
+    editStreet: route?.params?.editStreet,
+    isReset,
+    onRehydrate: rehydrateSelectedStreet
+  });
 
   const goToReminder = useCallback(
     () =>
@@ -234,6 +239,12 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setInputValueCitySelected(false);
     setIsReset(true);
   }, []);
+
+  useWasteStreetEditRequest({
+    editStreet: route?.params?.editStreet,
+    onReset: resetSelectedStreetId,
+    onRequestHandled: () => navigation.setParams({ editStreet: undefined })
+  });
 
   const wasteHeader = useCallback(() => {
     return <WasteHeader locationData={locationData} onPress={resetSelectedStreetId} />;

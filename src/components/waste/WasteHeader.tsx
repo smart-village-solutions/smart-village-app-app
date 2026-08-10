@@ -6,7 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import { Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { useStreetString } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { BoldText, RegularText } from '../Text';
@@ -60,6 +60,8 @@ export const WasteHeader = ({ locationData, onPress }: WasteHeaderProps) => {
           {getStreetString(locationData)}
         </BoldText>
         <TouchableOpacity
+          accessibilityHint={consts.a11yLabel.editHint}
+          accessibilityLabel={consts.a11yLabel.editIcon}
           onPress={onPress}
           style={[
             styles.editButton,
