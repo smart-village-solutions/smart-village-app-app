@@ -12,6 +12,7 @@ import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } 
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, device, normalize, texts } from '../../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import {
   buildAddressData,
   buildContactData,
@@ -29,6 +30,7 @@ import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
 import { Button } from '../../Button';
 import { Label } from '../../Label';
+import { LoadingModal } from '../../LoadingModal';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
@@ -237,7 +239,10 @@ export const PointOfInterestForm = ({
     name: 'priceInformations'
   });
 
-  const [createPointOfInterest, { loading }] = useMutation(CREATE_POINT_OF_INTEREST);
+  const [createPointOfInterest, { loading }] = useMutation(
+    CREATE_POINT_OF_INTEREST,
+    getApolloAuthContext(AUTH_MODE_USER)
+  );
 
   const registerFieldPosition = useCallback(
     (fieldName: keyof PoiFormValues | string) => (event: LayoutChangeEvent) => {
@@ -340,6 +345,8 @@ export const PointOfInterestForm = ({
 
   return (
     <>
+      <LoadingModal loading={loading || isLoading} />
+
       <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
         <Controller
           name="categories"

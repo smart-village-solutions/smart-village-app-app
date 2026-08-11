@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import _camelCase from 'lodash/camelCase';
 import _uniqBy from 'lodash/uniqBy';
@@ -16,6 +17,7 @@ import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { getApolloAuthContext } from '../../graphqlAuth';
 import {
   filterTypesHelper,
   geoLocationFilteredListItem,
@@ -59,6 +61,12 @@ const FILTER_TYPES = {
   LIST: 'list',
   MAP: 'map'
 };
+
+const QUERIES_WITH_VISIBILITY_FILTER = new Set([
+  QUERY_TYPES.EVENT_RECORDS,
+  QUERY_TYPES.NEWS_ITEMS,
+  QUERY_TYPES.POINTS_OF_INTEREST
+]);
 
 const { SWITCH_BETWEEN_LIST_AND_MAP } = consts;
 
@@ -140,9 +148,11 @@ export const Overviews = ({ navigation, route }) => {
       : query === QUERY_TYPES.NEWS_ITEMS
       ? _camelCase(route.params?.title)
       : query;
+  const skipResourceFilters = route.params?.skipResourceFilters ?? false;
+  const hideInvisible = route.params?.hideInvisible ?? false;
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
-    ...resourceFiltersState[filterQuery]
+    ...(skipResourceFilters ? {} : resourceFiltersState[filterQuery])
   });
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
@@ -163,6 +173,7 @@ export const Overviews = ({ navigation, route }) => {
   const currentPosition = position || lastKnownPosition;
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
+  const authMode = route.params?.authMode;
   const bookmarkable = route.params?.bookmarkable;
   const categories = route.params?.categories; // HINT: defined on a nested category list screen
   const subQuery = route.params?.subQuery ?? {};
@@ -179,6 +190,7 @@ export const Overviews = ({ navigation, route }) => {
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
+    ...(authMode ? getApolloAuthContext(authMode) : {}),
     fetchPolicy,
     variables: {
       ...queryVariables,
@@ -196,7 +208,15 @@ export const Overviews = ({ navigation, route }) => {
   });
 
   const listItems = useMemo(() => {
-    let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
+    const shouldHideInvisible =
+      hideInvisible && QUERIES_WITH_VISIBILITY_FILTER.has(query) && Array.isArray(data?.[query]);
+    const parsedData = shouldHideInvisible
+      ? {
+          ...data,
+          [query]: data[query].filter((item) => item?.visible !== false)
+        }
+      : data;
+    let parsedListItems = parseListItemsFromQuery(query, parsedData, titleDetail, {
       bookmarkable,
       withDate: false,
       queryVariables,
@@ -244,7 +264,8 @@ export const Overviews = ({ navigation, route }) => {
     radiusSearchByDistance,
     isLocationAlertShow,
     locationSettings,
-    navigation
+    navigation,
+    hideInvisible
   ]);
 
   const refresh = useCallback(() => {
@@ -254,6 +275,18 @@ export const Overviews = ({ navigation, route }) => {
     }
     setRefreshing(false);
   }, [isConnected, setRefreshing, refetch]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isConnected || !query) {
+        return undefined;
+      }
+
+      refetch?.();
+
+      return undefined;
+    }, [isConnected, query, refetch])
+  );
 
   const filterTypes = useMemo(() => {
     return filterTypesHelper({
@@ -283,7 +316,7 @@ export const Overviews = ({ navigation, route }) => {
     // the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...resourceFiltersState?.[filterQuery],
+      ...(skipResourceFilters ? {} : resourceFiltersState?.[filterQuery]),
       ...getAdditionalQueryVariables(
         query,
         undefined,
@@ -291,7 +324,15 @@ export const Overviews = ({ navigation, route }) => {
         excludeMowasRegionalKeys
       )
     });
-  }, [excludeDataProviderIds, excludeMowasRegionalKeys, query, route.params?.queryVariables]);
+  }, [
+    excludeDataProviderIds,
+    excludeMowasRegionalKeys,
+    filterQuery,
+    query,
+    resourceFiltersState,
+    route.params?.queryVariables,
+    skipResourceFilters
+  ]);
 
   useLayoutEffect(() => {
     if (

@@ -5,11 +5,12 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { filterProfileEditorialTiles } from '../../helpers/profileEditorialContentHelper';
 import { usePersonalizedTiles } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
 import { ProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { ProfileRoles, ScreenName } from '../../types';
+import { ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -21,31 +22,6 @@ import { ServiceTile, TServiceTile } from './ServiceTile';
 const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
 const ITEMS_PER_ROW_PORTRAIT = 3;
 const ITEMS_PER_ROW_LANDSCAPE = 5;
-
-/**
- * Maps item.params.query values (camelCase) to their corresponding ProfileRoles keys.
- * Only queries listed here are subject to role-based filtering.
- */
-const QUERY_TO_ROLE_MAP: Partial<Record<string, keyof ProfileRoles>> = {
-  constructionSite: 'role_construction_site',
-  deadlines: 'role_deadlines',
-  defectReport: 'role_defect_report',
-  encounterSupport: 'role_encounter_support',
-  eventRecord: 'role_event_record',
-  job: 'role_job',
-  lunch: 'role_lunch',
-  newsItem: 'role_news_item',
-  noticeboard: 'role_noticeboard',
-  offer: 'role_offer',
-  pointOfInterest: 'role_point_of_interest',
-  pushNotification: 'role_push_notification',
-  staticContents: 'role_static_contents',
-  survey: 'role_survey',
-  tour: 'role_tour',
-  tourStops: 'role_tour_stops',
-  voucher: 'role_voucher',
-  wasteCalendar: 'role_waste_calendar'
-};
 
 export const umlautSwitcher = (text: string) => {
   if (!text) return;
@@ -71,11 +47,20 @@ export const umlautSwitcher = (text: string) => {
 export const Service = ({
   data,
   isEditMode = false,
+  alignIncompleteRowsLeft = false,
+  rowHorizontalPadding = 0,
+  tileLayoutColumns,
   staticJsonName,
   hasDiagonalGradientBackground
 }: {
   data: any;
   isEditMode?: boolean;
+  alignIncompleteRowsLeft?: boolean;
+  rowHorizontalPadding?: number;
+  tileLayoutColumns?: {
+    landscape?: number;
+    portrait?: number;
+  };
   staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
@@ -116,15 +101,34 @@ export const Service = ({
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
-        item={item}
+        item={
+          tileLayoutColumns
+            ? {
+                ...item,
+                numberOfTiles: {
+                  ...item.numberOfTiles,
+                  landscape: tileLayoutColumns.landscape ?? item.numberOfTiles?.landscape,
+                  portrait: tileLayoutColumns.portrait ?? item.numberOfTiles?.portrait
+                }
+              }
+            : item
+        }
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
+        staticJsonName={staticJsonName}
         shouldAddMargin={shouldAddMargin}
         tileSizeFactor={tileSizeFactor}
       />
     ),
-    [isEditMode, hasDiagonalGradientBackground, onToggleVisibility, serviceTiles, tileSizeFactor]
+    [
+      isEditMode,
+      hasDiagonalGradientBackground,
+      onToggleVisibility,
+      serviceTiles,
+      tileLayoutColumns,
+      tileSizeFactor
+    ]
   );
   const toggler = isPersonalizable && (
     <View style={styles.toggler}>
@@ -139,20 +143,16 @@ export const Service = ({
   const isPortrait = orientation === 'portrait';
   const itemsPerRow = isPortrait ? ITEMS_PER_ROW_PORTRAIT : ITEMS_PER_ROW_LANDSCAPE;
 
-  // Role-based filtering: only active on ProfileCreateContentHome in view mode.
-  // Edit mode always shows all tiles so users can manage their layout.
-  // If roles are not available, all tiles are shown.
   const visibleTiles = useMemo(() => {
-    if (route.name !== ScreenName.ProfileCreateContentHome || isEditMode || !roles) {
+    if (isEditMode) {
       return tiles;
     }
 
-    return tiles?.filter((tile) => {
-      const roleKey = tile.params?.query ? QUERY_TO_ROLE_MAP[tile.params.query] : undefined;
-      // If no role mapping exists for this tile's query, always show it
-      if (!roleKey) return true;
-      return roles[roleKey];
-    });
+    if (route.name === ScreenName.Profile) {
+      return filterProfileEditorialTiles(tiles, roles);
+    }
+
+    return tiles;
   }, [tiles, route.name, isEditMode, roles]);
 
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
@@ -180,14 +180,16 @@ export const Service = ({
         const isIncompleteRow = row.length < itemsPerRow;
         const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
         const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
-        // marginLeft add only if it's the last row and there is more than one item
-        const shouldAddMargin = isLastAndIncompleteRow && row.length > 1;
+        const shouldCenterIncompleteRow = isLastAndIncompleteRow && !alignIncompleteRowsLeft;
+        // marginLeft add only if it's the last row, centered and there is more than one item
+        const shouldAddMargin = shouldCenterIncompleteRow && row.length > 1;
 
         return (
           <WrapperWrap
             key={rowKey}
-            center={isLastAndIncompleteRow}
+            center={shouldCenterIncompleteRow}
             spaceBetween={!isLastAndIncompleteRow}
+            style={rowHorizontalPadding ? { paddingHorizontal: rowHorizontalPadding } : undefined}
           >
             {row.map((item, index) => renderItem(item, index, shouldAddMargin))}
           </WrapperWrap>

@@ -30,6 +30,7 @@ type ProfileContentRecord = {
   title?: string;
   updatedAt?: string;
   updated_at?: string;
+  visible?: boolean;
 };
 
 type ProfileContentListItem = {
@@ -167,15 +168,18 @@ const PROFILE_CONTENT_SECTIONS = [
   }
 ] as const;
 
+const filterVisibleRecords = <T extends ProfileContentRecord>(items: T[] = []) =>
+  items.filter((item) => item?.visible !== false);
+
 export const buildProfileContentListItems = ({
   eventRecords = [],
   newsItems = [],
   pointsOfInterest = []
 }: ProfileContentData): ProfileContentListItem[] => {
   const parsedItems = [
-    ...newsItems.map(mapNewsItem),
-    ...pointsOfInterest.map(mapPointOfInterest),
-    ...eventRecords.map(mapEventRecord)
+    ...filterVisibleRecords(newsItems).map(mapNewsItem),
+    ...filterVisibleRecords(pointsOfInterest).map(mapPointOfInterest),
+    ...filterVisibleRecords(eventRecords).map(mapEventRecord)
   ];
 
   return parsedItems
@@ -190,7 +194,7 @@ export const buildProfileContentSectionedList = (data: ProfileContentData) => {
   const sectionedData: Array<string | ProfileContentListItem> = [];
 
   PROFILE_CONTENT_SECTIONS.forEach(({ itemsKey, mapper, title }) => {
-    const sectionItems = (data[itemsKey] || [])
+    const sectionItems = filterVisibleRecords(data[itemsKey] || [])
       .map(mapper)
       .sort((a, b) => getContentTimestamp(b) - getContentTimestamp(a))
       .map((item, index, items) => ({
@@ -214,7 +218,7 @@ export const buildProfileContentSectionedList = (data: ProfileContentData) => {
 
 export const buildProfileContentSections = (data: ProfileContentData): ProfileContentSection[] =>
   PROFILE_CONTENT_SECTIONS.map(({ itemsKey, mapper, query, title }) => {
-    const sectionItems = (data[itemsKey] || [])
+    const sectionItems = filterVisibleRecords(data[itemsKey] || [])
       .map(mapper)
       .sort((a, b) => getContentTimestamp(b) - getContentTimestamp(a))
       .map((item, index, items) => ({

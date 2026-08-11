@@ -6,6 +6,7 @@ import { useMutation } from 'react-apollo';
 import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, colors, consts, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DELETE_NEWS_ITEM } from '../../queries/newsItems';
@@ -63,6 +64,9 @@ export const NewsItem = ({ data, navigation, refetch, route }) => {
     !!dataProvider?.id &&
     currentUserDataProviderId == dataProvider.id;
   const [deleteNewsItem] = useMutation(DELETE_NEWS_ITEM, {
+    ...getApolloAuthContext(AUTH_MODE_USER),
+    awaitRefetchQueries: true,
+    refetchQueries: ['NewsItems'],
     variables: { id: data.id },
     onCompleted: () => navigation.goBack()
   });

@@ -6,6 +6,7 @@ const defaultFragment = `
   createdAt
   listDate
   updatedAt
+  visible
   mediaContents {
     id
     contentType

@@ -30,6 +30,7 @@ import {
   WrapperRow
 } from '../../../components';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import {
   formatSizeStandard,
   graphqlFetchPolicy,
@@ -311,7 +312,10 @@ export const ProfileNoticeboardCreateForm = ({
     }
   }, [departureDate]);
 
-  const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
+  const [createGenericItem, { loading }] = useMutation(
+    CREATE_GENERIC_ITEM,
+    getApolloAuthContext(AUTH_MODE_USER)
+  );
   let imageUrl: string | undefined;
 
   const registerFieldPosition = useCallback(

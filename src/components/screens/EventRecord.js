@@ -8,6 +8,7 @@ import { WebView } from 'react-native-webview';
 import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, colors, consts, normalize, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -118,6 +119,7 @@ export const EventRecord = ({ data, navigation, refetch, route }) => {
     !!dataProvider?.id &&
     currentUserDataProviderId == dataProvider.id;
   const [deleteEventRecord] = useMutation(DELETE_EVENT_RECORD, {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { id: data.id },
     onCompleted: () => navigation.goBack()
   });

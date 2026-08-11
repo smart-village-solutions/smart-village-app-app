@@ -8,12 +8,14 @@ import { Divider } from 'react-native-elements';
 
 import { ProfileContext } from '../../../ProfileProvider';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import { parseDateInputValue, uploadImages } from '../../../helpers';
 import { DETAIL_REFRESH_EVENT } from '../../../hooks';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
 import { Checkbox } from '../../Checkbox';
+import { LoadingModal } from '../../LoadingModal';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
@@ -37,6 +39,7 @@ type NewsFormValues = {
 };
 
 type NewsFormProps = {
+  defaultCategories?: string[];
   initialData?: any;
   mode?: 'create' | 'edit';
   scrollViewRef?: MutableRefObject<ScrollView | null>;
@@ -95,12 +98,18 @@ const buildMediaContentInput = (mediaContents: any[] = []) =>
     }));
 
 /* eslint-disable complexity */
-export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFormProps) => {
+export const NewsForm = ({
+  defaultCategories = [],
+  initialData,
+  mode = 'create',
+  scrollViewRef
+}: NewsFormProps) => {
   const { currentUserData } = useContext(ProfileContext);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const fieldPositionsRef = useRef<Partial<Record<keyof NewsFormValues | string, number>>>({});
   const isEdit = mode === 'edit' && !!initialData?.id;
+  const hasFixedDefaultCategory = !isEdit && defaultCategories.length > 0;
   const contentBlock = initialData?.contentBlocks?.[0];
 
   const { data: dataCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES, {
@@ -114,7 +123,9 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
   } = useForm<NewsFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      categories: initialData?.categories?.map((category: { name: string }) => category.name) || [],
+      categories:
+        initialData?.categories?.map((category: { name: string }) => category.name) ||
+        defaultCategories,
       date: parseDateInputValue(initialData?.publishedAt) ?? moment().toDate(),
       description: contentBlock?.body ?? '',
       id: initialData?.id ?? '',
@@ -127,7 +138,10 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
     }
   });
 
-  const [createNewsItem, { loading }] = useMutation(CREATE_NEWS_ITEM);
+  const [createNewsItem, { loading }] = useMutation(
+    CREATE_NEWS_ITEM,
+    getApolloAuthContext(AUTH_MODE_USER)
+  );
 
   const registerFieldPosition = useCallback(
     (fieldName: keyof NewsFormValues | string) => (event: LayoutChangeEvent) => {
@@ -270,19 +284,22 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
     void handleSubmit(submitWithPushNotificationConfirmation, scrollToFirstError)();
   }, [handleSubmit, scrollToFirstError, submitWithPushNotificationConfirmation]);
 
-  if (loadingCategories) {
-    return <LoadingSpinner loading />;
-  }
-
   const categoryNameDropdownData =
     dataCategories?.categories?.map((category) => ({
       id: category.id,
       name: category.name,
       value: category.name
     })) || [];
+  const shouldAutoSelectNewsCategory = categoryNameDropdownData.length === 1;
+
+  if (loadingCategories) {
+    return <LoadingSpinner loading />;
+  }
 
   return (
     <>
+      <LoadingModal loading={loading || isLoading} />
+
       <Wrapper noPaddingTop onLayout={registerFieldPosition('title')}>
         <Input
           autoCapitalize="none"
@@ -385,29 +402,31 @@ export const NewsForm = ({ initialData, mode = 'create', scrollViewRef }: NewsFo
         <Divider style={styles.divider} />
       </Wrapper>
 
-      <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
-        <Controller
-          name="categories"
-          render={({ field: { name, onChange, value } }) => (
-            <DropdownInput
-              {...{
-                boldLabel: true,
-                control,
-                data: categoryNameDropdownData,
-                errors,
-                label: `${texts.profile.forms.categories}`,
-                multipleSelect: true,
-                name,
-                onChange,
-                placeholder: texts.profile.forms.categoriesPlaceholder,
-                value,
-                valueKey: 'name'
-              }}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
+      {!hasFixedDefaultCategory && !shouldAutoSelectNewsCategory ? (
+        <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
+          <Controller
+            name="categories"
+            render={({ field: { name, onChange, value } }) => (
+              <DropdownInput
+                {...{
+                  boldLabel: true,
+                  control,
+                  data: categoryNameDropdownData,
+                  errors,
+                  label: `${texts.profile.forms.categories}`,
+                  multipleSelect: true,
+                  name,
+                  onChange,
+                  placeholder: texts.profile.forms.categoriesPlaceholder,
+                  value,
+                  valueKey: 'name'
+                }}
+              />
+            )}
+            control={control}
+          />
+        </Wrapper>
+      ) : null}
 
       <Wrapper noPaddingTop onLayout={registerFieldPosition('date')}>
         <Controller

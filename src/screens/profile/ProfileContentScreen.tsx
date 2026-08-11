@@ -10,12 +10,13 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   SectionHeader,
-  Wrapper,
   WrapperVertical
 } from '../../components';
 import { colors, consts, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { graphqlFetchPolicy } from '../../helpers';
 import { buildProfileContentSections } from '../../helpers/profileContentHelper';
+import { hasEditorialRoles } from '../../helpers/profileEditorialContentHelper';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -23,6 +24,26 @@ import { ProfileMember, ScreenName } from '../../types';
 
 const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
 const PAGE_LIMIT = 100;
+
+const PROFILE_CONTENT_NAVIGATION_CONFIG = {
+  eventRecords: {
+    query: QUERY_TYPES.EVENT_RECORDS,
+    rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
+    order: 'listDate_ASC',
+    hideVolunteerEvents: true
+  },
+  pointsOfInterest: {
+    query: QUERY_TYPES.POINTS_OF_INTEREST,
+    rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
+    order: 'updatedAt_DESC'
+  },
+  newsItems: {
+    query: QUERY_TYPES.NEWS_ITEMS,
+    rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
+    order: 'updatedAt_DESC',
+    skipResourceFilters: true
+  }
+} as const;
 
 type ProfileMemberWithDataProvider = ProfileMember & {
   data_provider_id?: string | number;
@@ -33,41 +54,23 @@ const getSectionNavigationParams = (
   title: string,
   dataProviderId?: string | number
 ) => {
-  switch (sectionKey) {
-    case 'eventRecords':
-      return {
-        title,
-        query: QUERY_TYPES.EVENT_RECORDS,
-        queryVariables: {
-          dataProviderId,
-          limit: PAGE_LIMIT,
-          order: 'listDate_ASC'
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
-      };
-    case 'pointsOfInterest':
-      return {
-        title,
-        query: QUERY_TYPES.POINTS_OF_INTEREST,
-        queryVariables: {
-          dataProviderId,
-          limit: PAGE_LIMIT,
-          order: 'updatedAt_DESC'
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
-      };
-    default:
-      return {
-        title,
-        query: QUERY_TYPES.NEWS_ITEMS,
-        queryVariables: {
-          dataProviderId,
-          limit: PAGE_LIMIT,
-          order: 'updatedAt_DESC'
-        },
-        rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS
-      };
-  }
+  const config =
+    PROFILE_CONTENT_NAVIGATION_CONFIG[sectionKey] ?? PROFILE_CONTENT_NAVIGATION_CONFIG.newsItems;
+
+  return {
+    authMode: AUTH_MODE_USER,
+    hideInvisible: true,
+    title,
+    query: config.query,
+    queryVariables: {
+      dataProviderId,
+      limit: PAGE_LIMIT,
+      order: config.order
+    },
+    rootRouteName: config.rootRouteName,
+    hideVolunteerEvents: config.hideVolunteerEvents,
+    skipResourceFilters: config.skipResourceFilters
+  };
 };
 
 export const ProfileContentScreen = ({
@@ -77,7 +80,9 @@ export const ProfileContentScreen = ({
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const emptyTitle = texts.noticeboard.emptyTitle;
   const profileData = currentUserData as ProfileMemberWithDataProvider | null;
+  const hasEditorialAccess = hasEditorialRoles(profileData?.roles);
   const dataProviderId = profileData?.user?.data_provider_id || profileData?.data_provider_id;
   const queryVariables = {
     dataProviderId,
@@ -90,8 +95,9 @@ export const ProfileContentScreen = ({
     loading: loadingNews,
     refetch: refetchNews
   } = useQuery(getQuery(QUERY_TYPES.NEWS_ITEMS), {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     fetchPolicy,
-    skip: !dataProviderId,
+    skip: !dataProviderId || !hasEditorialAccess,
     variables: queryVariables
   });
 
@@ -100,8 +106,9 @@ export const ProfileContentScreen = ({
     loading: loadingPointsOfInterest,
     refetch: refetchPointsOfInterest
   } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     fetchPolicy,
-    skip: !dataProviderId,
+    skip: !dataProviderId || !hasEditorialAccess,
     variables: queryVariables
   });
 
@@ -110,8 +117,9 @@ export const ProfileContentScreen = ({
     loading: loadingEventRecords,
     refetch: refetchEventRecords
   } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     fetchPolicy,
-    skip: !dataProviderId,
+    skip: !dataProviderId || !hasEditorialAccess,
     variables: {
       ...queryVariables,
       onlyUniqEvents: true
@@ -136,12 +144,13 @@ export const ProfileContentScreen = ({
         await refresh();
       }
 
-      if (!dataProviderId) return;
+      if (!dataProviderId || !hasEditorialAccess) return;
 
       await Promise.all([refetchNews?.(), refetchPointsOfInterest?.(), refetchEventRecords?.()]);
     },
     [
       dataProviderId,
+      hasEditorialAccess,
       isConnected,
       refetchEventRecords,
       refetchNews,
@@ -173,19 +182,15 @@ export const ProfileContentScreen = ({
   }
 
   if (!dataProviderId) {
-    return (
-      <Wrapper>
-        <EmptyMessage title={texts.profile.myContentEmpty} />
-      </Wrapper>
-    );
+    return <EmptyMessage title={emptyTitle} />;
+  }
+
+  if (!hasEditorialAccess) {
+    return <EmptyMessage title={emptyTitle} />;
   }
 
   if (!sections.length) {
-    return (
-      <Wrapper>
-        <EmptyMessage title={texts.profile.myContentEmpty} />
-      </Wrapper>
-    );
+    return <EmptyMessage title={emptyTitle} />;
   }
 
   return (

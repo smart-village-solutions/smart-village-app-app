@@ -73,7 +73,6 @@ export const DropdownInput = ({
     return hasSelectedValue(inputValue);
   };
 
-  const selectedValues = Array.isArray(value) ? value : [];
   const onChangeRef = useRef(onChange);
 
   useEffect(() => {
@@ -83,6 +82,28 @@ export const DropdownInput = ({
   const getEntryValue = useCallback(
     (entry: DropdownEntry) => entry[valueKey] as string | number | undefined,
     [valueKey]
+  );
+  const buildDropdownData = useCallback(
+    (inputValue: number | string | Array<number | string>, inputData: DropdownEntry[]) => [
+      {
+        id: -1,
+        index: 0,
+        isPlaceholder: true,
+        value: placeholder || '',
+        selected: !hasSelectedValue(inputValue)
+      },
+      ...inputData.map((item) =>
+        multipleSelect
+          ? {
+              ...item,
+              selected: (Array.isArray(inputValue) ? inputValue : []).includes(
+                getEntryValue(item) ?? ''
+              )
+            }
+          : { ...item, selected: getEntryValue(item) == inputValue }
+      )
+    ],
+    [getEntryValue, multipleSelect, placeholder]
   );
 
   const areValuesEqual = useCallback(
@@ -102,26 +123,32 @@ export const DropdownInput = ({
     },
     []
   );
+  const areDropdownEntriesEqual = useCallback(
+    (left: DropdownEntry[], right: DropdownEntry[]) => {
+      if (left.length !== right.length) {
+        return false;
+      }
 
-  const [dropdownData, setDropdownData] = useState([
-    {
-      id: -1,
-      index: 0,
-      isPlaceholder: true,
-      value: placeholder || '',
-      selected: !hasSelectedValue(value)
+      return left.every((entry, index) => {
+        const comparedEntry = right[index];
+
+        return (
+          entry.id === comparedEntry.id &&
+          entry.value === comparedEntry.value &&
+          entry.selected === comparedEntry.selected &&
+          entry.isPlaceholder === comparedEntry.isPlaceholder
+        );
+      });
     },
-    ...data.map((item) =>
-      multipleSelect
-        ? { ...item, selected: selectedValues.includes(getEntryValue(item) ?? '') }
-        : { ...item, selected: getEntryValue(item) == value }
-    )
-  ]);
+    []
+  );
+
+  const [dropdownData, setDropdownData] = useState(buildDropdownData(value, data));
 
   const getSelectedMultipleValues = useCallback(
     () =>
       dropdownData
-        ?.filter((entry) => entry.selected)
+        ?.filter((entry) => entry.selected && !entry.isPlaceholder)
         .map((entry) => getEntryValue(entry))
         .filter((entry): entry is string | number => entry !== undefined) ?? [],
     [dropdownData, getEntryValue]
@@ -136,6 +163,15 @@ export const DropdownInput = ({
 
     return getEntryValue(selectedData) ?? '';
   }, [dropdownData, getEntryValue]);
+
+  useEffect(() => {
+    const nextDropdownData = buildDropdownData(value, data);
+    setDropdownData((currentDropdownData) =>
+      areDropdownEntriesEqual(currentDropdownData, nextDropdownData)
+        ? currentDropdownData
+        : nextDropdownData
+    );
+  }, [areDropdownEntriesEqual, buildDropdownData, data, value]);
 
   useEffect(() => {
     if (multipleSelect) {

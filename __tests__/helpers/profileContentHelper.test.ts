@@ -111,4 +111,48 @@ describe('buildProfileContentListItems', () => {
     ]);
     expect(result[0].data[0].subtitle).toBe('01.05.2026, 08:30 Uhr | FOZ Bremen');
   });
+
+  it('filters invisible records out of profile content lists and sections', () => {
+    const data = {
+      eventRecords: [
+        { id: 'event-visible', title: 'Visible Event', listDate: '2026-05-01', visible: true },
+        { id: 'event-hidden', title: 'Hidden Event', listDate: '2026-05-02', visible: false }
+      ],
+      newsItems: [
+        {
+          id: 'news-visible',
+          contentBlocks: [{ title: 'Visible News' }],
+          publishedAt: '2026-05-03T08:00:00Z',
+          visible: true
+        },
+        {
+          id: 'news-hidden',
+          contentBlocks: [{ title: 'Hidden News' }],
+          publishedAt: '2026-05-04T08:00:00Z',
+          visible: false
+        }
+      ],
+      pointsOfInterest: [
+        {
+          id: 'poi-visible',
+          name: 'Visible POI',
+          createdAt: '2026-05-02T08:00:00Z',
+          visible: true
+        },
+        { id: 'poi-hidden', name: 'Hidden POI', createdAt: '2026-05-05T08:00:00Z', visible: false }
+      ]
+    };
+
+    expect(buildProfileContentListItems(data).map((item) => item.title)).toEqual([
+      'Visible News',
+      'Visible POI',
+      'Visible Event'
+    ]);
+
+    expect(
+      buildProfileContentSections(data).map(({ data: sectionData }) =>
+        sectionData.map((item) => item.title)
+      )
+    ).toEqual([['Visible Event'], ['Visible News'], ['Visible POI']]);
+  });
 });

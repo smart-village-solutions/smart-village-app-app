@@ -14,6 +14,7 @@ import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } 
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import {
   buildAddressData,
   buildContactsData,
@@ -31,6 +32,7 @@ import { CREATE_EVENT_RECORDS } from '../../../queries/eventRecords';
 import { Button } from '../../Button';
 import { Checkbox } from '../../Checkbox';
 import { Label } from '../../Label';
+import { LoadingModal } from '../../LoadingModal';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
@@ -286,7 +288,10 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
     name: 'contacts'
   });
 
-  const [createEventRecord, { loading }] = useMutation(CREATE_EVENT_RECORDS);
+  const [createEventRecord, { loading }] = useMutation(
+    CREATE_EVENT_RECORDS,
+    getApolloAuthContext(AUTH_MODE_USER)
+  );
 
   const registerFieldPosition = useCallback(
     (fieldName: keyof EventFormValues | string) => (event: LayoutChangeEvent) => {
@@ -401,6 +406,8 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
 
   return (
     <>
+      <LoadingModal loading={loading || isLoading} />
+
       <Wrapper noPaddingTop onLayout={registerFieldPosition('categories')}>
         <Controller
           name="categories"

@@ -1,11 +1,18 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, Service } from '../../components';
-import { colors, normalize } from '../../config';
+import {
+  LoadingSpinner,
+  SafeAreaViewFlex,
+  SectionHeader,
+  Service,
+  WrapperVertical
+} from '../../components';
+import { colors, normalize, texts } from '../../config';
 import { profileAuthToken } from '../../helpers';
+import { hasEditorialRoles } from '../../helpers/profileEditorialContentHelper';
 import { useStaticContent } from '../../hooks/staticContent';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -13,7 +20,7 @@ import { useProfileContext } from '../../ProfileProvider';
 import { ProfileHomeScreen } from './ProfileHomeScreen';
 
 export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { refresh, isLoggedIn } = useProfileContext();
+  const { currentUserData, refresh, isLoggedIn } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
 
   const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(isLoggedIn);
@@ -73,6 +80,8 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
     return <LoadingSpinner loading />;
   }
 
+  const hasEditorialAccess = hasEditorialRoles(currentUserData?.roles);
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -84,17 +93,33 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
             tintColor={colors.refreshControl}
           />
         }
-        contentContainerStyle={styles.contentContainer}
       >
-        <Service data={topTiles} staticJsonName="profileCreateContentServiceTop" />
-        <Service data={bottomTiles} staticJsonName="profileCreateContentServiceBottom" />
+        {!!topTiles?.length && (
+          <WrapperVertical noPaddingBottom>
+            <SectionHeader title={texts.profile.createContentNoticeboard} />
+            <Service
+              alignIncompleteRowsLeft
+              data={topTiles}
+              rowHorizontalPadding={normalize(8)}
+              staticJsonName="profileCreateContentServiceTop"
+              tileLayoutColumns={{ portrait: 2.7 }}
+            />
+          </WrapperVertical>
+        )}
+
+        {!!bottomTiles?.length && hasEditorialAccess && (
+          <WrapperVertical noPaddingTop>
+            <SectionHeader title={texts.profile.createContentEditorial} />
+            <Service
+              alignIncompleteRowsLeft
+              data={bottomTiles}
+              rowHorizontalPadding={normalize(8)}
+              staticJsonName="profileCreateContentServiceBottom"
+              tileLayoutColumns={{ portrait: 2.7 }}
+            />
+          </WrapperVertical>
+        )}
       </ScrollView>
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    padding: normalize(14)
-  }
-});

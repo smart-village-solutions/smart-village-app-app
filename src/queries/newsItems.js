@@ -32,6 +32,7 @@ export const GET_NEWS_ITEMS = gql`
       createdAt
       publishedAt
       updatedAt
+      visible
       categories {
         id
         parent {
@@ -103,6 +104,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       id
       mainTitle: title
       publishedAt
+      visible
       categories {
         id
       }

@@ -1,13 +1,22 @@
-import * as SecureStore from 'expo-secure-store';
 import { GraphQLClient } from 'graphql-request';
+
 import { namespace, secrets } from './config';
+import { AUTH_MODE_PUBLIC, getGraphqlAuthHeaders, GraphqlAuthMode } from './graphqlAuth';
+
+type ReactQueryRequestOptions = {
+  authMode?: GraphqlAuthMode;
+};
 
 export const ReactQueryClient = async () => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const client = new GraphQLClient(
+    `${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`
+  );
 
-  return new GraphQLClient(`${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`, {
-    headers: {
-      authorization: accessToken ? `Bearer ${accessToken}` : ''
+  return {
+    request: async (document, variables, options: ReactQueryRequestOptions = {}) => {
+      const headers = await getGraphqlAuthHeaders(options.authMode ?? AUTH_MODE_PUBLIC);
+
+      return client.request(document, variables, headers);
     }
-  });
+  };
 };

@@ -1164,6 +1164,8 @@ export const texts = {
     myContent: 'Meine Inhalte',
     myContentEmpty: 'Sie haben noch keine Inhalte erstellt.',
     myContentNews: 'Nachrichten',
+    createContentEditorial: 'Redaktioneller Inhalt',
+    createContentNoticeboard: 'Schwarzes Brett',
     next: 'Weiter',
     notYetRegistered: 'Sie sind noch nicht registriert? ',
     ok: 'OK',

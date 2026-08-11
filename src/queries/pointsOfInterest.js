@@ -30,6 +30,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       name
       payload
       updatedAt
+      visible
       categories {
         id
         name

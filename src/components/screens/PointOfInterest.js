@@ -7,6 +7,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, colors, consts, normalize, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -100,6 +101,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, refetch, route }) =
     !!dataProvider?.id &&
     currentUserDataProviderId == dataProvider.id;
   const [deletePointOfInterest] = useMutation(DELETE_POINT_OF_INTEREST, {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { id: data.id },
     onCompleted: () => navigation.goBack()
   });
