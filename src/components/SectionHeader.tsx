@@ -1,17 +1,16 @@
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, device, Icon, normalize } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 
 import { Title, TitleContainer, TitleShadow } from './Title';
-import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 type Props = {
   big?: boolean;
   center?: boolean;
-  containerStyle?: any;
+  containerStyle?: StyleProp<ViewStyle>;
   small?: boolean;
   onPress?: () => void;
   title: string;
@@ -30,13 +29,15 @@ export const SectionHeader = ({
   const { flat = true, uppercase = false } = settings;
 
   if (!title) return null;
+  const headingAccessibilityLabel = `(${title}) ${consts.a11yLabel.heading}`;
+  const pressableAccessibilityLabel = `${headingAccessibilityLabel} ${consts.a11yLabel.button}`;
 
   const innerComponent = (
     <WrapperRow spaceBetween>
       <Title
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
-          onPress ? consts.a11yLabel.button : ''
-        } `}
+        accessibilityLabel={onPress ? pressableAccessibilityLabel : headingAccessibilityLabel}
+        accessibilityRole={onPress ? undefined : 'header'}
+        $interactive={!!onPress}
         big={big}
         center={center}
         small={small}
@@ -53,7 +54,18 @@ export const SectionHeader = ({
   return (
     <>
       <TitleContainer flat={flat} style={containerStyle}>
-        {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+        {onPress ? (
+          <TouchableOpacity
+            accessibilityLabel={pressableAccessibilityLabel}
+            accessibilityRole="button"
+            activeOpacity={0.6}
+            onPress={onPress}
+          >
+            {innerComponent}
+          </TouchableOpacity>
+        ) : (
+          innerComponent
+        )}
       </TitleContainer>
       {!flat && device.platform === 'ios' && <TitleShadow />}
     </>

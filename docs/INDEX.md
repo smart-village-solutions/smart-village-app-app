@@ -65,3 +65,6 @@ For detailed documentation see [the auth docs](./AUTH.md).
 ## Augmented Reality
 
 For detailed documentation see [the ar docs](./AR.md).
+## Generic Item events
+
+For configuring Generic Items as additional calendar events, see [the Generic Item event docs](./GENERIC_ITEM_EVENTS.md).

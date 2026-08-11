@@ -9,15 +9,14 @@
  */
 export const subtitle = (first, last, time) => {
   let formattedText = '';
+  const firstWithTime = first && time ? `${first}, ${time} Uhr` : first;
 
-  if (first && time && last) {
-    formattedText = `${first}, ${time} Uhr | ${last}`;
-  } else if (first && last) {
-    formattedText = `${first} | ${last}`;
+  if (firstWithTime && last) {
+    formattedText = `${firstWithTime} | ${last}`;
   } else if (time && last) {
     formattedText = `${time} Uhr | ${last}`;
-  } else if (first) {
-    formattedText = first;
+  } else if (firstWithTime) {
+    formattedText = firstWithTime;
   } else if (time) {
     formattedText = `${time} Uhr`;
   } else if (last) {
