@@ -166,7 +166,7 @@ export const ImagesCarousel = ({
         renderItem={({ item }) =>
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
-        style={[styles.center, { height: itemHeight, width: dimensions.width }]}
+        style={[styles.carousel, { height: itemHeight, width: dimensions.width }]}
         withAnimation={withAnimation}
       />
 
