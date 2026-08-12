@@ -52,11 +52,16 @@ describe('Icon', () => {
   });
 
   it('does not override the no-fill default of named outline icons', () => {
-    const tree = renderIcon(<Icon.HeartEmpty color="#00822b" />);
+    const tree = renderIcon(<Icon.BookmarkEmpty color="#00822b" />);
     const svg = tree.root.findByType('RNSVGSvgView');
 
     expect(svg.props.fill).toBe('none');
     expect(svg.props.stroke).toBe('#00822b');
+  });
+
+  it('provides filled and outline bookmark icons for favorite actions', () => {
+    expect(renderIcon(<Icon.BookmarkEmpty />).toJSON()).not.toBeNull();
+    expect(renderIcon(<Icon.BookmarkFilled />).toJSON()).not.toBeNull();
   });
 
   it.each([Icon.DrawerMenu, Icon.EditSetting, Icon.Pen])(

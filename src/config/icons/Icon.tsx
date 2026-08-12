@@ -1,6 +1,6 @@
 import _camelCase from 'lodash/camelCase';
 import _upperFirst from 'lodash/upperFirst';
-import React, { ComponentProps } from 'react';
+import React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import * as Tabler from 'tabler-icons-react-native';
@@ -119,6 +119,23 @@ const SvgIcon = ({
 
 type TablerIconName = keyof typeof Tabler;
 
+type TablerIconComponent = React.ComponentType<{
+  color?: string;
+  fill?: string;
+  size?: number;
+  stroke?: number;
+  style?: StyleProp<ViewStyle>;
+}>;
+
+const getTablerIcon = (name: unknown): TablerIconComponent | undefined => {
+  if (typeof name !== 'string' || !name.trim()) return undefined;
+
+  const tablerName = ('Icon' + _upperFirst(_camelCase(name))) as TablerIconName;
+  const icon = Tabler?.[tablerName];
+
+  return typeof icon === 'function' ? (icon as TablerIconComponent) : undefined;
+};
+
 const NamedIcon = ({
   accessibilityLabel,
   color: colorProp,
@@ -131,19 +148,12 @@ const NamedIcon = ({
   size = normalize(24),
   style
 }: IconProps & {
-  name: ComponentProps<typeof IconSet>['name'];
+  name: string;
   strokeWidth?: number;
 }) => {
   const { colors } = useTheme();
   const strokeColor = strokeColorProp ?? colorProp ?? colors.primary;
-  let IconComponent: any;
-
-  if (IconSet === Tabler) {
-    const TablerName = ('Icon' + _upperFirst(_camelCase(name))) as TablerIconName;
-    IconComponent = Tabler?.[TablerName] || Tabler.IconQuestionMark;
-  } else {
-    IconComponent = IconSet;
-  }
+  const SelectedIcon = getTablerIcon(name) || Tabler.IconQuestionMark;
 
   return (
     <View
@@ -151,10 +161,11 @@ const NamedIcon = ({
       style={style}
       hitSlop={hasNoHitSlop ? undefined : getHitSlops(size)}
     >
-      <IconComponent
+      {/* The component is selected from the static Tabler icon registry. */}
+      {/* eslint-disable-next-line react-hooks/static-components */}
+      <SelectedIcon
         color={strokeColor}
         {...(fillColor !== undefined ? { fill: fillColor } : {})}
-        name={name}
         size={size}
         style={iconStyle}
         stroke={strokeWidth}
@@ -175,6 +186,8 @@ export const Icon = {
   ArrowRight2: (props: IconProps) => <NamedIcon name="arrow-narrow-right" {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   At: (props: IconProps) => <NamedIcon name="at" {...props} />,
+  BookmarkEmpty: (props: IconProps) => <NamedIcon name="bookmark" {...props} />,
+  BookmarkFilled: (props: IconProps) => <NamedIcon name="bookmark-filled" {...props} />,
   Calendar: (props: IconProps) => <NamedIcon name="calendar-event" {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,

@@ -3,14 +3,17 @@ import React, { useCallback, useContext } from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { consts, Icon } from '../../config';
+import { consts } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
-import { togglePushDeviceAssignment } from '../../pushNotifications';
-import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../headerIconConfig';
 import { useTheme } from '../../hooks/useTheme';
+import { togglePushDeviceAssignment } from '../../pushNotifications';
+import { RegularText } from '../Text';
+
+import { ConfiguredBookmarkIcon } from './BookmarkIcon';
 
 type Props = {
   buttonStyle?: StyleProp<ViewStyle>;
+  label?: string;
   route: RouteProp<Record<string, BookmarkRouteParams | undefined>, string>;
   style?: StyleProp<ViewStyle>;
 };
@@ -24,7 +27,13 @@ type BookmarkRouteParams = {
 
 const a11yLabel = consts.a11yLabel;
 
-export const BookmarkHeader = ({ buttonStyle, route, style }: Props) => {
+const BookmarkLabel = ({ label }: { label?: string }) =>
+  label ? <RegularText primary>{label}</RegularText> : null;
+
+const getIconColor = (label: string | undefined, colors: ReturnType<typeof useTheme>['colors']) =>
+  label ? colors.primary : colors.darkText;
+
+export const BookmarkHeader = ({ buttonStyle, label, route, style }: Props) => {
   const { colors } = useTheme();
 
   const { toggleBookmark } = useContext(BookmarkContext);
@@ -50,30 +59,19 @@ export const BookmarkHeader = ({ buttonStyle, route, style }: Props) => {
     return null;
   }
 
+  const iconColor = getIconColor(label, colors);
+
   return (
     <TouchableOpacity
       accessibilityRole="button"
-      accessibilityLabel={a11yLabel.bookmarkList}
+      accessibilityLabel={label || a11yLabel.bookmarkList}
       accessibilityHint={a11yLabel.bookmarkListHint}
       accessibilityState={{ selected: isBookmarked }}
       onPress={onPress}
       style={buttonStyle}
     >
-      {isBookmarked ? (
-        <Icon.HeartFilled
-          color={colors.darkText}
-          style={style}
-          hasNoHitSlop
-          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
-        />
-      ) : (
-        <Icon.HeartEmpty
-          color={colors.darkText}
-          style={style}
-          hasNoHitSlop
-          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
-        />
-      )}
+      <ConfiguredBookmarkIcon color={iconColor} selected={isBookmarked} style={style} />
+      <BookmarkLabel label={label} />
     </TouchableOpacity>
   );
 };

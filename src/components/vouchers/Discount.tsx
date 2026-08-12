@@ -2,12 +2,13 @@ import React, { useCallback, useContext } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { Icon, consts, normalize } from '../../config';
+import { consts, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
-import { TDiscount } from '../../types';
-import { BoldText, RegularText } from '../Text';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { TDiscount } from '../../types';
+import { ConfiguredBookmarkIcon } from '../bookmarks/BookmarkIcon';
+import { BoldText, RegularText } from '../Text';
 
 const a11yLabel = consts.a11yLabel;
 const localeString = 'de';
@@ -68,11 +69,11 @@ export const Discount = ({
         accessibilityLabel={a11yLabel.bookmarkList}
         accessibilityHint={a11yLabel.bookmarkListHint}
       >
-        {isBookmarked ? (
-          <Icon.HeartFilled color={colors.primary} style={styles.icon} />
-        ) : (
-          <Icon.HeartEmpty color={colors.primary} style={styles.icon} />
-        )}
+        <ConfiguredBookmarkIcon
+          color={colors.primary}
+          selected={isBookmarked}
+          style={styles.icon}
+        />
       </TouchableOpacity>
     </View>
   );
