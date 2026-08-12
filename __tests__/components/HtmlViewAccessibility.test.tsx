@@ -231,15 +231,15 @@ describe('HtmlView accessibility', () => {
       <HtmlView html={'<ul><li>Erster Punkt</li><li>Zweiter Punkt</li></ul>'} />
     );
 
-    const list = tree.root.findByProps({ accessibilityRole: 'list' });
-    const items = tree.root.findAll(
-      (node) => node.props.accessibilityRole === 'listitem'
-    );
+    const list = tree.root.findByProps({ role: 'list' });
+    const items = tree.root.findAll((node) => node.props.role === 'listitem');
 
-    expect(list.props.accessibilityRole).toBe('list');
+    expect(list.props.accessibilityRole).toBeUndefined();
+    expect(list.props.role).toBe('list');
     expect(list.props.accessible).toBe(false);
     expect(items.length).toBeGreaterThanOrEqual(2);
-    expect(items.every((item) => item.props.accessibilityRole === 'listitem')).toBe(true);
+    expect(items.every((item) => item.props.accessibilityRole === undefined)).toBe(true);
+    expect(items.every((item) => item.props.role === 'listitem')).toBe(true);
     expect(items.every((item) => item.props.accessible === true)).toBe(true);
   });
 

@@ -251,7 +251,7 @@ const getListNativeProps =
       ...modelProps,
       native: mergeNativeProps(modelProps?.native ?? preGeneratedProps?.native, {
         accessible,
-        accessibilityRole: role,
+        role,
         ...getFormattingAccessibilityProps(tnode.domNode)
       })
     };
