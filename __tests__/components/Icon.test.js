@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import { Icon } from '../../src/config';
+import { hasNamedIcon, Icon } from '../../src/config';
 import { darkColors, lightColors } from '../../src/config/colors';
 import { ThemeContext } from '../../src/ThemeContext';
 
@@ -62,6 +62,13 @@ describe('Icon', () => {
   it('provides filled and outline bookmark icons for favorite actions', () => {
     expect(renderIcon(<Icon.BookmarkEmpty />).toJSON()).not.toBeNull();
     expect(renderIcon(<Icon.BookmarkFilled />).toJSON()).not.toBeNull();
+  });
+
+  it('detects supported raw Tabler icon names', () => {
+    expect(hasNamedIcon('bookmark')).toBe(true);
+    expect(hasNamedIcon('bookmark-filled')).toBe(true);
+    expect(hasNamedIcon('star')).toBe(true);
+    expect(hasNamedIcon('does-not-exist')).toBe(false);
   });
 
   it.each([Icon.DrawerMenu, Icon.EditSetting, Icon.Pen])(

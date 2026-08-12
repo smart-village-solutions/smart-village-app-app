@@ -110,8 +110,8 @@ The `heart` and `bookmark` presets can be selected with a short string:
 }
 ```
 
-Use the same `iconName` / `activeIconName` contract as custom tab configuration when selecting
-components from the app's `Icon` registry:
+Use the same `iconName` / `activeIconName` contract as custom tab configuration. Each value first
+resolves against the app's `Icon` registry and then falls back to a raw Tabler icon name:
 
 ```json
 {
@@ -124,8 +124,23 @@ components from the app's `Icon` registry:
 }
 ```
 
-Invalid icon names fall back to the built-in Heart icons. To use another Tabler icon, expose it once
-in the shared `Icon` registry and reference that component name here.
+The legacy `default` / `selected` aliases are also supported, and raw Tabler names can be used
+directly:
+
+```json
+{
+  "settings": {
+    "bookmarkIcon": {
+      "default": "star",
+      "selected": "bookmark-filled"
+    }
+  }
+}
+```
+
+Registry and Tabler names can be mixed in the same configuration. For example, `ArrowDown` resolves
+to `Icon.ArrowDown`, while `bookmark` resolves through `Icon.NamedIcon`. Invalid icon names fall back
+to the built-in Heart icons.
 
 ## Global Configuration Schema
 

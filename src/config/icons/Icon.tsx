@@ -136,6 +136,8 @@ const getTablerIcon = (name: unknown): TablerIconComponent | undefined => {
   return typeof icon === 'function' ? (icon as TablerIconComponent) : undefined;
 };
 
+export const hasNamedIcon = (name: unknown): boolean => !!getTablerIcon(name);
+
 const NamedIcon = ({
   accessibilityLabel,
   color: colorProp,

@@ -46,6 +46,7 @@ jest.mock('../../src/config', () => {
       }
     },
     Icon: {
+      ArrowDown: createIcon('mock-arrow-down'),
       BookmarkEmpty: createIcon('mock-bookmark-empty'),
       BookmarkFilled: createIcon('mock-bookmark-filled'),
       HeartEmpty: createIcon('mock-heart-empty'),
@@ -54,6 +55,7 @@ jest.mock('../../src/config', () => {
       Pin: createIcon('mock-pin'),
       PinFilled: createIcon('mock-pin-filled')
     },
+    hasNamedIcon: (name: string) => ['bookmark', 'bookmark-filled', 'star'].includes(name),
     texts: {
       bookmarks: {
         bookmarks: 'Lesezeichen'
@@ -133,6 +135,32 @@ describe('BookmarkHeader icon configuration', () => {
 
     expect(renderBookmark(configuration).root.findByType('mock-pin')).toBeTruthy();
     expect(renderFavoritesHeader(configuration).root.findByType('mock-pin-filled')).toBeTruthy();
+  });
+
+  it('renders raw Tabler names through NamedIcon and supports default/selected aliases', () => {
+    const configuration = {
+      default: 'star',
+      selected: 'bookmark-filled'
+    };
+
+    expect(renderBookmark(configuration).root.findByType('mock-named-icon').props.name).toBe(
+      'star'
+    );
+    expect(renderFavoritesHeader(configuration).root.findByType('mock-named-icon').props.name).toBe(
+      'bookmark-filled'
+    );
+  });
+
+  it('supports mixing a raw Tabler name with an Icon registry name', () => {
+    const configuration = {
+      activeIconName: 'ArrowDown',
+      iconName: 'bookmark'
+    };
+
+    expect(renderBookmark(configuration).root.findByType('mock-named-icon').props.name).toBe(
+      'bookmark'
+    );
+    expect(renderFavoritesHeader(configuration).root.findByType('mock-arrow-down')).toBeTruthy();
   });
 
   it('falls back to heart for an invalid configuration', () => {
