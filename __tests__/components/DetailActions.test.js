@@ -12,7 +12,15 @@ jest.mock('../../src/components/ShareHeader', () => ({
 }));
 
 jest.mock('../../src/config', () => ({
-  normalize: (value) => value
+  normalize: (value) => value,
+  texts: {
+    detailActions: {
+      remember: '{{title}} merken',
+      rememberFallback: 'Merken',
+      share: '{{title}} teilen',
+      shareFallback: 'Teilen'
+    }
+  }
 }));
 
 const route = {
@@ -21,7 +29,8 @@ const route = {
   params: {
     query: 'newsItem',
     queryVariables: { id: '42' },
-    shareContent: { message: 'Share me' }
+    shareContent: { message: 'Share me' },
+    title: 'Nachricht'
   }
 };
 
@@ -46,5 +55,15 @@ describe('DetailActions', () => {
     expect(tree.root.findAllByType('mock-bookmark-action')).toHaveLength(1);
     expect(tree.root.findAllByType('mock-share-action')).toHaveLength(1);
     expect(tree.root.findAll((node) => node.props.accessibilityRole === 'switch')).toHaveLength(0);
+    expect(tree.root.findByType('mock-bookmark-action').props.label).toBe('Nachricht merken');
+    expect(tree.root.findByType('mock-share-action').props.label).toBe('Nachricht teilen');
+    expect(tree.root.findByType('mock-bookmark-action').props.buttonStyle).toMatchObject({
+      flexDirection: 'row',
+      width: '100%'
+    });
+    expect(tree.root.findByProps({ accessibilityRole: 'toolbar' }).props.style).not.toHaveProperty(
+      'flexDirection',
+      'row'
+    );
   });
 });

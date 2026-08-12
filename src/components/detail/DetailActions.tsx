@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { ShareContent, View, ViewStyle } from 'react-native';
 
-import { normalize } from '../../config';
+import { normalize, texts } from '../../config';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { BookmarkHeader } from '../bookmarks';
 import { ShareHeader } from '../ShareHeader';
@@ -12,6 +12,7 @@ type DetailRouteParams = {
   query?: string;
   queryVariables?: { id?: string };
   shareContent?: ShareContent;
+  title?: string;
 };
 
 type Props = {
@@ -26,18 +27,31 @@ export const DetailActions = ({ route, shareContent = route.params?.shareContent
   const id = route.params?.queryVariables?.id;
   const showBookmark = route.params?.bookmarkable !== false && !!query && id !== undefined;
   const showShare = !!shareContent;
+  const detailTitle = route.params?.title?.trim();
+  const bookmarkLabel = detailTitle
+    ? texts.detailActions.remember.replace('{{title}}', detailTitle)
+    : texts.detailActions.rememberFallback;
+  const shareLabel = detailTitle
+    ? texts.detailActions.share.replace('{{title}}', detailTitle)
+    : texts.detailActions.shareFallback;
 
   if (!showBookmark && !showShare) return null;
 
   return (
     <View accessibilityRole="toolbar" style={styles.container}>
       {showBookmark && (
-        <BookmarkHeader buttonStyle={styles.actionButton} route={route} style={styles.actionIcon} />
+        <BookmarkHeader
+          buttonStyle={styles.actionButton}
+          label={bookmarkLabel}
+          route={route}
+          style={styles.actionIcon}
+        />
       )}
 
       {showShare && (
         <ShareHeader
           buttonStyle={styles.actionButton}
+          label={shareLabel}
           shareContent={shareContent}
           style={styles.actionIcon}
         />
@@ -46,27 +60,25 @@ export const DetailActions = ({ route, shareContent = route.params?.shareContent
   );
 };
 
-const ACTION_SIZE = normalize(44);
-
 const createStyles = (): Record<string, ViewStyle> => ({
   actionButton: {
     alignItems: 'center',
-    borderRadius: ACTION_SIZE / 2,
-    height: ACTION_SIZE,
-    justifyContent: 'center',
-    marginHorizontal: normalize(4),
-    width: ACTION_SIZE
+    flexDirection: 'row',
+    minHeight: normalize(44),
+    paddingVertical: normalize(8),
+    width: '100%'
   },
 
   actionIcon: {
+    marginRight: normalize(12),
     paddingHorizontal: 0
   },
 
   container: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
     paddingBottom: normalize(16),
-    paddingTop: normalize(4)
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(4),
+    width: '100%'
   }
 });

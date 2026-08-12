@@ -462,6 +462,12 @@ export const texts = {
     voucher: 'Gutschein',
     tour: 'Tour'
   },
+  detailActions: {
+    remember: '{{title}} merken',
+    rememberFallback: 'Merken',
+    share: '{{title}} teilen',
+    shareFallback: 'Teilen'
+  },
   dropdownFilter: {
     category: 'Kategorie',
     city: 'Ort auswählen',

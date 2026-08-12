@@ -25,7 +25,6 @@ export const NewsItem = ({ data, readAloudControls, route }) => {
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings, categories } =
     data;
 
-  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
   const subtitle = dataProvider && dataProvider.name;
   // the title of a news item is either a given main title or the title from the first content block
@@ -75,13 +74,12 @@ export const NewsItem = ({ data, readAloudControls, route }) => {
         </Wrapper>
       )}
 
-      {readAloudControls}
-
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection
         imageRightsPosition={imageRightsPosition}
         mediaContents={contentBlocks?.[0]?.mediaContents}
       />
+      {readAloudControls}
 
       {!!contentBlocks?.length &&
         contentBlocks.map((contentBlock, index) => (
