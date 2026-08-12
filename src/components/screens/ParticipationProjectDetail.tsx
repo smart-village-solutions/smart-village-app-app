@@ -1,14 +1,13 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import {
   buildParticipationProjectCalendarValues,
   getGenericItemMatomoName,
   getParticipationProjectBody,
   getParticipationProjectLocationText,
   getParticipationProjectPlainBody,
-  getParticipationProjectStatus,
   getParticipationProjectStatusColor,
   getParticipationProjectStatusLabel,
   getParticipationProjectType,
@@ -16,7 +15,6 @@ import {
   matomoTrackingString,
   normalizeParticipationProjectDates,
   normalizeParticipationProjectValue,
-  PARTICIPATION_PROJECT_STATUS,
   ParticipationProject
 } from '../../helpers';
 import { createCalendarEvent } from '../../helpers/createCalendarEvent';
@@ -26,6 +24,7 @@ import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { ImageSection } from '../ImageSection';
+import { ParticipationProjectStatusIndicator } from '../ParticipationProjectStatusIndicator';
 import { SectionHeader } from '../SectionHeader';
 import { StorySection } from '../StorySection';
 import { HeadlineText, RegularText } from '../Text';
@@ -201,47 +200,20 @@ const ParticipationProjectCalendarExport = ({ data }: { data: ParticipationProje
   );
 };
 
-const getDefaultParticipationProjectStatusColor = (data: ParticipationProject) => {
-  switch (getParticipationProjectStatus(data)) {
-    case PARTICIPATION_PROJECT_STATUS.ACTIVE:
-      return colors.primary;
-    case PARTICIPATION_PROJECT_STATUS.ANNOUNCED:
-      return colors.accent;
-    case PARTICIPATION_PROJECT_STATUS.COMPLETED:
-    case PARTICIPATION_PROJECT_STATUS.ENDED:
-    case PARTICIPATION_PROJECT_STATUS.RECENTLY_ENDED:
-      return colors.placeholder;
-    default:
-      return colors.gray60;
-  }
-};
-
-const ParticipationProjectStatusIndicator = ({ data }: { data: ParticipationProject }) => {
+const ParticipationProjectDetailStatusIndicator = ({ data }: { data: ParticipationProject }) => {
   const statusLabel = getParticipationProjectStatusLabel(data);
 
   if (!statusLabel) return null;
 
-  const statusColor =
-    getParticipationProjectStatusColor(data) || getDefaultParticipationProjectStatusColor(data);
-  const accessibilityLabel = `${texts.participationProject.status}: ${statusLabel}`;
+  const statusColor = getParticipationProjectStatusColor(data);
 
   return (
     <WrapperHorizontal>
-      <View
-        accessibilityLabel={accessibilityLabel}
-        accessibilityRole="text"
-        accessible
-        style={styles.statusContainer}
-      >
-        <View
-          accessible={false}
-          importantForAccessibility="no"
-          style={[styles.statusDot, { backgroundColor: statusColor }]}
-        />
-        <RegularText accessible={false} importantForAccessibility="no">
-          {statusLabel}
-        </RegularText>
-      </View>
+      <ParticipationProjectStatusIndicator
+        color={statusColor}
+        containerStyle={styles.statusContainer}
+        label={statusLabel}
+      />
     </WrapperHorizontal>
   );
 };
@@ -285,7 +257,7 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
 
       {!!title && <SectionHeader big title={title} />}
 
-      <ParticipationProjectStatusIndicator data={data} />
+      <ParticipationProjectDetailStatusIndicator data={data} />
 
       {!!imageMediaContents.length && (
         <WrapperVertical>
@@ -333,17 +305,7 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
 
 const styles = StyleSheet.create({
   statusContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
     marginBottom: normalize(12),
     marginTop: normalize(4)
-  },
-  statusDot: {
-    borderColor: colors.darkText,
-    borderRadius: normalize(6),
-    borderWidth: StyleSheet.hairlineWidth,
-    height: normalize(12),
-    marginRight: normalize(8),
-    width: normalize(12)
   }
 });

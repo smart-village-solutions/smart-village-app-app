@@ -28,6 +28,7 @@ import {
   parseListItemsFromQuery,
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
   PARTICIPATION_PROJECT_STATUS_FILTER,
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
@@ -280,6 +281,10 @@ export const Overviews = ({ navigation, route }) => {
 
     const participationQueryVariables = { ...queryVariables };
     delete participationQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+    delete participationQueryVariables[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM];
+    delete participationQueryVariables.participationOrder;
+    delete participationQueryVariables.subtitleNumberOfLines;
+    delete participationQueryVariables.titleNumberOfLines;
 
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
@@ -484,6 +489,7 @@ export const Overviews = ({ navigation, route }) => {
     // the query variables are taken freshly. otherwise the mounted screen can have query variables
     // from the previous screen, what does not work. this can result in an unchanged screen because
     // the query is not returning anything.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
       ...resourceFiltersState?.[filterQuery],

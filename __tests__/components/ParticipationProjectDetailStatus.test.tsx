@@ -57,9 +57,7 @@ jest.mock('../../src/helpers', () => ({
   getParticipationProjectLocationText: jest.fn(),
   getParticipationProjectPlainBody: jest.fn(),
   getParticipationProjectStatus: jest.fn(() => 'recently_ended'),
-  getParticipationProjectStatusColor: jest.fn(
-    (item) => item.payload?.color || item.payload?.status?.color
-  ),
+  getParticipationProjectStatusColor: jest.fn((item) => item.payload?.statusColor),
   getParticipationProjectStatusLabel: jest.fn((item) =>
     typeof item.payload?.status === 'string' ? item.payload.status : item.payload?.status?.label
   ),
@@ -129,8 +127,8 @@ describe('ParticipationProjectDetail status', () => {
             id: 'participation-project-1',
             mediaContents: [],
             payload: {
-              color: 'gray',
-              status: 'Kürzlich beendet'
+              status: 'Kürzlich beendet',
+              statusColor: 'gray'
             },
             title: 'Beteiligung zum Stadtpark',
             webUrls: []
@@ -142,10 +140,48 @@ describe('ParticipationProjectDetail status', () => {
 
     expect(screen.getByText('Kürzlich beendet')).toBeTruthy();
     expect(screen.getByLabelText('Status: Kürzlich beendet')).toBeTruthy();
+    const statusDotStyle = screen
+      .UNSAFE_getAllByType(View)
+      .map((view) => StyleSheet.flatten(view.props.style))
+      .find((style) => style?.backgroundColor === 'gray');
+
+    expect(statusDotStyle).toMatchObject({
+      borderColor: '#111111',
+      height: 12,
+      width: 12
+    });
+  });
+
+  it('does not derive a frontend color when the API omits the status color', () => {
+    const screen = render(
+      <ParticipationProjectDetail
+        data={
+          {
+            categories: [],
+            contentBlocks: [],
+            dates: [],
+            id: 'participation-project-2',
+            mediaContents: [],
+            payload: {
+              status: 'Aktiv'
+            },
+            title: 'Beteiligung ohne API-Farbe',
+            webUrls: []
+          } as never
+        }
+        route={{ params: { title: 'Beteiligung' } }}
+      />
+    );
+
+    expect(screen.getByLabelText('Status: Aktiv')).toBeTruthy();
     expect(
       screen
         .UNSAFE_getAllByType(View)
-        .some((view) => StyleSheet.flatten(view.props.style)?.backgroundColor === 'gray')
-    ).toBe(true);
+        .some((view) =>
+          ['#008000', '#006600', '#888888'].includes(
+            StyleSheet.flatten(view.props.style)?.backgroundColor
+          )
+        )
+    ).toBe(false);
   });
 });

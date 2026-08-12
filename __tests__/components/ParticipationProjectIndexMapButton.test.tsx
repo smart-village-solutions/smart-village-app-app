@@ -68,7 +68,7 @@ jest.mock('../../src/helpers/updateResourceFiltersStateHelper', () => ({
 }));
 
 jest.mock('../../src/helpers', () => ({
-  PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active'],
   PARTICIPATION_PROJECT_STATUS: {
     ACTIVE: 'active',
     ANNOUNCED: 'announced',
@@ -78,6 +78,7 @@ jest.mock('../../src/helpers', () => ({
     EMPTY: 'empty'
   },
   PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',
   filterTypesHelper: jest.fn(() => []),
   geoLocationFilteredListItem: jest.fn(({ listItem }) => listItem),
   getParticipationProjectStatusCounts: jest.fn((items) => {
@@ -236,7 +237,7 @@ jest.mock('../../src/config', () => ({
       statusFilter: 'Status auswählen',
       statuses: {
         active: 'Aktiv',
-        announced: 'Angekündigt',
+        announced: 'Ankündigung',
         completed: 'Abgeschlossen',
         ended: 'Beendet',
         recently_ended: 'Kürzlich beendet',
@@ -338,7 +339,7 @@ describe('ParticipationProjectIndexMapButton', () => {
     expect(navigation.navigate).toHaveBeenCalledWith(ScreenName.ParticipationProjectMap, {
       queryVariables: {
         genericType: GenericType.ParticipationProject,
-        participationStatus: ['active', 'announced']
+        participationStatus: ['active']
       },
       rootRouteName: 'participation-projects',
       title: 'Beteiligungsprojekte'
@@ -391,7 +392,7 @@ describe('ParticipationProjectIndexMapButton', () => {
     expect(screen.queryByTestId('participation-status-filter')).toBeNull();
   });
 
-  it('lists active and announced projects by default and adds completed projects via the overlay', () => {
+  it('lists only active projects by default and adds other statuses via multiselect', () => {
     const { screen } = renderScreen({
       genericItems: [
         {
@@ -411,12 +412,12 @@ describe('ParticipationProjectIndexMapButton', () => {
         },
         {
           id: 'ended-project',
-          payload: { color: 'gray', status: 'ended' },
+          payload: { status: 'ended', statusColor: 'gray' },
           title: 'Beendetes Projekt'
         },
         {
           id: 'recently-ended-project',
-          payload: { color: 'gray', status: 'recently_ended' },
+          payload: { status: 'recently_ended', statusColor: 'gray' },
           title: 'Kürzlich beendetes Projekt'
         },
         {
@@ -428,7 +429,7 @@ describe('ParticipationProjectIndexMapButton', () => {
     });
 
     expect(screen.getByText('Aktives Projekt')).toBeTruthy();
-    expect(screen.getByText('Angekündigtes Projekt')).toBeTruthy();
+    expect(screen.queryByText('Angekündigtes Projekt')).toBeNull();
     expect(screen.queryByText('Abgeschlossenes Projekt')).toBeNull();
     expect(screen.queryByText('Beendetes Projekt')).toBeNull();
     expect(screen.queryByText('Kürzlich beendetes Projekt')).toBeNull();
@@ -437,7 +438,7 @@ describe('ParticipationProjectIndexMapButton', () => {
       'Abgeschlossen (1)'
     );
     expect(screen.getByTestId('participation-status-filter').props.children).toContain(
-      'Angekündigt (1)'
+      'Ankündigung (1)'
     );
     expect(screen.getByTestId('participation-status-filter').props.children).toContain(
       'Ohne Status (1)'
@@ -456,6 +457,13 @@ describe('ParticipationProjectIndexMapButton', () => {
     expect(screen.getByText('Beendetes Projekt')).toBeTruthy();
     expect(screen.getByText('Kürzlich beendetes Projekt')).toBeTruthy();
     expect(screen.queryByText('Projekt ohne Status')).toBeNull();
+    expect(screen.getByTestId('participation-status-filter').props.children).toContain('Aktiv (1)');
+    expect(screen.getByTestId('participation-status-filter').props.children).toContain(
+      'Ankündigung (1)'
+    );
+    expect(screen.getByTestId('participation-status-filter').props.children).toContain(
+      'Abgeschlossen (1)'
+    );
   });
 
   it('keeps a sole completed status behind the filter', () => {

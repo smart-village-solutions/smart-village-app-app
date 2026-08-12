@@ -8,9 +8,12 @@ import { colors, consts, Icon, normalize } from '../config';
 import { isOpen, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
+import { ParticipationProjectStatusIndicator } from './ParticipationProjectStatusIndicator';
 import { BoldText, HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
+
+type ListNavigation = StackNavigationProp<Record<string, object | undefined>>;
 
 export type ItemData = {
   id: string;
@@ -20,7 +23,7 @@ export type ItemData = {
   count?: number;
   isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
-  onPress?: (navigation: any) => void;
+  onPress?: (navigation: ListNavigation) => void;
   overtitle?: string;
   params: Record<string, unknown>;
   picture?: { url: string };
@@ -28,6 +31,9 @@ export type ItemData = {
   routeName: string;
   statustitle?: string;
   statustitleIcon?: React.ReactElement;
+  statusColor?: string;
+  statusLabel?: string;
+  statusPosition?: 'belowTeaser' | 'replaceTeaser';
   subtitle?: string;
   teaserTitle?: string;
   title: string;
@@ -42,7 +48,7 @@ type Props = {
   leftImage?: boolean;
   listItemStyle?: ViewStyle;
   listsWithoutArrows?: boolean | undefined;
-  navigation: StackNavigationProp<Record<string, any>>;
+  navigation: ListNavigation;
   noOvertitle?: boolean;
   noSubtitle?: boolean;
   rightImage?: boolean;
@@ -54,7 +60,7 @@ type Props = {
 
 /* eslint-disable complexity */
 export const TextListItem: NamedExoticComponent<Props> & {
-  propTypes?: Record<string, Validator<any>>;
+  propTypes?: Record<string, Validator<unknown>>;
 } & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(
@@ -90,6 +96,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
       routeName: name,
       statustitle,
       statustitleIcon,
+      statusColor,
+      statusLabel,
+      statusPosition = 'belowTeaser',
       subtitle,
       teaserTitle,
       title,
@@ -140,6 +149,15 @@ export const TextListItem: NamedExoticComponent<Props> & {
       );
     }
 
+    const showSubtitle = !noSubtitle && !!subtitle && statusPosition !== 'replaceTeaser';
+    const statusIndicator = statusLabel ? (
+      <ParticipationProjectStatusIndicator
+        color={statusColor}
+        containerStyle={styles.statusWrapper}
+        label={statusLabel}
+      />
+    ) : null;
+
     // `title` is the first line and `subtitle` the second line, so `title` is used with our subtitle
     // content and `subtitle` is used with the main title
     return (
@@ -152,7 +170,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         disabled={!navigation}
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+        accessibilityLabel={accessibilityLabel || `(${title}) ${consts.a11yLabel.button}`}
       >
         {leftIcon ||
           (leftImage && !!picture?.url ? (
@@ -171,10 +189,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
-            {noSubtitle || !subtitle ? undefined : titleText}
-            {noSubtitle || !subtitle ? (
-              titleText
-            ) : (
+            {statusIndicator}
+            {titleText}
+            {showSubtitle && (
               <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
               </RegularText>
@@ -187,10 +204,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
-            {noSubtitle || !subtitle ? undefined : titleText}
-            {noSubtitle || !subtitle ? (
-              titleText
-            ) : (
+            {statusIndicator}
+            {titleText}
+            {showSubtitle && (
               <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
               </RegularText>
@@ -209,7 +225,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             />
           ) : undefined)}
 
-        {!!count && <BoldText>{count}</BoldText>}
+        {count !== undefined && count !== null && <BoldText>{count}</BoldText>}
 
         {!listsWithoutArrows && !!navigation && !withCard && (
           <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
@@ -235,6 +251,9 @@ const styles = StyleSheet.create({
   },
   smallImageContainer: {
     alignSelf: 'flex-start'
+  },
+  statusWrapper: {
+    marginBottom: normalize(6)
   },
   statustitleWrapper: {
     marginTop: normalize(7)

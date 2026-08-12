@@ -731,7 +731,7 @@ export const texts = {
     statusFilter: 'Status auswählen',
     statuses: {
       active: 'Aktiv',
-      announced: 'Angekündigt',
+      announced: 'Ankündigung',
       completed: 'Abgeschlossen',
       ended: 'Beendet',
       recently_ended: 'Kürzlich beendet',

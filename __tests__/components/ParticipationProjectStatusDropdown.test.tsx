@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React, { useState } from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { Text } from 'react-native';
@@ -67,8 +68,8 @@ const statusOptions = [
     filterValue: 'announced',
     id: 2,
     index: 1,
-    selected: true,
-    value: 'Angekündigt (1)'
+    selected: false,
+    value: 'Ankündigung (1)'
   },
   {
     filterValue: 'completed',
@@ -81,7 +82,7 @@ const statusOptions = [
 
 const StatusDropdownHarness = () => {
   const [filters, setFilters] = useState<FilterProps>({
-    participationStatus: ['active', 'announced']
+    participationStatus: ['active']
   });
 
   return (
@@ -100,7 +101,7 @@ const StatusDropdownHarness = () => {
 };
 
 describe('ParticipationProject status dropdown', () => {
-  it('keeps active and announced selected when completed is added', async () => {
+  it('keeps active selected when completed is added', async () => {
     const screen = render(<StatusDropdownHarness />);
 
     expect(screen.getByTestId('dropdown-state').props.children).toContain('0:false');
@@ -108,9 +109,7 @@ describe('ParticipationProject status dropdown', () => {
     fireEvent.press(screen.getByText('Select completed'));
 
     await waitFor(() =>
-      expect(screen.getByTestId('selected-statuses').props.children).toBe(
-        '["active","announced","completed"]'
-      )
+      expect(screen.getByTestId('selected-statuses').props.children).toBe('["active","completed"]')
     );
   });
 });

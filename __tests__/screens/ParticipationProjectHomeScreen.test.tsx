@@ -85,7 +85,7 @@ jest.mock('../../src/config', () => ({
 }));
 
 jest.mock('../../src/helpers', () => ({
-  PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active'],
   PARTICIPATION_PROJECT_STATUS: {
     ACTIVE: 'active',
     ANNOUNCED: 'announced',
@@ -95,6 +95,11 @@ jest.mock('../../src/helpers', () => ({
     EMPTY: 'empty'
   },
   PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
+  PARTICIPATION_PROJECT_STATUS_POSITION: {
+    BELOW_TEASER: 'belowTeaser',
+    REPLACE_TEASER: 'replaceTeaser'
+  },
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',
   subtitle: jest.fn((...parts) => parts.filter(Boolean).join(' | ')),
   getParticipationProjectStatus: jest.fn(
     (item) =>
@@ -106,20 +111,16 @@ jest.mock('../../src/helpers', () => ({
       'empty')
   ),
   getParticipationProjectPreviewDate: jest.fn(),
-  isParticipationProjectCurrent: jest.fn(
-    (item) =>
-      item.payload?.status &&
-      ['active', 'announced'].includes(item.payload.status.trim().toLowerCase())
-  ),
-  isParticipationProjectCompleted: jest.fn(
-    (item) =>
-      item.payload?.color === 'gray' ||
-      ['completed', 'ended', 'recently_ended', 'beendet', 'kürzlich beendet'].includes(
-        item.payload?.status?.trim().toLowerCase()
-      )
+  getParticipationProjectStatusColor: jest.fn((item) => item.payload?.statusColor),
+  getParticipationProjectStatusLabel: jest.fn((item) => item.payload?.status),
+  isParticipationProjectActive: jest.fn(
+    (item) => item.payload?.status?.trim().toLowerCase() === 'active'
   ),
   mainImageOfMediaContents: jest.fn(),
   matomoTrackingString: jest.fn((parts) => parts.join(' / ')),
+  normalizeParticipationProjectStatusPosition: jest.fn((value) =>
+    value === 'replaceTeaser' ? 'replaceTeaser' : 'belowTeaser'
+  ),
   removeHtml: jest.fn((value) => value),
   trimNewLines: jest.fn((value) => value)
 }));
@@ -164,7 +165,7 @@ describe('ParticipationProjectHomeScreen', () => {
     expect(queryByTestId('participation-project-home-content')).toBeNull();
   });
 
-  it('counts and features active and announced projects while reporting completed projects', () => {
+  it('shows only the active count and uses active projects as the default list selection', () => {
     useQuery.mockReturnValue({
       data: {
         genericItems: [
@@ -204,7 +205,7 @@ describe('ParticipationProjectHomeScreen', () => {
             dates: [],
             id: 'ended-project',
             mediaContents: [],
-            payload: { color: 'gray', itemIndex: 4, status: 'Beendet', type: 'Dialog' },
+            payload: { itemIndex: 4, status: 'Beendet', statusColor: 'gray', type: 'Dialog' },
             title: 'Beendetes Projekt',
             webUrls: []
           },
@@ -215,9 +216,9 @@ describe('ParticipationProjectHomeScreen', () => {
             id: 'recently-ended-project',
             mediaContents: [],
             payload: {
-              color: 'gray',
               itemIndex: 5,
               status: 'Kürzlich beendet',
+              statusColor: 'gray',
               type: 'Dialog'
             },
             title: 'Kürzlich beendetes Projekt',
@@ -232,9 +233,9 @@ describe('ParticipationProjectHomeScreen', () => {
     const navigation = { navigate: jest.fn() };
     const screen = render(<ParticipationProjectHomeScreen navigation={navigation as never} />);
 
-    expect(screen.getByText('Dialog|2|3 beendet')).toBeTruthy();
+    expect(screen.getByText('Dialog|1')).toBeTruthy();
     expect(screen.getByText('Aktives Projekt')).toBeTruthy();
-    expect(screen.getByText('Angekündigtes Projekt')).toBeTruthy();
+    expect(screen.queryByText('Angekündigtes Projekt')).toBeNull();
     expect(screen.queryByText('Abgeschlossenes Projekt')).toBeNull();
     expect(screen.queryByText('Beendetes Projekt')).toBeNull();
     expect(screen.queryByText('Kürzlich beendetes Projekt')).toBeNull();
@@ -245,7 +246,37 @@ describe('ParticipationProjectHomeScreen', () => {
       'Index',
       expect.objectContaining({
         queryVariables: expect.objectContaining({
-          participationStatus: ['active', 'announced']
+          participationStatus: ['active'],
+          participationStatusPosition: 'belowTeaser'
+        })
+      })
+    );
+  });
+
+  it('forwards the teaser replacement design from static configuration', () => {
+    useStaticContent.mockReset();
+    useStaticContent
+      .mockReturnValueOnce({
+        data: { statusPosition: 'replaceTeaser' },
+        loading: false,
+        refetch: jest.fn()
+      })
+      .mockReturnValueOnce({
+        data: undefined,
+        loading: false,
+        refetch: jest.fn()
+      });
+
+    const navigation = { navigate: jest.fn() };
+    const screen = render(<ParticipationProjectHomeScreen navigation={navigation as never} />);
+
+    fireEvent.press(screen.getByText('Alle Beteiligungen ansehen'));
+
+    expect(navigation.navigate).toHaveBeenCalledWith(
+      'Index',
+      expect.objectContaining({
+        queryVariables: expect.objectContaining({
+          participationStatusPosition: 'replaceTeaser'
         })
       })
     );

@@ -15,7 +15,14 @@ import {
 import { removeHtml, trimNewLines } from '../htmlViewHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
-import { getParticipationProjectPreviewDate } from '../participationProjectHelper';
+import {
+  getParticipationProjectPreviewDate,
+  getParticipationProjectStatusColor,
+  getParticipationProjectStatusLabel,
+  normalizeParticipationProjectStatusPosition,
+  PARTICIPATION_PROJECT_STATUS_POSITION,
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM
+} from '../participationProjectHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
 
@@ -40,6 +47,35 @@ const normalizeParticipationProjectText = (text) =>
 
 const getParticipationProjectSubtitle = (genericItem) =>
   normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);
+
+const getParticipationProjectListPresentation = (genericItem, queryVariables) => {
+  if (genericItem.genericType !== GenericType.ParticipationProject) return;
+
+  const listSubtitle = getParticipationProjectSubtitle(genericItem);
+  const statusLabel = getParticipationProjectStatusLabel(genericItem);
+  const statusPosition = normalizeParticipationProjectStatusPosition(
+    queryVariables?.[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]
+  );
+  const accessibilityLabel = [
+    genericItem.title,
+    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER
+      ? undefined
+      : listSubtitle,
+    statusLabel
+  ]
+    .filter(Boolean)
+    .map((value) => `(${value})`)
+    .join(' ');
+
+  return {
+    accessibilityLabel: `${accessibilityLabel} ${consts.a11yLabel.button}`,
+    overtitle: subtitle(getParticipationProjectPreviewDate(genericItem), genericItem.payload?.type),
+    statusColor: getParticipationProjectStatusColor(genericItem),
+    statusLabel,
+    statusPosition,
+    subtitle: listSubtitle
+  };
+};
 
 /* eslint-disable complexity */
 export const filterGenericItems = (item, queryVariables, filterTypes) => {
@@ -124,19 +160,22 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
 
   return filteredData?.map((genericItem, index) => {
     const isParticipationProject = genericItem.genericType === GenericType.ParticipationProject;
+    const participationListPresentation = getParticipationProjectListPresentation(
+      genericItem,
+      queryVariables
+    );
 
     return {
       id: genericItem.id,
       categories: genericItem.categories,
-      overtitle: isParticipationProject
-        ? subtitle(getParticipationProjectPreviewDate(genericItem), genericItem.payload?.type)
-        : genericItem.genericType !== GenericType.Deadline &&
-          subtitle(
-            (isCarpool && genericItem?.payload?.departureDate) ||
-              momentFormatUtcToLocal(genericItem.publicationDate || genericItem.createdAt),
-            getGenericItemSubtitle(genericItem)
-          ),
-      subtitle: isParticipationProject ? getParticipationProjectSubtitle(genericItem) : undefined,
+      overtitle:
+        !isParticipationProject &&
+        genericItem.genericType !== GenericType.Deadline &&
+        subtitle(
+          (isCarpool && genericItem?.payload?.departureDate) ||
+            momentFormatUtcToLocal(genericItem.publicationDate || genericItem.createdAt),
+          getGenericItemSubtitle(genericItem)
+        ),
       title: genericItem.title,
       picture: {
         url: isParticipationProject
@@ -165,7 +204,8 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
         },
         details: genericItem
       },
-      bottomDivider: !skipLastDivider || index !== filteredData.length - 1
+      bottomDivider: !skipLastDivider || index !== filteredData.length - 1,
+      ...participationListPresentation
     };
   });
 };

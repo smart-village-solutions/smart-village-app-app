@@ -12,21 +12,24 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   TextListItem,
-  Wrapper,
   WrapperVertical
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
 import {
   subtitle as formatSubtitle,
-  getParticipationProjectStatus,
+  getParticipationProjectStatusColor,
+  getParticipationProjectStatusLabel,
   getParticipationProjectPreviewDate,
-  isParticipationProjectCompleted,
-  isParticipationProjectCurrent,
+  isParticipationProjectActive,
   mainImageOfMediaContents,
   matomoTrackingString,
+  normalizeParticipationProjectStatusPosition,
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
   PARTICIPATION_PROJECT_STATUS_FILTER,
+  PARTICIPATION_PROJECT_STATUS_POSITION,
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   ParticipationProject,
+  ParticipationProjectStatusPosition,
   removeHtml,
   trimNewLines
 } from '../../helpers';
@@ -50,7 +53,6 @@ type ParticipationProjectHomeConfig = {
   featuredLimit: number;
   featuredTitle: string;
   hiddenCategoryIds: Array<string | number>;
-  homeLimit: number;
   indexLimit: number;
   indexOrder: string;
   introHtmlName: string;
@@ -60,6 +62,7 @@ type ParticipationProjectHomeConfig = {
   showEmptyCategories: boolean;
   showFeatured: boolean;
   showIntro: boolean;
+  statusPosition: ParticipationProjectStatusPosition;
   subtitleNumberOfLines: number;
   title: string;
   titleNumberOfLines: number;
@@ -89,7 +92,6 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
   featuredLimit: 3,
   featuredTitle: texts.participationProject.featuredProjects,
   hiddenCategoryIds: [],
-  homeLimit: 100,
   indexLimit: 15,
   indexOrder: 'itemIndex',
   introHtmlName: 'participationProjectHomeText',
@@ -99,6 +101,7 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
   showEmptyCategories: false,
   showFeatured: true,
   showIntro: true,
+  statusPosition: PARTICIPATION_PROJECT_STATUS_POSITION.BELOW_TEASER,
   subtitleNumberOfLines: 2,
   title: texts.screenTitles.participationProject.home,
   titleNumberOfLines: 2
@@ -106,8 +109,7 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
 
 type CategoryGroup = {
   categoryId?: string;
-  completedCount: number;
-  currentCount: number;
+  activeCount: number;
   id: string;
   itemIds: string[];
   title: string;
@@ -193,14 +195,24 @@ const getContentBlockText = (item: GenericItem) => {
 
 const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
 
-const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
+const buildProjectListItem = (
+  item: GenericItem,
+  statusPosition: ParticipationProjectStatusPosition,
+  bottomDivider = true
+) => {
   const type = getPayloadType(item.payload);
   const subtitle = getProjectSubtitle(item);
   const listDate = getParticipationProjectPreviewDate(item);
+  const statusLabel = getParticipationProjectStatusLabel(item as ParticipationProject);
 
   const overtitle = formatSubtitle(listDate, type);
 
-  const accessibilityLabel = [overtitle, item.title, subtitle]
+  const accessibilityLabel = [
+    overtitle,
+    item.title,
+    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER ? undefined : subtitle,
+    statusLabel
+  ]
     .filter(Boolean)
     .map((text) => `(${text})`)
     .join(' ');
@@ -221,6 +233,9 @@ const buildProjectListItem = (item: GenericItem, bottomDivider = true) => {
       url: mainImageOfMediaContents(item.mediaContents)
     },
     routeName: ScreenName.Detail,
+    statusColor: getParticipationProjectStatusColor(item as ParticipationProject),
+    statusLabel,
+    statusPosition,
     subtitle,
     title: item.title || texts.participationProject.participationProject
   };
@@ -233,6 +248,7 @@ const buildAllProjectsParams = (homeConfig: ParticipationProjectHomeConfig) => (
     genericType: GenericType.ParticipationProject,
     limit: homeConfig.indexLimit,
     participationOrder: homeConfig.indexOrder,
+    [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
     [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
     subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
     titleNumberOfLines: homeConfig.titleNumberOfLines
@@ -261,19 +277,14 @@ const buildCategoryItems = ({
 
       const currentGroup = groups.get(id) || {
         categoryId,
-        completedCount: 0,
-        currentCount: 0,
+        activeCount: 0,
         id,
         itemIds: [],
         title: category.name || config.fallbackCategoryTitle
       };
 
-      const status = getParticipationProjectStatus(item as ParticipationProject);
-
-      if (PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(status)) {
-        currentGroup.currentCount += 1;
-      } else if (isParticipationProjectCompleted(item as ParticipationProject)) {
-        currentGroup.completedCount += 1;
+      if (isParticipationProjectActive(item as ParticipationProject)) {
+        currentGroup.activeCount += 1;
       }
 
       currentGroup.itemIds.push(item.id);
@@ -293,8 +304,7 @@ const buildCategoryItems = ({
     } else if (config.showEmptyCategories && !hiddenCategoryIds.has(id)) {
       orderedGroups.push({
         categoryId: id,
-        completedCount: 0,
-        currentCount: 0,
+        activeCount: 0,
         id,
         itemIds: [],
         title: title || id
@@ -319,10 +329,14 @@ export const ParticipationProjectHomeScreen = ({
     type: 'json'
   });
 
-  const homeConfig = useMemo(
-    () => ({ ...DEFAULT_HOME_CONFIG, ...(homeConfigData || {}) }),
-    [homeConfigData]
-  );
+  const homeConfig = useMemo(() => {
+    const mergedConfig = { ...DEFAULT_HOME_CONFIG, ...(homeConfigData || {}) };
+
+    return {
+      ...mergedConfig,
+      statusPosition: normalizeParticipationProjectStatusPosition(mergedConfig.statusPosition)
+    };
+  }, [homeConfigData]);
   const introHtmlName = homeConfig.showIntro ? homeConfig.introHtmlName : undefined;
 
   const {
@@ -367,16 +381,14 @@ export const ParticipationProjectHomeScreen = ({
     const categoryGroups = buildCategoryItems({ config: homeConfig, items: genericItems });
 
     return categoryGroups.map((category) => {
-      const currentCountText = texts.participationProject.categoryCount(category.currentCount);
-      const completedCountText = category.completedCount
-        ? texts.participationProject.completedCount(category.completedCount)
-        : undefined;
+      const activeCountText = texts.participationProject.categoryCount(category.activeCount);
       const categoryQueryVariables = category.categoryId
         ? {
             categoryId: category.categoryId,
             genericType: GenericType.ParticipationProject,
             limit: homeConfig.indexLimit,
             participationOrder: homeConfig.indexOrder,
+            [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
             [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
             subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
             titleNumberOfLines: homeConfig.titleNumberOfLines
@@ -386,16 +398,15 @@ export const ParticipationProjectHomeScreen = ({
             ids: category.itemIds,
             limit: homeConfig.indexLimit,
             participationOrder: homeConfig.indexOrder,
+            [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
             [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
             subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
             titleNumberOfLines: homeConfig.titleNumberOfLines
           };
 
       return {
-        accessibilityLabel: `(${category.title}) ${[currentCountText, completedCountText]
-          .filter(Boolean)
-          .join(', ')} ${consts.a11yLabel.button}`,
-        count: category.currentCount,
+        accessibilityLabel: `(${category.title}) ${activeCountText} ${consts.a11yLabel.button}`,
+        count: category.activeCount,
         id: category.id,
         params: {
           title: category.title,
@@ -404,7 +415,6 @@ export const ParticipationProjectHomeScreen = ({
           rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
         },
         routeName: ScreenName.Index,
-        subtitle: completedCountText,
         title: category.title
       };
     });
@@ -416,11 +426,13 @@ export const ParticipationProjectHomeScreen = ({
     if (!homeConfig.showFeatured) return [];
 
     return sortProjectsByItemIndex(
-      genericItems.filter((item) => isParticipationProjectCurrent(item as ParticipationProject))
+      genericItems.filter((item) => isParticipationProjectActive(item as ParticipationProject))
     )
       .slice(0, homeConfig.featuredLimit)
-      .map((item, index, items) => buildProjectListItem(item, index !== items.length - 1));
-  }, [genericItems, homeConfig.featuredLimit, homeConfig.showFeatured]);
+      .map((item, index, items) =>
+        buildProjectListItem(item, homeConfig.statusPosition, index !== items.length - 1)
+      );
+  }, [genericItems, homeConfig.featuredLimit, homeConfig.showFeatured, homeConfig.statusPosition]);
 
   const refreshHome = useCallback(async () => {
     setRefreshing(true);

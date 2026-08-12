@@ -130,7 +130,7 @@ In this mapping:
 - `categoryName` creates or assigns the server-side category used by the home screen.
 - `payload.type` keeps the participation type available in the detail/list payload.
 - `payload.theme` keeps the source theme as metadata. It is not the home-screen category.
-- Optional structured fields such as `payload.status`, `payload.color`, `payload.tags`, `payload.organizer`,
+- Optional structured fields such as `payload.status`, `payload.statusColor`, `payload.tags`, `payload.organizer`,
   `payload.contact`, `payload.email`, `payload.phone`, `payload.capacity`,
   `payload.registrationRequired`, `payload.startTime` and `payload.endTime` improve the
   detail overview but are not required for the module to render.
@@ -167,7 +167,6 @@ Default values:
   "featuredLimit": 3,
   "featuredTitle": "Besonders interessant",
   "hiddenCategoryIds": [],
-  "homeLimit": 100,
   "indexLimit": 15,
   "indexOrder": "itemIndex",
   "introHtmlName": "participationProjectHomeText",
@@ -177,6 +176,7 @@ Default values:
   "showEmptyCategories": false,
   "showFeatured": true,
   "showIntro": true,
+  "statusPosition": "belowTeaser",
   "title": "Beteiligung"
 }
 ```
@@ -195,11 +195,11 @@ Example configuration for testing:
   "allButtonTitle": "Alle Beteiligungen ansehen",
   "categoryTitle": "Beteiligungsarten",
   "fallbackCategoryTitle": "Other projects",
-  "homeLimit": 100,
   "indexLimit": 15,
   "indexOrder": "itemIndex",
   "introHtmlName": "participationProjectHomeText",
   "showIntro": true,
+  "statusPosition": "belowTeaser",
   "categoryOrder": [
     {
       "id": "veranstaltung",
@@ -221,26 +221,26 @@ Example configuration for testing:
 
 ### Home Configuration Fields
 
-| Field                      | Type      | Description                                                                                                                                     |
-| -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `allButtonTitle`           | `string`  | Text for the row that opens all Participation Project records without a category filter.                                                        |
-| `carouselPublicJsonFile`   | `string`  | Static JSON content name used by `ConnectedImagesCarousel`.                                                                                     |
-| `categoryTitle`            | `string`  | Section title above the category list.                                                                                                          |
-| `fallbackCategoryTitle`    | `string`  | Category title used when an item has no category.                                                                                               |
-| `featuredLimit`            | `number`  | Number of records shown in the `Besonders interessant` section.                                                                                 |
-| `featuredTitle`            | `string`  | Section title for the featured records.                                                                                                         |
-| `homeLimit`                | `number`  | Number of Participation Project records fetched by the home screen for grouping.                                                                |
-| `indexLimit`               | `number`  | Number of records requested by the opened `IndexScreen`.                                                                                        |
-| `indexOrder`               | `string`  | Payload field key used for client-side sorting in `IndexScreen` and featured rows (forwarded as `participationOrder`); defaults to `itemIndex`. |
-| `introHtmlName`            | `string`  | Static HTML content name used for the optional intro block.                                                                                     |
-| `isCarouselImageFullWidth` | `boolean` | Enables full-width carousel images.                                                                                                             |
-| `showAllButton`            | `boolean` | Enables or disables the all-records navigation row.                                                                                             |
-| `showCarousel`             | `boolean` | Enables or disables the static image carousel.                                                                                                  |
-| `showFeatured`             | `boolean` | Enables or disables the featured records section.                                                                                               |
-| `showIntro`                | `boolean` | Enables or disables the intro HTML block.                                                                                                       |
-| `categoryOrder`            | `array`   | Optional category ordering and optional display title overrides.                                                                                |
-| `hiddenCategoryIds`        | `array`   | Category ids that should not be shown on the home screen.                                                                                       |
-| `showEmptyCategories`      | `boolean` | If `true`, categories from `categoryOrder` are shown even when count is `0`.                                                                    |
+| Field                      | Type      | Description                                                                                                                                              |
+| -------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `allButtonTitle`           | `string`  | Text for the row that opens all Participation Project records without a category filter.                                                                 |
+| `carouselPublicJsonFile`   | `string`  | Static JSON content name used by `ConnectedImagesCarousel`.                                                                                              |
+| `categoryTitle`            | `string`  | Section title above the category list.                                                                                                                   |
+| `fallbackCategoryTitle`    | `string`  | Category title used when an item has no category.                                                                                                        |
+| `featuredLimit`            | `number`  | Number of records shown in the `Besonders interessant` section.                                                                                          |
+| `featuredTitle`            | `string`  | Section title for the featured records.                                                                                                                  |
+| `indexLimit`               | `number`  | Number of records requested by the opened `IndexScreen`.                                                                                                 |
+| `indexOrder`               | `string`  | Payload field key used for client-side sorting in `IndexScreen` and featured rows (forwarded as `participationOrder`); defaults to `itemIndex`.          |
+| `introHtmlName`            | `string`  | Static HTML content name used for the optional intro block.                                                                                              |
+| `isCarouselImageFullWidth` | `boolean` | Enables full-width carousel images.                                                                                                                      |
+| `showAllButton`            | `boolean` | Enables or disables the all-records navigation row.                                                                                                      |
+| `showCarousel`             | `boolean` | Enables or disables the static image carousel.                                                                                                           |
+| `showFeatured`             | `boolean` | Enables or disables the featured records section.                                                                                                        |
+| `showIntro`                | `boolean` | Enables or disables the intro HTML block.                                                                                                                |
+| `statusPosition`           | `string`  | List design: both values show status between overtitle and title; `replaceTeaser` hides the teaser while `belowTeaser` keeps it. Default: `belowTeaser`. |
+| `categoryOrder`            | `array`   | Optional category ordering and optional display title overrides.                                                                                         |
+| `hiddenCategoryIds`        | `array`   | Category ids that should not be shown on the home screen.                                                                                                |
+| `showEmptyCategories`      | `boolean` | If `true`, categories from `categoryOrder` are shown even when count is `0`.                                                                             |
 
 `categoryOrder` accepts either plain ids:
 
@@ -390,7 +390,7 @@ The home screen requests:
 ```json
 {
   "genericType": "ParticipationProject",
-  "limit": 100,
+  "limit": null,
   "participationOrder": "itemIndex"
 }
 ```
@@ -408,10 +408,13 @@ in the data requirements section before using the configured fallback category.
 This fallback is useful for importer transitions or old records, but the preferred
 data model is still the server-side `categories` array.
 
+All Participation Projects are loaded for grouping so category and status counts are
+calculated from the complete matching data set rather than the first page.
+
 Each category row contains:
 
 - category title
-- item count
+- active item count; announced, completed and other statuses do not contribute to this number
 - an accessibility label containing the title, count and button hint
 
 Selecting a category navigates to `IndexScreen`.
@@ -425,7 +428,9 @@ For normal categories, `IndexScreen` receives:
   "genericType": "ParticipationProject",
   "categoryId": "veranstaltung",
   "limit": 15,
-  "participationOrder": "itemIndex"
+  "participationOrder": "itemIndex",
+  "participationStatus": ["active"],
+  "participationStatusPosition": "belowTeaser"
 }
 ```
 
@@ -469,7 +474,7 @@ The detail screen displays:
 - a shared `InfoCard` overview section for addresses, contacts and web URLs
 - theme from `payload.theme`
 - status from `payload.status`
-- a status color from `payload.color` or `payload.status.color`, rendered together with
+- a status color from `payload.statusColor`, rendered together with
   the status text and exposed as one screen-reader label
 - instance, organizer, contact, email, phone, capacity, registration state and statistics
 - tags from `payload.tags`
@@ -483,6 +488,21 @@ The detail screen displays:
 - operating company information, when company data or an organizer fallback exists
 - data provider notice
 - data provider button for business account providers
+
+### List Status
+
+The list displays each Participation Project status directly. The presentation is
+configured through `statusPosition` in `participationProjectHome`:
+
+- `replaceTeaser`: the teaser/content-block preview is hidden.
+- `belowTeaser`: the teaser remains visible.
+
+In both variants, the status is rendered between the overtitle and title.
+
+The status dot uses only `payload.statusColor` supplied by the API. There is no
+status-to-app-theme fallback, so a city primary color such as Magdeburg red is never
+inferred for a status. The API provides one of the supported names `yellow`, `green`
+and `gray`. If no API color is present, the status text is shown without a dot.
 
 If no content fields are available, the detail screen shows the module empty text.
 
@@ -539,10 +559,12 @@ The implementation includes:
 
 ### Participation Status and Search
 
-The client treats `active` and `announced` as the default visible statuses. Terminal
-statuses such as `completed`, `Beendet` and `Kürzlich beendet`, as well as otherwise
-unknown statuses marked with `"color": "gray"`, are excluded from the default list
-and map. They remain available through the status filter. The global search includes
+The client treats only `active` as the default visible status. Announced, terminal
+and unknown statuses are excluded from the default list and map. They remain
+available through the checkbox-based multi-select status filter. Filter counts are
+calculated from all items matching the list context before the status selection is
+applied, so selecting multiple statuses does not reduce the counts displayed beside
+the other status options. The global search includes
 `generic_item` records and does not apply the list status filter, so terminal
 Participation Projects remain searchable.
 
@@ -583,10 +605,8 @@ the correct base ref.
 ## Known First-Version Limitations
 
 - Filter UI is intentionally not enabled for this module.
-- Map view and map filtering are intentionally not enabled for this module.
 - Server-side resource filter configuration for `ParticipationProject` is not required.
 - Featured project rows are sorted by `payload[indexOrder]` (default: `itemIndex`) and limited to `featuredLimit`.
-- Category counts are based on the first `homeLimit` records returned by the server.
 - `indexOrder` currently performs client-side sorting against `payload[indexOrder]` (forwarded as `participationOrder`), not GraphQL `genericItems(order: ...)` sorting.
 - For predictable ordering, provide a numeric payload field such as `payload.itemIndex`; non-numeric values fall back to deterministic text sorting.
 

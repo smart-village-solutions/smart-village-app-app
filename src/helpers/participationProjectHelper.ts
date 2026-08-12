@@ -12,7 +12,6 @@ import { subtitle as formatSubtitle } from './textHelper';
 
 export type ParticipationProjectPayload = {
   capacity?: string | number;
-  color?: string;
   contact?: string;
   email?: string;
   endTime?: string;
@@ -26,7 +25,6 @@ export type ParticipationProjectPayload = {
   status?:
     | string
     | {
-        color?: string;
         label?: string;
         name?: string;
         status?: string;
@@ -34,6 +32,7 @@ export type ParticipationProjectPayload = {
         title?: string;
         value?: string;
       };
+  statusColor?: string;
   tags?: string[] | string;
   theme?: string;
   type?: string;
@@ -49,9 +48,15 @@ export const PARTICIPATION_PROJECT_STATUS = {
 } as const;
 
 export const PARTICIPATION_PROJECT_STATUS_FILTER = 'participationStatus';
+export const PARTICIPATION_PROJECT_STATUS_POSITION_PARAM = 'participationStatusPosition';
+export const PARTICIPATION_PROJECT_STATUS_POSITION = {
+  BELOW_TEASER: 'belowTeaser',
+  REPLACE_TEASER: 'replaceTeaser'
+} as const;
+export type ParticipationProjectStatusPosition =
+  (typeof PARTICIPATION_PROJECT_STATUS_POSITION)[keyof typeof PARTICIPATION_PROJECT_STATUS_POSITION];
 export const PARTICIPATION_PROJECT_DEFAULT_STATUSES: string[] = [
-  PARTICIPATION_PROJECT_STATUS.ACTIVE,
-  PARTICIPATION_PROJECT_STATUS.ANNOUNCED
+  PARTICIPATION_PROJECT_STATUS.ACTIVE
 ];
 export const PARTICIPATION_PROJECT_COMPLETED_STATUSES: string[] = [
   PARTICIPATION_PROJECT_STATUS.COMPLETED,
@@ -89,6 +94,9 @@ type ParticipationProjectPreviewItem = {
     url?: string;
   };
   routeName: ScreenName;
+  statusColor?: string;
+  statusLabel?: string;
+  statusPosition: ParticipationProjectStatusPosition;
   subtitle?: string;
   title: string;
 };
@@ -132,6 +140,8 @@ export const normalizeParticipationProjectStatus = (value?: unknown) => {
 const getParticipationProjectStatusRecord = (status: ParticipationProjectPayload['status']) =>
   status && typeof status === 'object' ? status : undefined;
 
+const PARTICIPATION_PROJECT_STATUS_COLORS = ['gray', 'green', 'yellow'];
+
 export const getParticipationProjectStatusValue = ({ payload }: ParticipationProject) => {
   const status = payload?.status;
   const statusRecord = getParticipationProjectStatusRecord(status);
@@ -148,24 +158,13 @@ export const getParticipationProjectStatusValue = ({ payload }: ParticipationPro
 };
 
 export const getParticipationProjectStatusColor = ({ payload }: ParticipationProject) => {
-  const statusRecord = getParticipationProjectStatusRecord(payload?.status);
+  const statusColor = normalizeParticipationProjectValue(payload?.statusColor)?.toLowerCase();
 
-  return normalizeParticipationProjectValue(payload?.color || statusRecord?.color)?.toLowerCase();
+  return PARTICIPATION_PROJECT_STATUS_COLORS.includes(statusColor || '') ? statusColor : undefined;
 };
 
-export const getParticipationProjectStatus = (item: ParticipationProject) => {
-  const status = normalizeParticipationProjectStatus(getParticipationProjectStatusValue(item));
-  const color = getParticipationProjectStatusColor(item);
-
-  if (
-    ['gray', 'grey', 'grau'].includes(color || '') &&
-    !PARTICIPATION_PROJECT_COMPLETED_STATUSES.includes(status)
-  ) {
-    return PARTICIPATION_PROJECT_STATUS.COMPLETED;
-  }
-
-  return status;
-};
+export const getParticipationProjectStatus = (item: ParticipationProject) =>
+  normalizeParticipationProjectStatus(getParticipationProjectStatusValue(item));
 
 export const getParticipationProjectStatusLabel = (item: ParticipationProject) => {
   const status = getParticipationProjectStatus(item);
@@ -174,6 +173,13 @@ export const getParticipationProjectStatusLabel = (item: ParticipationProject) =
 
   return configuredLabel || getParticipationProjectStatusValue(item);
 };
+
+export const normalizeParticipationProjectStatusPosition = (
+  value?: unknown
+): ParticipationProjectStatusPosition =>
+  value === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER
+    ? PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER
+    : PARTICIPATION_PROJECT_STATUS_POSITION.BELOW_TEASER;
 
 export const isParticipationProjectStatus = (item: ParticipationProject, status?: unknown) =>
   getParticipationProjectStatus(item) === normalizeParticipationProjectStatus(status);
@@ -329,18 +335,26 @@ export const buildParticipationProjectPreviewItem = (
   {
     bottomDivider = false,
     rootRouteName = consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS,
+    statusPosition = PARTICIPATION_PROJECT_STATUS_POSITION.BELOW_TEASER,
     title = texts.participationProject.participationProject
   }: {
     bottomDivider?: boolean;
     rootRouteName?: string;
+    statusPosition?: ParticipationProjectStatusPosition;
     title?: string;
   } = {}
 ): ParticipationProjectPreviewItem => {
   const type = getParticipationProjectType(item);
   const subtitle = getParticipationProjectPreviewSubtitle(item);
+  const statusLabel = getParticipationProjectStatusLabel(item);
   const previewDate = getParticipationProjectPreviewDate(item);
   const overtitle = formatSubtitle(previewDate, type, '');
-  const accessibilityLabel = [overtitle, item.title, subtitle]
+  const accessibilityLabel = [
+    overtitle,
+    statusLabel,
+    item.title,
+    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER ? undefined : subtitle
+  ]
     .filter(Boolean)
     .map((text) => `(${text})`)
     .join(' ');
@@ -362,6 +376,9 @@ export const buildParticipationProjectPreviewItem = (
     },
     routeName: ScreenName.Detail,
     subtitle,
+    statusColor: getParticipationProjectStatusColor(item),
+    statusLabel,
+    statusPosition,
     title: item.title || texts.participationProject.participationProject
   };
 };
