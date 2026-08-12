@@ -41,8 +41,91 @@ Accessibility configuration is read from:
 
 - `globalSettings.settings.accessibility`
 
-If no configuration is provided, all app-level accessibility features are disabled by default.
-Enable each feature explicitly in `globalSettings.settings.accessibility.enabledFeatures`.
+If no accessibility configuration is provided, all app-level accessibility features are disabled
+until they are enabled explicitly in `globalSettings.settings.accessibility.enabledFeatures`.
+
+Read Aloud no longer has a user-facing on/off preference. Operators enable it globally with
+`enabledFeatures.readAloud: true`; the player then appears automatically on supported screens when
+readable content is available.
+
+## Ready-to-use examples
+
+### Built-in bookmark default
+
+No configuration is required for the built-in Heart bookmark icon:
+
+```json
+{
+  "settings": {}
+}
+```
+
+This uses `HeartEmpty` / `HeartFilled` for bookmark states. Read Aloud remains disabled until its
+global feature gate is enabled.
+
+### Recommended accessibility controls
+
+```json
+{
+  "settings": {
+    "accessibility": {
+      "enabledFeatures": {
+        "settingsEntry": true,
+        "headerEntry": true,
+        "textScaling": true,
+        "theming": true,
+        "boldText": true,
+        "isGrayscaleEnabled": true,
+        "highContrast": true,
+        "reduceMotion": true,
+        "reduceTransparency": true,
+        "readAloud": true
+      },
+      "defaults": {
+        "textScaleLevel": 2,
+        "themeMode": "system",
+        "boldTextEnabled": false,
+        "isGrayscaleEnabled": false,
+        "highContrastEnabled": false,
+        "reduceMotionEnabled": false,
+        "reduceTransparencyEnabled": false
+      }
+    }
+  }
+}
+```
+
+`defaults.readAloudEnabled` is intentionally omitted. `enabledFeatures.readAloud` is the global
+feature gate, and TTS does not expose a user-facing on/off toggle.
+
+### Bookmark icon overrides
+
+The `heart` and `bookmark` presets can be selected with a short string:
+
+```json
+{
+  "settings": {
+    "bookmarkIcon": "bookmark"
+  }
+}
+```
+
+Use the same `iconName` / `activeIconName` contract as custom tab configuration when selecting
+components from the app's `Icon` registry:
+
+```json
+{
+  "settings": {
+    "bookmarkIcon": {
+      "iconName": "Pin",
+      "activeIconName": "PinFilled"
+    }
+  }
+}
+```
+
+Invalid icon names fall back to the built-in Heart icons. To use another Tabler icon, expose it once
+in the shared `Icon` registry and reference that component name here.
 
 ## Global Configuration Schema
 
@@ -51,6 +134,7 @@ Use the following JSON shape in `globalSettings`:
 ```json
 {
   "settings": {
+    "bookmarkIcon": "heart",
     "accessibility": {
       "enabledFeatures": {
         "settingsEntry": false,
@@ -71,7 +155,6 @@ Use the following JSON shape in `globalSettings`:
         "highContrastEnabled": false,
         "reduceMotionEnabled": false,
         "reduceTransparencyEnabled": false,
-        "readAloudEnabled": false,
         "themeMode": "system"
       },
       "themePalettes": {
@@ -124,7 +207,10 @@ Any omitted key in `enabledFeatures` defaults to `false`.
 - `reduceTransparency`
   - Enables/disables in-app reduced-transparency preference.
 - `readAloud`
-  - Enables/disables read-aloud capability toggle (feature gate for detail and HTML-page TTS behavior).
+  - Global feature gate for detail and HTML-page TTS behavior.
+  - `true`: show the player automatically when supported readable content is available.
+  - If disabled or omitted, the player is not rendered.
+  - This does not add an on/off toggle to the accessibility settings UI.
 - `theming`
   - Enables/disables the Light, Dark, and System theme selector in both accessibility entry points.
   - When disabled or omitted, the app uses the built-in light palette and ignores stored theme selections and configured palette overrides.
@@ -139,8 +225,10 @@ Defines default user preference values applied when a user has no stored accessi
 - `highContrastEnabled`
 - `reduceMotionEnabled`
 - `reduceTransparencyEnabled`
-- `readAloudEnabled`
 - `themeMode` (`"light"`, `"dark"`, or `"system"`; defaults to `"system"`)
+
+`readAloudEnabled` is retained only as a legacy stored preference field. It no longer controls TTS
+availability and should not be added to new `globalSettings` payloads.
 
 ### `themePalettes`
 
@@ -301,7 +389,8 @@ Behavior:
 ### Settings screen
 
 - Accessibility appears as a dedicated Settings entry when `enabledFeatures.settingsEntry === true`.
-- The screen exposes toggles only for features enabled by `enabledFeatures`.
+- The screen exposes controls only for features enabled by `enabledFeatures`; Read Aloud is not an
+  on/off control.
 - A reset action restores values to global defaults (`defaults`).
 
 ### Header modal
@@ -331,10 +420,9 @@ Behavior:
   - Exposes reduced-transparency state for app-level transparency handling.
   - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
 - **Read Aloud (Feature Gate)**
-  - Provides a persisted toggle and feature gate.
-  - Adds a floating read-aloud toggle on supported screens when `enabledFeatures.readAloud` is enabled.
-  - The floating toggle updates the same persisted `readAloudEnabled` user preference as Settings and the header modal.
-  - Displays playback controls in a floating media player that opens from the floating read-aloud toggle.
+  - Is enabled globally with `enabledFeatures.readAloud: true`.
+  - Has no user-facing on/off preference in Settings or the header modal.
+  - Displays playback controls in a floating media player when readable content is available.
   - Provides start/pause, resume, stop, expand, and collapse controls in the floating media player.
   - Shows the currently read text in the compact player.
   - Shows speech speed selection (`0.8x`, `1.0x`, `1.2x`) and a scrollable read-along text area in the expanded player.
@@ -445,7 +533,8 @@ not require app-specific navigation code.
 
 ## Read Aloud Coverage (Screen-by-Screen)
 
-When `enabledFeatures.readAloud` is enabled and user preference `readAloudEnabled` is on, TTS controls are available on the following screens:
+When `enabledFeatures.readAloud` is `true`, TTS controls are available on the following screens when
+readable content is present:
 
 1. Core detail and HTML foundations
    - `DetailScreen` (detail content blocks, media/detail layout flow)
