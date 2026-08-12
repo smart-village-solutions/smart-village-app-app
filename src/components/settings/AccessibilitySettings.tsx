@@ -6,6 +6,7 @@ import { consts, normalize, texts } from '../../config';
 import { ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS, normalizeTextScaleLevel } from '../../helpers';
 import { useAccessibilityPreferences } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
+import type { AccessibilityTogglePreferenceKey } from '../../types/Accessibility';
 import { ThemeMode } from '../../types/Theme';
 import { SettingsToggle } from '../SettingsToggle';
 import { BoldText, RegularText } from '../Text';
@@ -23,10 +24,7 @@ type Props = {
 type Definition = {
   description?: string;
   featureKey: keyof ReturnType<typeof useAccessibilityPreferences>['features'];
-  key: Exclude<
-    keyof ReturnType<typeof useAccessibilityPreferences>['preferences'],
-    'textScaleLevel'
-  >;
+  key: AccessibilityTogglePreferenceKey;
   title: string;
 };
 
@@ -60,12 +58,6 @@ const SETTINGS_DEFINITIONS: Definition[] = [
     featureKey: 'reduceTransparency',
     title: texts.settingsContents.accessibility.reduceTransparency.title,
     description: texts.settingsContents.accessibility.reduceTransparency.description
-  },
-  {
-    key: 'readAloudEnabled',
-    featureKey: 'readAloud',
-    title: texts.settingsContents.accessibility.readAloud.title,
-    description: texts.settingsContents.accessibility.readAloud.description
   }
 ];
 
@@ -143,8 +135,6 @@ export const AccessibilitySettings = ({
         </WrapperHorizontal>
       )}
 
-      <ThemeControl enabled={showThemeControl} onChange={setThemeMode} value={themeMode} />
-
       {showTextScaleControl && (
         <WrapperHorizontal>
           <ListItem
@@ -220,6 +210,8 @@ export const AccessibilitySettings = ({
           </ListItem>
         </WrapperHorizontal>
       )}
+
+      <ThemeControl enabled={showThemeControl} onChange={setThemeMode} value={themeMode} />
 
       {availableSettings.map((setting) => (
         <WrapperHorizontal key={setting.key}>

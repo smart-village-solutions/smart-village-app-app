@@ -15,7 +15,20 @@ describe('accessibilitySettingsHelper', () => {
     const resolved = resolveAccessibilityConfiguration();
 
     expect(resolved.features).toEqual(DEFAULT_ACCESSIBILITY_FEATURES);
+    expect(resolved.features.readAloud).toBe(false);
     expect(resolved.defaults).toEqual(DEFAULT_ACCESSIBILITY_USER_SETTINGS);
+  });
+
+  it('allows read aloud to be enabled explicitly', () => {
+    const resolved = resolveAccessibilityConfiguration({
+      settings: {
+        accessibility: {
+          enabledFeatures: { readAloud: true }
+        }
+      }
+    });
+
+    expect(resolved.features.readAloud).toBe(true);
   });
 
   it('applies only boolean enabledFeatures values', () => {

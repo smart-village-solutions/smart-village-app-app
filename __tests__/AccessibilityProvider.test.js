@@ -45,11 +45,25 @@ const renderProvider = async (globalSettings) => {
   return tree;
 };
 
-describe('AccessibilityProvider theming', () => {
+describe('AccessibilityProvider', () => {
   beforeEach(async () => {
     currentAccessibility = undefined;
     mockUseColorScheme.mockReturnValue('light');
     await AsyncStorage.clear();
+  });
+
+  it('enables read aloud from the global feature gate without a user preference', async () => {
+    await renderProvider({
+      settings: {
+        accessibility: {
+          defaults: { readAloudEnabled: false },
+          enabledFeatures: { readAloud: true }
+        }
+      }
+    });
+
+    expect(currentAccessibility.features.readAloud).toBe(true);
+    expect(currentAccessibility.isReadAloudEnabled).toBe(true);
   });
 
   it('resolves system mode and configured palette overrides after hydration', async () => {

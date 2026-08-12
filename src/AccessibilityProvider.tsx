@@ -263,7 +263,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
       isGrayscaleEnabled,
       isHighContrastEnabled: features.highContrast && preferences.highContrastEnabled,
       isHydrated: hasHydratedSettings,
-      isReadAloudEnabled: features.readAloud && preferences.readAloudEnabled,
+      isReadAloudEnabled: features.readAloud,
       isReduceMotionEnabled,
       isReduceTransparencyEnabled,
       preferences,

@@ -37,7 +37,7 @@ export const FloatingButton = ({
   const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
-  const { features, preferences, setPreference } = useAccessibilityPreferences();
+  const { features } = useAccessibilityPreferences();
   const { getRouteItems, isRouteAvailable } = useReadAloudAvailability();
 
   // Subscribe to navigation state to trigger re-renders on every route change.
@@ -51,9 +51,8 @@ export const FloatingButton = ({
   const activeRoute = navigationRef.isReady() ? navigationRef.getCurrentRoute() : undefined;
   const activeRouteName = activeRoute?.name ?? '';
   const activeRouteKey = activeRoute?.key;
-  const isReadAloudQuickToggleEnabled = preferences.readAloudEnabled;
   const readAloudItems = getRouteItems(activeRouteKey);
-  const showReadAloudQuickToggle = features.readAloud && isRouteAvailable(activeRouteKey);
+  const showReadAloudPlayer = features.readAloud && isRouteAvailable(activeRouteKey);
   const positionStyle = useMemo(
     () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
     [bottomOffset, navigationType]
@@ -76,19 +75,13 @@ export const FloatingButton = ({
         ({ visibleScreens }) => !visibleScreens?.length || visibleScreens.includes(activeRouteName)
       );
 
-  if (!showReadAloudQuickToggle && !visibleItems.length) return null;
+  if (!showReadAloudPlayer && !visibleItems.length) return null;
 
   return (
     <View pointerEvents="box-none" style={[styles.container, positionStyle]}>
-      {showReadAloudQuickToggle && (
+      {showReadAloudPlayer && (
         <View pointerEvents="box-none" style={styles.readAloudRow}>
-          <FloatingReadAloudPlayer
-            isEnabled={isReadAloudQuickToggleEnabled}
-            items={readAloudItems}
-            key={activeRouteKey}
-            onDisable={() => setPreference('readAloudEnabled', false)}
-            onEnable={() => setPreference('readAloudEnabled', true)}
-          />
+          <FloatingReadAloudPlayer items={readAloudItems} key={activeRouteKey} />
         </View>
       )}
 

@@ -13,10 +13,7 @@ import { ThemeColorPalette } from '../types/Theme';
 import { RegularText } from './Text';
 
 type Props = {
-  isEnabled: boolean;
   items: DetailSpeechItem[];
-  onDisable: () => void;
-  onEnable: () => void;
 };
 
 type PlayerControlProps = {
@@ -131,7 +128,7 @@ const PlayerControl = ({
 };
 
 // eslint-disable-next-line complexity
-export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable }: Props) => {
+export const FloatingReadAloudPlayer = ({ items }: Props) => {
   const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
@@ -158,9 +155,8 @@ export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable 
     skipNext,
     skipPrevious,
     start,
-    stop,
     totalItems
-  } = useDetailSpeech(items, isEnabled, speechRate);
+  } = useDetailSpeech(items, true, speechRate);
 
   const animationDuration = isReduceMotionEnabled ? 0 : 240;
   const rateLabel = formatSpeechRate(speechRate);
@@ -208,12 +204,6 @@ export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable 
       setShowReadAlong(false);
     });
   }, [animationDuration, height, readAlongProgress, width]);
-
-  useEffect(() => {
-    if (isEnabled) return;
-
-    collapsePlayer();
-  }, [collapsePlayer, isEnabled]);
 
   useEffect(() => {
     const targetWidth = isControlsVisible ? PLAYER_WIDTH : FLOATING_BUTTON_SIZE;
@@ -272,15 +262,9 @@ export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable 
     return start();
   }, [isPaused, isSpeaking, pause, resume, start]);
 
-  const disableReadAloud = useCallback(() => {
-    void stop();
-    onDisable();
-  }, [onDisable, stop]);
-
   const expandPlayer = useCallback(() => {
-    if (!isEnabled) onEnable();
     setIsControlsVisible(true);
-  }, [isEnabled, onEnable]);
+  }, []);
 
   const controlsOpacity = width.interpolate({
     extrapolate: 'clamp',
@@ -299,11 +283,7 @@ export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable 
       <Animated.View style={[styles.shadowContainer, { height, width }]}>
         <View style={[styles.container, styles.floatingContainer]}>
           <Pressable
-            accessibilityLabel={
-              isEnabled
-                ? texts.settingsContents.accessibility.readAloud.expandPlayer
-                : texts.settingsContents.accessibility.readAloud.enableQuickToggle
-            }
+            accessibilityLabel={texts.settingsContents.accessibility.readAloud.expandPlayer}
             accessibilityRole="button"
             onPress={expandPlayer}
             style={({ pressed }) => [
@@ -326,7 +306,7 @@ export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable 
 
   return (
     <Animated.View style={[styles.shadowContainer, { height, width }]}>
-      <View style={[styles.container, styles.expandedContainer]}>
+      <View style={styles.container}>
         <Animated.View style={[styles.controlsContent, { opacity: controlsOpacity }]}>
           {isReadAlongRendered && (
             <Animated.View
@@ -390,9 +370,9 @@ export const FloatingReadAloudPlayer = ({ isEnabled, items, onDisable, onEnable 
             </View>
 
             <PlayerControl
-              iconName="volume-off"
-              label={texts.settingsContents.accessibility.readAloud.disableQuickToggle}
-              onPress={disableReadAloud}
+              iconName="chevron-down"
+              label={texts.settingsContents.accessibility.readAloud.collapsePlayer}
+              onPress={collapsePlayer}
             />
           </View>
         </Animated.View>
@@ -418,11 +398,6 @@ const createStyles = (colors: ThemeColorPalette): Record<string, TextStyle | Vie
 
   controlsContent: {
     flex: 1
-  },
-
-  expandedContainer: {
-    borderColor: colors.text,
-    borderWidth: normalize(1.5)
   },
 
   shadowContainer: {

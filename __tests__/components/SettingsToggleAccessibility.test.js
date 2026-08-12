@@ -24,6 +24,9 @@ jest.mock('../../src/config', () => ({
   device: {
     isTablet: false
   },
+  Icon: {
+    NamedIcon: 'mock-named-icon'
+  },
   normalize: (value) => value,
   texts: {
     errors: {

@@ -27,6 +27,9 @@ jest.mock('../../src/config', () => ({
     platform: 'ios',
     width: 400
   },
+  Icon: {
+    NamedIcon: 'mock-named-icon'
+  },
   normalize: (value: number) => value
 }));
 

@@ -78,8 +78,7 @@ jest.mock('../../src/config', () => ({
     settingsContents: {
       accessibility: {
         readAloud: {
-          disableQuickToggle: 'Disable read aloud',
-          enableQuickToggle: 'Enable read aloud'
+          expandPlayer: 'Expand player'
         }
       }
     }
@@ -222,35 +221,29 @@ describe('FloatingButton', () => {
     expect(mockNavigate).toHaveBeenCalledWith('Web', { webUrl: 'https://example.com' });
   });
 
-  it('keeps the centered player visible and lets it enable the global feature', () => {
-    const setPreference = jest.fn();
+  it('keeps the always-active centered player visible when content is available', () => {
     mockIsRouteAvailable.mockReturnValue(true);
     mockUseAccessibilityPreferences.mockReturnValue({
-      features: { readAloud: true },
-      preferences: { readAloudEnabled: false },
-      setPreference
+      features: { readAloud: true }
     });
 
     const testRenderer = renderFloatingButton({ bottomOffset: 0 });
     const player = testRenderer.root.findByType('mock-read-aloud-player');
 
-    renderer.act(() => player.props.onEnable());
-
-    expect(player.props.isEnabled).toBe(false);
-    expect(setPreference).toHaveBeenCalledWith('readAloudEnabled', true);
+    expect(player.props.isEnabled).toBeUndefined();
+    expect(player.props.onEnable).toBeUndefined();
+    expect(player.props.onDisable).toBeUndefined();
   });
 
   it('shows the redesigned player while global read aloud is enabled', () => {
     mockIsRouteAvailable.mockReturnValue(true);
     mockUseAccessibilityPreferences.mockReturnValue({
-      features: { readAloud: true },
-      preferences: { readAloudEnabled: true },
-      setPreference: jest.fn()
+      features: { readAloud: true }
     });
 
     const testRenderer = renderFloatingButton({ bottomOffset: 0 });
 
     expect(testRenderer.root.findAllByType(TouchableOpacity)).toHaveLength(0);
-    expect(testRenderer.root.findByType('mock-read-aloud-player').props.isEnabled).toBe(true);
+    expect(testRenderer.root.findByType('mock-read-aloud-player')).toBeTruthy();
   });
 });

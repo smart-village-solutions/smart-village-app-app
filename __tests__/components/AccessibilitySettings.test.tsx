@@ -87,7 +87,11 @@ jest.mock('../../src/components/Button', () => ({
 }));
 
 jest.mock('../../src/components/SettingsToggle', () => ({
-  SettingsToggle: () => null
+  SettingsToggle: (props: unknown) => {
+    const ReactLocal = require('react');
+
+    return ReactLocal.createElement('mock-settings-toggle', props);
+  }
 }));
 
 jest.mock('../../src/components/Radiobutton', () => ({
@@ -211,5 +215,53 @@ describe('AccessibilitySettings', () => {
     });
 
     expect(setThemeMode).toHaveBeenCalledWith('dark');
+  });
+
+  it('orders text size before color scheme and omits the read-aloud toggle', () => {
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: {
+        boldText: true,
+        highContrast: true,
+        isGrayscaleEnabled: true,
+        readAloud: true,
+        reduceMotion: true,
+        reduceTransparency: true,
+        textScaling: true,
+        theming: true
+      },
+      preferences: {
+        boldTextEnabled: false,
+        highContrastEnabled: false,
+        isGrayscaleEnabled: false,
+        readAloudEnabled: false,
+        reduceMotionEnabled: false,
+        reduceTransparencyEnabled: false,
+        textScaleLevel: 2
+      },
+      resetPreferences: jest.fn(),
+      setPreference: jest.fn(),
+      setTextScaleLevel: jest.fn(),
+      setThemeMode: jest.fn(),
+      themeMode: 'system'
+    });
+
+    const tree = renderWithAct(
+      <AccessibilitySettings withResetButton={false} withScrollView={false} />
+    );
+    const listItems = tree.root.findAllByType('mock-list-item');
+    const toggleTitles = tree.root
+      .findAllByType('mock-settings-toggle')
+      .map((toggle) => toggle.props.item.title);
+
+    expect(listItems[0].props.accessibilityLabel).toContain('Textgröße');
+    expect(listItems[1].findByProps({ accessibilityRole: 'radiogroup' })).toBeTruthy();
+    expect(toggleTitles).toEqual([
+      'Fetter Text',
+      'Graustufen',
+      'Hoher Kontrast',
+      'Bewegung reduzieren',
+      'Transparenz reduzieren'
+    ]);
+    expect(toggleTitles).not.toContain('Vorlesen');
   });
 });

@@ -48,6 +48,7 @@ jest.mock('../../src/config', () => {
     },
     Icon: {
       AlertHexagonFilled: MockIcon,
+      NamedIcon: (props) => ReactLocal.createElement('mock-named-icon', props),
       Ok: MockIcon,
       RadioButtonEmpty: MockIcon,
       RadioButtonFilled: MockIcon
@@ -114,7 +115,14 @@ describe('Accessibility primitives', () => {
 
   it('Touchable sets default role and merges state', () => {
     const tree = renderWithAct(
-      <Touchable accessibilityLabel="Aktion Taste" checked disabled expanded onPress={onPress} selected />
+      <Touchable
+        accessibilityLabel="Aktion Taste"
+        checked
+        disabled
+        expanded
+        onPress={onPress}
+        selected
+      />
     );
     const node = tree.root.findByType(TouchableOpacity);
 
@@ -160,5 +168,15 @@ describe('Accessibility primitives', () => {
 
     expect(node.props.accessibilityState).toEqual({ checked: false, disabled: true });
     expect(node.props.accessibilityLabel).toBe('Filtereinstellungen dauerhaft speichern');
+    expect(tree.root.findByProps({ testID: 'switch-state-off' })).toBeTruthy();
+  });
+
+  it('Switch displays a check icon in addition to the active track color', () => {
+    const tree = renderWithAct(
+      <AppSwitch accessibilityLabel="Aktive Option" switchValue toggleSwitch={onPress} />
+    );
+
+    expect(tree.root.findByProps({ testID: 'switch-state-on' })).toBeTruthy();
+    expect(tree.root.findByType('mock-named-icon').props.name).toBe('check');
   });
 });

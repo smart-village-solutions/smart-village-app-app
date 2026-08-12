@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { NavigationRouteContext } from '@react-navigation/native';
 import React, {
   createContext,
   useCallback,
@@ -143,24 +143,24 @@ export const useRegisterReadAloudContent = (
   items: DetailSpeechItem[],
   isAvailable: boolean
 ) => {
-  const route = useRoute<RouteProp<Record<string, object | undefined>, string>>();
+  const route = useContext(NavigationRouteContext);
   const { registerContent, unregisterContent } = useReadAloudAvailability();
 
   useEffect(() => {
-    if (!isAvailable) return undefined;
+    if (!isAvailable || !route?.key) return undefined;
 
     registerContent(route.key, contentKey, items);
 
     return () => unregisterContent(route.key, contentKey);
-  }, [contentKey, isAvailable, items, registerContent, route.key, unregisterContent]);
+  }, [contentKey, isAvailable, items, registerContent, route?.key, unregisterContent]);
 };
 
 export const useReadAloudPlayerBottomSpacing = () => {
-  const route = useRoute<RouteProp<Record<string, object | undefined>, string>>();
+  const route = useContext(NavigationRouteContext);
   const { features } = useContext(AccessibilityContext);
   const { isRouteAvailable, playerBottomSpacing } = useReadAloudAvailability();
 
-  return features.readAloud && isRouteAvailable(route.key) ? playerBottomSpacing : 0;
+  return features.readAloud && isRouteAvailable(route?.key) ? playerBottomSpacing : 0;
 };
 
 export const useReadAloudScrollContentContainerStyle = <T extends StyleProp<ViewStyle>>(

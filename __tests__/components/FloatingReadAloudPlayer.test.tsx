@@ -33,8 +33,7 @@ jest.mock('../../src/config', () => {
       settingsContents: {
         accessibility: {
           readAloud: {
-            disableQuickToggle: 'Disable read aloud',
-            enableQuickToggle: 'Enable read aloud',
+            collapsePlayer: 'Collapse player',
             expandPlayer: 'Expand player',
             hideReadAlong: 'Hide read along',
             next: 'Next section',
@@ -132,12 +131,7 @@ describe('FloatingReadAloudPlayer controls', () => {
 
     renderer.act(() => {
       tree = renderer.create(
-        <FloatingReadAloudPlayer
-          isEnabled
-          items={[{ id: 'title', text: speechState.currentItemText }]}
-          onDisable={jest.fn()}
-          onEnable={jest.fn()}
-        />
+        <FloatingReadAloudPlayer items={[{ id: 'title', text: speechState.currentItemText }]} />
       );
     });
 
@@ -150,7 +144,7 @@ describe('FloatingReadAloudPlayer controls', () => {
       'Start',
       'Next section',
       'Show read along',
-      'Disable read aloud'
+      'Collapse player'
     ];
     const controls = controlLabels.map((label) =>
       tree!.root.findByProps({ accessibilityLabel: label })
@@ -161,18 +155,12 @@ describe('FloatingReadAloudPlayer controls', () => {
     expect(controls[4].props.accessibilityState.expanded).toBe(false);
   });
 
-  it('expands the read-along ticker and disables the global feature from the player', () => {
-    const onDisable = jest.fn();
+  it('expands the read-along ticker and can collapse without disabling read aloud', () => {
     let tree: renderer.ReactTestRenderer;
 
     renderer.act(() => {
       tree = renderer.create(
-        <FloatingReadAloudPlayer
-          isEnabled
-          items={[{ id: 'title', text: speechState.currentItemText }]}
-          onDisable={onDisable}
-          onEnable={jest.fn()}
-        />
+        <FloatingReadAloudPlayer items={[{ id: 'title', text: speechState.currentItemText }]} />
       );
     });
 
@@ -188,33 +176,26 @@ describe('FloatingReadAloudPlayer controls', () => {
     ).toEqual({ disabled: false, expanded: true });
 
     renderer.act(() =>
-      tree!.root.findByProps({ accessibilityLabel: 'Disable read aloud' }).props.onPress()
+      tree!.root.findByProps({ accessibilityLabel: 'Collapse player' }).props.onPress()
     );
 
-    expect(speechState.stop).toHaveBeenCalledTimes(1);
-    expect(onDisable).toHaveBeenCalledTimes(1);
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Expand player' })).toBeTruthy();
+    expect(speechState.stop).not.toHaveBeenCalled();
   });
 
-  it('keeps the centered speaker available globally and enables the feature while expanding', () => {
-    const onEnable = jest.fn();
+  it('keeps the centered speaker always available and expands directly', () => {
     let tree: renderer.ReactTestRenderer;
 
     renderer.act(() => {
       tree = renderer.create(
-        <FloatingReadAloudPlayer
-          isEnabled={false}
-          items={[{ id: 'title', text: speechState.currentItemText }]}
-          onDisable={jest.fn()}
-          onEnable={onEnable}
-        />
+        <FloatingReadAloudPlayer items={[{ id: 'title', text: speechState.currentItemText }]} />
       );
     });
 
     renderer.act(() =>
-      tree!.root.findByProps({ accessibilityLabel: 'Enable read aloud' }).props.onPress()
+      tree!.root.findByProps({ accessibilityLabel: 'Expand player' }).props.onPress()
     );
 
-    expect(onEnable).toHaveBeenCalledTimes(1);
     expect(tree!.root.findByProps({ accessibilityLabel: 'Speech speed: 1,0x' })).toBeTruthy();
     expect(mockSetPlayerBottomSpacing).toHaveBeenLastCalledWith(72);
   });
@@ -224,12 +205,7 @@ describe('FloatingReadAloudPlayer controls', () => {
 
     renderer.act(() => {
       tree = renderer.create(
-        <FloatingReadAloudPlayer
-          isEnabled
-          items={[{ id: 'title', text: speechState.currentItemText }]}
-          onDisable={jest.fn()}
-          onEnable={jest.fn()}
-        />
+        <FloatingReadAloudPlayer items={[{ id: 'title', text: speechState.currentItemText }]} />
       );
     });
 
@@ -252,12 +228,7 @@ describe('FloatingReadAloudPlayer controls', () => {
 
     renderer.act(() => {
       tree = renderer.create(
-        <FloatingReadAloudPlayer
-          isEnabled
-          items={[{ id: 'title', text: speechState.currentItemText }]}
-          onDisable={jest.fn()}
-          onEnable={jest.fn()}
-        />
+        <FloatingReadAloudPlayer items={[{ id: 'title', text: speechState.currentItemText }]} />
       );
     });
 
