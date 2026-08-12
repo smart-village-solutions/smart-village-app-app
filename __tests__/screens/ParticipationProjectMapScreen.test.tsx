@@ -25,6 +25,7 @@ jest.mock('../../src/queries', () => ({
 jest.mock('../../src/helpers', () => ({
   PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
   PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',
   buildParticipationProjectPreviewItem: jest.fn((item, options) => ({
     accessibilityLabel: `${item.title} button`,
     bottomDivider: false,
@@ -49,7 +50,8 @@ jest.mock('../../src/helpers', () => ({
   ),
   isParticipationProjectStatus: jest.fn(
     (item, status) => item.payload?.status?.trim().toLowerCase() === status
-  )
+  ),
+  normalizeParticipationProjectStatusPosition: jest.fn(() => 'between')
 }));
 
 const mockMapLibre = jest.fn();
@@ -59,12 +61,13 @@ jest.mock('../../src/components', () => {
   const { Text, View } = require('react-native');
 
   return {
-    HeaderLeft: ({ onPress }) => (
+    HeaderLeft: ({ backImage, onPress }) => (
       <Text testID="header-left" onPress={onPress}>
-        close
+        {backImage ? 'custom' : 'back'}
       </Text>
     ),
-    LoadingSpinner: () => <Text>loading</Text>,
+    LoadingSpinner: ({ loading }) =>
+      loading ? <Text testID="loading-spinner">loading</Text> : null,
     MapLibre: (props) => {
       mockMapLibre(props);
 
@@ -190,9 +193,18 @@ describe('ParticipationProjectMapScreen', () => {
             id: 'announced-1'
           })
         ],
+        initialBounds: [11.575, 52.075, 11.675, 52.175],
+        onMapReady: expect.any(Function),
         selectedMarker: undefined
       })
     );
+    expect(screen.getByTestId('loading-spinner')).toBeTruthy();
+
+    act(() => {
+      mockMapLibre.mock.calls[0][0].onMapReady();
+    });
+
+    expect(screen.queryByTestId('loading-spinner')).toBeNull();
 
     act(() => {
       mockMapLibre.mock.calls[0][0].onMarkerPress('active-1');
@@ -211,7 +223,7 @@ describe('ParticipationProjectMapScreen', () => {
     expect(useQuery.mock.calls[0][0][1]).not.toHaveProperty('participationStatus');
   });
 
-  it('renders the empty state and wires the close button to goBack', () => {
+  it('renders the empty state and wires the standard back button to goBack', () => {
     useQuery.mockReturnValue({
       data: {
         genericItems: [buildItem({ id: 'without-geo', status: 'Inaktiv' })]
@@ -239,6 +251,7 @@ describe('ParticipationProjectMapScreen', () => {
     expect(
       screen.getByText('Keine aktiven Beteiligungsprojekte mit Standort verfuegbar.')
     ).toBeTruthy();
+    expect(getByTestId('header-left')).toHaveTextContent('back');
 
     fireEvent.press(getByTestId('header-left'));
     expect(navigation.goBack).toHaveBeenCalledTimes(1);
@@ -267,11 +280,13 @@ describe('ParticipationProjectMapScreen', () => {
     render(
       <ParticipationProjectMapScreen
         navigation={navigation as never}
-        route={{
-          params: {
-            queryVariables: { participationStatus: ['active', 'announced', 'completed'] }
-          }
-        } as never}
+        route={
+          {
+            params: {
+              queryVariables: { participationStatus: ['active', 'announced', 'completed'] }
+            }
+          } as never
+        }
       />
     );
 

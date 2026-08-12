@@ -188,7 +188,7 @@ const ParticipationProjectCalendarExport = ({ data }: { data: ParticipationProje
           })
         }
       >
-        <WrapperRow center>
+        <WrapperRow>
           <Icon.NamedIcon name="download" style={{ marginRight: normalize(8) }} />
 
           <RegularText primary center>

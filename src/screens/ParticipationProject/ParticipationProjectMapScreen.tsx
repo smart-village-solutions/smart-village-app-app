@@ -13,14 +13,17 @@ import {
   TextListItem,
   Wrapper
 } from '../../components';
-import { colors, consts, Icon, normalize } from '../../config';
+import { expandMapBounds, getMarkerBounds } from '../../components/map/getMarkerBounds';
+import { colors, consts, normalize } from '../../config';
 import {
   buildParticipationProjectPreviewItem,
   getParticipationProjectGeoLocation,
   isParticipationProjectMapEligible,
   isParticipationProjectStatus,
+  normalizeParticipationProjectStatusPosition,
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
   PARTICIPATION_PROJECT_STATUS_FILTER,
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   ParticipationProject
 } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -41,6 +44,7 @@ type ParticipationProjectItemsResponse = {
 };
 
 const EMPTY_STATE_TEXT = 'Keine aktiven Beteiligungsprojekte mit Standort verfuegbar.';
+const INITIAL_BOUNDS_EXPANSION_FACTOR = 2;
 const { MAP } = consts;
 
 export const ParticipationProjectMapScreen = ({
@@ -48,9 +52,13 @@ export const ParticipationProjectMapScreen = ({
   route
 }: StackScreenProps<ParticipationProjectMapParamList, ScreenName.ParticipationProjectMap>) => {
   const [selectedMarker, setSelectedMarker] = useState<string>();
+  const [isMapReady, setIsMapReady] = useState(false);
   const titleNumberOfLines = route.params?.titleNumberOfLines;
   const subtitleNumberOfLines = route.params?.subtitleNumberOfLines;
   const rootRouteName = route.params?.rootRouteName;
+  const statusPosition = normalizeParticipationProjectStatusPosition(
+    route.params?.queryVariables?.[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]
+  );
   const selectedMapStatuses = useMemo(() => {
     const selectedStatuses = route.params?.queryVariables?.[PARTICIPATION_PROJECT_STATUS_FILTER];
     const statuses = Array.isArray(selectedStatuses)
@@ -64,6 +72,10 @@ export const ParticipationProjectMapScreen = ({
   const mapQueryVariables = useMemo(() => {
     const queryVariables = { ...(route.params?.queryVariables || {}) };
     delete queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+    delete queryVariables[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM];
+    delete queryVariables.participationOrder;
+    delete queryVariables.subtitleNumberOfLines;
+    delete queryVariables.titleNumberOfLines;
 
     return {
       ...queryVariables,
@@ -74,18 +86,7 @@ export const ParticipationProjectMapScreen = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <HeaderLeft
-          backImage={({ tintColor }) => (
-            <Icon.Close
-              color={tintColor}
-              size={normalize(22)}
-              style={{ paddingHorizontal: normalize(14) }}
-            />
-          )}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />,
       title: route.params?.title
     });
   }, [navigation, route.params?.title]);
@@ -123,6 +124,13 @@ export const ParticipationProjectMapScreen = ({
       })),
     [eligibleProjects]
   );
+  const initialBounds = useMemo(() => {
+    const markerBounds = getMarkerBounds(markers);
+
+    return markerBounds
+      ? expandMapBounds(markerBounds, INITIAL_BOUNDS_EXPANSION_FACTOR)
+      : undefined;
+  }, [markers]);
 
   const selectedProject = useMemo(
     () => eligibleProjects.find((item) => item.id === selectedMarker),
@@ -132,9 +140,9 @@ export const ParticipationProjectMapScreen = ({
   const selectedPreviewItem = useMemo(
     () =>
       selectedProject
-        ? buildParticipationProjectPreviewItem(selectedProject, { rootRouteName })
+        ? buildParticipationProjectPreviewItem(selectedProject, { rootRouteName, statusPosition })
         : undefined,
-    [rootRouteName, selectedProject]
+    [rootRouteName, selectedProject, statusPosition]
   );
 
   if (isLoading) {
@@ -145,12 +153,20 @@ export const ParticipationProjectMapScreen = ({
     <View style={styles.container}>
       {!!markers.length && (
         <MapLibre
+          initialBounds={initialBounds}
           isMyLocationButtonVisible={false}
           locations={markers}
           mapStyle={styles.map}
+          onMapReady={() => setIsMapReady(true)}
           onMarkerPress={setSelectedMarker}
           selectedMarker={selectedMarker}
         />
+      )}
+
+      {!!markers.length && !isMapReady && (
+        <View pointerEvents="none" style={styles.loadingOverlay}>
+          <LoadingSpinner loading />
+        </View>
       )}
 
       {!markers.length && (
@@ -200,6 +216,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3,
     width: '92%'
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.surface,
+    zIndex: 1
   },
   map: {
     height: '100%',

@@ -2,6 +2,21 @@ import type { LngLatBounds } from '@maplibre/maplibre-react-native';
 
 import type { MapMarker } from '../../types';
 
+export const expandMapBounds = (bounds: LngLatBounds, factor: number): LngLatBounds => {
+  if (!Number.isFinite(factor) || factor <= 1) return bounds;
+
+  const [west, south, east, north] = bounds;
+  const longitudePadding = ((east - west) * (factor - 1)) / 2;
+  const latitudePadding = ((north - south) * (factor - 1)) / 2;
+
+  return [
+    Math.max(-180, west - longitudePadding),
+    Math.max(-90, south - latitudePadding),
+    Math.min(180, east + longitudePadding),
+    Math.min(90, north + latitudePadding)
+  ];
+};
+
 export const getMarkerBounds = (markers: MapMarker[] | undefined): LngLatBounds | undefined => {
   const coordinates = markers
     ?.map(({ position }) => [position?.longitude, position?.latitude] as const)
