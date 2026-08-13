@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => {
@@ -175,7 +175,7 @@ describe('Accessibility primitives', () => {
     expect(tree.root.findAllByProps({ testID: 'switch-state-off' })).toHaveLength(0);
   });
 
-  it('Switch displays the iOS on indicator inside the track when app labels are enabled', () => {
+  it('Switch displays the on indicator inside the track when app labels are enabled', () => {
     const tree = renderWithAct(
       <AccessibilityContext.Provider
         value={{
@@ -194,7 +194,7 @@ describe('Accessibility primitives', () => {
     expect(tree.root.findAllByType('mock-named-icon')).toHaveLength(0);
   });
 
-  it('Switch displays the iOS off indicator inside the track when app labels are enabled', () => {
+  it('Switch displays the off indicator inside the track when app labels are enabled', () => {
     const tree = renderWithAct(
       <AccessibilityContext.Provider
         value={{
@@ -216,7 +216,32 @@ describe('Accessibility primitives', () => {
     expect(tree.root.findByProps({ testID: 'switch-off-circle' })).toBeTruthy();
   });
 
-  it('Switch can always preview the iOS off indicator for the switch-label setting', () => {
+  it('Switch displays app-controlled state indicators on Android', () => {
+    const originalPlatform = Platform.OS;
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'android' });
+
+    try {
+      const tree = renderWithAct(
+        <AccessibilityContext.Provider
+          value={{
+            features: { switchLabels: true },
+            isReduceMotionEnabled: false,
+            isReduceTransparencyEnabled: false,
+            isSwitchLabelsEnabled: true
+          }}
+        >
+          <AppSwitch accessibilityLabel="Aktive Option" switchValue toggleSwitch={onPress} />
+        </AccessibilityContext.Provider>
+      );
+
+      expect(tree.root.findByProps({ testID: 'switch-state-on' })).toBeTruthy();
+      expect(tree.root.findByProps({ testID: 'switch-on-line' })).toBeTruthy();
+    } finally {
+      Object.defineProperty(Platform, 'OS', { configurable: true, value: originalPlatform });
+    }
+  });
+
+  it('Switch can always preview the off indicator for the switch-label setting', () => {
     const tree = renderWithAct(
       <AppSwitch
         accessibilityLabel="Ein/Aus-Kennzeichnungen"

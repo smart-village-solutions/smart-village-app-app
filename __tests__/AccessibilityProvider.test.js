@@ -175,7 +175,7 @@ describe('AccessibilityProvider', () => {
     expect(storedSettings.switchLabelsEnabled).toBe(false);
   });
 
-  it('can enable app switch labels while the iOS system setting is off', async () => {
+  it('can enable app switch labels without a matching system setting', async () => {
     await renderProvider({
       settings: {
         accessibility: {

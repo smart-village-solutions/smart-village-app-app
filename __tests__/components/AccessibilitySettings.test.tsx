@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => {
@@ -269,7 +270,7 @@ describe('AccessibilitySettings', () => {
     expect(toggleTitles).not.toContain('Vorlesen');
   });
 
-  it('stores an explicit app override for iOS switch labels', () => {
+  it('stores an explicit app override for switch labels on every platform', () => {
     const setPreference = jest.fn();
     mockUseAccessibilityPreferences.mockReturnValue({
       features: {
@@ -300,5 +301,38 @@ describe('AccessibilitySettings', () => {
     });
 
     expect(setPreference).toHaveBeenCalledWith('switchLabelsEnabled', false);
+  });
+
+  it('exposes the app-controlled switch-label preference on Android', () => {
+    const originalPlatform = Platform.OS;
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'android' });
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: {
+        switchLabels: true,
+        textScaling: false
+      },
+      isSwitchLabelsEnabled: false,
+      preferences: {
+        textScaleLevel: 2
+      },
+      resetPreferences: jest.fn(),
+      setPreference: jest.fn(),
+      setTextScaleLevel: jest.fn(),
+      setThemeMode: jest.fn(),
+      themeMode: 'system'
+    });
+
+    try {
+      const tree = renderWithAct(
+        <AccessibilitySettings withResetButton={false} withScrollView={false} />
+      );
+      const toggle = tree.root.findByType('mock-settings-toggle');
+
+      expect(toggle.props.item.title).toBe('Ein/Aus-Kennzeichnungen');
+      expect(toggle.props.item.value).toBe(false);
+      expect(toggle.props.item.showSwitchLabels).toBe(true);
+    } finally {
+      Object.defineProperty(Platform, 'OS', { configurable: true, value: originalPlatform });
+    }
   });
 });

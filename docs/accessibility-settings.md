@@ -224,9 +224,10 @@ Any omitted key in `enabledFeatures` defaults to `false`.
 - `reduceTransparency`
   - Enables/disables in-app reduced-transparency preference.
 - `switchLabels`
-  - iOS only. Enables an app-level On/Off Labels preference and app-controlled switch rendering.
-  - When enabled without a stored override, the app follows the current iOS **On/Off Labels** setting.
-  - Requires a new native iOS build because the system value is provided by a local Expo module.
+  - Enables an app-level On/Off Labels preference and app-controlled switch rendering on iOS and Android.
+  - On iOS, the app follows the current system **On/Off Labels** setting until an app override is stored.
+  - Android has no matching public system preference, so it uses the app preference or configured default.
+  - A new native build is required only on iOS because the system value is provided by a local Expo module.
 - `readAloud`
   - Global feature gate for detail and HTML-page TTS behavior.
   - `true`: show the player automatically when supported readable content is available.
@@ -247,8 +248,8 @@ Defines default user preference values applied when a user has no stored accessi
 - `reduceMotionEnabled`
 - `reduceTransparencyEnabled`
 - `switchLabels` or `switchLabelsEnabled` (optional boolean; `switchLabelsEnabled` wins when both are present)
-  - If omitted, follows the iOS system **On/Off Labels** value.
-  - Once changed in the app, the explicit app value overrides the system value.
+  - If omitted, follows the iOS system **On/Off Labels** value and defaults to `false` on Android.
+  - Once changed in the app, the explicit app value overrides the platform fallback.
 - `themeMode` (`"light"`, `"dark"`, or `"system"`; defaults to `"system"`)
 
 `readAloudEnabled` is retained only as a legacy stored preference field. It no longer controls TTS
@@ -395,12 +396,14 @@ Theme resolution follows this order:
 
 When theming is disabled, the resolved mode is always `light`, regardless of the OS scheme or stored preference.
 
-Switch-label resolution on iOS follows this order:
+Switch-label resolution follows this order:
 
-1. An explicit app preference (`switchLabelsEnabled`) wins when the user has changed the control.
-2. Without an app override, the current iOS **On/Off Labels** setting is used.
-3. `defaults.switchLabels: true` (or `defaults.switchLabelsEnabled: true`) can opt in by default while the iOS system setting is off.
-4. `enabledFeatures.switchLabels` must be `true` to expose the app override. If it is disabled, the standard native iOS switch continues to follow the system setting directly.
+1. `enabledFeatures.switchLabels` must be `true` to expose and apply the app preference.
+2. An explicit app preference (`switchLabelsEnabled`) wins when the user has changed the control.
+3. `defaults.switchLabels` or `defaults.switchLabelsEnabled` can opt in or out before the user creates an override.
+4. On iOS, without an app override or configured default, the current system **On/Off Labels** setting is used.
+5. On Android, which has no matching public system setting, the value resolves to `false` when no app override or configured default exists.
+6. If the feature is disabled, each platform continues to use its standard native switch rendering.
 
 ### Local persistence
 
@@ -450,10 +453,11 @@ Behavior:
 - **Reduce Transparency**
   - Exposes reduced-transparency state for app-level transparency handling.
   - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
-- **On/Off Labels (iOS)**
+- **On/Off Labels (iOS and Android)**
   - Adds a vertical line for the on state and a circle for the off state inside switches.
-  - Follows the iOS system setting until the user chooses an explicit app value.
-  - Refreshes the system value when the app returns from the background.
+  - On iOS, follows the system setting until the user chooses an explicit app value.
+  - On Android, uses only the app preference or configured default because no matching public system setting exists.
+  - Refreshes the iOS system value when the app returns from the background.
   - Can be enabled or disabled independently inside the Settings screen or header accessibility modal.
   - Always shows a line/circle preview inside this preference's own switch, including while the preference is off.
   - Preserves switch role, checked/disabled state, reduced-motion behavior, and non-color state cues.
