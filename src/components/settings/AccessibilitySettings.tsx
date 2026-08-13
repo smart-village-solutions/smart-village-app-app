@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem, Slider } from 'react-native-elements';
 
 import { consts, normalize, texts } from '../../config';
@@ -25,7 +25,6 @@ type Definition = {
   description?: string;
   featureKey: keyof ReturnType<typeof useAccessibilityPreferences>['features'];
   key: AccessibilityTogglePreferenceKey;
-  platform?: 'ios';
   title: string;
 };
 
@@ -63,7 +62,6 @@ const SETTINGS_DEFINITIONS: Definition[] = [
   {
     key: 'switchLabelsEnabled',
     featureKey: 'switchLabels',
-    platform: 'ios',
     title: texts.settingsContents.accessibility.switchLabels.title,
     description: texts.settingsContents.accessibility.switchLabels.description
   }
@@ -110,10 +108,7 @@ export const AccessibilitySettings = ({
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
-  const availableSettings = SETTINGS_DEFINITIONS.filter(
-    (setting) =>
-      features[setting.featureKey] && (!setting.platform || setting.platform === Platform.OS)
-  );
+  const availableSettings = SETTINGS_DEFINITIONS.filter((setting) => features[setting.featureKey]);
   const textScaleLevel = normalizeTextScaleLevel(preferences.textScaleLevel);
   const textScaleLevelLabels = useMemo(
     () => [

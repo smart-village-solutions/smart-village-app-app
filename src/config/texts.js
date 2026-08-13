@@ -1311,7 +1311,7 @@ export const texts = {
       switchLabels: {
         title: 'Ein/Aus-Kennzeichnungen',
         description:
-          'Zeigt auf iOS in Schaltern zusätzlich einen Strich für „Ein“ und einen Kreis für „Aus“ an.'
+          'Zeigt in Schaltern zusätzlich einen Strich für „Ein“ und einen Kreis für „Aus“ an.'
       }
     },
     analytics: {

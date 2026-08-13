@@ -51,20 +51,18 @@ NativeSwitch.propTypes = {
   toggleSwitch: PropTypes.func.isRequired
 };
 
-const IOSStateIndicator = ({ colors, switchValue }) => {
-  const indicatorPositionStyle = switchValue
-    ? styles.iosStateIndicatorOn
-    : styles.iosStateIndicatorOff;
+const SwitchStateIndicator = ({ colors, switchValue }) => {
+  const indicatorPositionStyle = switchValue ? styles.stateIndicatorOn : styles.stateIndicatorOff;
   const indicatorStyle = switchValue
-    ? [styles.iosOnIndicator, { backgroundColor: colors.onPrimary }]
-    : [styles.iosOffIndicator, { borderColor: colors.text }];
+    ? [styles.onIndicator, { backgroundColor: colors.onPrimary }]
+    : [styles.offIndicator, { borderColor: colors.text }];
 
   return (
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       pointerEvents="none"
-      style={[styles.iosStateIndicator, indicatorPositionStyle]}
+      style={[styles.stateIndicator, indicatorPositionStyle]}
       testID={switchValue ? 'switch-state-on' : 'switch-state-off'}
     >
       <View style={indicatorStyle} testID={switchValue ? 'switch-on-line' : 'switch-off-circle'} />
@@ -72,12 +70,12 @@ const IOSStateIndicator = ({ colors, switchValue }) => {
   );
 };
 
-IOSStateIndicator.propTypes = {
+SwitchStateIndicator.propTypes = {
   colors: PropTypes.object.isRequired,
   switchValue: PropTypes.bool.isRequired
 };
 
-const AppControlledIOSSwitch = ({
+const AppControlledSwitch = ({
   accessibilityLabel,
   colors,
   isDisabled,
@@ -111,17 +109,19 @@ const AppControlledIOSSwitch = ({
       disabled={isDisabled}
       hitSlop={normalize(8)}
       onPress={() => toggleSwitch(!switchValue)}
-      style={[styles.iosControl, isDisabled && styles.disabled]}
+      style={[styles.appControlledSwitch, isDisabled && styles.disabled]}
     >
-      <Animated.View style={[styles.iosTrack, trackStyle]}>
-        {isSwitchLabelsEnabled && <IOSStateIndicator colors={colors} switchValue={switchValue} />}
-        <Animated.View pointerEvents="none" style={[styles.iosThumb, thumbStyle]} />
+      <Animated.View style={[styles.appControlledTrack, trackStyle]}>
+        {isSwitchLabelsEnabled && (
+          <SwitchStateIndicator colors={colors} switchValue={switchValue} />
+        )}
+        <Animated.View pointerEvents="none" style={[styles.appControlledThumb, thumbStyle]} />
       </Animated.View>
     </Pressable>
   );
 };
 
-AppControlledIOSSwitch.propTypes = {
+AppControlledSwitch.propTypes = {
   accessibilityLabel: PropTypes.string,
   colors: PropTypes.object.isRequired,
   isDisabled: PropTypes.bool,
@@ -142,12 +142,9 @@ export const Switch = ({
   const accessibility = useContext(AccessibilityContext);
   const { colors } = useTheme();
 
-  if (
-    Platform.OS === 'ios' &&
-    (accessibility.features?.switchLabels === true || showSwitchLabels)
-  ) {
+  if (accessibility.features?.switchLabels === true || showSwitchLabels) {
     return (
-      <AppControlledIOSSwitch
+      <AppControlledSwitch
         accessibilityLabel={accessibilityLabel}
         colors={colors}
         isDisabled={isDisabled}
@@ -175,45 +172,13 @@ export const Switch = ({
 /* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
 /* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
-  disabled: {
-    opacity: 0.65
-  },
-  iosControl: {
+  appControlledSwitch: {
     alignItems: 'center',
     height: normalize(32),
     justifyContent: 'center',
     width: normalize(47)
   },
-  iosOffIndicator: {
-    borderRadius: normalize(4),
-    borderWidth: normalize(1.5),
-    height: normalize(8),
-    width: normalize(8)
-  },
-  iosOnIndicator: {
-    borderRadius: normalize(1),
-    height: normalize(10),
-    width: normalize(2)
-  },
-  iosStateIndicator: {
-    alignItems: 'center',
-    bottom: 0,
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    width: normalize(17)
-  },
-  iosStateIndicatorOff: {
-    right: 0
-  },
-  iosStateIndicatorOn: {
-    left: 0
-  },
-  iosSwitch: {
-    right: -6,
-    transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
-  },
-  iosThumb: {
+  appControlledThumb: {
     borderRadius: normalize(10),
     height: normalize(20),
     left: normalize(2),
@@ -221,13 +186,45 @@ const styles = StyleSheet.create({
     top: normalize(2),
     width: normalize(20)
   },
-  iosTrack: {
+  appControlledTrack: {
     borderRadius: normalize(12),
     borderWidth: StyleSheet.hairlineWidth,
     height: normalize(24),
     overflow: 'hidden',
     position: 'relative',
     width: normalize(39)
+  },
+  disabled: {
+    opacity: 0.65
+  },
+  offIndicator: {
+    borderRadius: normalize(4),
+    borderWidth: normalize(1.5),
+    height: normalize(8),
+    width: normalize(8)
+  },
+  onIndicator: {
+    borderRadius: normalize(1),
+    height: normalize(10),
+    width: normalize(2)
+  },
+  stateIndicator: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: normalize(17)
+  },
+  stateIndicatorOff: {
+    right: 0
+  },
+  stateIndicatorOn: {
+    left: 0
+  },
+  iosSwitch: {
+    right: -6,
+    transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }]
   }
 });
 /* eslint-enable react-native/no-unused-styles */
