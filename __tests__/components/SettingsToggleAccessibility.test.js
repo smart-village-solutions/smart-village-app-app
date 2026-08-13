@@ -64,11 +64,14 @@ jest.mock('../../src/hooks/useTheme', () => ({
     colors: {
       gray20: '#F2F2F7',
       gray40: '#DBDBE6',
+      gray60: '#BCBBC1',
+      border: '#C5C5CC',
       onPrimary: '#FFFFFF',
       overlayRgba: 'rgba(0, 0, 0, 0.7)',
       primary: '#107821',
       refreshControl: '#107821',
       shadow: '#858585',
+      text: '#141414',
       transparent: 'transparent'
     }
   })
@@ -143,5 +146,21 @@ describe('SettingsToggle accessibility', () => {
     )[0];
 
     expect(loadingSlot).toBeDefined();
+  });
+
+  it('forwards the permanent switch-label preview to the switch control', () => {
+    const tree = renderWithAct(
+      <SettingsToggle
+        needsConnection={false}
+        item={{
+          showSwitchLabels: true,
+          title: 'Ein/Aus-Kennzeichnungen',
+          value: false
+        }}
+      />
+    );
+
+    expect(tree.root.findByProps({ testID: 'switch-state-off' })).toBeTruthy();
+    expect(tree.root.findByProps({ testID: 'switch-off-circle' })).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem, Slider } from 'react-native-elements';
 
 import { consts, normalize, texts } from '../../config';
@@ -25,6 +25,7 @@ type Definition = {
   description?: string;
   featureKey: keyof ReturnType<typeof useAccessibilityPreferences>['features'];
   key: AccessibilityTogglePreferenceKey;
+  platform?: 'ios';
   title: string;
 };
 
@@ -58,6 +59,13 @@ const SETTINGS_DEFINITIONS: Definition[] = [
     featureKey: 'reduceTransparency',
     title: texts.settingsContents.accessibility.reduceTransparency.title,
     description: texts.settingsContents.accessibility.reduceTransparency.description
+  },
+  {
+    key: 'switchLabelsEnabled',
+    featureKey: 'switchLabels',
+    platform: 'ios',
+    title: texts.settingsContents.accessibility.switchLabels.title,
+    description: texts.settingsContents.accessibility.switchLabels.description
   }
 ];
 
@@ -91,6 +99,7 @@ export const AccessibilitySettings = ({
   const {
     features,
     isHighContrastEnabled,
+    isSwitchLabelsEnabled,
     preferences,
     resetPreferences,
     setPreference,
@@ -101,7 +110,10 @@ export const AccessibilitySettings = ({
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
-  const availableSettings = SETTINGS_DEFINITIONS.filter((setting) => features[setting.featureKey]);
+  const availableSettings = SETTINGS_DEFINITIONS.filter(
+    (setting) =>
+      features[setting.featureKey] && (!setting.platform || setting.platform === Platform.OS)
+  );
   const textScaleLevel = normalizeTextScaleLevel(preferences.textScaleLevel);
   const textScaleLevelLabels = useMemo(
     () => [
@@ -221,8 +233,12 @@ export const AccessibilitySettings = ({
               description: setting.description,
               onActivate: () => setPreference(setting.key, true),
               onDeactivate: () => setPreference(setting.key, false),
+              showSwitchLabels: setting.key === 'switchLabelsEnabled',
               title: setting.title,
-              value: preferences[setting.key]
+              value:
+                setting.key === 'switchLabelsEnabled'
+                  ? isSwitchLabelsEnabled
+                  : preferences[setting.key]
             }}
           />
         </WrapperHorizontal>

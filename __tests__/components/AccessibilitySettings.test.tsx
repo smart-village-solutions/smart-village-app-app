@@ -43,6 +43,7 @@ jest.mock('../../src/config', () => ({
         readAloud: { title: 'Vorlesen', description: 'desc' },
         reduceMotion: { title: 'Bewegung reduzieren', description: 'desc' },
         reduceTransparency: { title: 'Transparenz reduzieren', description: 'desc' },
+        switchLabels: { title: 'Ein/Aus-Kennzeichnungen', description: 'desc' },
         reset: 'Auf Standardwerte zurücksetzen',
         theme: {
           title: 'Farbschema',
@@ -226,6 +227,7 @@ describe('AccessibilitySettings', () => {
         readAloud: true,
         reduceMotion: true,
         reduceTransparency: true,
+        switchLabels: true,
         textScaling: true,
         theming: true
       },
@@ -239,6 +241,7 @@ describe('AccessibilitySettings', () => {
         textScaleLevel: 2
       },
       resetPreferences: jest.fn(),
+      isSwitchLabelsEnabled: true,
       setPreference: jest.fn(),
       setTextScaleLevel: jest.fn(),
       setThemeMode: jest.fn(),
@@ -260,8 +263,42 @@ describe('AccessibilitySettings', () => {
       'Graustufen',
       'Hoher Kontrast',
       'Bewegung reduzieren',
-      'Transparenz reduzieren'
+      'Transparenz reduzieren',
+      'Ein/Aus-Kennzeichnungen'
     ]);
     expect(toggleTitles).not.toContain('Vorlesen');
+  });
+
+  it('stores an explicit app override for iOS switch labels', () => {
+    const setPreference = jest.fn();
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: {
+        switchLabels: true,
+        textScaling: false
+      },
+      isSwitchLabelsEnabled: true,
+      preferences: {
+        textScaleLevel: 2
+      },
+      resetPreferences: jest.fn(),
+      setPreference,
+      setTextScaleLevel: jest.fn(),
+      setThemeMode: jest.fn(),
+      themeMode: 'system'
+    });
+
+    const tree = renderWithAct(
+      <AccessibilitySettings withResetButton={false} withScrollView={false} />
+    );
+    const toggle = tree.root.findByType('mock-settings-toggle');
+
+    expect(toggle.props.item.value).toBe(true);
+    expect(toggle.props.item.showSwitchLabels).toBe(true);
+
+    renderer.act(() => {
+      toggle.props.item.onDeactivate();
+    });
+
+    expect(setPreference).toHaveBeenCalledWith('switchLabelsEnabled', false);
   });
 });

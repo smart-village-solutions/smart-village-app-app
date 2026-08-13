@@ -74,6 +74,9 @@ jest.mock('../../src/AccessibilityProvider', () => {
 
   return {
     AccessibilityContext: ReactLocal.createContext({
+      features: {
+        switchLabels: false
+      },
       isBoldTextEnabled: false,
       isGrayscaleEnabled: false,
       isInvertColorsEnabled: false,
@@ -91,6 +94,7 @@ import { Radiobutton } from '../../src/components/Radiobutton';
 import { Switch as AppSwitch } from '../../src/components/Switch';
 import { Touchable } from '../../src/components/Touchable';
 import { consts } from '../../src/config';
+import { AccessibilityContext } from '../../src/AccessibilityProvider';
 
 describe('Accessibility primitives', () => {
   const onPress = () => {};
@@ -168,15 +172,61 @@ describe('Accessibility primitives', () => {
 
     expect(node.props.accessibilityState).toEqual({ checked: false, disabled: true });
     expect(node.props.accessibilityLabel).toBe('Filtereinstellungen dauerhaft speichern');
-    expect(tree.root.findByProps({ testID: 'switch-state-off' })).toBeTruthy();
+    expect(tree.root.findAllByProps({ testID: 'switch-state-off' })).toHaveLength(0);
   });
 
-  it('Switch displays a check icon in addition to the active track color', () => {
+  it('Switch displays the iOS on indicator inside the track when app labels are enabled', () => {
     const tree = renderWithAct(
-      <AppSwitch accessibilityLabel="Aktive Option" switchValue toggleSwitch={onPress} />
+      <AccessibilityContext.Provider
+        value={{
+          features: { switchLabels: true },
+          isReduceMotionEnabled: false,
+          isReduceTransparencyEnabled: false,
+          isSwitchLabelsEnabled: true
+        }}
+      >
+        <AppSwitch accessibilityLabel="Aktive Option" switchValue toggleSwitch={onPress} />
+      </AccessibilityContext.Provider>
     );
 
     expect(tree.root.findByProps({ testID: 'switch-state-on' })).toBeTruthy();
-    expect(tree.root.findByType('mock-named-icon').props.name).toBe('check');
+    expect(tree.root.findByProps({ testID: 'switch-on-line' })).toBeTruthy();
+    expect(tree.root.findAllByType('mock-named-icon')).toHaveLength(0);
+  });
+
+  it('Switch displays the iOS off indicator inside the track when app labels are enabled', () => {
+    const tree = renderWithAct(
+      <AccessibilityContext.Provider
+        value={{
+          features: { switchLabels: true },
+          isReduceMotionEnabled: false,
+          isReduceTransparencyEnabled: false,
+          isSwitchLabelsEnabled: true
+        }}
+      >
+        <AppSwitch
+          accessibilityLabel="Inaktive Option"
+          switchValue={false}
+          toggleSwitch={onPress}
+        />
+      </AccessibilityContext.Provider>
+    );
+
+    expect(tree.root.findByProps({ testID: 'switch-state-off' })).toBeTruthy();
+    expect(tree.root.findByProps({ testID: 'switch-off-circle' })).toBeTruthy();
+  });
+
+  it('Switch can always preview the iOS off indicator for the switch-label setting', () => {
+    const tree = renderWithAct(
+      <AppSwitch
+        accessibilityLabel="Ein/Aus-Kennzeichnungen"
+        showSwitchLabels
+        switchValue={false}
+        toggleSwitch={onPress}
+      />
+    );
+
+    expect(tree.root.findByProps({ testID: 'switch-state-off' })).toBeTruthy();
+    expect(tree.root.findByProps({ testID: 'switch-off-circle' })).toBeTruthy();
   });
 });

@@ -79,6 +79,7 @@ global feature gate is enabled.
         "highContrast": true,
         "reduceMotion": true,
         "reduceTransparency": true,
+        "switchLabels": true,
         "readAloud": true
       },
       "defaults": {
@@ -160,6 +161,7 @@ Use the following JSON shape in `globalSettings`:
         "highContrast": false,
         "reduceMotion": false,
         "reduceTransparency": false,
+        "switchLabels": false,
         "readAloud": false,
         "theming": false
       },
@@ -221,6 +223,10 @@ Any omitted key in `enabledFeatures` defaults to `false`.
   - Enables/disables in-app reduced-motion preference.
 - `reduceTransparency`
   - Enables/disables in-app reduced-transparency preference.
+- `switchLabels`
+  - iOS only. Enables an app-level On/Off Labels preference and app-controlled switch rendering.
+  - When enabled without a stored override, the app follows the current iOS **On/Off Labels** setting.
+  - Requires a new native iOS build because the system value is provided by a local Expo module.
 - `readAloud`
   - Global feature gate for detail and HTML-page TTS behavior.
   - `true`: show the player automatically when supported readable content is available.
@@ -240,6 +246,9 @@ Defines default user preference values applied when a user has no stored accessi
 - `highContrastEnabled`
 - `reduceMotionEnabled`
 - `reduceTransparencyEnabled`
+- `switchLabels` or `switchLabelsEnabled` (optional boolean; `switchLabelsEnabled` wins when both are present)
+  - If omitted, follows the iOS system **On/Off Labels** value.
+  - Once changed in the app, the explicit app value overrides the system value.
 - `themeMode` (`"light"`, `"dark"`, or `"system"`; defaults to `"system"`)
 
 `readAloudEnabled` is retained only as a legacy stored preference field. It no longer controls TTS
@@ -386,6 +395,13 @@ Theme resolution follows this order:
 
 When theming is disabled, the resolved mode is always `light`, regardless of the OS scheme or stored preference.
 
+Switch-label resolution on iOS follows this order:
+
+1. An explicit app preference (`switchLabelsEnabled`) wins when the user has changed the control.
+2. Without an app override, the current iOS **On/Off Labels** setting is used.
+3. `defaults.switchLabels: true` (or `defaults.switchLabelsEnabled: true`) can opt in by default while the iOS system setting is off.
+4. `enabledFeatures.switchLabels` must be `true` to expose the app override. If it is disabled, the standard native iOS switch continues to follow the system setting directly.
+
 ### Local persistence
 
 User selections are stored in local storage under:
@@ -434,6 +450,13 @@ Behavior:
 - **Reduce Transparency**
   - Exposes reduced-transparency state for app-level transparency handling.
   - Already consumed in several UI components (`Input`, `Switch`, `Results`, `VersionNumber`, etc.).
+- **On/Off Labels (iOS)**
+  - Adds a vertical line for the on state and a circle for the off state inside switches.
+  - Follows the iOS system setting until the user chooses an explicit app value.
+  - Refreshes the system value when the app returns from the background.
+  - Can be enabled or disabled independently inside the Settings screen or header accessibility modal.
+  - Always shows a line/circle preview inside this preference's own switch, including while the preference is off.
+  - Preserves switch role, checked/disabled state, reduced-motion behavior, and non-color state cues.
 - **Read Aloud (Feature Gate)**
   - Is enabled globally with `enabledFeatures.readAloud: true`.
   - Has no user-facing on/off preference in Settings or the header modal.
@@ -607,6 +630,7 @@ Implementation notes:
    - live OS appearance changes while System is selected,
    - navigation, modal, HTML, map, form, list, media, loading, and error surfaces in both modes,
    - persistence after app restart,
+   - iOS On/Off Labels system inheritance and app override in both directions,
    - expected behavior on iOS and Android.
 
 ## Troubleshooting

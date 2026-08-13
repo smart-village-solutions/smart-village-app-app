@@ -1307,6 +1307,11 @@ export const texts = {
       reduceTransparency: {
         title: 'Transparenz reduzieren',
         description: 'Verwendet stärker deckende Oberflächen und Hervorhebungen.'
+      },
+      switchLabels: {
+        title: 'Ein/Aus-Kennzeichnungen',
+        description:
+          'Zeigt auf iOS in Schaltern zusätzlich einen Strich für „Ein“ und einen Kreis für „Aus“ an.'
       }
     },
     analytics: {

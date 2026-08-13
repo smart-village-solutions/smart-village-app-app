@@ -24,6 +24,7 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
     isDisabled,
     onActivate,
     onDeactivate,
+    showSwitchLabels,
     title,
     topDivider,
     value
@@ -83,6 +84,7 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
         <Switch
           accessibilityLabel={title}
           isDisabled={isDisabled}
+          showSwitchLabels={showSwitchLabels}
           switchValue={switchValue}
           toggleSwitch={toggleSwitch}
         />
