@@ -55,7 +55,7 @@ const SwitchStateIndicator = ({ colors, switchValue }) => {
   const indicatorPositionStyle = switchValue ? styles.stateIndicatorOn : styles.stateIndicatorOff;
   const indicatorStyle = switchValue
     ? [styles.onIndicator, { backgroundColor: colors.onPrimary }]
-    : [styles.offIndicator, { borderColor: colors.text }];
+    : [styles.offIndicator, { borderColor: colors.surface }];
 
   return (
     <View
